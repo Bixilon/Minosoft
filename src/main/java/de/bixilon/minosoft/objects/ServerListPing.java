@@ -28,4 +28,9 @@ public class ServerListPing {
     public String getBase64EncodedFavicon() {
         return raw.getString("favicon");
     }
+
+    public String getMotd() {
+        //ToDo TextComponent handling
+        return raw.getString("description");
+    }
 }

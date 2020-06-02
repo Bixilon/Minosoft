@@ -4,14 +4,13 @@ import de.bixilon.minosoft.objects.BlockPosition;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class OutByteBuffer {
-    private List<Byte> bytes = new ArrayList<>();
+    private final List<Byte> bytes = new ArrayList<>();
 
     public OutByteBuffer() {
     }
@@ -37,7 +36,6 @@ public class OutByteBuffer {
     public void writeShort(short s) {
         ByteBuffer buffer = ByteBuffer.allocate(Short.BYTES);
         buffer.putShort(s);
-        buffer.order(ByteOrder.BIG_ENDIAN);
         for (byte b : buffer.array()) {
             bytes.add(b);
         }
@@ -46,7 +44,6 @@ public class OutByteBuffer {
     public void writeInteger(int i) {
         ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
         buffer.putInt(i);
-        buffer.order(ByteOrder.BIG_ENDIAN);
         for (byte b : buffer.array()) {
             bytes.add(b);
         }
@@ -55,7 +52,6 @@ public class OutByteBuffer {
     public void writeLong(Long l) {
         ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
         buffer.putLong(l);
-        buffer.order(ByteOrder.BIG_ENDIAN);
         for (byte b : buffer.array()) {
             bytes.add(b);
         }
@@ -64,7 +60,6 @@ public class OutByteBuffer {
     public void writeFloat(Float f) {
         ByteBuffer buffer = ByteBuffer.allocate(Float.BYTES);
         buffer.putFloat(f);
-        buffer.order(ByteOrder.BIG_ENDIAN);
         for (byte b : buffer.array()) {
             bytes.add(b);
         }
@@ -73,7 +68,6 @@ public class OutByteBuffer {
     public void writeDouble(Double d) {
         ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
         buffer.putDouble(d);
-        buffer.order(ByteOrder.BIG_ENDIAN);
         for (byte b : buffer.array()) {
             bytes.add(b);
         }
@@ -94,7 +88,6 @@ public class OutByteBuffer {
         ByteBuffer buffer = ByteBuffer.allocate(16); // UUID.BYTES
         buffer.putLong(u.getMostSignificantBits());
         buffer.putLong(u.getLeastSignificantBits());
-        buffer.order(ByteOrder.BIG_ENDIAN);
         for (byte b : buffer.array()) {
             bytes.add(b);
         }

@@ -1,8 +1,8 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.clientbound.handshaking.PacketStatusPong;
-import de.bixilon.minosoft.protocol.packets.clientbound.handshaking.PacketStatusResponse;
+import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
+import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 
 import java.util.HashMap;
 

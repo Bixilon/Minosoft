@@ -4,7 +4,6 @@ import de.bixilon.minosoft.objects.BlockPosition;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -39,36 +38,31 @@ public class InByteBuffer {
     public short readShort() {
         ByteBuffer buffer = ByteBuffer.allocate(Short.BYTES);
         buffer.put(readBytes(Short.BYTES));
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        return buffer.getShort();
+        return buffer.getShort(0);
     }
 
     public int readInteger() {
         ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
         buffer.put(readBytes(Integer.BYTES));
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        return buffer.getInt();
+        return buffer.getInt(0);
     }
 
     public Long readLong() {
         ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
         buffer.put(readBytes(Long.BYTES));
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        return buffer.getLong();
+        return buffer.getLong(0);
     }
 
     public Float readFloat() {
         ByteBuffer buffer = ByteBuffer.allocate(Float.BYTES);
         buffer.put(readBytes(Float.BYTES));
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        return buffer.getFloat();
+        return buffer.getFloat(0);
     }
 
     public Double readDouble() {
         ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
         buffer.put(readBytes(Double.BYTES));
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        return buffer.getDouble();
+        return buffer.getDouble(0);
     }
 
     public String readString() {
@@ -83,7 +77,6 @@ public class InByteBuffer {
     public UUID readUUID() {
         ByteBuffer buffer = ByteBuffer.allocate(16); // UUID.BYTES
         buffer.put(readBytes(16));
-        buffer.order(ByteOrder.BIG_ENDIAN);
         return new UUID(buffer.getLong(0), buffer.getLong(1));
     }
 
