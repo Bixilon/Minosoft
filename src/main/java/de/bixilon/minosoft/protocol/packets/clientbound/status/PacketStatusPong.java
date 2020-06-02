@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.status;
 
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
@@ -11,11 +12,12 @@ public class PacketStatusPong implements ClientboundPacket {
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         this.id = buffer.readLong();
+        log();
     }
 
     @Override
     public void log() {
-        // ToDo
+        Log.protocol(String.format("Receiving pong packet (%s)", id));
     }
 
     @Override

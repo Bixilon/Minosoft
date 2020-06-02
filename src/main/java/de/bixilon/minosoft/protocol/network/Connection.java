@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.protocol.network;
 
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
@@ -72,7 +73,7 @@ public class Connection {
         if (this.state == state) {
             return;
         }
-        System.out.println("ConnectionStatus changed: " + state.name());
+        Log.verbose("ConnectionStatus changed: " + state.name());
         this.state = state;
         switch (state) {
             case HANDSHAKING:

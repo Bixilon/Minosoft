@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.protocol.network;
 
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionState;
@@ -59,7 +60,6 @@ public class Network {
                         dOut.write(b);
                         dOut.flush();
                         binQueue.remove(0);
-                        System.out.println(String.format("[OUT] (%s)", b[1]));
                     }
 
                     // everything sent for now, waiting for data
@@ -117,7 +117,7 @@ public class Network {
                     Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand()));
 
                     if (clazz == null) {
-                        System.out.println("[IN] Unknown: " + inPacketBuffer.getCommand());
+                        Log.warn("[IN] Unknown: " + inPacketBuffer.getCommand());
                         binQueueIn.remove(0);
                         continue;
                     }

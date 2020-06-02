@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.handshaking;
 
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.*;
 
@@ -26,6 +27,7 @@ public class PacketHandshake implements ServerboundPacket {
 
     @Override
     public OutPacketBuffer write(ProtocolVersion v) {
+        log();
         // no version checking, is the same in all versions (1.7.x - 1.15.2)
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.STATUS_REQUEST));
         buffer.writeVarInt((nextState == ConnectionState.STATUS ? -1 : version)); // get best protocol version
@@ -37,6 +39,6 @@ public class PacketHandshake implements ServerboundPacket {
 
     @Override
     public void log() {
-        // ToDo
+        Log.protocol(String.format("Sending handshake packet (%s:%s)", address, port));
     }
 }

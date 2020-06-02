@@ -33,4 +33,8 @@ public class ServerListPing {
         //ToDo TextComponent handling
         return raw.getString("description");
     }
+
+    public JSONObject getRaw() {
+        return this.raw;
+    }
 }
