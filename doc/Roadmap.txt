@@ -7,12 +7,12 @@ No copyright violations (Launcher to download textures, ...)
 Native Windows (JavaFX, no 100% CPU usage in Menu :D)
 Multithreaded
 Mostly GPU based, not cpu
-Aimed for performance (goal: reach v-sync framerate, dynamicly disable effects, ...)
+Aimed for performance (goal: reach v-sync framerate, dynamically disable effects, ...)
 Server support
-No orginal Minecraft workarounds (API: plugin channel): No invisible entitys to show holograms, No Scoreboard workarounds, ... (Scoreboard still must be implemented to avoid compatiblity issues)
+No original Minecraft workarounds (API: plugin channel): No invisible entities to show holograms, No Scoreboard workarounds, ... (Scoreboard still must be implemented to avoid compatiblity issues)
 Debug settings (stop entity updates, entity limiter, ...)
 No cheat client (only per modding api)
-Server GUI API (server can send custom guis to client)
+Server GUI API (server can send custom GUIs to client)
 Only Multiplayer support (Singleplayer is in fact only a local server)
 No invalid session error
 No screenshot freeze
