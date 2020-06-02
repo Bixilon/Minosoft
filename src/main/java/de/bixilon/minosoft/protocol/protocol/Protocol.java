@@ -1,6 +1,8 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKeyRequest;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 
@@ -26,5 +28,7 @@ public interface Protocol {
     private static void initPacketClassMapping() {
         packetClassMapping.put(Packets.Clientbound.STATUS_RESPONSE, PacketStatusResponse.class);
         packetClassMapping.put(Packets.Clientbound.STATUS_PONG, PacketStatusPong.class);
+        packetClassMapping.put(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST, PacketEncryptionKeyRequest.class);
+        packetClassMapping.put(Packets.Clientbound.LOGIN_LOGIN_SUCCESS, PacketLoginSuccess.class);
     }
 }

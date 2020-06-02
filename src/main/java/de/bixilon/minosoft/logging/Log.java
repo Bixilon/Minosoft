@@ -3,7 +3,7 @@ package de.bixilon.minosoft.logging;
 import java.text.SimpleDateFormat;
 
 public class Log {
-    static LogLevel level = LogLevel.VERBOSE;
+    static LogLevel level = LogLevel.PROTOCOL;
     static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     public static void log(LogLevel l, String message) {

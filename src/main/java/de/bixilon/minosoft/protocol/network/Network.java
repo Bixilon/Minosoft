@@ -3,11 +3,14 @@ package de.bixilon.minosoft.protocol.network;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.ConnectionState;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.Protocol;
+import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
+import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.Util;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.SecretKey;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -22,6 +25,9 @@ public class Network {
     private final List<byte[]> binQueue;
     private final List<byte[]> binQueueIn;
     private Socket socket;
+    private boolean encryptionEnabled = false;
+    private Cipher cipherEncrypt;
+    private Cipher cipherDecrypt;
 
     public Network(Connection c) {
         this.connection = c;
@@ -62,29 +68,37 @@ public class Network {
                         binQueue.remove(0);
                     }
 
-                    // everything sent for now, waiting for data
-
-                    while (dIn.available() > 0) {
-                        int numRead = 0;
-                        int len = 0;
-                        byte read;
-                        do {
-                            read = dIn.readByte();
-                            int value = (read & 0b01111111);
-                            len |= (value << (7 * numRead));
-
-                            numRead++;
-                            if (numRead > 5) {
-                                throw new RuntimeException("VarInt is too big");
-                            }
-                        } while ((read & 0b10000000) != 0);
-
-
-                        byte[] in = dIn.readNBytes(len);
-                        // add to queue
-                        binQueueIn.add(in);
-
+                    if (dIn.available() == 0) {
+                        // nothing to receive
+                        Util.sleep(1);
+                        continue;
                     }
+                    // everything sent for now, waiting for data
+                    List<Byte> raw = new ArrayList<>();
+                    byte[] buffer = new byte[1];
+                    while (true) {
+                        if (raw.size() > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+                            raw = null;
+                            break;
+                        }
+                        if (dIn.available() == 0) {
+                            // packet end
+                            break;
+                        }
+                        dIn.readFully(buffer, 0, 1);
+                        raw.add(buffer[0]);
+                    }
+                    if (raw == null || raw.size() == 0) {
+                        // data was tto long, ...
+                        continue;
+                    }
+                    // convert to array
+                    byte[] in = new byte[raw.size()];
+                    for (int i = 0; i < raw.size(); i++) {
+                        in[i] = raw.get(i);
+                    }
+                    // add to queue
+                    binQueueIn.add(in);
                     Util.sleep(1);
 
                 }
@@ -107,17 +121,52 @@ public class Network {
 
                 while (queue.size() > 0) {
                     ServerboundPacket p = queue.get(0);
-                    binQueue.add(p.write(connection.getVersion()).getOutBytes());
+                    byte[] raw = p.write(connection.getVersion()).getOutBytes();
+                    if (encryptionEnabled) {
+                        // encrypt
+                        byte[] encrypted;
+                        try {
+                            encrypted = cipherEncrypt.doFinal(raw);
+                        } catch (IllegalBlockSizeException | BadPaddingException e) {
+                            Log.fatal("Failed to encrypt!");
+                            e.printStackTrace();
+                            binQueue.remove(0);
+                            continue;
+                        }
+                        binQueue.add(encrypted);
+                    } else {
+                        binQueue.add(raw);
+                    }
                     queue.remove(0);
+                    if (p instanceof PacketEncryptionResponse) {
+                        // enable encryption
+                        enableEncryption(((PacketEncryptionResponse) p).getSecretKey());
+                    }
                 }
                 while (binQueueIn.size() > 0) {
 
                     // read data
-                    InPacketBuffer inPacketBuffer = new InPacketBuffer(binQueueIn.get(0));
+                    byte[] raw = binQueueIn.get(0);
+                    InPacketBuffer inPacketBuffer;
+                    if (encryptionEnabled) {
+                        // decrypt
+                        byte[] decrypted;
+                        try {
+                            decrypted = cipherDecrypt.doFinal(raw);
+                        } catch (IllegalBlockSizeException | BadPaddingException e) {
+                            Log.fatal("Failed to decrypt!");
+                            e.printStackTrace();
+                            binQueueIn.remove(0);
+                            continue;
+                        }
+                        inPacketBuffer = new InPacketBuffer(decrypted);
+                    } else {
+                        inPacketBuffer = new InPacketBuffer(raw);
+                    }
                     Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand()));
 
                     if (clazz == null) {
-                        Log.warn("[IN] Unknown: " + inPacketBuffer.getCommand());
+                        Log.warn("[IN] Unknown packet with command " + inPacketBuffer.getCommand());
                         binQueueIn.remove(0);
                         continue;
                     }
@@ -143,6 +192,13 @@ public class Network {
 
     public void sendPacket(ServerboundPacket p) {
         queue.add(p);
+    }
 
+    public void enableEncryption(SecretKey secretKey) {
+        Log.debug("Enabling encryption...");
+        cipherEncrypt = CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey);
+        cipherDecrypt = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey);
+        encryptionEnabled = true;
+        Log.debug("Encryption enabled!");
     }
 }

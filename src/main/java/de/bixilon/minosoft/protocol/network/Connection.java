@@ -1,8 +1,13 @@
 package de.bixilon.minosoft.protocol.network;
 
+import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.objects.Account;
+import de.bixilon.minosoft.objects.Player;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake;
+import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest;
 import de.bixilon.minosoft.protocol.protocol.ConnectionState;
@@ -18,6 +23,7 @@ public class Connection {
     private final Network network;
     private final PacketHandler handler;
     private final ArrayList<ClientboundPacket> handlingQueue;
+    private Player player = new Player(new Account(Config.username, Config.password));
     private ConnectionState state = ConnectionState.DISCONNECTED;
 
     private boolean onlyPing;
@@ -88,6 +94,9 @@ public class Connection {
                 network.sendPacket(new PacketStatusRequest());
                 network.sendPacket(new PacketStatusPing(0));
                 break;
+            case LOGIN:
+                network.sendPacket(new PacketLoginStart(player));
+                break;
         }
     }
 
@@ -110,5 +119,13 @@ public class Connection {
 
     public void disconnect() {
         setConnectionState(ConnectionState.DISCONNECTING);
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void sendPacket(ServerboundPacket p) {
+        network.sendPacket(p);
     }
 }
