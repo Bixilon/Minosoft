@@ -1,5 +1,8 @@
 package de.bixilon.minosoft.protocol.protocol;
 
+import de.bixilon.minosoft.objects.BlockPosition;
+import org.json.JSONObject;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -130,4 +133,11 @@ public class OutByteBuffer {
         return bytes;
     }
 
+    public void writeJson(JSONObject j) {
+        writeString(j.toString());
+    }
+
+    public void writeBlockPosition(BlockPosition pos) {
+        writeLong((((long) pos.getX() & 0x3FFFFFF) << 38) | (((long) pos.getZ() & 0x3FFFFFF) << 12) | ((long) pos.getY() & 0xFFF));
+    }
 }

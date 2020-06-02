@@ -1,5 +1,8 @@
 package de.bixilon.minosoft.protocol.protocol;
 
+import de.bixilon.minosoft.objects.BlockPosition;
+import org.json.JSONObject;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -121,5 +124,13 @@ public class InByteBuffer {
         return result;
     }
 
+    public JSONObject readJson() {
+        return new JSONObject(readString());
+    }
+
+    public BlockPosition readBlockPosition() {
+        Long raw = readLong();
+        return new BlockPosition(Long.valueOf(raw >> 38).intValue(), Long.valueOf(raw & 0xFFF).shortValue(), Long.valueOf(raw << 26 >> 38).intValue());
+    }
 
 }

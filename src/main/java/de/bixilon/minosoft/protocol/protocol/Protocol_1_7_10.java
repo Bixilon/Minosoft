@@ -14,10 +14,13 @@ public class Protocol_1_7_10 implements Protocol {
         serverboundPacketMapping = new HashMap<>();
         // handshake
         serverboundPacketMapping.put(Packets.Serverbound.HANDSHAKING_HANDSHAKE, 0x00);
+        // status
         serverboundPacketMapping.put(Packets.Serverbound.STATUS_REQUEST, 0x00);
         serverboundPacketMapping.put(Packets.Serverbound.STATUS_PING, 0x01);
+        // login
         serverboundPacketMapping.put(Packets.Serverbound.LOGIN_LOGIN_START, 0x00);
         serverboundPacketMapping.put(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE, 0x01);
+        // play
         serverboundPacketMapping.put(Packets.Serverbound.PLAY_KEEP_ALIVE, 0x00);
         serverboundPacketMapping.put(Packets.Serverbound.PLAY_CHAT_MESSAGE, 0x01);
         serverboundPacketMapping.put(Packets.Serverbound.PLAY_INTERACT_ENTITY, 0x02);
@@ -44,11 +47,14 @@ public class Protocol_1_7_10 implements Protocol {
 
 
         clientboundPacketMapping = new HashMap<>();
+        // status
         clientboundPacketMapping.put(Packets.Clientbound.STATUS_RESPONSE, 0x00);
         clientboundPacketMapping.put(Packets.Clientbound.STATUS_PONG, 0x01);
+        // login
         clientboundPacketMapping.put(Packets.Clientbound.LOGIN_DISCONNECT, 0x00);
         clientboundPacketMapping.put(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST, 0x01);
         clientboundPacketMapping.put(Packets.Clientbound.LOGIN_LOGIN_SUCCESS, 0x02);
+        // play
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_KEEP_ALIVE, 0x00);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_JOIN_GAME, 0x01);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_CHAT_MESSAGE, 0x02);
