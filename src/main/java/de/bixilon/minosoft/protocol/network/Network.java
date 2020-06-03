@@ -108,14 +108,16 @@ public class Network {
             }
         });
         socketThread.start();
+    }
 
+    public void startPacketThread() {
         // compressed data, makes packets to binary data
         // read data
         // safety first, but will not occur
         // sleep 1 ms
         Thread packetThread = new Thread(() -> {
             // compressed data, makes packets to binary data
-            while (connection.getConnectionState() != ConnectionState.DISCONNECTING) {
+            while (connection.getConnectionState() != ConnectionState.DISCONNECTED) {
 
                 while (queue.size() > 0) {
                     ServerboundPacket p = queue.get(0);
@@ -170,10 +172,8 @@ public class Network {
                 Util.sleep(1); // sleep 1 ms
 
             }
-            connection.setConnectionState(ConnectionState.DISCONNECTED);
         });
         packetThread.start();
-
     }
 
     public void sendPacket(ServerboundPacket p) {

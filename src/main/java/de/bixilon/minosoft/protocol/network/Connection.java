@@ -34,16 +34,6 @@ public class Connection {
         network = new Network(this);
         handlingQueue = new ArrayList<>();
         handler = new PacketHandler(this);
-        Thread handleThread = new Thread(() -> {
-            while (getConnectionState() != ConnectionState.DISCONNECTING) {
-                while (handlingQueue.size() > 0) {
-                    handlingQueue.get(0).handle(getHandler());
-                    handlingQueue.remove(0);
-                }
-                Util.sleep(1);
-            }
-        });
-        handleThread.start();
     }
 
     /**
@@ -83,7 +73,9 @@ public class Connection {
         this.state = state;
         switch (state) {
             case HANDSHAKING:
-                // connection established, logging in
+                // connection established, starting threads and logging in
+                network.startPacketThread();
+                startHandlingThread();
                 ConnectionState next = (onlyPing ? ConnectionState.STATUS : ConnectionState.LOGIN);
                 network.sendPacket(new PacketHandshake(getHost(), getPort(), next, (onlyPing) ? -1 : getVersion().getVersion()));
                 // after sending it, switch to next state
@@ -127,5 +119,18 @@ public class Connection {
 
     public void sendPacket(ServerboundPacket p) {
         network.sendPacket(p);
+    }
+
+    private void startHandlingThread() {
+        Thread handleThread = new Thread(() -> {
+            while (getConnectionState() != ConnectionState.DISCONNECTED) {
+                while (handlingQueue.size() > 0) {
+                    handlingQueue.get(0).handle(getHandler());
+                    handlingQueue.remove(0);
+                }
+                Util.sleep(1);
+            }
+        });
+        handleThread.start();
     }
 }
