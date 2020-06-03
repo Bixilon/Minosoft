@@ -4,6 +4,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKeyRequest;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketJoinGame;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
@@ -43,5 +44,8 @@ public class PacketHandler {
     public void handle(PacketLoginSuccess pkg) {
         // now we are playing
         connection.setConnectionState(ConnectionState.PLAY);
+    }
+
+    public void handle(PacketJoinGame pkg) {
     }
 }

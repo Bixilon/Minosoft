@@ -7,9 +7,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionRe
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.Util;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SecretKey;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -124,24 +122,16 @@ public class Network {
                     byte[] raw = p.write(connection.getVersion()).getOutBytes();
                     if (encryptionEnabled) {
                         // encrypt
-                        byte[] encrypted;
-                        try {
-                            encrypted = cipherEncrypt.doFinal(raw);
-                        } catch (IllegalBlockSizeException | BadPaddingException e) {
-                            Log.fatal("Failed to encrypt!");
-                            e.printStackTrace();
-                            binQueue.remove(0);
-                            continue;
-                        }
+                        byte[] encrypted = cipherEncrypt.update(raw);
                         binQueue.add(encrypted);
                     } else {
+                        if (p instanceof PacketEncryptionResponse) {
+                            // enable encryption
+                            enableEncryption(((PacketEncryptionResponse) p).getSecretKey());
+                        }
                         binQueue.add(raw);
                     }
                     queue.remove(0);
-                    if (p instanceof PacketEncryptionResponse) {
-                        // enable encryption
-                        enableEncryption(((PacketEncryptionResponse) p).getSecretKey());
-                    }
                 }
                 while (binQueueIn.size() > 0) {
 
@@ -150,23 +140,16 @@ public class Network {
                     InPacketBuffer inPacketBuffer;
                     if (encryptionEnabled) {
                         // decrypt
-                        byte[] decrypted;
-                        try {
-                            decrypted = cipherDecrypt.doFinal(raw);
-                        } catch (IllegalBlockSizeException | BadPaddingException e) {
-                            Log.fatal("Failed to decrypt!");
-                            e.printStackTrace();
-                            binQueueIn.remove(0);
-                            continue;
-                        }
+                        byte[] decrypted = cipherDecrypt.update(raw);
                         inPacketBuffer = new InPacketBuffer(decrypted);
                     } else {
                         inPacketBuffer = new InPacketBuffer(raw);
                     }
-                    Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand()));
+                    Packets.Clientbound p = connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
+                    Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(p);
 
                     if (clazz == null) {
-                        Log.warn("[IN] Unknown packet with command " + inPacketBuffer.getCommand());
+                        Log.warn(String.format("[IN] Unknown packet with command %x (%s)", inPacketBuffer.getCommand(), ((p != null) ? p.name() : "UNKNOWN")));
                         binQueueIn.remove(0);
                         continue;
                     }
