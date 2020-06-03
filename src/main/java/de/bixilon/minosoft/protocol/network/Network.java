@@ -149,7 +149,7 @@ public class Network {
                     Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(p);
 
                     if (clazz == null) {
-                        Log.warn(String.format("[IN] Unknown packet with command %x (%s)", inPacketBuffer.getCommand(), ((p != null) ? p.name() : "UNKNOWN")));
+                        Log.warn(String.format("[IN] Unknown packet with command 0x%x (%s)", inPacketBuffer.getCommand(), ((p != null) ? p.name() : "UNKNOWN")));
                         binQueueIn.remove(0);
                         continue;
                     }

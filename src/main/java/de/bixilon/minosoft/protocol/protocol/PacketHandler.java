@@ -3,8 +3,10 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKeyRequest;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketJoinGame;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerInfo;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
@@ -47,5 +49,13 @@ public class PacketHandler {
     }
 
     public void handle(PacketJoinGame pkg) {
+    }
+
+    public void handle(PacketLoginDisconnect pkg) {
+        Log.info(String.format("Disconnecting from server(%s)", pkg.getReason().toString()));
+        connection.setConnectionState(ConnectionState.DISCONNECTING);
+    }
+
+    public void handle(PacketPlayerInfo pkg) {
     }
 }
