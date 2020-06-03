@@ -9,18 +9,19 @@ public enum Block {
     COBBLESTONE(new Identifier("stone"), 4),
     WHITE_WOOL(new Identifier("wool"), 35, 0),
     RED_WOOL(new Identifier("wool", "red_wool"), 35, 14),
-    DROPPER(new Identifier("dropper", "dropper"), 158, BlockRotation.RotationType.NORMAL);
+    DROPPER_DOWN(new Identifier("dropper", "dropper"), 158, 0),
+    DROPPER_EAST(new Identifier("dropper", "dropper"), 158, 1),
+    DROPPER_NORTH(new Identifier("dropper", "dropper"), 158, 2),
+    DROPPER_SOUTH(new Identifier("dropper", "dropper"), 158, 3),
+    DROPPER_UP(new Identifier("dropper", "dropper"), 158, 4),
+    DROPPER_WEST(new Identifier("dropper", "dropper"), 158, 5);
+
+    //ToDo all blocks
+    //ToDo post water update block states
 
     Identifier identifier;
     int legacyId;
     int legacyData;
-    BlockRotation.RotationType rotationType;
-
-    Block(Identifier identifier, int legacyId, BlockRotation.RotationType rotationType) {
-        this.identifier = identifier;
-        this.legacyId = legacyId;
-        this.rotationType = rotationType;
-    }
 
     Block(Identifier identifier, int legacyId, int legacyData) {
         this.identifier = identifier;
@@ -46,7 +47,4 @@ public enum Block {
         return legacyData;
     }
 
-    public BlockRotation.RotationType getRotationType() {
-        return rotationType;
-    }
 }

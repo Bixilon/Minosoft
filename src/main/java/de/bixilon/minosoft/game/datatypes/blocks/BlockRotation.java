@@ -1,39 +1,17 @@
 package de.bixilon.minosoft.game.datatypes.blocks;
 
+// Only for reference, will be removed very soon
+@Deprecated
 public interface BlockRotation {
-
-    int getId();
-
-    enum RotationType {
-        BARELY,
-        NORMAL,
-        EXTENDED
-    }
-
     enum Barely implements BlockRotation {
         EAST(0),
         NORTH(1),
         SOUTH(2),
         WEST(3);
 
-        int id;
-
         Barely(int id) {
-            this.id = id;
         }
 
-        public static Barely byId(int id) {
-            for (Barely b : values()) {
-                if (b.getId() == id) {
-                    return b;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
-        }
     }
 
     enum Normal implements BlockRotation {
@@ -44,23 +22,7 @@ public interface BlockRotation {
         UP(4),
         WEST(5);
 
-        int id;
-
         Normal(int id) {
-            this.id = id;
-        }
-
-        public static Normal byId(int id) {
-            for (Normal n : values()) {
-                if (n.getId() == id) {
-                    return n;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
         }
     }
 
@@ -82,23 +44,7 @@ public interface BlockRotation {
         SOUTH_EAST(14),
         SOUTH_SOUTH_EAST(15);
 
-        int id;
-
         Extended(int id) {
-            this.id = id;
-        }
-
-        public static Extended byId(int id) {
-            for (Extended e : values()) {
-                if (e.getId() == id) {
-                    return e;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
         }
     }
 }
