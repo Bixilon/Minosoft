@@ -136,29 +136,32 @@ public class Network {
                 while (binQueueIn.size() > 0) {
 
                     // read data
-                    byte[] raw = binQueueIn.get(0);
+                    byte[] decrypted = binQueueIn.get(0);
                     InPacketBuffer inPacketBuffer;
                     if (encryptionEnabled) {
                         // decrypt
-                        byte[] decrypted = cipherDecrypt.update(raw);
-                        inPacketBuffer = new InPacketBuffer(decrypted);
-                    } else {
-                        inPacketBuffer = new InPacketBuffer(raw);
-                    }
-                    Packets.Clientbound p = connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
-                    Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(p);
-
-                    if (clazz == null) {
-                        Log.warn(String.format("[IN] Unknown packet with command 0x%x (%s)", inPacketBuffer.getCommand(), ((p != null) ? p.name() : "UNKNOWN")));
-                        binQueueIn.remove(0);
-                        continue;
+                        decrypted = cipherDecrypt.update(decrypted);
                     }
                     try {
-                        ClientboundPacket packet = clazz.getConstructor().newInstance();
-                        packet.read(inPacketBuffer, connection.getVersion());
-                        connection.handle(packet);
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        // safety first, but will not occur
+                        inPacketBuffer = new InPacketBuffer(decrypted);
+                        Packets.Clientbound p = connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
+                        Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(p);
+
+                        if (clazz == null) {
+                            Log.warn(String.format("[IN] Unknown packet with command 0x%x (%s)", inPacketBuffer.getCommand(), ((p != null) ? p.name() : "UNKNOWN")));
+                            binQueueIn.remove(0);
+                            continue;
+                        }
+                        try {
+                            ClientboundPacket packet = clazz.getConstructor().newInstance();
+                            packet.read(inPacketBuffer, connection.getVersion());
+                            connection.handle(packet);
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                            // safety first, but will not occur
+                            e.printStackTrace();
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        Log.protocol("Received broken packet!");
                         e.printStackTrace();
                     }
 
