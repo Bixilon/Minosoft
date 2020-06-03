@@ -6,10 +6,13 @@ import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKe
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketJoinGame;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketKeepAlive;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerInfo;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTimeUpdate;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;
@@ -57,5 +60,12 @@ public class PacketHandler {
     }
 
     public void handle(PacketPlayerInfo pkg) {
+    }
+
+    public void handle(PacketTimeUpdate pkg) {
+    }
+
+    public void handle(PacketKeepAlive pkg) {
+        connection.sendPacket(new PacketKeepAliveResponse(pkg.getId()));
     }
 }

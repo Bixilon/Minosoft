@@ -5,7 +5,9 @@ import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKe
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketJoinGame;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketKeepAlive;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerInfo;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTimeUpdate;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 
@@ -37,5 +39,7 @@ public interface Protocol {
 
         packetClassMapping.put(Packets.Clientbound.PLAY_JOIN_GAME, PacketJoinGame.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_INFO, PacketPlayerInfo.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_TIME_UPDATE, PacketTimeUpdate.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_KEEP_ALIVE, PacketKeepAlive.class);
     }
 }
