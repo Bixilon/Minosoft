@@ -5,10 +5,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKeyRequest;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketJoinGame;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketKeepAlive;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerInfo;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTimeUpdate;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
@@ -67,5 +64,8 @@ public class PacketHandler {
 
     public void handle(PacketKeepAlive pkg) {
         connection.sendPacket(new PacketKeepAliveResponse(pkg.getId()));
+    }
+
+    public void handle(PlayChunkBulk pkg) {
     }
 }

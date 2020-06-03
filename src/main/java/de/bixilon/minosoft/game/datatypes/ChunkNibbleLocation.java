@@ -1,13 +1,14 @@
 package de.bixilon.minosoft.game.datatypes;
 
-public class BlockPosition {
+/**
+ * Chunk X, Y and Z location (max 16x16x16)
+ */
+public class ChunkNibbleLocation {
     int x;
     int y;
     int z;
 
-    public BlockPosition(int x, short y, int z) {
-        // y min -2048, max 2047
-        //ToDo check values
+    public ChunkNibbleLocation(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -30,11 +31,7 @@ public class BlockPosition {
         if (super.equals(obj)) {
             return true;
         }
-        BlockPosition pos = (BlockPosition) obj;
-        return pos.getX() == getX() && pos.getY() == getY() && pos.getZ() == getZ();
-    }
-
-    public ChunkLocation getChunkLocation() {
-        return new ChunkLocation(getX() / 16, getZ() / 16);
+        ChunkNibbleLocation that = (ChunkNibbleLocation) obj;
+        return getX() == that.getX() && getY() == that.getY() && getZ() == that.getZ();
     }
 }

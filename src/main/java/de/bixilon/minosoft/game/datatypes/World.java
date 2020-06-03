@@ -1,12 +1,14 @@
 package de.bixilon.minosoft.game.datatypes;
 
+import de.bixilon.minosoft.game.datatypes.blocks.Block;
+
 import java.util.HashMap;
 
 /**
  * Collection of ChunkColumns
  */
 public class World {
-    public final HashMap<ChunkColumnLocation, ChunkColumn> chunks;
+    public final HashMap<ChunkLocation, Chunk> chunks;
     final String name;
 
     public World(String name) {
@@ -18,9 +20,16 @@ public class World {
         return name;
     }
 
-    public ChunkColumn getChunkColumn(ChunkColumnLocation loc) {
-        return new ChunkColumn(loc.getX(), loc.getZ());
+    public Chunk getChunk(ChunkLocation loc) {
+        return chunks.get(loc);
+    }
+
+    public Block getBlock(BlockPosition pos) {
         //ToDo
-        //return chunks.get(loc);
+        ChunkLocation loc = pos.getChunkLocation();
+        if (getChunk(loc) != null) {
+            return getChunk(loc).getBlock(pos.getX() % 16, pos.getX(), pos.getZ() % 16);
+        }
+        return Block.AIR;
     }
 }

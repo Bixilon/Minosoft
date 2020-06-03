@@ -1,28 +1,22 @@
 package de.bixilon.minosoft.game.datatypes;
 
 /**
- * Chunk X, Y and Z location (max 16x16x16)
+ * Chunk X and Z location (block position / 16, rounded down)
  */
 public class ChunkLocation {
-    byte x;
-    byte y;
-    byte z;
+    int x;
+    int z;
 
-    public ChunkLocation(byte x, byte y, byte z) {
+    public ChunkLocation(int x, int z) {
         this.x = x;
-        this.y = y;
         this.z = z;
     }
 
-    public byte getX() {
+    public int getX() {
         return x;
     }
 
-    public byte getY() {
-        return y;
-    }
-
-    public byte getZ() {
+    public int getZ() {
         return z;
     }
 
@@ -32,6 +26,6 @@ public class ChunkLocation {
             return true;
         }
         ChunkLocation that = (ChunkLocation) obj;
-        return getX() == that.getX() && getY() == that.getY() && getZ() == that.getZ();
+        return getX() == that.getX() && getZ() == that.getZ();
     }
 }
