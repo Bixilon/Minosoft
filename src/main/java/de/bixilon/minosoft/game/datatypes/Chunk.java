@@ -8,12 +8,11 @@ import java.util.HashMap;
 public class Chunk {
     private final HashMap<ChunkLocation, WorldBlock> blocks;
 
-    public Chunk() {
-        blocks = new HashMap<>();
+    public Chunk(HashMap<ChunkLocation, WorldBlock> blocks) {
+        this.blocks = blocks;
     }
 
     public WorldBlock getWorldBlock(ChunkLocation loc) {
-        //ToDo will return air if null
         return blocks.get(loc);
     }
 

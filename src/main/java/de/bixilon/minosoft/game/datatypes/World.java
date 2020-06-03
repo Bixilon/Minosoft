@@ -19,6 +19,8 @@ public class World {
     }
 
     public ChunkColumn getChunkColumn(ChunkColumnLocation loc) {
-        return chunks.get(loc);
+        return new ChunkColumn(loc.getX(), loc.getZ());
+        //ToDo
+        //return chunks.get(loc);
     }
 }
