@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.objects;
+package de.bixilon.minosoft.game.datatypes;
 
 public class BlockPosition {
     int x;
@@ -27,6 +27,9 @@ public class BlockPosition {
 
     @Override
     public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
         BlockPosition pos = (BlockPosition) obj;
         return pos.getX() == getX() && pos.getY() == getY() && pos.getZ() == getZ();
     }

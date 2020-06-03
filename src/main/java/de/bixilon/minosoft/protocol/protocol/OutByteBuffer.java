@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.objects.BlockPosition;
+import de.bixilon.minosoft.game.datatypes.BlockPosition;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;

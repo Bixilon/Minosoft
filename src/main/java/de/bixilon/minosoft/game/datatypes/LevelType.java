@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.objects;
+package de.bixilon.minosoft.game.datatypes;
 
 public enum LevelType {
     DEFAULT("default"),

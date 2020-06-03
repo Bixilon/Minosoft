@@ -1,10 +1,10 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.Difficulty;
+import de.bixilon.minosoft.game.datatypes.Dimension;
+import de.bixilon.minosoft.game.datatypes.GameMode;
+import de.bixilon.minosoft.game.datatypes.LevelType;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.objects.Difficulty;
-import de.bixilon.minosoft.objects.Dimension;
-import de.bixilon.minosoft.objects.GameMode;
-import de.bixilon.minosoft.objects.LevelType;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
