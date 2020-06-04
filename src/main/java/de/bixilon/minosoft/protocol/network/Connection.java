@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.protocol.network;
 
 import de.bixilon.minosoft.Config;
+import de.bixilon.minosoft.game.datatypes.World;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.objects.Account;
 import de.bixilon.minosoft.objects.Player;
@@ -24,6 +25,7 @@ public class Connection {
     private final PacketHandler handler;
     private final ArrayList<ClientboundPacket> handlingQueue;
     private Player player = new Player(new Account(Config.username, Config.password));
+    private World world = new World("world");
     private ConnectionState state = ConnectionState.DISCONNECTED;
 
     private boolean onlyPing;
@@ -132,5 +134,9 @@ public class Connection {
             }
         });
         handleThread.start();
+    }
+
+    public World getWorld() {
+        return this.world;
     }
 }

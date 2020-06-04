@@ -32,4 +32,13 @@ public class Identifier {
     public String getWaterUpdateName() {
         return ((water == null) ? legacy : water);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        Identifier that = (Identifier) obj;
+        return that.getLegacy().equals(getLegacy()) || that.getWaterUpdateName().equals(getWaterUpdateName());
+    }
 }

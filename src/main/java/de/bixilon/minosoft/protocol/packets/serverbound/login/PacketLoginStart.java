@@ -24,7 +24,7 @@ public class PacketLoginStart implements ServerboundPacket {
         log();
         // no version checking, is the same in all versions (1.7.x - 1.15.2)
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.LOGIN_LOGIN_START));
-        buffer.writeString(username);
+        buffer.writeString((username == null) ? "Player132" : username);
         return buffer;
     }
 

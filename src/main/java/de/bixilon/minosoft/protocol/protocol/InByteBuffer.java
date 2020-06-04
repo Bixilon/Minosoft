@@ -41,6 +41,16 @@ public class InByteBuffer {
         return buffer.getShort(0);
     }
 
+    public short[] readShorts(int num) {
+        ByteBuffer buffer = ByteBuffer.allocate(Short.BYTES * num);
+        buffer.put(readBytes(Short.BYTES * num));
+        short[] ret = new short[num];
+        for (int i = 0; i < num; i++) {
+            ret[i] = buffer.getShort(i);
+        }
+        return ret;
+    }
+
     public int readInteger() {
         ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
         buffer.put(readBytes(Integer.BYTES));
@@ -126,4 +136,8 @@ public class InByteBuffer {
         return new BlockPosition(Long.valueOf(raw >> 38).intValue(), Long.valueOf(raw & 0xFFF).shortValue(), Long.valueOf(raw << 26 >> 38).intValue());
     }
 
+    @Override
+    public String toString() {
+        return "dataLen: " + bytes.length + "; pos: " + pos;
+    }
 }
