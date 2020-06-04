@@ -3,6 +3,7 @@ package de.bixilon.minosoft.protocol.network;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.Util;
@@ -157,6 +158,11 @@ public class Network {
                         try {
                             ClientboundPacket packet = clazz.getConstructor().newInstance();
                             packet.read(inPacketBuffer, connection.getVersion());
+
+                            if (packet instanceof PacketLoginSuccess) {
+                                // login was okay, setting play status to avoid miss timing issues
+                                connection.setConnectionState(ConnectionState.PLAY);
+                            }
                             connection.handle(packet);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                             // safety first, but will not occur

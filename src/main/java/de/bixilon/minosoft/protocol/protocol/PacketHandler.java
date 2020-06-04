@@ -45,7 +45,8 @@ public class PacketHandler {
 
     public void handle(PacketLoginSuccess pkg) {
         // now we are playing
-        connection.setConnectionState(ConnectionState.PLAY);
+        // already done in packet thread
+        // connection.setConnectionState(ConnectionState.PLAY);
     }
 
     public void handle(PacketJoinGame pkg) {
