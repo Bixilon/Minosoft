@@ -50,6 +50,7 @@ public class Network {
                 socket.setKeepAlive(true);
                 DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
                 DataInputStream dIn = new DataInputStream(socket.getInputStream());
+                socket.getInputStream();
 
 
                 while (connection.getConnectionState() != ConnectionState.DISCONNECTING) {
@@ -73,31 +74,25 @@ public class Network {
                         continue;
                     }
                     // everything sent for now, waiting for data
-                    List<Byte> raw = new ArrayList<>();
-                    byte[] buffer = new byte[1];
-                    while (true) {
-                        if (raw.size() > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
-                            raw = null;
-                            break;
-                        }
-                        if (dIn.available() == 0) {
-                            // packet end
-                            break;
-                        }
-                        dIn.readFully(buffer, 0, 1);
-                        raw.add(buffer[0]);
+
+                    if (dIn.available() > 0) {
+                        int numRead = 0;
+                        int length = 0;
+                        byte read;
+                        do {
+                            read = dIn.readByte();
+                            int value = (read & 0b01111111);
+                            length |= (value << (7 * numRead));
+
+                            numRead++;
+                            if (numRead > 5) {
+                                throw new RuntimeException("VarInt is too big");
+                            }
+                        } while ((read & 0b10000000) != 0);
+
+                        byte[] raw = dIn.readNBytes(length);
+                        binQueueIn.add(raw);
                     }
-                    if (raw == null || raw.size() == 0) {
-                        // data was tto long, ...
-                        continue;
-                    }
-                    // convert to array
-                    byte[] in = new byte[raw.size()];
-                    for (int i = 0; i < raw.size(); i++) {
-                        in[i] = raw.get(i);
-                    }
-                    // add to queue
-                    binQueueIn.add(in);
                     Util.sleep(1);
 
                 }
