@@ -9,12 +9,12 @@ public enum Block {
     COBBLESTONE(new Identifier("stone"), 4),
     WHITE_WOOL(new Identifier("wool"), 35, 0),
     RED_WOOL(new Identifier("wool", "red_wool"), 35, 14),
-    DROPPER_DOWN(new Identifier("dropper", "dropper"), 158, 0),
-    DROPPER_EAST(new Identifier("dropper", "dropper"), 158, 1),
-    DROPPER_NORTH(new Identifier("dropper", "dropper"), 158, 2),
-    DROPPER_SOUTH(new Identifier("dropper", "dropper"), 158, 3),
-    DROPPER_UP(new Identifier("dropper", "dropper"), 158, 4),
-    DROPPER_WEST(new Identifier("dropper", "dropper"), 158, 5);
+    DROPPER_DOWN(new Identifier("dropper"), 158, 0),
+    DROPPER_EAST(new Identifier("dropper"), 158, 1),
+    DROPPER_NORTH(new Identifier("dropper"), 158, 2),
+    DROPPER_SOUTH(new Identifier("dropper"), 158, 3),
+    DROPPER_UP(new Identifier("dropper"), 158, 4),
+    DROPPER_WEST(new Identifier("dropper"), 158, 5);
 
     //ToDo all blocks
     //ToDo post water update block states
