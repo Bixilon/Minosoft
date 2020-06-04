@@ -153,6 +153,10 @@ public class Network {
                         try {
                             ClientboundPacket packet = clazz.getConstructor().newInstance();
                             packet.read(inPacketBuffer, connection.getVersion());
+                            if (inPacketBuffer.getBytesLeft() > 0) {
+                                // warn not all data used
+                                Log.protocol(String.format("[IN] Packet %s did not used all bytes sent", ((p != null) ? p.name() : "UNKNOWN")));
+                            }
 
                             if (packet instanceof PacketLoginSuccess) {
                                 // login was okay, setting play status to avoid miss timing issues

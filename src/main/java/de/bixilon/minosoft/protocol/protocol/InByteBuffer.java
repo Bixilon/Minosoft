@@ -143,6 +143,18 @@ public class InByteBuffer {
     }
 
     public ChatComponent readChatComponent() {
-        return new ChatComponent(readJson());
+        return new ChatComponent(readString());
+    }
+
+    public int getPos() {
+        return this.pos;
+    }
+
+    public int getLength() {
+        return bytes.length;
+    }
+
+    public int getBytesLeft() {
+        return bytes.length - pos;
     }
 }

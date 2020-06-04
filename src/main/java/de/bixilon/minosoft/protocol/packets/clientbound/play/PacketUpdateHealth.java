@@ -16,9 +16,9 @@ public class PacketUpdateHealth implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
-                health = buffer.readFloat();
+                health = (float) (Math.round(buffer.readFloat() * 10) / 10.0);
                 food = buffer.readShort();
-                saturation = buffer.readFloat();
+                saturation = (float) (Math.round(buffer.readFloat() * 10) / 10.0);
                 break;
         }
         log();
