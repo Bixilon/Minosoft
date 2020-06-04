@@ -69,4 +69,13 @@ public class PacketHandler {
     public void handle(PlayChunkBulk pkg) {
         //ToDo
     }
+
+    public void handle(PacketUpdateHealth pkg) {
+        connection.getPlayer().setFood(pkg.getFood());
+        connection.getPlayer().setHealth(pkg.getHealth());
+        connection.getPlayer().setSaturation(pkg.getSaturation());
+    }
+
+    public void handle(PacketPluginMessageReceived pkg) {
+    }
 }
