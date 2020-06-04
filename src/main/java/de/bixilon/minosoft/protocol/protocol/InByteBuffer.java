@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.game.datatypes.BlockPosition;
+import de.bixilon.minosoft.game.datatypes.ChatComponent;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
@@ -139,5 +140,9 @@ public class InByteBuffer {
     @Override
     public String toString() {
         return "dataLen: " + bytes.length + "; pos: " + pos;
+    }
+
+    public ChatComponent readChatComponent() {
+        return new ChatComponent(readJson());
     }
 }

@@ -67,7 +67,7 @@ public class PacketHandler {
         connection.sendPacket(new PacketKeepAliveResponse(pkg.getId()));
     }
 
-    public void handle(PlayChunkBulk pkg) {
+    public void handle(PacketChunkBulk pkg) {
         //ToDo
     }
 
@@ -78,5 +78,17 @@ public class PacketHandler {
     }
 
     public void handle(PacketPluginMessageReceived pkg) {
+    }
+
+    public void handle(PacketSpawnLocation pkg) {
+        connection.getPlayer().setSpawnLocation(pkg.getSpawnLocation());
+    }
+
+    public void handle(PacketChatMessage pkg) {
+    }
+
+    public void handle(PacketDisconnect pkg) {
+        // got kicked
+        connection.setConnectionState(ConnectionState.DISCONNECTING);
     }
 }

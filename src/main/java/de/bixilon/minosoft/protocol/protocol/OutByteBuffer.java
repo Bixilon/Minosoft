@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.game.datatypes.BlockPosition;
+import de.bixilon.minosoft.game.datatypes.ChatComponent;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
@@ -132,5 +133,9 @@ public class OutByteBuffer {
 
     public void writeBlockPosition(BlockPosition pos) {
         writeLong((((long) pos.getX() & 0x3FFFFFF) << 38) | (((long) pos.getZ() & 0x3FFFFFF) << 12) | ((long) pos.getY() & 0xFFF));
+    }
+
+    public void writeChatComponent(ChatComponent c) {
+        writeJson(c.getRaw());
     }
 }

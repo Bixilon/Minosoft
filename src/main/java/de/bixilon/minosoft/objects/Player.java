@@ -1,5 +1,7 @@
 package de.bixilon.minosoft.objects;
 
+import de.bixilon.minosoft.game.datatypes.player.Location;
+
 import java.util.UUID;
 
 public class Player {
@@ -7,6 +9,7 @@ public class Player {
     float health;
     short food;
     float saturation;
+    Location spawnLocation;
 
     public Player(Account acc) {
         this.acc = acc;
@@ -43,5 +46,13 @@ public class Player {
 
     public void setSaturation(float saturation) {
         this.saturation = saturation;
+    }
+
+    public Location getSpawnLocation() {
+        return spawnLocation;
+    }
+
+    public void setSpawnLocation(Location spawnLocation) {
+        this.spawnLocation = spawnLocation;
     }
 }
