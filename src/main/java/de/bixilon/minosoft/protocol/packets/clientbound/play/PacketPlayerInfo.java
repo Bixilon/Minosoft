@@ -27,7 +27,7 @@ public class PacketPlayerInfo implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.game(String.format("%s %s", name, (state == PlayerJoinState.JOINED ? "joined" : "disconnected")));
+        Log.game(String.format("[TAB] %s %s", name, (state == PlayerJoinState.JOINED ? "added" : "removed")));
     }
 
     @Override

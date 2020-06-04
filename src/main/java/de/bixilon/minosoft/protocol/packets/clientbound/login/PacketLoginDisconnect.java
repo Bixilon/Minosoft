@@ -18,7 +18,7 @@ public class PacketLoginDisconnect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol("Receiving login disconnect packet");
+        Log.protocol(String.format("Receiving login disconnect packet (%s)", reason.toString()));
     }
 
     @Override

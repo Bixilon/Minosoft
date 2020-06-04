@@ -108,7 +108,7 @@ public class PlayChunkBulk implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol("Chunk bulk packet received");
+        Log.protocol(String.format("Chunk bulk packet received (chunks: %s)", chunkMap.size()));
     }
 
     public HashMap<ChunkLocation, Chunk> getChunkMap() {
