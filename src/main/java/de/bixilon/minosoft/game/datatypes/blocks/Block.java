@@ -7,7 +7,7 @@ public enum Block {
     DIRT(new Identifier("stone"), 1),
     GRASS(new Identifier("grass"), 2),
     COBBLESTONE(new Identifier("stone"), 4),
-    WHITE_WOOL(new Identifier("wool"), 35, 0),
+    WHITE_WOOL(new Identifier("wool", "white_wool"), 35, 0),
     RED_WOOL(new Identifier("wool", "red_wool"), 35, 14),
     DROPPER_DOWN(new Identifier("dropper"), 158, 0),
     DROPPER_EAST(new Identifier("dropper"), 158, 1),
