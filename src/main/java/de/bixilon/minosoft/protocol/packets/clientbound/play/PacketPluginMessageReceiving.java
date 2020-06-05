@@ -6,7 +6,7 @@ import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketPluginMessageReceived implements ClientboundPacket {
+public class PacketPluginMessageReceiving implements ClientboundPacket {
     String channel;
     byte[] data;
 

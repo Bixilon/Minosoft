@@ -1,5 +1,7 @@
 package de.bixilon.minosoft.objects;
 
+import de.bixilon.minosoft.game.datatypes.GameMode;
+import de.bixilon.minosoft.game.datatypes.World;
 import de.bixilon.minosoft.game.datatypes.player.Location;
 
 import java.util.UUID;
@@ -10,6 +12,9 @@ public class Player {
     short food;
     float saturation;
     Location spawnLocation;
+    int entityId;
+    GameMode gameMode;
+    World world = new World("world");
 
     public Player(Account acc) {
         this.acc = acc;
@@ -48,11 +53,35 @@ public class Player {
         this.saturation = saturation;
     }
 
+    public float getSaturation() {
+        return saturation;
+    }
+
     public Location getSpawnLocation() {
         return spawnLocation;
     }
 
     public void setSpawnLocation(Location spawnLocation) {
         this.spawnLocation = spawnLocation;
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    public int getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(int entityId) {
+        this.entityId = entityId;
+    }
+
+    public World getWorld() {
+        return world;
     }
 }

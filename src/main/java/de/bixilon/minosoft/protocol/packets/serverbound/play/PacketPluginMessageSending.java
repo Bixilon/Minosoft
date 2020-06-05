@@ -6,12 +6,12 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketPluginMessageSended implements ServerboundPacket {
+public class PacketPluginMessageSending implements ServerboundPacket {
 
     public final String channel;
     public final byte[] data;
 
-    public PacketPluginMessageSended(String channel, byte[] data) {
+    public PacketPluginMessageSending(String channel, byte[] data) {
         this.channel = channel;
         this.data = data;
     }

@@ -19,15 +19,10 @@ public class Chunk {
             throw new IllegalArgumentException(String.format("Invalid chunk location %s %s %s", x, y, z));
         }
         byte section = (byte) (y / 16);
-        if (section == 0) {
-            return Block.COBBLESTONE;
-        } else if (section == 1) {
-            return Block.DIRT;
-        } else {
-            return Block.AIR;
-        }
-        //ToDo
-        //return chunks.get(section).getBlock(x, y % 16,z);
+        return chunks.get(section).getBlock(x, y % 16, z);
     }
 
+    public void setBlock(int x, int y, int z, Block block) {
+        chunks.get(y / 16).setBlock(x, y % 16, z, block);
+    }
 }

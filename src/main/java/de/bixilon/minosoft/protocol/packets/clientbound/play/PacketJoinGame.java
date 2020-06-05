@@ -43,11 +43,39 @@ public class PacketJoinGame implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s)", entityId, gameMode.name(), dimension.name(), difficulty.name()));
+        Log.protocol(String.format("Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s)", entityId, gameMode.name(), dimension.name(), difficulty.name(), hardcore));
     }
 
     @Override
     public void handle(PacketHandler h) {
         h.handle(this);
+    }
+
+    public boolean isHardcore() {
+        return hardcore;
+    }
+
+    public int getEntityId() {
+        return entityId;
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public LevelType getLevelType() {
+        return levelType;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public Dimension getDimension() {
+        return dimension;
     }
 }

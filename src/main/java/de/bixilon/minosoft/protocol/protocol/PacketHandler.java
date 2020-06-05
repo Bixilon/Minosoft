@@ -10,7 +10,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
-import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPluginMessageSended;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPluginMessageSending;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;
@@ -51,6 +51,9 @@ public class PacketHandler {
     }
 
     public void handle(PacketJoinGame pkg) {
+        connection.getPlayer().setGameMode(pkg.getGameMode());
+        connection.getPlayer().setEntityId(pkg.getEntityId());
+        connection.getPlayer().getWorld().setHardcore(pkg.isHardcore());
     }
 
     public void handle(PacketLoginDisconnect pkg) {
@@ -69,7 +72,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketChunkBulk pkg) {
-        //ToDo
+        connection.getPlayer().getWorld().setChunks(pkg.getChunkMap());
     }
 
     public void handle(PacketUpdateHealth pkg) {
@@ -78,14 +81,14 @@ public class PacketHandler {
         connection.getPlayer().setSaturation(pkg.getSaturation());
     }
 
-    public void handle(PacketPluginMessageReceived pkg) {
+    public void handle(PacketPluginMessageReceiving pkg) {
         if (pkg.getChannel().equals("MC|Brand")) {
             // server brand received
             Log.info(String.format("Server is running %s on version %s", new String(pkg.getData()), connection.getVersion().getName()));
 
             // send back own brand
             // ToDo option to toggle for minosoft or original minecraft
-            connection.sendPacket(new PacketPluginMessageSended("MC|Brand", "Minosoft".getBytes()));
+            connection.sendPacket(new PacketPluginMessageSending("MC|Brand", "Minosoft".getBytes()));
         }
     }
 
