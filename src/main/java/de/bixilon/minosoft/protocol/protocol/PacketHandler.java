@@ -2,6 +2,7 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
+import de.bixilon.minosoft.game.datatypes.GameMode;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKeyRequest;
@@ -112,5 +113,20 @@ public class PacketHandler {
     public void handle(PacketSetExperience pkg) {
         connection.getPlayer().setLevel(pkg.getLevel());
         connection.getPlayer().setTotalExperience(pkg.getTotal());
+    }
+
+    public void handle(PacketChangeGameState pkg) {
+        switch (pkg.getReason()) {
+            case START_RAIN:
+                connection.getPlayer().getWorld().setRaining(true);
+                break;
+            case END_RAIN:
+                connection.getPlayer().getWorld().setRaining(false);
+                break;
+            case CHANGE_GAMEMODE:
+                connection.getPlayer().setGameMode(GameMode.byId(pkg.getValue().intValue()));
+                break;
+            //ToDo: handle all updates
+        }
     }
 }

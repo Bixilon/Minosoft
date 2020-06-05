@@ -12,6 +12,7 @@ public class World {
     public final HashMap<ChunkLocation, Chunk> chunks;
     final String name;
     boolean hardcore;
+    boolean raining;
 
     public World(String name) {
         this.name = name;
@@ -64,5 +65,13 @@ public class World {
 
     public void setHardcore(boolean hardcore) {
         this.hardcore = hardcore;
+    }
+
+    public boolean isRaining() {
+        return raining;
+    }
+
+    public void setRaining(boolean raining) {
+        this.raining = raining;
     }
 }
