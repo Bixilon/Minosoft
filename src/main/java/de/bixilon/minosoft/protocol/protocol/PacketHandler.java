@@ -108,4 +108,9 @@ public class PacketHandler {
     public void handle(PacketHeldItemChangeReceiving pkg) {
         connection.getPlayer().setSelectedSlot(pkg.getSlot());
     }
+
+    public void handle(PacketSetExperience pkg) {
+        connection.getPlayer().setLevel(pkg.getLevel());
+        connection.getPlayer().setTotalExperience(pkg.getTotal());
+    }
 }

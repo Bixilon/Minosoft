@@ -47,5 +47,6 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_CHAT_MESSAGE, PacketChatMessage.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_DISCONNECT, PacketDisconnect.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_HELD_ITEM_CHANGE, PacketHeldItemChangeReceiving.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SET_EXPERIENCE, PacketSetExperience.class);
     }
 }

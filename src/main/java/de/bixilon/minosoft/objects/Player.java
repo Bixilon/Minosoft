@@ -16,6 +16,8 @@ public class Player {
     GameMode gameMode;
     World world = new World("world");
     byte selectedSlot;
+    short level;
+    short totalExperience;
 
     public Player(Account acc) {
         this.acc = acc;
@@ -92,5 +94,21 @@ public class Player {
 
     public void setSelectedSlot(byte selectedSlot) {
         this.selectedSlot = selectedSlot;
+    }
+
+    public short getLevel() {
+        return level;
+    }
+
+    public void setLevel(short level) {
+        this.level = level;
+    }
+
+    public short getTotalExperience() {
+        return totalExperience;
+    }
+
+    public void setTotalExperience(short totalExperience) {
+        this.totalExperience = totalExperience;
     }
 }
