@@ -17,6 +17,8 @@ public interface Protocol {
 
     int getPacketCommand(Packets.Serverbound p);
 
+    String getName();
+
     Packets.Clientbound getPacketByCommand(ConnectionState s, int command);
 
     static Class<? extends ClientboundPacket> getPacketByPacket(Packets.Clientbound p) {

@@ -31,4 +31,12 @@ public class PacketPluginMessageReceived implements ClientboundPacket {
     public void handle(PacketHandler h) {
         h.handle(this);
     }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
 }

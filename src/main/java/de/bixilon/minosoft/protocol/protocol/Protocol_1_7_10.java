@@ -128,6 +128,11 @@ public class Protocol_1_7_10 implements Protocol {
         return serverboundPacketMapping.get(p);
     }
 
+    @Override
+    public String getName() {
+        return "1.7.10";
+    }
+
     public Packets.Clientbound getPacketByCommand(ConnectionState s, int command) {
         for (Map.Entry<Packets.Clientbound, Integer> set : clientboundPacketMapping.entrySet()) {
             if (set.getValue() == command && set.getKey().name().startsWith(s.name())) {

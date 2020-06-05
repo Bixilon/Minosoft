@@ -10,6 +10,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPluginMessageSended;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;
@@ -78,6 +79,14 @@ public class PacketHandler {
     }
 
     public void handle(PacketPluginMessageReceived pkg) {
+        if (pkg.getChannel().equals("MC|Brand")) {
+            // server brand received
+            Log.info(String.format("Server is running %s on version %s", new String(pkg.getData()), connection.getVersion().getName()));
+
+            // send back own brand
+            // ToDo option to toggle for minosoft or original minecraft
+            connection.sendPacket(new PacketPluginMessageSended("MC|Brand", "Minosoft".getBytes()));
+        }
     }
 
     public void handle(PacketSpawnLocation pkg) {

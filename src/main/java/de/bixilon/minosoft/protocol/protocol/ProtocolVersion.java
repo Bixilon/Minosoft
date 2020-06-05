@@ -3,8 +3,8 @@ package de.bixilon.minosoft.protocol.protocol;
 public enum ProtocolVersion {
     VERSION_1_7_10(new Protocol_1_7_10());
 
-    private int version;
-    private Protocol protocol;
+    private final int version;
+    private final Protocol protocol;
 
     ProtocolVersion(Protocol protocol) {
         this.protocol = protocol;
@@ -21,6 +21,10 @@ public enum ProtocolVersion {
 
     public int getPacketCommand(Packets.Serverbound p) {
         return protocol.getPacketCommand(p);
+    }
+
+    public String getName() {
+        return protocol.getName();
     }
 
 }
