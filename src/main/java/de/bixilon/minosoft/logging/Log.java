@@ -76,4 +76,12 @@ public class Log {
     public static void protocol(String message) {
         log(LogLevel.PROTOCOL, message);
     }
+
+    public static LogLevel getLevel() {
+        return level;
+    }
+
+    public static void setLevel(LogLevel level) {
+        Log.level = level;
+    }
 }

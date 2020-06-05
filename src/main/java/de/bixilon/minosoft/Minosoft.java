@@ -3,6 +3,7 @@ package de.bixilon.minosoft;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.logging.LogLevel;
 import de.bixilon.minosoft.objects.Account;
 import de.bixilon.minosoft.objects.Player;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -26,6 +27,9 @@ public class Minosoft {
             return;
         }
         Log.info(String.format("Loaded config file (version=%s)", config.getInteger(GameConfiguration.CONFIG_VERSION)));
+        // set log level from config
+        Log.setLevel(LogLevel.byName(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
+
         Connection c = new Connection(config.getString("debug.host"), config.getInteger("debug.port"));
         c.setPlayer(new Player(new Account(config.getString("debug.username"), config.getString("debug.password"))));
         c.connect();

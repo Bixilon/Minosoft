@@ -9,7 +9,7 @@ public enum LogLevel {
     VERBOSE(5),
     PROTOCOL(6);
 
-    private int id;
+    private final int id;
 
     LogLevel(int id) {
         this.id = id;
@@ -17,5 +17,23 @@ public enum LogLevel {
 
     public int getId() {
         return id;
+    }
+
+    public static LogLevel byId(int id) {
+        for (LogLevel g : values()) {
+            if (g.getId() == id) {
+                return g;
+            }
+        }
+        return null;
+    }
+
+    public static LogLevel byName(String name) {
+        for (LogLevel g : values()) {
+            if (g.name().equals(name)) {
+                return g;
+            }
+        }
+        return null;
     }
 }
