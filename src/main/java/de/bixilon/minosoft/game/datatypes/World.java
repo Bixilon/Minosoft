@@ -28,7 +28,6 @@ public class World {
     }
 
     public Block getBlock(BlockPosition pos) {
-        //ToDo
         ChunkLocation loc = pos.getChunkLocation();
         if (getChunk(loc) != null) {
             return getChunk(loc).getBlock(pos.getX() % 16, pos.getX(), pos.getZ() % 16);

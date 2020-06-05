@@ -16,6 +16,9 @@ public class Minosoft {
     static Configuration config;
 
     public static void main(String[] args) {
+        // int log thread
+        Log.initThread();
+
         Log.info("Starting...");
         setConfigFolder();
         Log.info("Reading config file...");
@@ -39,20 +42,25 @@ public class Minosoft {
      * Sets Config.homeDir to the correct folder per OS
      */
     public static void setConfigFolder() {
-        String folder = System.getProperty("user.home");
-        if (!folder.endsWith(File.separator)) {
-            folder += "/";
+        String path = System.getProperty("user.home");
+        if (!path.endsWith(File.separator)) {
+            path += "/";
         }
         switch (OSUtil.getOS()) {
             case LINUX:
-                folder += ".local/share/minosoft/";
+                path += ".local/share/minosoft/";
                 break;
             case WINDOWS:
-                Config.homeDir = "AppData/Roaming/Minosoft/";
+                path = "AppData/Roaming/Minosoft/";
                 break;
             //ToDo: Mac, Other
         }
-        Config.homeDir = folder;
+        File folder = new File(path);
+        if (!folder.exists() && !folder.mkdirs()) {
+            // failed creating folder
+            throw new RuntimeException(String.format("Could not create home folder (%s)!", path));
+        }
+        Config.homeDir = path;
     }
 
     public static Configuration getConfig() {

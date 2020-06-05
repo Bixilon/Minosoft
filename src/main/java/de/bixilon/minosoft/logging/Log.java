@@ -1,17 +1,41 @@
 package de.bixilon.minosoft.logging;
 
+import de.bixilon.minosoft.util.Util;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Log {
     static LogLevel level = LogLevel.PROTOCOL;
     final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    final static List<String> queue = new ArrayList<>();
 
     public static void log(LogLevel l, String message) {
         if (l.getId() > level.getId()) {
             // log level too low
             return;
         }
-        System.out.println(String.format("[%s] [%s] %s", timeFormat.format(System.currentTimeMillis()), l.name(), message));
+        queue.add(String.format("[%s] [%s] %s", timeFormat.format(System.currentTimeMillis()), l.name(), message));
+    }
+
+    public static void initThread() {
+
+        Thread logThread = new Thread(() -> {
+            while (true) {
+                while (queue.size() > 0) {
+                    // something to print
+                    System.out.println(queue.get(0));
+
+                    //ToDo: log to file
+
+                    queue.remove(0);
+                }
+                Util.sleep(1);
+            }
+
+        });
+        logThread.start();
     }
 
     /**
