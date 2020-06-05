@@ -16,12 +16,12 @@ public class PacketClientSettings implements ServerboundPacket {
     public PacketClientSettings(Locale locale, int renderDistance) {
         this.locale = locale;
         this.renderDistance = (byte) renderDistance;
+        log();
     }
 
 
     @Override
     public OutPacketBuffer write(ProtocolVersion v) {
-        log();
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_CLIENT_SETTINGS));
         switch (v) {
             case VERSION_1_7_10:

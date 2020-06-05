@@ -13,15 +13,16 @@ public class PacketLoginStart implements ServerboundPacket {
 
     public PacketLoginStart(Player p) {
         username = p.getPlayerName();
+        log();
     }
 
     public PacketLoginStart(String username) {
         this.username = username;
+        log();
     }
 
     @Override
     public OutPacketBuffer write(ProtocolVersion v) {
-        log();
         // no version checking, is the same in all versions (1.7.x - 1.15.2)
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.LOGIN_LOGIN_START));
         buffer.writeString((username == null) ? "Player132" : username);

@@ -12,12 +12,12 @@ public class PacketKeepAliveResponse implements ServerboundPacket {
 
     public PacketKeepAliveResponse(int id) {
         this.id = id;
+        log();
     }
 
 
     @Override
     public OutPacketBuffer write(ProtocolVersion v) {
-        log();
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.LOGIN_LOGIN_START));
         switch (v) {
             case VERSION_1_7_10:

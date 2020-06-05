@@ -18,7 +18,6 @@ public class PacketDisconnect implements ClientboundPacket {
                 reason = buffer.readChatComponent();
                 break;
         }
-        log();
     }
 
     @Override

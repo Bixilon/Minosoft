@@ -21,7 +21,6 @@ public class PacketUpdateHealth implements ClientboundPacket {
                 saturation = (float) (Math.round(buffer.readFloat() * 10) / 10.0);
                 break;
         }
-        log();
     }
 
     @Override

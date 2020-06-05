@@ -14,17 +14,18 @@ public class PacketPluginMessageSending implements ServerboundPacket {
     public PacketPluginMessageSending(String channel, byte[] data) {
         this.channel = channel;
         this.data = data;
+        log();
     }
 
     public PacketPluginMessageSending(String channel, String data) {
         this.channel = channel;
         this.data = data.getBytes();
+        log();
     }
 
 
     @Override
     public OutPacketBuffer write(ProtocolVersion v) {
-        log();
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_PLUGIN_MESSAGE));
         switch (v) {
             case VERSION_1_7_10:

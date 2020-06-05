@@ -18,7 +18,6 @@ public class PacketChatMessage implements ClientboundPacket {
                 c = buffer.readChatComponent();
                 break;
         }
-        log();
     }
 
     @Override

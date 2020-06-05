@@ -38,7 +38,6 @@ public class PacketJoinGame implements ClientboundPacket {
                 levelType = LevelType.byType(buffer.readString());
                 break;
         }
-        log();
     }
 
     @Override

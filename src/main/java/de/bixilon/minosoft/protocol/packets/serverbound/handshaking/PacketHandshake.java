@@ -16,6 +16,7 @@ public class PacketHandshake implements ServerboundPacket {
         this.port = port;
         this.nextState = nextState;
         this.version = version;
+        log();
     }
 
     public PacketHandshake(String address, int version) {
@@ -23,11 +24,11 @@ public class PacketHandshake implements ServerboundPacket {
         this.version = version;
         this.port = ProtocolDefinition.DEFAULT_PORT;
         this.nextState = ConnectionState.STATUS;
+        log();
     }
 
     @Override
     public OutPacketBuffer write(ProtocolVersion v) {
-        log();
         // no version checking, is the same in all versions (1.7.x - 1.15.2)
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.STATUS_REQUEST));
         buffer.writeVarInt((nextState == ConnectionState.STATUS ? -1 : version)); // get best protocol version

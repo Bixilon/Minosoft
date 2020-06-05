@@ -21,7 +21,6 @@ public class PacketSpawnLocation implements ClientboundPacket {
                 loc = new Location(x, y, z);
                 break;
         }
-        log();
     }
 
     @Override

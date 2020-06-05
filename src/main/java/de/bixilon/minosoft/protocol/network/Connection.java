@@ -123,6 +123,7 @@ public class Connection {
         Thread handleThread = new Thread(() -> {
             while (getConnectionState() != ConnectionState.DISCONNECTED) {
                 while (handlingQueue.size() > 0) {
+                    handlingQueue.get(0).log();
                     handlingQueue.get(0).handle(getHandler());
                     handlingQueue.remove(0);
                 }

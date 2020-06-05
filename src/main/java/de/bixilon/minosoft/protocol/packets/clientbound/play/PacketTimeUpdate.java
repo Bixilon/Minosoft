@@ -19,7 +19,6 @@ public class PacketTimeUpdate implements ClientboundPacket {
                 timeOfDay = buffer.readLong();
                 break;
         }
-        log();
     }
 
     @Override

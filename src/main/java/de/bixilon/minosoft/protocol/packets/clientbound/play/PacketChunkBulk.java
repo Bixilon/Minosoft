@@ -103,7 +103,6 @@ public class PacketChunkBulk implements ClientboundPacket {
                 }
                 break;
         }
-        log();
     }
 
     @Override

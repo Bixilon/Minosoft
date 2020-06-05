@@ -14,7 +14,6 @@ public class PacketStatusResponse implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         // no version checking, is the same in all versions (1.7.x - 1.15.2)
         response = new ServerListPing(buffer.readJson());
-        log();
     }
 
     @Override

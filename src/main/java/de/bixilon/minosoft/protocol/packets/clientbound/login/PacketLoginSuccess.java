@@ -16,8 +16,6 @@ public class PacketLoginSuccess implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         uuid = UUID.fromString(buffer.readString());
         username = buffer.readString();
-
-        log();
     }
 
     @Override

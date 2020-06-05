@@ -19,7 +19,6 @@ public class PacketChangeGameState implements ClientboundPacket {
                 value = buffer.readFloat();
                 break;
         }
-        log();
     }
 
     @Override

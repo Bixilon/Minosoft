@@ -17,7 +17,6 @@ public class PacketKeepAlive implements ClientboundPacket {
                 id = buffer.readInteger();
                 break;
         }
-        log();
     }
 
     @Override

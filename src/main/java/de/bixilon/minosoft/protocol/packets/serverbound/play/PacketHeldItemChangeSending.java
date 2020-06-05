@@ -12,16 +12,17 @@ public class PacketHeldItemChangeSending implements ServerboundPacket {
 
     public PacketHeldItemChangeSending(byte slot) {
         this.slot = slot;
+        log();
     }
 
     public PacketHeldItemChangeSending(int slot) {
         this.slot = (byte) slot;
+        log();
     }
 
 
     @Override
     public OutPacketBuffer write(ProtocolVersion v) {
-        log();
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_HELD_ITEM_CHANGE));
         switch (v) {
             case VERSION_1_7_10:

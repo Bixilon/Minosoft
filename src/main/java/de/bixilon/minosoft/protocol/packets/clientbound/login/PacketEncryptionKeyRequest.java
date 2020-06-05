@@ -20,8 +20,6 @@ public class PacketEncryptionKeyRequest implements ClientboundPacket {
                 verifyToken = buffer.readBytes(buffer.readShort()); // read length, then the bytes
                 break;
         }  // ToDo
-
-        log();
     }
 
     @Override

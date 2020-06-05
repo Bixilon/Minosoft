@@ -19,7 +19,6 @@ public class PacketPluginMessageReceiving implements ClientboundPacket {
                 data = buffer.readBytes(buffer.readShort()); // first read length, then the data
                 break;
         }
-        log();
     }
 
     @Override

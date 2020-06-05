@@ -13,7 +13,6 @@ public class PacketLoginDisconnect implements ClientboundPacket {
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         reason = buffer.readChatComponent();
-        log();
     }
 
     @Override

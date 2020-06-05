@@ -22,7 +22,6 @@ public class PacketSetExperience implements ClientboundPacket {
                 total = buffer.readShort();
                 break;
         }
-        log();
     }
 
     @Override

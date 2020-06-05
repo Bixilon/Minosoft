@@ -16,7 +16,6 @@ public class PacketHeldItemChangeReceiving implements ClientboundPacket {
                 slot = buffer.readByte();
                 break;
         }
-        log();
     }
 
     @Override

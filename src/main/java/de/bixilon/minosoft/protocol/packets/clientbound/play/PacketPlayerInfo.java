@@ -22,7 +22,6 @@ public class PacketPlayerInfo implements ClientboundPacket {
 
                 break;
         }
-        log();
     }
 
     @Override
