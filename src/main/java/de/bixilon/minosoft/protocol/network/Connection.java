@@ -1,8 +1,6 @@
 package de.bixilon.minosoft.protocol.network;
 
-import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.objects.Account;
 import de.bixilon.minosoft.objects.Player;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -23,7 +21,7 @@ public class Connection {
     private final Network network;
     private final PacketHandler handler;
     private final ArrayList<ClientboundPacket> handlingQueue;
-    private Player player = new Player(new Account(Config.username, Config.password));
+    private Player player;
     private ConnectionState state = ConnectionState.DISCONNECTED;
 
     private boolean onlyPing;
@@ -132,5 +130,9 @@ public class Connection {
             }
         });
         handleThread.start();
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

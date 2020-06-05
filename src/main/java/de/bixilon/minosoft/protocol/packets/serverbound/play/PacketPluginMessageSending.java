@@ -16,6 +16,11 @@ public class PacketPluginMessageSending implements ServerboundPacket {
         this.data = data;
     }
 
+    public PacketPluginMessageSending(String channel, String data) {
+        this.channel = channel;
+        this.data = data.getBytes();
+    }
+
 
     @Override
     public OutPacketBuffer write(ProtocolVersion v) {

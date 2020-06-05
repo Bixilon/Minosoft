@@ -1,5 +1,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKeyRequest;
@@ -87,8 +89,7 @@ public class PacketHandler {
             Log.info(String.format("Server is running %s on version %s", new String(pkg.getData()), connection.getVersion().getName()));
 
             // send back own brand
-            // ToDo option to toggle for minosoft or original minecraft
-            connection.sendPacket(new PacketPluginMessageSending("MC|Brand", "Minosoft".getBytes()));
+            connection.sendPacket(new PacketPluginMessageSending("MC|Brand", (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft")));
         }
     }
 

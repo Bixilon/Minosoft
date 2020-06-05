@@ -1,0 +1,16 @@
+# Settings of the game
+version: 1 # do not edit this, used for migration between versions of config
+
+# game
+game:
+  render-distance: 12
+
+network:
+  fake-client-brand: false # if true, minosoft will tell the server that this is unmodified vanilla. if false, it will tell "minosoft".
+
+# this will be removed soon
+debug:
+  host: "127.0.0.1"
+  port: 25565
+  username: "Player"
+  password: "secret123"
