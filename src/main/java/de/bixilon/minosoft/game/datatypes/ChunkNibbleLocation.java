@@ -4,9 +4,9 @@ package de.bixilon.minosoft.game.datatypes;
  * Chunk X, Y and Z location (max 16x16x16)
  */
 public class ChunkNibbleLocation {
-    int x;
-    int y;
-    int z;
+    final int x;
+    final int y;
+    final int z;
 
     public ChunkNibbleLocation(int x, int y, int z) {
         this.x = x;

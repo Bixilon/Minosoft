@@ -62,6 +62,7 @@ public class Configuration {
             String[] spilt = path.split("\\.");
             LinkedHashMap<String, Object> temp = config;
             for (int i = 0; i < spilt.length - 1; i++) {
+                //noinspection unchecked
                 temp = (LinkedHashMap<String, Object>) temp.get(spilt[i]);
             }
             return temp.get(spilt[spilt.length - 1]);

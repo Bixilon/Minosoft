@@ -39,10 +39,8 @@ public class World {
     public void setBlock(BlockPosition pos, Block block) {
         if (getChunk(pos.getChunkLocation()) != null) {
             getChunk(pos.getChunkLocation()).setBlock(pos.getX() % 16, pos.getX(), pos.getZ() % 16, block);
-        } else {
-            //throw new IllegalAccessException("Chunk is not loaded!");
-            // ToDo
         }
+        // do nothing if chunk is unloaded
     }
 
     public void unloadChunk(ChunkLocation location) {

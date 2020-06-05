@@ -9,7 +9,7 @@ Multithreaded
 Mostly GPU based, not cpu
 Aimed for performance (goal: reach v-sync framerate, dynamically disable effects, ...)
 Server support
-No original Minecraft workarounds (API: plugin channel): No invisible entities to show holograms, No Scoreboard workarounds, ... (Scoreboard still must be implemented to avoid compatiblity issues)
+No original Minecraft workarounds (API: plugin channel): No invisible entities to show holograms, No Scoreboard workarounds, ... (Scoreboard still must be implemented to avoid compatibility issues)
 Debug settings (stop entity updates, entity limiter, ...)
 No cheat client (only per modding api)
 Server GUI API (server can send custom GUIs to client)

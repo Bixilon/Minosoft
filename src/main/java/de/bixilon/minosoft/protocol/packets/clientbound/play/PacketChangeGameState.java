@@ -64,7 +64,7 @@ public class PacketChangeGameState implements ClientboundPacket {
         FADE_VALUE(7),
         FADE_TIME(8);
 
-        byte id;
+        final byte id;
 
         Reason(byte id) {
             this.id = id;

@@ -6,7 +6,7 @@ public enum GameMode {
     ADVENTURE(2),
     SPECTATOR(3);
 
-    int id;
+    final int id;
 
     GameMode(int id) {
         this.id = id;

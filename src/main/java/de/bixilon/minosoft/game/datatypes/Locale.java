@@ -5,7 +5,7 @@ public enum Locale {
     EN_GB("en_gb"),
     DE_DE("de_DE");
 
-    String name;
+    final String name;
 
     Locale(String name) {
         this.name = name;

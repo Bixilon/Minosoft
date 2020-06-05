@@ -20,7 +20,7 @@ import java.math.BigInteger;
 import java.security.PublicKey;
 
 public class PacketHandler {
-    Connection connection;
+    final Connection connection;
 
     public PacketHandler(Connection connection) {
         this.connection = connection;

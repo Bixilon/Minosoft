@@ -27,11 +27,14 @@ public class ChatComponent {
             return json.getString("text");
         }
         StringBuilder buffer = new StringBuilder();
-        JSONArray arr = json.getJSONArray("extra");
-        for (int i = 0; i < arr.length(); i++) {
-            buffer.append(arr.getJSONObject(i).getString("text"));
+        if (json.has("extra")) {
+            JSONArray arr = json.getJSONArray("extra");
+            for (int i = 0; i < arr.length(); i++) {
+                buffer.append(arr.getJSONObject(i).getString("text"));
+            }
+            return buffer.toString();
         }
-        return buffer.toString();
+        return "";
     }
 
     public JSONObject getRaw() {

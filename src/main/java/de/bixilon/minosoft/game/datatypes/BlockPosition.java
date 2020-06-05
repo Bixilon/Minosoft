@@ -1,9 +1,9 @@
 package de.bixilon.minosoft.game.datatypes;
 
 public class BlockPosition {
-    int x;
-    int y;
-    int z;
+    final int x;
+    final int y;
+    final int z;
 
     public BlockPosition(int x, short y, int z) {
         // y min -2048, max 2047

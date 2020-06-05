@@ -3,7 +3,7 @@ package de.bixilon.minosoft.objects;
 import org.json.JSONObject;
 
 public class ServerListPing {
-    JSONObject raw;
+    final JSONObject raw;
 
     public ServerListPing(JSONObject json) {
         this.raw = json;

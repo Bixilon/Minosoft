@@ -12,9 +12,9 @@ import java.security.PublicKey;
 
 public class PacketEncryptionResponse implements ServerboundPacket {
 
-    byte[] secret;
-    byte[] token;
-    SecretKey secretKey;
+    final byte[] secret;
+    final byte[] token;
+    final SecretKey secretKey;
 
 
     public PacketEncryptionResponse(SecretKey secret, byte[] token, PublicKey key) {

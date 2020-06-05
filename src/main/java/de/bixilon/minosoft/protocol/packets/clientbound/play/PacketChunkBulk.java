@@ -17,7 +17,7 @@ import de.bixilon.minosoft.util.Util;
 import java.util.HashMap;
 
 public class PacketChunkBulk implements ClientboundPacket {
-    HashMap<ChunkLocation, Chunk> chunkMap = new HashMap<>();
+    final HashMap<ChunkLocation, Chunk> chunkMap = new HashMap<>();
 
 
     @Override

@@ -9,7 +9,7 @@ public enum LevelType {
     CUSTOMIZED("customized"),
     BUFFET("buffet");
 
-    String type;
+    final String type;
 
     LevelType(String type) {
         this.type = type;

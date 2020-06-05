@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 
 public class Log {
     static LogLevel level = LogLevel.PROTOCOL;
-    static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     public static void log(LogLevel l, String message) {
         if (l.getId() > level.getId()) {

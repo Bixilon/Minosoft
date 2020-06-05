@@ -5,7 +5,7 @@ public enum Dimension {
     OVERWORLD(0),
     END(1);
 
-    int id;
+    final int id;
 
     Dimension(int id) {
         this.id = id;

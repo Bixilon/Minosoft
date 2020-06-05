@@ -4,8 +4,8 @@ package de.bixilon.minosoft.game.datatypes;
  * Chunk X and Z location (block position / 16, rounded down)
  */
 public class ChunkLocation {
-    int x;
-    int z;
+    final int x;
+    final int z;
 
     public ChunkLocation(int x, int z) {
         this.x = x;

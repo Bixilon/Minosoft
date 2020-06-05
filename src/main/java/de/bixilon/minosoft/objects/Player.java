@@ -7,7 +7,7 @@ import de.bixilon.minosoft.game.datatypes.player.Location;
 import java.util.UUID;
 
 public class Player {
-    Account acc;
+    final Account acc;
     float health;
     short food;
     float saturation;

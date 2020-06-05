@@ -6,7 +6,7 @@ public enum Difficulty {
     NORMAL(2),
     HARD(3);
 
-    int id;
+    final int id;
 
     Difficulty(int id) {
         this.id = id;

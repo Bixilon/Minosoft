@@ -6,8 +6,8 @@ import java.util.Map;
 
 public class Protocol_1_7_10 implements Protocol {
 
-    public HashMap<Packets.Serverbound, Integer> serverboundPacketMapping;
-    public HashMap<Packets.Clientbound, Integer> clientboundPacketMapping;
+    public final HashMap<Packets.Serverbound, Integer> serverboundPacketMapping;
+    public final HashMap<Packets.Clientbound, Integer> clientboundPacketMapping;
 
     Protocol_1_7_10() {
         // serverbound

@@ -48,8 +48,8 @@ public enum Block {
     //ToDo all blocks
     //ToDo post water update block states
 
-    Identifier identifier;
-    int legacyId;
+    final Identifier identifier;
+    final int legacyId;
     int legacyData;
 
     Block(Identifier identifier, int legacyId, int legacyData) {

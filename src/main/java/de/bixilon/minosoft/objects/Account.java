@@ -10,8 +10,8 @@ import java.util.UUID;
 
 public class Account {
 
-    String username;
-    String password;
+    final String username;
+    final String password;
     String playerName;
 
     String token;
