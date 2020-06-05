@@ -104,4 +104,8 @@ public class PacketHandler {
         // got kicked
         connection.setConnectionState(ConnectionState.DISCONNECTING);
     }
+
+    public void handle(PacketHeldItemChangeReceiving pkg) {
+        connection.getPlayer().setSelectedSlot(pkg.getSlot());
+    }
 }

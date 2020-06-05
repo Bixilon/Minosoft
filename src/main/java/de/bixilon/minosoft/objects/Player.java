@@ -15,6 +15,7 @@ public class Player {
     int entityId;
     GameMode gameMode;
     World world = new World("world");
+    byte selectedSlot;
 
     public Player(Account acc) {
         this.acc = acc;
@@ -83,5 +84,13 @@ public class Player {
 
     public World getWorld() {
         return world;
+    }
+
+    public byte getSelectedSlot() {
+        return selectedSlot;
+    }
+
+    public void setSelectedSlot(byte selectedSlot) {
+        this.selectedSlot = selectedSlot;
     }
 }
