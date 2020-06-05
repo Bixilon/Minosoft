@@ -42,7 +42,7 @@ public class PacketChunkBulk implements ClientboundPacket {
 
 
                     //chunk
-                    byte sections = (byte) Integer.bitCount(sectionBitMask);
+                    byte sections = BitByte.getBitCount(sectionBitMask);
                     int totalBytes = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
                     int halfBytes = totalBytes / 2; // half bytes
 
