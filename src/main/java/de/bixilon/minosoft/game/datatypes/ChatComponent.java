@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 public class ChatComponent {
     JSONObject json;
+    //ToDo
 
     public ChatComponent(String raw) {
         try {
