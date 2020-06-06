@@ -69,5 +69,6 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_DESTROY_ENTITIES, PacketDestoryEntity.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_VELOCITY, PacketEntityVelocity.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_PLAYER, PacketSpawnPlayer.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_TELEPORT, PacketEntityTeleport.class);
     }
 }

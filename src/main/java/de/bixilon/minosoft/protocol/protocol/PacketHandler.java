@@ -176,4 +176,10 @@ public class PacketHandler {
     public void handle(PacketSpawnPlayer pkg) {
         connection.getPlayer().getWorld().addEntity(pkg.getPlayer());
     }
+
+    public void handle(PacketEntityTeleport pkg) {
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setLocation(pkg.getRelativeLocation());
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setYaw(pkg.getYaw());
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setPitch(pkg.getPitch());
+    }
 }
