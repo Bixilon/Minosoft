@@ -15,21 +15,21 @@ package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.game.datatypes.Identifier;
 
-public enum Entities {
+public enum Mobs {
     ZOMBIE(new Identifier("zombie"), 54, Zombie.class);
 
     final Identifier identifier;
     final int type;
     final Class<? extends Entity> clazz;
 
-    Entities(Identifier identifier, int type, Class<? extends Entity> clazz) {
+    Mobs(Identifier identifier, int type, Class<? extends Entity> clazz) {
         this.identifier = identifier;
         this.type = type;
         this.clazz = clazz;
     }
 
-    public static Entities byIdentifier(Identifier identifier) {
-        for (Entities b : values()) {
+    public static Mobs byIdentifier(Identifier identifier) {
+        for (Mobs b : values()) {
             if (b.getIdentifier().equals(identifier)) {
                 return b;
             }
@@ -37,8 +37,8 @@ public enum Entities {
         return null;
     }
 
-    public static Entities byType(int type) {
-        for (Entities b : values()) {
+    public static Mobs byType(int type) {
+        for (Mobs b : values()) {
             if (b.getType() == type) {
                 return b;
             }

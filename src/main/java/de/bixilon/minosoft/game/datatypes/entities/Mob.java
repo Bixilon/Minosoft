@@ -13,34 +13,8 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-public interface Entity {
-    Mobs getEntityType();
+public interface Mob extends Entity {
+    float getHealth();
 
-    int getId();
-
-    Location getLocation();
-
-    void setLocation(Location location);
-
-    Velocity getVelocity();
-
-    void setVelocity(Velocity velocity);
-
-    int getYaw();
-
-    void setYaw(int yaw);
-
-    int getPitch();
-
-    void setPitch(int pitch);
-
-    float getWidth();
-
-    float getHeight();
-
-    EntityMetaData getMetaData();
-
-    void setMetaData(EntityMetaData data);
-
-
+    void setHealth(float health);
 }

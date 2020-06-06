@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.game.datatypes.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.ChatComponent;
+import de.bixilon.minosoft.game.datatypes.entities.EntityMetaData;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
@@ -141,6 +142,10 @@ public class InByteBuffer {
         return result;
     }
 
+    public double readFixedPointNumber() {
+        return readInteger() / 32.0D;
+    }
+
     public JSONObject readJson() {
         return new JSONObject(readString());
     }
@@ -169,5 +174,10 @@ public class InByteBuffer {
 
     public int getBytesLeft() {
         return bytes.length - pos;
+    }
+
+    public EntityMetaData readEntityMetaData() {
+        //ToDo
+        return null;
     }
 }

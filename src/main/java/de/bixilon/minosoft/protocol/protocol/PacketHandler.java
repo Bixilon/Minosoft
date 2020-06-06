@@ -142,4 +142,8 @@ public class PacketHandler {
             //ToDo: handle all updates
         }
     }
+
+    public void handle(PacketSpawnMob pkg) {
+        connection.getPlayer().getWorld().addEntity(pkg.getMob());
+    }
 }

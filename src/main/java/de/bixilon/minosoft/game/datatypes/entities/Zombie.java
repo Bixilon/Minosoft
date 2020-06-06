@@ -13,21 +13,28 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-public class Zombie implements Entity {
+
+public class Zombie implements Mob {
     final int id;
     Location location;
     Velocity velocity;
     int yaw;
     int pitch;
-    EntityMetaData data;
+    EntityMetaData metaData;
+    float health;
 
-    public Zombie(int id) {
+    public Zombie(int id, Location location, int yaw, int pitch, Velocity velocity, EntityMetaData metaData) {
         this.id = id;
+        this.location = location;
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.velocity = velocity;
+        this.metaData = metaData;
     }
 
     @Override
-    public Entities getEntityType() {
-        return Entities.ZOMBIE;
+    public Mobs getEntityType() {
+        return Mobs.ZOMBIE;
     }
 
     public int getId() {
@@ -79,21 +86,31 @@ public class Zombie implements Entity {
 
     @Override
     public float getWidth() {
-        return 0;
+        return 0.6F;
     }
 
     @Override
     public float getHeight() {
-        return 0;
+        return 1.95F;
     }
 
     @Override
     public EntityMetaData getMetaData() {
-        return data;
+        return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData data) {
-        this.data = data;
+        this.metaData = data;
+    }
+
+    @Override
+    public float getHealth() {
+        return health;
+    }
+
+    @Override
+    public void setHealth(float health) {
+        this.health = health;
     }
 }

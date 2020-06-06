@@ -81,8 +81,9 @@ public class Protocol_1_7_10 implements Protocol {
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_USE_BED, 0x0A);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_ANIMATION, 0x0B);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_SPAWN_PLAYER, 0x0C);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_COLLECT_ITEM, 0x0E);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_SPAWN_ENTITY, 0x0F);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_COLLECT_ITEM, 0x0D);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_SPAWN_OBJECT, 0x0E);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_SPAWN_MOB, 0x0F);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_SPAWN_PAINTING, 0x10);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_SPAWN_EXPERIENCE_ORB, 0x11);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_VELOCITY, 0x12);

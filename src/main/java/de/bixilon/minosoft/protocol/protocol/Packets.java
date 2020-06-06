@@ -78,7 +78,7 @@ public class Packets {
         LOGIN_LOGIN_SUCCESS,
         LOGIN_SET_COMPRESSION,
         LOGIN_PLUGIN_REQUEST,
-        PLAY_SPAWN_ENTITY,
+        PLAY_SPAWN_MOB,
         PLAY_SPAWN_EXPERIENCE_ORB,
         PLAY_SPAWN_WEATHER_ENTITY,
         PLAY_SPAWN_LIVING_ENTITY,
@@ -174,7 +174,7 @@ public class Packets {
         PLAY_UPDATE_VIEW_DISTANCE,
         PLAY_CHUNK_BULK,
         PLAY_UPDATE_SIGN,
-        PLAY_STATISTICS
-
+        PLAY_STATISTICS,
+        PLAY_SPAWN_OBJECT
     }
 }

@@ -23,8 +23,8 @@ import java.util.Map;
  * Collection of ChunkColumns
  */
 public class World {
-    public final HashMap<ChunkLocation, Chunk> chunks;
-    public final HashMap<Integer, Entity> entities;
+    final HashMap<ChunkLocation, Chunk> chunks;
+    final HashMap<Integer, Entity> entities;
     final String name;
     boolean hardcore;
     boolean raining;
@@ -86,5 +86,17 @@ public class World {
 
     public void setRaining(boolean raining) {
         this.raining = raining;
+    }
+
+    public void addEntity(Entity entity) {
+        this.entities.put(entity.getId(), entity);
+    }
+
+    public Entity getEntity(int id) {
+        return entities.get(id);
+    }
+
+    public void removeEntity(Entity entity) {
+        this.entities.remove(entity.getId());
     }
 }

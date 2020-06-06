@@ -136,6 +136,10 @@ public class OutByteBuffer {
         } while (value != 0);
     }
 
+    public void writeFixedPointNumber(double d) {
+        writeInteger((int) (d * 32.0D));
+    }
+
     public List<Byte> getBytes() {
         return bytes;
     }
