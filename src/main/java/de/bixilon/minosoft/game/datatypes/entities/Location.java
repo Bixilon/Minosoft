@@ -11,39 +11,29 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes;
+package de.bixilon.minosoft.game.datatypes.entities;
 
-public class Identifier {
-    final String legacy;
-    String mod = "minecraft"; // by default minecraft
-    String water;
+public class Location {
+    private final double x;
+    private final double y;
+    private final double z;
 
-    public Identifier(String mod, String legacy, String water) { // water for water update name (post 1.13.x)
-        this.mod = mod;
-        this.legacy = legacy;
-        this.water = water;
+    public Location(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
-    public Identifier(String legacy, String water) {
-        this.legacy = legacy;
-        this.water = water;
+    public double getX() {
+        return x;
     }
 
-    public Identifier(String name) {
-        // legacy and water are the same
-        this.legacy = name;
+    public double getY() {
+        return y;
     }
 
-    public String getMod() {
-        return mod;
-    }
-
-    public String getLegacy() {
-        return legacy;
-    }
-
-    public String getWaterUpdateName() {
-        return ((water == null) ? legacy : water);
+    public double getZ() {
+        return z;
     }
 
     @Override
@@ -51,7 +41,7 @@ public class Identifier {
         if (super.equals(obj)) {
             return true;
         }
-        Identifier that = (Identifier) obj;
-        return that.getLegacy().equals(getLegacy()) || that.getWaterUpdateName().equals(getWaterUpdateName());
+        Location that = (Location) obj;
+        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
     }
 }
