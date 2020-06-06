@@ -37,7 +37,7 @@ public class PacketEntityPosition implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity %d moved relative %s %s %s", entityId, location.getX(), location.getY(), location.getZ()));
+        Log.protocol(String.format("Entity %d moved relative %s", entityId, location.toString()));
     }
 
     public int getEntityId() {

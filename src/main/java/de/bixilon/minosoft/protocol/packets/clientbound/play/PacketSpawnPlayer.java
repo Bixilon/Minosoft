@@ -55,7 +55,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Player spawned (name=%s, uuid=%s, location=%s", player.getName(), player.getUUID(), player.getLocation().toString()));
+        Log.protocol(String.format("Player spawned (name=%s, uuid=%s, location=%s)", player.getName(), player.getUUID(), player.getLocation().toString()));
     }
 
     public int getEntityId() {
