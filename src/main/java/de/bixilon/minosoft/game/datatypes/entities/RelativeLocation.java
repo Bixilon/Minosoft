@@ -13,10 +13,35 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-public interface Mob extends Entity {
-    float getHealth();
+public class RelativeLocation {
+    private final double x;
+    private final double y;
+    private final double z;
 
-    void setHealth(float health);
+    public RelativeLocation(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
-    int getMaxHealth();
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getZ() {
+        return z;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        RelativeLocation that = (RelativeLocation) obj;
+        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
+    }
 }

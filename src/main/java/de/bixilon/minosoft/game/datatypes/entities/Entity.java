@@ -22,6 +22,8 @@ public interface Entity {
 
     void setLocation(Location location);
 
+    void setLocation(RelativeLocation location);
+
     Velocity getVelocity();
 
     void setVelocity(Velocity velocity);

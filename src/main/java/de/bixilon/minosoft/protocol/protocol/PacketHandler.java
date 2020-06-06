@@ -146,4 +146,34 @@ public class PacketHandler {
     public void handle(PacketSpawnMob pkg) {
         connection.getPlayer().getWorld().addEntity(pkg.getMob());
     }
+
+    public void handle(PacketEntityPositionAndRotation pkg) {
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setLocation(pkg.getRelativeLocation());
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setYaw(pkg.getYaw());
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setPitch(pkg.getPitch());
+    }
+
+    public void handle(PacketEntityPosition pkg) {
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setLocation(pkg.getRelativeLocation());
+    }
+
+    public void handle(PacketEntityRotation pkg) {
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setYaw(pkg.getYaw());
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setPitch(pkg.getPitch());
+    }
+
+    public void handle(PacketDestoryEntity pkg) {
+        for (int entityId : pkg.getEntityIds()) {
+            connection.getPlayer().getWorld().removeEntity(entityId);
+        }
+    }
+
+    public void handle(PacketEntityVelocity pkg) {
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setVelocity(pkg.getVelocity());
+
+    }
+
+    public void handle(PacketSpawnPlayer pkg) {
+        connection.getPlayer().getWorld().addEntity(pkg.getPlayer());
+    }
 }

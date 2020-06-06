@@ -13,48 +13,57 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.PlayerPropertyData;
+import de.bixilon.minosoft.game.datatypes.entities.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.OtherPlayer;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
-public class PacketSpawnMob implements ClientboundPacket {
-    Mob mob;
+
+public class PacketSpawnPlayer implements ClientboundPacket {
+    int entityId;
+    OtherPlayer player;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
-                int entityId = buffer.readVarInt();
-                Mobs type = Mobs.byType(buffer.readByte());
+                this.entityId = buffer.readVarInt();
+                UUID uuid = UUID.fromString(buffer.readString());
+                String name = buffer.readString();
+                PlayerPropertyData[] properties = new PlayerPropertyData[buffer.readVarInt()];
+                for (int i = 0; i < properties.length; i++) {
+                    properties[i] = new PlayerPropertyData(buffer.readString(), buffer.readString(), buffer.readString());
+                }
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-                int yaw = buffer.readByte(); //ToDo
+                int yaw = buffer.readByte();
                 int pitch = buffer.readByte();
-                int headPitch = buffer.readByte();
-                Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+
+                short currentItem = buffer.readShort();
                 EntityMetaData metaData = buffer.readEntityMetaData();
 
-                assert type != null;
-                try {
-                    mob = (Mob) type.getClazz().getConstructor(int.class, Location.class, int.class, int.class, Velocity.class, EntityMetaData.class).newInstance(entityId, location, yaw, pitch, velocity, metaData);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
+                this.player = new OtherPlayer(entityId, name, uuid, properties, location, yaw, pitch, currentItem, metaData);
                 break;
         }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Mob spawned (entityId=%d, type=%s, at %s %s %s)", mob.getId(), mob.getEntityType().name(), mob.getLocation().getX(), mob.getLocation().getY(), mob.getLocation().getZ()));
+        Log.protocol(String.format("Player spawned (name=%s, uuid=%s, location=%s", player.getName(), player.getUUID(), player.getLocation().toString()));
     }
 
-    public Mob getMob() {
-        return mob;
+    public int getEntityId() {
+        return entityId;
+    }
+
+    public OtherPlayer getPlayer() {
+        return player;
     }
 
     @Override

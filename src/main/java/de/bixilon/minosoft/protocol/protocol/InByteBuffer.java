@@ -142,8 +142,12 @@ public class InByteBuffer {
         return result;
     }
 
-    public double readFixedPointNumber() {
+    public double readFixedPointNumberInteger() {
         return readInteger() / 32.0D;
+    }
+
+    public double readFixedPointNumberByte() {
+        return readByte() / 32.0D;
     }
 
     public JSONObject readJson() {

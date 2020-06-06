@@ -63,5 +63,11 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_SET_EXPERIENCE, PacketSetExperience.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_CHANGE_GAME_STATE, PacketChangeGameState.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_MOB, PacketSpawnMob.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_POSITION_AND_ROTATION, PacketEntityPositionAndRotation.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_POSITION, PacketEntityPosition.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_ROTATION, PacketEntityRotation.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_DESTROY_ENTITIES, PacketDestoryEntity.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_VELOCITY, PacketEntityVelocity.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_PLAYER, PacketSpawnPlayer.class);
     }
 }

@@ -16,7 +16,8 @@ package de.bixilon.minosoft.game.datatypes.entities;
 import de.bixilon.minosoft.game.datatypes.Identifier;
 
 public enum Mobs {
-    ZOMBIE(new Identifier("zombie"), 54, Zombie.class);
+    ZOMBIE(new Identifier("zombie"), 54, Zombie.class),
+    PLAYER(null, 92, OtherPlayer.class);
 
     final Identifier identifier;
     final int type;

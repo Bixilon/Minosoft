@@ -11,12 +11,28 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes;
 
-public interface Mob extends Entity {
-    float getHealth();
+public class PlayerPropertyData {
+    final String name;
+    final String value;
+    final String signature;
 
-    void setHealth(float health);
+    public PlayerPropertyData(String name, String value, String signature) {
+        this.name = name;
+        this.value = value;
+        this.signature = signature;
+    }
 
-    int getMaxHealth();
+    public String getName() {
+        return this.name;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }

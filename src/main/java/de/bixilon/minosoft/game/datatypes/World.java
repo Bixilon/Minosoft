@@ -97,6 +97,10 @@ public class World {
     }
 
     public void removeEntity(Entity entity) {
-        this.entities.remove(entity.getId());
+        removeEntity(entity.getId());
+    }
+
+    public void removeEntity(int entityId) {
+        this.entities.remove(entityId);
     }
 }

@@ -14,27 +14,37 @@
 package de.bixilon.minosoft.game.datatypes.entities;
 
 
-public class Zombie implements Mob {
+import de.bixilon.minosoft.game.datatypes.PlayerPropertyData;
+
+import java.util.UUID;
+
+public class OtherPlayer implements Mob {
     final int id;
+    final String name;
+    final UUID uuid;
+    PlayerPropertyData[] properties;
     Location location;
-    Velocity velocity;
     int yaw;
     int pitch;
+    short currentItem;
     EntityMetaData metaData;
     float health;
 
-    public Zombie(int id, Location location, int yaw, int pitch, Velocity velocity, EntityMetaData metaData) {
+    public OtherPlayer(int id, String name, UUID uuid, PlayerPropertyData[] properties, Location location, int yaw, int pitch, short currentItem, EntityMetaData metaData) {
         this.id = id;
+        this.name = name;
+        this.uuid = uuid;
+        this.properties = properties;
         this.location = location;
         this.yaw = yaw;
         this.pitch = pitch;
-        this.velocity = velocity;
+        this.currentItem = currentItem;
         this.metaData = metaData;
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.ZOMBIE;
+        return Mobs.PLAYER;
     }
 
     public int getId() {
@@ -58,14 +68,16 @@ public class Zombie implements Mob {
         location = new Location(location.getX() + relativeLocation.getX(), location.getY() + relativeLocation.getY(), location.getZ() + relativeLocation.getZ());
     }
 
+    @Deprecated
     @Override
     public Velocity getVelocity() {
-        return velocity;
+        return null;
     }
 
+    @Deprecated
     @Override
     public void setVelocity(Velocity velocity) {
-        this.velocity = velocity;
+
     }
 
     @Override
@@ -97,7 +109,7 @@ public class Zombie implements Mob {
 
     @Override
     public float getHeight() {
-        return 1.95F;
+        return 1.8F;
     }
 
     @Override
@@ -123,5 +135,21 @@ public class Zombie implements Mob {
     @Override
     public int getMaxHealth() {
         return 40;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public PlayerPropertyData[] getProperties() {
+        return properties;
+    }
+
+    public UUID getUUID() {
+        return uuid;
+    }
+
+    public short getCurrentItem() {
+        return currentItem;
     }
 }
