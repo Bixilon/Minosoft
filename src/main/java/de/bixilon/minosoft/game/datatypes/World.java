@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.game.datatypes;
 
 import de.bixilon.minosoft.game.datatypes.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.entities.Entity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.Map;
  */
 public class World {
     public final HashMap<ChunkLocation, Chunk> chunks;
+    public final HashMap<Integer, Entity> entities;
     final String name;
     boolean hardcore;
     boolean raining;
@@ -30,6 +32,7 @@ public class World {
     public World(String name) {
         this.name = name;
         chunks = new HashMap<>();
+        entities = new HashMap<>();
     }
 
     public String getName() {
