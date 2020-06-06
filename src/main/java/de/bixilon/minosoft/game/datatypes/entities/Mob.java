@@ -19,4 +19,8 @@ public interface Mob extends Entity {
     void setHealth(float health);
 
     int getMaxHealth();
+
+    int getHeadYaw();
+
+    void setHeadYaw(int headYaw);
 }

@@ -20,6 +20,7 @@ public class Zombie implements Mob {
     Velocity velocity;
     int yaw;
     int pitch;
+    int headYaw;
     EntityMetaData metaData;
     float health;
 
@@ -123,5 +124,15 @@ public class Zombie implements Mob {
     @Override
     public int getMaxHealth() {
         return 40;
+    }
+
+    @Override
+    public int getHeadYaw() {
+        return headYaw;
+    }
+
+    @Override
+    public void setHeadYaw(int headYaw) {
+        this.headYaw = headYaw;
     }
 }

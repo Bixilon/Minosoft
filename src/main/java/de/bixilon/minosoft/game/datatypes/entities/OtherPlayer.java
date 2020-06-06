@@ -26,6 +26,7 @@ public class OtherPlayer implements Mob {
     Location location;
     int yaw;
     int pitch;
+    int headYaw;
     short currentItem;
     EntityMetaData metaData;
     float health;
@@ -183,5 +184,15 @@ public class OtherPlayer implements Mob {
         SLEEPING,
         GLIDING,
         SWIMMING
+    }
+
+    @Override
+    public int getHeadYaw() {
+        return headYaw;
+    }
+
+    @Override
+    public void setHeadYaw(int headYaw) {
+        this.headYaw = headYaw;
     }
 }

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.GameMode;
+import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKeyRequest;
@@ -181,5 +182,9 @@ public class PacketHandler {
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setLocation(pkg.getRelativeLocation());
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setYaw(pkg.getYaw());
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setPitch(pkg.getPitch());
+    }
+
+    public void handle(PacketEntityHeadRotation pkg) {
+        ((Mob) connection.getPlayer().getWorld().getEntity(pkg.getEntityId())).setHeadYaw(pkg.getHeadYaw());
     }
 }
