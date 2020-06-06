@@ -18,7 +18,7 @@ import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import java.util.HashMap;
 
 /**
- * Collection of 16 chunks
+ * Collection of 16 chunks nibbles
  */
 public class Chunk {
     private final HashMap<Byte, ChunkNibble> chunks;
