@@ -29,6 +29,7 @@ public class OtherPlayer implements Mob {
     short currentItem;
     EntityMetaData metaData;
     float health;
+    Status status = Status.STANDING;
 
     public OtherPlayer(int id, String name, UUID uuid, PlayerPropertyData[] properties, Location location, int yaw, int pitch, short currentItem, EntityMetaData metaData) {
         this.id = id;
@@ -104,13 +105,36 @@ public class OtherPlayer implements Mob {
 
     @Override
     public float getWidth() {
-        return 0.6F;
+        switch (status) {
+            case STANDING:
+            case SNEAKING:
+            case GLIDING:
+            case SWIMMING:
+                return 0.6F;
+            case SLEEPING:
+                return 0.2F;
+
+        }
+        return 0; // thanks java for that useless line...
     }
 
     @Override
     public float getHeight() {
-        return 1.8F;
+        switch (status) {
+            case STANDING:
+                return 1.8F;
+            case SNEAKING:
+                return 1.5F;
+            case GLIDING:
+            case SWIMMING:
+                return 0.6F;
+            case SLEEPING:
+                return 0.2F;
+
+        }
+        return 0; // thanks java for that useless line...
     }
+
 
     @Override
     public EntityMetaData getMetaData() {
@@ -151,5 +175,13 @@ public class OtherPlayer implements Mob {
 
     public short getCurrentItem() {
         return currentItem;
+    }
+
+    enum Status {
+        STANDING,
+        SNEAKING,
+        SLEEPING,
+        GLIDING,
+        SWIMMING
     }
 }
