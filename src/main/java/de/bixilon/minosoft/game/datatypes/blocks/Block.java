@@ -89,7 +89,7 @@ public enum Block {
         return legacyData;
     }
 
-    public static Block getBlockByIdentifier(Identifier identifier) {
+    public static Block byIdentifier(Identifier identifier) {
         for (Block b : values()) {
             if (b.getIdentifier().equals(identifier)) {
                 return b;
@@ -98,7 +98,7 @@ public enum Block {
         return UNKNOWN;
     }
 
-    public static Block getBlockByLegacy(int id, int data) {
+    public static Block byLegacy(int id, int data) {
         for (Block b : values()) {
             if (b.getLegacyId() == id && b.getLegacyData() == data) {
                 return b;
@@ -107,8 +107,8 @@ public enum Block {
         return UNKNOWN;
     }
 
-    public static Block getBlockByLegacy(int id) {
-        return getBlockByLegacy(id, 0);
+    public static Block byLegacy(int id) {
+        return byLegacy(id, 0);
     }
 
 

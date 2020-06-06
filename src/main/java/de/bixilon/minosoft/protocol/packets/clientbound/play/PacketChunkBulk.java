@@ -102,7 +102,7 @@ public class PacketChunkBulk implements ClientboundPacket {
 
 
                                         // ToDo light, biome
-                                        blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), Block.getBlockByLegacy(singeBlockId, singleMeta));
+                                        blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), Block.byLegacy(singeBlockId, singleMeta));
                                         arrayPos++;
                                     }
                                 }
