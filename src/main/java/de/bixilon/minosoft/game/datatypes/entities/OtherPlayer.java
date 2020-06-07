@@ -24,6 +24,7 @@ public class OtherPlayer implements Mob {
     final UUID uuid;
     PlayerPropertyData[] properties;
     Location location;
+    Velocity velocity;
     int yaw;
     int pitch;
     int headYaw;
@@ -70,16 +71,14 @@ public class OtherPlayer implements Mob {
         location = new Location(location.getX() + relativeLocation.getX(), location.getY() + relativeLocation.getY(), location.getZ() + relativeLocation.getZ());
     }
 
-    @Deprecated
     @Override
     public Velocity getVelocity() {
-        return null;
+        return velocity;
     }
 
-    @Deprecated
     @Override
     public void setVelocity(Velocity velocity) {
-
+        this.velocity = velocity;
     }
 
     @Override
