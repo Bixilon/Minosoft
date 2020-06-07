@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.PlayerPropertyData;
-import de.bixilon.minosoft.game.datatypes.entities.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.OtherPlayer;
+import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -46,7 +46,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
                 int pitch = buffer.readByte();
 
                 short currentItem = buffer.readShort();
-                EntityMetaData metaData = buffer.readEntityMetaData();
+                HumanMetaData metaData = new HumanMetaData(buffer, v);
 
                 this.player = new OtherPlayer(entityId, name, uuid, properties, location, yaw, pitch, currentItem, metaData);
                 break;

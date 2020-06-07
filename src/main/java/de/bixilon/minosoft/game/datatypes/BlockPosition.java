@@ -50,4 +50,9 @@ public class BlockPosition {
     public ChunkLocation getChunkLocation() {
         return new ChunkLocation(getX() / 16, getZ() / 16);
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s %s", getX(), getY(), getZ());
+    }
 }

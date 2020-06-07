@@ -15,9 +15,17 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.game.datatypes.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.ChatComponent;
-import de.bixilon.minosoft.game.datatypes.entities.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.Direction;
+import de.bixilon.minosoft.game.datatypes.Slot;
+import de.bixilon.minosoft.game.datatypes.entities.Pose;
+import de.bixilon.minosoft.game.datatypes.particle.BlockParticle;
+import de.bixilon.minosoft.game.datatypes.particle.OtherParticles;
+import de.bixilon.minosoft.game.datatypes.particle.Particle;
+import de.bixilon.minosoft.game.datatypes.particle.Particles;
+import net.querz.nbt.io.NamedTag;
 import org.json.JSONObject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -180,8 +188,41 @@ public class InByteBuffer {
         return bytes.length - pos;
     }
 
-    public EntityMetaData readEntityMetaData() {
+
+    public Direction readDirection() {
+        return Direction.byId(readVarInt());
+    }
+
+    public Pose readPose() {
+        return Pose.byId(readVarInt());
+    }
+
+    public Particle readParticle() {
+        Particles type = Particles.byType(readVarInt());
+        try {
+            if (type.getClazz() == OtherParticles.class) {
+                return type.getClazz().getConstructor(Particles.class).newInstance(type);
+            } else if (type.getClazz() == BlockParticle.class) {
+                return type.getClazz().getConstructor(int.class).newInstance(readVarInt());
+            }
+            //ToDo
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public NamedTag readNBT() {
         //ToDo
         return null;
+    }
+
+    public Slot readSlot() {
+        if (readBoolean()) {
+            return new Slot(readVarInt(), readByte(), readNBT());
+        }
+        //else no data
+        return null;
+
     }
 }

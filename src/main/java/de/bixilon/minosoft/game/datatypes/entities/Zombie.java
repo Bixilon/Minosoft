@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.ZombieMetaData;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class Zombie implements Mob {
     final int id;
@@ -21,16 +25,16 @@ public class Zombie implements Mob {
     int yaw;
     int pitch;
     int headYaw;
-    EntityMetaData metaData;
+    ZombieMetaData metaData;
     float health;
 
-    public Zombie(int id, Location location, int yaw, int pitch, Velocity velocity, EntityMetaData metaData) {
+    public Zombie(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         this.id = id;
         this.location = location;
         this.yaw = yaw;
         this.pitch = pitch;
         this.velocity = velocity;
-        this.metaData = metaData;
+        this.metaData = new ZombieMetaData(buffer, v);
     }
 
     @Override
@@ -102,13 +106,13 @@ public class Zombie implements Mob {
     }
 
     @Override
-    public EntityMetaData getMetaData() {
+    public ZombieMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData data) {
-        this.metaData = data;
+        this.metaData = (ZombieMetaData) data;
     }
 
     @Override

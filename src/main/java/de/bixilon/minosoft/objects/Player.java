@@ -16,6 +16,7 @@ package de.bixilon.minosoft.objects;
 import de.bixilon.minosoft.game.datatypes.GameMode;
 import de.bixilon.minosoft.game.datatypes.World;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 
 import java.util.UUID;
 
@@ -31,6 +32,7 @@ public class Player {
     byte selectedSlot;
     short level;
     short totalExperience;
+    HumanMetaData metaData;
 
     public Player(Account acc) {
         this.acc = acc;
@@ -123,5 +125,13 @@ public class Player {
 
     public void setTotalExperience(short totalExperience) {
         this.totalExperience = totalExperience;
+    }
+
+    public HumanMetaData getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(HumanMetaData metaData) {
+        this.metaData = metaData;
     }
 }

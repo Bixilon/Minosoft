@@ -11,29 +11,32 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes;
 
-import net.querz.nbt.io.NBTUtil;
-import net.querz.nbt.io.NamedTag;
+public enum Direction {
+    DOWN(0),
+    UP(1),
+    NORTH(2),
+    SOUTH(3),
+    WEST(3),
+    EAST(3);
 
-import java.io.IOException;
+    final int id;
 
-public class EntityMetaData {
-    NamedTag nbt;
-
-    public EntityMetaData(byte[] nbt) {
-        try {
-            this.nbt = NBTUtil.read(new String(nbt));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    Direction(int id) {
+        this.id = id;
     }
 
-    public EntityMetaData(String nbt) {
-        try {
-            this.nbt = NBTUtil.read(nbt);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static Direction byId(int id) {
+        for (Direction g : values()) {
+            if (g.getId() == id) {
+                return g;
+            }
         }
+        return null;
+    }
+
+    public int getId() {
+        return id;
     }
 }

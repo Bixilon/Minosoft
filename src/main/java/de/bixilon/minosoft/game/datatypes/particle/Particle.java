@@ -11,40 +11,8 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.particle;
 
-import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-
-public interface Entity {
-    Mobs getEntityType();
-
-    int getId();
-
-    Location getLocation();
-
-    void setLocation(Location location);
-
-    void setLocation(RelativeLocation location);
-
-    Velocity getVelocity();
-
-    void setVelocity(Velocity velocity);
-
-    int getYaw();
-
-    void setYaw(int yaw);
-
-    int getPitch();
-
-    void setPitch(int pitch);
-
-    float getWidth();
-
-    float getHeight();
-
-    <T extends EntityMetaData> EntityMetaData getMetaData();
-
-    void setMetaData(EntityMetaData data);
-
-
+public interface Particle {
+    Particles getParticle();
 }

@@ -11,42 +11,26 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-public class RelativeLocation {
-    private final double x;
-    private final double y;
-    private final double z;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-    public RelativeLocation(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+public class AgeableMetaData extends MobMetaData {
+
+    public AgeableMetaData(InByteBuffer buffer, ProtocolVersion v) {
+        super(buffer, v);
     }
 
-    public double getX() {
-        return x;
-    }
 
-    public double getY() {
-        return y;
-    }
-
-    public double getZ() {
-        return z;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
+    public int getAge() {
+        //ToDo custom Potion Effect Color Type
+        switch (version) {
+            case VERSION_1_7_10:
+                return (int) sets.get(12).getData();
         }
-        RelativeLocation that = (RelativeLocation) obj;
-        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
+        return 0;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", getX(), getY(), getZ());
-    }
+
 }

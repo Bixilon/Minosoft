@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.GameMode;
 import de.bixilon.minosoft.game.datatypes.entities.Mob;
+import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKeyRequest;
@@ -163,7 +164,7 @@ public class PacketHandler {
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setPitch(pkg.getPitch());
     }
 
-    public void handle(PacketDestoryEntity pkg) {
+    public void handle(PacketDestroyEntity pkg) {
         for (int entityId : pkg.getEntityIds()) {
             connection.getPlayer().getWorld().removeEntity(entityId);
         }
@@ -186,5 +187,18 @@ public class PacketHandler {
 
     public void handle(PacketEntityHeadRotation pkg) {
         ((Mob) connection.getPlayer().getWorld().getEntity(pkg.getEntityId())).setHeadYaw(pkg.getHeadYaw());
+    }
+
+    public void handle(PacketWindowItems pkg) {
+    }
+
+    public void handle(PacketEntityMetadata pkg) {
+        if (pkg.getEntityId() == connection.getPlayer().getEntityId()) {
+            // our own meta data...set it
+            connection.getPlayer().setMetaData((HumanMetaData) pkg.getEntityData(HumanMetaData.class));
+        } else {
+            connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setMetaData(pkg.getEntityData(connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).getMetaData().getClass()));
+
+        }
     }
 }

@@ -13,40 +13,31 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-public class RelativeLocation {
-    private final double x;
-    private final double y;
-    private final double z;
+public enum Pose {
+    STANDING(0),
+    FLYING(1),
+    SLEEPING(2),
+    SWIMMING(3),
+    SPIN_ATTACK(4),
+    SNEAKING(5),
+    DYING(6);
 
-    public RelativeLocation(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    final int id;
+
+    Pose(int id) {
+        this.id = id;
     }
 
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public double getZ() {
-        return z;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
+    public static Pose byId(int id) {
+        for (Pose g : values()) {
+            if (g.getId() == id) {
+                return g;
+            }
         }
-        RelativeLocation that = (RelativeLocation) obj;
-        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
+        return null;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", getX(), getY(), getZ());
+    public int getId() {
+        return id;
     }
 }

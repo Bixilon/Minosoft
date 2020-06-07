@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import java.util.Arrays;
 
 
-public class PacketDestoryEntity implements ClientboundPacket {
+public class PacketDestroyEntity implements ClientboundPacket {
     int[] entityIds;
 
     @Override

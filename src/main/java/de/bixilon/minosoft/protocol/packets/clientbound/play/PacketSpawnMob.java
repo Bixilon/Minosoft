@@ -13,9 +13,13 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Mob;
+import de.bixilon.minosoft.game.datatypes.entities.Mobs;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -36,11 +40,10 @@ public class PacketSpawnMob implements ClientboundPacket {
                 int pitch = buffer.readByte();
                 int headPitch = buffer.readByte();
                 Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-                EntityMetaData metaData = buffer.readEntityMetaData();
 
                 assert type != null;
                 try {
-                    mob = (Mob) type.getClazz().getConstructor(int.class, Location.class, int.class, int.class, Velocity.class, EntityMetaData.class).newInstance(entityId, location, yaw, pitch, velocity, metaData);
+                    mob = (Mob) type.getClazz().getConstructor(int.class, Location.class, int.class, int.class, Velocity.class, InByteBuffer.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer, v);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     e.printStackTrace();
                 }

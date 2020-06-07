@@ -11,27 +11,35 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.particle;
 
 import de.bixilon.minosoft.game.datatypes.Identifier;
 
-public enum Mobs {
-    ZOMBIE(new Identifier("zombie"), 54, Zombie.class),
-    PLAYER(null, 92, OtherPlayer.class);
-    // ToDo all mobs
+public enum Particles {
+    AMBIENT_ENTITY_EFFECT(new Identifier("ambient_entity_effect"), 0),
+    ANGRY_VILLAGER(new Identifier("angry_villager"), 1),
+    BARRIER(new Identifier("barrier"), 2),
+    BLOCK(new Identifier("block"), 3, BlockParticle.class);
+    // ToDo other particles
 
     final Identifier identifier;
-    final int type;
-    final Class<? extends Entity> clazz;
+    final int id;
+    final Class<? extends Particle> clazz;
 
-    Mobs(Identifier identifier, int type, Class<? extends Entity> clazz) {
+    Particles(Identifier identifier, int id, Class<? extends Particle> clazz) {
         this.identifier = identifier;
-        this.type = type;
+        this.id = id;
         this.clazz = clazz;
     }
 
-    public static Mobs byIdentifier(Identifier identifier) {
-        for (Mobs b : values()) {
+    Particles(Identifier identifier, int id) {
+        this.identifier = identifier;
+        this.id = id;
+        this.clazz = OtherParticles.class;
+    }
+
+    public static Particles byIdentifier(Identifier identifier) {
+        for (Particles b : values()) {
             if (b.getIdentifier().equals(identifier)) {
                 return b;
             }
@@ -39,9 +47,9 @@ public enum Mobs {
         return null;
     }
 
-    public static Mobs byType(int type) {
-        for (Mobs b : values()) {
-            if (b.getType() == type) {
+    public static Particles byType(int type) {
+        for (Particles b : values()) {
+            if (b.getId() == type) {
                 return b;
             }
         }
@@ -52,11 +60,11 @@ public enum Mobs {
         return identifier;
     }
 
-    public int getType() {
-        return type;
+    public int getId() {
+        return id;
     }
 
-    public Class<? extends Entity> getClazz() {
+    public Class<? extends Particle> getClazz() {
         return clazz;
     }
 }

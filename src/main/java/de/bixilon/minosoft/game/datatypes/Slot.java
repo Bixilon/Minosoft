@@ -11,42 +11,30 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes;
 
-public class RelativeLocation {
-    private final double x;
-    private final double y;
-    private final double z;
+import net.querz.nbt.io.NamedTag;
 
-    public RelativeLocation(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+public class Slot {
+    int itemId;
+    int itemCount;
+    NamedTag nbt;
+
+    public Slot(int itemId, int itemCount, NamedTag nbt) {
+        this.itemId = itemId;
+        this.itemCount = itemCount;
+        this.nbt = nbt;
     }
 
-    public double getX() {
-        return x;
+    public int getItemId() {
+        return this.itemId;
     }
 
-    public double getY() {
-        return y;
+    public int getItemCount() {
+        return itemCount;
     }
 
-    public double getZ() {
-        return z;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        RelativeLocation that = (RelativeLocation) obj;
-        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", getX(), getY(), getZ());
+    public NamedTag getNbt() {
+        return nbt;
     }
 }

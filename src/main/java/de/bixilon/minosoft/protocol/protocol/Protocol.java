@@ -66,10 +66,12 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_POSITION_AND_ROTATION, PacketEntityPositionAndRotation.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_POSITION, PacketEntityPosition.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_ROTATION, PacketEntityRotation.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_DESTROY_ENTITIES, PacketDestoryEntity.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_DESTROY_ENTITIES, PacketDestroyEntity.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_VELOCITY, PacketEntityVelocity.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_PLAYER, PacketSpawnPlayer.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_TELEPORT, PacketEntityTeleport.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_HEAD_LOOK, PacketEntityHeadRotation.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_WINDOW_ITEMS, PacketWindowItems.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_METADATA, PacketEntityMetadata.class);
     }
 }

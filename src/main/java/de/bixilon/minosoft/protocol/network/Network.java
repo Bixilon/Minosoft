@@ -63,7 +63,6 @@ public class Network {
                 socket.setKeepAlive(true);
                 DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
                 DataInputStream dIn = new DataInputStream(socket.getInputStream());
-                socket.getInputStream();
 
 
                 while (connection.getConnectionState() != ConnectionState.DISCONNECTING) {
@@ -81,11 +80,6 @@ public class Network {
                         binQueue.remove(0);
                     }
 
-                    if (dIn.available() == 0) {
-                        // nothing to receive
-                        Util.sleep(1);
-                        continue;
-                    }
                     // everything sent for now, waiting for data
 
                     if (dIn.available() > 0) {

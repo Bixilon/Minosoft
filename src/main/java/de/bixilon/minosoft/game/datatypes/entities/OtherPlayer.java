@@ -15,6 +15,8 @@ package de.bixilon.minosoft.game.datatypes.entities;
 
 
 import de.bixilon.minosoft.game.datatypes.PlayerPropertyData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 
 import java.util.UUID;
 
@@ -29,11 +31,11 @@ public class OtherPlayer implements Mob {
     int pitch;
     int headYaw;
     short currentItem;
-    EntityMetaData metaData;
+    HumanMetaData metaData;
     float health;
-    Status status = Status.STANDING;
+    Pose status = Pose.STANDING;
 
-    public OtherPlayer(int id, String name, UUID uuid, PlayerPropertyData[] properties, Location location, int yaw, int pitch, short currentItem, EntityMetaData metaData) {
+    public OtherPlayer(int id, String name, UUID uuid, PlayerPropertyData[] properties, Location location, int yaw, int pitch, short currentItem, HumanMetaData metaData) {
         this.id = id;
         this.name = name;
         this.uuid = uuid;
@@ -106,44 +108,39 @@ public class OtherPlayer implements Mob {
     @Override
     public float getWidth() {
         switch (status) {
-            case STANDING:
-            case SNEAKING:
-            case GLIDING:
-            case SWIMMING:
+            default:
                 return 0.6F;
             case SLEEPING:
                 return 0.2F;
 
         }
-        return 0; // thanks java for that useless line...
     }
 
     @Override
     public float getHeight() {
         switch (status) {
-            case STANDING:
+            default:
                 return 1.8F;
             case SNEAKING:
                 return 1.5F;
-            case GLIDING:
+            case FLYING:
             case SWIMMING:
                 return 0.6F;
             case SLEEPING:
                 return 0.2F;
 
         }
-        return 0; // thanks java for that useless line...
     }
 
 
     @Override
-    public EntityMetaData getMetaData() {
+    public HumanMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData data) {
-        this.metaData = data;
+        this.metaData = (HumanMetaData) data;
     }
 
     @Override
@@ -177,13 +174,6 @@ public class OtherPlayer implements Mob {
         return currentItem;
     }
 
-    enum Status {
-        STANDING,
-        SNEAKING,
-        SLEEPING,
-        GLIDING,
-        SWIMMING
-    }
 
     @Override
     public int getHeadYaw() {
@@ -193,5 +183,9 @@ public class OtherPlayer implements Mob {
     @Override
     public void setHeadYaw(int headYaw) {
         this.headYaw = headYaw;
+    }
+
+    public Pose getStatus() {
+        return status;
     }
 }

@@ -11,28 +11,28 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes;
 
-public class RelativeLocation {
-    private final double x;
-    private final double y;
-    private final double z;
+public class Vector {
+    final int x;
+    final int y;
+    final int z;
 
-    public RelativeLocation(double x, double y, double z) {
+    public Vector(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public double getX() {
+    public int getX() {
         return x;
     }
 
-    public double getY() {
+    public int getY() {
         return y;
     }
 
-    public double getZ() {
+    public int getZ() {
         return z;
     }
 
@@ -41,8 +41,8 @@ public class RelativeLocation {
         if (super.equals(obj)) {
             return true;
         }
-        RelativeLocation that = (RelativeLocation) obj;
-        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
+        Vector pos = (Vector) obj;
+        return pos.getX() == getX() && pos.getY() == getY() && pos.getZ() == getZ();
     }
 
     @Override
