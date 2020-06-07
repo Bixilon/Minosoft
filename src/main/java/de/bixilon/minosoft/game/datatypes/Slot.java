@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-import net.querz.nbt.io.NamedTag;
+import net.querz.nbt.tag.CompoundTag;
 
 public class Slot {
     int itemId;
     int itemCount;
-    NamedTag nbt;
+    CompoundTag nbt;
 
-    public Slot(int itemId, int itemCount, NamedTag nbt) {
+    public Slot(int itemId, int itemCount, CompoundTag nbt) {
         this.itemId = itemId;
         this.itemCount = itemCount;
         this.nbt = nbt;
@@ -34,7 +34,14 @@ public class Slot {
         return itemCount;
     }
 
-    public NamedTag getNbt() {
+    public CompoundTag getNbt() {
         return nbt;
+    }
+
+    public String getDisplayName() {
+        if (nbt.containsKey("display") && nbt.getCompoundTag("display").containsKey("Name")) {
+            return new ChatComponent(nbt.getCompoundTag("display").getString("Name")).getColoredMessage();
+        }
+        return "<ToDo>"; //ToDo display name per Item
     }
 }

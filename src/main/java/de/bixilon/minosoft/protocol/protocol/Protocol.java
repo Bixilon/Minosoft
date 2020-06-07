@@ -73,5 +73,6 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_HEAD_LOOK, PacketEntityHeadRotation.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_WINDOW_ITEMS, PacketWindowItems.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_METADATA, PacketEntityMetadata.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_EQUIPMENT, PacketEntityEquipment.class);
     }
 }

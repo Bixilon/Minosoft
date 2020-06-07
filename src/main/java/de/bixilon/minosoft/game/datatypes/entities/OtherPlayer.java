@@ -15,9 +15,12 @@ package de.bixilon.minosoft.game.datatypes.entities;
 
 
 import de.bixilon.minosoft.game.datatypes.PlayerPropertyData;
+import de.bixilon.minosoft.game.datatypes.Slot;
+import de.bixilon.minosoft.game.datatypes.Slots;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class OtherPlayer implements Mob {
@@ -34,6 +37,7 @@ public class OtherPlayer implements Mob {
     HumanMetaData metaData;
     float health;
     Pose status = Pose.STANDING;
+    final HashMap<Slots.Entity, Slot> equipment;
 
     public OtherPlayer(int id, String name, UUID uuid, PlayerPropertyData[] properties, Location location, int yaw, int pitch, short currentItem, HumanMetaData metaData) {
         this.id = id;
@@ -45,6 +49,7 @@ public class OtherPlayer implements Mob {
         this.pitch = pitch;
         this.currentItem = currentItem;
         this.metaData = metaData;
+        equipment = new HashMap<>();
     }
 
     @Override
@@ -187,5 +192,15 @@ public class OtherPlayer implements Mob {
 
     public Pose getStatus() {
         return status;
+    }
+
+    @Override
+    public void setEquipment(Slots.Entity slot, Slot data) {
+        equipment.replace(slot, data);
+    }
+
+    @Override
+    public Slot getEquipment(Slots.Entity slot) {
+        return equipment.get(slot);
     }
 }

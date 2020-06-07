@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
+import de.bixilon.minosoft.game.datatypes.Slot;
+import de.bixilon.minosoft.game.datatypes.Slots;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 
 public interface Entity {
@@ -45,6 +47,10 @@ public interface Entity {
     <T extends EntityMetaData> EntityMetaData getMetaData();
 
     void setMetaData(EntityMetaData data);
+
+    void setEquipment(Slots.Entity slot, Slot data);
+
+    Slot getEquipment(Slots.Entity slot);
 
 
 }

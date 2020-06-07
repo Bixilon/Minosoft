@@ -22,7 +22,7 @@ import de.bixilon.minosoft.game.datatypes.particle.BlockParticle;
 import de.bixilon.minosoft.game.datatypes.particle.OtherParticles;
 import de.bixilon.minosoft.game.datatypes.particle.Particle;
 import de.bixilon.minosoft.game.datatypes.particle.Particles;
-import net.querz.nbt.io.NamedTag;
+import net.querz.nbt.tag.CompoundTag;
 import org.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
@@ -212,8 +212,9 @@ public class InByteBuffer {
         return null;
     }
 
-    public NamedTag readNBT() {
+    public CompoundTag readNBT() {
         //ToDo
+        new CompoundTag();
         return null;
     }
 

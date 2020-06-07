@@ -201,4 +201,8 @@ public class PacketHandler {
 
         }
     }
+
+    public void handle(PacketEntityEquipment pkg) {
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setEquipment(pkg.getSlot(), pkg.getData());
+    }
 }

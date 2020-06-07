@@ -13,10 +13,14 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
+import de.bixilon.minosoft.game.datatypes.Slot;
+import de.bixilon.minosoft.game.datatypes.Slots;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.ZombieMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class Zombie implements Mob {
     final int id;
@@ -27,6 +31,7 @@ public class Zombie implements Mob {
     int headYaw;
     ZombieMetaData metaData;
     float health;
+    final HashMap<Slots.Entity, Slot> equipment;
 
     public Zombie(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         this.id = id;
@@ -35,6 +40,7 @@ public class Zombie implements Mob {
         this.pitch = pitch;
         this.velocity = velocity;
         this.metaData = new ZombieMetaData(buffer, v);
+        this.equipment = new HashMap<>();
     }
 
     @Override
@@ -113,6 +119,16 @@ public class Zombie implements Mob {
     @Override
     public void setMetaData(EntityMetaData data) {
         this.metaData = (ZombieMetaData) data;
+    }
+
+    @Override
+    public void setEquipment(Slots.Entity slot, Slot data) {
+        equipment.replace(slot, data);
+    }
+
+    @Override
+    public Slot getEquipment(Slots.Entity slot) {
+        return equipment.get(slot);
     }
 
     @Override

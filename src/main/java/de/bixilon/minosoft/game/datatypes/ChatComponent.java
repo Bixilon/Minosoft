@@ -54,4 +54,9 @@ public class ChatComponent {
     public JSONObject getRaw() {
         return this.json;
     }
+
+    public String getColoredMessage() {
+        //ToDo
+        return getRawMessage();
+    }
 }
