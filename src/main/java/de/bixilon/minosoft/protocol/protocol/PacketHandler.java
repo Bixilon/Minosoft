@@ -75,7 +75,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketLoginDisconnect pkg) {
-        Log.info(String.format("Disconnecting from server(%s)", pkg.getReason().toString()));
+        Log.info(String.format("Disconnecting from server(%s)", pkg.getReason().getColoredMessage()));
         connection.setConnectionState(ConnectionState.DISCONNECTING);
     }
 

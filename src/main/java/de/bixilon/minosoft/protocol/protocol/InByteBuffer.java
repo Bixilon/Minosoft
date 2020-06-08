@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.game.datatypes.ChatComponent;
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.Slot;
 import de.bixilon.minosoft.game.datatypes.entities.Pose;
@@ -188,8 +188,8 @@ public class InByteBuffer {
         return "dataLen: " + bytes.length + "; pos: " + pos;
     }
 
-    public ChatComponent readChatComponent() {
-        return new ChatComponent(readString());
+    public TextComponent readChatComponent() {
+        return new TextComponent(readString());
     }
 
     public int getPosition() {

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.objects;
 
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import org.json.JSONObject;
 
 public class ServerListPing {
@@ -42,9 +43,8 @@ public class ServerListPing {
         return raw.getString("favicon");
     }
 
-    public String getMotd() {
-        //ToDo TextComponent handling
-        return raw.getString("description");
+    public TextComponent getMotd() {
+        return new TextComponent(raw.getString("description"));
     }
 
     public JSONObject getRaw() {
