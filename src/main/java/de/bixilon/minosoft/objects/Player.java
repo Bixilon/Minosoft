@@ -14,10 +14,13 @@
 package de.bixilon.minosoft.objects;
 
 import de.bixilon.minosoft.game.datatypes.GameMode;
+import de.bixilon.minosoft.game.datatypes.Slot;
+import de.bixilon.minosoft.game.datatypes.Slots;
 import de.bixilon.minosoft.game.datatypes.World;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class Player {
@@ -33,6 +36,7 @@ public class Player {
     short level;
     short totalExperience;
     HumanMetaData metaData;
+    HashMap<Slots.Inventory, Slot> inventory = new HashMap<>();
 
     public Player(Account acc) {
         this.acc = acc;
@@ -133,5 +137,27 @@ public class Player {
 
     public void setMetaData(HumanMetaData metaData) {
         this.metaData = metaData;
+    }
+
+    public HashMap<Slots.Inventory, Slot> getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(HashMap<Slots.Inventory, Slot> inventory) {
+        this.inventory = inventory;
+    }
+
+    public void setInventory(Slot[] data) {
+        for (int i = 0; i < data.length; i++) {
+            setSlot(Slots.Inventory.byId(i), data[i]);
+        }
+    }
+
+    public Slot getSlot(Slots.Inventory slot) {
+        return inventory.get(slot);
+    }
+
+    public void setSlot(Slots.Inventory slot, Slot data) {
+        inventory.replace(slot, data);
     }
 }

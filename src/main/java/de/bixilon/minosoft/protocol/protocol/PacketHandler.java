@@ -190,6 +190,11 @@ public class PacketHandler {
     }
 
     public void handle(PacketWindowItems pkg) {
+        switch (pkg.getWindowId()) {
+            case 0: //Inventory
+                connection.getPlayer().setInventory(pkg.getData());
+                break;
+        }
     }
 
     public void handle(PacketEntityMetadata pkg) {
@@ -198,7 +203,6 @@ public class PacketHandler {
             connection.getPlayer().setMetaData((HumanMetaData) pkg.getEntityData(HumanMetaData.class));
         } else {
             connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setMetaData(pkg.getEntityData(connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).getMetaData().getClass()));
-
         }
     }
 
