@@ -16,7 +16,7 @@ package de.bixilon.minosoft.objects;
 import de.bixilon.minosoft.game.datatypes.GameMode;
 import de.bixilon.minosoft.game.datatypes.Slot;
 import de.bixilon.minosoft.game.datatypes.Slots;
-import de.bixilon.minosoft.game.datatypes.World;
+import de.bixilon.minosoft.game.datatypes.world.World;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 
@@ -158,6 +158,6 @@ public class Player {
     }
 
     public void setSlot(Slots.Inventory slot, Slot data) {
-        inventory.replace(slot, data);
+        inventory.put(slot, data);
     }
 }

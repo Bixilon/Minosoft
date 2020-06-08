@@ -123,7 +123,7 @@ public class Zombie implements Mob {
 
     @Override
     public void setEquipment(Slots.Entity slot, Slot data) {
-        equipment.replace(slot, data);
+        equipment.put(slot, data);
     }
 
     @Override

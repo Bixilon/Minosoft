@@ -11,7 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes;
+package de.bixilon.minosoft.game.datatypes.world;
 
 /**
  * Chunk X, Y and Z location (max 16x16x16)
@@ -46,5 +46,15 @@ public class ChunkNibbleLocation {
         }
         ChunkNibbleLocation that = (ChunkNibbleLocation) obj;
         return getX() == that.getX() && getY() == that.getY() && getZ() == that.getZ();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d %d %d", getX(), getY(), getZ());
+    }
+
+    @Override
+    public int hashCode() {
+        return x * y * z;
     }
 }

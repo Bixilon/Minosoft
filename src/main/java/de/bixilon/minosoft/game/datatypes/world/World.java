@@ -11,13 +11,17 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes;
+package de.bixilon.minosoft.game.datatypes.world;
 
 import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.game.datatypes.world.Chunk;
+import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Collection of ChunkColumns
@@ -46,14 +50,14 @@ public class World {
     public Block getBlock(BlockPosition pos) {
         ChunkLocation loc = pos.getChunkLocation();
         if (getChunk(loc) != null) {
-            return getChunk(loc).getBlock(pos.getX() % 16, pos.getX(), pos.getZ() % 16);
+            return getChunk(loc).getBlock(pos.getX() % 16, pos.getY(), pos.getZ() % 16);
         }
         return Block.AIR;
     }
 
     public void setBlock(BlockPosition pos, Block block) {
         if (getChunk(pos.getChunkLocation()) != null) {
-            getChunk(pos.getChunkLocation()).setBlock(pos.getX() % 16, pos.getX(), pos.getZ() % 16, block);
+            getChunk(pos.getChunkLocation()).setBlock(pos.getX() % 16, pos.getY(), pos.getZ() % 16, block);
         }
         // do nothing if chunk is unloaded
     }
@@ -63,12 +67,12 @@ public class World {
     }
 
     public void setChunk(ChunkLocation location, Chunk chunk) {
-        chunks.replace(location, chunk);
+        chunks.put(location, chunk);
     }
 
     public void setChunks(HashMap<ChunkLocation, Chunk> chunkMap) {
         for (Map.Entry<ChunkLocation, Chunk> set : chunkMap.entrySet()) {
-            chunks.replace(set.getKey(), set.getValue());
+            chunks.put(set.getKey(), set.getValue());
         }
     }
 

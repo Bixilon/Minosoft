@@ -11,7 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes;
+package de.bixilon.minosoft.game.datatypes.world;
 
 import de.bixilon.minosoft.game.datatypes.blocks.Block;
 
@@ -27,6 +27,11 @@ public class ChunkNibble {
         this.blocks = blocks;
     }
 
+    public ChunkNibble() {
+        // empty
+        this.blocks = new HashMap<>();
+    }
+
     public Block getBlock(ChunkNibbleLocation loc) {
         return blocks.get(loc);
     }
@@ -36,6 +41,10 @@ public class ChunkNibble {
     }
 
     public void setBlock(int x, int y, int z, Block block) {
-        blocks.replace(new ChunkNibbleLocation(x, y, z), block);
+        blocks.put(new ChunkNibbleLocation(x, y, z), block);
+    }
+
+    public void setBlock(ChunkNibbleLocation location, Block block) {
+        blocks.put(location, block);
     }
 }

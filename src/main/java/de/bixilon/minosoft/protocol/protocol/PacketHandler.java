@@ -209,4 +209,12 @@ public class PacketHandler {
     public void handle(PacketEntityEquipment pkg) {
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setEquipment(pkg.getSlot(), pkg.getData());
     }
+
+    public void handle(PacketBlockChange pkg) {
+        connection.getPlayer().getWorld().setBlock(pkg.getPosition(), pkg.getBlock());
+    }
+
+    public void handle(PacketMultiBlockChange pkg) {
+        connection.getPlayer().getWorld().getChunk(pkg.getLocation()).setBlocks(pkg.getBlocks());
+    }
 }

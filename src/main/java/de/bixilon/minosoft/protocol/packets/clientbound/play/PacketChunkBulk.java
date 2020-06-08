@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Chunk;
-import de.bixilon.minosoft.game.datatypes.ChunkLocation;
-import de.bixilon.minosoft.game.datatypes.ChunkNibble;
-import de.bixilon.minosoft.game.datatypes.ChunkNibbleLocation;
+import de.bixilon.minosoft.game.datatypes.world.Chunk;
+import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
+import de.bixilon.minosoft.game.datatypes.world.ChunkNibble;
+import de.bixilon.minosoft.game.datatypes.world.ChunkNibbleLocation;
 import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;

@@ -11,28 +11,37 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.world;
 
-public class RelativeLocation {
-    private final double x;
-    private final double y;
-    private final double z;
+/**
+ * Chunk X, Y and Z location (max 16x16x16)
+ */
+public class InChunkLocation {
+    final int x;
+    final int y;
+    final int z;
 
-    public RelativeLocation(double x, double y, double z) {
+    public InChunkLocation(int x, int y, int z) {
+        // x 0 - 16
+        // y 0 - 255
+        // z 0 - 16
+        if (x > 16 || y > 255 || z > 16 || x < 0 || y < 0 || z < 0) {
+            throw new IllegalArgumentException(String.format("Invalid chunk location %s %s %s", x, y, z));
+        }
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public double getX() {
+    public int getX() {
         return x;
     }
 
-    public double getY() {
+    public int getY() {
         return y;
     }
 
-    public double getZ() {
+    public int getZ() {
         return z;
     }
 
@@ -41,17 +50,16 @@ public class RelativeLocation {
         if (super.equals(obj)) {
             return true;
         }
-        RelativeLocation that = (RelativeLocation) obj;
-        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
+        InChunkLocation that = (InChunkLocation) obj;
+        return getX() == that.getX() && getY() == that.getY() && getZ() == that.getZ();
+    }
+
+    public ChunkNibbleLocation getChunkNibbleLocation() {
+        return new ChunkNibbleLocation(getX(), getY() % 16, getZ());
     }
 
     @Override
     public String toString() {
-        return String.format("%s %s %s", getX(), getY(), getZ());
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (x * y * z);
+        return String.format("%d %d %d", getX(), getY(), getZ());
     }
 }

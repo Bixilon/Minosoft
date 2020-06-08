@@ -11,27 +11,22 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes;
+package de.bixilon.minosoft.game.datatypes.world;
 
-public class BlockPosition {
+/**
+ * Chunk X and Z location (block position / 16, rounded down)
+ */
+public class ChunkLocation {
     final int x;
-    final int y;
     final int z;
 
-    public BlockPosition(int x, short y, int z) {
-        // y min -2048, max 2047
-        //ToDo check values
+    public ChunkLocation(int x, int z) {
         this.x = x;
-        this.y = y;
         this.z = z;
     }
 
     public int getX() {
         return x;
-    }
-
-    public int getY() {
-        return y;
     }
 
     public int getZ() {
@@ -43,16 +38,16 @@ public class BlockPosition {
         if (super.equals(obj)) {
             return true;
         }
-        BlockPosition pos = (BlockPosition) obj;
-        return pos.getX() == getX() && pos.getY() == getY() && pos.getZ() == getZ();
+        ChunkLocation that = (ChunkLocation) obj;
+        return getX() == that.getX() && getZ() == that.getZ();
     }
-
-    public ChunkLocation getChunkLocation() {
-        return new ChunkLocation(getX() / 16, getZ() / 16);
+    @Override
+    public String toString() {
+        return String.format("%d %d", getX(), getZ());
     }
 
     @Override
-    public String toString() {
-        return String.format("%s %s %s", getX(), getY(), getZ());
+    public int hashCode() {
+        return x * z;
     }
 }
