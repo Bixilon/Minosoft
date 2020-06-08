@@ -89,7 +89,6 @@ public class OutByteBuffer {
 
     public void writeString(String s) {
         if (s.length() > ProtocolDefinition.STRING_MAX_LEN) {
-            //ToDo
             writeByte((byte) 0); // write length 0
         }
         writeVarInt(s.length());

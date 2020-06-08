@@ -33,7 +33,7 @@ public class PacketEntityPositionAndRotation implements ClientboundPacket {
             case VERSION_1_7_10:
                 this.entityId = buffer.readInteger();
                 this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                this.yaw = buffer.readByte(); //ToDo
+                this.yaw = buffer.readByte(); //ToDo dividing, ...
                 this.pitch = buffer.readByte();
                 break;
         }

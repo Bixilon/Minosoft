@@ -36,7 +36,7 @@ public class PacketSpawnMob implements ClientboundPacket {
                 int entityId = buffer.readVarInt();
                 Mobs type = Mobs.byType(buffer.readByte());
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-                int yaw = buffer.readByte(); //ToDo
+                int yaw = buffer.readByte();
                 int pitch = buffer.readByte();
                 int headPitch = buffer.readByte();
                 Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());

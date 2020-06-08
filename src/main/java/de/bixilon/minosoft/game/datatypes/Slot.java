@@ -13,11 +13,13 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
+import de.bixilon.minosoft.game.datatypes.entities.Items;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 
 public class Slot {
     int itemId;
     int itemCount;
+    short itemMetadata;
     CompoundTag nbt;
 
     public Slot(int itemId, int itemCount, CompoundTag nbt) {
@@ -26,8 +28,9 @@ public class Slot {
         this.nbt = nbt;
     }
 
-    public Slot(short itemId, byte itemCount, short itemDamage, CompoundTag nbt) {
+    public Slot(short itemId, byte itemCount, short itemMetadata, CompoundTag nbt) {
         this.itemId = itemId;
+        this.itemMetadata = itemMetadata;
         this.itemCount = itemCount;
         this.nbt = nbt;
     }
@@ -40,14 +43,19 @@ public class Slot {
         return itemCount;
     }
 
+    public short getItemMetadata() {
+        return itemMetadata;
+    }
+
     public CompoundTag getNbt() {
         return nbt;
     }
 
     public String getDisplayName() {
+        String itemName = Items.byLegacy(getItemId(), getItemMetadata()).name();
         if (nbt != null && nbt.containsKey("display") && nbt.getCompoundTag("display").containsKey("Name")) { // check if object has nbt data, and a custom display name
-            return new TextComponent(nbt.getCompoundTag("display").getStringTag("Name").getValue()).getColoredMessage();
+            return String.format("%s (%s)", new TextComponent(nbt.getCompoundTag("display").getStringTag("Name").getValue()).getColoredMessage(), itemName);
         }
-        return "<ToDo>"; //ToDo display name per Item
+        return itemName; //ToDo display name per Item
     }
 }

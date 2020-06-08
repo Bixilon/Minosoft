@@ -24,7 +24,6 @@ public class AgeableMetaData extends MobMetaData {
 
 
     public int getAge() {
-        //ToDo custom Potion Effect Color Type
         switch (version) {
             case VERSION_1_7_10:
                 return (int) sets.get(12).getData();

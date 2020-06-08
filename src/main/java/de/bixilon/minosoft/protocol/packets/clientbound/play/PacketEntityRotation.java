@@ -30,7 +30,7 @@ public class PacketEntityRotation implements ClientboundPacket {
         switch (v) {
             case VERSION_1_7_10:
                 this.entityId = buffer.readInteger();
-                this.yaw = buffer.readByte(); //ToDo
+                this.yaw = buffer.readByte();
                 this.pitch = buffer.readByte();
                 break;
         }

@@ -112,7 +112,6 @@ public class InByteBuffer {
     public String readString() {
         int length = readVarInt();
         if (length > ProtocolDefinition.STRING_MAX_LEN) {
-            // ToDo throw new PacketDataException(String.format("String is longer than %s", ProtocolDefinition.STRING_MAX_LEN));
             return null;
         }
         return new String(readBytes(length), StandardCharsets.UTF_8);
