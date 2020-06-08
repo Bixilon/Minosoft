@@ -160,7 +160,7 @@ public class Network {
                         try {
                             ClientboundPacket packet = clazz.getConstructor().newInstance();
                             packet.read(inPacketBuffer, connection.getVersion());
-                            if (inPacketBuffer.getBytesLeft() > 0) {
+                            if (inPacketBuffer.getBytesLeft() > 0 && p != Packets.Clientbound.PLAY_ENTITY_METADATA) { // entity meta data uses mostly all data, but this happens in the handling thread
                                 // warn not all data used
                                 Log.protocol(String.format("[IN] Packet %s did not used all bytes sent", ((p != null) ? p.name() : "UNKNOWN")));
                             }
