@@ -22,7 +22,7 @@ import de.bixilon.minosoft.game.datatypes.particle.BlockParticle;
 import de.bixilon.minosoft.game.datatypes.particle.OtherParticles;
 import de.bixilon.minosoft.game.datatypes.particle.Particle;
 import de.bixilon.minosoft.game.datatypes.particle.Particles;
-import net.querz.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import org.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
@@ -106,6 +106,11 @@ public class InByteBuffer {
         }
         return new String(readBytes(length), StandardCharsets.UTF_8);
     }
+
+    public String readString(int length) {
+        return new String(readBytes(length));
+    }
+
 
     public UUID readUUID() {
         ByteBuffer buffer = ByteBuffer.allocate(16); // UUID.BYTES
@@ -213,9 +218,7 @@ public class InByteBuffer {
     }
 
     public CompoundTag readNBT() {
-        //ToDo
-        new CompoundTag();
-        return null;
+        return new CompoundTag(this);
     }
 
     public Slot readSlot() {
@@ -224,6 +227,8 @@ public class InByteBuffer {
         }
         //else no data
         return null;
-
+                 */
+        }
+        return null;
     }
 }

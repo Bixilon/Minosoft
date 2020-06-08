@@ -56,11 +56,6 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.25</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.Querz</groupId>
-            <artifactId>NBT</artifactId>
-            <version>5.4</version>
-        </dependency>
     </dependencies>
 
 </project>
