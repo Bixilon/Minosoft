@@ -45,7 +45,7 @@ public class Slot {
     }
 
     public String getDisplayName() {
-        if (nbt.containsKey("display") && nbt.getCompoundTag("display").containsKey("Name")) {
+        if (nbt != null && nbt.containsKey("display") && nbt.getCompoundTag("display").containsKey("Name")) { // check if object has nbt data, and a custom display name
             return new ChatComponent(nbt.getCompoundTag("display").getStringTag("Name").getValue()).getColoredMessage();
         }
         return "<ToDo>"; //ToDo display name per Item
