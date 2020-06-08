@@ -76,5 +76,6 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_EQUIPMENT, PacketEntityEquipment.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_BLOCK_CHANGE, PacketBlockChange.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_MULTIBLOCK_CHANGE, PacketMultiBlockChange.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_RESPAWN, PacketRespawn.class);
     }
 }

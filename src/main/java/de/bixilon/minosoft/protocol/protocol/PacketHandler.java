@@ -218,4 +218,10 @@ public class PacketHandler {
     public void handle(PacketMultiBlockChange pkg) {
         connection.getPlayer().getWorld().getChunk(pkg.getLocation()).setBlocks(pkg.getBlocks());
     }
+
+    public void handle(PacketRespawn pkg) {
+        connection.getPlayer().getWorld().setDimension(pkg.getDimension());
+        connection.getPlayer().setSpawnConfirmed(false);
+        connection.getPlayer().setGameMode(pkg.getGameMode());
+    }
 }

@@ -16,9 +16,9 @@ package de.bixilon.minosoft.objects;
 import de.bixilon.minosoft.game.datatypes.GameMode;
 import de.bixilon.minosoft.game.datatypes.Slot;
 import de.bixilon.minosoft.game.datatypes.Slots;
-import de.bixilon.minosoft.game.datatypes.world.World;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
+import de.bixilon.minosoft.game.datatypes.world.World;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -37,6 +37,7 @@ public class Player {
     short totalExperience;
     HumanMetaData metaData;
     HashMap<Slots.Inventory, Slot> inventory = new HashMap<>();
+    boolean spawnConfirmed = false;
 
     public Player(Account acc) {
         this.acc = acc;
@@ -159,5 +160,13 @@ public class Player {
 
     public void setSlot(Slots.Inventory slot, Slot data) {
         inventory.put(slot, data);
+    }
+
+    public boolean isSpawnConfirmed() {
+        return spawnConfirmed;
+    }
+
+    public void setSpawnConfirmed(boolean spawnConfirmed) {
+        this.spawnConfirmed = spawnConfirmed;
     }
 }
