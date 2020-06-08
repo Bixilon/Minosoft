@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.world;
 
+import de.bixilon.minosoft.game.datatypes.Dimension;
 import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
@@ -32,6 +33,7 @@ public class World {
     final String name;
     boolean hardcore;
     boolean raining;
+    Dimension dimension; // used for sky color, etc
 
     public World(String name) {
         this.name = name;
@@ -106,5 +108,13 @@ public class World {
 
     public void removeEntity(int entityId) {
         this.entities.remove(entityId);
+    }
+
+    public Dimension getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(Dimension dimension) {
+        this.dimension = dimension;
     }
 }

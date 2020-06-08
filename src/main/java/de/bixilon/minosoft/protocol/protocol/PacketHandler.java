@@ -72,6 +72,7 @@ public class PacketHandler {
         connection.getPlayer().setGameMode(pkg.getGameMode());
         connection.getPlayer().setEntityId(pkg.getEntityId());
         connection.getPlayer().getWorld().setHardcore(pkg.isHardcore());
+        connection.getPlayer().getWorld().setDimension(pkg.getDimension());
     }
 
     public void handle(PacketLoginDisconnect pkg) {
