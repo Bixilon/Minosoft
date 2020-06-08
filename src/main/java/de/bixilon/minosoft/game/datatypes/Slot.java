@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-import net.querz.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.nbt.tag.CompoundTag;
 
 public class Slot {
     int itemId;
@@ -21,6 +21,12 @@ public class Slot {
     CompoundTag nbt;
 
     public Slot(int itemId, int itemCount, CompoundTag nbt) {
+        this.itemId = itemId;
+        this.itemCount = itemCount;
+        this.nbt = nbt;
+    }
+
+    public Slot(short itemId, byte itemCount, short itemDamage, CompoundTag nbt) {
         this.itemId = itemId;
         this.itemCount = itemCount;
         this.nbt = nbt;
@@ -40,7 +46,7 @@ public class Slot {
 
     public String getDisplayName() {
         if (nbt.containsKey("display") && nbt.getCompoundTag("display").containsKey("Name")) {
-            return new ChatComponent(nbt.getCompoundTag("display").getString("Name")).getColoredMessage();
+            return new ChatComponent(nbt.getCompoundTag("display").getStringTag("Name").getValue()).getColoredMessage();
         }
         return "<ToDo>"; //ToDo display name per Item
     }

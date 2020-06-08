@@ -33,7 +33,7 @@ public class PacketEntityEquipment implements ClientboundPacket {
             case VERSION_1_7_10:
                 entityId = buffer.readInteger();
                 this.slot = Slots.Entity.byId(buffer.readShort());
-                this.data = buffer.readSlot();
+                this.data = buffer.readSlot(v);
                 break;
         }
     }

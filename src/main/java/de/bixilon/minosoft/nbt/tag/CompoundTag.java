@@ -26,13 +26,17 @@ public class CompoundTag implements Tag {
         this.data = data;
     }
 
-    public CompoundTag(InByteBuffer buffer) {
-        if (buffer.readByte() != TagTypes.COMPOUND.getId()) { // will be a Compound Tag
-            this.name = "";
-            this.data = new HashMap<>();
-            return;
+    public CompoundTag(boolean subTag, InByteBuffer buffer) {
+        if (!subTag) {
+            if (buffer.readByte() != TagTypes.COMPOUND.getId()) { // will be a Compound Tag
+                // decompressed but still bad.... :(
+                throw new IllegalArgumentException("Bad nbt");
+            }
+            // if in an array, there is no name
+            this.name = buffer.readString(buffer.readShort()); // length
+        } else {
+            this.name = null;
         }
-        this.name = buffer.readString(buffer.readShort()); // length
         this.data = new HashMap<>();
         while (true) {
             TagTypes tagType = TagTypes.getById(buffer.readByte());
@@ -70,10 +74,14 @@ public class CompoundTag implements Tag {
                     data.put(tagName, new ListTag(buffer));
                     break;
                 case COMPOUND:
-                    data.put(tagName, new CompoundTag(buffer));
+                    data.put(tagName, new CompoundTag(true, buffer));
                     break;
             }
         }
+    }
+
+    public CompoundTag(InByteBuffer buffer) {
+        this(false, buffer);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class PacketWindowItems implements ClientboundPacket {
                 windowId = buffer.readByte();
                 data = new Slot[buffer.readShort()];
                 for (int i = 0; i < data.length; i++) {
-                    data[i] = buffer.readSlot();
+                    data[i] = buffer.readSlot(v);
                 }
                 break;
         }

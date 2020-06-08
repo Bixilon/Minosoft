@@ -174,7 +174,7 @@ public class Network {
                             // safety first, but will not occur
                             e.printStackTrace();
                         }
-                    } catch (ArrayIndexOutOfBoundsException e) {
+                    } catch (Exception e) {
                         Log.protocol("Received broken packet!");
                         e.printStackTrace();
                     }

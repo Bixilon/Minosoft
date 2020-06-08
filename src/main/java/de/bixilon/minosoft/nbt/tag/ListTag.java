@@ -61,7 +61,7 @@ public class ListTag implements Tag {
                     list.add(new ListTag(buffer));
                     break;
                 case COMPOUND:
-                    list.add(new CompoundTag(buffer));
+                    list.add(new CompoundTag(true, buffer));
                     break;
             }
         }

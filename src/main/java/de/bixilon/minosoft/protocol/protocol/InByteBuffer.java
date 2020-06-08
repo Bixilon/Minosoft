@@ -23,11 +23,15 @@ import de.bixilon.minosoft.game.datatypes.particle.OtherParticles;
 import de.bixilon.minosoft.game.datatypes.particle.Particle;
 import de.bixilon.minosoft.game.datatypes.particle.Particles;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.nbt.tag.TagTypes;
+import de.bixilon.minosoft.util.Util;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.UUID;
 
 public class InByteBuffer {
@@ -49,6 +53,13 @@ public class InByteBuffer {
         byte[] ret = new byte[count];
         System.arraycopy(bytes, pos, ret, 0, count);
         pos = pos + count;
+        return ret;
+    }
+
+
+    private byte[] readBytes(int pos, int count) {
+        byte[] ret = new byte[count];
+        System.arraycopy(bytes, pos, ret, 0, count);
         return ret;
     }
 
@@ -181,7 +192,7 @@ public class InByteBuffer {
         return new ChatComponent(readString());
     }
 
-    public int getPos() {
+    public int getPosition() {
         return this.pos;
     }
 
@@ -217,11 +228,43 @@ public class InByteBuffer {
         return null;
     }
 
+    public void setPosition(int pos) {
+        this.pos = pos;
+    }
+
     public CompoundTag readNBT() {
+
+        if (readByte() != TagTypes.COMPOUND.getId()) { // will be a Compound Tag
+            // maybe compressed
+            setPosition(getPosition() - 1);
+            short length = readShort();
+            if (length == -1) {
+                // no nbt data here...
+                return null;
+            }
+            try {
+                return new CompoundTag(new InByteBuffer(Util.decompressGzip(readBytes(length))));
+            } catch (IOException e) {
+                // oh no
+                e.printStackTrace();
+                throw new IllegalArgumentException("Bad nbt");
+            }
+            // try again
+        }
+        setPosition(getPosition() - 1);
         return new CompoundTag(this);
     }
 
-    public Slot readSlot() {
+    public Slot readSlot(ProtocolVersion v) {
+        switch (v) {
+            case VERSION_1_7_10:
+                short id = readShort();
+                if (id != -1) {
+                    return new Slot(id, readByte(), readShort(), readNBT());
+                }
+                return null;
+                /*
+
         if (readBoolean()) {
             return new Slot(readVarInt(), readByte(), readNBT());
         }
@@ -230,5 +273,13 @@ public class InByteBuffer {
                  */
         }
         return null;
+    }
+
+    public String getBase64(int pos, int length) {
+        return new String(Base64.getEncoder().encode(readBytes(pos, length)));
+    }
+
+    public String getBase64() {
+        return getBase64(getPosition(), getBytesLeft());
     }
 }

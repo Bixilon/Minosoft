@@ -42,7 +42,7 @@ public class PacketEntityMetadata implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received entity metadata (entityId=%d", entityId));
+        Log.protocol(String.format("Received entity metadata (entityId=%d)", entityId));
     }
 
     @Override
