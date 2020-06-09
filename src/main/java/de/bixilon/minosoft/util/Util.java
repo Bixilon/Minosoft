@@ -18,6 +18,9 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.zip.DataFormatException;
@@ -77,4 +80,17 @@ public class Util {
         }
         return outputStream.toByteArray();
     }
+
+    public static String sha1(String string) {
+        try {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(string.getBytes(StandardCharsets.UTF_8));
+            return new String(crypt.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

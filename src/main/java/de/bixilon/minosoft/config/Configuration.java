@@ -14,12 +14,13 @@
 package de.bixilon.minosoft.config;
 
 import de.bixilon.minosoft.Config;
+import de.bixilon.minosoft.mojang.api.MojangAccount;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 public class Configuration {
     LinkedHashMap<String, Object> config;
@@ -69,6 +70,38 @@ public class Configuration {
     }
 
 
+    public void putBoolean(ConfigEnum config, boolean value) {
+        putBoolean(config.getPath(), value);
+    }
+
+    public void putBoolean(String path, boolean value) {
+        put(path, value);
+    }
+
+    public void putInteger(ConfigEnum config, int value) {
+        putInteger(config.getPath(), value);
+    }
+
+    public void putInteger(String path, int value) {
+        put(path, value);
+    }
+
+    public void putString(ConfigEnum config, String value) {
+        putString(config.getPath(), value);
+    }
+
+    public void putString(String path, String value) {
+        put(path, value);
+    }
+
+    public void putMojangAccount(MojangAccount account) {
+        String basePath = String.format("account.accounts.%s.", account.getUserId());
+        putString(basePath + "accessToken", account.getAccessToken());
+        putString(basePath + "uuid", account.getUUID().toString());
+        putString(basePath + "userName", account.getMojangUserName());
+        putString(basePath + "playerName", account.getPlayerName());
+    }
+
     public Object get(String path) {
         if (path.contains(".")) {
             // split
@@ -78,9 +111,54 @@ public class Configuration {
                 //noinspection unchecked
                 temp = (LinkedHashMap<String, Object>) temp.get(spilt[i]);
             }
+            if (temp == null) {
+                return null;
+            }
             return temp.get(spilt[spilt.length - 1]);
         }
         return config.get(path);
+    }
+
+    public void put(String path, Serializable value) {
+        if (path.contains(".")) {
+            // split
+            String[] spilt = path.split("\\.");
+            LinkedHashMap<String, Object> temp = config;
+            for (int i = 0; i < spilt.length - 1; i++) {
+                if (temp.get(spilt[i]) == null) {
+                    // not yet existing, creating it
+                    temp.put(spilt[i], new LinkedHashMap<String, Object>());
+                }
+                temp = (LinkedHashMap<String, Object>) temp.get(spilt[i]);
+
+            }
+            temp.put(spilt[spilt.length - 1], value);
+            return;
+        }
+        config.put(path, value);
+    }
+
+    public void saveToFile(String filename) {
+        Yaml yaml = new Yaml();
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(Config.homeDir + "config/" + filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        yaml.dump(config, writer);
+    }
+
+    public List<MojangAccount> getMojangAccounts() {
+        List<MojangAccount> accounts = new ArrayList<>();
+        LinkedHashMap<String, Object> objects = (LinkedHashMap<String, Object>) get("account.accounts");
+        for (Map.Entry<String, Object> set : objects.entrySet()) {
+            LinkedHashMap<String, Object> entry = (LinkedHashMap<String, Object>) set.getValue();
+            accounts.add(new MojangAccount((String) entry.get("accessToken"), set.getKey(), UUID.fromString((String) entry.get("uuid")), (String) entry.get("playerName"), (String) entry.get("mojangUserName")));
+        }
+        return accounts;
+
     }
 }
 

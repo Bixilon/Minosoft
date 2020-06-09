@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.network;
 
+import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.objects.Player;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake;

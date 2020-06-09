@@ -11,7 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.objects;
+package de.bixilon.minosoft;
 
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import org.json.JSONObject;

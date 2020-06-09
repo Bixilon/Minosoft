@@ -31,8 +31,20 @@ public class HTTP {
                 .header("Content-Type", "application/json")
                 .build();
         try {
-            return client.send(request,
-                    HttpResponse.BodyHandlers.ofString());
+            return client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static HttpResponse<String> get(String url) {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .build();
+        try {
+            return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

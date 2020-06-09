@@ -11,20 +11,18 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.objects;
+package de.bixilon.minosoft.game.datatypes;
 
-import de.bixilon.minosoft.game.datatypes.GameMode;
-import de.bixilon.minosoft.game.datatypes.Slot;
-import de.bixilon.minosoft.game.datatypes.Slots;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 import de.bixilon.minosoft.game.datatypes.world.World;
+import de.bixilon.minosoft.mojang.api.MojangAccount;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class Player {
-    final Account acc;
+    final MojangAccount acc;
     float health;
     short food;
     float saturation;
@@ -39,9 +37,8 @@ public class Player {
     HashMap<Slots.Inventory, Slot> inventory = new HashMap<>();
     boolean spawnConfirmed = false;
 
-    public Player(Account acc) {
+    public Player(MojangAccount acc) {
         this.acc = acc;
-        acc.login();
     }
 
     public String getPlayerName() {
@@ -52,7 +49,7 @@ public class Player {
         return acc.getUUID();
     }
 
-    public Account getAccount() {
+    public MojangAccount getAccount() {
         return this.acc;
     }
 

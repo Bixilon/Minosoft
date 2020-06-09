@@ -11,9 +11,36 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft;
+package de.bixilon.minosoft.mojang.api;
 
-public class Config {
-    public static String homeDir;
-    public static String configFileName = "game.yml";
+public enum MojangURLs {
+    STATUS("https://status.mojang.com/check"),
+    BLOCKED_SERVERS("https://sessionserver.mojang.com/blockedservers"),
+    LOGIN("https://authserver.mojang.com/authenticate"),
+    JOIN("https://sessionserver.mojang.com/session/minecraft/join"),
+    REFRESH("https://authserver.mojang.com/refresh");
+
+    final String url;
+
+    MojangURLs(String url) {
+        this.url = url;
+    }
+
+    public static MojangURLs byUrl(String key) {
+        for (MojangURLs s : values()) {
+            if (s.getUrl().equals(key)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    @Override
+    public String toString() {
+        return url;
+    }
 }

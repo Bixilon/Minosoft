@@ -11,9 +11,11 @@ game:
 network:
   fake-client-brand: false # if true, minosoft will tell the server that this is unmodified vanilla. if false, it will tell "minosoft".
 
-# this will be removed soon
+account:
+  clientToken: "randomGenerated"
+  accounts:
+
+# this will be removed soon, only for debugging (pre alpha stage): some features are not implemented yet -/-
 debug:
   host: "127.0.0.1"
   port: 25565
-  username: "Player"
-  password: "secret123"
