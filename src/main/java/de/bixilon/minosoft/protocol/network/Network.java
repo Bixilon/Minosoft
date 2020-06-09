@@ -40,6 +40,7 @@ public class Network {
     private boolean encryptionEnabled = false;
     private Cipher cipherEncrypt;
     private Cipher cipherDecrypt;
+    private Thread packetThread;
 
     public Network(Connection c) {
         this.connection = c;
@@ -99,6 +100,7 @@ public class Network {
 
                         byte[] raw = dIn.readNBytes(length);
                         binQueueIn.add(raw);
+                        packetThread.interrupt();
                     }
                     Util.sleep(1);
 
@@ -118,7 +120,7 @@ public class Network {
         // read data
         // safety first, but will not occur
         // sleep 1 ms
-        Thread packetThread = new Thread(() -> {
+        packetThread = new Thread(() -> {
             // compressed data, makes packets to binary data
             while (connection.getConnectionState() != ConnectionState.DISCONNECTED) {
 
@@ -181,7 +183,11 @@ public class Network {
 
                     binQueueIn.remove(0);
                 }
-                Util.sleep(1); // sleep 1 ms
+                try {
+                    // sleep, wait for an interrupt from other thread
+                    Thread.sleep(100);
+                } catch (InterruptedException ignored) {
+                }
 
             }
         });
@@ -190,6 +196,7 @@ public class Network {
 
     public void sendPacket(ServerboundPacket p) {
         queue.add(p);
+        packetThread.interrupt();
     }
 
     public void enableEncryption(SecretKey secretKey) {

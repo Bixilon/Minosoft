@@ -25,7 +25,6 @@ import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusReque
 import de.bixilon.minosoft.protocol.protocol.ConnectionState;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.Util;
 
 import java.util.ArrayList;
 
@@ -37,6 +36,7 @@ public class Connection {
     private final ArrayList<ClientboundPacket> handlingQueue;
     private Player player;
     private ConnectionState state = ConnectionState.DISCONNECTED;
+    Thread handleThread;
 
     private boolean onlyPing;
 
@@ -115,6 +115,7 @@ public class Connection {
 
     public void handle(ClientboundPacket p) {
         handlingQueue.add(p);
+        handleThread.interrupt();
     }
 
     public boolean isOnlyPing() {
@@ -134,7 +135,7 @@ public class Connection {
     }
 
     private void startHandlingThread() {
-        Thread handleThread = new Thread(() -> {
+        handleThread = new Thread(() -> {
             while (getConnectionState() != ConnectionState.DISCONNECTED) {
                 while (handlingQueue.size() > 0) {
                     try {
@@ -145,7 +146,11 @@ public class Connection {
                     }
                     handlingQueue.remove(0);
                 }
-                Util.sleep(1);
+                try {
+                    // sleep, wait for an interrupt from other thread
+                    Thread.sleep(100);
+                } catch (InterruptedException ignored) {
+                }
             }
         });
         handleThread.start();
