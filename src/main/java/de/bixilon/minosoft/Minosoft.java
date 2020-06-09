@@ -80,7 +80,7 @@ public class Minosoft {
                 path += ".local/share/minosoft/";
                 break;
             case WINDOWS:
-                path = "AppData/Roaming/Minosoft/";
+                path += "AppData/Roaming/Minosoft/";
                 break;
             //ToDo: Mac, Other
         }
