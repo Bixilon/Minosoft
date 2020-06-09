@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-import de.bixilon.minosoft.game.datatypes.particle.Particles;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -120,8 +119,8 @@ public class TextComponent {
         BLUE("\033[38;2;85;85;255m", "9"),
         GREEN("\033[38;2;85;255;85m", "a"),
         AQUA("\033[38;2;85;255;255m", "b"),
-        RED("\033[38;2;255;255;85m", "c"),
-        PURPLE("\033[38;2;255;85;85m", "d", "light_purple"),
+        RED("\033[38;2;255;85;85m", "c"),
+        PURPLE("\033[38;2;255;85;255m", "d", "light_purple"),
         YELLOW("\033[38;2;255;255;85m", "e"),
         WHITE("\033[38;2;255;255;255m", "f"),
 
