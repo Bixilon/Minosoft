@@ -117,6 +117,15 @@ public class Log {
         log(LogLevel.PROTOCOL, message);
     }
 
+    /**
+     * Logs all infos (mostly warnings) from data transfer to the mojang api (failed to login, etc)
+     *
+     * @param message Raw message to log
+     */
+    public static void mojang(String message) {
+        log(LogLevel.MOJANG, message);
+    }
+
     public static LogLevel getLevel() {
         return level;
     }
