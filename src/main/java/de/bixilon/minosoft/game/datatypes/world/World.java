@@ -16,13 +16,9 @@ package de.bixilon.minosoft.game.datatypes.world;
 import de.bixilon.minosoft.game.datatypes.Dimension;
 import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.game.datatypes.world.Chunk;
-import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Collection of ChunkColumns
@@ -47,6 +43,10 @@ public class World {
 
     public Chunk getChunk(ChunkLocation loc) {
         return chunks.get(loc);
+    }
+
+    public HashMap<ChunkLocation, Chunk> getAllChunks() {
+        return chunks;
     }
 
     public Block getBlock(BlockPosition pos) {
