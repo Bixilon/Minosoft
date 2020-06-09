@@ -224,4 +224,8 @@ public class PacketHandler {
         connection.getPlayer().setSpawnConfirmed(false);
         connection.getPlayer().setGameMode(pkg.getGameMode());
     }
+
+    public void handle(PacketOpenSignEditor pkg) {
+        //ToDo
+    }
 }
