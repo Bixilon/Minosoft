@@ -153,6 +153,9 @@ public class Configuration {
     public List<MojangAccount> getMojangAccounts() {
         List<MojangAccount> accounts = new ArrayList<>();
         LinkedHashMap<String, Object> objects = (LinkedHashMap<String, Object>) get("account.accounts");
+        if (objects == null) {
+            return accounts;
+        }
         for (Map.Entry<String, Object> set : objects.entrySet()) {
             LinkedHashMap<String, Object> entry = (LinkedHashMap<String, Object>) set.getValue();
             accounts.add(new MojangAccount((String) entry.get("accessToken"), set.getKey(), UUID.fromString((String) entry.get("uuid")), (String) entry.get("playerName"), (String) entry.get("mojangUserName")));

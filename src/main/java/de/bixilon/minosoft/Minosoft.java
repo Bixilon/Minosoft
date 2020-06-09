@@ -54,8 +54,11 @@ public class Minosoft {
         Connection c = new Connection(config.getString("debug.host"), config.getInteger("debug.port"));
         accountList = config.getMojangAccounts();
         if (accountList.size() == 0) {
+            /*
+            MojangAccount account = MojangAuthentication.login("email", "password");
+            account.saveToConfig();
+             */
             throw new RuntimeException("No accounts in config file!");
-            //MojangAccount account = MojangAuthentication.login("email", "password");
         }
         MojangAccount account = accountList.get(0);
         if (!account.refreshToken()) {
