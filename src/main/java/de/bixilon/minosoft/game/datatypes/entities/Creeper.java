@@ -13,27 +13,22 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
+import de.bixilon.minosoft.game.datatypes.entities.meta.CreeperMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.ZombieMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Zombie extends Mob implements MobInterface {
-    ZombieMetaData metaData;
+public class Creeper extends Mob implements MobInterface {
+    CreeperMetaData metaData;
 
-    public Zombie(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Creeper(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new ZombieMetaData(buffer, v);
-    }
-
-    @Override
-    public int getMaxHealth() {
-        return 40;
+        this.metaData = new CreeperMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.ZOMBIE;
+        return Mobs.CREEPER;
     }
 
     @Override
@@ -43,7 +38,7 @@ public class Zombie extends Mob implements MobInterface {
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (ZombieMetaData) metaData;
+        this.metaData = (CreeperMetaData) metaData;
     }
 
     @Override
@@ -53,6 +48,11 @@ public class Zombie extends Mob implements MobInterface {
 
     @Override
     public float getHeight() {
-        return 1.8F;
+        return 1.7F;
+    }
+
+    @Override
+    public int getMaxHealth() {
+        return 40;
     }
 }

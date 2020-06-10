@@ -13,20 +13,6 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-public abstract class Mob extends Entity implements MobInterface {
-    int headYaw;
-
-    public Mob(int id, Location location, int yaw, int pitch, Velocity velocity) {
-        super(id, location, yaw, pitch, velocity);
-    }
-
-
-    public int getHeadYaw() {
-        return headYaw;
-    }
-
-    public void setHeadYaw(int headYaw) {
-        this.headYaw = headYaw;
-    }
-
+public interface MobInterface extends EntityInterface {
+    int getMaxHealth();
 }

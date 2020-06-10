@@ -15,42 +15,77 @@ package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.game.datatypes.Slot;
 import de.bixilon.minosoft.game.datatypes.Slots;
-import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 
-public interface Entity {
-    Mobs getEntityType();
+import java.util.HashMap;
 
-    int getId();
+public abstract class Entity implements EntityInterface {
+    final int id;
+    final HashMap<Slots.Entity, Slot> equipment;
+    Location location;
+    Velocity velocity;
+    int yaw;
+    int pitch;
 
-    Location getLocation();
+    public Entity(int id, Location location, int yaw, int pitch, Velocity velocity) {
+        this.id = id;
+        this.location = location;
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.velocity = velocity;
+        this.equipment = new HashMap<>();
+    }
 
-    void setLocation(Location location);
 
-    void setLocation(RelativeLocation location);
+    public int getId() {
+        return id;
+    }
 
-    Velocity getVelocity();
+    public Location getLocation() {
+        return location;
+    }
 
-    void setVelocity(Velocity velocity);
+    public void setLocation(Location location) {
+        this.location = location;
 
-    int getYaw();
+    }
 
-    void setYaw(int yaw);
+    public void setLocation(RelativeLocation relativeLocation) {
+        // change relative location
+        location = new Location(location.getX() + relativeLocation.getX(), location.getY() + relativeLocation.getY(), location.getZ() + relativeLocation.getZ());
+    }
 
-    int getPitch();
+    public Velocity getVelocity() {
+        return velocity;
+    }
 
-    void setPitch(int pitch);
+    public void setVelocity(Velocity velocity) {
+        this.velocity = velocity;
+    }
 
-    float getWidth();
+    public int getYaw() {
+        return 0;
+    }
 
-    float getHeight();
+    public void setYaw(int yaw) {
+        this.yaw = yaw;
 
-    <T extends EntityMetaData> EntityMetaData getMetaData();
+    }
 
-    void setMetaData(EntityMetaData data);
+    public int getPitch() {
+        return 0;
+    }
 
-    void setEquipment(Slots.Entity slot, Slot data);
+    public void setPitch(int pitch) {
+        this.pitch = pitch;
 
-    Slot getEquipment(Slots.Entity slot);
+    }
 
+    public void setEquipment(Slots.Entity slot, Slot data) {
+        equipment.put(slot, data);
+    }
+
+    public Slot getEquipment(Slots.Entity slot) {
+        return equipment.get(slot);
+    }
 
 }

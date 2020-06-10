@@ -48,7 +48,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
                 short currentItem = buffer.readShort();
                 HumanMetaData metaData = new HumanMetaData(buffer, v);
 
-                this.player = new OtherPlayer(entityId, name, uuid, properties, location, yaw, pitch, currentItem, metaData);
+                this.player = new OtherPlayer(entityId, name, uuid, properties, location, null, yaw, pitch, currentItem, metaData);
                 break;
         }
     }

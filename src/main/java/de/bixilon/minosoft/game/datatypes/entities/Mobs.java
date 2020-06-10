@@ -17,8 +17,8 @@ import de.bixilon.minosoft.game.datatypes.Identifier;
 
 public enum Mobs {
     ZOMBIE(new Identifier("zombie"), 54, Zombie.class),
-    PLAYER(null, 92, OtherPlayer.class);
-    // ToDo all mobs
+    PLAYER(null, 92, OtherPlayer.class),
+    CREEPER(new Identifier("creeper"), 50, Creeper.class);
 
     final Identifier identifier;
     final int type;

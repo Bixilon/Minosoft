@@ -15,99 +15,31 @@ package de.bixilon.minosoft.game.datatypes.entities;
 
 
 import de.bixilon.minosoft.game.datatypes.PlayerPropertyData;
-import de.bixilon.minosoft.game.datatypes.Slot;
-import de.bixilon.minosoft.game.datatypes.Slots;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 
-import java.util.HashMap;
 import java.util.UUID;
 
-public class OtherPlayer implements Mob {
-    final int id;
+public class OtherPlayer extends Mob implements MobInterface {
     final String name;
     final UUID uuid;
     PlayerPropertyData[] properties;
-    Location location;
-    Velocity velocity;
-    int yaw;
-    int pitch;
-    int headYaw;
     short currentItem;
     HumanMetaData metaData;
-    float health;
     Pose status = Pose.STANDING;
-    final HashMap<Slots.Entity, Slot> equipment;
 
-    public OtherPlayer(int id, String name, UUID uuid, PlayerPropertyData[] properties, Location location, int yaw, int pitch, short currentItem, HumanMetaData metaData) {
-        this.id = id;
+    public OtherPlayer(int id, String name, UUID uuid, PlayerPropertyData[] properties, Location location, Velocity velocity, int yaw, int pitch, short currentItem, HumanMetaData metaData) {
+        super(id, location, yaw, pitch, velocity);
         this.name = name;
         this.uuid = uuid;
         this.properties = properties;
-        this.location = location;
-        this.yaw = yaw;
-        this.pitch = pitch;
         this.currentItem = currentItem;
         this.metaData = metaData;
-        equipment = new HashMap<>();
     }
 
     @Override
     public Mobs getEntityType() {
         return Mobs.PLAYER;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public Location getLocation() {
-        return location;
-    }
-
-    @Override
-    public void setLocation(Location location) {
-        this.location = location;
-
-    }
-
-    @Override
-    public void setLocation(RelativeLocation relativeLocation) {
-        // change relative location
-        location = new Location(location.getX() + relativeLocation.getX(), location.getY() + relativeLocation.getY(), location.getZ() + relativeLocation.getZ());
-    }
-
-    @Override
-    public Velocity getVelocity() {
-        return velocity;
-    }
-
-    @Override
-    public void setVelocity(Velocity velocity) {
-        this.velocity = velocity;
-    }
-
-    @Override
-    public int getYaw() {
-        return 0;
-    }
-
-    @Override
-    public void setYaw(int yaw) {
-        this.yaw = yaw;
-
-    }
-
-    @Override
-    public int getPitch() {
-        return 0;
-    }
-
-    @Override
-    public void setPitch(int pitch) {
-        this.pitch = pitch;
-
     }
 
     @Override
@@ -149,18 +81,9 @@ public class OtherPlayer implements Mob {
     }
 
     @Override
-    public float getHealth() {
-        return health;
-    }
-
-    @Override
-    public void setHealth(float health) {
-        this.health = health;
-    }
-
-    @Override
     public int getMaxHealth() {
         return 40;
+        //ToDo
     }
 
     public String getName() {
@@ -179,28 +102,8 @@ public class OtherPlayer implements Mob {
         return currentItem;
     }
 
-
-    @Override
-    public int getHeadYaw() {
-        return headYaw;
-    }
-
-    @Override
-    public void setHeadYaw(int headYaw) {
-        this.headYaw = headYaw;
-    }
-
     public Pose getStatus() {
         return status;
     }
 
-    @Override
-    public void setEquipment(Slots.Entity slot, Slot data) {
-        equipment.put(slot, data);
-    }
-
-    @Override
-    public Slot getEquipment(Slots.Entity slot) {
-        return equipment.get(slot);
-    }
 }
