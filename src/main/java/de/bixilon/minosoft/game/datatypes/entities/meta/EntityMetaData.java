@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.BitByte;
 import java.util.HashMap;
 
 public class EntityMetaData {
-    HashMap<Byte, MetaDataSet> sets = new HashMap<>();
+    HashMap<Integer, MetaDataSet> sets = new HashMap<>();
     ProtocolVersion version;
 
     public EntityMetaData(InByteBuffer buffer, ProtocolVersion v) {
@@ -55,7 +55,7 @@ public class EntityMetaData {
                         default:
                             throw new IllegalStateException("Unexpected value: " + type);
                     }
-                    sets.put(index, new MetaDataSet(index, data));
+                    sets.put((int) index, new MetaDataSet(index, data));
 
 
                     item = buffer.readByte();
@@ -142,7 +142,7 @@ public class EntityMetaData {
 
     }
 
-    public HashMap<Byte, MetaDataSet> getSets() {
+    public HashMap<Integer, MetaDataSet> getSets() {
         return sets;
     }
 
