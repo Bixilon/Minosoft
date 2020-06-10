@@ -107,22 +107,22 @@ public class TextComponent {
     }
 
     public enum ChatAttributes {
-        BLACK("\033[38;2;0;0;0m", Color.BLACK),
-        DARK_BLUE("\033[38;2;0;0;170m", Color.DARK_BLUE),
-        DARK_GREEN("\033[38;2;0;170;0m", Color.DARK_GREEN),
-        DARK_AQUA("\033[38;2;0;170;170m", Color.DARK_AQUA),
-        DARK_RED("\033[38;2;170;0;0m", Color.DARK_RED),
-        DARK_PURPLE("\033[38;2;170;0;170m", Color.DARK_PURPLE),
-        GOLD("\033[38;2;255;170;0m", Color.GOLD),
-        GRAY("\033[38;2;170;170;170m", Color.GRAY),
-        DARK_GRAY("\033[38;2;85;85;85m", Color.DARK_GRAY),
-        BLUE("\033[38;2;85;85;255m", Color.DARK_BLUE),
-        GREEN("\033[38;2;85;255;85m", Color.GREEN),
-        AQUA("\033[38;2;85;255;255m", Color.AQUA),
-        RED("\033[38;2;255;85;85m", Color.RED),
-        PURPLE("\033[38;2;255;85;255m", Color.PURPLE, "light_purple"),
-        YELLOW("\033[38;2;255;255;85m", Color.YELLOW),
-        WHITE("\033[38;2;255;255;255m", Color.WHITE),
+        BLACK("\033[38;2;0;0;0m", ChatColor.BLACK),
+        DARK_BLUE("\033[38;2;0;0;170m", ChatColor.DARK_BLUE),
+        DARK_GREEN("\033[38;2;0;170;0m", ChatColor.DARK_GREEN),
+        DARK_AQUA("\033[38;2;0;170;170m", ChatColor.DARK_AQUA),
+        DARK_RED("\033[38;2;170;0;0m", ChatColor.DARK_RED),
+        DARK_PURPLE("\033[38;2;170;0;170m", ChatColor.DARK_PURPLE),
+        GOLD("\033[38;2;255;170;0m", ChatColor.GOLD),
+        GRAY("\033[38;2;170;170;170m", ChatColor.GRAY),
+        DARK_GRAY("\033[38;2;85;85;85m", ChatColor.DARK_GRAY),
+        BLUE("\033[38;2;85;85;255m", ChatColor.DARK_BLUE),
+        GREEN("\033[38;2;85;255;85m", ChatColor.GREEN),
+        AQUA("\033[38;2;85;255;255m", ChatColor.AQUA),
+        RED("\033[38;2;255;85;85m", ChatColor.RED),
+        PURPLE("\033[38;2;255;85;255m", ChatColor.PURPLE, "light_purple"),
+        YELLOW("\033[38;2;255;255;85m", ChatColor.YELLOW),
+        WHITE("\033[38;2;255;255;255m", ChatColor.WHITE),
 
         RESET("\u001b[0m", "r"),
         BOLD("\u001b[1m", "l"),
@@ -132,18 +132,18 @@ public class TextComponent {
         OBFUSCATED("\u001b[47;1m", "k"); //ToDo
 
         final String consolePrefix;
-        final Color color;
+        final ChatColor color;
         final String prefix;
         final String name;
 
-        ChatAttributes(String consolePrefix, Color color, String name) {
+        ChatAttributes(String consolePrefix, ChatColor color, String name) {
             this.consolePrefix = consolePrefix;
             this.color = color;
             this.name = name;
             this.prefix = null;
         }
 
-        ChatAttributes(String consolePrefix, Color color) {
+        ChatAttributes(String consolePrefix, ChatColor color) {
             this.consolePrefix = consolePrefix;
             this.color = color;
             this.name = null;
@@ -174,7 +174,7 @@ public class TextComponent {
             return null;
         }
 
-        public static ChatAttributes byColor(Color color) {
+        public static ChatAttributes byColor(ChatColor color) {
             for (ChatAttributes c : values()) {
                 if (c.getColor() == color) {
                     return c;
@@ -194,7 +194,7 @@ public class TextComponent {
             return prefix;
         }
 
-        public Color getColor() {
+        public ChatColor getColor() {
             return color;
         }
 

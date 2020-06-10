@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.blocks;
 
+import de.bixilon.minosoft.game.datatypes.Color;
 import de.bixilon.minosoft.game.datatypes.Identifier;
 
 public enum Block {
@@ -34,22 +35,22 @@ public enum Block {
     BIRCH_WOOD(new Identifier("log", "birch_wood"), 17, 2),
     JUNGLE_WOOD(new Identifier("log", "jungle_wood"), 17, 3),
     GLASS(new Identifier("glass"), 20),
-    WHITE_WOOL(new Identifier("wool", "white_wool"), 35, 0),
-    ORANGE_WOOL(new Identifier("wool", "orange_wool"), 35, 1),
-    MAGENTA_WOOL(new Identifier("wool", "magenta_wool"), 35, 2),
-    LIGHT_BLUE_WOOL(new Identifier("wool", "light_blue_wool"), 35, 3),
-    YELLOW_WOOL(new Identifier("wool", "yellow_wool"), 35, 4),
-    LIME_WOOL(new Identifier("wool", "lime_wool"), 35, 5),
-    PINK_WOOL(new Identifier("wool", "pink_wool"), 35, 6),
-    GRAY_WOOL(new Identifier("wool", "gray_wool"), 35, 7),
-    LIGHT_GRAY_WOOL(new Identifier("wool", "light_gray_wool"), 35, 8),
-    CYAN_WOOL(new Identifier("wool", "cyan_wool"), 35, 9),
-    PURPLE_WOOL(new Identifier("wool", "purple_wool"), 35, 10),
-    BLUE_WOOL(new Identifier("wool", "blue_wool"), 35, 11),
-    BROWN_WOOL(new Identifier("wool", "brown_wool"), 35, 12),
-    GREEN_WOOL(new Identifier("wool", "green_wool"), 35, 13),
-    RED_WOOL(new Identifier("wool", "red_wool"), 35, 14),
-    BLACK_WOOL(new Identifier("wool", "black_wool"), 35, 15),
+    WHITE_WOOL(new Identifier("wool", "white_wool"), 35, Color.WHITE.getColor()),
+    ORANGE_WOOL(new Identifier("wool", "orange_wool"), 35, Color.ORANGE.getColor()),
+    MAGENTA_WOOL(new Identifier("wool", "magenta_wool"), 35, Color.MAGENTA.getColor()),
+    LIGHT_BLUE_WOOL(new Identifier("wool", "light_blue_wool"), 35, Color.LIGHT_BLUE.getColor()),
+    YELLOW_WOOL(new Identifier("wool", "yellow_wool"), 35, Color.YELLOW.getColor()),
+    LIME_WOOL(new Identifier("wool", "lime_wool"), 35, Color.LIME.getColor()),
+    PINK_WOOL(new Identifier("wool", "pink_wool"), 35, Color.PINK.getColor()),
+    GRAY_WOOL(new Identifier("wool", "gray_wool"), 35, Color.GRAY.getColor()),
+    LIGHT_GRAY_WOOL(new Identifier("wool", "light_gray_wool"), 35, Color.SILVER.getColor()),
+    CYAN_WOOL(new Identifier("wool", "cyan_wool"), 35, Color.CYAN.getColor()),
+    PURPLE_WOOL(new Identifier("wool", "purple_wool"), 35, Color.PURPLE.getColor()),
+    BLUE_WOOL(new Identifier("wool", "blue_wool"), 35, Color.BLUE.getColor()),
+    BROWN_WOOL(new Identifier("wool", "brown_wool"), 35, Color.BROWN.getColor()),
+    GREEN_WOOL(new Identifier("wool", "green_wool"), 35, Color.GREEN.getColor()),
+    RED_WOOL(new Identifier("wool", "red_wool"), 35, Color.RED.getColor()),
+    BLACK_WOOL(new Identifier("wool", "black_wool"), 35, Color.BLACK.getColor()),
     TNT(new Identifier("tnt"), 46),
     DROPPER_DOWN(new Identifier("dropper"), 158, 0),
     DROPPER_EAST(new Identifier("dropper"), 158, 1),
@@ -76,19 +77,6 @@ public enum Block {
         this.legacyId = legacyId;
     }
 
-    public Identifier getIdentifier() {
-        return identifier;
-    }
-
-
-    public int getLegacyId() {
-        return legacyId;
-    }
-
-    public int getLegacyData() {
-        return legacyData;
-    }
-
     public static Block byIdentifier(Identifier identifier) {
         for (Block b : values()) {
             if (b.getIdentifier().equals(identifier)) {
@@ -109,6 +97,18 @@ public enum Block {
 
     public static Block byLegacy(int id) {
         return byLegacy(id, 0);
+    }
+
+    public Identifier getIdentifier() {
+        return identifier;
+    }
+
+    public int getLegacyId() {
+        return legacyId;
+    }
+
+    public int getLegacyData() {
+        return legacyData;
     }
 
 

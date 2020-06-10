@@ -13,33 +13,35 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-public enum Color {
-    WHITE(0x00),
-    ORANGE(0x01),
-    MAGENTA(0x02),
-    LIGHT_BLUE(0x03),
-    YELLOW(0x04),
-    LIME(0x05),
-    PINK(0x06),
+public enum ChatColor {
+    BLACK(0x00),
+    DARK_BLUE(0x01),
+    DARK_GREEN(0x02),
+    DARK_AQUA(0x03),
+    DARK_RED(0x04),
+    DARK_PURPLE(0x05),
+    GOLD(0x06),
     GRAY(0x07),
-    SILVER(0x08),
-    CYAN(0x09),
-    PURPLE(0x0A),
-    BLUE(0x0B),
-    BROWN(0x0C),
-    GREEN(0x0D),
-    RED(0x0E),
-    BLACK(0x0F);
+    DARK_GRAY(0x08),
+    BLUE(0x09),
+    GREEN(0x0A),
+    AQUA(0x0B),
+    RED(0x0C),
+    PURPLE(0x0D),
+    YELLOW(0x0E),
+    WHITE(0x0F);
 
 
     final int color;
+    final String prefix;
 
-    Color(int color) {
+    ChatColor(int color) {
         this.color = color;
+        this.prefix = String.format("%x", color);
     }
 
-    public static Color byId(int id) {
-        for (Color c : values()) {
+    public static ChatColor byId(int id) {
+        for (ChatColor c : values()) {
             if (c.getColor() == id) {
                 return c;
             }
@@ -51,4 +53,7 @@ public enum Color {
         return color;
     }
 
+    public String getPrefix() {
+        return prefix;
+    }
 }
