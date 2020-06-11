@@ -11,48 +11,49 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.SpiderMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.WitherMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Spider extends Mob implements MobInterface {
-    SpiderMetaData metaData;
+public class Wither extends Mob implements MobInterface {
+    WitherMetaData metaData;
 
-    public Spider(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Wither(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new SpiderMetaData(buffer, v);
+        this.metaData = new WitherMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.SPIDER;
+        return Mobs.WITHER;
     }
 
     @Override
-    public SpiderMetaData getMetaData() {
+    public WitherMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (SpiderMetaData) metaData;
+        this.metaData = (WitherMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 1.4F;
-    }
-
-    @Override
-    public float getHeight() {
         return 0.9F;
     }
 
     @Override
+    public float getHeight() {
+        return 4.0F;
+    }
+
+    @Override
     public int getMaxHealth() {
-        return 16;
+        return 300;
     }
 }

@@ -11,57 +11,55 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.meta.AgeableMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.WolfMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Wolf extends Mob implements MobInterface {
-    WolfMetaData metaData;
+public class Cow extends Mob implements MobInterface {
+    AgeableMetaData metaData;
 
-    public Wolf(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Cow(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new WolfMetaData(buffer, v);
+        this.metaData = new AgeableMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.WOLF;
+        return Mobs.COW;
     }
 
     @Override
-    public WolfMetaData getMetaData() {
+    public AgeableMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (WolfMetaData) metaData;
+        this.metaData = (AgeableMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
         if (metaData.isAdult()) {
-            return 0.6F;
+            return 1.4F;
         }
-        return 0.3F;
+        return 0.7F;
     }
 
     @Override
     public float getHeight() {
         if (metaData.isAdult()) {
-            return 0.85F;
+            return 0.7F;
         }
-        return 0.425F;
+        return 0.45F;
     }
 
     @Override
     public int getMaxHealth() {
-        if (metaData.isTame()) {
-            return 8;
-        }
-        return 20;
+        return 10;
     }
 }

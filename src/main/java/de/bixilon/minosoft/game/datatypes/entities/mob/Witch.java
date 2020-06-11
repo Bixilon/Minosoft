@@ -11,54 +11,49 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.HorseMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.WitchMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Horse extends Mob implements MobInterface {
-    HorseMetaData metaData;
+public class Witch extends Mob implements MobInterface {
+    WitchMetaData metaData;
 
-    public Horse(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Witch(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new HorseMetaData(buffer, v);
+        this.metaData = new WitchMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.HORSE;
+        return Mobs.WITCH;
     }
 
     @Override
-    public HorseMetaData getMetaData() {
+    public WitchMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (HorseMetaData) metaData;
+        this.metaData = (WitchMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        if (metaData.isAdult()) {
-            return 1.3965F;
-        }
-        return 0.6982F;
+        return 0.6F;
     }
 
     @Override
     public float getHeight() {
-        if (metaData.isAdult()) {
-            return 1.6F;
-        }
-        return 0.8F;
+        return 1.95F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 100;
+        return 26;
     }
 }

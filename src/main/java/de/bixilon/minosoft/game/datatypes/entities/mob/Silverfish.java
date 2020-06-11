@@ -11,54 +11,49 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.SkeletonMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.MobMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Skeleton extends Mob implements MobInterface {
-    SkeletonMetaData metaData;
+public class Silverfish extends Mob implements MobInterface {
+    MobMetaData metaData;
 
-    public Skeleton(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Silverfish(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new SkeletonMetaData(buffer, v);
+        this.metaData = new MobMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.SKELETON;
+        return Mobs.SILVERFISH;
     }
 
     @Override
-    public SkeletonMetaData getMetaData() {
+    public MobMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (SkeletonMetaData) metaData;
+        this.metaData = (MobMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        if (metaData.isWitherSkeleton()) {
-            return 0.7F;
-        }
-        return 0.6F;
+        return 0.4F;
     }
 
     @Override
     public float getHeight() {
-        if (metaData.isWitherSkeleton()) {
-            return 2.4F;
-        }
-        return 1.99F;
+        return 0.3F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 20;
+        return 8;
     }
 }

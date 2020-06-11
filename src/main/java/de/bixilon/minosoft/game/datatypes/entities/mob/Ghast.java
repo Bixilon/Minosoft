@@ -11,48 +11,49 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.WitchMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.GhastMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Witch extends Mob implements MobInterface {
-    WitchMetaData metaData;
+public class Ghast extends Mob implements MobInterface {
+    GhastMetaData metaData;
 
-    public Witch(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Ghast(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new WitchMetaData(buffer, v);
+        this.metaData = new GhastMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.WITCH;
+        return Mobs.GHAST;
     }
 
     @Override
-    public WitchMetaData getMetaData() {
+    public GhastMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (WitchMetaData) metaData;
+        this.metaData = (GhastMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.6F;
+        return 4.0F;
     }
 
     @Override
     public float getHeight() {
-        return 1.95F;
+        return 4.0F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 26;
+        return 10;
     }
 }

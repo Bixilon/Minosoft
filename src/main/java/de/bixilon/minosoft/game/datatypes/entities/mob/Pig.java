@@ -11,55 +11,55 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
-import de.bixilon.minosoft.game.datatypes.entities.meta.AgeableMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.MobMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.PigMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Squid extends Mob implements MobInterface {
-    AgeableMetaData metaData;
+public class Pig extends Mob implements MobInterface {
+    PigMetaData metaData;
 
-    public Squid(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Pig(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new AgeableMetaData(buffer, v);
+        this.metaData = new PigMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.SQUID;
+        return Mobs.PIG;
     }
 
     @Override
-    public MobMetaData getMetaData() {
+    public PigMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (AgeableMetaData) metaData;
+        this.metaData = (PigMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
         if (metaData.isAdult()) {
-            return 0.8F;
+            return 0.9F;
         }
-        return 0.4F;
+        return 0.45F;
     }
 
     @Override
     public float getHeight() {
         if (metaData.isAdult()) {
-            return 0.8F;
+            return 0.9F;
         }
-        return 0.4F;
+        return 0.45F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 4;
+        return 10;
     }
 }

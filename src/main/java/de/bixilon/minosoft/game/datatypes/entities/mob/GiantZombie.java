@@ -11,44 +11,32 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
-import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.MobMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Mobs;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class IronGolem extends Mob implements MobInterface {
-    MobMetaData metaData;
-
-    public IronGolem(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
-        super(id, location, yaw, pitch, velocity);
-        this.metaData = new MobMetaData(buffer, v);
+public class GiantZombie extends Zombie {
+    public GiantZombie(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+        super(id, location, yaw, pitch, velocity, buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.IRON_GOLEM;
-    }
-
-    @Override
-    public MobMetaData getMetaData() {
-        return metaData;
-    }
-
-    @Override
-    public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (MobMetaData) metaData;
+        return Mobs.GIANT_ZOMBIE;
     }
 
     @Override
     public float getWidth() {
-        return 1.4F;
+        return 3.6F;
     }
 
     @Override
     public float getHeight() {
-        return 2.7F;
+        return 10.8F;
     }
 
     @Override

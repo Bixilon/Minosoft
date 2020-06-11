@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.game.datatypes.Identifier;
+import de.bixilon.minosoft.game.datatypes.entities.mob.*;
 
 public enum Mobs {
     PLAYER(null, 92, OtherPlayer.class),

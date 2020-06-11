@@ -11,54 +11,58 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
-import de.bixilon.minosoft.game.datatypes.entities.meta.AgeableMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.SlimeMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Chicken extends Mob implements MobInterface {
-    AgeableMetaData metaData;
+public class Slime extends Mob implements MobInterface {
+    SlimeMetaData metaData;
 
-    public Chicken(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Slime(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new AgeableMetaData(buffer, v);
+        this.metaData = new SlimeMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.CHICKEN;
+        return Mobs.SLIME;
     }
 
     @Override
-    public AgeableMetaData getMetaData() {
+    public SlimeMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (AgeableMetaData) metaData;
+        this.metaData = (SlimeMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        if (metaData.isAdult()) {
-            return 0.4F;
-        }
-        return 0.2F;
+        return 0.6F * metaData.getSize();
     }
 
     @Override
     public float getHeight() {
-        if (metaData.isAdult()) {
-            return 0.7F;
-        }
-        return 0.35F;
+        return 0.6F * metaData.getSize();
     }
 
     @Override
     public int getMaxHealth() {
-        return 4;
+        switch (metaData.getSize()) {
+            case 1:
+                return 1;
+            case 2:
+                return 4;
+            case 4:
+                return 16;
+
+        }
+        return 0;
     }
 }

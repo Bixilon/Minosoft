@@ -11,48 +11,55 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
-import de.bixilon.minosoft.game.datatypes.entities.meta.CreeperMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.SheepMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Creeper extends Mob implements MobInterface {
-    CreeperMetaData metaData;
+public class Sheep extends Mob implements MobInterface {
+    SheepMetaData metaData;
 
-    public Creeper(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Sheep(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new CreeperMetaData(buffer, v);
+        this.metaData = new SheepMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.CREEPER;
+        return Mobs.SHEEP;
     }
 
     @Override
-    public CreeperMetaData getMetaData() {
+    public SheepMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (CreeperMetaData) metaData;
+        this.metaData = (SheepMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.6F;
+        if (metaData.isAdult()) {
+            return 1.3F;
+        }
+        return 0.65F;
     }
 
     @Override
     public float getHeight() {
-        return 1.7F;
+        if (metaData.isAdult()) {
+            return 0.9F;
+        }
+        return 0.45F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 20;
+        return 8;
     }
 }

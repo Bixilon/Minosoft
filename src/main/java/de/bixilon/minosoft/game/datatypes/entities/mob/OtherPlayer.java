@@ -11,10 +11,11 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 
 import de.bixilon.minosoft.game.datatypes.PlayerPropertyData;
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 

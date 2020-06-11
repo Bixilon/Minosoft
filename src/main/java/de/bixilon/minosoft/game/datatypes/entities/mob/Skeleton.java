@@ -11,54 +11,55 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.PigMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.SkeletonMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Pig extends Mob implements MobInterface {
-    PigMetaData metaData;
+public class Skeleton extends Mob implements MobInterface {
+    SkeletonMetaData metaData;
 
-    public Pig(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Skeleton(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new PigMetaData(buffer, v);
+        this.metaData = new SkeletonMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.PIG;
+        return Mobs.SKELETON;
     }
 
     @Override
-    public PigMetaData getMetaData() {
+    public SkeletonMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (PigMetaData) metaData;
+        this.metaData = (SkeletonMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        if (metaData.isAdult()) {
-            return 0.9F;
+        if (metaData.isWitherSkeleton()) {
+            return 0.7F;
         }
-        return 0.45F;
+        return 0.6F;
     }
 
     @Override
     public float getHeight() {
-        if (metaData.isAdult()) {
-            return 0.9F;
+        if (metaData.isWitherSkeleton()) {
+            return 2.4F;
         }
-        return 0.45F;
+        return 1.99F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 10;
+        return 20;
     }
 }

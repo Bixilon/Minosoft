@@ -11,48 +11,56 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
-import de.bixilon.minosoft.game.datatypes.entities.meta.BatMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.VillagerMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Bat extends Mob implements MobInterface {
-    BatMetaData metaData;
+public class Villager extends Mob implements MobInterface {
+    VillagerMetaData metaData;
 
-    public Bat(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Villager(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new BatMetaData(buffer, v);
+        this.metaData = new VillagerMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.BAT;
+        return Mobs.VILLAGER;
     }
 
     @Override
-    public BatMetaData getMetaData() {
+    public VillagerMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (BatMetaData) metaData;
+        this.metaData = (VillagerMetaData) metaData;
     }
+
 
     @Override
     public float getWidth() {
-        return 0.5F;
+        if (metaData.isAdult()) {
+            return 0.6F;
+        }
+        return 0.3F;
     }
 
     @Override
     public float getHeight() {
-        return 0.9F;
+        if (metaData.isAdult()) {
+            return 1.95F;
+        }
+        return 0.975F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 6;
+        return 100;
     }
 }

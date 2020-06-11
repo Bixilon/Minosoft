@@ -11,54 +11,55 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
-import de.bixilon.minosoft.game.datatypes.entities.meta.AgeableMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.HorseMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Cow extends Mob implements MobInterface {
-    AgeableMetaData metaData;
+public class Horse extends Mob implements MobInterface {
+    HorseMetaData metaData;
 
-    public Cow(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Horse(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new AgeableMetaData(buffer, v);
+        this.metaData = new HorseMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.COW;
+        return Mobs.HORSE;
     }
 
     @Override
-    public AgeableMetaData getMetaData() {
+    public HorseMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (AgeableMetaData) metaData;
+        this.metaData = (HorseMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
         if (metaData.isAdult()) {
-            return 1.4F;
+            return 1.3965F;
         }
-        return 0.7F;
+        return 0.6982F;
     }
 
     @Override
     public float getHeight() {
         if (metaData.isAdult()) {
-            return 0.7F;
+            return 1.6F;
         }
-        return 0.45F;
+        return 0.8F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 10;
+        return 100;
     }
 }

@@ -11,48 +11,37 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
-import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.WitherMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Mobs;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Wither extends Mob implements MobInterface {
-    WitherMetaData metaData;
-
-    public Wither(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
-        super(id, location, yaw, pitch, velocity);
-        this.metaData = new WitherMetaData(buffer, v);
+public class CaveSpider extends Spider {
+    public CaveSpider(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+        super(id, location, yaw, pitch, velocity, buffer, v);
     }
+
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.WITHER;
-    }
-
-    @Override
-    public WitherMetaData getMetaData() {
-        return metaData;
-    }
-
-    @Override
-    public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (WitherMetaData) metaData;
+        return Mobs.CAVE_SPIDER;
     }
 
     @Override
     public float getWidth() {
-        return 0.9F;
+        return 0.7F;
     }
 
     @Override
     public float getHeight() {
-        return 4.0F;
+        return 0.5F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 300;
+        return 12;
     }
 }

@@ -11,54 +11,50 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.OcelotMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.ZombieMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Ocelot extends Mob implements MobInterface {
-    OcelotMetaData metaData;
+public class Zombie extends Mob implements MobInterface {
+    ZombieMetaData metaData;
 
-    public Ocelot(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Zombie(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new OcelotMetaData(buffer, v);
+        this.metaData = new ZombieMetaData(buffer, v);
     }
+
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.OCELOT;
+        return Mobs.ZOMBIE;
     }
 
     @Override
-    public OcelotMetaData getMetaData() {
+    public ZombieMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (OcelotMetaData) metaData;
+        this.metaData = (ZombieMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        if (metaData.isAdult()) {
-            return 0.6F;
-        }
-        return 0.45F;
+        return 0.6F;
     }
 
     @Override
     public float getHeight() {
-        if (metaData.isAdult()) {
-            return 0.7F;
-        }
-        return 0.35F;
+        return 1.8F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 10;
+        return 20;
     }
 }

@@ -11,57 +11,49 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.SlimeMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.MobMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Slime extends Mob implements MobInterface {
-    SlimeMetaData metaData;
+public class SnowGolem extends Mob implements MobInterface {
+    MobMetaData metaData;
 
-    public Slime(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public SnowGolem(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new SlimeMetaData(buffer, v);
+        this.metaData = new MobMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.SLIME;
+        return Mobs.SNOW_GOLEM;
     }
 
     @Override
-    public SlimeMetaData getMetaData() {
+    public MobMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (SlimeMetaData) metaData;
+        this.metaData = (MobMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.6F * metaData.getSize();
+        return 0.7F;
     }
 
     @Override
     public float getHeight() {
-        return 0.6F * metaData.getSize();
+        return 1.9F;
     }
 
     @Override
     public int getMaxHealth() {
-        switch (metaData.getSize()) {
-            case 1:
-                return 1;
-            case 2:
-                return 4;
-            case 4:
-                return 16;
-
-        }
-        return 0;
+        return 4;
     }
 }

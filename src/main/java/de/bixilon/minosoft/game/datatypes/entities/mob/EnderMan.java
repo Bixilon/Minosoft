@@ -11,54 +11,53 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EndermanMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.SheepMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Sheep extends Mob implements MobInterface {
-    SheepMetaData metaData;
+public class EnderMan extends Mob implements MobInterface {
+    EndermanMetaData metaData;
 
-    public Sheep(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public EnderMan(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new SheepMetaData(buffer, v);
+        this.metaData = new EndermanMetaData(buffer, v);
     }
+
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.SHEEP;
+        return Mobs.ENDERMAN;
     }
 
     @Override
-    public SheepMetaData getMetaData() {
+    public EndermanMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (SheepMetaData) metaData;
+        this.metaData = (EndermanMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        if (metaData.isAdult()) {
-            return 1.3F;
-        }
-        return 0.65F;
+        return 0.6F;
     }
 
     @Override
     public float getHeight() {
-        if (metaData.isAdult()) {
-            return 0.9F;
+        if (metaData.isScreaming()) {
+            return 3.25F;
         }
-        return 0.45F;
+        return 2.9F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 8;
+        return 40;
     }
 }

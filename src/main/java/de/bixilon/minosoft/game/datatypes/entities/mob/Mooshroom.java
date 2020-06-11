@@ -11,44 +11,51 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.meta.AgeableMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.GhastMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Ghast extends Mob implements MobInterface {
-    GhastMetaData metaData;
+public class Mooshroom extends Mob implements MobInterface {
+    AgeableMetaData metaData;
 
-    public Ghast(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Mooshroom(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new GhastMetaData(buffer, v);
+        this.metaData = new AgeableMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.GHAST;
+        return Mobs.MOOSHROOM;
     }
 
     @Override
-    public GhastMetaData getMetaData() {
+    public AgeableMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (GhastMetaData) metaData;
+        this.metaData = (AgeableMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 4.0F;
+        if (metaData.isAdult()) {
+            return 0.9F;
+        }
+        return 0.45F;
     }
 
     @Override
     public float getHeight() {
-        return 4.0F;
+        if (metaData.isAdult()) {
+            return 1.4F;
+        }
+        return 0.7F;
     }
 
     @Override

@@ -11,36 +11,55 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.meta.AgeableMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class ZombiePigman extends Zombie {
+public class Chicken extends Mob implements MobInterface {
+    AgeableMetaData metaData;
 
-    public ZombiePigman(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
-        super(id, location, yaw, pitch, velocity, buffer, v);
+    public Chicken(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+        super(id, location, yaw, pitch, velocity);
+        this.metaData = new AgeableMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.ZOMBIE_PIGMAN;
+        return Mobs.CHICKEN;
+    }
+
+    @Override
+    public AgeableMetaData getMetaData() {
+        return metaData;
+    }
+
+    @Override
+    public void setMetaData(EntityMetaData metaData) {
+        this.metaData = (AgeableMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        if (metaData.isChild()) {
-            return 0.3F;
+        if (metaData.isAdult()) {
+            return 0.4F;
         }
-        return 0.6F;
+        return 0.2F;
     }
 
     @Override
     public float getHeight() {
-        if (metaData.isChild()) {
-            return 0.975F;
+        if (metaData.isAdult()) {
+            return 0.7F;
         }
-        return 1.95F;
+        return 0.35F;
     }
 
+    @Override
+    public int getMaxHealth() {
+        return 4;
+    }
 }

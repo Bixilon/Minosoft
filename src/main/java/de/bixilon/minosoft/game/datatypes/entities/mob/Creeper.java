@@ -11,48 +11,49 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.meta.CreeperMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.MobMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Silverfish extends Mob implements MobInterface {
-    MobMetaData metaData;
+public class Creeper extends Mob implements MobInterface {
+    CreeperMetaData metaData;
 
-    public Silverfish(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Creeper(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new MobMetaData(buffer, v);
+        this.metaData = new CreeperMetaData(buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.SILVERFISH;
+        return Mobs.CREEPER;
     }
 
     @Override
-    public MobMetaData getMetaData() {
+    public CreeperMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (MobMetaData) metaData;
+        this.metaData = (CreeperMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.4F;
+        return 0.6F;
     }
 
     @Override
     public float getHeight() {
-        return 0.3F;
+        return 1.7F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 8;
+        return 20;
     }
 }

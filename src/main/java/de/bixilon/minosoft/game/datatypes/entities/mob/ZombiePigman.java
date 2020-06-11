@@ -11,54 +11,39 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
-import de.bixilon.minosoft.game.datatypes.entities.meta.AgeableMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Mobs;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Mooshroom extends Mob implements MobInterface {
-    AgeableMetaData metaData;
+public class ZombiePigman extends Zombie {
 
-    public Mooshroom(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
-        super(id, location, yaw, pitch, velocity);
-        this.metaData = new AgeableMetaData(buffer, v);
+    public ZombiePigman(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+        super(id, location, yaw, pitch, velocity, buffer, v);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.MOOSHROOM;
-    }
-
-    @Override
-    public AgeableMetaData getMetaData() {
-        return metaData;
-    }
-
-    @Override
-    public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (AgeableMetaData) metaData;
+        return Mobs.ZOMBIE_PIGMAN;
     }
 
     @Override
     public float getWidth() {
-        if (metaData.isAdult()) {
-            return 0.9F;
+        if (metaData.isChild()) {
+            return 0.3F;
         }
-        return 0.45F;
+        return 0.6F;
     }
 
     @Override
     public float getHeight() {
-        if (metaData.isAdult()) {
-            return 1.4F;
+        if (metaData.isChild()) {
+            return 0.975F;
         }
-        return 0.7F;
+        return 1.95F;
     }
 
-    @Override
-    public int getMaxHealth() {
-        return 10;
-    }
 }
