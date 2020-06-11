@@ -11,24 +11,34 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities.meta;
+package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class OcelotMetaData extends TameableMetaData {
-
-    public OcelotMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+public class CaveSpider extends Spider {
+    public CaveSpider(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+        super(id, location, yaw, pitch, velocity, buffer, v);
     }
 
 
-    public byte getType() {
-        switch (version) {
-            case VERSION_1_7_10:
-                return (byte) sets.get(18).getData();
-        }
-        return 0x00;
+    @Override
+    public Mobs getEntityType() {
+        return Mobs.CAVE_SPIDER;
     }
 
+    @Override
+    public float getWidth() {
+        return 0.7F;
+    }
+
+    @Override
+    public float getHeight() {
+        return 0.5F;
+    }
+
+    @Override
+    public int getMaxHealth() {
+        return 12;
+    }
 }

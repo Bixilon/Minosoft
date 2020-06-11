@@ -16,9 +16,36 @@ package de.bixilon.minosoft.game.datatypes.entities;
 import de.bixilon.minosoft.game.datatypes.Identifier;
 
 public enum Mobs {
-    ZOMBIE(new Identifier("zombie"), 54, Zombie.class),
     PLAYER(null, 92, OtherPlayer.class),
-    CREEPER(new Identifier("creeper"), 50, Creeper.class);
+    CREEPER(new Identifier("creeper"), 50, Creeper.class),
+    SKELETON(new Identifier("skeleton"), 51, Skeleton.class),
+    SPIDER(new Identifier("spider"), 52, Spider.class),
+    GIANT_ZOMBIE(new Identifier("giant"), 53, GiantZombie.class),
+    ZOMBIE(new Identifier("zombie"), 54, Zombie.class),
+    SLIME(new Identifier("slime"), 55, Slime.class),
+    GHAST(new Identifier("ghast"), 56, Ghast.class),
+    ZOMBIE_PIGMAN(new Identifier("zombie_pigman"), 57, ZombiePigman.class),
+    ENDERMAN(new Identifier("enderman"), 58, EnderMan.class),
+    CAVE_SPIDER(new Identifier("cave_spider"), 59, CaveSpider.class),
+    SILVERFISH(new Identifier("silverfish"), 60, Silverfish.class),
+    BLAZE(new Identifier("blaze"), 61, Blaze.class),
+    MAGMA_CUBE(new Identifier("magma_cube"), 62, MagmaCube.class),
+    ENDER_DRAGON(new Identifier("ender_dragon"), 63, EnderDragon.class),
+    WITHER(new Identifier("wither"), 64, Wither.class),
+    BAT(new Identifier("bat"), 65, Bat.class),
+    WITCH(new Identifier("witch"), 66, Witch.class),
+    PIG(new Identifier("pig"), 90, Pig.class),
+    SHEEP(new Identifier("sheep"), 91, Sheep.class),
+    COW(new Identifier("cow"), 92, Cow.class),
+    CHICKEN(new Identifier("chicken"), 93, Chicken.class),
+    SQUID(new Identifier("squid"), 94, Squid.class),
+    WOLF(new Identifier("wolf"), 95, Wolf.class),
+    MOOSHROOM(new Identifier("mooshroom"), 95, Mooshroom.class),
+    SNOW_GOLEM(new Identifier("snow_golem"), 97, SnowGolem.class),
+    OCELOT(new Identifier("ocelot"), 98, Ocelot.class),
+    IRON_GOLEM(new Identifier("iron_golem"), 99, IronGolem.class),
+    HORSE(new Identifier("horse"), 100, Horse.class),
+    VILLAGER(new Identifier("villager"), 120, Villager.class);
 
     final Identifier identifier;
     final int type;

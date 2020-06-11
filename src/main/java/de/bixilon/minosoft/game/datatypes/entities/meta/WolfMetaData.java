@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
-public class WolfMetaData extends TamableMetaData {
+public class WolfMetaData extends TameableMetaData {
 
     public WolfMetaData(InByteBuffer buffer, ProtocolVersion v) {
         super(buffer, v);

@@ -15,20 +15,37 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.util.BitByte;
 
-public class OcelotMetaData extends TameableMetaData {
+public class TameableMetaData extends AgeableMetaData {
 
-    public OcelotMetaData(InByteBuffer buffer, ProtocolVersion v) {
+    public TameableMetaData(InByteBuffer buffer, ProtocolVersion v) {
         super(buffer, v);
     }
 
 
-    public byte getType() {
+    public boolean isSitting() {
         switch (version) {
             case VERSION_1_7_10:
-                return (byte) sets.get(18).getData();
+                return BitByte.isBitSet((int) sets.get(16).getData(), 0);
         }
-        return 0x00;
+        return false;
+    }
+
+    public boolean isTame() {
+        switch (version) {
+            case VERSION_1_7_10:
+                return BitByte.isBitSet((int) sets.get(16).getData(), 2);
+        }
+        return false;
+    }
+
+    public String getOwnerName() {
+        switch (version) {
+            case VERSION_1_7_10:
+                return (String) sets.get(17).getData();
+        }
+        return null;
     }
 
 }

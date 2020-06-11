@@ -32,7 +32,7 @@ public class Creeper extends Mob implements MobInterface {
     }
 
     @Override
-    public EntityMetaData getMetaData() {
+    public CreeperMetaData getMetaData() {
         return metaData;
     }
 
@@ -53,6 +53,6 @@ public class Creeper extends Mob implements MobInterface {
 
     @Override
     public int getMaxHealth() {
-        return 40;
+        return 20;
     }
 }

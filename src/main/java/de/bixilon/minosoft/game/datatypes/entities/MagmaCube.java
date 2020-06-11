@@ -11,24 +11,20 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities.meta;
+package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class OcelotMetaData extends TameableMetaData {
+public class MagmaCube extends Slime {
 
-    public OcelotMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public MagmaCube(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+        super(id, location, yaw, pitch, velocity, buffer, v);
     }
 
 
-    public byte getType() {
-        switch (version) {
-            case VERSION_1_7_10:
-                return (byte) sets.get(18).getData();
-        }
-        return 0x00;
+    @Override
+    public Mobs getEntityType() {
+        return Mobs.MAGMA_CUBE;
     }
-
 }

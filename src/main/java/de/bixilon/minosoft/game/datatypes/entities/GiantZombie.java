@@ -11,41 +11,33 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities.meta;
+package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
-public class TamableMetaData extends MobMetaData {
-
-    public TamableMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+public class GiantZombie extends Zombie {
+    public GiantZombie(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+        super(id, location, yaw, pitch, velocity, buffer, v);
     }
 
-
-    public boolean isSitting() {
-        switch (version) {
-            case VERSION_1_7_10:
-                return BitByte.isBitSet((int) sets.get(16).getData(), 0);
-        }
-        return false;
+    @Override
+    public Mobs getEntityType() {
+        return Mobs.GIANT_ZOMBIE;
     }
 
-    public boolean isTame() {
-        switch (version) {
-            case VERSION_1_7_10:
-                return BitByte.isBitSet((int) sets.get(16).getData(), 2);
-        }
-        return false;
+    @Override
+    public float getWidth() {
+        return 3.6F;
     }
 
-    public String getOwnerName() {
-        switch (version) {
-            case VERSION_1_7_10:
-                return (String) sets.get(17).getData();
-        }
-        return null;
+    @Override
+    public float getHeight() {
+        return 10.8F;
     }
 
+    @Override
+    public int getMaxHealth() {
+        return 100;
+    }
 }

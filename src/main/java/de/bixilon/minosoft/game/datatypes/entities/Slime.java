@@ -14,46 +14,54 @@
 package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.ZombieMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.SlimeMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Zombie extends Mob implements MobInterface {
-    ZombieMetaData metaData;
+public class Slime extends Mob implements MobInterface {
+    SlimeMetaData metaData;
 
-    public Zombie(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Slime(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new ZombieMetaData(buffer, v);
+        this.metaData = new SlimeMetaData(buffer, v);
     }
-
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.ZOMBIE;
+        return Mobs.SLIME;
     }
 
     @Override
-    public ZombieMetaData getMetaData() {
+    public SlimeMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (ZombieMetaData) metaData;
+        this.metaData = (SlimeMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.6F;
+        return 0.6F * metaData.getSize();
     }
 
     @Override
     public float getHeight() {
-        return 1.8F;
+        return 0.6F * metaData.getSize();
     }
 
     @Override
     public int getMaxHealth() {
-        return 20;
+        switch (metaData.getSize()) {
+            case 1:
+                return 1;
+            case 2:
+                return 4;
+            case 4:
+                return 16;
+
+        }
+        return 0;
     }
 }

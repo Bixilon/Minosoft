@@ -31,5 +31,9 @@ public class AgeableMetaData extends MobMetaData {
         return 0;
     }
 
+    public boolean isAdult() {
+        return getAge() >= 0;
+    }
+
 
 }
