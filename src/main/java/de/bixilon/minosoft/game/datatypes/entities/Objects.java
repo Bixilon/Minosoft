@@ -31,7 +31,14 @@ public enum Objects implements EntityEnumInterface {
     WITHER_SKULL(new Identifier("wither_skull"), 66, WitherSkull.class),
     FALLING_BLOCK(new Identifier("falling_block"), 70, FallingBlock.class),
     ITEM_FRAME(new Identifier("item_frame"), 71, ItemFrame.class),
-    ;
+    EYE_OF_ENDER(new Identifier("eye_of_ender"), 72, EyeOfEnder.class),
+    THROWN_POTION(new Identifier("thrown_potion"), 73, ThrownPotion.class),
+    FALLING_DRAGON_EGG(new Identifier("falling_dragon_eg"), 74, FallingDragonEgg.class),
+    THROWN_EXP_BOTTLE(null, 75, ThrownExpBottle.class),
+    FIREWORK(new Identifier("firework"), 76, Firework.class),
+    LEASH_KNOT(new Identifier("firework"), 77, LeashKnot.class),
+    FISHING_FLOAT(null, 90, FishingFloat.class);
+    //ToDo: identifier
 
     final Identifier identifier;
     final int type;
