@@ -52,6 +52,9 @@ public class EntityMetaData {
                         case VECTOR:
                             data = new Vector(buffer.readInteger(), buffer.readInteger(), buffer.readInteger());
                             break;
+                        case SLOT:
+                            data = buffer.readSlot(v);
+                            break;
                         default:
                             throw new IllegalStateException("Unexpected value: " + type);
                     }

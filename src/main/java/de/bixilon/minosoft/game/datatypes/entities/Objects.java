@@ -14,10 +14,24 @@
 package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.game.datatypes.Identifier;
-import de.bixilon.minosoft.game.datatypes.entities.objects.Boat;
+import de.bixilon.minosoft.game.datatypes.entities.objects.*;
 
 public enum Objects implements EntityEnumInterface {
-    BOAT(new Identifier("boat"), 1, Boat.class);
+    BOAT(new Identifier("boat"), 1, Boat.class),
+    ITEM_STACK(null, 2, ItemStack.class),
+    MINECART(new Identifier("minecart"), 10, Minecart.class),
+    PRIMED_TNT(new Identifier("tnt"), 50, PrimedTNT.class),
+    ENDER_CRYSTAL(new Identifier("ender_crystal"), 51, EnderCrystal.class),
+    ARROW(new Identifier("arrow"), 60, Arrow.class),
+    SNOWBALL(new Identifier("snowball"), 61, Snowball.class),
+    EGG(new Identifier("egg"), 62, Egg.class),
+    FIRE_BALL(new Identifier("fire_ball"), 63, FireBall.class),
+    FIRE_CHARGE(new Identifier("fire_charge"), 64, FireCharge.class),
+    ENDER_PEARL(new Identifier("ender_pearl"), 65, Enderpearl.class),
+    WITHER_SKULL(new Identifier("wither_skull"), 66, WitherSkull.class),
+    FALLING_BLOCK(new Identifier("falling_block"), 70, FallingBlock.class),
+    ITEM_FRAME(new Identifier("item_frame"), 71, ItemFrame.class),
+    ;
 
     final Identifier identifier;
     final int type;
