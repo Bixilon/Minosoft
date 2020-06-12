@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.mojang.api;
 
+import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.logging.Log;
@@ -51,6 +52,9 @@ public class MojangAuthentication {
     }
 
     public static void joinServer(MojangAccount account, String serverId) {
+        if (Config.skipAuthentication) {
+            return;
+        }
 
         JSONObject payload = new JSONObject();
         payload.put("accessToken", account.getAccessToken());
@@ -73,6 +77,9 @@ public class MojangAuthentication {
     }
 
     public static String refresh(String clientToken, String accessToken) {
+        if (Config.skipAuthentication) {
+            return clientToken;
+        }
         JSONObject payload = new JSONObject();
         payload.put("accessToken", accessToken);
         payload.put("clientToken", clientToken);
