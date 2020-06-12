@@ -15,6 +15,7 @@ package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.game.datatypes.Slot;
 import de.bixilon.minosoft.game.datatypes.Slots;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 
 import java.util.HashMap;
 
@@ -25,6 +26,7 @@ public abstract class Entity implements EntityInterface {
     Velocity velocity;
     int yaw;
     int pitch;
+    int headYaw;
 
     public Entity(int id, Location location, int yaw, int pitch, Velocity velocity) {
         this.id = id;
@@ -86,6 +88,19 @@ public abstract class Entity implements EntityInterface {
 
     public Slot getEquipment(Slots.Entity slot) {
         return equipment.get(slot);
+    }
+
+
+    public int getHeadYaw() {
+        return headYaw;
+    }
+
+    public void setHeadYaw(int headYaw) {
+        this.headYaw = headYaw;
+    }
+
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return EntityMetaData.class;
     }
 
 }

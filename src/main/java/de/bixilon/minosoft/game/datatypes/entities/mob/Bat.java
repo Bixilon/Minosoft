@@ -56,4 +56,9 @@ public class Bat extends Mob implements MobInterface {
     public int getMaxHealth() {
         return 6;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return BatMetaData.class;
+    }
 }

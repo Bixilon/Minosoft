@@ -62,4 +62,9 @@ public class Skeleton extends Mob implements MobInterface {
     public int getMaxHealth() {
         return 20;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return SkeletonMetaData.class;
+    }
 }

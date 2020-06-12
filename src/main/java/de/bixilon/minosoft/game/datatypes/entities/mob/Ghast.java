@@ -56,4 +56,9 @@ public class Ghast extends Mob implements MobInterface {
     public int getMaxHealth() {
         return 10;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return GhastMetaData.class;
+    }
 }

@@ -60,4 +60,9 @@ public class EnderMan extends Mob implements MobInterface {
     public int getMaxHealth() {
         return 40;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return EndermanMetaData.class;
+    }
 }

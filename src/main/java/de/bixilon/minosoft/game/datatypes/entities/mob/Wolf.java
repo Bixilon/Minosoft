@@ -65,4 +65,9 @@ public class Wolf extends Mob implements MobInterface {
         }
         return 20;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return WolfMetaData.class;
+    }
 }

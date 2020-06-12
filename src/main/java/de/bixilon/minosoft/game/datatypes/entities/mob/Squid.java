@@ -63,4 +63,9 @@ public class Squid extends Mob implements MobInterface {
     public int getMaxHealth() {
         return 4;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return AgeableMetaData.class;
+    }
 }

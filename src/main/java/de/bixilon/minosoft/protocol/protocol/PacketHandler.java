@@ -16,7 +16,6 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.GameMode;
-import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -187,7 +186,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityHeadRotation pkg) {
-        ((Mob) connection.getPlayer().getWorld().getEntity(pkg.getEntityId())).setHeadYaw(pkg.getHeadYaw());
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setHeadYaw(pkg.getHeadYaw());
     }
 
     public void handle(PacketWindowItems pkg) {
@@ -203,7 +202,7 @@ public class PacketHandler {
             // our own meta data...set it
             connection.getPlayer().setMetaData((HumanMetaData) pkg.getEntityData(HumanMetaData.class));
         } else {
-            connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setMetaData(pkg.getEntityData(connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).getMetaData().getClass()));
+            connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setMetaData(pkg.getEntityData(connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).getMetaDataClass()));
         }
     }
 
@@ -227,5 +226,9 @@ public class PacketHandler {
 
     public void handle(PacketOpenSignEditor pkg) {
         //ToDo
+    }
+
+    public void handle(PacketSpawnObject pkg) {
+        connection.getPlayer().getWorld().addEntity(pkg.getObject());
     }
 }

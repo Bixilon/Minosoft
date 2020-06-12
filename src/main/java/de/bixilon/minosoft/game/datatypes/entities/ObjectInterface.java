@@ -13,16 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.MobMetaData;
 
-public abstract class Mob extends Entity implements MobInterface {
-    public Mob(int id, Location location, int yaw, int pitch, Velocity velocity) {
-        super(id, location, yaw, pitch, velocity);
-    }
-
-    @Override
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return MobMetaData.class;
-    }
+public interface ObjectInterface extends EntityInterface {
+    Objects getEntityType();
 }

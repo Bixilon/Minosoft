@@ -107,4 +107,9 @@ public class OtherPlayer extends Mob implements MobInterface {
         return status;
     }
 
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return HumanMetaData.class;
+    }
+
 }

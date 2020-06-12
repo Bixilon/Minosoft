@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.meta.AgeableMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.PigMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -61,5 +62,10 @@ public class Pig extends Mob implements MobInterface {
     @Override
     public int getMaxHealth() {
         return 10;
+    }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return AgeableMetaData.class;
     }
 }

@@ -56,4 +56,9 @@ public class Spider extends Mob implements MobInterface {
     public int getMaxHealth() {
         return 16;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return SpiderMetaData.class;
+    }
 }

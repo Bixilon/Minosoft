@@ -62,4 +62,9 @@ public class Horse extends Mob implements MobInterface {
     public int getMaxHealth() {
         return 100;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return HorseMetaData.class;
+    }
 }

@@ -62,4 +62,9 @@ public class Mooshroom extends Mob implements MobInterface {
     public int getMaxHealth() {
         return 10;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return AgeableMetaData.class;
+    }
 }

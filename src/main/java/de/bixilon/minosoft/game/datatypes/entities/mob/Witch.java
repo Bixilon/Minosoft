@@ -56,4 +56,9 @@ public class Witch extends Mob implements MobInterface {
     public int getMaxHealth() {
         return 26;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return WitchMetaData.class;
+    }
 }

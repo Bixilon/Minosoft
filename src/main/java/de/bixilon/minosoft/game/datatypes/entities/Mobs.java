@@ -50,9 +50,9 @@ public enum Mobs {
 
     final Identifier identifier;
     final int type;
-    final Class<? extends Entity> clazz;
+    final Class<? extends Mob> clazz;
 
-    Mobs(Identifier identifier, int type, Class<? extends Entity> clazz) {
+    Mobs(Identifier identifier, int type, Class<? extends Mob> clazz) {
         this.identifier = identifier;
         this.type = type;
         this.clazz = clazz;
@@ -84,7 +84,7 @@ public enum Mobs {
         return type;
     }
 
-    public Class<? extends Entity> getClazz() {
+    public Class<? extends Mob> getClazz() {
         return clazz;
     }
 }

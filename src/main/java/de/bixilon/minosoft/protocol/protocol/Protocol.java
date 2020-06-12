@@ -78,5 +78,6 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_MULTIBLOCK_CHANGE, PacketMultiBlockChange.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_RESPAWN, PacketRespawn.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_OPEN_SIGN_EDITOR, PacketOpenSignEditor.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_OBJECT, PacketSpawnObject.class);
     }
 }

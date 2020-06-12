@@ -167,10 +167,10 @@ public class Network {
                                 Log.protocol(String.format("[IN] Packet %s did not used all bytes sent", ((p != null) ? p.name() : "UNKNOWN")));
                             }
 
-                            if (packet instanceof PacketLoginSuccess) {
-                                // login was okay, setting play status to avoid miss timing issues
-                                connection.setConnectionState(ConnectionState.PLAY);
-                            }
+                                if (packet instanceof PacketLoginSuccess) {
+                                    // login was okay, setting play status to avoid miss timing issues
+                                    connection.setConnectionState(ConnectionState.PLAY);
+                                }
                             connection.handle(packet);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                             // safety first, but will not occur

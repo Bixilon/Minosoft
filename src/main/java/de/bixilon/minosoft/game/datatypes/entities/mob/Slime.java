@@ -65,4 +65,9 @@ public class Slime extends Mob implements MobInterface {
         }
         return 0;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return SlimeMetaData.class;
+    }
 }

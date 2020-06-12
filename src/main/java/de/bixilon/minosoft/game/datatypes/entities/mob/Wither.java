@@ -56,4 +56,9 @@ public class Wither extends Mob implements MobInterface {
     public int getMaxHealth() {
         return 300;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return WitherMetaData.class;
+    }
 }
