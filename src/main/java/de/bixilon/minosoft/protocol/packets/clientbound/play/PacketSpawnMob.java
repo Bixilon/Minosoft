@@ -43,7 +43,7 @@ public class PacketSpawnMob implements ClientboundPacket {
 
                 assert type != null;
                 try {
-                    mob = (Mob) type.getClazz().getConstructor(int.class, Location.class, int.class, int.class, Velocity.class, InByteBuffer.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer, v);
+                    mob = type.getClazz().getConstructor(int.class, Location.class, int.class, int.class, Velocity.class, InByteBuffer.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer, v);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     e.printStackTrace();
                 }
@@ -53,7 +53,7 @@ public class PacketSpawnMob implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Mob spawned (entityId=%d, type=%s, at %s %s %s)", mob.getId(), mob.getEntityType().name(), mob.getLocation().getX(), mob.getLocation().getY(), mob.getLocation().getZ()));
+        Log.protocol(String.format("Mob spawned (entityId=%d, type=%s, at %s)", mob.getId(), mob.getEntityType().name(), mob.getLocation().toString()));
     }
 
     public Mob getMob() {

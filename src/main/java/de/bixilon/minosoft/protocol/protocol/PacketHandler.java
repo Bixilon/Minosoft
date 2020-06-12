@@ -231,4 +231,8 @@ public class PacketHandler {
     public void handle(PacketSpawnObject pkg) {
         connection.getPlayer().getWorld().addEntity(pkg.getObject());
     }
+
+    public void handle(PacketSpawnExperienceOrb pkg) {
+        connection.getPlayer().getWorld().addEntity(pkg.getOrb());
+    }
 }
