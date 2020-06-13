@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibble;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibbleLocation;
-import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -102,7 +102,11 @@ public class PacketChunkBulk implements ClientboundPacket {
 
 
                                         // ToDo light, biome
-                                        blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), Block.byLegacy(singeBlockId, singleMeta));
+                                        Block block = Block.byLegacy(singeBlockId, singleMeta);
+                                        if (block == Block.AIR) {
+                                            continue;
+                                        }
+                                        blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), block);
                                         arrayPos++;
                                     }
                                 }
