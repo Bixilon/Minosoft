@@ -239,4 +239,8 @@ public class PacketHandler {
     public void handle(PacketSpawnWeatherEntity pkg) {
         //ToDo
     }
+
+    public void handle(PacketChunkData pkg) {
+        connection.getPlayer().getWorld().setChunk(pkg.getLocation(), pkg.getChunk());
+    }
 }

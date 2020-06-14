@@ -24,43 +24,40 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.ChunkUtil;
 import de.bixilon.minosoft.util.Util;
 
-import java.util.HashMap;
-
-public class PacketChunkBulk implements ClientboundPacket {
-    final HashMap<ChunkLocation, Chunk> chunkMap = new HashMap<>();
+public class PacketChunkData implements ClientboundPacket {
+    ChunkLocation location;
+    Chunk chunk;
 
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
-                short chunkCount = buffer.readShort();
-                int dataLen = buffer.readInteger();
-                boolean containsSkyLight = buffer.readBoolean();
+                this.location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
+                boolean groundUpContinuous = buffer.readBoolean();
+                short sectionBitMask = buffer.readShort();
+                short addBitMask = buffer.readShort();
 
                 // decompress chunk data
-                InByteBuffer decompressed = Util.decompress(buffer.readBytes(dataLen));
+                InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInteger()));
 
-                // chunk meta data
-                for (int i = 0; i < chunkCount; i++) {
-                    int x = buffer.readInteger();
-                    int z = buffer.readInteger();
-                    short sectionBitMask = buffer.readShort();
-                    short addBitMask = buffer.readShort();
-
-                    chunkMap.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(v, decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
-                }
+                chunk = ChunkUtil.readChunkPacket(v, decompressed, sectionBitMask, addBitMask, groundUpContinuous, true);
                 break;
         }
+
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Chunk bulk packet received (chunks: %s)", chunkMap.size()));
+        Log.protocol(String.format("Chunk packet received (chunk: %s)", location.toString()));
     }
 
-    public HashMap<ChunkLocation, Chunk> getChunkMap() {
-        return chunkMap;
+    public ChunkLocation getLocation() {
+        return location;
+    }
+
+    public Chunk getChunk() {
+        return chunk;
     }
 
     @Override
