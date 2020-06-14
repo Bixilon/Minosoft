@@ -235,4 +235,8 @@ public class PacketHandler {
     public void handle(PacketSpawnExperienceOrb pkg) {
         connection.getPlayer().getWorld().addEntity(pkg.getOrb());
     }
+
+    public void handle(PacketSpawnWeatherEntity pkg) {
+        //ToDo
+    }
 }
