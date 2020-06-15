@@ -255,4 +255,12 @@ public class PacketHandler {
     public void handle(PacketUpdateSign pkg) {
         connection.getPlayer().getWorld().updateSign(pkg.getPosition(), pkg.getLines());
     }
+
+    public void handle(PacketEntityAnimation pkg) {
+        //ToDo
+    }
+
+    public void handle(PacketEntityStatus pkg) {
+        //ToDo
+    }
 }
