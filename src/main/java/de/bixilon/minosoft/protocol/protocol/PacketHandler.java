@@ -243,4 +243,12 @@ public class PacketHandler {
     public void handle(PacketChunkData pkg) {
         connection.getPlayer().getWorld().setChunk(pkg.getLocation(), pkg.getChunk());
     }
+
+    public void handle(PacketEntityEffect pkg) {
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).addEffect(pkg.getEffect());
+    }
+
+    public void handle(PacketRemoveEntityEffect pkg) {
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).removeEffect(pkg.getEffect());
+    }
 }

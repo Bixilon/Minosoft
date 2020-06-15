@@ -26,14 +26,6 @@ import java.util.HashMap;
 public interface Protocol {
     HashMap<Packets.Clientbound, Class<? extends ClientboundPacket>> packetClassMapping = new HashMap<>();
 
-    int getProtocolVersion();
-
-    int getPacketCommand(Packets.Serverbound p);
-
-    String getName();
-
-    Packets.Clientbound getPacketByCommand(ConnectionState s, int command);
-
     static Class<? extends ClientboundPacket> getPacketByPacket(Packets.Clientbound p) {
         if (packetClassMapping.size() == 0) {
             // init
@@ -82,5 +74,15 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_EXPERIENCE_ORB, PacketSpawnExperienceOrb.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_WEATHER_ENTITY, PacketSpawnWeatherEntity.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_CHUNK_DATA, PacketChunkData.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_EFFECT, PacketEntityEffect.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_REMOVE_ENTITY_EFFECT, PacketRemoveEntityEffect.class);
     }
+
+    int getProtocolVersion();
+
+    int getPacketCommand(Packets.Serverbound p);
+
+    String getName();
+
+    Packets.Clientbound getPacketByCommand(ConnectionState s, int command);
 }

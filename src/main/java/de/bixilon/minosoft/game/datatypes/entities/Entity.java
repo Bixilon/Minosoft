@@ -17,11 +17,14 @@ import de.bixilon.minosoft.game.datatypes.Slot;
 import de.bixilon.minosoft.game.datatypes.Slots;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class Entity implements EntityInterface {
     final int id;
     final HashMap<Slots.Entity, Slot> equipment;
+    final List<StatusEffect> effectList;
     Location location;
     Velocity velocity;
     int yaw;
@@ -35,6 +38,7 @@ public abstract class Entity implements EntityInterface {
         this.pitch = pitch;
         this.velocity = velocity;
         this.equipment = new HashMap<>();
+        this.effectList = new ArrayList<>();
     }
 
 
@@ -103,4 +107,17 @@ public abstract class Entity implements EntityInterface {
         return EntityMetaData.class;
     }
 
+    public List<StatusEffect> getEffectList() {
+        return effectList;
+    }
+
+    public void addEffect(StatusEffect effect) {
+        // effect already applied, maybe the duration or the amplifier changed?
+        effectList.removeIf(listEffect -> listEffect.getEffect() == effect.getEffect());
+        effectList.add(effect);
+    }
+
+    public void removeEffect(StatusEffects effect) {
+        effectList.removeIf(listEffect -> listEffect.getEffect() == effect);
+    }
 }
