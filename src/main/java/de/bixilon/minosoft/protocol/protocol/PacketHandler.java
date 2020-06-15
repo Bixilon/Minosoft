@@ -267,4 +267,8 @@ public class PacketHandler {
     public void handle(PacketSoundEffect pkg) {
         //ToDo
     }
+
+    public void handle(PacketPlayerAbilitiesReceiving pkg) {
+        //ToDo: used to set fly abilities
+    }
 }
