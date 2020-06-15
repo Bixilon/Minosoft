@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
-import de.bixilon.minosoft.game.datatypes.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
@@ -23,13 +23,13 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class FallingBlock extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
-    Block block;
+    Blocks block;
 
     public FallingBlock(int id, Location location, int yaw, int pitch, int additionalInt, ProtocolVersion v) {
         super(id, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
         // tnt does not have any additional info
-        block = Block.byLegacy(additionalInt & 0xFFF, additionalInt >> 12);
+        block = Blocks.byLegacy(additionalInt & 0xFFF, additionalInt >> 12);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class FallingBlock extends EntityObject implements ObjectInterface {
         return EntityMetaData.class;
     }
 
-    public Block getBlock() {
+    public Blocks getBlock() {
         return block;
     }
 }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.world;
 
-import de.bixilon.minosoft.game.datatypes.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 
 import java.util.HashMap;
 
@@ -21,30 +21,41 @@ import java.util.HashMap;
  * Collection of 16x16x16 blocks
  */
 public class ChunkNibble {
-    private final HashMap<ChunkNibbleLocation, Block> blocks;
+    private final HashMap<ChunkNibbleLocation, Blocks> blocks;
+    private final HashMap<ChunkNibbleLocation, String[]> signs;
 
-    public ChunkNibble(HashMap<ChunkNibbleLocation, Block> blocks) {
+    public ChunkNibble(HashMap<ChunkNibbleLocation, Blocks> blocks) {
         this.blocks = blocks;
+        this.signs = new HashMap<>();
     }
 
     public ChunkNibble() {
         // empty
         this.blocks = new HashMap<>();
+        this.signs = new HashMap<>();
     }
 
-    public Block getBlock(ChunkNibbleLocation loc) {
+    public Blocks getBlock(ChunkNibbleLocation loc) {
         return blocks.get(loc);
     }
 
-    public Block getBlock(int x, int y, int z) {
+    public Blocks getBlock(int x, int y, int z) {
         return getBlock(new ChunkNibbleLocation(x, y, z));
     }
 
-    public void setBlock(int x, int y, int z, Block block) {
+    public void setBlock(int x, int y, int z, Blocks block) {
         blocks.put(new ChunkNibbleLocation(x, y, z), block);
     }
 
-    public void setBlock(ChunkNibbleLocation location, Block block) {
+    public void setBlock(ChunkNibbleLocation location, Blocks block) {
         blocks.put(location, block);
+    }
+
+    public void updateSign(ChunkNibbleLocation location, String[] lines) {
+        signs.put(location, lines);
+    }
+
+    public String[] getSignText(ChunkNibbleLocation location) {
+        return signs.get(location);
     }
 }

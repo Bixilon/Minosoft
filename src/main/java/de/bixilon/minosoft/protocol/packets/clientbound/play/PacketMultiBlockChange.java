@@ -13,13 +13,12 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
 import de.bixilon.minosoft.game.datatypes.world.InChunkLocation;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketDataException;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
@@ -27,7 +26,7 @@ import java.util.HashMap;
 
 public class PacketMultiBlockChange implements ClientboundPacket {
     ChunkLocation location;
-    final HashMap<InChunkLocation, Block> blocks = new HashMap<>();
+    final HashMap<InChunkLocation, Blocks> blocks = new HashMap<>();
 
 
     @Override
@@ -47,7 +46,7 @@ public class PacketMultiBlockChange implements ClientboundPacket {
                     byte y = (byte) ((raw & 0xFF_00_00) >> 16);
                     byte z = (byte) ((raw & 0x0F_00_00_00) >> 24);
                     byte x = (byte) (Math.abs((raw & 0xF0_00_00_00) >> 28));
-                    blocks.put(new InChunkLocation(x, y, z), Block.byLegacy(blockId, meta));
+                    blocks.put(new InChunkLocation(x, y, z), Blocks.byLegacy(blockId, meta));
                 }
 
                 break;
@@ -68,7 +67,7 @@ public class PacketMultiBlockChange implements ClientboundPacket {
         return location;
     }
 
-    public HashMap<InChunkLocation, Block> getBlocks() {
+    public HashMap<InChunkLocation, Blocks> getBlocks() {
         return blocks;
     }
 }

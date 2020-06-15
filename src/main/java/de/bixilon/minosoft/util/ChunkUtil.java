@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util;
 
-import de.bixilon.minosoft.game.datatypes.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibble;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibbleLocation;
@@ -50,7 +50,7 @@ public class ChunkUtil {
                 for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
                     if (BitByte.isBitSet(sectionBitMask, c)) {
 
-                        HashMap<ChunkNibbleLocation, Block> blockMap = new HashMap<>();
+                        HashMap<ChunkNibbleLocation, Blocks> blockMap = new HashMap<>();
 
                         for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                             for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
@@ -76,8 +76,8 @@ public class ChunkUtil {
 
 
                                     // ToDo light, biome
-                                    Block block = Block.byLegacy(singeBlockId, singleMeta);
-                                    if (block == Block.AIR) {
+                                    Blocks block = Blocks.byLegacy(singeBlockId, singleMeta);
+                                    if (block == Blocks.AIR) {
                                         continue;
                                     }
                                     blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), block);

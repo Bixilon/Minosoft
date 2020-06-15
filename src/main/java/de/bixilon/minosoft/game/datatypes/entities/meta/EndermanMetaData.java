@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
@@ -24,12 +24,12 @@ public class EndermanMetaData extends MobMetaData {
     }
 
 
-    public Block getCarriedBlock() {
+    public Blocks getCarriedBlock() {
         switch (version) {
             case VERSION_1_7_10:
-                return Block.byLegacy((short) sets.get(16).getData(), (byte) sets.get(17).getData());
+                return Blocks.byLegacy((short) sets.get(16).getData(), (byte) sets.get(17).getData());
         }
-        return Block.AIR;
+        return Blocks.AIR;
     }
 
     public boolean isScreaming() {

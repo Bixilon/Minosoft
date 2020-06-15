@@ -13,33 +13,33 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
-public class PacketBlockChange implements ClientboundPacket {
+public class PacketUpdateSign implements ClientboundPacket {
     BlockPosition position;
-    Blocks block;
+    String[] lines = new String[4];
 
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
-                position = new BlockPosition(buffer.readInteger(), BitByte.byteToUShort(buffer.readByte()), buffer.readInteger());
-                block = Blocks.byLegacy(buffer.readVarInt(), buffer.readByte());
+                position = new BlockPosition(buffer.readInteger(), buffer.readShort(), buffer.readInteger());
+                for (byte i = 0; i < 4; i++) {
+                    lines[i] = buffer.readString();
+                }
                 break;
         }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Block change received: %s %s", position.toString(), block.name()));
+        Log.game(String.format("Sign data received at: %s", position.toString()));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class PacketBlockChange implements ClientboundPacket {
         return position;
     }
 
-    public Blocks getBlock() {
-        return block;
+    public String[] getLines() {
+        return lines;
     }
 }

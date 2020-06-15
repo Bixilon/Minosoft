@@ -251,4 +251,8 @@ public class PacketHandler {
     public void handle(PacketRemoveEntityEffect pkg) {
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).removeEffect(pkg.getEffect());
     }
+
+    public void handle(PacketUpdateSign pkg) {
+        connection.getPlayer().getWorld().updateSign(pkg.getPosition(), pkg.getLines());
+    }
 }

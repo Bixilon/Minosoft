@@ -76,6 +76,7 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_CHUNK_DATA, PacketChunkData.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_EFFECT, PacketEntityEffect.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_REMOVE_ENTITY_EFFECT, PacketRemoveEntityEffect.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_SIGN, PacketUpdateSign.class);
     }
 
     int getProtocolVersion();

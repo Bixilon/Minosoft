@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
@@ -47,12 +47,12 @@ public class MinecartMetaData extends EntityMetaData {
         return 0;
     }
 
-    public Block getBlock() {
+    public Blocks getBlock() {
         switch (version) {
             case VERSION_1_7_10:
-                return Block.byLegacy((int) sets.get(20).getData() & 0xFF, (int) sets.get(20).getData() & 0xFF00);
+                return Blocks.byLegacy((int) sets.get(20).getData() & 0xFF, (int) sets.get(20).getData() & 0xFF00);
         }
-        return Block.AIR;
+        return Blocks.AIR;
     }
 
 }

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.game.datatypes.blocks;
 import de.bixilon.minosoft.game.datatypes.Color;
 import de.bixilon.minosoft.game.datatypes.Identifier;
 
-public enum Block {
+public enum Blocks {
     UNKNOWN(null, -1), // the buggy pink black block
     AIR(new Identifier("air"), 0),
     STONE(new Identifier("stone"), 1),
@@ -52,6 +52,26 @@ public enum Block {
     RED_WOOL(new Identifier("wool", "red_wool"), 35, Color.RED.getColor()),
     BLACK_WOOL(new Identifier("wool", "black_wool"), 35, Color.BLACK.getColor()),
     TNT(new Identifier("tnt"), 46),
+    STANDING_SIGN_SOUTH(new Identifier("standing_sign"), 63, 0),
+    STANDING_SIGN_SOUTH_SOUTH_WEST(new Identifier("standing_sign"), 63, 1),
+    STANDING_SIGN_SOUTH_WEST(new Identifier("standing_sign"), 63, 2),
+    STANDING_SIGN_WEST_SOUTH_WEST(new Identifier("standing_sign"), 63, 3),
+    STANDING_SIGN_WEST(new Identifier("standing_sign"), 63, 4),
+    STANDING_SIGN_WEST_NORTH_WEST(new Identifier("standing_sign"), 63, 5),
+    STANDING_SIGN_NORTH_WEST(new Identifier("standing_sign"), 63, 6),
+    STANDING_SIGN_NORTH_NORTH_WEST(new Identifier("standing_sign"), 63, 7),
+    STANDING_SIGN_NORTH(new Identifier("standing_sign"), 63, 8),
+    STANDING_SIGN_NORTH_NORTH_EAST(new Identifier("standing_sign"), 63, 9),
+    STANDING_SIGN_NORTH_EAST(new Identifier("standing_sign"), 63, 10),
+    STANDING_SIGN_EAST_NORTH_EAST(new Identifier("standing_sign"), 63, 11),
+    STANDING_SIGN_EAST(new Identifier("standing_sign"), 63, 12),
+    STANDING_SIGN_EAST_SOUTH_EAST(new Identifier("standing_sign"), 63, 13),
+    STANDING_SIGN_SOUTH_EAST(new Identifier("standing_sign"), 63, 14),
+    STANDING_SIGN_SOUTH_SOUTH_EAST(new Identifier("standing_sign"), 63, 15),
+    WALL_SIGN_EAST(new Identifier("wall_sign"), 68, 0),
+    WALL_SIGN_NORTH(new Identifier("wall_sign"), 68, 1),
+    WALL_SIGN_SOUTH(new Identifier("wall_sign"), 68, 2),
+    WALL_SIGN_WEST(new Identifier("wall_sign"), 68, 3),
     DROPPER_DOWN(new Identifier("dropper"), 158, 0),
     DROPPER_EAST(new Identifier("dropper"), 158, 1),
     DROPPER_NORTH(new Identifier("dropper"), 158, 2),
@@ -66,19 +86,19 @@ public enum Block {
     final int legacyId;
     int legacyData;
 
-    Block(Identifier identifier, int legacyId, int legacyData) {
+    Blocks(Identifier identifier, int legacyId, int legacyData) {
         this.identifier = identifier;
         this.legacyId = legacyId;
         this.legacyData = legacyData;
     }
 
-    Block(Identifier identifier, int legacyId) {
+    Blocks(Identifier identifier, int legacyId) {
         this.identifier = identifier;
         this.legacyId = legacyId;
     }
 
-    public static Block byIdentifier(Identifier identifier) {
-        for (Block b : values()) {
+    public static Blocks byIdentifier(Identifier identifier) {
+        for (Blocks b : values()) {
             if (b.getIdentifier().equals(identifier)) {
                 return b;
             }
@@ -86,8 +106,8 @@ public enum Block {
         return UNKNOWN;
     }
 
-    public static Block byLegacy(int id, int data) {
-        for (Block b : values()) {
+    public static Blocks byLegacy(int id, int data) {
+        for (Blocks b : values()) {
             if (b.getLegacyId() == id && b.getLegacyData() == data) {
                 return b;
             }
@@ -95,7 +115,7 @@ public enum Block {
         return UNKNOWN;
     }
 
-    public static Block byLegacy(int id) {
+    public static Blocks byLegacy(int id) {
         return byLegacy(id, 0);
     }
 

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.world;
 
 import de.bixilon.minosoft.game.datatypes.Dimension;
-import de.bixilon.minosoft.game.datatypes.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 
 import java.util.HashMap;
@@ -49,15 +49,15 @@ public class World {
         return chunks;
     }
 
-    public Block getBlock(BlockPosition pos) {
+    public Blocks getBlock(BlockPosition pos) {
         ChunkLocation loc = pos.getChunkLocation();
         if (getChunk(loc) != null) {
             return getChunk(loc).getBlock(pos.getX() % 16, pos.getY(), pos.getZ() % 16);
         }
-        return Block.AIR;
+        return Blocks.AIR;
     }
 
-    public void setBlock(BlockPosition pos, Block block) {
+    public void setBlock(BlockPosition pos, Blocks block) {
         if (getChunk(pos.getChunkLocation()) != null) {
             getChunk(pos.getChunkLocation()).setBlock(pos.getX() % 16, pos.getY(), pos.getZ() % 16, block);
         }
@@ -116,5 +116,14 @@ public class World {
 
     public void setDimension(Dimension dimension) {
         this.dimension = dimension;
+    }
+
+    public void updateSign(BlockPosition position, String[] lines) {
+        //ToDo check if block is really a sign
+        getChunk(position.getChunkLocation()).updateSign(position, lines);
+    }
+
+    public String[] getSignText(BlockPosition position) {
+        return getChunk(position.getChunkLocation()).getSignText(position);
     }
 }
