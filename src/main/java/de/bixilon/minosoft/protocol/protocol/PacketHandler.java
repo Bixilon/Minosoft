@@ -263,4 +263,8 @@ public class PacketHandler {
     public void handle(PacketEntityStatus pkg) {
         //ToDo
     }
+
+    public void handle(PacketSoundEffect pkg) {
+        //ToDo
+    }
 }

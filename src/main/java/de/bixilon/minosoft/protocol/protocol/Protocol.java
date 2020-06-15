@@ -79,6 +79,7 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_SIGN, PacketUpdateSign.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_ANIMATION, PacketEntityAnimation.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_STATUS, PacketEntityStatus.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SOUND_EFFECT, PacketSoundEffect.class);
     }
 
     int getProtocolVersion();
