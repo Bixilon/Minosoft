@@ -53,9 +53,4 @@ public class LeashKnot extends EntityObject implements ObjectInterface {
         return 0.5F;
     }
 
-    @Override
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return EntityMetaData.class;
-    }
-
 }

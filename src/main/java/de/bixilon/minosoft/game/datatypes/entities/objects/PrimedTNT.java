@@ -52,9 +52,4 @@ public class PrimedTNT extends EntityObject implements ObjectInterface {
     public float getHeight() {
         return 0.98F;
     }
-
-    @Override
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return EntityMetaData.class;
-    }
 }

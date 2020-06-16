@@ -53,9 +53,4 @@ public class FallingDragonEgg extends EntityObject implements ObjectInterface {
         return 0.98F;
     }
 
-    @Override
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return EntityMetaData.class;
-    }
-
 }

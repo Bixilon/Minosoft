@@ -53,9 +53,4 @@ public class ThrownExpBottle extends EntityObject implements ObjectInterface {
         return 0.25F;
     }
 
-    @Override
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return EntityMetaData.class;
-    }
-
 }

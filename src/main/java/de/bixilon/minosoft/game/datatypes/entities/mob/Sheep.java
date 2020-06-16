@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
-import de.bixilon.minosoft.game.datatypes.entities.meta.AgeableMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.SheepMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -66,6 +65,6 @@ public class Sheep extends Mob implements MobInterface {
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return AgeableMetaData.class;
+        return SheepMetaData.class;
     }
 }

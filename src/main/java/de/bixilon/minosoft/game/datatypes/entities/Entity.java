@@ -144,7 +144,7 @@ public abstract class Entity implements EntityInterface {
         return attachedTo;
     }
 
-    public void deteach() {
+    public void detach() {
         attachedTo = -1;
     }
 }

@@ -52,10 +52,4 @@ public class Enderpearl extends EntityObject implements ObjectInterface {
     public float getHeight() {
         return 0.25F;
     }
-
-    @Override
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return EntityMetaData.class;
-    }
-
 }

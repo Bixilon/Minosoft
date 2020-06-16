@@ -55,11 +55,6 @@ public class FireBall extends EntityObject implements ObjectInterface {
         return 1.0F;
     }
 
-    @Override
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return EntityMetaData.class;
-    }
-
     public int getThrower() {
         return thrower;
     }

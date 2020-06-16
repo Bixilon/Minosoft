@@ -56,11 +56,6 @@ public class FallingBlock extends EntityObject implements ObjectInterface {
         return 0.98F;
     }
 
-    @Override
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return EntityMetaData.class;
-    }
-
     public Blocks getBlock() {
         return block;
     }
