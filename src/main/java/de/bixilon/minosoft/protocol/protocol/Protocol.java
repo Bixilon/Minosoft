@@ -84,6 +84,7 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_ATTACH_ENTITY, PacketAttachEntity.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_USE_BED, PacketUseBed.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_BLOCK_ENTITY_DATA, PacketBlockEntityMetadata.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_BLOCK_BREAK_ANIMATION, PacketBlockBreakAnimation.class);
     }
 
     int getProtocolVersion();

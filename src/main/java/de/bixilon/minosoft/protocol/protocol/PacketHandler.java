@@ -294,4 +294,8 @@ public class PacketHandler {
 
     public void handle(PacketBlockEntityMetadata pkg) {
     }
+
+    public void handle(PacketBlockBreakAnimation pkg) {
+        // ToDo
+    }
 }
