@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.world;
 
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
+import de.bixilon.minosoft.nbt.tag.CompoundTag;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,13 +63,19 @@ public class Chunk {
     }
 
     public void updateSign(BlockPosition position, String[] lines) {
-        ChunkNibble nibble = nibbles.get((byte) (position.getY() / 16));
-        nibble.updateSign(new ChunkNibbleLocation(position.getX() % 16, position.getY() % 16, position.getZ() % 16), lines);
+        nibbles.get(position.getSectionHeight()).updateSign(position.getNibbleLocation(), lines);
     }
 
     public String[] getSignText(BlockPosition position) {
-        ChunkNibble nibble = nibbles.get((byte) (position.getY() / 16));
-        return nibble.getSignText(new ChunkNibbleLocation(position.getX() % 16, position.getY() / 16, position.getZ() % 16));
+        return nibbles.get(position.getSectionHeight()).getSignText(position.getNibbleLocation());
 
+    }
+
+    public void setBlockEntityData(BlockPosition position, CompoundTag nbt) {
+        nibbles.get(position.getSectionHeight()).setBlockEntityData(position.getNibbleLocation(), nbt);
+    }
+
+    public CompoundTag getBlockEntityData(BlockPosition position) {
+        return nibbles.get(position.getSectionHeight()).getBlockEntityData(position.getNibbleLocation());
     }
 }

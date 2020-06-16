@@ -16,6 +16,7 @@ package de.bixilon.minosoft.game.datatypes.world;
 import de.bixilon.minosoft.game.datatypes.Dimension;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
+import de.bixilon.minosoft.nbt.tag.CompoundTag;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -125,5 +126,14 @@ public class World {
 
     public String[] getSignText(BlockPosition position) {
         return getChunk(position.getChunkLocation()).getSignText(position);
+    }
+
+    public void setBlockEntityData(BlockPosition position, CompoundTag nbt) {
+        //ToDo check if block is really a sign
+        getChunk(position.getChunkLocation()).setBlockEntityData(position, nbt);
+    }
+
+    public CompoundTag getBlockEntityData(BlockPosition position) {
+        return getChunk(position.getChunkLocation()).getBlockEntityData(position);
     }
 }

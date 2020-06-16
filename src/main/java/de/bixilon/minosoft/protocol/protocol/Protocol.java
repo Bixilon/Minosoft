@@ -83,6 +83,7 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_POSITION_AND_LOOK, PacketPlayerPositionAndRotation.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ATTACH_ENTITY, PacketAttachEntity.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_USE_BED, PacketUseBed.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_BLOCK_ENTITY_DATA, PacketBlockEntityMetadata.class);
     }
 
     int getProtocolVersion();

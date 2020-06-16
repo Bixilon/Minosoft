@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.world;
 
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
+import de.bixilon.minosoft.nbt.tag.CompoundTag;
 
 import java.util.HashMap;
 
@@ -23,16 +24,19 @@ import java.util.HashMap;
 public class ChunkNibble {
     private final HashMap<ChunkNibbleLocation, Blocks> blocks;
     private final HashMap<ChunkNibbleLocation, String[]> signs;
+    private final HashMap<ChunkNibbleLocation, CompoundTag> blockEntityMeta;
 
     public ChunkNibble(HashMap<ChunkNibbleLocation, Blocks> blocks) {
         this.blocks = blocks;
         this.signs = new HashMap<>();
+        blockEntityMeta = new HashMap<>();
     }
 
     public ChunkNibble() {
         // empty
         this.blocks = new HashMap<>();
         this.signs = new HashMap<>();
+        blockEntityMeta = new HashMap<>();
     }
 
     public Blocks getBlock(ChunkNibbleLocation loc) {
@@ -57,5 +61,13 @@ public class ChunkNibble {
 
     public String[] getSignText(ChunkNibbleLocation location) {
         return signs.get(location);
+    }
+
+    public void setBlockEntityData(ChunkNibbleLocation nibbleLocation, CompoundTag nbt) {
+        blockEntityMeta.put(nibbleLocation, nbt);
+    }
+
+    public CompoundTag getBlockEntityData(ChunkNibbleLocation nibbleLocation) {
+        return blockEntityMeta.get(nibbleLocation);
     }
 }

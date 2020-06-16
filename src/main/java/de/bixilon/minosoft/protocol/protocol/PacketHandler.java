@@ -291,4 +291,7 @@ public class PacketHandler {
     public void handle(PacketUseBed pkg) {
         //ToDo
     }
+
+    public void handle(PacketBlockEntityMetadata pkg) {
+    }
 }
