@@ -25,6 +25,7 @@ import de.bixilon.minosoft.game.datatypes.particle.Particles;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.nbt.tag.TagTypes;
+import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.Util;
 import org.json.JSONObject;
 
@@ -178,7 +179,7 @@ public class InByteBuffer {
         return new JSONObject(readString());
     }
 
-    public BlockPosition readBlockPosition() {
+    public BlockPosition readPosition() {
         Long raw = readLong();
         return new BlockPosition(Long.valueOf(raw >> 38).intValue(), Long.valueOf(raw & 0xFFF).shortValue(), Long.valueOf(raw << 26 >> 38).intValue());
     }
@@ -288,5 +289,17 @@ public class InByteBuffer {
 
     public Location readLocation() {
         return new Location(readDouble(), readDouble(), readDouble());
+    }
+
+    public BlockPosition readBlockPosition() {
+        return new BlockPosition(readInteger(), BitByte.byteToUShort(readByte()), readInteger());
+    }
+
+    public BlockPosition readBlockPositionInteger() {
+        return new BlockPosition(readInteger(), (short) (readInteger()), readInteger());
+    }
+
+    public BlockPosition readBlockPositionShort() {
+        return new BlockPosition(readInteger(), readShort(), readInteger());
     }
 }

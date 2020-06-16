@@ -287,4 +287,8 @@ public class PacketHandler {
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).attachTo(pkg.getVehicleId());
         //ToDo leash support
     }
+
+    public void handle(PacketUseBed pkg) {
+        //ToDo
+    }
 }

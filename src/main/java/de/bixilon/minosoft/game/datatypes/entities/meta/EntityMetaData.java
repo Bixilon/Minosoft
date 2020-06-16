@@ -109,11 +109,11 @@ public class EntityMetaData {
                     buffer.readFloat();
                     break;
                 case POSITION:
-                    data = buffer.readBlockPosition();
+                    data = buffer.readPosition();
                     break;
                 case OPT_POSITION:
                     if (buffer.readBoolean()) {
-                        data = buffer.readBlockPosition();
+                        data = buffer.readPosition();
                     }
                     break;
                 case DIRECTION:

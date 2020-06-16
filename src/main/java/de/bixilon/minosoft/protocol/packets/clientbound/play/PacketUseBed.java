@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -21,24 +20,24 @@ import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketBlockChange implements ClientboundPacket {
+public class PacketUseBed implements ClientboundPacket {
+    int entityId;
     BlockPosition position;
-    Blocks block;
 
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
+                entityId = buffer.readInteger();
                 position = buffer.readBlockPosition();
-                block = Blocks.byLegacy(buffer.readVarInt(), buffer.readByte());
                 break;
         }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Block change received: %s %s", position.toString(), block.name()));
+        Log.protocol(String.format("Entity used bed (entityId=%d, position=%s)", entityId, position.toString()));
     }
 
     @Override
@@ -46,11 +45,11 @@ public class PacketBlockChange implements ClientboundPacket {
         h.handle(this);
     }
 
-    public BlockPosition getPosition() {
-        return position;
+    public int getEntityId() {
+        return entityId;
     }
 
-    public Blocks getBlock() {
-        return block;
+    public BlockPosition getPosition() {
+        return position;
     }
 }

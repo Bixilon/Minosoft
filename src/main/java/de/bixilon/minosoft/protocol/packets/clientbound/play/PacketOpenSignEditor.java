@@ -28,7 +28,7 @@ public class PacketOpenSignEditor implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
-                position = new BlockPosition(buffer.readInteger(), (short) buffer.readInteger(), buffer.readInteger());
+                position = buffer.readBlockPositionInteger();
                 break;
         }
     }

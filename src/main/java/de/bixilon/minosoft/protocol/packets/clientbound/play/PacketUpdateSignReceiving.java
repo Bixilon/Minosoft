@@ -29,7 +29,7 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
-                position = new BlockPosition(buffer.readInteger(), buffer.readShort(), buffer.readInteger());
+                position = buffer.readBlockPositionShort();
                 for (byte i = 0; i < 4; i++) {
                     lines[i] = buffer.readString();
                 }
