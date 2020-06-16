@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class Cow extends Mob implements MobInterface {
     AgeableMetaData metaData;
 
-    public Cow(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Cow(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
         this.metaData = new AgeableMetaData(buffer, v);
     }

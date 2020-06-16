@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class SnowGolem extends Mob implements MobInterface {
     MobMetaData metaData;
 
-    public SnowGolem(int id, Location location, int yaw, int pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public SnowGolem(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
         super(id, location, yaw, pitch, velocity);
         this.metaData = new MobMetaData(buffer, v);
     }

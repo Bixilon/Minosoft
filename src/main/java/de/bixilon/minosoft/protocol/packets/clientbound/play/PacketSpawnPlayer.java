@@ -42,8 +42,8 @@ public class PacketSpawnPlayer implements ClientboundPacket {
                     properties[i] = new PlayerPropertyData(buffer.readString(), buffer.readString(), buffer.readString());
                 }
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-                int yaw = buffer.readByte();
-                int pitch = buffer.readByte();
+                short yaw = buffer.readAngle();
+                short pitch = buffer.readAngle();
 
                 short currentItem = buffer.readShort();
                 HumanMetaData metaData = new HumanMetaData(buffer, v);

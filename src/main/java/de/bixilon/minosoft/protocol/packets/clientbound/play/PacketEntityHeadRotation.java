@@ -22,14 +22,14 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketEntityHeadRotation implements ClientboundPacket {
     int entityId;
-    int headYaw;
+    short headYaw;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
                 this.entityId = buffer.readInteger();
-                this.headYaw = buffer.readByte();
+                this.headYaw = buffer.readAngle();
                 break;
         }
     }
@@ -44,7 +44,7 @@ public class PacketEntityHeadRotation implements ClientboundPacket {
     }
 
 
-    public int getHeadYaw() {
+    public short getHeadYaw() {
         return headYaw;
     }
 

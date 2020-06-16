@@ -25,7 +25,7 @@ public class Minecart extends EntityObject implements ObjectInterface {
     MinecartType type;
     MinecartMetaData metaData;
 
-    public Minecart(int id, Location location, int yaw, int pitch, int additionalInt, ProtocolVersion v) {
+    public Minecart(int id, Location location, short yaw, short pitch, int additionalInt, ProtocolVersion v) {
         super(id, location, yaw, pitch, null);
         type = MinecartType.byType(additionalInt);
     }

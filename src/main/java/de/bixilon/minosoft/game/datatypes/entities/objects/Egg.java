@@ -24,10 +24,9 @@ public class Egg extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
     int thrower;
 
-    public Egg(int id, Location location, int yaw, int pitch, int additionalInt, ProtocolVersion v) {
+    public Egg(int id, Location location, short yaw, short pitch, int additionalInt, ProtocolVersion v) {
         super(id, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
-        // tnt does not have any additional info
         this.thrower = additionalInt;
     }
 

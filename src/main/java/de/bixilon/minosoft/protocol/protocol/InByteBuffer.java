@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.Slot;
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.entities.Pose;
 import de.bixilon.minosoft.game.datatypes.particle.BlockParticle;
 import de.bixilon.minosoft.game.datatypes.particle.OtherParticles;
 import de.bixilon.minosoft.game.datatypes.particle.Particle;
 import de.bixilon.minosoft.game.datatypes.particle.Particles;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.nbt.tag.TagTypes;
 import de.bixilon.minosoft.util.Util;
@@ -195,6 +195,10 @@ public class InByteBuffer {
         return this.pos;
     }
 
+    public void setPosition(int pos) {
+        this.pos = pos;
+    }
+
     public int getLength() {
         return bytes.length;
     }
@@ -202,7 +206,6 @@ public class InByteBuffer {
     public int getBytesLeft() {
         return bytes.length - pos;
     }
-
 
     public Direction readDirection() {
         return Direction.byId(readVarInt());
@@ -225,10 +228,6 @@ public class InByteBuffer {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public void setPosition(int pos) {
-        this.pos = pos;
     }
 
     public CompoundTag readNBT() {
@@ -280,5 +279,9 @@ public class InByteBuffer {
 
     public String getBase64() {
         return getBase64(getPosition(), getBytesLeft());
+    }
+
+    public short readAngle() {
+        return (short) (readByte() * ProtocolDefinition.ANGLE_CALCULATION_CONSTANT);
     }
 }

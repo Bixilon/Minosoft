@@ -22,16 +22,16 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketEntityRotation implements ClientboundPacket {
     int entityId;
-    int yaw;
-    int pitch;
+    short yaw;
+    short pitch;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
                 this.entityId = buffer.readInteger();
-                this.yaw = buffer.readByte();
-                this.pitch = buffer.readByte();
+                this.yaw = buffer.readAngle();
+                this.pitch = buffer.readAngle();
                 break;
         }
     }
@@ -46,11 +46,11 @@ public class PacketEntityRotation implements ClientboundPacket {
     }
 
 
-    public int getYaw() {
+    public short getYaw() {
         return yaw;
     }
 
-    public int getPitch() {
+    public short getPitch() {
         return pitch;
     }
 

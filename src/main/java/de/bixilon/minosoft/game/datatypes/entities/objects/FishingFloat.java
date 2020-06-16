@@ -24,10 +24,9 @@ public class FishingFloat extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
     int owner;
 
-    public FishingFloat(int id, Location location, int yaw, int pitch, int additionalInt, ProtocolVersion v) {
+    public FishingFloat(int id, Location location, short yaw, short pitch, int additionalInt, ProtocolVersion v) {
         super(id, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
-        // tnt does not have any additional info
         this.owner = additionalInt;
     }
 

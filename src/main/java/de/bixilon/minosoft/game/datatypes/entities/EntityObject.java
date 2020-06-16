@@ -15,7 +15,7 @@ package de.bixilon.minosoft.game.datatypes.entities;
 
 public abstract class EntityObject extends Entity implements ObjectInterface {
 
-    public EntityObject(int id, Location location, int yaw, int pitch, Velocity velocity) {
+    public EntityObject(int id, Location location, short yaw, short pitch, Velocity velocity) {
         super(id, location, yaw, pitch, velocity);
     }
 

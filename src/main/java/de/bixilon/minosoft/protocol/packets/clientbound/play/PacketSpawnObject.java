@@ -34,12 +34,12 @@ public class PacketSpawnObject implements ClientboundPacket {
                 int entityId = buffer.readVarInt();
                 Objects type = Objects.byType(buffer.readByte());
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-                int pitch = buffer.readByte();
-                int yaw = buffer.readByte();
+                short pitch = buffer.readAngle();
+                short yaw = buffer.readAngle();
 
                 assert type != null;
                 try {
-                    object = type.getClazz().getConstructor(int.class, Location.class, int.class, int.class, int.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, buffer.readInteger(), v);
+                    object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, buffer.readInteger(), v);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     e.printStackTrace();
                 }

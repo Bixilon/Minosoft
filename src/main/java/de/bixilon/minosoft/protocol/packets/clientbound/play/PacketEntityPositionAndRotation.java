@@ -24,8 +24,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class PacketEntityPositionAndRotation implements ClientboundPacket {
     int entityId;
     RelativeLocation location;
-    int yaw;
-    int pitch;
+    short yaw;
+    short pitch;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
@@ -33,8 +33,8 @@ public class PacketEntityPositionAndRotation implements ClientboundPacket {
             case VERSION_1_7_10:
                 this.entityId = buffer.readInteger();
                 this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                this.yaw = buffer.readByte(); //ToDo dividing, ...
-                this.pitch = buffer.readByte();
+                this.yaw = buffer.readAngle();
+                this.pitch = buffer.readAngle();
                 break;
         }
     }
@@ -52,11 +52,11 @@ public class PacketEntityPositionAndRotation implements ClientboundPacket {
         return location;
     }
 
-    public int getYaw() {
+    public short getYaw() {
         return yaw;
     }
 
-    public int getPitch() {
+    public short getPitch() {
         return pitch;
     }
 

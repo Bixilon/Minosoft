@@ -27,15 +27,25 @@ public abstract class Entity implements EntityInterface {
     final List<StatusEffect> effectList;
     Location location;
     Velocity velocity;
-    int yaw;
-    int pitch;
-    int headYaw;
+    short yaw;
+    short pitch;
+    short headYaw;
 
-    public Entity(int id, Location location, int yaw, int pitch, Velocity velocity) {
+    public Entity(int id, Location location, short yaw, short pitch, Velocity velocity) {
         this.id = id;
         this.location = location;
         this.yaw = yaw;
         this.pitch = pitch;
+        this.velocity = velocity;
+        this.equipment = new HashMap<>();
+        this.effectList = new ArrayList<>();
+    }
+
+    public Entity(int id, Location location, int yaw, int pitch, Velocity velocity) {
+        this.id = id;
+        this.location = location;
+        this.yaw = (short) yaw;
+        this.pitch = (short) pitch;
         this.velocity = velocity;
         this.equipment = new HashMap<>();
         this.effectList = new ArrayList<>();
@@ -68,20 +78,20 @@ public abstract class Entity implements EntityInterface {
         this.velocity = velocity;
     }
 
-    public int getYaw() {
+    public short getYaw() {
         return 0;
     }
 
-    public void setYaw(int yaw) {
+    public void setYaw(short yaw) {
         this.yaw = yaw;
 
     }
 
-    public int getPitch() {
+    public short getPitch() {
         return 0;
     }
 
-    public void setPitch(int pitch) {
+    public void setPitch(short pitch) {
         this.pitch = pitch;
 
     }
@@ -95,11 +105,11 @@ public abstract class Entity implements EntityInterface {
     }
 
 
-    public int getHeadYaw() {
+    public short getHeadYaw() {
         return headYaw;
     }
 
-    public void setHeadYaw(int headYaw) {
+    public void setHeadYaw(short headYaw) {
         this.headYaw = headYaw;
     }
 

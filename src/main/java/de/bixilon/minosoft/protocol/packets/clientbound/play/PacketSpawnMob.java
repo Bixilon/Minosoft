@@ -36,14 +36,14 @@ public class PacketSpawnMob implements ClientboundPacket {
                 int entityId = buffer.readVarInt();
                 Mobs type = Mobs.byType(buffer.readByte());
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-                int yaw = buffer.readByte();
-                int pitch = buffer.readByte();
-                int headPitch = buffer.readByte();
+                short yaw = buffer.readAngle();
+                short pitch = buffer.readAngle();
+                int headpitch = buffer.readAngle();
                 Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
 
                 assert type != null;
                 try {
-                    mob = type.getClazz().getConstructor(int.class, Location.class, int.class, int.class, Velocity.class, InByteBuffer.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer, v);
+                    mob = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, InByteBuffer.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer, v);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     e.printStackTrace();
                 }
