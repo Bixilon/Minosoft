@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketUpdateSign implements ClientboundPacket {
+public class PacketUpdateSignReceiving implements ClientboundPacket {
     BlockPosition position;
     String[] lines = new String[4];
 

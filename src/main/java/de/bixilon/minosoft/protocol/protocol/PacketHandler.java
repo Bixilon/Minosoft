@@ -253,7 +253,7 @@ public class PacketHandler {
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).removeEffect(pkg.getEffect());
     }
 
-    public void handle(PacketUpdateSign pkg) {
+    public void handle(PacketUpdateSignReceiving pkg) {
         connection.getPlayer().getWorld().updateSign(pkg.getPosition(), pkg.getLines());
     }
 
