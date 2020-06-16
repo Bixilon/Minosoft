@@ -174,8 +174,12 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityVelocity pkg) {
+        if (pkg.getEntityId() == connection.getPlayer().getEntityId()) {
+            // this is us
+            //ToDo
+            return;
+        }
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setVelocity(pkg.getVelocity());
-
     }
 
     public void handle(PacketSpawnPlayer pkg) {
