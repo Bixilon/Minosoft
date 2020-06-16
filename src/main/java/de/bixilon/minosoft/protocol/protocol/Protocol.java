@@ -80,7 +80,7 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_ANIMATION, PacketEntityAnimation.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_STATUS, PacketEntityStatus.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SOUND_EFFECT, PacketSoundEffect.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_ABILITIES, PacketPlayerAbilitiesReceiving.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_POSITION_AND_LOOK, PacketPlayerPositionAndRotation.class);
     }
 
     int getProtocolVersion();

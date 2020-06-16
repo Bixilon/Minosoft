@@ -27,6 +27,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPluginMessageSending;
 
 import javax.crypto.SecretKey;
@@ -270,5 +271,15 @@ public class PacketHandler {
 
     public void handle(PacketPlayerAbilitiesReceiving pkg) {
         //ToDo: used to set fly abilities
+    }
+
+    public void handle(PacketPlayerPositionAndRotation pkg) {
+        //ToDo handle with gui
+        if (!connection.getPlayer().isSpawnConfirmed()) {
+            // oops, not spawned yet, confirming position
+            //ToDo feet position
+            connection.sendPacket(new PacketPlayerPositionAndRotationSending(pkg.getLocation().getX(), pkg.getLocation().getY() - 1.65F, pkg.getLocation().getY(), pkg.getLocation().getZ(), pkg.getYaw(), pkg.getPitch(), pkg.isOnGround()));
+            connection.getPlayer().setSpawnConfirmed(true);
+        }
     }
 }
