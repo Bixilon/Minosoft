@@ -298,4 +298,8 @@ public class PacketHandler {
     public void handle(PacketBlockBreakAnimation pkg) {
         // ToDo
     }
+
+    public void handle(PacketBlockAction pkg) {
+        // ToDo
+    }
 }
