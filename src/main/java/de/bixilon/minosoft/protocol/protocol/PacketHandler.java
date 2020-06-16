@@ -16,7 +16,9 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.GameMode;
+import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKeyRequest;
@@ -301,5 +303,17 @@ public class PacketHandler {
 
     public void handle(PacketBlockAction pkg) {
         // ToDo
+    }
+
+    public void handle(PacketExplosion pkg) {
+        // remove all blocks set by explosion
+        for (byte[] record : pkg.getRecords()) {
+            int x = ((int) pkg.getLocation().getX()) + record[0];
+            int y = ((int) pkg.getLocation().getY()) + record[1];
+            int z = ((int) pkg.getLocation().getY()) + record[2];
+            BlockPosition blockPosition = new BlockPosition(x, (short) y, z);
+            connection.getPlayer().getWorld().setBlock(blockPosition, Blocks.AIR);
+        }
+        //ToDo: motion support
     }
 }
