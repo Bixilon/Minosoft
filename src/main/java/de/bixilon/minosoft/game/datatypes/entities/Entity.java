@@ -30,6 +30,7 @@ public abstract class Entity implements EntityInterface {
     short yaw;
     short pitch;
     short headYaw;
+    int attachedTo = -1;
 
     public Entity(int id, Location location, short yaw, short pitch, Velocity velocity) {
         this.id = id;
@@ -129,5 +130,21 @@ public abstract class Entity implements EntityInterface {
 
     public void removeEffect(StatusEffects effect) {
         effectList.removeIf(listEffect -> listEffect.getEffect() == effect);
+    }
+
+    public void attachTo(int vehicleId) {
+        this.attachedTo = vehicleId;
+    }
+
+    public boolean isAttached() {
+        return attachedTo != -1;
+    }
+
+    public int getAttachedEntity() {
+        return attachedTo;
+    }
+
+    public void deteach() {
+        attachedTo = -1;
     }
 }

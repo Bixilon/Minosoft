@@ -81,6 +81,7 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_STATUS, PacketEntityStatus.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SOUND_EFFECT, PacketSoundEffect.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_POSITION_AND_LOOK, PacketPlayerPositionAndRotation.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ATTACH_ENTITY, PacketAttachEntity.class);
     }
 
     int getProtocolVersion();

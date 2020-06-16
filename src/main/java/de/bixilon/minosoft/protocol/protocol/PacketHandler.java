@@ -282,4 +282,9 @@ public class PacketHandler {
             connection.getPlayer().setSpawnConfirmed(true);
         }
     }
+
+    public void handle(PacketAttachEntity pkg) {
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).attachTo(pkg.getVehicleId());
+        //ToDo leash support
+    }
 }
