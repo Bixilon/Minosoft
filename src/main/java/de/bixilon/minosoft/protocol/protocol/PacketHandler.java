@@ -320,4 +320,8 @@ public class PacketHandler {
         }
         //ToDo: motion support
     }
+
+    public void handle(PacketCollectItem pkg) {
+        //ToDo
+    }
 }

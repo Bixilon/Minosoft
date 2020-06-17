@@ -87,6 +87,7 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_BLOCK_BREAK_ANIMATION, PacketBlockBreakAnimation.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_BLOCK_ACTION, PacketBlockAction.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_EXPLOSION, PacketExplosion.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_COLLECT_ITEM, PacketCollectItem.class);
     }
 
     int getProtocolVersion();
