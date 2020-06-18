@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
@@ -157,5 +159,19 @@ public class OutByteBuffer {
 
     public void writeChatComponent(TextComponent c) {
         writeJson(c.getRaw());
+    }
+
+    public void writeSlot(ProtocolVersion v, Slot slot) {
+        switch (v) {
+            case VERSION_1_7_10:
+                writeShort((short) slot.getItemId());
+                writeByte((byte) slot.getItemCount());
+                writeShort(slot.getItemMetadata());
+                writeNBT(slot.getNbt());
+        }
+    }
+
+    private void writeNBT(CompoundTag nbt) {
+        // ToDo: writeBytes(nbt.getBytes());
     }
 }

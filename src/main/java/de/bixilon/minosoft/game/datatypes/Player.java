@@ -15,6 +15,8 @@ package de.bixilon.minosoft.game.datatypes;
 
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
+import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.game.datatypes.inventory.Slots;
 import de.bixilon.minosoft.game.datatypes.world.World;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
 

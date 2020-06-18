@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.particle;
 
-import de.bixilon.minosoft.game.datatypes.Slot;
+import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 
 public class ItemParticle implements Particle {
     final Slot slot;
