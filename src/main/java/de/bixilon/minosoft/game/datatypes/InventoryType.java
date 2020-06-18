@@ -14,8 +14,18 @@
 package de.bixilon.minosoft.game.datatypes;
 
 public enum InventoryType {
-    ;
-    //ToDo
+    CHEST(0),
+    WORKBENCH(1),
+    FURNACE(2),
+    DISPENSER(3),
+    ENCHANTMENT_TABLE(4),
+    BREWING_STAND(5),
+    NPC_TRACE(6),
+    BEACON(7),
+    ANVIL(8),
+    HOPPER(9),
+    DROPPER(10),
+    HORSE(11);
 
     final int id;
 
