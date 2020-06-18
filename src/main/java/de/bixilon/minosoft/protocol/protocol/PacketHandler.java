@@ -324,4 +324,24 @@ public class PacketHandler {
     public void handle(PacketCollectItem pkg) {
         //ToDo
     }
+
+    public void handle(PacketOpenWindow pkg) {
+        //ToDo
+    }
+
+    public void handle(PacketCloseWindow pkg) {
+        // ToDo
+    }
+
+    public void handle(PacketSetSlot pkg) {
+        //ToDo
+    }
+
+    public void handle(WindowProperty pkg) {
+        //ToDo
+    }
+
+    public void handle(PacketConfirmTransactionReceiving pkg) {
+        //ToDo
+    }
 }
