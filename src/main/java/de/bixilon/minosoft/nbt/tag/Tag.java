@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.nbt.tag;
 
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
+
 public interface Tag {
     TagTypes getType();
+
+    void writeBytes(OutByteBuffer buffer);
 }

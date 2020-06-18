@@ -172,6 +172,13 @@ public class OutByteBuffer {
     }
 
     private void writeNBT(CompoundTag nbt) {
-        // ToDo: writeBytes(nbt.getBytes());
+        // ToDo: test
+        nbt.writeBytes(this);
+    }
+
+    public void writeStringNoLength(String s) {
+        for (byte b : s.getBytes(StandardCharsets.UTF_8)) {
+            bytes.add(b);
+        }
     }
 }

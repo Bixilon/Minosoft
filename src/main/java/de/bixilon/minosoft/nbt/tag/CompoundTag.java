@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.nbt.tag;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class CompoundTag implements Tag {
     final String name;
@@ -87,6 +89,33 @@ public class CompoundTag implements Tag {
     @Override
     public TagTypes getType() {
         return TagTypes.COMPOUND;
+    }
+
+    @Override
+    public void writeBytes(OutByteBuffer buffer) {
+        buffer.writeByte((byte) TagTypes.COMPOUND.getId());
+        buffer.writeShort((short) name.length());
+        buffer.writeStringNoLength(name);
+        // now with prefixed name, etc it is technically the same as a subtag
+        writeBytesSubTag(buffer);
+    }
+
+    public void writeBytesSubTag(OutByteBuffer buffer) {
+        for (Map.Entry<String, Tag> set : data.entrySet()) {
+            buffer.writeByte((byte) set.getValue().getType().getId());
+            buffer.writeShort((short) set.getKey().length());
+            buffer.writeStringNoLength(set.getKey());
+
+            // write data
+            if (set.getValue() instanceof CompoundTag) {
+                // that's a subtag! special rule
+                CompoundTag compoundTag = (CompoundTag) set.getValue();
+                compoundTag.writeBytesSubTag(buffer);
+                continue;
+            }
+            set.getValue().writeBytes(buffer);
+
+        }
     }
 
     public boolean containsKey(String key) {

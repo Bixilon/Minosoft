@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.nbt.tag;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 public class FloatTag implements Tag {
     final float value;
@@ -29,6 +30,11 @@ public class FloatTag implements Tag {
     @Override
     public TagTypes getType() {
         return TagTypes.FLOAT;
+    }
+
+    @Override
+    public void writeBytes(OutByteBuffer buffer) {
+        buffer.writeFloat(value);
     }
 
     public float getValue() {

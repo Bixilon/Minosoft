@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.nbt.tag;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 public class StringTag implements Tag {
     final String value;
@@ -29,6 +30,12 @@ public class StringTag implements Tag {
     @Override
     public TagTypes getType() {
         return TagTypes.STRING;
+    }
+
+    @Override
+    public void writeBytes(OutByteBuffer buffer) {
+        buffer.writeShort((short) value.length());
+        buffer.writeStringNoLength(value);
     }
 
     public String getValue() {
