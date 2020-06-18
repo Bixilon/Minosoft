@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.entities.StatusEffects;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
@@ -31,13 +32,12 @@ public class MobMetaData extends EntityMetaData {
         return 0.0F;
     }
 
-    public int getPotionEffectColor() {
-        //ToDo custom Potion Effect Color Type
+    public StatusEffects getPotionEffectColor() {
         switch (version) {
             case VERSION_1_7_10:
-                return (int) sets.get(7).getData();
+                return StatusEffects.byId((int) sets.get(7).getData());
         }
-        return 0;
+        return null;
     }
 
 

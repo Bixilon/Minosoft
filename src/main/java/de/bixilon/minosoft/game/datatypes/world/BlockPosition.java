@@ -20,7 +20,6 @@ public class BlockPosition {
 
     public BlockPosition(int x, short y, int z) {
         // y min -2048, max 2047
-        //ToDo check values
         this.x = x;
         this.y = y;
         this.z = z;

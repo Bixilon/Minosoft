@@ -129,7 +129,7 @@ public class World {
     }
 
     public void setBlockEntityData(BlockPosition position, CompoundTag nbt) {
-        //ToDo check if block is really a sign
+        //ToDo check if block is really a block entity (command block, spawner, skull, flower pot)
         getChunk(position.getChunkLocation()).setBlockEntityData(position, nbt);
     }
 

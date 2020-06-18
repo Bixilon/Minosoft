@@ -88,6 +88,23 @@ public class HorseMetaData extends AgeableMetaData {
         return null;
     }
 
+    public HorseColor getColor() {
+        switch (version) {
+            case VERSION_1_7_10:
+                return HorseColor.byId((int) sets.get(20).getData() & 0xFF);
+        }
+        return null;
+    }
+
+    public HorseDots getDots() {
+        switch (version) {
+            case VERSION_1_7_10:
+                return HorseDots.byId((int) sets.get(20).getData() & 0xFF00);
+        }
+        return null;
+    }
+
+
     public String getOwnerName() {
         switch (version) {
             case VERSION_1_7_10:
@@ -96,10 +113,15 @@ public class HorseMetaData extends AgeableMetaData {
         return null;
     }
 
-    // ToDo: entity color (index 20)
+    public HorseArmor getArmor() {
+        switch (version) {
+            case VERSION_1_7_10:
+                return HorseArmor.byId((int) sets.get(21).getData());
+        }
+        return null;
+    }
 
-
-    enum HorseType {
+    public enum HorseType {
         HORSE(0),
         DONKEY(1),
         MULE(2),
@@ -126,7 +148,7 @@ public class HorseMetaData extends AgeableMetaData {
         }
     }
 
-    enum Armor {
+    public enum HorseArmor {
         NO_ARMOR(0),
         IRON_ARMOR(1),
         GOLD_ARMOR(2),
@@ -134,12 +156,12 @@ public class HorseMetaData extends AgeableMetaData {
 
         final int id;
 
-        Armor(int id) {
+        HorseArmor(int id) {
             this.id = id;
         }
 
-        public static Armor byId(int id) {
-            for (Armor a : values()) {
+        public static HorseArmor byId(int id) {
+            for (HorseArmor a : values()) {
                 if (a.getId() == id) {
                     return a;
                 }
@@ -151,4 +173,127 @@ public class HorseMetaData extends AgeableMetaData {
             return id;
         }
     }
+
+    /*
+    public enum HorseColor {
+        SOLID_WHITE(0),
+        SOLID_CREAMY(1),
+        SOLID_CHESTNUT(2),
+        SOLID_BROWN(3),
+        SOLID_BLACK(4),
+        SOLID_GRAY(5),
+        SOLID_DARK_BROWN(6),
+
+        // white stockings and blaze
+        WSAB_WHITE(256),
+        WSAB_CREAMY(257),
+        WSAB_CHESTNUT(258),
+        WSAB_BROWN(259),
+        WSAB_BLACK(260),
+        WSAB_GRAY(261),
+        WSAB_DARK_BROWN(262),
+
+        // white patches
+        WP_WHITE(512),
+        WP_CREAMY(513),
+        WP_CHESTNUT(514),
+        WP_BROWN(515),
+        WP_BLACK(516),
+        WP_GRAY(517),
+        WP_DARK_BROWN(518),
+
+        // white dots
+        WD_WHITE(768),
+        WD_CREAMY(769),
+        WD_CHESTNUT(770),
+        WD_BROWN(771),
+        WD_BLACK(772),
+        WD_GRAY(773),
+        WD_DARK_BROWN(774),
+
+        // black sooty
+        BS_WHITE(1024),
+        BS_CREAMY(1025),
+        BS_CHESTNUT(1026),
+        BS_BROWN(1027),
+        BS_BLACK(1028),
+        BS_GRAY(1029),
+        BS_DARK_BROWN(1030);
+
+        final int id;
+
+        HorseColor(int id) {
+            this.id = id;
+        }
+
+        public static HorseColor byId(int id) {
+            for (HorseColor c : values()) {
+                if (c.getId() == id) {
+                    return c;
+                }
+            }
+            return null;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+     */
+    public enum HorseColor {
+        WHITE(0),
+        CREAMY(1),
+        CHESTNUT(2),
+        BROWN(3),
+        BLACK(4),
+        GRAY(5),
+        DARK_BROWN(6);
+
+        final int id;
+
+        HorseColor(int id) {
+            this.id = id;
+        }
+
+        public static HorseColor byId(int id) {
+            for (HorseColor c : values()) {
+                if (c.getId() == id) {
+                    return c;
+                }
+            }
+            return null;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+
+    public enum HorseDots {
+        NONE(0),
+        WHITE(1),
+        WHITEFIELD(2),
+        WHITE_DOTS(3),
+        BLACK_DOTS(4);
+
+        final int id;
+
+        HorseDots(int id) {
+            this.id = id;
+        }
+
+        public static HorseDots byId(int id) {
+            for (HorseDots d : values()) {
+                if (d.getId() == id) {
+                    return d;
+                }
+            }
+            return null;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+
 }

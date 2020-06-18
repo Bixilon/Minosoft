@@ -18,10 +18,7 @@ import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Pose;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.particle.BlockParticle;
-import de.bixilon.minosoft.game.datatypes.particle.OtherParticles;
-import de.bixilon.minosoft.game.datatypes.particle.Particle;
-import de.bixilon.minosoft.game.datatypes.particle.Particles;
+import de.bixilon.minosoft.game.datatypes.particle.*;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.nbt.tag.TagTypes;
@@ -217,15 +214,20 @@ public class InByteBuffer {
         return Pose.byId(readVarInt());
     }
 
-    public Particle readParticle() {
+    public Particle readParticle(ProtocolVersion v) {
         Particles type = Particles.byType(readVarInt());
         try {
             if (type.getClazz() == OtherParticles.class) {
                 return type.getClazz().getConstructor(Particles.class).newInstance(type);
             } else if (type.getClazz() == BlockParticle.class) {
                 return type.getClazz().getConstructor(int.class).newInstance(readVarInt());
+            } else if (type.getClazz() == DustParticle.class) {
+                return type.getClazz().getConstructor(float.class, float.class, float.class, float.class).newInstance(readFloat(), readFloat(), readFloat(), readFloat());
+            } else if (type.getClazz() == FallingDustParticle.class) {
+                return type.getClazz().getConstructor(int.class).newInstance(readVarInt());
+            } else if (type.getClazz() == ItemParticle.class) {
+                return type.getClazz().getConstructor(Slot.class).newInstance(readSlot(v));
             }
-            //ToDo
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }

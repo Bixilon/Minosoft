@@ -34,7 +34,6 @@ public class TextComponent {
         this.json = json;
     }
 
-    //ToDo
     public String getRawMessage() {
         if (json.has("text") && json.getString("text").length() != 0) {
             return json.getString("text");
