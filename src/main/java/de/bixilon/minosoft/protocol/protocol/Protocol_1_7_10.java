@@ -113,7 +113,8 @@ public class Protocol_1_7_10 implements Protocol {
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_CHANGE_GAME_STATE, 0x2B);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_SPAWN_WEATHER_ENTITY, 0x2C);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_OPEN_WINDOW, 0x2D);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_CLOSE_WINDOW, 0x2F);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_CLOSE_WINDOW, 0x2E);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_SET_SLOT, 0x2F);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_WINDOW_ITEMS, 0x30);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_WINDOW_PROPERTY, 0x31);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_WINDOW_CONFIRMATION, 0x32);

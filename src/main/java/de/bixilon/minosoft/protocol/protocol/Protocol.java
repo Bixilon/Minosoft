@@ -89,7 +89,7 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_EXPLOSION, PacketExplosion.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_COLLECT_ITEM, PacketCollectItem.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_OPEN_WINDOW, PacketOpenWindow.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_CLOSE_WINDOW, PacketCloseWindow.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_CLOSE_WINDOW, PacketCloseWindowReceiving.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SET_SLOT, PacketSetSlot.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_WINDOW_CONFIRMATION, PacketConfirmTransactionReceiving.class);
     }

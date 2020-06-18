@@ -329,7 +329,7 @@ public class PacketHandler {
         //ToDo
     }
 
-    public void handle(PacketCloseWindow pkg) {
+    public void handle(PacketCloseWindowReceiving pkg) {
         // ToDo
     }
 

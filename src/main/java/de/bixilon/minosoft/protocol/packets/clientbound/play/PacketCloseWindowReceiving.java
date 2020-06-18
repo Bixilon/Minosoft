@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketCloseWindow implements ClientboundPacket {
+public class PacketCloseWindowReceiving implements ClientboundPacket {
     byte windowId;
 
 
