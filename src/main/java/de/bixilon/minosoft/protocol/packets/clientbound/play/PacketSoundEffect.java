@@ -23,10 +23,11 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 
 public class PacketSoundEffect implements ClientboundPacket {
+    static float pitchCalc = 100.0F / 63.0F;
     Location location;
     Sounds sound;
     float volume;
-    byte pitch;
+    int pitch;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
@@ -35,7 +36,7 @@ public class PacketSoundEffect implements ClientboundPacket {
                 sound = Sounds.byName(buffer.readString());
                 location = new Location(buffer.readInteger() * 8, buffer.readInteger() * 8, buffer.readInteger() * 8);
                 volume = buffer.readFloat();
-                pitch = buffer.readByte(); // ToDo 63 is 100%
+                pitch = (int) (buffer.readByte() * pitchCalc);
                 break;
         }
     }
@@ -54,7 +55,10 @@ public class PacketSoundEffect implements ClientboundPacket {
         return location;
     }
 
-    public byte getPitch() {
+    /**
+     * @return Pitch in Percent * 100
+     */
+    public int getPitch() {
         return pitch;
     }
 
