@@ -290,6 +290,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketBlockEntityMetadata pkg) {
+        connection.getPlayer().getWorld().setBlockEntityData(pkg.getPosition(), pkg.getNbt());
     }
 
     public void handle(PacketBlockBreakAnimation pkg) {
@@ -337,6 +338,10 @@ public class PacketHandler {
     }
 
     public void handle(PacketStatistics pkg) {
+        //ToDo
+    }
+
+    public void handle(PacketTabCompleteReceiving pkg) {
         //ToDo
     }
 }
