@@ -36,7 +36,7 @@ public class PacketUpdateSignSending implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_UPDATE_SIGN));
         switch (v) {
             case VERSION_1_7_10:
-                buffer.writeBlockPosition(position);
+                buffer.writeBlockPositionByte(position);
                 for (int i = 0; i < 4; i++) {
                     buffer.writeString(lines[i]);
                 }

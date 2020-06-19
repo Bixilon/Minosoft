@@ -165,6 +165,10 @@ public class OutByteBuffer {
     public void writeSlot(ProtocolVersion v, Slot slot) {
         switch (v) {
             case VERSION_1_7_10:
+                if (slot == null) {
+                    writeShort((short) -1);
+                    return;
+                }
                 writeShort((short) slot.getItemId());
                 writeByte((byte) slot.getItemCount());
                 writeShort(slot.getItemMetadata());
@@ -183,19 +187,19 @@ public class OutByteBuffer {
         }
     }
 
-    public void writePositionInteger(BlockPosition pos) {
+    public void writeBlockPositionInteger(BlockPosition pos) {
         writeInteger(pos.getX());
         writeInteger(pos.getY());
         writeInteger(pos.getZ());
     }
 
-    public void writePositionShort(BlockPosition pos) {
+    public void writeBlockPositionShort(BlockPosition pos) {
         writeInteger(pos.getX());
         writeShort((short) pos.getY());
         writeInteger(pos.getZ());
     }
 
-    public void writePositionByte(BlockPosition pos) {
+    public void writeBlockPositionByte(BlockPosition pos) {
         writeInteger(pos.getX());
         writeByte((byte) pos.getY());
         writeInteger(pos.getZ());

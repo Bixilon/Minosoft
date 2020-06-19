@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
+import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -20,35 +21,38 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketPlayerDigging implements ServerboundPacket {
-    final DiggingStatus status;
+public class PacketPlayerBlockPlacement implements ServerboundPacket {
     final BlockPosition position;
-    final byte face;
+    final byte direction;
+    final Slot item;
+    final byte cursorX;
+    final byte cursorY;
+    final byte cursorZ;
 
 
-    public PacketPlayerDigging(DiggingStatus status, BlockPosition position, byte face) {
-        this.status = status;
+    public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Slot item, byte cursorX, byte cursorY, byte cursorZ) {
         this.position = position;
-        this.face = face;
+        this.direction = direction;
+        this.item = item;
+        this.cursorX = cursorX;
+        this.cursorY = cursorY;
+        this.cursorZ = cursorZ;
         log();
     }
 
 
     @Override
     public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_DIGGING));
+        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_BLOCK_PLACEMENT));
         switch (v) {
             case VERSION_1_7_10:
-                buffer.writeByte((byte) status.getId());
-                if (position == null) {
-                    buffer.writeInteger(0);
-                    buffer.writeByte((byte) 0);
-                    buffer.writeInteger(0);
-                } else {
-                    buffer.writeBlockPositionByte(position);
-                }
-                buffer.writeByte(face);
+                buffer.writeBlockPositionByte(position);
+                buffer.writeByte(direction);
+                buffer.writeSlot(v, item);
 
+                buffer.writeByte(cursorX);
+                buffer.writeByte(cursorY);
+                buffer.writeByte(cursorZ);
                 break;
         }
         return buffer;
@@ -56,25 +60,6 @@ public class PacketPlayerDigging implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Send player digging packet (status=%s, position=%s, face=%d)", status.name(), position.toString(), face));
-    }
-
-    public enum DiggingStatus {
-        START_DIGGING(0),
-        CANCELLED_DIGGING(1),
-        FINISHED_DIGGING(2),
-        DROP_ITEM_STACK(3),
-        DROP_ITEM(4),
-        SHOOT_ARROW__FINISH_EATING(5);
-
-        final int id;
-
-        DiggingStatus(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
+        Log.protocol(String.format("Send player block placement(position=%s, direction=%d, item=%s, cursor=%d %d %d)", position.toString(), direction, ((item == null) ? "AIR" : item.getDisplayName()), cursorX, cursorY, cursorZ));
     }
 }
