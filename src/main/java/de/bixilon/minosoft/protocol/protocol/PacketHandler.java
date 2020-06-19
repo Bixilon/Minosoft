@@ -328,11 +328,15 @@ public class PacketHandler {
         //ToDo
     }
 
-    public void handle(WindowProperty pkg) {
+    public void handle(PacketWindowProperty pkg) {
         //ToDo
     }
 
     public void handle(PacketConfirmTransactionReceiving pkg) {
+        //ToDo
+    }
+
+    public void handle(PacketStatistics pkg) {
         //ToDo
     }
 }

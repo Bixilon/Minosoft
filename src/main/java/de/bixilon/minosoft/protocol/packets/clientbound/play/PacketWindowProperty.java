@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class WindowProperty implements ClientboundPacket {
+public class PacketWindowProperty implements ClientboundPacket {
     byte windowId;
     short property;
     short value;

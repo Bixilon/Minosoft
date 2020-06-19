@@ -93,6 +93,7 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_SET_SLOT, PacketSetSlot.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_WINDOW_CONFIRMATION, PacketConfirmTransactionReceiving.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_ABILITIES, PacketPlayerAbilitiesReceiving.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_STATISTICS, PacketStatistics.class);
     }
 
     int getProtocolVersion();
