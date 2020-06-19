@@ -344,4 +344,7 @@ public class PacketHandler {
     public void handle(PacketTabCompleteReceiving pkg) {
         //ToDo
     }
+
+    public void handle(PacketSpawnPainting pkg) {
+    }
 }

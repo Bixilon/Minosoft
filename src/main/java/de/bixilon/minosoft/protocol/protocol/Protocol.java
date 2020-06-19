@@ -94,6 +94,7 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_WINDOW_CONFIRMATION, PacketConfirmTransactionReceiving.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_ABILITIES, PacketPlayerAbilitiesReceiving.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_STATISTICS, PacketStatistics.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_PAINTING, PacketSpawnPainting.class);
     }
 
     int getProtocolVersion();
