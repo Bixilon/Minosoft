@@ -14,6 +14,11 @@
 package de.bixilon.minosoft.game.datatypes.sounds;
 
 import de.bixilon.minosoft.game.datatypes.Identifier;
+import de.bixilon.minosoft.game.datatypes.IdentifierSet;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 public enum Sounds {
     AMBIENT_WEATHER_THUNDER(new Identifier("ambient.weather.thunder"), SoundCategories.WEATHER),
@@ -101,7 +106,7 @@ public enum Sounds {
     CROSSBOW_QUICK_CHARGE_START(new Identifier("crossbow.quick_charge.start"), SoundCategories.NEUTRAL),
     CROSSBOW_QUICK_CHARGE_MIDDLE(new Identifier("crossbow.quick_charge.middle"), SoundCategories.NEUTRAL),
     CROSSBOW_QUICK_CHARGE_END(new Identifier("crossbow.quick_charge.end"), SoundCategories.NEUTRAL),
-    DAMAGE_FALLBIG(new Identifier("game.player.hurt.fall.big", "damage.fallbig"), SoundCategories.PLAYER),
+    DAMAGE_FALLBIG(new Identifier(new IdentifierSet(ProtocolVersion.VERSION_1_7_10, Arrays.asList("game.player.hurt.fall.big", "game.neutral.hurt.fall.big", "game.hostile.hurt.fall.big")), new IdentifierSet(ProtocolVersion.VERSION_1_9_4, Collections.singletonList("damage.fallbig"))), SoundCategories.PLAYER),
     DAMAGE_FALLSMALL(new Identifier("damage.fallsmall"), SoundCategories.PLAYER),
     ELYTRA_LOOP(new Identifier("elytra.loop"), SoundCategories.NEUTRAL),
     GAME_PLAYER_ATTACK_NODAMAGE(new Identifier("game.player.attack.nodamage"), SoundCategories.OTHER),
@@ -607,7 +612,7 @@ public enum Sounds {
     BLOCK_BEEHIVE_SHEAR(new Identifier("block.beehive.shear"), SoundCategories.BLOCK),
     BLOCK_BEEHIVE_WORK(new Identifier("block.beehive.work"), SoundCategories.BLOCK),
     BLOCK_BEEHIVE_DRIP(new Identifier("block.beehive.drip"), SoundCategories.BLOCK);
-    //ToDo add legacy names
+    //ToDo complete per version
 
 
     final Identifier identifier;

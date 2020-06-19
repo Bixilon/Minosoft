@@ -33,6 +33,16 @@ public class Identifier {
         names.put(ProtocolVersion.VERSION_1_13_2, Collections.singletonList(water));
     }
 
+    public Identifier(HashMap<ProtocolVersion, List<String>> names) {
+        this.names = names;
+    }
+
+    public Identifier(IdentifierSet... sets) {
+        for (IdentifierSet set : sets) {
+            names.put(set.getKey(), set.getValue());
+        }
+    }
+
     public Identifier(String name) {
         names.put(Protocol.getLowestVersionSupported(), Collections.singletonList(name));
     }
