@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.GameMode;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
@@ -30,7 +28,6 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusRespo
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending;
-import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPluginMessageSending;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;
@@ -103,13 +100,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketPluginMessageReceiving pkg) {
-        if (pkg.getChannel().equals("MC|Brand")) {
-            // server brand received
-            Log.info(String.format("Server is running %s on version %s", new String(pkg.getData()), connection.getVersion().getName()));
-
-            // send back own brand
-            connection.sendPacket(new PacketPluginMessageSending("MC|Brand", (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft")));
-        }
+        connection.getPluginChannelHandler().handle(pkg.getChannel(), pkg.getData());
     }
 
     public void handle(PacketSpawnLocation pkg) {
