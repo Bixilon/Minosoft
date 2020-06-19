@@ -41,7 +41,7 @@ public class PacketEntityPositionAndRotation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity %d moved relative %s - %s %s", entityId, location.toString(), yaw, pitch));
+        Log.protocol(String.format("Entity %d moved relative %s (yaw=%s, pitch=%s)", entityId, location.toString(), yaw, pitch));
     }
 
     public int getEntityId() {

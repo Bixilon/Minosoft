@@ -41,7 +41,7 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Thunderbolt spawned (entityId=%d, at %s)", entityId, location.toString()));
+        Log.protocol(String.format("Thunderbolt spawned at %s (entityId=%d)", location.toString(), entityId));
     }
 
     @Override

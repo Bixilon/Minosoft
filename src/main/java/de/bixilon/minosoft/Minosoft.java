@@ -32,7 +32,7 @@ public class Minosoft {
     static List<MojangAccount> accountList;
 
     public static void main(String[] args) {
-        // int log thread
+        // init log thread
         Log.initThread();
 
         Log.info("Starting...");

@@ -38,12 +38,12 @@ public class PacketLoginStart implements ServerboundPacket {
     public OutPacketBuffer write(ProtocolVersion v) {
         // no version checking, is the same in all versions (1.7.x - 1.15.2)
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.LOGIN_LOGIN_START));
-        buffer.writeString((username == null) ? "Player132" : username);
+        buffer.writeString(username);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending login start (%s)", username));
+        Log.protocol(String.format("Sending login start (username=%s)", username));
     }
 }

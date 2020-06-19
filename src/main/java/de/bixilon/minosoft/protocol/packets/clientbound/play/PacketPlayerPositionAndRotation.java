@@ -41,7 +41,7 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received player location: %s - %s %s", location.toString(), yaw, pitch));
+        Log.protocol(String.format("Received player location: %s (yaw=%s, pitch=%s)", location.toString(), yaw, pitch));
     }
 
     public Location getLocation() {

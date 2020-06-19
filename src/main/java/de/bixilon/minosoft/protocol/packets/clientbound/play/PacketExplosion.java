@@ -54,7 +54,7 @@ public class PacketExplosion implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Explosion packet received at %s(recordCount=%d, radius=%s)", location.toString(), records.length, radius));
+        Log.protocol(String.format("Explosion packet received at %s (recordCount=%d, radius=%s)", location.toString(), records.length, radius));
     }
 
     @Override

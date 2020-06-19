@@ -47,6 +47,6 @@ public class PacketPlayerRotationSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending player rotation: %s %s", yaw, pitch));
+        Log.protocol(String.format("Sending player rotation (yaw=%s, pitch=%s)", yaw, pitch));
     }
 }

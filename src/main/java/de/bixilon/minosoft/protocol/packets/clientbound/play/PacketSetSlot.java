@@ -39,7 +39,7 @@ public class PacketSetSlot implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received slot data (windowId=%d, slotId=%d, item=%s", windowId, slotId, ((slot == null) ? "AIR" : slot.getDisplayName())));
+        Log.protocol(String.format("Received slot data (windowId=%d, slotId=%d, item=%s)", windowId, slotId, ((slot == null) ? "AIR" : slot.getDisplayName())));
     }
 
     @Override
