@@ -347,4 +347,11 @@ public class PacketHandler {
 
     public void handle(PacketSpawnPainting pkg) {
     }
+
+    public void handle(PacketEntity pkg) {
+    }
+
+    public void handle(PacketParticle pkg) {
+        //ToDo
+    }
 }
