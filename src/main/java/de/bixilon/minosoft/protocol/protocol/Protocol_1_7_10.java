@@ -14,17 +14,11 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class Protocol_1_7_10 implements Protocol {
-
-    public final HashMap<Packets.Serverbound, Integer> serverboundPacketMapping;
-    public final HashMap<Packets.Clientbound, Integer> clientboundPacketMapping;
-
+public class Protocol_1_7_10 extends Protocol {
+    // https://wiki.vg/index.php?title=Protocol&oldid=6003
     Protocol_1_7_10() {
+        super();
         // serverbound
-        serverboundPacketMapping = new HashMap<>();
         // handshake
         serverboundPacketMapping.put(Packets.Serverbound.HANDSHAKING_HANDSHAKE, 0x00);
         // status
@@ -59,7 +53,6 @@ public class Protocol_1_7_10 implements Protocol {
         serverboundPacketMapping.put(Packets.Serverbound.PLAY_PLUGIN_MESSAGE, 0x17);
 
 
-        clientboundPacketMapping = new HashMap<>();
         // status
         clientboundPacketMapping.put(Packets.Clientbound.STATUS_RESPONSE, 0x00);
         clientboundPacketMapping.put(Packets.Clientbound.STATUS_PONG, 0x01);
@@ -139,22 +132,8 @@ public class Protocol_1_7_10 implements Protocol {
         return 5;
     }
 
-    public int getPacketCommand(Packets.Serverbound p) {
-        return serverboundPacketMapping.get(p);
-    }
-
     @Override
     public String getName() {
         return "1.7.10";
     }
-
-    public Packets.Clientbound getPacketByCommand(ConnectionState s, int command) {
-        for (Map.Entry<Packets.Clientbound, Integer> set : clientboundPacketMapping.entrySet()) {
-            if (set.getValue() == command && set.getKey().name().startsWith(s.name())) {
-                return set.getKey();
-            }
-        }
-        return null;
-    }
-
 }

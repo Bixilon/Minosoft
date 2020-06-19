@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.Identifier;
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.sounds.Sounds;
 import de.bixilon.minosoft.logging.Log;
@@ -26,6 +28,7 @@ public class PacketSoundEffect implements ClientboundPacket {
     static final float pitchCalc = 100.0F / 63.0F;
     Location location;
     Sounds sound;
+    String soundName;
     float volume;
     int pitch;
 
@@ -33,7 +36,8 @@ public class PacketSoundEffect implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
-                sound = Sounds.byName(buffer.readString());
+                soundName = buffer.readString();
+                sound = Sounds.byName(new Identifier(soundName));
                 location = new Location(buffer.readInteger() * 8, buffer.readInteger() * 8, buffer.readInteger() * 8);
                 volume = buffer.readFloat();
                 pitch = (int) (buffer.readByte() * pitchCalc);
@@ -43,7 +47,7 @@ public class PacketSoundEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Play sound effect %s with volume=%s and pitch=%s at %s", sound.name(), volume, pitch, location.toString()));
+        Log.protocol(String.format("Play sound effect %s with volume=%s and pitch=%s at %s", ((sound == null) ? TextComponent.ChatAttributes.RED + soundName + TextComponent.ChatAttributes.RESET : sound.name()), volume, pitch, location.toString()));
     }
 
     @Override

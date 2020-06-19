@@ -22,11 +22,21 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 
 import java.util.HashMap;
+import java.util.Map;
 
-public interface Protocol {
-    HashMap<Packets.Clientbound, Class<? extends ClientboundPacket>> packetClassMapping = new HashMap<>();
+public abstract class Protocol implements ProtocolInterface {
+    static HashMap<Packets.Clientbound, Class<? extends ClientboundPacket>> packetClassMapping = new HashMap<>();
 
-    static Class<? extends ClientboundPacket> getPacketByPacket(Packets.Clientbound p) {
+
+    public final HashMap<Packets.Serverbound, Integer> serverboundPacketMapping;
+    public final HashMap<Packets.Clientbound, Integer> clientboundPacketMapping;
+
+    public Protocol() {
+        serverboundPacketMapping = new HashMap<>();
+        clientboundPacketMapping = new HashMap<>();
+    }
+
+    public static Class<? extends ClientboundPacket> getPacketByPacket(Packets.Clientbound p) {
         if (packetClassMapping.size() == 0) {
             // init
             initPacketClassMapping();
@@ -98,11 +108,26 @@ public interface Protocol {
         packetClassMapping.put(Packets.Clientbound.PLAY_PARTICLE, PacketParticle.class);
     }
 
-    int getProtocolVersion();
+    public static ProtocolVersion getLowestVersionSupported() {
+        return ProtocolVersion.VERSION_1_7_10;
+    }
 
-    int getPacketCommand(Packets.Serverbound p);
 
-    String getName();
+    public int getPacketCommand(Packets.Serverbound p) {
+        return serverboundPacketMapping.get(p);
+    }
 
-    Packets.Clientbound getPacketByCommand(ConnectionState s, int command);
+    public Packets.Clientbound getPacketByCommand(ConnectionState s, int command) {
+        for (Map.Entry<Packets.Clientbound, Integer> set : clientboundPacketMapping.entrySet()) {
+            if (set.getValue() == command && set.getKey().name().startsWith(s.name())) {
+                return set.getKey();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getProtocolVersion();
+    }
 }
