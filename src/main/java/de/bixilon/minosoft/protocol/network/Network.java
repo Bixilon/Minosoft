@@ -185,6 +185,7 @@ public class Network {
                 }
                 try {
                     // sleep, wait for an interrupt from other thread
+                    //noinspection BusyWait
                     Thread.sleep(100);
                 } catch (InterruptedException ignored) {
                 }

@@ -21,8 +21,8 @@ import de.bixilon.minosoft.util.BitByte;
 import java.util.HashMap;
 
 public class EntityMetaData {
-    HashMap<Integer, MetaDataSet> sets = new HashMap<>();
-    ProtocolVersion version;
+    final HashMap<Integer, MetaDataSet> sets = new HashMap<>();
+    final ProtocolVersion version;
 
     public EntityMetaData(InByteBuffer buffer, ProtocolVersion v) {
         version = v;

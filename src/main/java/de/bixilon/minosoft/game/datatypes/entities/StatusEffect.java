@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.game.datatypes.entities;
 
 public class StatusEffect {
-    StatusEffects effect;
-    byte amplifier;
-    short duration;
+    final StatusEffects effect;
+    final byte amplifier;
+    final short duration;
 
     public StatusEffect(StatusEffects effect, byte amplifier, short duration) {
         this.effect = effect;

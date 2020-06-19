@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class ItemFrame extends EntityObject implements ObjectInterface {
     ItemFrameMetaData metaData;
-    FrameDirection direction;
+    final FrameDirection direction;
 
     public ItemFrame(int id, Location location, short yaw, short pitch, int additionalInt, ProtocolVersion v) {
         super(id, location, yaw, pitch, null);

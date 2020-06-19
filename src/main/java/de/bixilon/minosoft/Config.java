@@ -15,6 +15,6 @@ package de.bixilon.minosoft;
 
 public class Config {
     public static String homeDir;
-    public static String configFileName = "game.yml";
-    public static boolean skipAuthentication = true; // only for offline developement#
+    public static final String configFileName = "game.yml";
+    public static final boolean skipAuthentication = true; // only for offline development
 }

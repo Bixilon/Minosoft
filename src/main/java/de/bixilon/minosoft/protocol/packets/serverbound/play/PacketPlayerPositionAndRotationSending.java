@@ -20,13 +20,13 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketPlayerPositionAndRotationSending implements ServerboundPacket {
-    double x;
-    double feetY;
-    double headY;
-    double z;
-    float yaw;
-    float pitch;
-    boolean onGround;
+    final double x;
+    final double feetY;
+    final double headY;
+    final double z;
+    final float yaw;
+    final float pitch;
+    final boolean onGround;
 
     public PacketPlayerPositionAndRotationSending(double x, double feetY, double headY, double z, float yaw, float pitch, boolean onGround) {
         this.x = x;

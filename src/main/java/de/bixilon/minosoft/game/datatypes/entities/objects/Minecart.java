@@ -22,7 +22,7 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.MinecartMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class Minecart extends EntityObject implements ObjectInterface {
-    MinecartType type;
+    final MinecartType type;
     MinecartMetaData metaData;
 
     public Minecart(int id, Location location, short yaw, short pitch, int additionalInt, ProtocolVersion v) {
@@ -69,8 +69,7 @@ public class Minecart extends EntityObject implements ObjectInterface {
         CHEST_MINECART(1),
         FURNACE_MINECART(2),
         TNT_MINECART(3),
-        SPAWNER_MINECART(3),
-        HOPPPER_MINECART(4),
+        SPAWNER_MINECART(4),
         HOPPER_MINECART(5),
         COMMAND_BLOCK_MINECART(6);
 

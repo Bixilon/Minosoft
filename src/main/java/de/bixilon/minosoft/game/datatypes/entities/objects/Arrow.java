@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class Arrow extends EntityObject implements ObjectInterface {
     ArrowMetaData metaData;
-    int shooter;
+    final int shooter;
 
     public Arrow(int id, Location location, short yaw, short pitch, int additionalInt, ProtocolVersion v) {
         super(id, location, yaw, pitch, null);

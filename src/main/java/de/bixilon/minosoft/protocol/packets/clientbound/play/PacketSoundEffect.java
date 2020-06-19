@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 
 public class PacketSoundEffect implements ClientboundPacket {
-    static float pitchCalc = 100.0F / 63.0F;
+    static final float pitchCalc = 100.0F / 63.0F;
     Location location;
     Sounds sound;
     float volume;

@@ -26,7 +26,7 @@ public class ThrownPotion extends EntityObject implements ObjectInterface {
 
     public ThrownPotion(int id, Location location, short yaw, short pitch, int additionalInt, ProtocolVersion v) {
         super(id, location, yaw, pitch, null);
-        // objects do not spawn with metadata... reading additsional info from the following int
+        // objects do not spawn with metadata... reading additional info from the following int
         this.potion = additionalInt;
     }
 

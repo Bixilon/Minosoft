@@ -20,12 +20,12 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketPlayerAbilitiesSending implements ServerboundPacket {
-    boolean creative;
-    boolean flying;
-    boolean canFly;
-    boolean godMode;
-    float flyingSpeed;
-    float walkingSpeed;
+    final boolean creative;
+    final boolean flying;
+    final boolean canFly;
+    final boolean godMode;
+    final float flyingSpeed;
+    final float walkingSpeed;
 
     public PacketPlayerAbilitiesSending(boolean creative, boolean flying, boolean canFly, boolean godMode, float flyingSpeed, float walkingSpeed) {
         this.creative = creative;

@@ -80,7 +80,7 @@ public abstract class Entity implements EntityInterface {
     }
 
     public short getYaw() {
-        return 0;
+        return yaw;
     }
 
     public void setYaw(short yaw) {
@@ -89,7 +89,7 @@ public abstract class Entity implements EntityInterface {
     }
 
     public short getPitch() {
-        return 0;
+        return pitch;
     }
 
     public void setPitch(short pitch) {

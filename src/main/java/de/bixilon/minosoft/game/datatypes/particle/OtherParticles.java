@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.particle;
 
 public class OtherParticles implements Particle {
-    Particles type;
+    final Particles type;
 
     public OtherParticles(Particles type) {
         this.type = type;

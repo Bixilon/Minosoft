@@ -125,10 +125,8 @@ public class Configuration {
             String[] spilt = path.split("\\.");
             LinkedHashMap<String, Object> temp = config;
             for (int i = 0; i < spilt.length - 1; i++) {
-                if (temp.get(spilt[i]) == null) {
-                    // not yet existing, creating it
-                    temp.put(spilt[i], new LinkedHashMap<String, Object>());
-                }
+                // not yet existing, creating it
+                temp.computeIfAbsent(spilt[i], k -> new LinkedHashMap<String, Object>());
                 temp = (LinkedHashMap<String, Object>) temp.get(spilt[i]);
 
             }
@@ -140,7 +138,7 @@ public class Configuration {
 
     public void saveToFile(String filename) {
         Yaml yaml = new Yaml();
-        FileWriter writer = null;
+        FileWriter writer;
         try {
             writer = new FileWriter(Config.homeDir + "config/" + filename);
         } catch (IOException e) {

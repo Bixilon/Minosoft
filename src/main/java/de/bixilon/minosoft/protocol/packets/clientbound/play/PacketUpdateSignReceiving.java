@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketUpdateSignReceiving implements ClientboundPacket {
     BlockPosition position;
-    String[] lines = new String[4];
+    final String[] lines = new String[4];
 
 
     @Override

@@ -44,7 +44,8 @@ public class Log {
                     queue.remove(0);
                 }
                 try {
-                    // wait for interupt
+                    // wait for interrupt
+                    //noinspection BusyWait
                     Thread.sleep(100);
                 } catch (InterruptedException ignored) {
                 }

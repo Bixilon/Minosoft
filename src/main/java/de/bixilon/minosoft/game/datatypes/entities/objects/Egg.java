@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class Egg extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
-    int thrower;
+    final int thrower;
 
     public Egg(int id, Location location, short yaw, short pitch, int additionalInt, ProtocolVersion v) {
         super(id, location, yaw, pitch, null);
