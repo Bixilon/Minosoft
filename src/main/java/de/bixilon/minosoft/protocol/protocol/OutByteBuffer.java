@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
@@ -153,8 +154,8 @@ public class OutByteBuffer {
         writeString(j.toString());
     }
 
-    public void writeBlockPosition(BlockPosition pos) {
-        writeLong((((long) pos.getX() & 0x3FFFFFF) << 38) | (((long) pos.getZ() & 0x3FFFFFF) << 12) | ((long) pos.getY() & 0xFFF));
+    public void writePosition(Location location) {
+        writeLong((((long) location.getX() & 0x3FFFFFF) << 38) | (((long) location.getZ() & 0x3FFFFFF) << 12) | ((long) location.getY() & 0xFFF));
     }
 
     public void writeChatComponent(TextComponent c) {
@@ -180,5 +181,23 @@ public class OutByteBuffer {
         for (byte b : s.getBytes(StandardCharsets.UTF_8)) {
             bytes.add(b);
         }
+    }
+
+    public void writePositionInteger(BlockPosition pos) {
+        writeInteger(pos.getX());
+        writeInteger(pos.getY());
+        writeInteger(pos.getZ());
+    }
+
+    public void writePositionShort(BlockPosition pos) {
+        writeInteger(pos.getX());
+        writeShort((short) pos.getY());
+        writeInteger(pos.getZ());
+    }
+
+    public void writePositionByte(BlockPosition pos) {
+        writeInteger(pos.getX());
+        writeByte((byte) pos.getY());
+        writeInteger(pos.getZ());
     }
 }
