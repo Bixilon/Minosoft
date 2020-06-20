@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.InventoryType;
+import de.bixilon.minosoft.game.datatypes.inventory.InventoryProperties;
+import de.bixilon.minosoft.game.datatypes.inventory.InventoryType;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -24,7 +25,7 @@ public class PacketOpenWindow implements ClientboundPacket {
     byte windowId;
     InventoryType type;
     String title;
-    byte slots;
+    byte slotCount;
     int entityId;
 
 
@@ -35,7 +36,7 @@ public class PacketOpenWindow implements ClientboundPacket {
                 this.windowId = buffer.readByte();
                 this.type = InventoryType.byId(buffer.readByte());
                 this.title = buffer.readString();
-                slots = buffer.readByte();
+                slotCount = buffer.readByte();
                 if (!buffer.readBoolean()) {
                     // no custom name
                     title = null;
@@ -47,7 +48,7 @@ public class PacketOpenWindow implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received inventory open packet (windowId=%d, type=%s, title=%s, entityId=%d)", windowId, type.name(), ((title == null) ? "null" : title), entityId));
+        Log.protocol(String.format("Received inventory open packet (windowId=%d, type=%s, title=%s, entityId=%d, slotCount=%d)", windowId, type.name(), ((title == null) ? "null" : title), entityId, slotCount));
     }
 
     @Override
@@ -56,7 +57,7 @@ public class PacketOpenWindow implements ClientboundPacket {
     }
 
     public byte getSlotCount() {
-        return slots;
+        return slotCount;
     }
 
     public byte getWindowId() {
@@ -73,5 +74,9 @@ public class PacketOpenWindow implements ClientboundPacket {
 
     public InventoryType getType() {
         return type;
+    }
+
+    public InventoryProperties getInventoryProperties() {
+        return new InventoryProperties(getWindowId(), getType(), title, slotCount);
     }
 }

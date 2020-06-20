@@ -188,11 +188,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketWindowItems pkg) {
-        switch (pkg.getWindowId()) {
-            case 0: //Inventory
-                connection.getPlayer().setInventory(pkg.getData());
-                break;
-        }
+        connection.getPlayer().setInventory(pkg.getWindowId(), pkg.getData());
     }
 
     public void handle(PacketEntityMetadata pkg) {
@@ -318,15 +314,20 @@ public class PacketHandler {
     }
 
     public void handle(PacketOpenWindow pkg) {
-        //ToDo
+        connection.getPlayer().createInventory(pkg.getInventoryProperties());
     }
 
     public void handle(PacketCloseWindowReceiving pkg) {
-        // ToDo
+        connection.getPlayer().deleteInventory(pkg.getWindowId());
     }
 
     public void handle(PacketSetSlot pkg) {
-        //ToDo
+        if (pkg.getWindowId() == -1) {
+            // invalid window Id
+            //ToDo: what is windowId -1
+            return;
+        }
+        connection.getPlayer().setSlot(pkg.getWindowId(), pkg.getSlotId(), pkg.getSlot());
     }
 
     public void handle(PacketWindowProperty pkg) {

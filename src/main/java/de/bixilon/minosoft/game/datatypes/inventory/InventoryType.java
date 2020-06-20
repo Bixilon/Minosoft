@@ -11,13 +11,38 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol;
+package de.bixilon.minosoft.game.datatypes.inventory;
 
-public final class ProtocolDefinition {
-    public static final int STRING_MAX_LEN = 32767;
-    public static final int DEFAULT_PORT = 25565;
-    public static final int PROTOCOL_PACKET_MAX_SIZE = 2097152;
-    public static final float ANGLE_CALCULATION_CONSTANT = 360.0F / 256.0F;
+public enum InventoryType {
+    CHEST(0),
+    WORKBENCH(1),
+    FURNACE(2),
+    DISPENSER(3),
+    ENCHANTMENT_TABLE(4),
+    BREWING_STAND(5),
+    NPC_TRACE(6),
+    BEACON(7),
+    ANVIL(8),
+    HOPPER(9),
+    DROPPER(10),
+    HORSE(11);
 
-    public static final int PLAYER_INVENTORY_ID = 0;
+    final int id;
+
+    InventoryType(int id) {
+        this.id = id;
+    }
+
+    public static InventoryType byId(int id) {
+        for (InventoryType t : values()) {
+            if (t.getId() == id) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public int getId() {
+        return id;
+    }
 }

@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.inventory.Slots;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import java.util.List;
 
 public abstract class Entity implements EntityInterface {
     final int id;
-    final HashMap<Slots.Entity, Slot> equipment;
+    final HashMap<InventorySlots.EntityInventory, Slot> equipment;
     final List<StatusEffect> effectList;
     Location location;
     Velocity velocity;
@@ -97,11 +97,11 @@ public abstract class Entity implements EntityInterface {
 
     }
 
-    public void setEquipment(Slots.Entity slot, Slot data) {
+    public void setEquipment(InventorySlots.EntityInventory slot, Slot data) {
         equipment.put(slot, data);
     }
 
-    public Slot getEquipment(Slots.Entity slot) {
+    public Slot getEquipment(InventorySlots.EntityInventory slot) {
         return equipment.get(slot);
     }
 

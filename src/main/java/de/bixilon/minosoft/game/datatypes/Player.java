@@ -15,13 +15,17 @@ package de.bixilon.minosoft.game.datatypes;
 
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
+import de.bixilon.minosoft.game.datatypes.inventory.Inventory;
+import de.bixilon.minosoft.game.datatypes.inventory.InventoryProperties;
+import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.inventory.Slots;
 import de.bixilon.minosoft.game.datatypes.world.World;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
 
 import java.util.HashMap;
 import java.util.UUID;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.PLAYER_INVENTORY_ID;
 
 public class Player {
     final MojangAccount acc;
@@ -36,11 +40,13 @@ public class Player {
     short level;
     short totalExperience;
     HumanMetaData metaData;
-    HashMap<Slots.Inventory, Slot> inventory = new HashMap<>();
+    HashMap<Integer, Inventory> inventories = new HashMap<>();
     boolean spawnConfirmed = false;
 
     public Player(MojangAccount acc) {
         this.acc = acc;
+        // create our own inventory without any properties
+        inventories.put(PLAYER_INVENTORY_ID, new Inventory(null));
     }
 
     public String getPlayerName() {
@@ -71,12 +77,12 @@ public class Player {
         this.food = food;
     }
 
-    public void setSaturation(float saturation) {
-        this.saturation = saturation;
-    }
-
     public float getSaturation() {
         return saturation;
+    }
+
+    public void setSaturation(float saturation) {
+        this.saturation = saturation;
     }
 
     public Location getSpawnLocation() {
@@ -139,26 +145,46 @@ public class Player {
         this.metaData = metaData;
     }
 
-    public HashMap<Slots.Inventory, Slot> getInventory() {
-        return inventory;
+    public Inventory getPlayerInventory() {
+        return getInventory(PLAYER_INVENTORY_ID);
     }
 
-    public void setInventory(HashMap<Slots.Inventory, Slot> inventory) {
-        this.inventory = inventory;
+    public void setPlayerInventory(Slot[] data) {
+        setInventory(PLAYER_INVENTORY_ID, data);
     }
 
-    public void setInventory(Slot[] data) {
+    public Inventory getInventory(int id) {
+        return inventories.get(id);
+    }
+
+    public void setInventory(int windowId, Slot[] data) {
         for (int i = 0; i < data.length; i++) {
-            setSlot(Slots.Inventory.byId(i), data[i]);
+            setSlot(windowId, i, data[i]);
         }
     }
 
-    public Slot getSlot(Slots.Inventory slot) {
-        return inventory.get(slot);
+    public Slot getSlot(int windowId, InventorySlots.InventoryInterface slot) {
+        return getSlot(windowId, slot.getId());
     }
 
-    public void setSlot(Slots.Inventory slot, Slot data) {
-        inventory.put(slot, data);
+    public Slot getSlot(int windowId, int slot) {
+        return inventories.get(windowId).getSlot(slot);
+    }
+
+    public void setSlot(int windowId, InventorySlots.InventoryInterface slot, Slot data) {
+        setSlot(windowId, slot.getId(), data);
+    }
+
+    public void setSlot(int windowId, int slot, Slot data) {
+        inventories.get(windowId).setSlot(slot, data);
+    }
+
+    public void createInventory(InventoryProperties properties) {
+        inventories.put(properties.getWindowId(), new Inventory(properties));
+    }
+
+    public void deleteInventory(int windowId) {
+        inventories.remove(windowId);
     }
 
     public boolean isSpawnConfirmed() {

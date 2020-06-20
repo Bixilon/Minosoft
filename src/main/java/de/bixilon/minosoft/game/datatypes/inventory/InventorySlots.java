@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.game.datatypes.inventory;
 
-public class Slots {
-    public enum Inventory {
+public class InventorySlots {
+    public enum PlayerInventory implements InventoryInterface {
         CRAFTING_OUTPUT(0),
         CRAFTING_UPPER_LEFT(1),
         CRAFTING_UPPER_RIGHT(2),
@@ -68,12 +68,12 @@ public class Slots {
 
         final int id;
 
-        Inventory(int id) {
+        PlayerInventory(int id) {
             this.id = id;
         }
 
-        public static Inventory byId(int id) {
-            for (Inventory i : values()) {
+        public static PlayerInventory byId(int id) {
+            for (PlayerInventory i : values()) {
                 if (i.getId() == id) {
                     return i;
                 }
@@ -81,12 +81,13 @@ public class Slots {
             return null;
         }
 
+        @Override
         public int getId() {
             return id;
         }
     }
 
-    public enum Entity {
+    public enum EntityInventory implements InventoryInterface {
         HELD(0),
         BOOTS(1),
         LEGGINGS(2),
@@ -96,12 +97,12 @@ public class Slots {
 
         final int id;
 
-        Entity(int id) {
+        EntityInventory(int id) {
             this.id = id;
         }
 
-        public static Entity byId(int id) {
-            for (Entity e : values()) {
+        public static EntityInventory byId(int id) {
+            for (EntityInventory e : values()) {
                 if (e.getId() == id) {
                     return e;
                 }
@@ -109,9 +110,14 @@ public class Slots {
             return null;
         }
 
+        @Override
         public int getId() {
             return id;
         }
+    }
+
+    public interface InventoryInterface {
+        int getId();
     }
 
 }

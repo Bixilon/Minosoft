@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.inventory.Slots;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketEntityEquipment implements ClientboundPacket {
     int entityId;
-    Slots.Entity slot;
+    InventorySlots.EntityInventory slot;
     Slot data;
 
 
@@ -32,7 +32,7 @@ public class PacketEntityEquipment implements ClientboundPacket {
         switch (v) {
             case VERSION_1_7_10:
                 entityId = buffer.readInteger();
-                this.slot = Slots.Entity.byId(buffer.readShort());
+                this.slot = InventorySlots.EntityInventory.byId(buffer.readShort());
                 this.data = buffer.readSlot(v);
                 break;
         }
@@ -57,7 +57,7 @@ public class PacketEntityEquipment implements ClientboundPacket {
         return entityId;
     }
 
-    public Slots.Entity getSlot() {
+    public InventorySlots.EntityInventory getSlot() {
         return slot;
     }
 

@@ -11,38 +11,34 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes;
+package de.bixilon.minosoft.game.datatypes.inventory;
 
-public enum InventoryType {
-    CHEST(0),
-    WORKBENCH(1),
-    FURNACE(2),
-    DISPENSER(3),
-    ENCHANTMENT_TABLE(4),
-    BREWING_STAND(5),
-    NPC_TRACE(6),
-    BEACON(7),
-    ANVIL(8),
-    HOPPER(9),
-    DROPPER(10),
-    HORSE(11);
+public class InventoryProperties {
+    final int windowId;
+    final InventoryType type;
+    final String title;
+    final byte slotCount;
 
-    final int id;
-
-    InventoryType(int id) {
-        this.id = id;
+    public InventoryProperties(int windowId, InventoryType type, String title, byte slotCount) {
+        this.windowId = windowId;
+        this.type = type;
+        this.title = title;
+        this.slotCount = slotCount;
     }
 
-    public static InventoryType byId(int id) {
-        for (InventoryType t : values()) {
-            if (t.getId() == id) {
-                return t;
-            }
-        }
-        return null;
+    public int getWindowId() {
+        return windowId;
     }
 
-    public int getId() {
-        return id;
+    public InventoryType getType() {
+        return type;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public byte getSlotCount() {
+        return slotCount;
     }
 }
