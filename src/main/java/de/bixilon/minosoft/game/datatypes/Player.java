@@ -19,6 +19,7 @@ import de.bixilon.minosoft.game.datatypes.inventory.Inventory;
 import de.bixilon.minosoft.game.datatypes.inventory.InventoryProperties;
 import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardManager;
 import de.bixilon.minosoft.game.datatypes.world.World;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
 
@@ -29,6 +30,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.PLAYER_IN
 
 public class Player {
     final MojangAccount acc;
+    final ScoreboardManager scoreboardManager = new ScoreboardManager();
     float health;
     short food;
     float saturation;
@@ -193,5 +195,9 @@ public class Player {
 
     public void setSpawnConfirmed(boolean spawnConfirmed) {
         this.spawnConfirmed = spawnConfirmed;
+    }
+
+    public ScoreboardManager getScoreboardManager() {
+        return scoreboardManager;
     }
 }

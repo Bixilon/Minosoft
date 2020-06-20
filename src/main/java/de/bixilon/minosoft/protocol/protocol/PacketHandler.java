@@ -16,6 +16,9 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.game.datatypes.GameMode;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
+import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardObjective;
+import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardScore;
+import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardTeam;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -32,6 +35,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositio
 import javax.crypto.SecretKey;
 import java.math.BigInteger;
 import java.security.PublicKey;
+import java.util.Arrays;
 
 public class PacketHandler {
     final Connection connection;
@@ -358,5 +362,55 @@ public class PacketHandler {
 
     public void handle(PacketEffect pkg) {
         //ToDo
+    }
+
+    public void handle(PacketScoreboardObjective pkg) {
+        switch (pkg.getAction()) {
+            case CREATE:
+                connection.getPlayer().getScoreboardManager().addObjective(new ScoreboardObjective(pkg.getName(), pkg.getValue()));
+                break;
+            case UPDATE:
+                connection.getPlayer().getScoreboardManager().getObjective(pkg.getName()).setValue(pkg.getValue());
+                break;
+            case REMOVE:
+                connection.getPlayer().getScoreboardManager().removeObjective(pkg.getName());
+                break;
+        }
+    }
+
+    public void handle(PacketScoreboardUpdateScore pkg) {
+        switch (pkg.getAction()) {
+            case CREATE_UPDATE:
+                connection.getPlayer().getScoreboardManager().getObjective(pkg.getItemName()).addScore(new ScoreboardScore(pkg.getItemName(), pkg.getScoreName(), pkg.getScoreValue()));
+                break;
+            case REMOVE:
+                connection.getPlayer().getScoreboardManager().getObjective(pkg.getItemName()).removeScore(pkg.getItemName());
+                break;
+
+        }
+    }
+
+    public void handle(PacketScoreboardDisplayScoreboard pkg) {
+        //ToDo
+    }
+
+    public void handle(PacketScoreboardTeams pkg) {
+        switch (pkg.getAction()) {
+            case CREATE:
+                connection.getPlayer().getScoreboardManager().addTeam(new ScoreboardTeam(pkg.getName(), pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.getFriendlyFire(), pkg.getPlayerNames()));
+                break;
+            case INFORMATION_UPDATE:
+                connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).updateInformation(pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.getFriendlyFire());
+                break;
+            case REMOVE:
+                connection.getPlayer().getScoreboardManager().removeTeam(pkg.getName());
+                break;
+            case PLAYER_ADD:
+                connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).addPlayers(Arrays.asList(pkg.getPlayerNames()));
+                break;
+            case PLAYER_REMOVE:
+                connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).removePlayers(Arrays.asList(pkg.getPlayerNames()));
+                break;
+        }
     }
 }
