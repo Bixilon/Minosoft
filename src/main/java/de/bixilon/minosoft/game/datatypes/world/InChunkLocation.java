@@ -25,7 +25,7 @@ public class InChunkLocation {
         // x 0 - 16
         // y 0 - 255
         // z 0 - 16
-        if (x > 16 || y > 255 || z > 16 || x < 0 || y < 0 || z < 0) {
+        if (x > 15 || y > 255 || z > 15 || x < 0 || y < 0 || z < 0) {
             throw new IllegalArgumentException(String.format("Invalid chunk location %s %s %s", x, y, z));
         }
         this.x = x;

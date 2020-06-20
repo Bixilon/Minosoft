@@ -34,11 +34,15 @@ public class Chunk {
     }
 
     public Blocks getBlock(int x, int y, int z) {
-        if (x > 16 || y > 255 || z > 16 || x < 0 || y < 0 || z < 0) {
+        if (x > 15 || y > 255 || z > 15 || x < 0 || y < 0 || z < 0) {
             throw new IllegalArgumentException(String.format("Invalid chunk location %s %s %s", x, y, z));
         }
         byte section = (byte) (y / 16);
         return nibbles.get(section).getBlock(x, y % 16, z);
+    }
+
+    public Blocks getBlock(InChunkLocation location) {
+        return getBlock(location.getX(), location.getY(), location.getZ());
     }
 
     public void setBlock(int x, int y, int z, Blocks block) {

@@ -53,14 +53,14 @@ public class World {
     public Blocks getBlock(BlockPosition pos) {
         ChunkLocation loc = pos.getChunkLocation();
         if (getChunk(loc) != null) {
-            return getChunk(loc).getBlock(pos.getX() % 16, pos.getY(), pos.getZ() % 16);
+            return getChunk(loc).getBlock(pos.getInChunkLocation());
         }
         return Blocks.AIR;
     }
 
     public void setBlock(BlockPosition pos, Blocks block) {
         if (getChunk(pos.getChunkLocation()) != null) {
-            getChunk(pos.getChunkLocation()).setBlock(pos.getX() % 16, pos.getY(), pos.getZ() % 16, block);
+            getChunk(pos.getChunkLocation()).setBlock(pos.getInChunkLocation(), block);
         }
         // do nothing if chunk is unloaded
     }
