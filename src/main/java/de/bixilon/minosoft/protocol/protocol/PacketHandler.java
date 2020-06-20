@@ -355,4 +355,8 @@ public class PacketHandler {
     public void handle(PacketParticle pkg) {
         //ToDo
     }
+
+    public void handle(PacketEffect pkg) {
+        //ToDo
+    }
 }

@@ -106,6 +106,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_STATISTICS, PacketStatistics.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_PAINTING, PacketSpawnPainting.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_PARTICLE, PacketParticle.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_EFFECT, PacketEffect.class);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {
