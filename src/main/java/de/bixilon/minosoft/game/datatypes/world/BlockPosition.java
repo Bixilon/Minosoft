@@ -60,11 +60,15 @@ public class BlockPosition {
         return x * y * z;
     }
 
-    public byte getSectionHeight() {
-        return (byte) (getY() / 16);
-    }
-
-    public ChunkNibbleLocation getNibbleLocation() {
-        return new ChunkNibbleLocation(getX() % 16, getY() % 16, getZ() % 16);
+    public InChunkLocation getInChunkLocation() {
+        int x = getX() % 16;
+        if (x < 0) {
+            x = 16 + x;
+        }
+        int z = getZ() % 16;
+        if (z < 0) {
+            z = 16 + z;
+        }
+        return new InChunkLocation(x, getY(), z);
     }
 }
