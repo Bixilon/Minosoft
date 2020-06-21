@@ -28,6 +28,7 @@ public class OutPacketBuffer extends OutByteBuffer {
         return command;
     }
 
+    @Override
     public byte[] getOutBytes() {
         // ToDo: compression
         List<Byte> before = getBytes();

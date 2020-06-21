@@ -204,4 +204,12 @@ public class OutByteBuffer {
         writeByte((byte) pos.getY());
         writeInteger(pos.getZ());
     }
+
+    public byte[] getOutBytes() {
+        byte[] ret = new byte[bytes.size()];
+        for (int i = 0; i < bytes.size(); i++) {
+            ret[i] = bytes.get(i);
+        }
+        return ret;
+    }
 }

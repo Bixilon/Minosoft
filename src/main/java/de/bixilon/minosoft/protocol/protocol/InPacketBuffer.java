@@ -22,6 +22,10 @@ public class InPacketBuffer extends InByteBuffer {
         command = readVarInt();
     }
 
+    public InPacketBuffer(InByteBuffer buffer) {
+        this(buffer.readBytesLeft());
+    }
+
     public int getCommand() {
         return command;
     }

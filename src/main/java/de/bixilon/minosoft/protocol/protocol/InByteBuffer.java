@@ -304,4 +304,12 @@ public class InByteBuffer {
     public BlockPosition readBlockPositionShort() {
         return new BlockPosition(readInteger(), readShort(), readInteger());
     }
+
+    public InPacketBuffer getPacketBuffer() {
+        return new InPacketBuffer(this);
+    }
+
+    public byte[] readBytesLeft() {
+        return readBytes(getBytesLeft());
+    }
 }

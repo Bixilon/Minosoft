@@ -433,4 +433,7 @@ public class PacketHandler {
     public void handle(PacketMapData pkg) {
         //ToDo
     }
+
+    public void handle(PacketLoginSetCompression pkg) {
+    }
 }

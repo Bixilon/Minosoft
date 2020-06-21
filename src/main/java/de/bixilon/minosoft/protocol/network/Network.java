@@ -17,6 +17,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketLoginSetCompression;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.Util;
@@ -36,6 +37,7 @@ public class Network {
     private final List<ServerboundPacket> queue;
     private final List<byte[]> binQueue;
     private final List<byte[]> binQueueIn;
+    private int compressionThreshold = -1;
     private Socket socket;
     private boolean encryptionEnabled = false;
     private Cipher cipherEncrypt;
@@ -130,31 +132,66 @@ public class Network {
 
                 while (queue.size() > 0) {
                     ServerboundPacket p = queue.get(0);
-                    byte[] raw = p.write(connection.getVersion()).getOutBytes();
+                    byte[] data = p.write(connection.getVersion()).getOutBytes();
                     if (encryptionEnabled) {
                         // encrypt
-                        byte[] encrypted = cipherEncrypt.update(raw);
-                        binQueue.add(encrypted);
-                    } else {
-                        if (p instanceof PacketEncryptionResponse) {
-                            // enable encryption
-                            enableEncryption(((PacketEncryptionResponse) p).getSecretKey());
-                        }
-                        binQueue.add(raw);
+                        data = cipherEncrypt.update(data);
                     }
+                    if (compressionThreshold != -1) {
+                        // compression is enabled
+                        // check if there is a need to compress it and if so, do it!
+                        OutByteBuffer outRawBuffer = new OutByteBuffer();
+                        if (data.length >= compressionThreshold) {
+                            // compress it
+                            byte[] compressed = Util.compress(data);
+                            OutByteBuffer buffer = new OutByteBuffer();
+                            buffer.writeVarInt(compressed.length);
+                            buffer.writeBytes(compressed);
+                            outRawBuffer.writeVarInt(buffer.getBytes().size());
+                            outRawBuffer.writeBytes(buffer.getOutBytes());
+                        } else {
+                            outRawBuffer.writeVarInt(data.length + 1); // 1 for the compressed length (0)
+                            outRawBuffer.writeVarInt(0);
+                            outRawBuffer.writeBytes(data);
+                        }
+                        data = outRawBuffer.getOutBytes();
+
+                    }
+
+
+                    if (p instanceof PacketEncryptionResponse) {
+                        // enable encryption
+                        enableEncryption(((PacketEncryptionResponse) p).getSecretKey());
+                    }
+                    binQueue.add(data);
                     queue.remove(0);
                 }
                 while (binQueueIn.size() > 0) {
 
                     // read data
-                    byte[] decrypted = binQueueIn.get(0);
+                    byte[] data = binQueueIn.get(0);
                     InPacketBuffer inPacketBuffer;
                     if (encryptionEnabled) {
                         // decrypt
-                        decrypted = cipherDecrypt.update(decrypted);
+                        data = cipherDecrypt.update(data);
+                    }
+                    if (compressionThreshold != -1) {
+                        // compression is enabled
+                        // check if there is a need to decompress it and if so, do it!
+                        InByteBuffer rawBuffer = new InByteBuffer(data);
+                        int packetSize = rawBuffer.readVarInt();
+                        byte[] left = rawBuffer.readBytesLeft();
+                        if (packetSize == 0) {
+                            // no need
+                            inPacketBuffer = new InPacketBuffer(left);
+                        } else {
+                            // need to decompress data
+                            inPacketBuffer = Util.decompress(left).getPacketBuffer();
+                        }
+                    } else {
+                        inPacketBuffer = new InPacketBuffer(data);
                     }
                     try {
-                        inPacketBuffer = new InPacketBuffer(decrypted);
                         Packets.Clientbound p = connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
                         Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(p);
 
@@ -174,6 +211,9 @@ public class Network {
                             if (packet instanceof PacketLoginSuccess) {
                                 // login was okay, setting play status to avoid miss timing issues
                                 connection.setConnectionState(ConnectionState.PLAY);
+                            } else if (packet instanceof PacketLoginSetCompression) {
+                                // instantly set compression. because handling is to slow...
+                                compressionThreshold = ((PacketLoginSetCompression) packet).getThreshold();
                             }
                             connection.handle(packet);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -219,4 +259,5 @@ public class Network {
     public void disconnect() {
         packetThread.interrupt();
     }
+
 }
