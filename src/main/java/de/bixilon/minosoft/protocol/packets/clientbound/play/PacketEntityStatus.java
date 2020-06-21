@@ -27,9 +27,9 @@ public class PacketEntityStatus implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 entityId = buffer.readInteger();
                 status = Status.byId(buffer.readByte());
-
                 break;
         }
     }
@@ -62,7 +62,11 @@ public class PacketEntityStatus implements ClientboundPacket {
         WITCH_MAGIC(15),
         ZOMBIE_CONVERTING(16),
         FIREWORK_EXPLODING(17),
-        ANIMAL_IN_LOVE(18);
+        ANIMAL_IN_LOVE(18),
+        RESET_SQUID_ROTATION(19),
+        SPAWN_EXPLOSION_PARTICLE(20),
+        ENABLE_REDUCED_DEBUG_SCREEN(21),
+        DISABLE_REDUCED_DEBUG_SCREEN(22);
 
 
         final int id;

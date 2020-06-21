@@ -129,14 +129,14 @@ public class Protocol_1_8 extends Protocol {
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_TEAMS, 0x3E);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_PLUGIN_MESSAGE, 0x3F);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_DISCONNECT, 0x40);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_SERVER_DIFFICULTY, 0x40);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_COMBAT_EVENT, 0x40);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_CAMERA, 0x40);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_WORLD_BORDER, 0x40);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_TITLE, 0x40);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_LIST_HEADER_AND_FOOTER, 0x40);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_RESOURCE_PACK_SEND, 0x40);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_NBT_QUERY_RESPONSE, 0x40);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_SERVER_DIFFICULTY, 0x41);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_COMBAT_EVENT, 0x42);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_CAMERA, 0x43);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_WORLD_BORDER, 0x44);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_TITLE, 0x45);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_LIST_HEADER_AND_FOOTER, 0x46);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_RESOURCE_PACK_SEND, 0x47);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_NBT_QUERY_RESPONSE, 0x48);
     }
 
     public int getProtocolVersion() {

@@ -70,7 +70,9 @@ public class PacketMapData implements ClientboundPacket {
                         scale = buffer.readByte();
                         return;
                 }
-
+                break;
+            case VERSION_1_8:
+                //ToDo
                 break;
         }
     }

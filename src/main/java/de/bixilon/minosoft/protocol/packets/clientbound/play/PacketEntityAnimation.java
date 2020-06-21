@@ -27,6 +27,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 entityId = buffer.readVarInt();
                 animation = Animations.byId(buffer.readByte());
 

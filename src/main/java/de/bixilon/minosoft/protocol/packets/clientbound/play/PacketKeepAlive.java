@@ -29,6 +29,9 @@ public class PacketKeepAlive implements ClientboundPacket {
             case VERSION_1_7_10:
                 id = buffer.readInteger();
                 break;
+            case VERSION_1_8:
+                id = buffer.readVarInt();
+                break;
         }
     }
 

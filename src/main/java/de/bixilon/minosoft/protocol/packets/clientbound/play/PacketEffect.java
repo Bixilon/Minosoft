@@ -36,6 +36,12 @@ public class PacketEffect implements ClientboundPacket {
                 data = buffer.readInteger();
                 disableRelativeVolume = buffer.readBoolean();
                 break;
+            case VERSION_1_8:
+                this.effect = EffectEffects.byId(buffer.readInteger());
+                position = buffer.readPosition();
+                data = buffer.readInteger();
+                disableRelativeVolume = buffer.readBoolean();
+                break;
         }
     }
 
@@ -93,9 +99,9 @@ public class PacketEffect implements ClientboundPacket {
         MOB_ZOMBIE_INFECT(1016),
         MOB_ZOMBIE_UNFECT(1017),
         MOB_ENDERDRAGON_END(1018),
-        RANDOM_ANVIL_BREAK(1019),
-        RANDOM_ANVIL_USE(1020),
-        RANDOM_ANVIL_LAND(1021),
+        RANDOM_ANVIL_BREAK(1020),
+        RANDOM_ANVIL_USE(1021),
+        RANDOM_ANVIL_LAND(1022),
 
         PARTICLE_10_SMOKE(2000), // data: smoke direction
         PARTICLE_BLOCK_BREAK(2001), // data: blockId

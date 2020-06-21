@@ -30,12 +30,6 @@ public class PacketPluginMessageSending implements ServerboundPacket {
         log();
     }
 
-    public PacketPluginMessageSending(String channel, String data) {
-        this.channel = channel;
-        this.data = data.getBytes();
-        log();
-    }
-
 
     @Override
     public OutPacketBuffer write(ProtocolVersion v) {
@@ -44,6 +38,10 @@ public class PacketPluginMessageSending implements ServerboundPacket {
             case VERSION_1_7_10:
                 buffer.writeString(channel); // name
                 buffer.writeShort((short) data.length); // length
+                buffer.writeBytes(data); // data
+                break;
+            case VERSION_1_8:
+                buffer.writeString(channel); // name
                 buffer.writeBytes(data); // data
                 break;
         }

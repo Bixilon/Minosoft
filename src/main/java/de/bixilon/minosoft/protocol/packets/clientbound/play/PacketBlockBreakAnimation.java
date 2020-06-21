@@ -34,6 +34,11 @@ public class PacketBlockBreakAnimation implements ClientboundPacket {
                 position = buffer.readBlockPositionInteger();
                 stage = buffer.readByte();
                 break;
+            case VERSION_1_8:
+                entityId = buffer.readVarInt();
+                position = buffer.readPosition();
+                stage = buffer.readByte();
+                break;
         }
     }
 

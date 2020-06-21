@@ -26,6 +26,7 @@ public class PacketEntityPositionAndRotation implements ClientboundPacket {
     RelativeLocation location;
     short yaw;
     short pitch;
+    boolean onGround;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
@@ -35,6 +36,13 @@ public class PacketEntityPositionAndRotation implements ClientboundPacket {
                 this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
                 this.yaw = buffer.readAngle();
                 this.pitch = buffer.readAngle();
+                break;
+            case VERSION_1_8:
+                this.entityId = buffer.readVarInt();
+                this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
+                this.yaw = buffer.readAngle();
+                this.pitch = buffer.readAngle();
+                onGround = buffer.readBoolean();
                 break;
         }
     }

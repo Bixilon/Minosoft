@@ -51,6 +51,9 @@ public class PacketChunkBulk implements ClientboundPacket {
                     chunkMap.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(v, decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
                 }
                 break;
+            case VERSION_1_8:
+                //ToDo
+                break;
         }
     }
 

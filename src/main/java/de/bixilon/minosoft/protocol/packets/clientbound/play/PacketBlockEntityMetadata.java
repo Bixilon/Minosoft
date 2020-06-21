@@ -35,6 +35,11 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
                 action = Action.byId(buffer.readByte());
                 nbt = buffer.readNBT();
                 break;
+            case VERSION_1_8:
+                position = buffer.readPosition();
+                action = Action.byId(buffer.readByte());
+                nbt = buffer.readNBT();
+                break;
         }
     }
 

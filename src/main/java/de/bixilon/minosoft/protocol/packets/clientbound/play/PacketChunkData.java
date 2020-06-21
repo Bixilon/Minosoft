@@ -43,6 +43,9 @@ public class PacketChunkData implements ClientboundPacket {
 
                 chunk = ChunkUtil.readChunkPacket(v, decompressed, sectionBitMask, addBitMask, groundUpContinuous, true);
                 break;
+            case VERSION_1_8:
+                //ToDo
+                break;
         }
 
     }

@@ -48,7 +48,9 @@ public class PacketMultiBlockChange implements ClientboundPacket {
                     byte x = (byte) (Math.abs((raw & 0xF0_00_00_00) >> 28));
                     blocks.put(new InChunkLocation(x, y, z), Blocks.byLegacy(blockId, meta));
                 }
-
+                break;
+            case VERSION_1_8:
+                //ToDo
                 break;
         }
     }

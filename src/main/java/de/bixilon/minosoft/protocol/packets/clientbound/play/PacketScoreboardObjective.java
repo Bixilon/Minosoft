@@ -23,6 +23,7 @@ public class PacketScoreboardObjective implements ClientboundPacket {
     String name;
     String value;
     ScoreboardObjectiveAction action;
+    ScoreboardObjectiveType type;
 
 
     @Override
@@ -32,6 +33,14 @@ public class PacketScoreboardObjective implements ClientboundPacket {
                 name = buffer.readString();
                 value = buffer.readString();
                 action = ScoreboardObjectiveAction.byId(buffer.readByte());
+                break;
+            case VERSION_1_8:
+                name = buffer.readString();
+                action = ScoreboardObjectiveAction.byId(buffer.readByte());
+                if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
+                    value = buffer.readString();
+                    type = ScoreboardObjectiveType.byName(buffer.readString());
+                }
                 break;
         }
     }
@@ -80,6 +89,30 @@ public class PacketScoreboardObjective implements ClientboundPacket {
 
         public int getId() {
             return id;
+        }
+    }
+
+    public enum ScoreboardObjectiveType {
+        INTEGER("integer"),
+        HEARTS("hearts");
+
+        final String name;
+
+        ScoreboardObjectiveType(String name) {
+            this.name = name;
+        }
+
+        public static ScoreboardObjectiveType byName(String name) {
+            for (ScoreboardObjectiveType a : values()) {
+                if (a.getName().equals(name)) {
+                    return a;
+                }
+            }
+            return null;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }

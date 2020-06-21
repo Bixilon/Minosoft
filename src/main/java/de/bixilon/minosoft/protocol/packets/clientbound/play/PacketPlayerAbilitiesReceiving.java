@@ -41,6 +41,9 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
                 flyingSpeed = buffer.readFloat();
                 walkingSpeed = buffer.readFloat();
                 break;
+            case VERSION_1_8:
+                //ToDo
+                break;
         }
     }
 

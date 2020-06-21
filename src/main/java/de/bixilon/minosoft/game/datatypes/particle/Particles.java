@@ -77,7 +77,11 @@ public enum Particles {
     DRIPPING_HONEY(new Identifier(null, "dripping_honey"), 58),
     FALLING_HONEY(new Identifier(null, "falling_honey"), 59),
     LANDING_HONEY(new Identifier(null, "landing_honey"), 60),
-    FALLING_NECTAR(new Identifier(null, "falling_nectar"), 61);
+    FALLING_NECTAR(new Identifier(null, "falling_nectar"), 61),
+
+    IRON_CRACK(new Identifier("ironcrack"), 36);
+
+    //ToDo: 1.8 names, etc
 
     final Identifier identifier;
     final int id;

@@ -65,6 +65,8 @@ public class PacketBlockAction implements ClientboundPacket {
                 }
 
                 break;
+            case VERSION_1_8:
+                //ToDO
         }
     }
 

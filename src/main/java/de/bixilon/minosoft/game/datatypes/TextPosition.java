@@ -11,33 +11,29 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes;
 
-public class StatusEffect {
-    final StatusEffects effect;
-    final byte amplifier;
-    final int duration;
+public enum TextPosition {
+    CHAT_BOX(0),
+    SYSTEM_MESSAGE(1),
+    ABOVE_HOTBAR(2);
 
-    public StatusEffect(StatusEffects effect, byte amplifier, int duration) {
-        this.effect = effect;
-        this.amplifier = amplifier;
-        this.duration = duration;
+    final int id;
+
+    TextPosition(int id) {
+        this.id = id;
     }
 
-    public byte getAmplifier() {
-        return amplifier;
+    public static TextPosition byId(int id) {
+        for (TextPosition g : values()) {
+            if (g.getId() == id) {
+                return g;
+            }
+        }
+        return null;
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
-    public StatusEffects getEffect() {
-        return effect;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s (amplifier: %d, duration: %d)", effect.name(), amplifier, duration);
+    public int getId() {
+        return id;
     }
 }

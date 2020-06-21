@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.TextPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -22,6 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketChatMessage implements ClientboundPacket {
     TextComponent c;
+    TextPosition position;
 
 
     @Override
@@ -29,6 +31,11 @@ public class PacketChatMessage implements ClientboundPacket {
         switch (v) {
             case VERSION_1_7_10:
                 c = buffer.readChatComponent();
+                position = TextPosition.CHAT_BOX;
+                break;
+            case VERSION_1_8:
+                c = buffer.readChatComponent();
+                position = TextPosition.byId(buffer.readByte());
                 break;
         }
     }

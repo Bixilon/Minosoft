@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.inventory.InventoryProperties;
 import de.bixilon.minosoft.game.datatypes.inventory.InventoryType;
 import de.bixilon.minosoft.logging.Log;
@@ -24,7 +25,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class PacketOpenWindow implements ClientboundPacket {
     byte windowId;
     InventoryType type;
-    String title;
+    TextComponent title;
     byte slotCount;
     int entityId;
 
@@ -35,13 +36,22 @@ public class PacketOpenWindow implements ClientboundPacket {
             case VERSION_1_7_10:
                 this.windowId = buffer.readByte();
                 this.type = InventoryType.byId(buffer.readByte());
-                this.title = buffer.readString();
+                this.title = buffer.readChatComponent();
                 slotCount = buffer.readByte();
                 if (!buffer.readBoolean()) {
                     // no custom name
                     title = null;
                 }
                 this.entityId = buffer.readInteger();
+                break;
+            case VERSION_1_8:
+                this.windowId = buffer.readByte();
+                this.type = InventoryType.byName(buffer.readString());
+                this.title = buffer.readChatComponent();
+                slotCount = buffer.readByte();
+                if (type == InventoryType.HORSE) {
+                    this.entityId = buffer.readInteger();
+                }
                 break;
         }
     }
@@ -68,7 +78,7 @@ public class PacketOpenWindow implements ClientboundPacket {
         return entityId;
     }
 
-    public String getTitle() {
+    public TextComponent getTitle() {
         return title;
     }
 

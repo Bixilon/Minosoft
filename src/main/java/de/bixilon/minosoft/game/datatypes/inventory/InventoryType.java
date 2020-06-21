@@ -14,23 +14,25 @@
 package de.bixilon.minosoft.game.datatypes.inventory;
 
 public enum InventoryType {
-    CHEST(0),
-    WORKBENCH(1),
-    FURNACE(2),
-    DISPENSER(3),
-    ENCHANTMENT_TABLE(4),
-    BREWING_STAND(5),
-    NPC_TRACE(6),
-    BEACON(7),
-    ANVIL(8),
-    HOPPER(9),
-    DROPPER(10),
-    HORSE(11);
+    CHEST(0, "minecraft:chest"),
+    WORKBENCH(1, "minecraft:crafting_table"),
+    FURNACE(2, "minecraft:furnace"),
+    DISPENSER(3, "minecraft:dispenser "),
+    ENCHANTMENT_TABLE(4, "minecraft:enchanting_table "),
+    BREWING_STAND(5, "minecraft:brewing_stand "),
+    NPC_TRACE(6, "minecraft:villager "),
+    BEACON(7, "minecraft:beacon "),
+    ANVIL(8, "minecraft:anvil "),
+    HOPPER(9, "minecraft:hopper "),
+    DROPPER(10, "minecraft:dropper "),
+    HORSE(11, "EntityHorse");
 
     final int id;
+    final String name;
 
-    InventoryType(int id) {
+    InventoryType(int id, String name) {
         this.id = id;
+        this.name = name;
     }
 
     public static InventoryType byId(int id) {
@@ -42,7 +44,20 @@ public enum InventoryType {
         return null;
     }
 
+    public static InventoryType byName(String name) {
+        for (InventoryType t : values()) {
+            if (t.getName().equals(name)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

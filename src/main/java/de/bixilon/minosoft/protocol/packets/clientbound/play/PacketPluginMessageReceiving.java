@@ -31,6 +31,10 @@ public class PacketPluginMessageReceiving implements ClientboundPacket {
                 channel = buffer.readString();
                 data = buffer.readBytes(buffer.readShort()); // first read length, then the data
                 break;
+            case VERSION_1_8:
+                channel = buffer.readString();
+                data = buffer.readBytesLeft();
+                break;
         }
     }
 

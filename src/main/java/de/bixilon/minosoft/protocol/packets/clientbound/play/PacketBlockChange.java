@@ -33,6 +33,11 @@ public class PacketBlockChange implements ClientboundPacket {
                 position = buffer.readBlockPosition();
                 block = Blocks.byLegacy(buffer.readVarInt(), buffer.readByte());
                 break;
+            case VERSION_1_8:
+                position = buffer.readPosition();
+                int blockId = buffer.readVarInt();
+                block = Blocks.byLegacy(blockId >> 4, blockId & 0xF);
+                break;
         }
     }
 

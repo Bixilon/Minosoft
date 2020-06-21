@@ -24,6 +24,7 @@ public class PacketEntityRotation implements ClientboundPacket {
     int entityId;
     short yaw;
     short pitch;
+    boolean onGround;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
@@ -32,6 +33,12 @@ public class PacketEntityRotation implements ClientboundPacket {
                 this.entityId = buffer.readInteger();
                 this.yaw = buffer.readAngle();
                 this.pitch = buffer.readAngle();
+                break;
+            case VERSION_1_8:
+                this.entityId = buffer.readVarInt();
+                this.yaw = buffer.readAngle();
+                this.pitch = buffer.readAngle();
+                onGround = buffer.readBoolean();
                 break;
         }
     }

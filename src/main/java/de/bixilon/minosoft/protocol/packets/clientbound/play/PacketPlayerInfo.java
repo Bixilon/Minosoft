@@ -32,7 +32,9 @@ public class PacketPlayerInfo implements ClientboundPacket {
                 name = buffer.readString();
                 state = (buffer.readBoolean() ? PlayerJoinState.JOINED : PlayerJoinState.DISCONNECTED);
                 ping = buffer.readShort();
-
+                break;
+            case VERSION_1_8:
+                //ToDo
                 break;
         }
     }

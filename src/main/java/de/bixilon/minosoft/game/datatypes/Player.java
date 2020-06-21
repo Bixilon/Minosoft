@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 import de.bixilon.minosoft.game.datatypes.inventory.Inventory;
 import de.bixilon.minosoft.game.datatypes.inventory.InventoryProperties;
 import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardManager;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.World;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
 
@@ -34,7 +34,7 @@ public class Player {
     float health;
     short food;
     float saturation;
-    Location spawnLocation;
+    BlockPosition spawnLocation;
     int entityId;
     GameMode gameMode;
     World world = new World("world");
@@ -87,11 +87,11 @@ public class Player {
         this.saturation = saturation;
     }
 
-    public Location getSpawnLocation() {
+    public BlockPosition getSpawnLocation() {
         return spawnLocation;
     }
 
-    public void setSpawnLocation(Location spawnLocation) {
+    public void setSpawnLocation(BlockPosition spawnLocation) {
         this.spawnLocation = spawnLocation;
     }
 
