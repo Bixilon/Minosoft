@@ -381,10 +381,10 @@ public class PacketHandler {
     public void handle(PacketScoreboardUpdateScore pkg) {
         switch (pkg.getAction()) {
             case CREATE_UPDATE:
-                connection.getPlayer().getScoreboardManager().getObjective(pkg.getItemName()).addScore(new ScoreboardScore(pkg.getItemName(), pkg.getScoreName(), pkg.getScoreValue()));
+                connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName()).addScore(new ScoreboardScore(pkg.getItemName(), pkg.getScoreName(), pkg.getScoreValue()));
                 break;
             case REMOVE:
-                connection.getPlayer().getScoreboardManager().getObjective(pkg.getItemName()).removeScore(pkg.getItemName());
+                connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName()).removeScore(pkg.getScoreName());
                 break;
 
         }
@@ -412,5 +412,9 @@ public class PacketHandler {
                 connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).removePlayers(Arrays.asList(pkg.getPlayerNames()));
                 break;
         }
+    }
+
+    public void handle(PacketMapData pkg) {
+        //ToDo
     }
 }

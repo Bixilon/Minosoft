@@ -111,6 +111,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_SCORE, PacketScoreboardUpdateScore.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_TEAMS, PacketScoreboardTeams.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_DISPLAY_SCOREBOARD, PacketScoreboardDisplayScoreboard.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_MAP_DATA, PacketMapData.class);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {
