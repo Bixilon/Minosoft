@@ -175,6 +175,7 @@ public class Packets {
         PLAY_CHUNK_BULK,
         PLAY_UPDATE_SIGN,
         PLAY_STATISTICS,
-        PLAY_SPAWN_OBJECT
+        PLAY_SPAWN_OBJECT,
+        PLAY_TITLE
     }
 }

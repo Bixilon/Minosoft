@@ -51,6 +51,15 @@ public enum ProtocolVersion {
         this.version = protocol.getProtocolVersion();
     }
 
+    public static ProtocolVersion byId(int protocolNumber) {
+        for (ProtocolVersion v : values()) {
+            if (v.getVersion() == protocolNumber) {
+                return v;
+            }
+        }
+        return null;
+    }
+
     public int getVersion() {
         return version;
     }

@@ -41,6 +41,7 @@ public class Network {
     private Cipher cipherEncrypt;
     private Cipher cipherDecrypt;
     private Thread packetThread;
+    private boolean connected;
 
     public Network(Connection c) {
         this.connection = c;
@@ -60,6 +61,7 @@ public class Network {
         Thread socketThread = new Thread(() -> {
             try {
                 socket = new Socket(connection.getHost(), connection.getPort());
+                connected = true;
                 connection.setConnectionState(ConnectionState.HANDSHAKING);
                 socket.setKeepAlive(true);
                 DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
@@ -105,6 +107,8 @@ public class Network {
                     Util.sleep(1);
 
                 }
+                socket.close();
+                connected = false;
                 connection.setConnectionState(ConnectionState.DISCONNECTED);
             } catch (IOException e) {
                 // Could not connect
@@ -167,10 +171,10 @@ public class Network {
                                 Log.protocol(String.format("[IN] Packet %s did not used all bytes sent", ((p != null) ? p.name() : "UNKNOWN")));
                             }
 
-                                if (packet instanceof PacketLoginSuccess) {
-                                    // login was okay, setting play status to avoid miss timing issues
-                                    connection.setConnectionState(ConnectionState.PLAY);
-                                }
+                            if (packet instanceof PacketLoginSuccess) {
+                                // login was okay, setting play status to avoid miss timing issues
+                                connection.setConnectionState(ConnectionState.PLAY);
+                            }
                             connection.handle(packet);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                             // safety first, but will not occur
@@ -206,5 +210,13 @@ public class Network {
         cipherDecrypt = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey);
         encryptionEnabled = true;
         Log.debug("Encryption enabled!");
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void disconnect() {
+        packetThread.interrupt();
     }
 }

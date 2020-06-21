@@ -26,6 +26,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketChatMessage;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest;
+import de.bixilon.minosoft.protocol.protocol.ConnectionReason;
 import de.bixilon.minosoft.protocol.protocol.ConnectionState;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -40,9 +41,10 @@ public class Connection {
     private final PluginChannelHandler pluginChannelHandler;
     private final ArrayList<ClientboundPacket> handlingQueue;
     Thread handleThread;
+    ProtocolVersion version = ProtocolVersion.VERSION_1_7_10; // default
     private Player player;
     private ConnectionState state = ConnectionState.DISCONNECTED;
-    private boolean onlyPing;
+    private ConnectionReason reason;
 
     public Connection(String host, int port) {
         this.host = host;
@@ -58,7 +60,7 @@ public class Connection {
      * Sends an server ping to the server (player count, motd, ...)
      */
     public void ping() {
-        onlyPing = true;
+        reason = ConnectionReason.PING;
         network.connect();
     }
 
@@ -66,7 +68,10 @@ public class Connection {
      * Tries to connect to the server and login
      */
     public void connect() {
-        onlyPing = false;
+        if (reason == null) {
+            // first get version, then login
+            reason = ConnectionReason.GET_VERSION;
+        }
         network.connect();
 
     }
@@ -94,8 +99,8 @@ public class Connection {
                 // connection established, starting threads and logging in
                 network.startPacketThread();
                 startHandlingThread();
-                ConnectionState next = (onlyPing ? ConnectionState.STATUS : ConnectionState.LOGIN);
-                network.sendPacket(new PacketHandshake(getHost(), getPort(), next, (onlyPing) ? -1 : getVersion().getVersion()));
+                ConnectionState next = ((reason == ConnectionReason.CONNECT) ? ConnectionState.LOGIN : ConnectionState.STATUS);
+                network.sendPacket(new PacketHandshake(getHost(), getPort(), next, next == ConnectionState.STATUS ? -1 : getVersion().getVersion()));
                 // after sending it, switch to next state
                 setConnectionState(next);
                 break;
@@ -111,8 +116,11 @@ public class Connection {
     }
 
     public ProtocolVersion getVersion() {
-        //ToDo: static right now
-        return ProtocolVersion.VERSION_1_7_10;
+        return version;
+    }
+
+    public void setVersion(ProtocolVersion version) {
+        this.version = version;
     }
 
     public PacketHandler getHandler() {
@@ -124,12 +132,18 @@ public class Connection {
         handleThread.interrupt();
     }
 
-    public boolean isOnlyPing() {
-        return onlyPing;
+    public ConnectionReason getReason() {
+        return reason;
+    }
+
+    public void setReason(ConnectionReason reason) {
+        this.reason = reason;
     }
 
     public void disconnect() {
         setConnectionState(ConnectionState.DISCONNECTING);
+        network.disconnect();
+        handleThread.interrupt();
     }
 
     public Player getPlayer() {
@@ -182,5 +196,9 @@ public class Connection {
 
             getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getName(), (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft").getBytes());
         });
+    }
+
+    public boolean isConnected() {
+        return network.isConnected();
     }
 }

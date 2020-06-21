@@ -28,6 +28,8 @@ public class World {
     final HashMap<ChunkLocation, Chunk> chunks;
     final HashMap<Integer, Entity> entities;
     final String name;
+    private final HashMap<BlockPosition, String[]> signs;
+    private final HashMap<BlockPosition, CompoundTag> blockEntityMeta;
     boolean hardcore;
     boolean raining;
     Dimension dimension; // used for sky color, etc
@@ -36,6 +38,8 @@ public class World {
         this.name = name;
         chunks = new HashMap<>();
         entities = new HashMap<>();
+        signs = new HashMap<>();
+        blockEntityMeta = new HashMap<>();
     }
 
     public String getName() {
@@ -121,19 +125,19 @@ public class World {
 
     public void updateSign(BlockPosition position, String[] lines) {
         //ToDo check if block is really a sign
-        getChunk(position.getChunkLocation()).updateSign(position, lines);
+        signs.put(position, lines);
     }
 
     public String[] getSignText(BlockPosition position) {
-        return getChunk(position.getChunkLocation()).getSignText(position);
+        return signs.get(position);
     }
 
     public void setBlockEntityData(BlockPosition position, CompoundTag nbt) {
         //ToDo check if block is really a block entity (command block, spawner, skull, flower pot)
-        getChunk(position.getChunkLocation()).setBlockEntityData(position, nbt);
+        blockEntityMeta.put(position, nbt);
     }
 
     public CompoundTag getBlockEntityData(BlockPosition position) {
-        return getChunk(position.getChunkLocation()).getBlockEntityData(position);
+        return blockEntityMeta.get(position);
     }
 }

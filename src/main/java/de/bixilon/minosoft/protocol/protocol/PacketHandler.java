@@ -45,14 +45,30 @@ public class PacketHandler {
     }
 
     public void handle(PacketStatusResponse pkg) {
-        Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd()));
+        if (connection.getReason() == ConnectionReason.GET_VERSION) {
+            // now we know the version, set it
+            connection.setVersion(ProtocolVersion.byId(pkg.getResponse().getProtocolNumber()));
+        }
+        Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getColoredMessage()));
     }
 
     public void handle(PacketStatusPong pkg) {
         Log.debug("Pong: " + pkg.getID());
-        if (connection.isOnlyPing()) {
-            // pong arrived, closing connection
-            connection.disconnect();
+        switch (connection.getReason()) {
+            case PING:
+                // pong arrived, closing connection
+                connection.disconnect();
+                break;
+            case GET_VERSION:
+                // reconnect...
+                connection.disconnect();
+                Log.info(String.format("Server is running on version %s, reconnecting...", connection.getVersion().getName()));
+                connection.setReason(ConnectionReason.CONNECT);
+                connection.connect();
+                break;
+            case CONNECT:
+                // do nothing
+                break;
         }
     }
 
