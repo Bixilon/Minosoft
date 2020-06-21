@@ -13,12 +13,24 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.game.datatypes.BlockPosition;
-import de.bixilon.minosoft.game.datatypes.ChatComponent;
+import de.bixilon.minosoft.game.datatypes.Direction;
+import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Pose;
+import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.game.datatypes.particle.*;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.nbt.tag.TagTypes;
+import de.bixilon.minosoft.util.BitByte;
+import de.bixilon.minosoft.util.Util;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.UUID;
 
 public class InByteBuffer {
@@ -40,6 +52,13 @@ public class InByteBuffer {
         byte[] ret = new byte[count];
         System.arraycopy(bytes, pos, ret, 0, count);
         pos = pos + count;
+        return ret;
+    }
+
+
+    private byte[] readBytes(int pos, int count) {
+        byte[] ret = new byte[count];
+        System.arraycopy(bytes, pos, ret, 0, count);
         return ret;
     }
 
@@ -92,11 +111,15 @@ public class InByteBuffer {
     public String readString() {
         int length = readVarInt();
         if (length > ProtocolDefinition.STRING_MAX_LEN) {
-            // ToDo throw new PacketDataException(String.format("String is longer than %s", ProtocolDefinition.STRING_MAX_LEN));
             return null;
         }
         return new String(readBytes(length), StandardCharsets.UTF_8);
     }
+
+    public String readString(int length) {
+        return new String(readBytes(length));
+    }
+
 
     public UUID readUUID() {
         ByteBuffer buffer = ByteBuffer.allocate(16); // UUID.BYTES
@@ -141,11 +164,19 @@ public class InByteBuffer {
         return result;
     }
 
+    public double readFixedPointNumberInteger() {
+        return readInteger() / 32.0D;
+    }
+
+    public double readFixedPointNumberByte() {
+        return readByte() / 32.0D;
+    }
+
     public JSONObject readJson() {
         return new JSONObject(readString());
     }
 
-    public BlockPosition readBlockPosition() {
+    public BlockPosition readPosition() {
         Long raw = readLong();
         return new BlockPosition(Long.valueOf(raw >> 38).intValue(), Long.valueOf(raw & 0xFFF).shortValue(), Long.valueOf(raw << 26 >> 38).intValue());
     }
@@ -155,12 +186,16 @@ public class InByteBuffer {
         return "dataLen: " + bytes.length + "; pos: " + pos;
     }
 
-    public ChatComponent readChatComponent() {
-        return new ChatComponent(readString());
+    public TextComponent readChatComponent() {
+        return new TextComponent(readString());
     }
 
-    public int getPos() {
+    public int getPosition() {
         return this.pos;
+    }
+
+    public void setPosition(int pos) {
+        this.pos = pos;
     }
 
     public int getLength() {
@@ -169,5 +204,104 @@ public class InByteBuffer {
 
     public int getBytesLeft() {
         return bytes.length - pos;
+    }
+
+    public Direction readDirection() {
+        return Direction.byId(readVarInt());
+    }
+
+    public Pose readPose() {
+        return Pose.byId(readVarInt());
+    }
+
+    public Particle readParticle(ProtocolVersion v) {
+        Particles type = Particles.byType(readVarInt());
+        try {
+            if (type.getClazz() == OtherParticles.class) {
+                return type.getClazz().getConstructor(Particles.class).newInstance(type);
+            } else if (type.getClazz() == BlockParticle.class) {
+                return type.getClazz().getConstructor(int.class).newInstance(readVarInt());
+            } else if (type.getClazz() == DustParticle.class) {
+                return type.getClazz().getConstructor(float.class, float.class, float.class, float.class).newInstance(readFloat(), readFloat(), readFloat(), readFloat());
+            } else if (type.getClazz() == FallingDustParticle.class) {
+                return type.getClazz().getConstructor(int.class).newInstance(readVarInt());
+            } else if (type.getClazz() == ItemParticle.class) {
+                return type.getClazz().getConstructor(Slot.class).newInstance(readSlot(v));
+            }
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public CompoundTag readNBT() {
+
+        if (readByte() != TagTypes.COMPOUND.getId()) { // will be a Compound Tag
+            // maybe compressed
+            setPosition(getPosition() - 1);
+            short length = readShort();
+            if (length == -1) {
+                // no nbt data here...
+                return null;
+            }
+            try {
+                return new CompoundTag(new InByteBuffer(Util.decompressGzip(readBytes(length))));
+            } catch (IOException e) {
+                // oh no
+                e.printStackTrace();
+                throw new IllegalArgumentException("Bad nbt");
+            }
+            // try again
+        }
+        setPosition(getPosition() - 1);
+        return new CompoundTag(this);
+    }
+
+    public Slot readSlot(ProtocolVersion v) {
+        switch (v) {
+            case VERSION_1_7_10:
+                short id = readShort();
+                if (id != -1) {
+                    return new Slot(id, readByte(), readShort(), readNBT());
+                }
+                return null;
+                /*
+
+        if (readBoolean()) {
+            return new Slot(readVarInt(), readByte(), readNBT());
+        }
+        //else no data
+        return null;
+                 */
+        }
+        return null;
+    }
+
+    public String getBase64(int pos, int length) {
+        return new String(Base64.getEncoder().encode(readBytes(pos, length)));
+    }
+
+    public String getBase64() {
+        return getBase64(getPosition(), getBytesLeft());
+    }
+
+    public short readAngle() {
+        return (short) (readByte() * ProtocolDefinition.ANGLE_CALCULATION_CONSTANT);
+    }
+
+    public Location readLocation() {
+        return new Location(readDouble(), readDouble(), readDouble());
+    }
+
+    public BlockPosition readBlockPosition() {
+        return new BlockPosition(readInteger(), BitByte.byteToUShort(readByte()), readInteger());
+    }
+
+    public BlockPosition readBlockPositionInteger() {
+        return new BlockPosition(readInteger(), (short) (readInteger()), readInteger());
+    }
+
+    public BlockPosition readBlockPositionShort() {
+        return new BlockPosition(readInteger(), readShort(), readInteger());
     }
 }

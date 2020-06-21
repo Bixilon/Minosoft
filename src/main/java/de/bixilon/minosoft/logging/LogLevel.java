@@ -14,13 +14,14 @@
 package de.bixilon.minosoft.logging;
 
 public enum LogLevel {
-    GAME(0),
-    FATAL(1),
-    INFO(2),
+    FATAL(0),
+    INFO(1),
+    MOJANG(2),
     WARNING(3),
-    DEBUG(4),
-    VERBOSE(5),
-    PROTOCOL(6);
+    GAME(4),
+    DEBUG(5),
+    VERBOSE(6),
+    PROTOCOL(7);
 
     private final int id;
 

@@ -13,8 +13,11 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.game.datatypes.BlockPosition;
-import de.bixilon.minosoft.game.datatypes.ChatComponent;
+import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
@@ -89,7 +92,6 @@ public class OutByteBuffer {
 
     public void writeString(String s) {
         if (s.length() > ProtocolDefinition.STRING_MAX_LEN) {
-            //ToDo
             writeByte((byte) 0); // write length 0
         }
         writeVarInt(s.length());
@@ -136,6 +138,14 @@ public class OutByteBuffer {
         } while (value != 0);
     }
 
+    public void writeFixedPointNumberInteger(double d) {
+        writeInteger((int) (d * 32.0D));
+    }
+
+    public void writeFixedPointNumberByte(double d) {
+        writeInteger((int) (d * 32.0D));
+    }
+
     public List<Byte> getBytes() {
         return bytes;
     }
@@ -144,11 +154,54 @@ public class OutByteBuffer {
         writeString(j.toString());
     }
 
-    public void writeBlockPosition(BlockPosition pos) {
-        writeLong((((long) pos.getX() & 0x3FFFFFF) << 38) | (((long) pos.getZ() & 0x3FFFFFF) << 12) | ((long) pos.getY() & 0xFFF));
+    public void writePosition(Location location) {
+        writeLong((((long) location.getX() & 0x3FFFFFF) << 38) | (((long) location.getZ() & 0x3FFFFFF) << 12) | ((long) location.getY() & 0xFFF));
     }
 
-    public void writeChatComponent(ChatComponent c) {
+    public void writeChatComponent(TextComponent c) {
         writeJson(c.getRaw());
+    }
+
+    public void writeSlot(ProtocolVersion v, Slot slot) {
+        switch (v) {
+            case VERSION_1_7_10:
+                if (slot == null) {
+                    writeShort((short) -1);
+                    return;
+                }
+                writeShort((short) slot.getItemId());
+                writeByte((byte) slot.getItemCount());
+                writeShort(slot.getItemMetadata());
+                writeNBT(slot.getNbt());
+        }
+    }
+
+    private void writeNBT(CompoundTag nbt) {
+        // ToDo: test
+        nbt.writeBytes(this);
+    }
+
+    public void writeStringNoLength(String s) {
+        for (byte b : s.getBytes(StandardCharsets.UTF_8)) {
+            bytes.add(b);
+        }
+    }
+
+    public void writeBlockPositionInteger(BlockPosition pos) {
+        writeInteger(pos.getX());
+        writeInteger(pos.getY());
+        writeInteger(pos.getZ());
+    }
+
+    public void writeBlockPositionShort(BlockPosition pos) {
+        writeInteger(pos.getX());
+        writeShort((short) pos.getY());
+        writeInteger(pos.getZ());
+    }
+
+    public void writeBlockPositionByte(BlockPosition pos) {
+        writeInteger(pos.getX());
+        writeByte((byte) pos.getY());
+        writeInteger(pos.getZ());
     }
 }

@@ -13,34 +13,138 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-public interface Entity {
-    Entities getEntityType();
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
+import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 
-    int getId();
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-    Location getLocation();
+public abstract class Entity implements EntityInterface {
+    final int id;
+    final HashMap<InventorySlots.EntityInventory, Slot> equipment;
+    final List<StatusEffect> effectList;
+    Location location;
+    Velocity velocity;
+    short yaw;
+    short pitch;
+    short headYaw;
+    int attachedTo = -1;
 
-    void setLocation(Location location);
+    public Entity(int id, Location location, short yaw, short pitch, Velocity velocity) {
+        this.id = id;
+        this.location = location;
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.velocity = velocity;
+        this.equipment = new HashMap<>();
+        this.effectList = new ArrayList<>();
+    }
 
-    Velocity getVelocity();
-
-    void setVelocity(Velocity velocity);
-
-    int getYaw();
-
-    void setYaw(int yaw);
-
-    int getPitch();
-
-    void setPitch(int pitch);
-
-    float getWidth();
-
-    float getHeight();
-
-    EntityMetaData getMetaData();
-
-    void setMetaData(EntityMetaData data);
+    public Entity(int id, Location location, int yaw, int pitch, Velocity velocity) {
+        this.id = id;
+        this.location = location;
+        this.yaw = (short) yaw;
+        this.pitch = (short) pitch;
+        this.velocity = velocity;
+        this.equipment = new HashMap<>();
+        this.effectList = new ArrayList<>();
+    }
 
 
+    public int getId() {
+        return id;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+
+    }
+
+    public void setLocation(RelativeLocation relativeLocation) {
+        // change relative location
+        location = new Location(location.getX() + relativeLocation.getX(), location.getY() + relativeLocation.getY(), location.getZ() + relativeLocation.getZ());
+    }
+
+    public Velocity getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(Velocity velocity) {
+        this.velocity = velocity;
+    }
+
+    public short getYaw() {
+        return yaw;
+    }
+
+    public void setYaw(short yaw) {
+        this.yaw = yaw;
+
+    }
+
+    public short getPitch() {
+        return pitch;
+    }
+
+    public void setPitch(short pitch) {
+        this.pitch = pitch;
+
+    }
+
+    public void setEquipment(InventorySlots.EntityInventory slot, Slot data) {
+        equipment.put(slot, data);
+    }
+
+    public Slot getEquipment(InventorySlots.EntityInventory slot) {
+        return equipment.get(slot);
+    }
+
+
+    public short getHeadYaw() {
+        return headYaw;
+    }
+
+    public void setHeadYaw(short headYaw) {
+        this.headYaw = headYaw;
+    }
+
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return EntityMetaData.class;
+    }
+
+    public List<StatusEffect> getEffectList() {
+        return effectList;
+    }
+
+    public void addEffect(StatusEffect effect) {
+        // effect already applied, maybe the duration or the amplifier changed?
+        effectList.removeIf(listEffect -> listEffect.getEffect() == effect.getEffect());
+        effectList.add(effect);
+    }
+
+    public void removeEffect(StatusEffects effect) {
+        effectList.removeIf(listEffect -> listEffect.getEffect() == effect);
+    }
+
+    public void attachTo(int vehicleId) {
+        this.attachedTo = vehicleId;
+    }
+
+    public boolean isAttached() {
+        return attachedTo != -1;
+    }
+
+    public int getAttachedEntity() {
+        return attachedTo;
+    }
+
+    public void detach() {
+        attachedTo = -1;
+    }
 }

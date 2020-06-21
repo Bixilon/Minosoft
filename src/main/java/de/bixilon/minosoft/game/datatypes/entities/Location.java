@@ -44,4 +44,9 @@ public class Location {
         Location that = (Location) obj;
         return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s %s", getX(), getY(), getZ());
+    }
 }

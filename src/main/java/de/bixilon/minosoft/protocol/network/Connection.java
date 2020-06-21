@@ -13,18 +13,22 @@
 
 package de.bixilon.minosoft.protocol.network;
 
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.config.GameConfiguration;
+import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.objects.Player;
+import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
+import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketChatMessage;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest;
 import de.bixilon.minosoft.protocol.protocol.ConnectionState;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.Util;
 
 import java.util.ArrayList;
 
@@ -33,10 +37,11 @@ public class Connection {
     private final int port;
     private final Network network;
     private final PacketHandler handler;
+    private final PluginChannelHandler pluginChannelHandler;
     private final ArrayList<ClientboundPacket> handlingQueue;
+    Thread handleThread;
     private Player player;
     private ConnectionState state = ConnectionState.DISCONNECTED;
-
     private boolean onlyPing;
 
     public Connection(String host, int port) {
@@ -45,6 +50,8 @@ public class Connection {
         network = new Network(this);
         handlingQueue = new ArrayList<>();
         handler = new PacketHandler(this);
+        pluginChannelHandler = new PluginChannelHandler(this);
+        registerDefaultChannels();
     }
 
     /**
@@ -114,6 +121,7 @@ public class Connection {
 
     public void handle(ClientboundPacket p) {
         handlingQueue.add(p);
+        handleThread.interrupt();
     }
 
     public boolean isOnlyPing() {
@@ -128,25 +136,51 @@ public class Connection {
         return player;
     }
 
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     public void sendPacket(ServerboundPacket p) {
         network.sendPacket(p);
     }
 
     private void startHandlingThread() {
-        Thread handleThread = new Thread(() -> {
+        handleThread = new Thread(() -> {
             while (getConnectionState() != ConnectionState.DISCONNECTED) {
                 while (handlingQueue.size() > 0) {
-                    handlingQueue.get(0).log();
-                    handlingQueue.get(0).handle(getHandler());
+                    try {
+                        handlingQueue.get(0).log();
+                        handlingQueue.get(0).handle(getHandler());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     handlingQueue.remove(0);
                 }
-                Util.sleep(1);
+                try {
+                    // sleep, wait for an interrupt from other thread
+                    //noinspection BusyWait
+                    Thread.sleep(100);
+                } catch (InterruptedException ignored) {
+                }
             }
         });
         handleThread.start();
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void sendChatMessage(String message) {
+        sendPacket(new PacketChatMessage(message));
+    }
+
+    public PluginChannelHandler getPluginChannelHandler() {
+        return pluginChannelHandler;
+    }
+
+    public void registerDefaultChannels() {
+        // MC|Brand
+        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getName(), (handler, buffer) -> {
+            Log.info(String.format("Server is running %s on version %s", new String(buffer.readBytes(buffer.getBytesLeft())), getVersion().getName()));
+
+            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getName(), (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft").getBytes());
+        });
     }
 }

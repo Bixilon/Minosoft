@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
-import de.bixilon.minosoft.game.datatypes.ChatComponent;
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketLoginDisconnect implements ClientboundPacket {
-    ChatComponent reason;
+    TextComponent reason;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
@@ -30,7 +30,7 @@ public class PacketLoginDisconnect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving login disconnect packet (%s)", reason.getRawMessage()));
+        Log.protocol(String.format("Receiving login disconnect packet (%s)", reason.getColoredMessage()));
     }
 
     @Override
@@ -38,7 +38,7 @@ public class PacketLoginDisconnect implements ClientboundPacket {
         h.handle(this);
     }
 
-    public ChatComponent getReason() {
+    public TextComponent getReason() {
         return reason;
     }
 }

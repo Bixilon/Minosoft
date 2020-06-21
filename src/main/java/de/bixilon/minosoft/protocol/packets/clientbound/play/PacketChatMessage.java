@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.ChatComponent;
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketChatMessage implements ClientboundPacket {
-    ChatComponent c;
+    TextComponent c;
 
 
     @Override
@@ -35,10 +35,10 @@ public class PacketChatMessage implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.game(String.format("[CHAT] %s", c.getRawMessage()));
+        Log.game(String.format("[CHAT] %s", c.getColoredMessage()));
     }
 
-    public ChatComponent getChatComponent() {
+    public TextComponent getChatComponent() {
         return c;
     }
 

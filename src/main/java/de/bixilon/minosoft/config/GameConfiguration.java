@@ -17,7 +17,8 @@ public enum GameConfiguration implements ConfigEnum {
     CONFIG_VERSION("version"),
     GAME_RENDER_DISTANCE("game.render-distance"),
     NETWORK_FAKE_CLIENT_BRAND("network.fake-client-brand"),
-    GENERAL_LOG_LEVEL("general.log-level");
+    GENERAL_LOG_LEVEL("general.log-level"),
+    CLIENT_TOKEN("account.clientToken");
 
 
     final String path;

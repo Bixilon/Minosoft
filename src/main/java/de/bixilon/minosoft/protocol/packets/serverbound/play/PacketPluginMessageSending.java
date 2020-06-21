@@ -52,6 +52,6 @@ public class PacketPluginMessageSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending data in plugin channel %s with a length of %s bytes", channel, data.length));
+        Log.protocol(String.format("Sending data in plugin channel \"%s\" with a length of %d bytes", channel, data.length));
     }
 }

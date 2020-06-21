@@ -40,6 +40,7 @@ public class Network {
     private boolean encryptionEnabled = false;
     private Cipher cipherEncrypt;
     private Cipher cipherDecrypt;
+    private Thread packetThread;
 
     public Network(Connection c) {
         this.connection = c;
@@ -63,7 +64,6 @@ public class Network {
                 socket.setKeepAlive(true);
                 DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
                 DataInputStream dIn = new DataInputStream(socket.getInputStream());
-                socket.getInputStream();
 
 
                 while (connection.getConnectionState() != ConnectionState.DISCONNECTING) {
@@ -81,11 +81,6 @@ public class Network {
                         binQueue.remove(0);
                     }
 
-                    if (dIn.available() == 0) {
-                        // nothing to receive
-                        Util.sleep(1);
-                        continue;
-                    }
                     // everything sent for now, waiting for data
 
                     if (dIn.available() > 0) {
@@ -105,6 +100,7 @@ public class Network {
 
                         byte[] raw = dIn.readNBytes(length);
                         binQueueIn.add(raw);
+                        packetThread.interrupt();
                     }
                     Util.sleep(1);
 
@@ -124,7 +120,7 @@ public class Network {
         // read data
         // safety first, but will not occur
         // sleep 1 ms
-        Thread packetThread = new Thread(() -> {
+        packetThread = new Thread(() -> {
             // compressed data, makes packets to binary data
             while (connection.getConnectionState() != ConnectionState.DISCONNECTED) {
 
@@ -166,28 +162,33 @@ public class Network {
                         try {
                             ClientboundPacket packet = clazz.getConstructor().newInstance();
                             packet.read(inPacketBuffer, connection.getVersion());
-                            if (inPacketBuffer.getBytesLeft() > 0) {
+                            if (inPacketBuffer.getBytesLeft() > 0 && p != Packets.Clientbound.PLAY_ENTITY_METADATA) { // entity meta data uses mostly all data, but this happens in the handling thread
                                 // warn not all data used
                                 Log.protocol(String.format("[IN] Packet %s did not used all bytes sent", ((p != null) ? p.name() : "UNKNOWN")));
                             }
 
-                            if (packet instanceof PacketLoginSuccess) {
-                                // login was okay, setting play status to avoid miss timing issues
-                                connection.setConnectionState(ConnectionState.PLAY);
-                            }
+                                if (packet instanceof PacketLoginSuccess) {
+                                    // login was okay, setting play status to avoid miss timing issues
+                                    connection.setConnectionState(ConnectionState.PLAY);
+                                }
                             connection.handle(packet);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                             // safety first, but will not occur
                             e.printStackTrace();
                         }
-                    } catch (ArrayIndexOutOfBoundsException e) {
+                    } catch (Exception e) {
                         Log.protocol("Received broken packet!");
                         e.printStackTrace();
                     }
 
                     binQueueIn.remove(0);
                 }
-                Util.sleep(1); // sleep 1 ms
+                try {
+                    // sleep, wait for an interrupt from other thread
+                    //noinspection BusyWait
+                    Thread.sleep(100);
+                } catch (InterruptedException ignored) {
+                }
 
             }
         });
@@ -196,6 +197,7 @@ public class Network {
 
     public void sendPacket(ServerboundPacket p) {
         queue.add(p);
+        packetThread.interrupt();
     }
 
     public void enableEncryption(SecretKey secretKey) {

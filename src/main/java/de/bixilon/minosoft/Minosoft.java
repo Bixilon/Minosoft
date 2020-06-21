@@ -15,28 +15,31 @@ package de.bixilon.minosoft;
 
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
+import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevel;
-import de.bixilon.minosoft.objects.Account;
-import de.bixilon.minosoft.objects.Player;
+import de.bixilon.minosoft.mojang.api.MojangAccount;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.OSUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
 
 public class Minosoft {
     static Configuration config;
+    static List<MojangAccount> accountList;
 
     public static void main(String[] args) {
-        // int log thread
+        // init log thread
         Log.initThread();
 
         Log.info("Starting...");
         setConfigFolder();
         Log.info("Reading config file...");
         try {
-            config = new Configuration("game.yml");
+            config = new Configuration(Config.configFileName);
         } catch (IOException e) {
             Log.fatal("Failed to load config file!");
             e.printStackTrace();
@@ -46,8 +49,24 @@ public class Minosoft {
         // set log level from config
         Log.setLevel(LogLevel.byName(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
 
+        checkClientToken();
+
         Connection c = new Connection(config.getString("debug.host"), config.getInteger("debug.port"));
-        c.setPlayer(new Player(new Account(config.getString("debug.username"), config.getString("debug.password"))));
+        accountList = config.getMojangAccounts();
+        if (accountList.size() == 0) {
+            /*
+            MojangAccount account = MojangAuthentication.login("email", "password");
+            account.saveToConfig();
+             */
+            throw new RuntimeException("No accounts in config file!");
+        }
+        MojangAccount account = accountList.get(0);
+        if (!account.refreshToken()) {
+            // could not login
+            System.exit(1);
+        }
+        account.saveToConfig();
+        c.setPlayer(new Player(account));
         c.connect();
     }
 
@@ -64,7 +83,7 @@ public class Minosoft {
                 path += ".local/share/minosoft/";
                 break;
             case WINDOWS:
-                path = "AppData/Roaming/Minosoft/";
+                path += "AppData/Roaming/Minosoft/";
                 break;
             //ToDo: Mac, Other
         }
@@ -78,5 +97,12 @@ public class Minosoft {
 
     public static Configuration getConfig() {
         return config;
+    }
+
+    public static void checkClientToken() {
+        if (config.getString(GameConfiguration.CLIENT_TOKEN) == null || config.getString(GameConfiguration.CLIENT_TOKEN).equals("randomGenerated")) {
+            config.putString(GameConfiguration.CLIENT_TOKEN, UUID.randomUUID().toString());
+            config.saveToFile(Config.configFileName);
+        }
     }
 }

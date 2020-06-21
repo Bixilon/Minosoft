@@ -15,11 +15,16 @@ package de.bixilon.minosoft.util;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.zip.DataFormatException;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 
 public class Util {
@@ -59,4 +64,33 @@ public class Util {
         }
         return new InByteBuffer(stream.toByteArray());
     }
+
+    public static byte[] decompressGzip(byte[] raw) throws IOException {
+
+        GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(raw));
+        ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
+
+        int res = 0;
+        byte[] buf = new byte[1024];
+        while (res >= 0) {
+            res = gzipInputStream.read(buf, 0, buf.length);
+            if (res > 0) {
+                outputStream.write(buf, 0, res);
+            }
+        }
+        return outputStream.toByteArray();
+    }
+
+    public static String sha1(String string) {
+        try {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(string.getBytes(StandardCharsets.UTF_8));
+            return new String(crypt.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

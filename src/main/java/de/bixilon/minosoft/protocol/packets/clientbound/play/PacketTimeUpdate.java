@@ -36,12 +36,11 @@ public class PacketTimeUpdate implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Time Update packet received. Time is now %st (total %st)", timeOfDay, worldAge));
+        Log.protocol(String.format("Time Update packet received. Time is now %st (total %st, moving=%s)", Math.abs(timeOfDay), worldAge, timeOfDay > 0));
     }
 
     @Override
     public void handle(PacketHandler h) {
         h.handle(this);
     }
-
 }

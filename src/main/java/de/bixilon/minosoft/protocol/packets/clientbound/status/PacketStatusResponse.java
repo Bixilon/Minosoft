@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.status;
 
+import de.bixilon.minosoft.ServerListPing;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.objects.ServerListPing;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
@@ -31,7 +31,7 @@ public class PacketStatusResponse implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving status response packet (%s)", response.getRaw().toString()));
+        Log.protocol(String.format("Receiving status response packet (%s)", response.getMotd().getColoredMessage()));
     }
 
     @Override

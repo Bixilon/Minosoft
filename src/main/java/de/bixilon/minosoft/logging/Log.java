@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.logging;
 
-import de.bixilon.minosoft.util.Util;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +21,7 @@ public class Log {
     static LogLevel level = LogLevel.PROTOCOL;
     final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     final static List<String> queue = new ArrayList<>();
+    static Thread logThread;
 
     public static void log(LogLevel l, String message) {
         if (l.getId() > level.getId()) {
@@ -30,11 +29,11 @@ public class Log {
             return;
         }
         queue.add(String.format("[%s] [%s] %s", timeFormat.format(System.currentTimeMillis()), l.name(), message));
+        logThread.interrupt();
     }
 
     public static void initThread() {
-
-        Thread logThread = new Thread(() -> {
+        logThread = new Thread(() -> {
             while (true) {
                 while (queue.size() > 0) {
                     // something to print
@@ -44,9 +43,14 @@ public class Log {
 
                     queue.remove(0);
                 }
-                Util.sleep(1);
-            }
+                try {
+                    // wait for interrupt
+                    //noinspection BusyWait
+                    Thread.sleep(100);
+                } catch (InterruptedException ignored) {
+                }
 
+            }
         });
         logThread.start();
     }
@@ -112,6 +116,15 @@ public class Log {
      */
     public static void protocol(String message) {
         log(LogLevel.PROTOCOL, message);
+    }
+
+    /**
+     * Logs all infos (mostly warnings) from data transfer to the mojang api (failed to login, etc)
+     *
+     * @param message Raw message to log
+     */
+    public static void mojang(String message) {
+        log(LogLevel.MOJANG, message);
     }
 
     public static LogLevel getLevel() {
