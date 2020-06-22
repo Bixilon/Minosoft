@@ -33,7 +33,7 @@ public class PacketChunkBulk implements ClientboundPacket {
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
-            case VERSION_1_7_10:
+            case VERSION_1_7_10: {
                 short chunkCount = buffer.readShort();
                 int dataLen = buffer.readInteger();
                 boolean containsSkyLight = buffer.readBoolean();
@@ -51,9 +51,23 @@ public class PacketChunkBulk implements ClientboundPacket {
                     chunkMap.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(v, decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
                 }
                 break;
-            case VERSION_1_8:
-                //ToDo
+            }
+            case VERSION_1_8: {
+                boolean containsSkyLight = buffer.readBoolean();
+                int chunks = buffer.readVarInt();
+                int[] x = new int[chunks];
+                int[] z = new int[chunks];
+                short[] sectionBitMask = new short[chunks];
+                for (int i = 0; i < chunks; i++) {
+                    x[i] = buffer.readInteger();
+                    z[i] = buffer.readInteger();
+                    sectionBitMask[i] = buffer.readShort();
+                }
+                for (int i = 0; i < chunks; i++) {
+                    chunkMap.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(v, buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
+                }
                 break;
+            }
         }
     }
 

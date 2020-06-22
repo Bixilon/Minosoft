@@ -24,9 +24,8 @@ import java.util.HashMap;
 
 public class ChunkUtil {
     public static Chunk readChunkPacket(ProtocolVersion v, InByteBuffer buffer, short sectionBitMask, short addBitMask, boolean groundUpContinuous, boolean containsSkyLight) {
-
         switch (v) {
-            case VERSION_1_7_10:
+            case VERSION_1_7_10: {
                 //chunk
                 byte sections = BitByte.getBitCount(sectionBitMask);
                 int totalBytes = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
@@ -78,6 +77,7 @@ public class ChunkUtil {
                                     // ToDo light, biome
                                     Blocks block = Blocks.byLegacy(singeBlockId, singleMeta);
                                     if (block == Blocks.AIR) {
+                                        arrayPos++;
                                         continue;
                                     }
                                     blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), block);
@@ -91,7 +91,50 @@ public class ChunkUtil {
 
                 }
                 return new Chunk(nibbleMap);
+            }
+            case VERSION_1_8: {
+                byte sections = BitByte.getBitCount(sectionBitMask);
+                int totalBlocks = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
+                int halfBytes = totalBlocks / 2; // half bytes
 
+
+                short[] blockData = buffer.readShorts(totalBlocks); // blocks >>> 4, data & 0xF
+
+                byte[] light = buffer.readBytes(halfBytes);
+                byte[] skyLight = null;
+                if (containsSkyLight) {
+                    skyLight = buffer.readBytes(halfBytes);
+                }
+
+                if (groundUpContinuous) {
+                    byte[] biomes = buffer.readBytes(256);
+                }
+
+                int arrayPos = 0;
+                HashMap<Byte, ChunkNibble> nibbleMap = new HashMap<>();
+                for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
+                    if (!BitByte.isBitSet(sectionBitMask, c)) {
+                        continue;
+                    }
+                    HashMap<ChunkNibbleLocation, Blocks> blockMap = new HashMap<>();
+
+                    for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
+                        for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
+                            for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
+                                Blocks block = Blocks.byLegacy(blockData[arrayPos] >>> 4, blockData[arrayPos] & 0xF);
+                                if (block == Blocks.AIR) {
+                                    arrayPos++;
+                                    continue;
+                                }
+                                blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), block);
+                                arrayPos++;
+                            }
+                        }
+                    }
+                    nibbleMap.put(c, new ChunkNibble(blockMap));
+                }
+                return new Chunk(nibbleMap);
+            }
         }
         throw new RuntimeException("Could not parse chunk!");
     }
