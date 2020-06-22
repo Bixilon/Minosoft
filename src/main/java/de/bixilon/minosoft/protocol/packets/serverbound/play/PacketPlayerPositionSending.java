@@ -35,6 +35,15 @@ public class PacketPlayerPositionSending implements ServerboundPacket {
         log();
     }
 
+    public PacketPlayerPositionSending(double x, double feetY, double z, boolean onGround) {
+        this.x = x;
+        this.feetY = feetY;
+        this.headY = feetY - 1.62F;
+        this.z = z;
+        this.onGround = onGround;
+        log();
+    }
+
 
     @Override
     public OutPacketBuffer write(ProtocolVersion v) {
@@ -44,6 +53,12 @@ public class PacketPlayerPositionSending implements ServerboundPacket {
                 buffer.writeDouble(x);
                 buffer.writeDouble(feetY);
                 buffer.writeDouble(headY);
+                buffer.writeDouble(z);
+                buffer.writeBoolean(onGround);
+                break;
+            case VERSION_1_8:
+                buffer.writeDouble(x);
+                buffer.writeDouble(feetY);
                 buffer.writeDouble(z);
                 buffer.writeBoolean(onGround);
                 break;

@@ -37,6 +37,7 @@ public class PacketCreativeInventoryAction implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_CREATIVE_INVENTORY_ACTION));
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 buffer.writeShort(slot);
                 buffer.writeSlot(v, clickedItem);
                 break;

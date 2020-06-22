@@ -36,6 +36,9 @@ public class PacketClientStatus implements ServerboundPacket {
             case VERSION_1_7_10:
                 buffer.writeByte((byte) status.getId());
                 break;
+            case VERSION_1_8:
+                buffer.writeVarInt((byte) status.getId());
+                break;
         }
         return buffer;
     }

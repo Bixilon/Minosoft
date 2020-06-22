@@ -32,6 +32,10 @@ public class PacketEncryptionKeyRequest implements ClientboundPacket {
                 publicKey = buffer.readBytes(buffer.readShort()); // read length, then the bytes
                 verifyToken = buffer.readBytes(buffer.readShort()); // read length, then the bytes
                 break;
+            case VERSION_1_8:
+                serverId = buffer.readString();
+                publicKey = buffer.readBytes(buffer.readVarInt()); // read length, then the bytes
+                verifyToken = buffer.readBytes(buffer.readVarInt()); // read length, then the bytes
         }
     }
 

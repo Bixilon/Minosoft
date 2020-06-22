@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
@@ -154,7 +153,7 @@ public class OutByteBuffer {
         writeString(j.toString());
     }
 
-    public void writePosition(Location location) {
+    public void writePosition(BlockPosition location) {
         writeLong((((long) location.getX() & 0x3FFFFFF) << 38) | (((long) location.getZ() & 0x3FFFFFF) << 12) | ((long) location.getY() & 0xFFF));
     }
 

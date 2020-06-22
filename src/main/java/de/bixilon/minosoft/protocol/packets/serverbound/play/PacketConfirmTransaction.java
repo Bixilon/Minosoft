@@ -38,6 +38,7 @@ public class PacketConfirmTransaction implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_WINDOW_CONFIRMATION));
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 buffer.writeByte(windowId);
                 buffer.writeShort(actionNumber);
                 buffer.writeBoolean(accepted);

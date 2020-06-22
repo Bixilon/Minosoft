@@ -54,6 +54,15 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
                 buffer.writeByte(cursorY);
                 buffer.writeByte(cursorZ);
                 break;
+            case VERSION_1_8:
+                buffer.writePosition(position);
+                buffer.writeByte(direction);
+                buffer.writeSlot(v, item);
+
+                buffer.writeByte(cursorX);
+                buffer.writeByte(cursorY);
+                buffer.writeByte(cursorZ);
+                break;
         }
         return buffer;
     }
