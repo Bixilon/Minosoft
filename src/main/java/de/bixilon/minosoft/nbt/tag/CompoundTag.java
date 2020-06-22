@@ -29,6 +29,14 @@ public class CompoundTag implements Tag {
     }
 
     public CompoundTag(boolean subTag, InByteBuffer buffer) {
+        if (buffer.readByte() == 0) {
+            // no nbt
+            name = null;
+            data = new HashMap<>();
+            return;
+        } else {
+            buffer.setPosition(buffer.getPosition() - 1);
+        }
         if (!subTag) {
             if (buffer.readByte() != TagTypes.COMPOUND.getId()) { // will be a Compound Tag
                 // decompressed but still bad.... :(
@@ -84,6 +92,11 @@ public class CompoundTag implements Tag {
 
     public CompoundTag(InByteBuffer buffer) {
         this(false, buffer);
+    }
+
+    public CompoundTag() {
+        name = null;
+        data = new HashMap<>();
     }
 
     @Override

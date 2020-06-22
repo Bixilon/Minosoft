@@ -21,7 +21,6 @@ import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.particle.*;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
-import de.bixilon.minosoft.nbt.tag.TagTypes;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.Util;
 import org.json.JSONObject;
@@ -234,15 +233,12 @@ public class InByteBuffer {
         return null;
     }
 
-    public CompoundTag readNBT() {
-
-        if (readByte() != TagTypes.COMPOUND.getId()) { // will be a Compound Tag
-            // maybe compressed
-            setPosition(getPosition() - 1);
+    public CompoundTag readNBT(boolean compressed) {
+        if (compressed) {
             short length = readShort();
             if (length == -1) {
                 // no nbt data here...
-                return null;
+                return new CompoundTag();
             }
             try {
                 return new CompoundTag(new InByteBuffer(Util.decompressGzip(readBytes(length))));
@@ -253,18 +249,29 @@ public class InByteBuffer {
             }
             // try again
         }
-        setPosition(getPosition() - 1);
         return new CompoundTag(this);
+    }
+
+    public CompoundTag readNBT() {
+        return readNBT(false);
     }
 
     public Slot readSlot(ProtocolVersion v) {
         switch (v) {
-            case VERSION_1_7_10:
+            case VERSION_1_7_10: {
                 short id = readShort();
                 if (id != -1) {
-                    return new Slot(id, readByte(), readShort(), readNBT());
+                    return new Slot(id, readByte(), readShort(), readNBT(true));
                 }
-                return null;
+                break;
+            }
+            case VERSION_1_8: {
+                short id = readShort();
+                if (id == -1) {
+                    return null;
+                }
+                return new Slot(id, readByte(), readShort(), readNBT());
+            }
                 /*
 
         if (readBoolean()) {
