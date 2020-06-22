@@ -26,10 +26,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketChatMessage;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest;
-import de.bixilon.minosoft.protocol.protocol.ConnectionReason;
-import de.bixilon.minosoft.protocol.protocol.ConnectionState;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.protocol.protocol.*;
 
 import java.util.ArrayList;
 
@@ -192,9 +189,21 @@ public class Connection {
     public void registerDefaultChannels() {
         // MC|Brand
         getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getName(), (handler, buffer) -> {
-            Log.info(String.format("Server is running %s on version %s", new String(buffer.readBytes(buffer.getBytesLeft())), getVersion().getName()));
+            String serverVersion;
+            String clientVersion = (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
+            OutByteBuffer toSend = new OutByteBuffer();
+            if (getVersion() == ProtocolVersion.VERSION_1_7_10) {
+                // no length prefix
+                serverVersion = new String(buffer.readBytes(buffer.getBytesLeft()));
+                toSend.writeBytes(clientVersion.getBytes());
+            } else {
+                // length prefix
+                serverVersion = buffer.readString();
+                toSend.writeString(clientVersion);
+            }
+            Log.info(String.format("Server is running %s, connected with %s", serverVersion, getVersion().getName()));
 
-            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getName(), (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft").getBytes());
+            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getName(), toSend);
         });
     }
 

@@ -26,10 +26,9 @@ public class FireBall extends EntityObject implements ObjectInterface {
         this.thrower = additionalInt;
     }
 
-    public FireBall(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity, EntityMetaData metaData) {
+    public FireBall(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(id, location, yaw, pitch, velocity);
         this.thrower = additionalInt;
-        this.metaData = metaData;
     }
 
     @Override

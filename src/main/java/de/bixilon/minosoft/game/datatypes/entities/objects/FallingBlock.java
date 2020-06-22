@@ -27,10 +27,9 @@ public class FallingBlock extends EntityObject implements ObjectInterface {
         block = Blocks.byLegacy(additionalInt & 0xFFF, additionalInt >> 12);
     }
 
-    public FallingBlock(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity, EntityMetaData metaData) {
+    public FallingBlock(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(id, location, yaw, pitch, velocity);
         block = Blocks.byLegacy(additionalInt & 0xFFF, additionalInt >> 12);
-        this.metaData = metaData;
     }
 
     @Override

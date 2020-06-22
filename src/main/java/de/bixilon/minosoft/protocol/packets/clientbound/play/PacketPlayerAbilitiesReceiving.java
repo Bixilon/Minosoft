@@ -32,7 +32,7 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
-            case VERSION_1_7_10:
+            case VERSION_1_7_10: {
                 byte flags = buffer.readByte();
                 creative = BitByte.isBitSet(flags, 0);
                 flying = BitByte.isBitSet(flags, 1);
@@ -41,9 +41,17 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
                 flyingSpeed = buffer.readFloat();
                 walkingSpeed = buffer.readFloat();
                 break;
-            case VERSION_1_8:
-                //ToDo
+            }
+            case VERSION_1_8: {
+                byte flags = buffer.readByte();
+                godMode = BitByte.isBitSet(flags, 0);
+                flying = BitByte.isBitSet(flags, 1);
+                canFly = BitByte.isBitSet(flags, 2);
+                creative = BitByte.isBitSet(flags, 3);
+                flyingSpeed = buffer.readFloat();
+                // ToDo Entity Properties
                 break;
+            }
         }
     }
 

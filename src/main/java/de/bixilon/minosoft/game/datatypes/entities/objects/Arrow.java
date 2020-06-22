@@ -27,10 +27,9 @@ public class Arrow extends EntityObject implements ObjectInterface {
         this.shooter = additionalInt;
     }
 
-    public Arrow(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity, EntityMetaData metaData) {
+    public Arrow(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(id, location, yaw, pitch, velocity);
         this.shooter = additionalInt;
-        this.metaData = (ArrowMetaData) metaData;
     }
 
     @Override

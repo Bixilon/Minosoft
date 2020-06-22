@@ -436,4 +436,7 @@ public class PacketHandler {
 
     public void handle(PacketLoginSetCompression pkg) {
     }
+
+    public void handle(PacketServerDifficulty pkg) {
+    }
 }

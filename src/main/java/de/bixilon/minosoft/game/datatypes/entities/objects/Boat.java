@@ -26,9 +26,8 @@ public class Boat extends EntityObject implements ObjectInterface {
         // boat does not have any additional info
     }
 
-    public Boat(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity, EntityMetaData metaData) {
+    public Boat(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = (BoatMetaData) metaData;
     }
 
     @Override

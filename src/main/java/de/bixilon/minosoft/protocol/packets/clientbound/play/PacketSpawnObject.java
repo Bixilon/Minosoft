@@ -57,21 +57,26 @@ public class PacketSpawnObject implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 int entityId = buffer.readVarInt();
                 Objects type = Objects.byType(buffer.readByte());
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
                 short pitch = buffer.readAngle();
                 short yaw = buffer.readAngle();
+                int data = buffer.readInteger();
 
                 try {
                     if (v.getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
                         // velocity present AND metadata
-                        Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-                        EntityMetaData metaData = getEntityData(object.getMetaDataClass(), buffer, v);
-                        object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class, EntityMetaData.class).newInstance(entityId, location, yaw, pitch, buffer.readInteger(), velocity, metaData);
+
+                        Velocity velocity = null;
+                        if (data != 0) {
+                            velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+                        }
+                        object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, location, yaw, pitch, data, velocity);
 
                     } else {
-                        object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class).newInstance(entityId, location, yaw, pitch, buffer.readInteger());
+                        object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class).newInstance(entityId, location, yaw, pitch, data);
                     }
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     e.printStackTrace();

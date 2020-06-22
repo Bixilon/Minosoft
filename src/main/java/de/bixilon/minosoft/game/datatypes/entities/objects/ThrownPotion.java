@@ -26,10 +26,9 @@ public class ThrownPotion extends EntityObject implements ObjectInterface {
         this.potion = additionalInt;
     }
 
-    public ThrownPotion(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity, EntityMetaData metaData) {
+    public ThrownPotion(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(id, location, yaw, pitch, velocity);
         this.potion = additionalInt;
-        this.metaData = metaData;
     }
 
     @Override

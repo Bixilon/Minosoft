@@ -44,18 +44,31 @@ public class PacketScoreboardTeams implements ClientboundPacket {
                     prefix = buffer.readString();
                     suffix = buffer.readString();
                     friendlyFire = ScoreboardFriendlyFire.byId(buffer.readByte());
-                    if (v.getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
-                        // color and nametag
-                        nameTagVisibility = ScoreboardNameTagVisibility.byName(buffer.readString());
-                        color = TextComponent.ChatAttributes.byColor(ChatColor.byId(buffer.readByte()));
-                    } else {
-                        // default values
-                        nameTagVisibility = ScoreboardNameTagVisibility.ALWAYS;
-                        color = TextComponent.ChatAttributes.WHITE;
-                    }
+                    // default values
+                    nameTagVisibility = ScoreboardNameTagVisibility.ALWAYS;
+                    color = TextComponent.ChatAttributes.WHITE;
                 }
                 if (action == ScoreboardTeamAction.CREATE || action == ScoreboardTeamAction.PLAYER_ADD || action == ScoreboardTeamAction.PLAYER_REMOVE) {
                     short playerCount = buffer.readShort();
+                    playerNames = new String[playerCount];
+                    for (int i = 0; i < playerCount; i++) {
+                        playerNames[i] = buffer.readString();
+                    }
+                }
+                break;
+            case VERSION_1_8:
+                name = buffer.readString();
+                action = ScoreboardTeamAction.byId(buffer.readByte());
+                if (action == ScoreboardTeamAction.CREATE || action == ScoreboardTeamAction.INFORMATION_UPDATE) {
+                    displayName = buffer.readString();
+                    prefix = buffer.readString();
+                    suffix = buffer.readString();
+                    friendlyFire = ScoreboardFriendlyFire.byId(buffer.readByte());
+                    nameTagVisibility = ScoreboardNameTagVisibility.byName(buffer.readString());
+                    color = TextComponent.ChatAttributes.byColor(ChatColor.byId(buffer.readByte()));
+                }
+                if (action == ScoreboardTeamAction.CREATE || action == ScoreboardTeamAction.PLAYER_ADD || action == ScoreboardTeamAction.PLAYER_REMOVE) {
+                    int playerCount = buffer.readVarInt();
                     playerNames = new String[playerCount];
                     for (int i = 0; i < playerCount; i++) {
                         playerNames[i] = buffer.readString();

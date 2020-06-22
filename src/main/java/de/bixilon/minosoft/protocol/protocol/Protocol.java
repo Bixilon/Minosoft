@@ -113,6 +113,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_TEAMS, PacketScoreboardTeams.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_DISPLAY_SCOREBOARD, PacketScoreboardDisplayScoreboard.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_MAP_DATA, PacketMapData.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SERVER_DIFFICULTY, PacketServerDifficulty.class);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {

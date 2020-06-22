@@ -24,9 +24,8 @@ public class FallingDragonEgg extends EntityObject implements ObjectInterface {
         // objects do not spawn with metadata... reading additional info from the following int
     }
 
-    public FallingDragonEgg(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity, EntityMetaData metaData) {
+    public FallingDragonEgg(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = metaData;
     }
 
     @Override

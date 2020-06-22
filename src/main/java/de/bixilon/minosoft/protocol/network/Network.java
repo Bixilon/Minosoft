@@ -155,7 +155,12 @@ public class Network {
                             outRawBuffer.writeBytes(data);
                         }
                         data = outRawBuffer.getOutBytes();
-
+                    } else {
+                        // append packet length
+                        OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer();
+                        bufferWithLengthPrefix.writeVarInt(data.length);
+                        bufferWithLengthPrefix.writeBytes(data);
+                        data = bufferWithLengthPrefix.getOutBytes();
                     }
 
 
