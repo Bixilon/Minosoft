@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.ChatColor;
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -26,6 +28,8 @@ public class PacketScoreboardTeams implements ClientboundPacket {
     String prefix;
     String suffix;
     ScoreboardFriendlyFire friendlyFire;
+    ScoreboardNameTagVisibility nameTagVisibility;
+    TextComponent.ChatAttributes color;
     String[] playerNames;
 
 
@@ -40,6 +44,15 @@ public class PacketScoreboardTeams implements ClientboundPacket {
                     prefix = buffer.readString();
                     suffix = buffer.readString();
                     friendlyFire = ScoreboardFriendlyFire.byId(buffer.readByte());
+                    if (v.getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
+                        // color and nametag
+                        nameTagVisibility = ScoreboardNameTagVisibility.byName(buffer.readString());
+                        color = TextComponent.ChatAttributes.byColor(ChatColor.byId(buffer.readByte()));
+                    } else {
+                        // default values
+                        nameTagVisibility = ScoreboardNameTagVisibility.ALWAYS;
+                        color = TextComponent.ChatAttributes.WHITE;
+                    }
                 }
                 if (action == ScoreboardTeamAction.CREATE || action == ScoreboardTeamAction.PLAYER_ADD || action == ScoreboardTeamAction.PLAYER_REMOVE) {
                     short playerCount = buffer.readShort();
@@ -139,6 +152,32 @@ public class PacketScoreboardTeams implements ClientboundPacket {
 
         public int getId() {
             return id;
+        }
+    }
+
+    public enum ScoreboardNameTagVisibility {
+        ALWAYS("always"),
+        HIDE_FOR_OTHER_TEAMS("hideForOtherTeams"),
+        HIDE_FOR_OWN_TEAM("hideForOwnTeam"),
+        NEVER("never");
+
+        final String name;
+
+        ScoreboardNameTagVisibility(String name) {
+            this.name = name;
+        }
+
+        public static ScoreboardNameTagVisibility byName(String name) {
+            for (ScoreboardNameTagVisibility v : values()) {
+                if (v.getName().equals(name)) {
+                    return v;
+                }
+            }
+            return null;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }

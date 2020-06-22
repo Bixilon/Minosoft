@@ -16,8 +16,11 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Objects;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -27,24 +30,13 @@ import java.lang.reflect.InvocationTargetException;
 public class PacketSpawnObject implements ClientboundPacket {
     EntityObject object;
 
-    @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
-            case VERSION_1_7_10:
-                int entityId = buffer.readVarInt();
-                Objects type = Objects.byType(buffer.readByte());
-                Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-                short pitch = buffer.readAngle();
-                short yaw = buffer.readAngle();
-
-                assert type != null;
-                try {
-                    object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, buffer.readInteger(), v);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
-                break;
+    public static EntityMetaData getEntityData(Class<? extends EntityMetaData> clazz, InByteBuffer buffer, ProtocolVersion v) {
+        try {
+            return clazz.getConstructor(InByteBuffer.class, ProtocolVersion.class).newInstance(buffer, v);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     @Override
@@ -59,5 +51,32 @@ public class PacketSpawnObject implements ClientboundPacket {
     @Override
     public void handle(PacketHandler h) {
         h.handle(this);
+    }
+
+    @Override
+    public void read(InPacketBuffer buffer, ProtocolVersion v) {
+        switch (v) {
+            case VERSION_1_7_10:
+                int entityId = buffer.readVarInt();
+                Objects type = Objects.byType(buffer.readByte());
+                Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
+                short pitch = buffer.readAngle();
+                short yaw = buffer.readAngle();
+
+                try {
+                    if (v.getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
+                        // velocity present AND metadata
+                        Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+                        EntityMetaData metaData = getEntityData(object.getMetaDataClass(), buffer, v);
+                        object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class, EntityMetaData.class).newInstance(entityId, location, yaw, pitch, buffer.readInteger(), velocity, metaData);
+
+                    } else {
+                        object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class).newInstance(entityId, location, yaw, pitch, buffer.readInteger());
+                    }
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
     }
 }

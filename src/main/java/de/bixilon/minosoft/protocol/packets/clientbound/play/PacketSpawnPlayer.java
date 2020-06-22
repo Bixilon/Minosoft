@@ -33,7 +33,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
-            case VERSION_1_7_10:
+            case VERSION_1_7_10: {
                 this.entityId = buffer.readVarInt();
                 UUID uuid = UUID.fromString(buffer.readString());
                 String name = buffer.readString();
@@ -50,6 +50,20 @@ public class PacketSpawnPlayer implements ClientboundPacket {
 
                 this.player = new OtherPlayer(entityId, name, uuid, properties, location, null, yaw, pitch, currentItem, metaData);
                 break;
+            }
+            case VERSION_1_8: {
+                this.entityId = buffer.readVarInt();
+                UUID uuid = buffer.readUUID();
+                Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
+                short yaw = buffer.readAngle();
+                short pitch = buffer.readAngle();
+
+                short currentItem = buffer.readShort();
+                HumanMetaData metaData = new HumanMetaData(buffer, v);
+
+                this.player = new OtherPlayer(entityId, null, uuid, null, location, null, yaw, pitch, currentItem, metaData);
+                break;
+            }
         }
     }
 

@@ -30,6 +30,7 @@ public class PacketSetSlot implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 this.windowId = buffer.readByte();
                 this.slotId = buffer.readShort();
                 this.slot = buffer.readSlot(v);

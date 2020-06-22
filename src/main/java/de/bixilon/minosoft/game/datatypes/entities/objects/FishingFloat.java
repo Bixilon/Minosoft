@@ -13,21 +13,23 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
-import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
-import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Objects;
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class FishingFloat extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
     final int owner;
 
-    public FishingFloat(int id, Location location, short yaw, short pitch, int additionalInt, ProtocolVersion v) {
+    public FishingFloat(int id, Location location, short yaw, short pitch, int additionalInt) {
         super(id, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
         this.owner = additionalInt;
+    }
+
+    public FishingFloat(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity, EntityMetaData metaData) {
+        super(id, location, yaw, pitch, velocity);
+        this.owner = additionalInt;
+        this.metaData = metaData;
     }
 
     @Override

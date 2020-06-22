@@ -21,8 +21,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketSetExperience implements ClientboundPacket {
     float bar;
-    short level;
-    short total;
+    int level;
+    int total;
 
 
     @Override
@@ -33,6 +33,11 @@ public class PacketSetExperience implements ClientboundPacket {
                 // maybe that should be an unsigned short, negative experience makes no sense. If you have negative exp the notchian client make strange things...
                 level = buffer.readShort();
                 total = buffer.readShort();
+                break;
+            case VERSION_1_8:
+                bar = buffer.readFloat();
+                level = buffer.readVarInt();
+                total = buffer.readVarInt();
                 break;
         }
     }
@@ -51,11 +56,11 @@ public class PacketSetExperience implements ClientboundPacket {
         return bar;
     }
 
-    public short getLevel() {
+    public int getLevel() {
         return level;
     }
 
-    public short getTotal() {
+    public int getTotal() {
         return total;
     }
 }

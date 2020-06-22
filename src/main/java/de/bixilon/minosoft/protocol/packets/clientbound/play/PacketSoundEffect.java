@@ -36,6 +36,7 @@ public class PacketSoundEffect implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 soundName = buffer.readString();
                 sound = Sounds.byName(new Identifier(soundName));
                 location = new Location(buffer.readInteger() * 8, buffer.readInteger() * 8, buffer.readInteger() * 8);

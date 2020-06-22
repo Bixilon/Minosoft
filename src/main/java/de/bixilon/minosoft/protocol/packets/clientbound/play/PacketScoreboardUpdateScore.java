@@ -39,6 +39,17 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
                 scoreName = buffer.readString();
                 scoreValue = buffer.readInteger();
                 break;
+            case VERSION_1_8:
+                itemName = buffer.readString();
+                action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
+                scoreName = buffer.readString();
+
+                if (action == ScoreboardUpdateScoreAction.REMOVE) {
+                    break;
+                }
+                // not present id action == REMOVE
+                scoreValue = buffer.readVarInt();
+                break;
         }
     }
 

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketUpdateHealth implements ClientboundPacket {
     float health;
-    short food;
+    int food;
     float saturation;
 
 
@@ -31,6 +31,11 @@ public class PacketUpdateHealth implements ClientboundPacket {
             case VERSION_1_7_10:
                 health = (float) (Math.round(buffer.readFloat() * 10) / 10.0);
                 food = buffer.readShort();
+                saturation = (float) (Math.round(buffer.readFloat() * 10) / 10.0);
+                break;
+            case VERSION_1_8:
+                health = (float) (Math.round(buffer.readFloat() * 10) / 10.0);
+                food = buffer.readVarInt();
                 saturation = (float) (Math.round(buffer.readFloat() * 10) / 10.0);
                 break;
         }
@@ -46,7 +51,7 @@ public class PacketUpdateHealth implements ClientboundPacket {
         h.handle(this);
     }
 
-    public short getFood() {
+    public int getFood() {
         return food;
     }
 

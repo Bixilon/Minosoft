@@ -32,15 +32,15 @@ public class Player {
     final MojangAccount acc;
     final ScoreboardManager scoreboardManager = new ScoreboardManager();
     float health;
-    short food;
+    int food;
     float saturation;
     BlockPosition spawnLocation;
     int entityId;
     GameMode gameMode;
     World world = new World("world");
     byte selectedSlot;
-    short level;
-    short totalExperience;
+    int level;
+    int totalExperience;
     HumanMetaData metaData;
     HashMap<Integer, Inventory> inventories = new HashMap<>();
     boolean spawnConfirmed = false;
@@ -71,11 +71,11 @@ public class Player {
         this.health = health;
     }
 
-    public short getFood() {
+    public int getFood() {
         return food;
     }
 
-    public void setFood(short food) {
+    public void setFood(int food) {
         this.food = food;
     }
 
@@ -123,19 +123,19 @@ public class Player {
         this.selectedSlot = selectedSlot;
     }
 
-    public short getLevel() {
+    public int getLevel() {
         return level;
     }
 
-    public void setLevel(short level) {
+    public void setLevel(int level) {
         this.level = level;
     }
 
-    public short getTotalExperience() {
+    public int getTotalExperience() {
         return totalExperience;
     }
 
-    public void setTotalExperience(short totalExperience) {
+    public void setTotalExperience(int totalExperience) {
         this.totalExperience = totalExperience;
     }
 
