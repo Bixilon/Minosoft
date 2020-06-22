@@ -36,7 +36,7 @@ public class PacketOpenWindow implements ClientboundPacket {
             case VERSION_1_7_10:
                 this.windowId = buffer.readByte();
                 this.type = InventoryType.byId(buffer.readByte());
-                this.title = buffer.readChatComponent();
+                this.title = buffer.readTextComponent();
                 slotCount = buffer.readByte();
                 if (!buffer.readBoolean()) {
                     // no custom name
@@ -47,7 +47,7 @@ public class PacketOpenWindow implements ClientboundPacket {
             case VERSION_1_8:
                 this.windowId = buffer.readByte();
                 this.type = InventoryType.byName(buffer.readString());
-                this.title = buffer.readChatComponent();
+                this.title = buffer.readTextComponent();
                 slotCount = buffer.readByte();
                 if (type == InventoryType.HORSE) {
                     this.entityId = buffer.readInteger();

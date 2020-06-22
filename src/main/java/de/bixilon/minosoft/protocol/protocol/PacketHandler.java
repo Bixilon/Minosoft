@@ -16,6 +16,8 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.game.datatypes.GameMode;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
+import de.bixilon.minosoft.game.datatypes.player.PlayerInfo;
+import de.bixilon.minosoft.game.datatypes.player.PlayerInfoBulk;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardObjective;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardScore;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardTeam;
@@ -36,6 +38,7 @@ import javax.crypto.SecretKey;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.Arrays;
+import java.util.UUID;
 
 public class PacketHandler {
     final Connection connection;
@@ -95,11 +98,48 @@ public class PacketHandler {
     }
 
     public void handle(PacketLoginDisconnect pkg) {
-        Log.info(String.format("Disconnecting from server(%s)", pkg.getReason().getColoredMessage()));
+        Log.info(String.format("Disconnecting from server (reason=%s)", pkg.getReason().getColoredMessage()));
         connection.setConnectionState(ConnectionState.DISCONNECTING);
     }
 
     public void handle(PacketPlayerInfo pkg) {
+        for (PlayerInfoBulk bulk : pkg.getInfos()) {
+            switch (bulk.getAction()) {
+                case ADD:
+                    connection.getPlayer().getPlayerInfos().put(bulk.getUUID(), new PlayerInfo(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGameMode(), bulk.getDisplayName(), bulk.getProperties()));
+                    break;
+                case UPDATE_LATENCY:
+                    if (bulk.isLegacy()) {
+                        //add or update
+                        PlayerInfo info = connection.getPlayer().getPlayerInfo(bulk.getName());
+                        if (info == null) {
+                            // create
+                            UUID uuid = UUID.randomUUID();
+                            connection.getPlayer().getPlayerInfos().put(uuid, new PlayerInfo(uuid, bulk.getName(), bulk.getPing()));
+                        } else {
+                            // update ping
+                            info.setPing(bulk.getPing());
+                        }
+                        return;
+                    }
+                    connection.getPlayer().getPlayerInfos().get(bulk.getUUID()).setPing(bulk.getPing());
+                    break;
+                case REMOVE_PLAYER:
+                    if (bulk.isLegacy()) {
+                        connection.getPlayer().getPlayerInfos().remove(connection.getPlayer().getPlayerInfo(bulk.getName()).getUUID());
+                        return;
+                    }
+                    connection.getPlayer().getPlayerInfos().remove(bulk.getUUID());
+                    break;
+                case UPDATE_GAMEMODE:
+                    connection.getPlayer().getPlayerInfos().get(bulk.getUUID()).setGameMode(bulk.getGameMode());
+                    break;
+                case UPDATE_DISPLAY_NAME:
+                    connection.getPlayer().getPlayerInfos().get(bulk.getUUID()).setDisplayName(bulk.getDisplayName());
+                    break;
+            }
+
+        }
     }
 
     public void handle(PacketTimeUpdate pkg) {

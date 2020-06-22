@@ -45,7 +45,7 @@ public class PacketUpdateSignSending implements ServerboundPacket {
             case VERSION_1_8:
                 buffer.writeBlockPositionByte(position);
                 for (int i = 0; i < 4; i++) {
-                    buffer.writeChatComponent(lines[i]);
+                    buffer.writeTextComponent(lines[i]);
                 }
                 break;
         }

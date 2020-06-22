@@ -186,7 +186,7 @@ public class InByteBuffer {
         return "dataLen: " + bytes.length + "; pos: " + pos;
     }
 
-    public TextComponent readChatComponent() {
+    public TextComponent readTextComponent() {
         return new TextComponent(readString());
     }
 

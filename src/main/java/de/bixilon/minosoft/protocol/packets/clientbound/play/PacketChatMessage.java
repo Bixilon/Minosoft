@@ -30,11 +30,11 @@ public class PacketChatMessage implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
-                c = buffer.readChatComponent();
+                c = buffer.readTextComponent();
                 position = TextPosition.CHAT_BOX;
                 break;
             case VERSION_1_8:
-                c = buffer.readChatComponent();
+                c = buffer.readTextComponent();
                 position = TextPosition.byId(buffer.readByte());
                 break;
         }

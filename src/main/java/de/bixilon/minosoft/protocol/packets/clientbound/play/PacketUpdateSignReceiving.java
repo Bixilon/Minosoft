@@ -32,13 +32,13 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
             case VERSION_1_7_10:
                 position = buffer.readBlockPositionShort();
                 for (byte i = 0; i < 4; i++) {
-                    lines[i] = buffer.readChatComponent();
+                    lines[i] = buffer.readTextComponent();
                 }
                 break;
             case VERSION_1_8:
                 position = buffer.readPosition();
                 for (byte i = 0; i < 4; i++) {
-                    lines[i] = buffer.readChatComponent();
+                    lines[i] = buffer.readTextComponent();
                 }
                 break;
         }

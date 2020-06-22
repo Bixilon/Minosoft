@@ -157,8 +157,8 @@ public class OutByteBuffer {
         writeLong((((long) location.getX() & 0x3FFFFFF) << 38) | (((long) location.getZ() & 0x3FFFFFF) << 12) | ((long) location.getY() & 0xFFF));
     }
 
-    public void writeChatComponent(TextComponent c) {
-        writeJson(c.getRaw());
+    public void writeTextComponent(TextComponent component) {
+        writeJson(component.getRaw());
     }
 
     public void writeSlot(ProtocolVersion v, Slot slot) {
