@@ -18,7 +18,6 @@ public class InPacketBuffer extends InByteBuffer {
 
     public InPacketBuffer(byte[] bytes) {
         super(bytes);
-        // ToDo: compression
         command = readVarInt();
     }
 

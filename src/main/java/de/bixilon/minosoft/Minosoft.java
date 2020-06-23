@@ -85,6 +85,12 @@ public class Minosoft {
             case WINDOWS:
                 path += "AppData/Roaming/Minosoft/";
                 break;
+            case MAC:
+                path += "Library/Application Support/Minosoft/";
+                break;
+            case OTHER:
+                path += ".minosoft/";
+                break;
             //ToDo: Mac, Other
         }
         File folder = new File(path);
