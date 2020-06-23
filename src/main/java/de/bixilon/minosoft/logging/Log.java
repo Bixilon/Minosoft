@@ -13,22 +13,39 @@
 
 package de.bixilon.minosoft.logging;
 
+import de.bixilon.minosoft.Config;
+import de.bixilon.minosoft.game.datatypes.TextComponent;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Log {
-    static LogLevel level = LogLevel.PROTOCOL;
     final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     final static List<String> queue = new ArrayList<>();
+    static LogLevel level = LogLevel.PROTOCOL;
     static Thread logThread;
 
-    public static void log(LogLevel l, String message) {
+    public static void log(LogLevel l, String message, TextComponent.ChatAttributes color) {
         if (l.getId() > level.getId()) {
             // log level too low
             return;
         }
-        queue.add(String.format("[%s] [%s] %s", timeFormat.format(System.currentTimeMillis()), l.name(), message));
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        builder.append(timeFormat.format(System.currentTimeMillis()));
+        builder.append("] [");
+        builder.append(l.name());
+        builder.append("] ");
+        if (color != null && Config.colorLog) {
+            builder.append(color);
+            builder.append(message);
+            builder.append(TextComponent.ChatAttributes.RESET);
+        } else {
+            builder.append(message);
+        }
+        queue.add(builder.toString());
+
         logThread.interrupt();
     }
 
@@ -61,7 +78,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void game(String message) {
-        log(LogLevel.GAME, message);
+        log(LogLevel.GAME, message, TextComponent.ChatAttributes.GREEN);
     }
 
     /**
@@ -70,7 +87,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void fatal(String message) {
-        log(LogLevel.FATAL, message);
+        log(LogLevel.FATAL, message, TextComponent.ChatAttributes.DARK_RED);
     }
 
     /**
@@ -79,7 +96,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void info(String message) {
-        log(LogLevel.INFO, message);
+        log(LogLevel.INFO, message, TextComponent.ChatAttributes.WHITE);
     }
 
     /**
@@ -88,7 +105,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void warn(String message) {
-        log(LogLevel.WARNING, message);
+        log(LogLevel.WARNING, message, TextComponent.ChatAttributes.RED);
     }
 
     /**
@@ -97,7 +114,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void debug(String message) {
-        log(LogLevel.DEBUG, message);
+        log(LogLevel.DEBUG, message, TextComponent.ChatAttributes.GRAY);
     }
 
     /**
@@ -106,7 +123,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void verbose(String message) {
-        log(LogLevel.VERBOSE, message);
+        log(LogLevel.VERBOSE, message, TextComponent.ChatAttributes.YELLOW);
     }
 
     /**
@@ -115,7 +132,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void protocol(String message) {
-        log(LogLevel.PROTOCOL, message);
+        log(LogLevel.PROTOCOL, message, TextComponent.ChatAttributes.BLUE);
     }
 
     /**
@@ -124,7 +141,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void mojang(String message) {
-        log(LogLevel.MOJANG, message);
+        log(LogLevel.MOJANG, message, TextComponent.ChatAttributes.AQUA);
     }
 
     public static LogLevel getLevel() {
