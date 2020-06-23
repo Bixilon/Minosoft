@@ -33,7 +33,7 @@ public class BitByte {
     }
 
     public static byte getHigh4Bits(byte input) {
-        return (byte) ((input) >> 4 & 0xF);
+        return (byte) ((input) >>> 4 & 0xF);
     }
 
     public static byte getBitCount(short input) {

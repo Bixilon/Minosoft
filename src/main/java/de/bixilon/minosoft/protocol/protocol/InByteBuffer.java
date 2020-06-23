@@ -177,7 +177,7 @@ public class InByteBuffer {
 
     public BlockPosition readPosition() {
         Long raw = readLong();
-        return new BlockPosition(Long.valueOf(raw >> 38).intValue(), Long.valueOf(raw & 0xFFF).shortValue(), Long.valueOf(raw << 26 >> 38).intValue());
+        return new BlockPosition(Long.valueOf(raw >>> 38).intValue(), Long.valueOf(raw & 0xFFF).shortValue(), Long.valueOf(raw << 26 >>> 38).intValue());
     }
 
     @Override

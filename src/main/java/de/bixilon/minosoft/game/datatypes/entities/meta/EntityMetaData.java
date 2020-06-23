@@ -32,7 +32,7 @@ public class EntityMetaData {
                 while (item != 0x7F) {
                     byte index = (byte) (item & 0x1F);
                     Object data;
-                    Type_1_7_10 type = Type_1_7_10.byId((item & 0xFF) >> 5);
+                    Type_1_7_10 type = Type_1_7_10.byId((item & 0xFF) >>> 5);
                     switch (type) {
                         case BYTE:
                             data = buffer.readByte();
