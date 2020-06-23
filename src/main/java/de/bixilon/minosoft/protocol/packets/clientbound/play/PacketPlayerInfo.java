@@ -85,7 +85,12 @@ public class PacketPlayerInfo implements ClientboundPacket {
     @Override
     public void log() {
         for (PlayerInfoBulk property : infos) {
-            Log.game(String.format("[TAB] Player info bulk (uuid=%s)", property.getUUID()));
+            if (property.isLegacy()) {
+                Log.game(String.format("[TAB] Player info bulk (uuid=%s)", property.getUUID()));
+            } else {
+                Log.game(String.format("[TAB] Player info bulk (uuid=%s, action=%s, name=%s, gameMode=%s, ping=%d)", property.getUUID(), property.getAction(), property.getName(), ((property.getGameMode() == null) ? "null" : property.getGameMode().name()), property.getPing()));
+
+            }
         }
     }
 
