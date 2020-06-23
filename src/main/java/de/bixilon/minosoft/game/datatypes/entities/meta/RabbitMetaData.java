@@ -16,25 +16,19 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class AgeableMetaData extends MobMetaData {
+public class RabbitMetaData extends TameableMetaData {
 
-    public AgeableMetaData(InByteBuffer buffer, ProtocolVersion v) {
+    public RabbitMetaData(InByteBuffer buffer, ProtocolVersion v) {
         super(buffer, v);
     }
 
 
-    public int getAge() {
+    public byte getType() {
         switch (version) {
-            case VERSION_1_7_10:
             case VERSION_1_8:
-                return (int) sets.get(12).getData();
+                return (byte) sets.get(18).getData();
         }
         return 0;
     }
-
-    public boolean isAdult() {
-        return getAge() >= 0;
-    }
-
 
 }

@@ -27,6 +27,7 @@ public class EndermanMetaData extends MobMetaData {
     public Blocks getCarriedBlock() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return Blocks.byLegacy((short) sets.get(16).getData(), (byte) sets.get(17).getData());
         }
         return Blocks.AIR;
@@ -35,7 +36,8 @@ public class EndermanMetaData extends MobMetaData {
     public boolean isScreaming() {
         switch (version) {
             case VERSION_1_7_10:
-                return (byte) sets.get(17).getData() == 0x01;
+            case VERSION_1_8:
+                return (byte) sets.get(18).getData() == 0x01;
         }
         return false;
     }

@@ -27,6 +27,7 @@ public class MobMetaData extends EntityMetaData {
     public float getHealth() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (float) sets.get(6).getData();
         }
         return 0.0F;
@@ -35,6 +36,7 @@ public class MobMetaData extends EntityMetaData {
     public StatusEffects getPotionEffectColor() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return StatusEffects.byId((int) sets.get(7).getData());
         }
         return null;
@@ -44,6 +46,7 @@ public class MobMetaData extends EntityMetaData {
     public byte getPotionEffectAmbient() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (byte) sets.get(8).getData();
         }
         return 0;
@@ -52,6 +55,7 @@ public class MobMetaData extends EntityMetaData {
     public byte getNumberOfArrowsInEntity() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (byte) sets.get(9).getData();
         }
         return 0;
@@ -61,6 +65,8 @@ public class MobMetaData extends EntityMetaData {
         switch (version) {
             case VERSION_1_7_10:
                 return (String) sets.get(10).getData();
+            case VERSION_1_8:
+                return (String) sets.get(2).getData();
         }
         return null;
     }
@@ -69,8 +75,18 @@ public class MobMetaData extends EntityMetaData {
         switch (version) {
             case VERSION_1_7_10:
                 return (byte) sets.get(11).getData();
+            case VERSION_1_8:
+                return (byte) sets.get(3).getData();
         }
         return 0;
+    }
+
+    public boolean hasAI() {
+        switch (version) {
+            case VERSION_1_8:
+                return (byte) sets.get(15).getData() == 0x01;
+        }
+        return false;
     }
 
 

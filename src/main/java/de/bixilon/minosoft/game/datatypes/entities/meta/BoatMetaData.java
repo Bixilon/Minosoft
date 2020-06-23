@@ -25,6 +25,7 @@ public class BoatMetaData extends EntityMetaData {
     public int getTimeSinceHit() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (int) sets.get(17).getData();
         }
         return 0;
@@ -33,6 +34,7 @@ public class BoatMetaData extends EntityMetaData {
     public int getForwardDirection() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (int) sets.get(18).getData();
         }
         return 0;
@@ -41,6 +43,7 @@ public class BoatMetaData extends EntityMetaData {
     public float getDamageTaken() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (float) sets.get(19).getData();
         }
         return 0;

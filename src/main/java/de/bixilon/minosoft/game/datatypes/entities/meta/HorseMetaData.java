@@ -27,6 +27,7 @@ public class HorseMetaData extends AgeableMetaData {
     public boolean isTame() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((int) sets.get(16).getData(), 1);
         }
         return false;
@@ -35,6 +36,7 @@ public class HorseMetaData extends AgeableMetaData {
     public boolean hasSaddle() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((int) sets.get(16).getData(), 2);
         }
         return false;
@@ -43,6 +45,7 @@ public class HorseMetaData extends AgeableMetaData {
     public boolean hasChest() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((int) sets.get(16).getData(), 3);
         }
         return false;
@@ -51,6 +54,7 @@ public class HorseMetaData extends AgeableMetaData {
     public boolean isBred() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((int) sets.get(16).getData(), 4);
         }
         return false;
@@ -59,6 +63,7 @@ public class HorseMetaData extends AgeableMetaData {
     public boolean isEating() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((int) sets.get(16).getData(), 5);
         }
         return false;
@@ -67,6 +72,7 @@ public class HorseMetaData extends AgeableMetaData {
     public boolean isRearing() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((int) sets.get(16).getData(), 6);
         }
         return false;
@@ -75,6 +81,7 @@ public class HorseMetaData extends AgeableMetaData {
     public boolean isMouthOpen() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((int) sets.get(16).getData(), 7);
         }
         return false;
@@ -83,6 +90,7 @@ public class HorseMetaData extends AgeableMetaData {
     public HorseType getType() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return HorseType.byId((Integer) sets.get(19).getData());
         }
         return null;
@@ -91,6 +99,7 @@ public class HorseMetaData extends AgeableMetaData {
     public HorseColor getColor() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return HorseColor.byId((int) sets.get(20).getData() & 0xFF);
         }
         return null;
@@ -99,6 +108,7 @@ public class HorseMetaData extends AgeableMetaData {
     public HorseDots getDots() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return HorseDots.byId((int) sets.get(20).getData() & 0xFF00);
         }
         return null;
@@ -108,6 +118,7 @@ public class HorseMetaData extends AgeableMetaData {
     public String getOwnerName() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (String) sets.get(21).getData();
         }
         return null;
@@ -116,6 +127,7 @@ public class HorseMetaData extends AgeableMetaData {
     public HorseArmor getArmor() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return HorseArmor.byId((int) sets.get(21).getData());
         }
         return null;

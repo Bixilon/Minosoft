@@ -37,6 +37,7 @@ public enum Objects implements EntityEnumInterface {
     THROWN_EXP_BOTTLE(null, 75, ThrownExpBottle.class),
     FIREWORK(new Identifier("firework"), 76, Firework.class),
     LEASH_KNOT(new Identifier("firework"), 77, LeashKnot.class),
+    ARMOR_STAND(new Identifier("armor_stand"), 78, ArmorStand.class),
     FISHING_FLOAT(null, 90, FishingFloat.class);
     //ToDo: identifier
 

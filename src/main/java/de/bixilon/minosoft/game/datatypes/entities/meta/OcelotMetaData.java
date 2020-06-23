@@ -26,6 +26,7 @@ public class OcelotMetaData extends TameableMetaData {
     public byte getType() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (byte) sets.get(18).getData();
         }
         return 0x00;

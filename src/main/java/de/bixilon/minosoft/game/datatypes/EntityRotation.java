@@ -11,30 +11,34 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities.meta;
+package de.bixilon.minosoft.game.datatypes;
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+public class EntityRotation {
+    final float yaw;
+    final float pitch;
+    final float roll;
 
-public class AgeableMetaData extends MobMetaData {
-
-    public AgeableMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public EntityRotation(float yaw, float pitch, float roll) {
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.roll = roll;
     }
 
 
-    public int getAge() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (int) sets.get(12).getData();
-        }
-        return 0;
+    public float getYaw() {
+        return yaw;
     }
 
-    public boolean isAdult() {
-        return getAge() >= 0;
+    public float getPitch() {
+        return pitch;
     }
 
+    public float getRoll() {
+        return roll;
+    }
 
+    @Override
+    public String toString() {
+        return String.format("%s %s %s", getYaw(), getPitch(), getRoll());
+    }
 }

@@ -26,6 +26,7 @@ public class FireworkMetaData extends EntityMetaData {
     public Slot getInfo() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (Slot) sets.get(8).getData();
         }
         return null;

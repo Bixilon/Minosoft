@@ -27,6 +27,7 @@ public class HumanMetaData extends MobMetaData {
     public boolean hideCape() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((byte) sets.get(16).getData(), 1);
         }
         return false;
@@ -35,6 +36,7 @@ public class HumanMetaData extends MobMetaData {
     public float getAbsorptionHearts() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (float) sets.get(17).getData();
         }
         return 0.0F;
@@ -43,6 +45,7 @@ public class HumanMetaData extends MobMetaData {
     public int getScore() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (int) sets.get(18).getData();
         }
         return 0;

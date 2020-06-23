@@ -35,6 +35,7 @@ public enum Mobs {
     WITHER(new Identifier("wither"), 64, Wither.class),
     BAT(new Identifier("bat"), 65, Bat.class),
     WITCH(new Identifier("witch"), 66, Witch.class),
+    GUARDIAN(new Identifier("witch"), 68, Guardian.class),
     PIG(new Identifier("pig"), 90, Pig.class),
     SHEEP(new Identifier("sheep"), 91, Sheep.class),
     COW(new Identifier("cow"), 92, Cow.class),
@@ -46,6 +47,7 @@ public enum Mobs {
     OCELOT(new Identifier("ocelot"), 98, Ocelot.class),
     IRON_GOLEM(new Identifier("iron_golem"), 99, IronGolem.class),
     HORSE(new Identifier("horse"), 100, Horse.class),
+    RABBIT(new Identifier("rabbit"), 101, Rabbit.class),
     VILLAGER(new Identifier("villager"), 120, Villager.class);
 
     final Identifier identifier;

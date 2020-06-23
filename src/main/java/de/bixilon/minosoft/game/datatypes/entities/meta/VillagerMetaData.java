@@ -26,7 +26,8 @@ public class VillagerMetaData extends AgeableMetaData {
     public VillagerType getVillagerType() {
         switch (version) {
             case VERSION_1_7_10:
-                return VillagerType.byId((int) sets.get(17).getData());
+            case VERSION_1_8:
+                return VillagerType.byId((int) sets.get(16).getData());
         }
         return VillagerType.FARMER;
     }
