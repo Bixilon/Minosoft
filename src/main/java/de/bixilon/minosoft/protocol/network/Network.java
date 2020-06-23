@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network;
 
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -210,7 +211,7 @@ public class Network {
                             packet.read(inPacketBuffer, connection.getVersion());
                             if (inPacketBuffer.getBytesLeft() > 0 && p != Packets.Clientbound.PLAY_ENTITY_METADATA) { // entity meta data uses mostly all data, but this happens in the handling thread
                                 // warn not all data used
-                                Log.protocol(String.format("[IN] Packet %s did not used all bytes sent", ((p != null) ? p.name() : "UNKNOWN")));
+                                Log.warn(String.format(TextComponent.ChatAttributes.RED + "[IN] Could not parse packet %s completely (used=%d, available=%d, total=%d)" + TextComponent.ChatAttributes.RESET, ((p != null) ? p.name() : "null"), inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength()));
                             }
 
                             if (packet instanceof PacketLoginSuccess) {
