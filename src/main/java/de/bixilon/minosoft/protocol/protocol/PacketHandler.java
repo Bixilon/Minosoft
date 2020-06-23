@@ -33,6 +33,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusRespo
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketResourcePackStatus;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;
@@ -483,5 +484,10 @@ public class PacketHandler {
     public void handle(PacketTabHeaderAndFooter pkg) {
         connection.getPlayer().setTabHeader(pkg.getHeader());
         connection.getPlayer().setTabFooter(pkg.getFooter());
+    }
+
+    public void handle(PackerResourcePackSend pkg) {
+        //ToDo ask user, download pack. for now send an okay
+        connection.sendPacket(new PacketResourcePackStatus(pkg.getHash(), PacketResourcePackStatus.ResourcePackStatus.SUCCESSFULLY));
     }
 }
