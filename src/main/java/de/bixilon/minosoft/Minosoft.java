@@ -91,7 +91,6 @@ public class Minosoft {
             case OTHER:
                 path += ".minosoft/";
                 break;
-            //ToDo: Mac, Other
         }
         File folder = new File(path);
         if (!folder.exists() && !folder.mkdirs()) {

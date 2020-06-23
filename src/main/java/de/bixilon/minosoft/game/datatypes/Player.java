@@ -47,6 +47,9 @@ public class Player {
     HashMap<Integer, Inventory> inventories = new HashMap<>();
     boolean spawnConfirmed = false;
 
+    TextComponent tabHeader;
+    TextComponent tabFooter;
+
     public Player(MojangAccount acc) {
         this.acc = acc;
         // create our own inventory without any properties
@@ -215,5 +218,21 @@ public class Player {
             }
         }
         return null;
+    }
+
+    public TextComponent getTabHeader() {
+        return tabHeader;
+    }
+
+    public void setTabHeader(TextComponent tabHeader) {
+        this.tabHeader = tabHeader;
+    }
+
+    public TextComponent getTabFooter() {
+        return tabFooter;
+    }
+
+    public void setTabFooter(TextComponent tabFooter) {
+        this.tabFooter = tabFooter;
     }
 }

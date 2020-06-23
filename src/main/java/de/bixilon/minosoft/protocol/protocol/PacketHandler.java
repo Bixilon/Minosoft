@@ -479,4 +479,9 @@ public class PacketHandler {
 
     public void handle(PacketServerDifficulty pkg) {
     }
+
+    public void handle(PacketTabHeaderAndFooter pkg) {
+        connection.getPlayer().setTabHeader(pkg.getHeader());
+        connection.getPlayer().setTabFooter(pkg.getFooter());
+    }
 }
