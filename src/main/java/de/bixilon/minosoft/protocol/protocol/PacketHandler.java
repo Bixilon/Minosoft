@@ -67,8 +67,6 @@ public class PacketHandler {
                 // reconnect...
                 connection.disconnect();
                 Log.info(String.format("Server is running on version %s, reconnecting...", connection.getVersion().getName()));
-                connection.setReason(ConnectionReason.CONNECT);
-                connection.connect();
                 break;
             case CONNECT:
                 // do nothing

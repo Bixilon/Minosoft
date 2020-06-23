@@ -176,8 +176,21 @@ public class InByteBuffer {
     }
 
     public BlockPosition readPosition() {
+        //ToDo:  here is something wrong with z :(
         Long raw = readLong();
-        return new BlockPosition(Long.valueOf(raw >>> 38).intValue(), Long.valueOf(raw & 0xFFF).shortValue(), Long.valueOf(raw << 26 >>> 38).intValue());
+        int x = (int) (raw >> 38);
+        short y = (short) (raw & 0xFFF);
+        int z = (int) (raw >> 12) & 0x3FFFFFF;
+        if (x >= (2 ^ 25)) {
+            x -= 2 ^ 26;
+        }
+        if (y >= (2 ^ 11)) {
+            y -= 2 ^ 12;
+        }
+        if (z >= (2 ^ 25)) {
+            z -= 2 ^ 26;
+        }
+        return new BlockPosition(x, y, z);
     }
 
     @Override

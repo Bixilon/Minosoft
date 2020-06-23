@@ -43,6 +43,7 @@ public class Network {
     private Cipher cipherEncrypt;
     private Cipher cipherDecrypt;
     private Thread packetThread;
+    Thread socketThread;
     private boolean connected;
 
     public Network(Connection c) {
@@ -60,7 +61,7 @@ public class Network {
         // everything sent for now, waiting for data
         // add to queue
         // Could not connect
-        Thread socketThread = new Thread(() -> {
+        socketThread = new Thread(() -> {
             try {
                 socket = new Socket(connection.getHost(), connection.getPort());
                 connected = true;

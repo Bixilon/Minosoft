@@ -35,8 +35,8 @@ public class Connection {
     private final int port;
     private final Network network;
     private final PacketHandler handler;
-    private final PluginChannelHandler pluginChannelHandler;
     private final ArrayList<ClientboundPacket> handlingQueue;
+    private PluginChannelHandler pluginChannelHandler;
     Thread handleThread;
     ProtocolVersion version = ProtocolVersion.VERSION_1_7_10; // default
     private Player player;
@@ -49,14 +49,13 @@ public class Connection {
         network = new Network(this);
         handlingQueue = new ArrayList<>();
         handler = new PacketHandler(this);
-        pluginChannelHandler = new PluginChannelHandler(this);
-        registerDefaultChannels();
     }
 
     /**
      * Sends an server ping to the server (player count, motd, ...)
      */
     public void ping() {
+        Log.info(String.format("Pinging server: %s:%d", host, port));
         reason = ConnectionReason.PING;
         network.connect();
     }
@@ -65,6 +64,7 @@ public class Connection {
      * Tries to connect to the server and login
      */
     public void connect() {
+        Log.info(String.format("Connecting to server: %s:%d", host, port));
         if (reason == null) {
             // first get version, then login
             reason = ConnectionReason.GET_VERSION;
@@ -97,7 +97,7 @@ public class Connection {
                 network.startPacketThread();
                 startHandlingThread();
                 ConnectionState next = ((reason == ConnectionReason.CONNECT) ? ConnectionState.LOGIN : ConnectionState.STATUS);
-                network.sendPacket(new PacketHandshake(getHost(), getPort(), next, next == ConnectionState.STATUS ? -1 : getVersion().getVersion()));
+                network.sendPacket(new PacketHandshake(getHost(), getPort(), next, (next == ConnectionState.STATUS) ? -1 : getVersion().getVersion()));
                 // after sending it, switch to next state
                 setConnectionState(next);
                 break;
@@ -108,7 +108,14 @@ public class Connection {
                 break;
             case LOGIN:
                 network.sendPacket(new PacketLoginStart(player));
+                pluginChannelHandler = new PluginChannelHandler(this);
+                registerDefaultChannels();
                 break;
+            case DISCONNECTED:
+                if (reason == ConnectionReason.GET_VERSION) {
+                    setReason(ConnectionReason.CONNECT);
+                    connect();
+                }
         }
     }
 

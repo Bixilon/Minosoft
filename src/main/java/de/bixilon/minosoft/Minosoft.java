@@ -48,6 +48,7 @@ public class Minosoft {
         Log.info(String.format("Loaded config file (version=%s)", config.getInteger(GameConfiguration.CONFIG_VERSION)));
         // set log level from config
         Log.setLevel(LogLevel.byName(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
+        Log.info(String.format("Logging info with level: %s", Log.getLevel().name()));
 
         checkClientToken();
 
