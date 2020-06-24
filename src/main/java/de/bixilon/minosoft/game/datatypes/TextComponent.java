@@ -27,6 +27,7 @@ public class TextComponent {
             // not a text component, is a legacy string
             this.json = new JSONObject();
             this.json.put("text", raw);
+            //ToDo parse minecraft color codes
         }
     }
 

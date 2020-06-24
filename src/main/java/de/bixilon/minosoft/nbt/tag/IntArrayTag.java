@@ -13,37 +13,33 @@
 
 package de.bixilon.minosoft.nbt.tag;
 
-public enum TagTypes {
-    END(0),
-    BYTE(1),
-    SHORT(2),
-    INT(3),
-    LONG(4),
-    FLOAT(5),
-    DOUBLE(6),
-    BYTE_ARRAY(7),
-    STRING(8),
-    LIST(9),
-    COMPOUND(10),
-    INT_ARRAY(11),
-    LONG_ARRAY(12);
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-    private final int id;
+public class IntArrayTag implements Tag {
+    final int[] value;
 
-    TagTypes(int id) {
-        this.id = id;
+    public IntArrayTag(int[] value) {
+        this.value = value;
     }
 
-    public static TagTypes getById(int id) {
-        for (TagTypes state : values()) {
-            if (state.getId() == id) {
-                return state;
-            }
-        }
-        return null;
+    public IntArrayTag(InByteBuffer buffer) {
+        this.value = buffer.readIntegers(new IntTag(buffer).getValue());
     }
 
-    public int getId() {
-        return this.id;
+    @Override
+    public TagTypes getType() {
+        return TagTypes.INT_ARRAY;
+    }
+
+    @Override
+    public void writeBytes(OutByteBuffer buffer) {
+        new IntTag(value.length).writeBytes(buffer);
+        buffer.writeIntegers(value);
+    }
+
+
+    public int[] getValue() {
+        return value;
     }
 }

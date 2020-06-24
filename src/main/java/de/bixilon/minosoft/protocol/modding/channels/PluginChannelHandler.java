@@ -75,7 +75,7 @@ public class PluginChannelHandler {
         }
         // check if channel was registered or if it is a default channel
         if (!registeredClientChannels.contains(name) && DefaultPluginChannels.byName(name) == null) {
-            Log.debug(String.format("Server tried to send data into unregistered plugin channel (name=\"%s\", messageLength=%d)", name, data.length));
+            Log.debug(String.format("Server tried to send data into unregistered plugin channel (name=\"%s\", messageLength=%d, string=\"%s\")", name, data.length, new String(data)));
             return;
         }
         if (channels.get(name) == null) {

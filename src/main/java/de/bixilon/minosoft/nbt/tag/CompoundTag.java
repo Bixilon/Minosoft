@@ -49,7 +49,8 @@ public class CompoundTag implements Tag {
         }
         this.data = new HashMap<>();
         while (true) {
-            TagTypes tagType = TagTypes.getById(buffer.readByte());
+            byte tag = buffer.readByte();
+            TagTypes tagType = TagTypes.getById(tag);
             if (tagType == TagTypes.END) {
                 //end tag
                 break;
@@ -85,6 +86,12 @@ public class CompoundTag implements Tag {
                     break;
                 case COMPOUND:
                     data.put(tagName, new CompoundTag(true, buffer));
+                    break;
+                case INT_ARRAY:
+                    data.put(tagName, new IntArrayTag(buffer));
+                    break;
+                case LONG_ARRAY:
+                    data.put(tagName, new LongArrayTag(buffer));
                     break;
             }
         }

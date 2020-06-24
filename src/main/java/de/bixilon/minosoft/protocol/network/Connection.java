@@ -113,6 +113,7 @@ public class Connection {
                 break;
             case DISCONNECTED:
                 if (reason == ConnectionReason.GET_VERSION) {
+                    setVersion(ProtocolVersion.VERSION_1_8);
                     setReason(ConnectionReason.CONNECT);
                     connect();
                 }

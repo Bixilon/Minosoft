@@ -14,6 +14,7 @@
 package de.bixilon.minosoft;
 
 import de.bixilon.minosoft.game.datatypes.TextComponent;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ServerListPing {
@@ -44,6 +45,10 @@ public class ServerListPing {
     }
 
     public TextComponent getMotd() {
+        try {
+            return new TextComponent(raw.getJSONObject("description"));
+        } catch (JSONException ignored) {
+        }
         return new TextComponent(raw.getString("description"));
     }
 

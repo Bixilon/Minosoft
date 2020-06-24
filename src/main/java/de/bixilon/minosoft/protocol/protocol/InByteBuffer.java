@@ -323,4 +323,20 @@ public class InByteBuffer {
     public byte[] readBytesLeft() {
         return readBytes(getBytesLeft());
     }
+
+    public int[] readIntegers(int length) {
+        int[] ret = new int[length];
+        for (int i = 0; i < length; i++) {
+            ret[i] = readInteger();
+        }
+        return ret;
+    }
+
+    public long[] readLongs(int length) {
+        long[] ret = new long[length];
+        for (int i = 0; i < length; i++) {
+            ret[i] = readLong();
+        }
+        return ret;
+    }
 }

@@ -211,4 +211,16 @@ public class OutByteBuffer {
         }
         return ret;
     }
+
+    public void writeIntegers(int[] data) {
+        for (int integer : data) {
+            writeInteger(integer);
+        }
+    }
+
+    public void writeLongs(long[] data) {
+        for (long long_long : data) {
+            writeLong(long_long);
+        }
+    }
 }
