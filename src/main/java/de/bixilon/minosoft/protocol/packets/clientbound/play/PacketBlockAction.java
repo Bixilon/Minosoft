@@ -35,7 +35,13 @@ public class PacketBlockAction implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
-                position = buffer.readBlockPositionShort();
+            case VERSION_1_8:
+                // that's the only difference here
+                if (v.getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
+                    position = buffer.readPosition();
+                } else {
+                    position = buffer.readBlockPositionShort();
+                }
                 byte byte1 = buffer.readByte();
                 byte byte2 = buffer.readByte();
                 Class<? extends BlockAction> clazz;
@@ -65,8 +71,6 @@ public class PacketBlockAction implements ClientboundPacket {
                 }
 
                 break;
-            case VERSION_1_8:
-                //ToDO
         }
     }
 

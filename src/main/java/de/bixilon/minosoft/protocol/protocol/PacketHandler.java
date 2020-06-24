@@ -444,7 +444,13 @@ public class PacketHandler {
                 connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName()).addScore(new ScoreboardScore(pkg.getItemName(), pkg.getScoreName(), pkg.getScoreValue()));
                 break;
             case REMOVE:
-                connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName()).removeScore(pkg.getScoreName());
+                ScoreboardObjective objective = connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName());
+                //ToDo handle correctly
+                if (objective == null) {
+                    Log.warn(String.format("Server tried to remove score with was not created before (itemName=\"%s\", scoreName=\"%s\")!", pkg.getItemName(), pkg.getScoreName()));
+                } else {
+                    objective.removeScore(pkg.getItemName());
+                }
                 break;
 
         }

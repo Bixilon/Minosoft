@@ -210,7 +210,7 @@ public class Connection {
                 serverVersion = buffer.readString();
                 toSend.writeString(clientVersion);
             }
-            Log.info(String.format("Server is running %s, connected with %s", serverVersion, getVersion().getName()));
+            Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getName()));
 
             getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getName(), toSend);
         });
