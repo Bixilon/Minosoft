@@ -23,10 +23,12 @@ import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.Util;
 
 import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKey;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -37,13 +39,15 @@ public class Network {
     private final List<ServerboundPacket> queue;
     private final List<byte[]> binQueue;
     private final List<byte[]> binQueueIn;
+    Thread socketThread;
     private int compressionThreshold = -1;
     private Socket socket;
-    private boolean encryptionEnabled = false;
-    private Cipher cipherEncrypt;
-    private Cipher cipherDecrypt;
+    private OutputStream outputStream;
+    private InputStream cipherInputStream;
+    private InputStream inputStream;
     private Thread packetThread;
-    Thread socketThread;
+    private boolean encryptionEnabled = false;
+    private SecretKey secretKey;
     private boolean connected;
 
     public Network(Connection c) {
@@ -67,8 +71,9 @@ public class Network {
                 connected = true;
                 connection.setConnectionState(ConnectionState.HANDSHAKING);
                 socket.setKeepAlive(true);
-                DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
-                DataInputStream dIn = new DataInputStream(socket.getInputStream());
+                outputStream = socket.getOutputStream();
+                inputStream = socket.getInputStream();
+                cipherInputStream = inputStream;
 
 
                 while (connection.getConnectionState() != ConnectionState.DISCONNECTING) {
@@ -81,19 +86,24 @@ public class Network {
                         byte[] b = binQueue.get(0);
 
                         // send, flush and remove
-                        dOut.write(b);
-                        dOut.flush();
+                        outputStream.write(b);
+                        outputStream.flush();
                         binQueue.remove(0);
+
+                        // check if should enable encryption
+                        if (!encryptionEnabled && secretKey != null) {
+                            enableEncryption(secretKey);
+                        }
                     }
 
                     // everything sent for now, waiting for data
 
-                    if (dIn.available() > 0) {
+                    if (inputStream.available() > 0) { // available seems not to work in CipherInputStream
                         int numRead = 0;
                         int length = 0;
                         byte read;
                         do {
-                            read = dIn.readByte();
+                            read = cipherInputStream.readNBytes(1)[0];
                             int value = (read & 0b01111111);
                             length |= (value << (7 * numRead));
 
@@ -103,7 +113,7 @@ public class Network {
                             }
                         } while ((read & 0b10000000) != 0);
 
-                        byte[] raw = dIn.readNBytes(length);
+                        byte[] raw = cipherInputStream.readNBytes(length);
                         binQueueIn.add(raw);
                         packetThread.interrupt();
                     }
@@ -127,7 +137,6 @@ public class Network {
         // compressed data, makes packets to binary data
         // read data
         // safety first, but will not occur
-        // sleep 1 ms
         packetThread = new Thread(() -> {
             // compressed data, makes packets to binary data
             while (connection.getConnectionState() != ConnectionState.DISCONNECTING) {
@@ -135,10 +144,6 @@ public class Network {
                 while (queue.size() > 0) {
                     ServerboundPacket p = queue.get(0);
                     byte[] data = p.write(connection.getVersion()).getOutBytes();
-                    if (encryptionEnabled) {
-                        // encrypt
-                        data = cipherEncrypt.update(data);
-                    }
                     if (compressionThreshold != -1) {
                         // compression is enabled
                         // check if there is a need to compress it and if so, do it!
@@ -166,11 +171,11 @@ public class Network {
                     }
 
 
+                    binQueue.add(data);
                     if (p instanceof PacketEncryptionResponse) {
                         // enable encryption
-                        enableEncryption(((PacketEncryptionResponse) p).getSecretKey());
+                        secretKey = ((PacketEncryptionResponse) p).getSecretKey();
                     }
-                    binQueue.add(data);
                     queue.remove(0);
                 }
                 while (binQueueIn.size() > 0) {
@@ -178,10 +183,6 @@ public class Network {
                     // read data
                     byte[] data = binQueueIn.get(0);
                     InPacketBuffer inPacketBuffer;
-                    if (encryptionEnabled) {
-                        // decrypt
-                        data = cipherDecrypt.update(data);
-                    }
                     if (compressionThreshold != -1) {
                         // compression is enabled
                         // check if there is a need to decompress it and if so, do it!
@@ -190,14 +191,14 @@ public class Network {
                         byte[] left = rawBuffer.readBytesLeft();
                         if (packetSize == 0) {
                             // no need
-                            inPacketBuffer = new InPacketBuffer(left);
+                            data = left;
                         } else {
                             // need to decompress data
-                            inPacketBuffer = Util.decompress(left).getPacketBuffer();
+                            data = Util.decompress(left).readBytesLeft();
                         }
-                    } else {
-                        inPacketBuffer = new InPacketBuffer(data);
                     }
+
+                    inPacketBuffer = new InPacketBuffer(data);
                     try {
                         Packets.Clientbound p = connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
                         Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(p);
@@ -253,9 +254,10 @@ public class Network {
     }
 
     public void enableEncryption(SecretKey secretKey) {
-        Log.debug("Enabling encryption...");
-        cipherEncrypt = CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey);
-        cipherDecrypt = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey);
+        Cipher cipherEncrypt = CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey);
+        Cipher cipherDecrypt = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey);
+        cipherInputStream = new CipherInputStream(inputStream, cipherDecrypt);
+        outputStream = new CipherOutputStream(outputStream, cipherEncrypt);
         encryptionEnabled = true;
         Log.debug("Encryption enabled!");
     }
