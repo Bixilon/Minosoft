@@ -116,6 +116,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_SERVER_DIFFICULTY, PacketServerDifficulty.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_LIST_HEADER_AND_FOOTER, PacketTabHeaderAndFooter.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_RESOURCE_PACK_SEND, PackerResourcePackSend.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_PROPERTIES, PacketEntityProperties.class);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {

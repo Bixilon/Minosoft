@@ -125,6 +125,11 @@ public class PacketHandler {
                     break;
                 case REMOVE_PLAYER:
                     if (bulk.isLegacy()) {
+                        PlayerInfo info = connection.getPlayer().getPlayerInfo(bulk.getName());
+                        if (info == null) {
+                            // not initialized yet
+                            return;
+                        }
                         connection.getPlayer().getPlayerInfos().remove(connection.getPlayer().getPlayerInfo(bulk.getName()).getUUID());
                         return;
                     }
@@ -485,7 +490,11 @@ public class PacketHandler {
     }
 
     public void handle(PackerResourcePackSend pkg) {
-        //ToDo ask user, download pack. for now send an okay
+        //ToDo ask user, download pack. for now just send an okay
         connection.sendPacket(new PacketResourcePackStatus(pkg.getHash(), PacketResourcePackStatus.ResourcePackStatus.SUCCESSFULLY));
+    }
+
+    public void handle(PacketEntityProperties pkg) {
+        //ToDo
     }
 }
