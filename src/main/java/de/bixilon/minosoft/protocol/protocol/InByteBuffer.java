@@ -176,20 +176,11 @@ public class InByteBuffer {
     }
 
     public BlockPosition readPosition() {
-        //ToDo:  here is something wrong with z :(
+        // this is the correct example! wiki.vg is clearly wrong with this!
         Long raw = readLong();
         int x = (int) (raw >> 38);
-        short y = (short) (raw & 0xFFF);
-        int z = (int) (raw >> 12) & 0x3FFFFFF;
-        if (x >= (2 ^ 25)) {
-            x -= 2 ^ 26;
-        }
-        if (y >= (2 ^ 11)) {
-            y -= 2 ^ 12;
-        }
-        if (z >= (2 ^ 25)) {
-            z -= 2 ^ 26;
-        }
+        short y = (short) ((raw >> 26) & 0xFFF);
+        int z = (int) (raw & 0x3FFFFFF);
         return new BlockPosition(x, y, z);
     }
 
