@@ -69,6 +69,7 @@ public class Log {
 
             }
         });
+        logThread.setName("Log-Thread");
         logThread.start();
     }
 

@@ -164,7 +164,7 @@ public class Connection {
 
     private void startHandlingThread() {
         handleThread = new Thread(() -> {
-            while (getConnectionState() != ConnectionState.DISCONNECTED) {
+            while (getConnectionState() != ConnectionState.DISCONNECTING) {
                 while (handlingQueue.size() > 0) {
                     try {
                         handlingQueue.get(0).log();
@@ -182,6 +182,7 @@ public class Connection {
                 }
             }
         });
+        handleThread.setName("Handle-Thread");
         handleThread.start();
     }
 

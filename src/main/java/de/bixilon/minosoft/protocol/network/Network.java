@@ -119,6 +119,7 @@ public class Network {
                 e.printStackTrace();
             }
         });
+        socketThread.setName("Socket-Thread");
         socketThread.start();
     }
 
@@ -129,7 +130,7 @@ public class Network {
         // sleep 1 ms
         packetThread = new Thread(() -> {
             // compressed data, makes packets to binary data
-            while (connection.getConnectionState() != ConnectionState.DISCONNECTED) {
+            while (connection.getConnectionState() != ConnectionState.DISCONNECTING) {
 
                 while (queue.size() > 0) {
                     ServerboundPacket p = queue.get(0);
@@ -242,6 +243,7 @@ public class Network {
 
             }
         });
+        packetThread.setName("Packet-Thread");
         packetThread.start();
     }
 
