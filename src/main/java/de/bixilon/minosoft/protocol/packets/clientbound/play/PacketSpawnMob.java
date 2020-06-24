@@ -45,7 +45,7 @@ public class PacketSpawnMob implements ClientboundPacket {
                 assert type != null;
                 try {
                     mob = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, InByteBuffer.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer, v);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
                 }
                 break;

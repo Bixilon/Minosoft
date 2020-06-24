@@ -80,7 +80,7 @@ public class PacketScoreboardTeams implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, playerCount=%s)", name, action.name(), displayName, prefix, suffix, friendlyFire.name(), ((playerNames == null) ? "null" : playerNames.length)));
+        Log.protocol(String.format("Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, playerCount=%s)", name, action.name(), displayName, prefix, suffix, (friendlyFire == null ? "null" : friendlyFire.name()), ((playerNames == null) ? "null" : playerNames.length)));
     }
 
     @Override

@@ -53,4 +53,9 @@ public class ArmorStand extends EntityObject implements ObjectInterface {
     public float getHeight() {
         return 2.0F;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return ArmorStandMetaData.class;
+    }
 }
