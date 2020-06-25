@@ -105,6 +105,38 @@ public class PacketWorldBorder implements ClientboundPacket {
         h.handle(this);
     }
 
+    public double getRadius() {
+        return radius;
+    }
+
+    public double getOldRadius() {
+        return oldRadius;
+    }
+
+    public double getNewRadius() {
+        return newRadius;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getZ() {
+        return z;
+    }
+
+    public int getPortalBound() {
+        return portalBound;
+    }
+
+    public int getWarningTime() {
+        return warningTime;
+    }
+
+    public int getWarningBlocks() {
+        return warningBlocks;
+    }
+
     public enum WorldBorderAction {
         SET_SIZE(0),
         LERP_SIZE(1),
