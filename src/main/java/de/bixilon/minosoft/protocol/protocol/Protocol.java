@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Protocol implements ProtocolInterface {
-    static HashMap<Packets.Clientbound, Class<? extends ClientboundPacket>> packetClassMapping = new HashMap<>();
+    static final HashMap<Packets.Clientbound, Class<? extends ClientboundPacket>> packetClassMapping = new HashMap<>();
 
 
     public final HashMap<Packets.Serverbound, Integer> serverboundPacketMapping;

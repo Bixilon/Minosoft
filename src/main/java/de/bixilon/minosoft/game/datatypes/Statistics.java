@@ -69,7 +69,7 @@ public enum Statistics {
     STAT_ANIMALS_BRED(new Identifier("stat.animalsBred")),
     STAT_PLAYER_KILLS(new Identifier("stat.playerKills")),
     STAT_FISH_CAUGHT(new Identifier("stat.fishCaught")),
-    STAT_JUN_KFISHED(new Identifier("stat.junkFished")),
+    STAT_JUNK_FISHED(new Identifier("stat.junkFished")),
     STAT_TREASURE_FISHED(new Identifier("stat.treasureFished")),
 
     ;

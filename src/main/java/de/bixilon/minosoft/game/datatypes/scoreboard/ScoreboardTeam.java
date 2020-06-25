@@ -25,7 +25,7 @@ public class ScoreboardTeam {
     String prefix;
     String suffix;
     PacketScoreboardTeams.ScoreboardFriendlyFire friendlyFire;
-    List<String> players;
+    final List<String> players;
 
     public ScoreboardTeam(String name, String displayName, String prefix, String suffix, PacketScoreboardTeams.ScoreboardFriendlyFire friendlyFire, String[] players) {
         this.name = name;

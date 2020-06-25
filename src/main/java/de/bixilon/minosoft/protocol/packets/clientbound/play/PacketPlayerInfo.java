@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class PacketPlayerInfo implements ClientboundPacket {
-    List<PlayerInfoBulk> infos = new ArrayList<>();
+    final List<PlayerInfoBulk> infos = new ArrayList<>();
 
 
     @Override

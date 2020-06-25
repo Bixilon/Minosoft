@@ -163,7 +163,7 @@ public class PacketMapData implements ClientboundPacket {
         }
     }
 
-    public class MapPlayerSet {
+    public static class MapPlayerSet {
         final int type;
         final MapPlayerDirection direction;
         byte x;

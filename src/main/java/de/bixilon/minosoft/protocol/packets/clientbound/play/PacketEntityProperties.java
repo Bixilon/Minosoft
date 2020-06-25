@@ -27,7 +27,7 @@ import java.util.UUID;
 
 public class PacketEntityProperties implements ClientboundPacket {
     int entityId;
-    HashMap<EntityPropertyKey, EntityProperty> properties = new HashMap<>();
+    final HashMap<EntityPropertyKey, EntityProperty> properties = new HashMap<>();
 
 
     @Override

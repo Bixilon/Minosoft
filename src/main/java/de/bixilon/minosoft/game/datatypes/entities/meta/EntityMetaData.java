@@ -289,7 +289,7 @@ public class EntityMetaData {
         int getId();
     }
 
-    public class MetaDataSet {
+    public static class MetaDataSet {
         final int index;
         final Object data;
 
