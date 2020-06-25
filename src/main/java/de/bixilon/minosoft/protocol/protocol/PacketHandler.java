@@ -507,4 +507,8 @@ public class PacketHandler {
     public void handle(PacketWorldBorder pkg) {
         //ToDo
     }
+
+    public void handle(PacketTitle pkg) {
+        //ToDo
+    }
 }
