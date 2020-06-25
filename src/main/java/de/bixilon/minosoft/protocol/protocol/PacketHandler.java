@@ -503,4 +503,8 @@ public class PacketHandler {
     public void handle(PacketEntityProperties pkg) {
         //ToDo
     }
+
+    public void handle(PacketWorldBorder pkg) {
+        //ToDo
+    }
 }
