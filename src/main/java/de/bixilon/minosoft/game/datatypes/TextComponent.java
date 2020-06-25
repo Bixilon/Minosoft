@@ -17,6 +17,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TextComponent {
     JSONObject json;
 
@@ -26,13 +29,101 @@ public class TextComponent {
         } catch (JSONException e) {
             // not a text component, is a legacy string
             this.json = new JSONObject();
-            this.json.put("text", raw);
-            //ToDo parse minecraft color codes
+            JSONArray extra = new JSONArray();
+
+            String[] paragraphSplit = raw.split("§");
+
+            StringBuilder message = new StringBuilder();
+            List<ChatAttributes> attributesList = new ArrayList<>();
+            ChatAttributes color = ChatAttributes.WHITE;
+            boolean first = true;
+            for (String paragraph : paragraphSplit) {
+                if (paragraph.length() >= 1) {
+                    if (first) {
+                        // skip first, just append.
+                        message.append(paragraph);
+                        first = false;
+                        continue;
+                    }
+                    // only 1 code without message, append to list
+                    ChatColor colorCheck = null;
+                    try {
+                        colorCheck = ChatColor.byId(Integer.parseInt(paragraph.substring(0, 1), 16));
+                    } catch (NumberFormatException ignored) {
+                    }
+                    if (colorCheck == null) {
+                        //this is not a color, append attribute to list
+                        switch (paragraph.substring(0, 1)) {
+                            case "k":
+                                attributesList.add(ChatAttributes.OBFUSCATED);
+                                break;
+                            case "l":
+                                attributesList.add(ChatAttributes.BOLD);
+                                break;
+                            case "m":
+                                attributesList.add(ChatAttributes.STRIKETHROUGH);
+                                break;
+                            case "n":
+                                attributesList.add(ChatAttributes.UNDERLINED);
+                                break;
+                            case "o":
+                                attributesList.add(ChatAttributes.ITALIC);
+                                break;
+                            case "r":
+                                //save and clear
+                                extra.put(getExtraByAttributes(message.toString(), color, attributesList));
+                                attributesList.clear();
+                                color = ChatAttributes.WHITE;
+                                message = new StringBuilder();
+                                break;
+                        }
+                    } else {
+                        // save current
+                        if (!message.toString().isEmpty()) {
+                            extra.put(getExtraByAttributes(message.toString(), color, attributesList));
+                            message = new StringBuilder();
+                        }
+                        color = ChatAttributes.byColor(colorCheck);
+                    }
+                    message.append(paragraph.substring(1));
+                } else {
+                    if (first) {
+                        // skip first
+                        first = false;
+                    }
+                }
+            }
+            // save
+            extra.put(getExtraByAttributes(message.toString(), color, attributesList));
+
+            this.json.put("extra", extra);
         }
     }
 
     public TextComponent(JSONObject json) {
         this.json = json;
+    }
+
+    private JSONObject getExtraByAttributes(String message, ChatAttributes color, List<ChatAttributes> formatting) {
+        JSONObject ret = new JSONObject();
+        ret.put("text", message);
+        if (color != null) {
+            ret.put("color", color.getName());
+        }
+        for (ChatAttributes attribute : formatting) {
+            if (attribute == ChatAttributes.BOLD && !ret.has("bold")) {
+                ret.put("bold", true);
+            } else if (attribute == ChatAttributes.ITALIC && !ret.has("italic")) {
+                ret.put("italic", true);
+            } else if (attribute == ChatAttributes.UNDERLINED && !ret.has("underlined")) {
+                ret.put("underlined", true);
+            } else if (attribute == ChatAttributes.STRIKETHROUGH && !ret.has("strikethrough")) {
+                ret.put("strikethrough", true);
+            } else if (attribute == ChatAttributes.OBFUSCATED && !ret.has("obfuscated")) {
+                ret.put("obfuscated", true);
+            }
+        }
+        return ret;
     }
 
     public String getRawMessage() {
