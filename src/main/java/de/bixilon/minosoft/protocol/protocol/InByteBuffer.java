@@ -121,9 +121,7 @@ public class InByteBuffer {
 
 
     public UUID readUUID() {
-        ByteBuffer buffer = ByteBuffer.allocate(16); // UUID.BYTES
-        buffer.put(readBytes(16));
-        return new UUID(buffer.getLong(0), buffer.getLong(1));
+        return new UUID(readLong(), readLong());
     }
 
     public int readVarInt() {

@@ -24,6 +24,10 @@ public class TextComponent {
     JSONObject json;
 
     public TextComponent(String raw) {
+        if (raw == null) {
+            this.json = new JSONObject();
+            return;
+        }
         try {
             this.json = new JSONObject(raw);
         } catch (JSONException e) {

@@ -88,7 +88,7 @@ public class PacketPlayerInfo implements ClientboundPacket {
             if (property.isLegacy()) {
                 Log.game(String.format("[TAB] Player info bulk (uuid=%s, name=%s, ping=%d)", property.getUUID(), property.getName(), property.getPing()));
             } else {
-                Log.game(String.format("[TAB] Player info bulk (uuid=%s, action=%s, name=%s, gameMode=%s, ping=%d)", property.getUUID(), property.getAction(), property.getName(), ((property.getGameMode() == null) ? "null" : property.getGameMode().name()), property.getPing()));
+                Log.game(String.format("[TAB] Player info bulk (uuid=%s, action=%s, name=%s, gameMode=%s, ping=%d, displayName=%s)", property.getUUID(), property.getAction(), property.getName(), ((property.getGameMode() == null) ? "null" : property.getGameMode().name()), property.getPing(), ((property.getDisplayName() == null) ? "null" : property.getDisplayName().getColoredMessage())));
 
             }
         }
