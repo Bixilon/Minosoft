@@ -57,17 +57,17 @@ public class PacketTitle implements ClientboundPacket {
     public void log() {
         switch (action) {
             case SET_TITLE:
-                Log.protocol(String.format("Received title (action=%s, text=%s)", action, text.getColoredMessage()));
+                Log.protocol(String.format("Received title (action=%s, text=%s)", action.name(), text.getColoredMessage()));
                 break;
             case SET_SUBTITLE:
-                Log.protocol(String.format("Received title (action=%s, subText=%s)", action, subText.getColoredMessage()));
+                Log.protocol(String.format("Received title (action=%s, subText=%s)", action.name(), subText.getColoredMessage()));
                 break;
             case SET_TIMES_AND_DISPLAY:
-                Log.protocol(String.format("Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", action, fadeInTime, stayTime, fadeOutTime));
+                Log.protocol(String.format("Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", action.name(), fadeInTime, stayTime, fadeOutTime));
                 break;
             case HIDE:
             case RESET:
-                Log.protocol(String.format("Received title (action=%s)", action));
+                Log.protocol(String.format("Received title (action=%s)", action.name()));
                 break;
         }
     }
@@ -77,6 +77,29 @@ public class PacketTitle implements ClientboundPacket {
         h.handle(this);
     }
 
+    public int getFadeInTime() {
+        return fadeInTime;
+    }
+
+    public int getFadeOutTime() {
+        return fadeOutTime;
+    }
+
+    public int getStayTime() {
+        return stayTime;
+    }
+
+    public TextComponent getSubText() {
+        return subText;
+    }
+
+    public TextComponent getText() {
+        return text;
+    }
+
+    public TitleAction getAction() {
+        return action;
+    }
 
     public enum TitleAction {
         SET_TITLE(0),

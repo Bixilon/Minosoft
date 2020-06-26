@@ -511,4 +511,8 @@ public class PacketHandler {
     public void handle(PacketTitle pkg) {
         //ToDo
     }
+
+    public void handle(PacketCombatEvent pkg) {
+        //ToDo
+    }
 }
