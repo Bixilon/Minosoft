@@ -515,4 +515,8 @@ public class PacketHandler {
     public void handle(PacketCombatEvent pkg) {
         //ToDo
     }
+
+    public void handle(PacketCamera pkg) {
+        //ToDo
+    }
 }

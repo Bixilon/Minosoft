@@ -120,6 +120,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_WORLD_BORDER, PacketWorldBorder.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_TITLE, PacketTitle.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_COMBAT_EVENT, PacketCombatEvent.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_CAMERA, PacketCamera.class);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {
