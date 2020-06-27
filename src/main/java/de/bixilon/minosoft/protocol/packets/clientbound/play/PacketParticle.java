@@ -65,21 +65,6 @@ public class PacketParticle implements ClientboundPacket {
 
                 particleData = buffer.readFloat();
                 count = buffer.readInteger();
-                switch (particle) {
-                    case IRON_CRACK:
-                        data = new int[2];
-                        data[0] = buffer.readVarInt();
-                        data[1] = buffer.readVarInt();
-                        break;
-                    case BLOCK:
-                    case DUST:
-                        data = new int[1];
-                        data[0] = buffer.readVarInt();
-                        break;
-                    default:
-                        data = new int[0];
-                        break;
-                }
                 break;
         }
     }
