@@ -21,7 +21,6 @@ import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.particle.*;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
-import de.bixilon.minosoft.nbt.tag.TagTypes;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.Util;
 import org.json.JSONObject;
@@ -122,9 +121,7 @@ public class InByteBuffer {
 
 
     public UUID readUUID() {
-        ByteBuffer buffer = ByteBuffer.allocate(16); // UUID.BYTES
-        buffer.put(readBytes(16));
-        return new UUID(buffer.getLong(0), buffer.getLong(1));
+        return new UUID(readLong(), readLong());
     }
 
     public int readVarInt() {
@@ -177,8 +174,12 @@ public class InByteBuffer {
     }
 
     public BlockPosition readPosition() {
+        // this is the correct example! wiki.vg is clearly wrong with this!
         Long raw = readLong();
-        return new BlockPosition(Long.valueOf(raw >> 38).intValue(), Long.valueOf(raw & 0xFFF).shortValue(), Long.valueOf(raw << 26 >> 38).intValue());
+        int x = (int) (raw >> 38);
+        short y = (short) ((raw >> 26) & 0xFFF);
+        int z = (int) (raw & 0x3FFFFFF);
+        return new BlockPosition(x, y, z);
     }
 
     @Override
@@ -186,7 +187,7 @@ public class InByteBuffer {
         return "dataLen: " + bytes.length + "; pos: " + pos;
     }
 
-    public TextComponent readChatComponent() {
+    public TextComponent readTextComponent() {
         return new TextComponent(readString());
     }
 
@@ -234,15 +235,12 @@ public class InByteBuffer {
         return null;
     }
 
-    public CompoundTag readNBT() {
-
-        if (readByte() != TagTypes.COMPOUND.getId()) { // will be a Compound Tag
-            // maybe compressed
-            setPosition(getPosition() - 1);
+    public CompoundTag readNBT(boolean compressed) {
+        if (compressed) {
             short length = readShort();
             if (length == -1) {
                 // no nbt data here...
-                return null;
+                return new CompoundTag();
             }
             try {
                 return new CompoundTag(new InByteBuffer(Util.decompressGzip(readBytes(length))));
@@ -253,18 +251,29 @@ public class InByteBuffer {
             }
             // try again
         }
-        setPosition(getPosition() - 1);
         return new CompoundTag(this);
+    }
+
+    public CompoundTag readNBT() {
+        return readNBT(false);
     }
 
     public Slot readSlot(ProtocolVersion v) {
         switch (v) {
-            case VERSION_1_7_10:
+            case VERSION_1_7_10: {
                 short id = readShort();
                 if (id != -1) {
-                    return new Slot(id, readByte(), readShort(), readNBT());
+                    return new Slot(id, readByte(), readShort(), readNBT(true));
                 }
-                return null;
+                break;
+            }
+            case VERSION_1_8: {
+                short id = readShort();
+                if (id == -1) {
+                    return null;
+                }
+                return new Slot(id, readByte(), readShort(), readNBT());
+            }
                 /*
 
         if (readBoolean()) {
@@ -303,5 +312,29 @@ public class InByteBuffer {
 
     public BlockPosition readBlockPositionShort() {
         return new BlockPosition(readInteger(), readShort(), readInteger());
+    }
+
+    public InPacketBuffer getPacketBuffer() {
+        return new InPacketBuffer(this);
+    }
+
+    public byte[] readBytesLeft() {
+        return readBytes(getBytesLeft());
+    }
+
+    public int[] readIntegers(int length) {
+        int[] ret = new int[length];
+        for (int i = 0; i < length; i++) {
+            ret[i] = readInteger();
+        }
+        return ret;
+    }
+
+    public long[] readLongs(int length) {
+        long[] ret = new long[length];
+        for (int i = 0; i < length; i++) {
+            ret[i] = readLong();
+        }
+        return ret;
     }
 }

@@ -21,9 +21,9 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketHeldItemChangeSending implements ServerboundPacket {
 
-    private final byte slot;
+    private final short slot;
 
-    public PacketHeldItemChangeSending(byte slot) {
+    public PacketHeldItemChangeSending(short slot) {
         this.slot = slot;
         log();
     }
@@ -39,7 +39,8 @@ public class PacketHeldItemChangeSending implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_HELD_ITEM_CHANGE));
         switch (v) {
             case VERSION_1_7_10:
-                buffer.writeByte(slot);
+            case VERSION_1_8:
+                buffer.writeShort(slot);
                 break;
         }
         return buffer;

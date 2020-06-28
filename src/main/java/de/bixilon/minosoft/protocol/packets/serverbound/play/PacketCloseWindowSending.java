@@ -34,6 +34,7 @@ public class PacketCloseWindowSending implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_CLOSE_WINDOW));
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 buffer.writeByte(windowId);
                 break;
         }

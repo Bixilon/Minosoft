@@ -26,9 +26,9 @@ public enum ProtocolVersion {
     VERSION_1_14_4(new Protocol_1_14_4()),
     VERSION_1_15_2(new Protocol_1_15_2());
 
-    public static TreeMap<Integer, ProtocolVersion> versionMapping = new TreeMap<>();
+    public static final TreeMap<Integer, ProtocolVersion> versionMapping = new TreeMap<>();
 
-    public static ProtocolVersion[] versionMappingArray;
+    public static final ProtocolVersion[] versionMappingArray;
 
     static {
         for (ProtocolVersion v : values()) {
@@ -49,6 +49,15 @@ public enum ProtocolVersion {
     ProtocolVersion(Protocol protocol) {
         this.protocol = protocol;
         this.version = protocol.getProtocolVersion();
+    }
+
+    public static ProtocolVersion byId(int protocolNumber) {
+        for (ProtocolVersion v : values()) {
+            if (v.getVersion() == protocolNumber) {
+                return v;
+            }
+        }
+        return null;
     }
 
     public int getVersion() {

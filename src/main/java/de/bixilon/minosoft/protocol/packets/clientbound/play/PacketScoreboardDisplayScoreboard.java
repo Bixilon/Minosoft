@@ -28,6 +28,7 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 action = ScoreboardAnimation.byId(buffer.readByte());
                 scoreName = buffer.readString();
                 break;

@@ -25,6 +25,7 @@ public class WitherMetaData extends MobMetaData {
     public int getWatchedTarget1() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (int) sets.get(17).getData();
         }
         return 0;
@@ -33,6 +34,7 @@ public class WitherMetaData extends MobMetaData {
     public int getWatchedTarget2() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (int) sets.get(18).getData();
         }
         return 0;
@@ -41,6 +43,7 @@ public class WitherMetaData extends MobMetaData {
     public int getWatchedTarget3() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (int) sets.get(19).getData();
         }
         return 0;
@@ -49,6 +52,7 @@ public class WitherMetaData extends MobMetaData {
     public int getInvulnerableTime() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (int) sets.get(20).getData();
         }
         return 0;

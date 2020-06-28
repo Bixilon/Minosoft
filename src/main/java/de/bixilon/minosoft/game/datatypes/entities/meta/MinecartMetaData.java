@@ -26,6 +26,7 @@ public class MinecartMetaData extends EntityMetaData {
     public int getShakingPower() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (int) sets.get(17).getData();
         }
         return 0;
@@ -34,6 +35,7 @@ public class MinecartMetaData extends EntityMetaData {
     public int getShakingDirection() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (int) sets.get(18).getData();
         }
         return 0;
@@ -42,6 +44,7 @@ public class MinecartMetaData extends EntityMetaData {
     public float getDamageTaken() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (float) sets.get(19).getData();
         }
         return 0;
@@ -50,9 +53,26 @@ public class MinecartMetaData extends EntityMetaData {
     public Blocks getBlock() {
         switch (version) {
             case VERSION_1_7_10:
-                return Blocks.byLegacy((int) sets.get(20).getData() & 0xFF, (int) sets.get(20).getData() & 0xFF00);
+            case VERSION_1_8:
+                return Blocks.byLegacy((int) sets.get(20).getData() & 0xFF, (int) sets.get(20).getData() >>> 4);
         }
         return Blocks.AIR;
+    }
+
+    public int getBlockYPosition() {
+        switch (version) {
+            case VERSION_1_8:
+                return (int) sets.get(21).getData();
+        }
+        return 0;
+    }
+
+    public boolean isShowingBlock() {
+        switch (version) {
+            case VERSION_1_8:
+                return (int) sets.get(22).getData() == 0x01;
+        }
+        return false;
     }
 
 }

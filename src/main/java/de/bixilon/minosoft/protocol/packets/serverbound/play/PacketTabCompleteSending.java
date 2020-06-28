@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
@@ -21,9 +22,17 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketTabCompleteSending implements ServerboundPacket {
     final String text;
+    final BlockPosition position;
 
     public PacketTabCompleteSending(String text) {
         this.text = text;
+        position = null;
+        log();
+    }
+
+    public PacketTabCompleteSending(String text, BlockPosition position) {
+        this.text = text;
+        this.position = position;
         log();
     }
 
@@ -33,6 +42,15 @@ public class PacketTabCompleteSending implements ServerboundPacket {
         switch (v) {
             case VERSION_1_7_10:
                 buffer.writeString(text);
+                break;
+            case VERSION_1_8:
+                buffer.writeString(text);
+                if (position == null) {
+                    buffer.writeBoolean(false);
+                } else {
+                    buffer.writeBoolean(true);
+                    buffer.writePosition(position);
+                }
                 break;
         }
         return buffer;

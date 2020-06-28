@@ -25,6 +25,7 @@ public class SlimeMetaData extends MobMetaData {
     public byte getSize() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (byte) sets.get(16).getData();
         }
         return 0;

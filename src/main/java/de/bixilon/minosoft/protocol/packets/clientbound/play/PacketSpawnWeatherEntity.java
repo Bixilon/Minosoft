@@ -28,6 +28,7 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 entityId = buffer.readVarInt();
                 // only thunderbolts
                 byte type = buffer.readByte();

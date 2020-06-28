@@ -25,6 +25,7 @@ public class GhastMetaData extends MobMetaData {
     public boolean isAttacking() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (byte) sets.get(16).getData() == 0x01;
         }
         return false;

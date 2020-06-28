@@ -13,33 +13,85 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.GameMode;
+import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.player.PlayerInfoBulk;
+import de.bixilon.minosoft.game.datatypes.player.PlayerProperties;
+import de.bixilon.minosoft.game.datatypes.player.PlayerProperty;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+
 public class PacketPlayerInfo implements ClientboundPacket {
-    String name;
-    PlayerJoinState state;
-    short ping;
+    final List<PlayerInfoBulk> infos = new ArrayList<>();
 
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
-                name = buffer.readString();
-                state = (buffer.readBoolean() ? PlayerJoinState.JOINED : PlayerJoinState.DISCONNECTED);
-                ping = buffer.readShort();
-
+                infos.add(new PlayerInfoBulk(buffer.readString(), buffer.readShort(), (buffer.readBoolean() ? PlayerInfoAction.UPDATE_LATENCY : PlayerInfoAction.REMOVE_PLAYER)));
+                break;
+            case VERSION_1_8:
+                PlayerInfoAction action = PlayerInfoAction.byId(buffer.readVarInt());
+                int count = buffer.readVarInt();
+                for (int i = 0; i < count; i++) {
+                    UUID uuid = buffer.readUUID();
+                    PlayerInfoBulk infoBulk;
+                    //UUID uuid, String name, int ping, GameMode gameMode, TextComponent displayName, HashMap< PlayerProperties, PlayerProperty > properties, PacketPlayerInfo.PlayerInfoAction action) {
+                    switch (action) {
+                        case ADD:
+                            String name = buffer.readString();
+                            int propertiesCount = buffer.readVarInt();
+                            HashMap<PlayerProperties, PlayerProperty> playerProperties = new HashMap<>();
+                            for (int p = 0; p < propertiesCount; p++) {
+                                PlayerProperty property = new PlayerProperty(PlayerProperties.byName(buffer.readString()), buffer.readString(), (buffer.readBoolean() ? buffer.readString() : null));
+                                playerProperties.put(property.getProperty(), property);
+                            }
+                            GameMode gameMode = GameMode.byId(buffer.readVarInt());
+                            int ping = buffer.readVarInt();
+                            TextComponent displayName = (buffer.readBoolean() ? buffer.readTextComponent() : null);
+                            infoBulk = new PlayerInfoBulk(uuid, name, ping, gameMode, displayName, playerProperties, action);
+                            break;
+                        case UPDATE_GAMEMODE:
+                            infoBulk = new PlayerInfoBulk(uuid, null, 0, GameMode.byId(buffer.readVarInt()), null, null, action);
+                            break;
+                        case UPDATE_LATENCY:
+                            infoBulk = new PlayerInfoBulk(uuid, null, buffer.readVarInt(), null, null, null, action);
+                            break;
+                        case UPDATE_DISPLAY_NAME:
+                            infoBulk = new PlayerInfoBulk(uuid, null, 0, null, (buffer.readBoolean() ? buffer.readTextComponent() : null), null, action);
+                            break;
+                        case REMOVE_PLAYER:
+                            infoBulk = new PlayerInfoBulk(uuid, null, 0, null, null, null, action);
+                            break;
+                        default:
+                            infoBulk = null;
+                            break;
+                    }
+                    infos.add(infoBulk);
+                }
                 break;
         }
     }
 
     @Override
     public void log() {
-        Log.game(String.format("[TAB] %s %s", name, (state == PlayerJoinState.JOINED ? "added" : "removed")));
+        for (PlayerInfoBulk property : infos) {
+            if (property.isLegacy()) {
+                Log.game(String.format("[TAB] Player info bulk (uuid=%s, name=%s, ping=%d)", property.getUUID(), property.getName(), property.getPing()));
+            } else {
+                Log.game(String.format("[TAB] Player info bulk (uuid=%s, action=%s, name=%s, gameMode=%s, ping=%d, displayName=%s)", property.getUUID(), property.getAction(), property.getName(), ((property.getGameMode() == null) ? "null" : property.getGameMode().name()), property.getPing(), ((property.getDisplayName() == null) ? "null" : property.getDisplayName().getColoredMessage())));
+
+            }
+        }
     }
 
     @Override
@@ -47,8 +99,34 @@ public class PacketPlayerInfo implements ClientboundPacket {
         h.handle(this);
     }
 
-    public enum PlayerJoinState {
-        JOINED,
-        DISCONNECTED
+    public List<PlayerInfoBulk> getInfos() {
+        return infos;
+    }
+
+    public enum PlayerInfoAction {
+        ADD(0),
+        UPDATE_GAMEMODE(1),
+        UPDATE_LATENCY(2),
+        UPDATE_DISPLAY_NAME(3),
+        REMOVE_PLAYER(4);
+
+        final int id;
+
+        PlayerInfoAction(int id) {
+            this.id = id;
+        }
+
+        public static PlayerInfoAction byId(int id) {
+            for (PlayerInfoAction a : values()) {
+                if (a.getId() == id) {
+                    return a;
+                }
+            }
+            return null;
+        }
+
+        public int getId() {
+            return id;
+        }
     }
 }

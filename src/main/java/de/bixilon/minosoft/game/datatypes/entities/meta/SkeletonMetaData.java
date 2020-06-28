@@ -25,6 +25,7 @@ public class SkeletonMetaData extends MobMetaData {
     public boolean isWitherSkeleton() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (byte) sets.get(13).getData() == 0x01;
         }
         return false;

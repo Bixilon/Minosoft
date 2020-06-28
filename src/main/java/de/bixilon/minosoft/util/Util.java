@@ -24,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 
@@ -63,6 +64,23 @@ public class Util {
             }
         }
         return new InByteBuffer(stream.toByteArray());
+    }
+
+    public static byte[] compress(byte[] bytes) {
+        // decompressing chunk data
+        Deflater deflater = new Deflater();
+        deflater.setInput(bytes, 0, bytes.length);
+        byte[] result = new byte[4096];
+        ByteArrayOutputStream stream = new ByteArrayOutputStream(bytes.length);
+        while (!deflater.finished()) {
+            stream.write(result, 0, deflater.deflate(result));
+        }
+        try {
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stream.toByteArray();
     }
 
     public static byte[] decompressGzip(byte[] raw) throws IOException {

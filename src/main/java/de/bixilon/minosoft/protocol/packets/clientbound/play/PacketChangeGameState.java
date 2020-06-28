@@ -28,6 +28,7 @@ public class PacketChangeGameState implements ClientboundPacket {
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 reason = Reason.byId(buffer.readByte());
                 value = buffer.readFloat();
                 break;
@@ -74,7 +75,8 @@ public class PacketChangeGameState implements ClientboundPacket {
         DEMO_MESSAGES(5),
         ARROW_HITTING_PLAYER(6),
         FADE_VALUE(7),
-        FADE_TIME(8);
+        FADE_TIME(8),
+        PLAY_MOB_APPEARANCE(10);
 
         final byte id;
 

@@ -18,8 +18,11 @@ public class InPacketBuffer extends InByteBuffer {
 
     public InPacketBuffer(byte[] bytes) {
         super(bytes);
-        // ToDo: compression
         command = readVarInt();
+    }
+
+    public InPacketBuffer(InByteBuffer buffer) {
+        this(buffer.readBytesLeft());
     }
 
     public int getCommand() {

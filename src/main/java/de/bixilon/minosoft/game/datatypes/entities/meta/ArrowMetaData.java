@@ -25,7 +25,8 @@ public class ArrowMetaData extends EntityMetaData {
     public boolean isCritical() {
         switch (version) {
             case VERSION_1_7_10:
-                return (int) sets.get(16).getData() == 0x01;
+            case VERSION_1_8:
+                return (byte) sets.get(16).getData() == 0x01;
         }
         return false;
     }

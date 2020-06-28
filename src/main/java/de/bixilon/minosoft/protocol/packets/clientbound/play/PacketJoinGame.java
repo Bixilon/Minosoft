@@ -32,12 +32,14 @@ public class PacketJoinGame implements ClientboundPacket {
     Difficulty difficulty;
     int maxPlayers;
     LevelType levelType;
+    boolean reducedDebugScreen;
 
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 this.entityId = buffer.readInteger();
                 byte gameModeRaw = buffer.readByte();
                 hardcore = BitByte.isBitSet(gameModeRaw, 3);
@@ -49,6 +51,11 @@ public class PacketJoinGame implements ClientboundPacket {
                 difficulty = Difficulty.byId(buffer.readByte());
                 maxPlayers = buffer.readByte();
                 levelType = LevelType.byType(buffer.readString());
+                // break here if 1.7.10, because this happened later
+                if (v == ProtocolVersion.VERSION_1_7_10) {
+                    break;
+                }
+                reducedDebugScreen = buffer.readBoolean();
                 break;
         }
     }

@@ -32,7 +32,7 @@ public class PacketChunkData implements ClientboundPacket {
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
-            case VERSION_1_7_10:
+            case VERSION_1_7_10: {
                 this.location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
                 boolean groundUpContinuous = buffer.readBoolean();
                 short sectionBitMask = buffer.readShort();
@@ -43,6 +43,16 @@ public class PacketChunkData implements ClientboundPacket {
 
                 chunk = ChunkUtil.readChunkPacket(v, decompressed, sectionBitMask, addBitMask, groundUpContinuous, true);
                 break;
+            }
+            case VERSION_1_8: {
+                this.location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
+                boolean groundUpContinuous = buffer.readBoolean();
+                short sectionBitMask = buffer.readShort();
+                int size = buffer.readVarInt();
+
+                chunk = ChunkUtil.readChunkPacket(v, buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
+                break;
+            }
         }
 
     }

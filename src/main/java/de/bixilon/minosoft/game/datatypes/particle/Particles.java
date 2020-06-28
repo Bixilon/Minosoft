@@ -79,6 +79,8 @@ public enum Particles {
     LANDING_HONEY(new Identifier(null, "landing_honey"), 60),
     FALLING_NECTAR(new Identifier(null, "falling_nectar"), 61);
 
+    //ToDo: 1.8 names, etc
+
     final Identifier identifier;
     final int id;
     final Class<? extends Particle> clazz;

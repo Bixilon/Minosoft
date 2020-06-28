@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 import de.bixilon.minosoft.game.datatypes.inventory.Inventory;
 import de.bixilon.minosoft.game.datatypes.inventory.InventoryProperties;
 import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.game.datatypes.player.PlayerInfo;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardManager;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.World;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
 
@@ -31,19 +32,23 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.PLAYER_IN
 public class Player {
     final MojangAccount acc;
     final ScoreboardManager scoreboardManager = new ScoreboardManager();
+    public HashMap<UUID, PlayerInfo> playerInfos = new HashMap<>();
     float health;
-    short food;
+    int food;
     float saturation;
-    Location spawnLocation;
+    BlockPosition spawnLocation;
     int entityId;
     GameMode gameMode;
     World world = new World("world");
     byte selectedSlot;
-    short level;
-    short totalExperience;
+    int level;
+    int totalExperience;
     HumanMetaData metaData;
     HashMap<Integer, Inventory> inventories = new HashMap<>();
     boolean spawnConfirmed = false;
+
+    TextComponent tabHeader;
+    TextComponent tabFooter;
 
     public Player(MojangAccount acc) {
         this.acc = acc;
@@ -71,11 +76,11 @@ public class Player {
         this.health = health;
     }
 
-    public short getFood() {
+    public int getFood() {
         return food;
     }
 
-    public void setFood(short food) {
+    public void setFood(int food) {
         this.food = food;
     }
 
@@ -87,11 +92,11 @@ public class Player {
         this.saturation = saturation;
     }
 
-    public Location getSpawnLocation() {
+    public BlockPosition getSpawnLocation() {
         return spawnLocation;
     }
 
-    public void setSpawnLocation(Location spawnLocation) {
+    public void setSpawnLocation(BlockPosition spawnLocation) {
         this.spawnLocation = spawnLocation;
     }
 
@@ -123,19 +128,19 @@ public class Player {
         this.selectedSlot = selectedSlot;
     }
 
-    public short getLevel() {
+    public int getLevel() {
         return level;
     }
 
-    public void setLevel(short level) {
+    public void setLevel(int level) {
         this.level = level;
     }
 
-    public short getTotalExperience() {
+    public int getTotalExperience() {
         return totalExperience;
     }
 
-    public void setTotalExperience(short totalExperience) {
+    public void setTotalExperience(int totalExperience) {
         this.totalExperience = totalExperience;
     }
 
@@ -199,5 +204,35 @@ public class Player {
 
     public ScoreboardManager getScoreboardManager() {
         return scoreboardManager;
+    }
+
+    public HashMap<UUID, PlayerInfo> getPlayerInfos() {
+        return playerInfos;
+    }
+
+    public PlayerInfo getPlayerInfo(String name) {
+        // only legacy
+        for (PlayerInfo info : playerInfos.values()) {
+            if (info.getName().equals(name)) {
+                return info;
+            }
+        }
+        return null;
+    }
+
+    public TextComponent getTabHeader() {
+        return tabHeader;
+    }
+
+    public void setTabHeader(TextComponent tabHeader) {
+        this.tabHeader = tabHeader;
+    }
+
+    public TextComponent getTabFooter() {
+        return tabFooter;
+    }
+
+    public void setTabFooter(TextComponent tabFooter) {
+        this.tabFooter = tabFooter;
     }
 }

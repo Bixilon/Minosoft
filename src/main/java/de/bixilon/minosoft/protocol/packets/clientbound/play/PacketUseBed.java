@@ -32,6 +32,10 @@ public class PacketUseBed implements ClientboundPacket {
                 entityId = buffer.readInteger();
                 position = buffer.readBlockPosition();
                 break;
+            case VERSION_1_8:
+                entityId = buffer.readVarInt();
+                position = buffer.readPosition();
+                break;
         }
     }
 

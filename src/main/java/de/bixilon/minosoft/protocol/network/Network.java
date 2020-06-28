@@ -17,15 +17,18 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketLoginSetCompression;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.Util;
 
 import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKey;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -36,11 +39,16 @@ public class Network {
     private final List<ServerboundPacket> queue;
     private final List<byte[]> binQueue;
     private final List<byte[]> binQueueIn;
+    Thread socketThread;
+    private int compressionThreshold = -1;
     private Socket socket;
-    private boolean encryptionEnabled = false;
-    private Cipher cipherEncrypt;
-    private Cipher cipherDecrypt;
+    private OutputStream outputStream;
+    private InputStream cipherInputStream;
+    private InputStream inputStream;
     private Thread packetThread;
+    private boolean encryptionEnabled = false;
+    private SecretKey secretKey;
+    private boolean connected;
 
     public Network(Connection c) {
         this.connection = c;
@@ -57,13 +65,15 @@ public class Network {
         // everything sent for now, waiting for data
         // add to queue
         // Could not connect
-        Thread socketThread = new Thread(() -> {
+        socketThread = new Thread(() -> {
             try {
                 socket = new Socket(connection.getHost(), connection.getPort());
+                connected = true;
                 connection.setConnectionState(ConnectionState.HANDSHAKING);
                 socket.setKeepAlive(true);
-                DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
-                DataInputStream dIn = new DataInputStream(socket.getInputStream());
+                outputStream = socket.getOutputStream();
+                inputStream = socket.getInputStream();
+                cipherInputStream = inputStream;
 
 
                 while (connection.getConnectionState() != ConnectionState.DISCONNECTING) {
@@ -76,19 +86,24 @@ public class Network {
                         byte[] b = binQueue.get(0);
 
                         // send, flush and remove
-                        dOut.write(b);
-                        dOut.flush();
+                        outputStream.write(b);
+                        outputStream.flush();
                         binQueue.remove(0);
+
+                        // check if should enable encryption
+                        if (!encryptionEnabled && secretKey != null) {
+                            enableEncryption(secretKey);
+                        }
                     }
 
                     // everything sent for now, waiting for data
 
-                    if (dIn.available() > 0) {
+                    if (inputStream.available() > 0) { // available seems not to work in CipherInputStream
                         int numRead = 0;
                         int length = 0;
                         byte read;
                         do {
-                            read = dIn.readByte();
+                            read = cipherInputStream.readNBytes(1)[0];
                             int value = (read & 0b01111111);
                             length |= (value << (7 * numRead));
 
@@ -98,13 +113,15 @@ public class Network {
                             }
                         } while ((read & 0b10000000) != 0);
 
-                        byte[] raw = dIn.readNBytes(length);
+                        byte[] raw = cipherInputStream.readNBytes(length);
                         binQueueIn.add(raw);
                         packetThread.interrupt();
                     }
                     Util.sleep(1);
 
                 }
+                socket.close();
+                connected = false;
                 connection.setConnectionState(ConnectionState.DISCONNECTED);
             } catch (IOException e) {
                 // Could not connect
@@ -112,6 +129,7 @@ public class Network {
                 e.printStackTrace();
             }
         });
+        socketThread.setName("Socket-Thread");
         socketThread.start();
     }
 
@@ -119,43 +137,74 @@ public class Network {
         // compressed data, makes packets to binary data
         // read data
         // safety first, but will not occur
-        // sleep 1 ms
         packetThread = new Thread(() -> {
             // compressed data, makes packets to binary data
-            while (connection.getConnectionState() != ConnectionState.DISCONNECTED) {
+            while (connection.getConnectionState() != ConnectionState.DISCONNECTING) {
 
                 while (queue.size() > 0) {
                     ServerboundPacket p = queue.get(0);
-                    byte[] raw = p.write(connection.getVersion()).getOutBytes();
-                    if (encryptionEnabled) {
-                        // encrypt
-                        byte[] encrypted = cipherEncrypt.update(raw);
-                        binQueue.add(encrypted);
-                    } else {
-                        if (p instanceof PacketEncryptionResponse) {
-                            // enable encryption
-                            enableEncryption(((PacketEncryptionResponse) p).getSecretKey());
+                    byte[] data = p.write(connection.getVersion()).getOutBytes();
+                    if (compressionThreshold != -1) {
+                        // compression is enabled
+                        // check if there is a need to compress it and if so, do it!
+                        OutByteBuffer outRawBuffer = new OutByteBuffer();
+                        if (data.length >= compressionThreshold) {
+                            // compress it
+                            byte[] compressed = Util.compress(data);
+                            OutByteBuffer buffer = new OutByteBuffer();
+                            buffer.writeVarInt(compressed.length);
+                            buffer.writeBytes(compressed);
+                            outRawBuffer.writeVarInt(buffer.getBytes().size());
+                            outRawBuffer.writeBytes(buffer.getOutBytes());
+                        } else {
+                            outRawBuffer.writeVarInt(data.length + 1); // 1 for the compressed length (0)
+                            outRawBuffer.writeVarInt(0);
+                            outRawBuffer.writeBytes(data);
                         }
-                        binQueue.add(raw);
+                        data = outRawBuffer.getOutBytes();
+                    } else {
+                        // append packet length
+                        OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer();
+                        bufferWithLengthPrefix.writeVarInt(data.length);
+                        bufferWithLengthPrefix.writeBytes(data);
+                        data = bufferWithLengthPrefix.getOutBytes();
+                    }
+
+
+                    binQueue.add(data);
+                    if (p instanceof PacketEncryptionResponse) {
+                        // enable encryption
+                        secretKey = ((PacketEncryptionResponse) p).getSecretKey();
                     }
                     queue.remove(0);
                 }
                 while (binQueueIn.size() > 0) {
 
                     // read data
-                    byte[] decrypted = binQueueIn.get(0);
+                    byte[] data = binQueueIn.get(0);
                     InPacketBuffer inPacketBuffer;
-                    if (encryptionEnabled) {
-                        // decrypt
-                        decrypted = cipherDecrypt.update(decrypted);
+                    if (compressionThreshold != -1) {
+                        // compression is enabled
+                        // check if there is a need to decompress it and if so, do it!
+                        InByteBuffer rawBuffer = new InByteBuffer(data);
+                        int packetSize = rawBuffer.readVarInt();
+                        byte[] left = rawBuffer.readBytesLeft();
+                        if (packetSize == 0) {
+                            // no need
+                            data = left;
+                        } else {
+                            // need to decompress data
+                            data = Util.decompress(left).readBytesLeft();
+                        }
                     }
+
+                    inPacketBuffer = new InPacketBuffer(data);
                     try {
-                        inPacketBuffer = new InPacketBuffer(decrypted);
                         Packets.Clientbound p = connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
                         Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(p);
 
                         if (clazz == null) {
-                            Log.warn(String.format("[IN] Unknown packet with command 0x%x (%s) and %d bytes of data", inPacketBuffer.getCommand(), ((p != null) ? p.name() : "UNKNOWN"), inPacketBuffer.getBytesLeft()));
+                            Log.warn(String.format("[IN] Received unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), ((p != null) ? p.name() : "UNKNOWN"), inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion().name(), connection.getConnectionState().name()));
                             binQueueIn.remove(0);
                             continue;
                         }
@@ -164,13 +213,16 @@ public class Network {
                             packet.read(inPacketBuffer, connection.getVersion());
                             if (inPacketBuffer.getBytesLeft() > 0 && p != Packets.Clientbound.PLAY_ENTITY_METADATA) { // entity meta data uses mostly all data, but this happens in the handling thread
                                 // warn not all data used
-                                Log.protocol(String.format("[IN] Packet %s did not used all bytes sent", ((p != null) ? p.name() : "UNKNOWN")));
+                                Log.warn(String.format("[IN] Could not parse packet %s completely (used=%d, available=%d, total=%d)", ((p != null) ? p.name() : "null"), inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength()));
                             }
 
-                                if (packet instanceof PacketLoginSuccess) {
-                                    // login was okay, setting play status to avoid miss timing issues
-                                    connection.setConnectionState(ConnectionState.PLAY);
-                                }
+                            if (packet instanceof PacketLoginSuccess) {
+                                // login was okay, setting play status to avoid miss timing issues
+                                connection.setConnectionState(ConnectionState.PLAY);
+                            } else if (packet instanceof PacketLoginSetCompression) {
+                                // instantly set compression. because handling is to slow...
+                                compressionThreshold = ((PacketLoginSetCompression) packet).getThreshold();
+                            }
                             connection.handle(packet);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                             // safety first, but will not occur
@@ -192,6 +244,7 @@ public class Network {
 
             }
         });
+        packetThread.setName("Packet-Thread");
         packetThread.start();
     }
 
@@ -201,10 +254,20 @@ public class Network {
     }
 
     public void enableEncryption(SecretKey secretKey) {
-        Log.debug("Enabling encryption...");
-        cipherEncrypt = CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey);
-        cipherDecrypt = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey);
+        Cipher cipherEncrypt = CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey);
+        Cipher cipherDecrypt = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey);
+        cipherInputStream = new CipherInputStream(inputStream, cipherDecrypt);
+        outputStream = new CipherOutputStream(outputStream, cipherEncrypt);
         encryptionEnabled = true;
         Log.debug("Encryption enabled!");
     }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void disconnect() {
+        packetThread.interrupt();
+    }
+
 }

@@ -28,6 +28,7 @@ public class SheepMetaData extends AgeableMetaData {
     public Color getColor() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return Color.byId((byte) sets.get(16).getData() & 0xF);
         }
         return Color.WHITE;
@@ -36,6 +37,7 @@ public class SheepMetaData extends AgeableMetaData {
     public boolean isSheared() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((byte) sets.get(16).getData(), 5);
         }
         return false;

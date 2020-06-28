@@ -15,6 +15,7 @@ package de.bixilon.minosoft.game.datatypes.scoreboard;
 
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketScoreboardTeams;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class ScoreboardTeam {
     String prefix;
     String suffix;
     PacketScoreboardTeams.ScoreboardFriendlyFire friendlyFire;
-    List<String> players;
+    final List<String> players;
 
     public ScoreboardTeam(String name, String displayName, String prefix, String suffix, PacketScoreboardTeams.ScoreboardFriendlyFire friendlyFire, String[] players) {
         this.name = name;
@@ -32,7 +33,7 @@ public class ScoreboardTeam {
         this.prefix = prefix;
         this.suffix = suffix;
         this.friendlyFire = friendlyFire;
-        this.players = Arrays.asList(players);
+        this.players = new ArrayList<>(Arrays.asList(players));
     }
 
     public void updateInformation(String displayName, String prefix, String suffix, PacketScoreboardTeams.ScoreboardFriendlyFire friendlyFire) {

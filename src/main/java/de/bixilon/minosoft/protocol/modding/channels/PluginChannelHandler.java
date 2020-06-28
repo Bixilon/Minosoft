@@ -17,6 +17,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPluginMessageSending;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,7 +75,7 @@ public class PluginChannelHandler {
         }
         // check if channel was registered or if it is a default channel
         if (!registeredClientChannels.contains(name) && DefaultPluginChannels.byName(name) == null) {
-            Log.debug(String.format("Server tried to send data into unregistered plugin channel (name=\"%s\", messageLength=%d)", name, data.length));
+            Log.debug(String.format("Server tried to send data into unregistered plugin channel (name=\"%s\", messageLength=%d, string=\"%s\")", name, data.length, new String(data)));
             return;
         }
         if (channels.get(name) == null) {
@@ -89,6 +90,10 @@ public class PluginChannelHandler {
 
     public void sendRawData(String channel, byte[] data) {
         connection.sendPacket(new PacketPluginMessageSending(channel, data));
+    }
+
+    public void sendRawData(String channel, OutByteBuffer buffer) {
+        connection.sendPacket(new PacketPluginMessageSending(channel, buffer.getOutBytes()));
     }
 
     public void registerServerChannel(String name) {

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.EntityRotation;
 import de.bixilon.minosoft.game.datatypes.Vector;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -24,15 +25,20 @@ public class EntityMetaData {
     final HashMap<Integer, MetaDataSet> sets = new HashMap<>();
     final ProtocolVersion version;
 
+    /*
+    1.7.10: https://wiki.vg/index.php?title=Entity_metadata&oldid=5991
+    1.8: https://wiki.vg/index.php?title=Entity_metadata&oldid=6611
+     */
     public EntityMetaData(InByteBuffer buffer, ProtocolVersion v) {
         version = v;
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 byte item = buffer.readByte();
                 while (item != 0x7F) {
                     byte index = (byte) (item & 0x1F);
                     Object data;
-                    Type_1_7_10 type = Type_1_7_10.byId((item & 0xFF) >> 5);
+                    TypeLegacy type = TypeLegacy.byId((item & 0xFF) >>> 5);
                     switch (type) {
                         case BYTE:
                             data = buffer.readByte();
@@ -54,6 +60,9 @@ public class EntityMetaData {
                             break;
                         case SLOT:
                             data = buffer.readSlot(v);
+                            break;
+                        case POSITION:
+                            data = new EntityRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
                             break;
                         default:
                             throw new IllegalStateException("Unexpected value: " + type);
@@ -152,6 +161,7 @@ public class EntityMetaData {
     public boolean onFire() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 0);
         }
         return false;
@@ -160,6 +170,7 @@ public class EntityMetaData {
     public boolean isSneaking() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 1);
         }
         return false;
@@ -168,6 +179,7 @@ public class EntityMetaData {
     public boolean isSprinting() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 2);
         }
         return false;
@@ -176,6 +188,7 @@ public class EntityMetaData {
     public boolean isEating() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 3);
         }
         return false;
@@ -192,6 +205,7 @@ public class EntityMetaData {
     public boolean isInvisible() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 4);
         }
         return false;
@@ -240,24 +254,25 @@ public class EntityMetaData {
         }
     }
 
-    enum Type_1_7_10 implements Types {
+    enum TypeLegacy implements Types {
         BYTE(0),
         SHORT(1),
         INT(2),
         FLOAT(3),
         STRING(4),
         SLOT(5),
-        VECTOR(6);
+        VECTOR(6),
+        POSITION(7);
 
 
         final int id;
 
-        Type_1_7_10(int id) {
+        TypeLegacy(int id) {
             this.id = id;
         }
 
-        public static Type_1_7_10 byId(int id) {
-            for (Type_1_7_10 s : values()) {
+        public static TypeLegacy byId(int id) {
+            for (TypeLegacy s : values()) {
                 if (s.getId() == id) {
                     return s;
                 }
@@ -274,7 +289,7 @@ public class EntityMetaData {
         int getId();
     }
 
-    public class MetaDataSet {
+    public static class MetaDataSet {
         final int index;
         final Object data;
 

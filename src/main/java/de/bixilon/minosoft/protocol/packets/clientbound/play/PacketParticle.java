@@ -25,14 +25,17 @@ import java.util.Random;
 
 public class PacketParticle implements ClientboundPacket {
     Particles particle;
+    boolean longDistance = false;
     float x;
     float y;
     float z;
     float particleData;
     int count;
+    int[] data;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
+        Random random = new Random();
         switch (v) {
             case VERSION_1_7_10:
                 particle = Particles.byIdentifier(new Identifier(buffer.readString()));
@@ -41,7 +44,21 @@ public class PacketParticle implements ClientboundPacket {
                 z = buffer.readFloat();
 
                 // offset
-                Random random = new Random();
+                x += buffer.readFloat() * random.nextGaussian();
+                y += buffer.readFloat() * random.nextGaussian();
+                z += buffer.readFloat() * random.nextGaussian();
+
+                particleData = buffer.readFloat();
+                count = buffer.readInteger();
+                break;
+            case VERSION_1_8:
+                particle = Particles.byType(buffer.readInteger());
+                longDistance = buffer.readBoolean();
+                x = buffer.readFloat();
+                y = buffer.readFloat();
+                z = buffer.readFloat();
+
+                // offset
                 x += buffer.readFloat() * random.nextGaussian();
                 y += buffer.readFloat() * random.nextGaussian();
                 z += buffer.readFloat() * random.nextGaussian();

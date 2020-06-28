@@ -24,7 +24,9 @@ public enum TagTypes {
     BYTE_ARRAY(7),
     STRING(8),
     LIST(9),
-    COMPOUND(10);
+    COMPOUND(10),
+    INT_ARRAY(11),
+    LONG_ARRAY(12);
 
     private final int id;
 

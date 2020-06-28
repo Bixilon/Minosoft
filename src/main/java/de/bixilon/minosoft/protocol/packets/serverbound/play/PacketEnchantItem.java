@@ -36,6 +36,7 @@ public class PacketEnchantItem implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_CLICK_WINDOW_BUTTON));
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 buffer.writeByte(windowId);
                 buffer.writeByte(buttonId);
                 break;

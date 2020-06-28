@@ -35,6 +35,12 @@ public class PacketSpawnPainting implements ClientboundPacket {
                 position = buffer.readBlockPositionInteger();
                 direction = buffer.readInteger();
                 break;
+            case VERSION_1_8:
+                entityId = buffer.readVarInt();
+                title = buffer.readString();
+                position = buffer.readPosition();
+                direction = buffer.readByte();
+                break;
         }
     }
 

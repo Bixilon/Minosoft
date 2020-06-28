@@ -38,11 +38,15 @@ public class PacketClientSettings implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_CLIENT_SETTINGS));
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 buffer.writeString(locale.getName()); // locale
                 buffer.writeByte(renderDistance); // render Distance
                 buffer.writeByte((byte) 0x00); // chat settings (nobody uses them)
                 buffer.writeBoolean(true); // chat colors
-                buffer.writeByte((byte) Difficulty.NORMAL.getId()); // difficulty
+                //skip this if not 1.7.10
+                if (v == ProtocolVersion.VERSION_1_7_10) {
+                    buffer.writeByte((byte) Difficulty.NORMAL.getId()); // difficulty
+                }
                 buffer.writeBoolean(true); // cape
                 break;
         }

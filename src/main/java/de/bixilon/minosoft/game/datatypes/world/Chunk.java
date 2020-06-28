@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.game.datatypes.world;
 
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
-import de.bixilon.minosoft.nbt.tag.CompoundTag;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,13 +23,9 @@ import java.util.Map;
  */
 public class Chunk {
     private final HashMap<Byte, ChunkNibble> nibbles;
-    private final HashMap<InChunkLocation, String[]> signs;
-    private final HashMap<InChunkLocation, CompoundTag> blockEntityMeta;
 
     public Chunk(HashMap<Byte, ChunkNibble> chunks) {
         this.nibbles = chunks;
-        signs = new HashMap<>();
-        blockEntityMeta = new HashMap<>();
     }
 
     public Blocks getBlock(int x, int y, int z) {
@@ -68,21 +63,5 @@ public class Chunk {
         for (Map.Entry<InChunkLocation, Blocks> set : blocks.entrySet()) {
             setBlock(set.getKey(), set.getValue());
         }
-    }
-
-    public void updateSign(BlockPosition position, String[] lines) {
-        signs.put(position.getInChunkLocation(), lines);
-    }
-
-    public String[] getSignText(BlockPosition position) {
-        return signs.get(position.getInChunkLocation());
-    }
-
-    public void setBlockEntityData(BlockPosition position, CompoundTag nbt) {
-        blockEntityMeta.put(position.getInChunkLocation(), nbt);
-    }
-
-    public CompoundTag getBlockEntityData(BlockPosition position) {
-        return blockEntityMeta.get(position.getInChunkLocation());
     }
 }

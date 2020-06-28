@@ -15,19 +15,37 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.util.BitByte;
 
-public class FurnaceMetaData extends EntityMetaData {
+public class GuardianMetaData extends MobMetaData {
 
-    public FurnaceMetaData(InByteBuffer buffer, ProtocolVersion v) {
+    public GuardianMetaData(InByteBuffer buffer, ProtocolVersion v) {
         super(buffer, v);
     }
 
-    public boolean getPowered() {
+    public boolean isElderly() {
         switch (version) {
-            case VERSION_1_7_10:
-                return (int) sets.get(16).getData() == 0x01;
+            case VERSION_1_8:
+                return BitByte.isBitSet((byte) sets.get(16).getData(), 1);
         }
         return false;
+    }
+
+    public boolean isRetractingSpikes() {
+        switch (version) {
+            case VERSION_1_8:
+                return BitByte.isBitSet((byte) sets.get(16).getData(), 2);
+        }
+        return false;
+    }
+
+
+    public int getTargetId() {
+        switch (version) {
+            case VERSION_1_8:
+                return (int) sets.get(17).getData();
+        }
+        return 0;
     }
 
 }

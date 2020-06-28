@@ -26,6 +26,7 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
     float yaw;
     float pitch;
     boolean onGround;
+    byte flags;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
@@ -35,6 +36,12 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
                 yaw = buffer.readFloat();
                 pitch = buffer.readFloat();
                 onGround = buffer.readBoolean();
+                break;
+            case VERSION_1_8:
+                location = buffer.readLocation();
+                yaw = buffer.readFloat();
+                pitch = buffer.readFloat();
+                flags = buffer.readByte();
                 break;
         }
     }

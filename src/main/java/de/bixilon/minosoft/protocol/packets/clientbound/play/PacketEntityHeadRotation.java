@@ -31,6 +31,10 @@ public class PacketEntityHeadRotation implements ClientboundPacket {
                 this.entityId = buffer.readInteger();
                 this.headYaw = buffer.readAngle();
                 break;
+            case VERSION_1_8:
+                this.entityId = buffer.readVarInt();
+                this.headYaw = buffer.readAngle();
+                break;
         }
     }
 

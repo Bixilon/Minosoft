@@ -31,11 +31,14 @@ public class PacketEntityMetadata implements ClientboundPacket {
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
+        this.v = v;
+        this.buffer = buffer;
         switch (v) {
             case VERSION_1_7_10:
                 entityId = buffer.readInteger();
-                this.v = v;
-                this.buffer = buffer;
+                break;
+            case VERSION_1_8:
+                entityId = buffer.readVarInt();
                 break;
         }
     }

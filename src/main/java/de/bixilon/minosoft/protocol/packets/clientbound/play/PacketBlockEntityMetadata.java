@@ -23,7 +23,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketBlockEntityMetadata implements ClientboundPacket {
     BlockPosition position;
-    Action action;
+    Action_1_7_10 action_1_7_10;
+    Action_1_8 action_1_8;
     CompoundTag nbt;
 
 
@@ -32,7 +33,12 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         switch (v) {
             case VERSION_1_7_10:
                 position = buffer.readBlockPositionShort();
-                action = Action.byId(buffer.readByte());
+                action_1_7_10 = Action_1_7_10.byId(buffer.readByte());
+                nbt = buffer.readNBT(true);
+                break;
+            case VERSION_1_8:
+                position = buffer.readPosition();
+                action_1_8 = Action_1_8.byId(buffer.readByte());
                 nbt = buffer.readNBT();
                 break;
         }
@@ -40,7 +46,7 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving blockEntityMeta (position=%s, action=%s)", position.toString(), action.name()));
+        Log.protocol(String.format("Receiving blockEntityMeta (position=%s, action=%s)", position.toString(), ((action_1_7_10 == null) ? action_1_8.name() : action_1_7_10.name())));
     }
 
     @Override
@@ -52,15 +58,19 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         return position;
     }
 
-    public Action getAction() {
-        return action;
+    public Action_1_7_10 getAction1_7_10() {
+        return action_1_7_10;
+    }
+
+    public Action_1_8 getAction1_8() {
+        return action_1_8;
     }
 
     public CompoundTag getNbt() {
         return nbt;
     }
 
-    public enum Action {
+    public enum Action_1_7_10 {
         SPAWNER(1),
         COMMAND_BLOCK(2),
         SKULL(3),
@@ -68,14 +78,42 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
 
         final int id;
 
-        Action(int id) {
+        Action_1_7_10(int id) {
             this.id = id;
         }
 
-        public static Action byId(int id) {
-            for (Action g : values()) {
-                if (g.getId() == id) {
-                    return g;
+        public static Action_1_7_10 byId(int id) {
+            for (Action_1_7_10 a : values()) {
+                if (a.getId() == id) {
+                    return a;
+                }
+            }
+            return null;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+
+    public enum Action_1_8 {
+        SPAWNER(1),
+        COMMAND_BLOCK(2),
+        BEACON(3),
+        SKULL(4),
+        FLOWER_POT(5),
+        BANNER(6);
+
+        final int id;
+
+        Action_1_8(int id) {
+            this.id = id;
+        }
+
+        public static Action_1_8 byId(int id) {
+            for (Action_1_8 a : values()) {
+                if (a.getId() == id) {
+                    return a;
                 }
             }
             return null;

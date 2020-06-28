@@ -27,6 +27,8 @@ public class ItemFrameMetaData extends EntityMetaData {
         switch (version) {
             case VERSION_1_7_10:
                 return (Slot) sets.get(2).getData();
+            case VERSION_1_8:
+                return (Slot) sets.get(8).getData();
         }
         return null;
     }
@@ -35,6 +37,8 @@ public class ItemFrameMetaData extends EntityMetaData {
         switch (version) {
             case VERSION_1_7_10:
                 return (byte) sets.get(3).getData();
+            case VERSION_1_8:
+                return (byte) sets.get(9).getData();
         }
         return 0;
     }

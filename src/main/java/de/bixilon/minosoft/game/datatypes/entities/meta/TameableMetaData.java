@@ -27,6 +27,7 @@ public class TameableMetaData extends AgeableMetaData {
     public boolean isSitting() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((int) sets.get(16).getData(), 0);
         }
         return false;
@@ -35,6 +36,7 @@ public class TameableMetaData extends AgeableMetaData {
     public boolean isTame() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((int) sets.get(16).getData(), 2);
         }
         return false;
@@ -43,6 +45,7 @@ public class TameableMetaData extends AgeableMetaData {
     public String getOwnerName() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return (String) sets.get(17).getData();
         }
         return null;

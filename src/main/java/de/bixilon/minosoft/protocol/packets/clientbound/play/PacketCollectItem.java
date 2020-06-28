@@ -30,7 +30,10 @@ public class PacketCollectItem implements ClientboundPacket {
             case VERSION_1_7_10:
                 itemId = buffer.readInteger();
                 collectorId = buffer.readInteger();
-
+                break;
+            case VERSION_1_8:
+                itemId = buffer.readVarInt();
+                collectorId = buffer.readVarInt();
                 break;
         }
     }

@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.ChatColor;
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -26,6 +28,8 @@ public class PacketScoreboardTeams implements ClientboundPacket {
     String prefix;
     String suffix;
     ScoreboardFriendlyFire friendlyFire;
+    ScoreboardNameTagVisibility nameTagVisibility;
+    TextComponent.ChatAttributes color;
     String[] playerNames;
 
 
@@ -40,9 +44,31 @@ public class PacketScoreboardTeams implements ClientboundPacket {
                     prefix = buffer.readString();
                     suffix = buffer.readString();
                     friendlyFire = ScoreboardFriendlyFire.byId(buffer.readByte());
+                    // default values
+                    nameTagVisibility = ScoreboardNameTagVisibility.ALWAYS;
+                    color = TextComponent.ChatAttributes.WHITE;
                 }
                 if (action == ScoreboardTeamAction.CREATE || action == ScoreboardTeamAction.PLAYER_ADD || action == ScoreboardTeamAction.PLAYER_REMOVE) {
                     short playerCount = buffer.readShort();
+                    playerNames = new String[playerCount];
+                    for (int i = 0; i < playerCount; i++) {
+                        playerNames[i] = buffer.readString();
+                    }
+                }
+                break;
+            case VERSION_1_8:
+                name = buffer.readString();
+                action = ScoreboardTeamAction.byId(buffer.readByte());
+                if (action == ScoreboardTeamAction.CREATE || action == ScoreboardTeamAction.INFORMATION_UPDATE) {
+                    displayName = buffer.readString();
+                    prefix = buffer.readString();
+                    suffix = buffer.readString();
+                    friendlyFire = ScoreboardFriendlyFire.byId(buffer.readByte());
+                    nameTagVisibility = ScoreboardNameTagVisibility.byName(buffer.readString());
+                    color = TextComponent.ChatAttributes.byColor(ChatColor.byId(buffer.readByte()));
+                }
+                if (action == ScoreboardTeamAction.CREATE || action == ScoreboardTeamAction.PLAYER_ADD || action == ScoreboardTeamAction.PLAYER_REMOVE) {
+                    int playerCount = buffer.readVarInt();
                     playerNames = new String[playerCount];
                     for (int i = 0; i < playerCount; i++) {
                         playerNames[i] = buffer.readString();
@@ -54,7 +80,7 @@ public class PacketScoreboardTeams implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, playerCount=%s)", name, action.name(), displayName, prefix, suffix, friendlyFire.name(), ((playerNames == null) ? "null" : playerNames.length)));
+        Log.protocol(String.format("Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, playerCount=%s)", name, action.name(), displayName, prefix, suffix, (friendlyFire == null ? "null" : friendlyFire.name()), ((playerNames == null) ? "null" : playerNames.length)));
     }
 
     @Override
@@ -139,6 +165,32 @@ public class PacketScoreboardTeams implements ClientboundPacket {
 
         public int getId() {
             return id;
+        }
+    }
+
+    public enum ScoreboardNameTagVisibility {
+        ALWAYS("always"),
+        HIDE_FOR_OTHER_TEAMS("hideForOtherTeams"),
+        HIDE_FOR_OWN_TEAM("hideForOwnTeam"),
+        NEVER("never");
+
+        final String name;
+
+        ScoreboardNameTagVisibility(String name) {
+            this.name = name;
+        }
+
+        public static ScoreboardNameTagVisibility byName(String name) {
+            for (ScoreboardNameTagVisibility v : values()) {
+                if (v.getName().equals(name)) {
+                    return v;
+                }
+            }
+            return null;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }

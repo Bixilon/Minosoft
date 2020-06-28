@@ -45,6 +45,18 @@ public class PacketSteerVehicle implements ServerboundPacket {
                 buffer.writeBoolean(jump);
                 buffer.writeBoolean(unmount);
                 break;
+            case VERSION_1_8:
+                buffer.writeFloat(sideways);
+                buffer.writeFloat(forward);
+                byte flags = 0;
+                if (jump) {
+                    flags |= 0x1;
+                }
+                if (unmount) {
+                    flags |= 0x2;
+                }
+                buffer.writeByte(flags);
+                break;
         }
         return buffer;
     }

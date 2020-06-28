@@ -48,7 +48,15 @@ public class PacketPlayerDigging implements ServerboundPacket {
                     buffer.writeBlockPositionByte(position);
                 }
                 buffer.writeByte(face);
-
+                break;
+            case VERSION_1_8:
+                buffer.writeByte((byte) status.getId());
+                if (position == null) {
+                    buffer.writeLong(0L);
+                } else {
+                    buffer.writePosition(position);
+                }
+                buffer.writeByte(face);
                 break;
         }
         return buffer;

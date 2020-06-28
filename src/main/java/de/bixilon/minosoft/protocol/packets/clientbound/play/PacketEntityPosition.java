@@ -24,6 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class PacketEntityPosition implements ClientboundPacket {
     int entityId;
     RelativeLocation location;
+    boolean onGround;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
@@ -31,6 +32,11 @@ public class PacketEntityPosition implements ClientboundPacket {
             case VERSION_1_7_10:
                 this.entityId = buffer.readInteger();
                 this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
+                break;
+            case VERSION_1_8:
+                this.entityId = buffer.readVarInt();
+                this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
+                this.onGround = buffer.readBoolean();
                 break;
         }
     }

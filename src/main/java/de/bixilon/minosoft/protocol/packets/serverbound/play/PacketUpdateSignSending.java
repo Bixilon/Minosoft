@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -22,9 +23,9 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketUpdateSignSending implements ServerboundPacket {
     final BlockPosition position;
-    final String[] lines;
+    final TextComponent[] lines;
 
-    public PacketUpdateSignSending(BlockPosition position, String[] lines) {
+    public PacketUpdateSignSending(BlockPosition position, TextComponent[] lines) {
         this.position = position;
         this.lines = lines;
         log();
@@ -38,7 +39,13 @@ public class PacketUpdateSignSending implements ServerboundPacket {
             case VERSION_1_7_10:
                 buffer.writeBlockPositionByte(position);
                 for (int i = 0; i < 4; i++) {
-                    buffer.writeString(lines[i]);
+                    buffer.writeString(lines[i].getRawMessage());
+                }
+                break;
+            case VERSION_1_8:
+                buffer.writeBlockPositionByte(position);
+                for (int i = 0; i < 4; i++) {
+                    buffer.writeTextComponent(lines[i]);
                 }
                 break;
         }

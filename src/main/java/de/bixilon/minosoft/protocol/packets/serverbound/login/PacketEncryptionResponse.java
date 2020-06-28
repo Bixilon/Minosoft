@@ -51,6 +51,13 @@ public class PacketEncryptionResponse implements ServerboundPacket {
                 buffer.writeBytes(secret);
                 buffer.writeShort((short) token.length);
                 buffer.writeBytes(token);
+                break;
+            case VERSION_1_8:
+                buffer.writeVarInt(secret.length);
+                buffer.writeBytes(secret);
+                buffer.writeVarInt(token.length);
+                buffer.writeBytes(token);
+                break;
         }
         //buffer.writeString(username);
         return buffer;

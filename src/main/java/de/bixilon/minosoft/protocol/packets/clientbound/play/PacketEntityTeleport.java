@@ -26,6 +26,7 @@ public class PacketEntityTeleport implements ClientboundPacket {
     Location location;
     short yaw;
     short pitch;
+    boolean onGround;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
@@ -35,6 +36,13 @@ public class PacketEntityTeleport implements ClientboundPacket {
                 this.location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
                 this.yaw = buffer.readAngle();
                 this.pitch = buffer.readAngle();
+                break;
+            case VERSION_1_8:
+                this.entityId = buffer.readVarInt();
+                this.location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
+                this.yaw = buffer.readAngle();
+                this.pitch = buffer.readAngle();
+                this.onGround = buffer.readBoolean();
                 break;
         }
     }

@@ -25,17 +25,10 @@ public class WolfMetaData extends TameableMetaData {
     }
 
 
-    public byte getType() {
-        switch (version) {
-            case VERSION_1_7_10:
-                return (byte) sets.get(18).getData();
-        }
-        return 0x00;
-    }
-
     public boolean isAngry() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return BitByte.isBitSet((int) sets.get(16).getData(), 1);
         }
         return false;
@@ -44,15 +37,26 @@ public class WolfMetaData extends TameableMetaData {
     public float getHealth() {
         switch (version) {
             case VERSION_1_7_10:
-                return (float) sets.get(19).getData();
+            case VERSION_1_8:
+                return (float) sets.get(18).getData();
         }
         return 0.00F;
     }
 
 
+    public boolean isBegging() {
+        switch (version) {
+            case VERSION_1_7_10:
+            case VERSION_1_8:
+                return ((byte) sets.get(19).getData()) == 0x01;
+        }
+        return false;
+    }
+
     public Color getColor() {
         switch (version) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 return Color.byId((byte) sets.get(20).getData());
         }
         return Color.WHITE;

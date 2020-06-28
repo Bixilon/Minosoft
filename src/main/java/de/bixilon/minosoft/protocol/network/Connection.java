@@ -26,9 +26,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketChatMessage;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest;
-import de.bixilon.minosoft.protocol.protocol.ConnectionState;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.protocol.protocol.*;
 
 import java.util.ArrayList;
 
@@ -37,12 +35,13 @@ public class Connection {
     private final int port;
     private final Network network;
     private final PacketHandler handler;
-    private final PluginChannelHandler pluginChannelHandler;
     private final ArrayList<ClientboundPacket> handlingQueue;
+    private PluginChannelHandler pluginChannelHandler;
     Thread handleThread;
+    ProtocolVersion version = ProtocolVersion.VERSION_1_7_10; // default
     private Player player;
     private ConnectionState state = ConnectionState.DISCONNECTED;
-    private boolean onlyPing;
+    private ConnectionReason reason;
 
     public Connection(String host, int port) {
         this.host = host;
@@ -50,15 +49,14 @@ public class Connection {
         network = new Network(this);
         handlingQueue = new ArrayList<>();
         handler = new PacketHandler(this);
-        pluginChannelHandler = new PluginChannelHandler(this);
-        registerDefaultChannels();
     }
 
     /**
      * Sends an server ping to the server (player count, motd, ...)
      */
     public void ping() {
-        onlyPing = true;
+        Log.info(String.format("Pinging server: %s:%d", host, port));
+        reason = ConnectionReason.PING;
         network.connect();
     }
 
@@ -66,7 +64,11 @@ public class Connection {
      * Tries to connect to the server and login
      */
     public void connect() {
-        onlyPing = false;
+        Log.info(String.format("Connecting to server: %s:%d", host, port));
+        if (reason == null) {
+            // first get version, then login
+            reason = ConnectionReason.GET_VERSION;
+        }
         network.connect();
 
     }
@@ -94,8 +96,8 @@ public class Connection {
                 // connection established, starting threads and logging in
                 network.startPacketThread();
                 startHandlingThread();
-                ConnectionState next = (onlyPing ? ConnectionState.STATUS : ConnectionState.LOGIN);
-                network.sendPacket(new PacketHandshake(getHost(), getPort(), next, (onlyPing) ? -1 : getVersion().getVersion()));
+                ConnectionState next = ((reason == ConnectionReason.CONNECT) ? ConnectionState.LOGIN : ConnectionState.STATUS);
+                network.sendPacket(new PacketHandshake(getHost(), getPort(), next, (next == ConnectionState.STATUS) ? -1 : getVersion().getVersion()));
                 // after sending it, switch to next state
                 setConnectionState(next);
                 break;
@@ -106,13 +108,24 @@ public class Connection {
                 break;
             case LOGIN:
                 network.sendPacket(new PacketLoginStart(player));
+                pluginChannelHandler = new PluginChannelHandler(this);
+                registerDefaultChannels();
                 break;
+            case DISCONNECTED:
+                if (reason == ConnectionReason.GET_VERSION) {
+                    setVersion(ProtocolVersion.VERSION_1_8);
+                    setReason(ConnectionReason.CONNECT);
+                    connect();
+                }
         }
     }
 
     public ProtocolVersion getVersion() {
-        //ToDo: static right now
-        return ProtocolVersion.VERSION_1_7_10;
+        return version;
+    }
+
+    public void setVersion(ProtocolVersion version) {
+        this.version = version;
     }
 
     public PacketHandler getHandler() {
@@ -124,12 +137,18 @@ public class Connection {
         handleThread.interrupt();
     }
 
-    public boolean isOnlyPing() {
-        return onlyPing;
+    public ConnectionReason getReason() {
+        return reason;
+    }
+
+    public void setReason(ConnectionReason reason) {
+        this.reason = reason;
     }
 
     public void disconnect() {
         setConnectionState(ConnectionState.DISCONNECTING);
+        network.disconnect();
+        handleThread.interrupt();
     }
 
     public Player getPlayer() {
@@ -146,7 +165,7 @@ public class Connection {
 
     private void startHandlingThread() {
         handleThread = new Thread(() -> {
-            while (getConnectionState() != ConnectionState.DISCONNECTED) {
+            while (getConnectionState() != ConnectionState.DISCONNECTING) {
                 while (handlingQueue.size() > 0) {
                     try {
                         handlingQueue.get(0).log();
@@ -164,6 +183,7 @@ public class Connection {
                 }
             }
         });
+        handleThread.setName("Handle-Thread");
         handleThread.start();
     }
 
@@ -178,9 +198,25 @@ public class Connection {
     public void registerDefaultChannels() {
         // MC|Brand
         getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getName(), (handler, buffer) -> {
-            Log.info(String.format("Server is running %s on version %s", new String(buffer.readBytes(buffer.getBytesLeft())), getVersion().getName()));
+            String serverVersion;
+            String clientVersion = (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
+            OutByteBuffer toSend = new OutByteBuffer();
+            if (getVersion() == ProtocolVersion.VERSION_1_7_10) {
+                // no length prefix
+                serverVersion = new String(buffer.readBytes(buffer.getBytesLeft()));
+                toSend.writeBytes(clientVersion.getBytes());
+            } else {
+                // length prefix
+                serverVersion = buffer.readString();
+                toSend.writeString(clientVersion);
+            }
+            Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getName()));
 
-            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getName(), (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft").getBytes());
+            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getName(), toSend);
         });
+    }
+
+    public boolean isConnected() {
+        return network.isConnected();
     }
 }

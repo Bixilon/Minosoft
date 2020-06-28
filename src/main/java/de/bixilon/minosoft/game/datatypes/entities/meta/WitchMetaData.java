@@ -25,7 +25,8 @@ public class WitchMetaData extends MobMetaData {
     public boolean isAggressive() {
         switch (version) {
             case VERSION_1_7_10:
-                return (byte) sets.get(13).getData() == 0x01;
+            case VERSION_1_8:
+                return (byte) sets.get(21).getData() == 0x01;
         }
         return false;
     }

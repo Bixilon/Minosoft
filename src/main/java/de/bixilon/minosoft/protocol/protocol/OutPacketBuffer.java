@@ -28,20 +28,17 @@ public class OutPacketBuffer extends OutByteBuffer {
         return command;
     }
 
+    @Override
     public byte[] getOutBytes() {
-        // ToDo: compression
         List<Byte> before = getBytes();
         List<Byte> after = new ArrayList<>();
-        List<Byte> last = new ArrayList<>();
         writeVarInt(getCommand(), after); // second: command
         after.addAll(before); // rest ist raw data
 
-        writeVarInt(after.size(), last); // first var int: length
-        last.addAll(after); // rest ist raw data
 
-        byte[] ret = new byte[last.size()];
-        for (int i = 0; i < last.size(); i++) {
-            ret[i] = last.get(i);
+        byte[] ret = new byte[after.size()];
+        for (int i = 0; i < after.size(); i++) {
+            ret[i] = after.get(i);
         }
         return ret;
     }

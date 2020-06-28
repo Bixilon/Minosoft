@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
@@ -23,16 +24,26 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class PacketUseEntity implements ServerboundPacket {
     final int entityId;
     final Click click;
+    final Location location;
 
     public PacketUseEntity(Entity entity, Click click) {
         this.entityId = entity.getId();
         this.click = click;
+        location = null;
         log();
     }
 
     public PacketUseEntity(int entityId, Click click) {
         this.entityId = entityId;
         this.click = click;
+        location = null;
+        log();
+    }
+
+    public PacketUseEntity(int entityId, Click click, Location location) {
+        this.entityId = entityId;
+        this.click = click;
+        this.location = location;
         log();
     }
 
@@ -45,6 +56,16 @@ public class PacketUseEntity implements ServerboundPacket {
                 buffer.writeInteger(entityId);
                 buffer.writeByte((byte) click.getId());
                 break;
+            case VERSION_1_8:
+                buffer.writeInteger(entityId);
+                buffer.writeByte((byte) click.getId());
+                if (click == Click.INTERACT_AT) {
+                    // position
+                    buffer.writeFloat((float) location.getX());
+                    buffer.writeFloat((float) location.getY());
+                    buffer.writeFloat((float) location.getZ());
+                }
+                break;
         }
         return buffer;
     }
@@ -56,7 +77,8 @@ public class PacketUseEntity implements ServerboundPacket {
 
     public enum Click {
         RIGHT(0),
-        LEFT(1);
+        LEFT(1),
+        INTERACT_AT(2);
 
         final int id;
 

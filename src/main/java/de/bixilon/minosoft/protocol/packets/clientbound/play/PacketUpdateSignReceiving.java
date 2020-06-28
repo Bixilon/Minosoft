@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketUpdateSignReceiving implements ClientboundPacket {
     BlockPosition position;
-    final String[] lines = new String[4];
+    final TextComponent[] lines = new TextComponent[4];
 
 
     @Override
@@ -31,7 +32,13 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
             case VERSION_1_7_10:
                 position = buffer.readBlockPositionShort();
                 for (byte i = 0; i < 4; i++) {
-                    lines[i] = buffer.readString();
+                    lines[i] = buffer.readTextComponent();
+                }
+                break;
+            case VERSION_1_8:
+                position = buffer.readPosition();
+                for (byte i = 0; i < 4; i++) {
+                    lines[i] = buffer.readTextComponent();
                 }
                 break;
         }
@@ -51,7 +58,7 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
         return position;
     }
 
-    public String[] getLines() {
+    public TextComponent[] getLines() {
         return lines;
     }
 }

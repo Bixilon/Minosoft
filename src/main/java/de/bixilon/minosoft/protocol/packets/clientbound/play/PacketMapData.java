@@ -34,11 +34,12 @@ public class PacketMapData implements ClientboundPacket {
     byte[] colors;
 
     // players
-    List<MapPlayerSet> players;
+    List<MapPinSet> pins;
 
     //scale
     byte scale;
 
+    byte[] data;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
@@ -55,20 +56,41 @@ public class PacketMapData implements ClientboundPacket {
                         colors = buffer.readBytes(length - 3); // 3: dataData(1) + xStart (1) + yStart (1)
                         break;
                     case PLAYERS:
-                        players = new ArrayList<>();
+                        pins = new ArrayList<>();
                         length--; // minus the dataData
                         for (int i = 0; i < length / 3; i++) { // loop over all sets ( 1 set: 3 bytes)
                             byte data = buffer.readByte();
                             byte type = BitByte.getLow4Bits(data);
                             MapPlayerDirection direction = MapPlayerDirection.byId(BitByte.getHigh4Bits(data));
                             byte x = buffer.readByte();
-                            byte y = buffer.readByte();
-                            players.add(new MapPlayerSet(type, direction, x, y));
+                            byte z = buffer.readByte();
+                            pins.add(new MapPinSet(type, direction, x, z));
                         }
                         break;
                     case SCALE:
                         scale = buffer.readByte();
                         return;
+                }
+                break;
+            case VERSION_1_8:
+                mapId = buffer.readVarInt();
+                scale = buffer.readByte();
+                int pinCount = buffer.readVarInt();
+                pins = new ArrayList<>();
+                for (int i = 0; i < pinCount; i++) {
+                    byte directionAndType = buffer.readByte();
+                    byte x = buffer.readByte();
+                    byte z = buffer.readByte();
+                    pins.add(new MapPinSet(BitByte.getHigh4Bits(directionAndType), MapPlayerDirection.byId(BitByte.getLow4Bits(directionAndType)), x, z));
+                }
+                byte columns = buffer.readByte();
+                if (columns > 0) {
+                    byte rows = buffer.readByte();
+                    byte xOffset = buffer.readByte();
+                    byte zOffset = buffer.readByte();
+
+                    int dataLength = buffer.readVarInt();
+                    data = buffer.readBytes(dataLength);
                 }
 
                 break;
@@ -102,10 +124,10 @@ public class PacketMapData implements ClientboundPacket {
     }
 
 
-    public List<MapPlayerSet> getPlayers() {
-        return players;
+    public List<MapPinSet> getPins() {
+        return pins;
     }
-    
+
 
     public byte getScale() {
         return scale;
@@ -161,13 +183,13 @@ public class PacketMapData implements ClientboundPacket {
         }
     }
 
-    public class MapPlayerSet {
+    public static class MapPinSet {
         final int type;
         final MapPlayerDirection direction;
         byte x;
         byte z;
 
-        public MapPlayerSet(int type, MapPlayerDirection direction, byte x, byte z) {
+        public MapPinSet(int type, MapPlayerDirection direction, byte x, byte z) {
             this.type = type;
             this.direction = direction;
             this.x = x;

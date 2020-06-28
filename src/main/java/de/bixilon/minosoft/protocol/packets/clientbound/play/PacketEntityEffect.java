@@ -24,6 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class PacketEntityEffect implements ClientboundPacket {
     int entityId;
     StatusEffect effect;
+    boolean hideParticle;
 
 
     @Override
@@ -32,6 +33,12 @@ public class PacketEntityEffect implements ClientboundPacket {
             case VERSION_1_7_10:
                 entityId = buffer.readInteger();
                 effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readShort());
+                hideParticle = false;
+                break;
+            case VERSION_1_8:
+                entityId = buffer.readVarInt();
+                effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readVarInt());
+                hideParticle = buffer.readBoolean();
                 break;
         }
     }

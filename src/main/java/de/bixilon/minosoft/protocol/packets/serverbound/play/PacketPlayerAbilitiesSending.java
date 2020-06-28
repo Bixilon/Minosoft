@@ -44,15 +44,17 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
         this.godMode = false;
         this.flyingSpeed = 0.05F;
         this.walkingSpeed = 0.1F;
+        log();
 
     }
 
 
     @Override
     public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_CLIENT_SETTINGS));
+        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_ABILITIES));
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 byte flags = 0;
                 if (creative) {
                     flags |= 0b1;

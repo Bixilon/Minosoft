@@ -35,6 +35,11 @@ public class PacketEntityEquipment implements ClientboundPacket {
                 this.slot = InventorySlots.EntityInventory.byId(buffer.readShort());
                 this.data = buffer.readSlot(v);
                 break;
+            case VERSION_1_8:
+                entityId = buffer.readVarInt();
+                this.slot = InventorySlots.EntityInventory.byId(buffer.readShort());
+                this.data = buffer.readSlot(v);
+                break;
         }
     }
 

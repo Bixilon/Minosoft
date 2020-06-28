@@ -25,14 +25,13 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import java.util.HashMap;
 
 public class PacketMultiBlockChange implements ClientboundPacket {
-    ChunkLocation location;
     final HashMap<InChunkLocation, Blocks> blocks = new HashMap<>();
-
+    ChunkLocation location;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
         switch (v) {
-            case VERSION_1_7_10:
+            case VERSION_1_7_10: {
                 location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
                 short count = buffer.readShort();
                 int dataSize = buffer.readInteger(); // should be count * 4
@@ -42,14 +41,25 @@ public class PacketMultiBlockChange implements ClientboundPacket {
                 for (int i = 0; i < count; i++) {
                     int raw = buffer.readInteger();
                     byte meta = (byte) (raw & 0xF);
-                    short blockId = (short) ((raw & 0xFF_F0) >> 4);
-                    byte y = (byte) ((raw & 0xFF_00_00) >> 16);
-                    byte z = (byte) ((raw & 0x0F_00_00_00) >> 24);
-                    byte x = (byte) (Math.abs((raw & 0xF0_00_00_00) >> 28));
+                    short blockId = (short) ((raw & 0xFF_F0) >>> 4);
+                    byte y = (byte) ((raw & 0xFF_00_00) >>> 16);
+                    byte z = (byte) ((raw & 0x0F_00_00_00) >>> 24);
+                    byte x = (byte) ((raw & 0xF0_00_00_00) >>> 28);
                     blocks.put(new InChunkLocation(x, y, z), Blocks.byLegacy(blockId, meta));
                 }
-
                 break;
+            }
+            case VERSION_1_8: {
+                location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
+                int count = buffer.readVarInt();
+                for (int i = 0; i < count; i++) {
+                    byte pos = buffer.readByte();
+                    byte y = buffer.readByte();
+                    int blockId = buffer.readVarInt();
+                    blocks.put(new InChunkLocation(((pos & 0xF0) >>> 4), y, (pos & 0xF)), Blocks.byLegacy((blockId >>> 4), (blockId & 0xF)));
+                }
+                break;
+            }
         }
     }
 

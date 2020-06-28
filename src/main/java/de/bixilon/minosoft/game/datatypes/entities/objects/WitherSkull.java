@@ -13,20 +13,21 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
-import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
-import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Objects;
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class WitherSkull extends EntityObject implements ObjectInterface {
-    EntityMetaData metaData;
     final int thrower;
+    EntityMetaData metaData;
 
-    public WitherSkull(int id, Location location, short yaw, short pitch, int additionalInt, ProtocolVersion v) {
+    public WitherSkull(int id, Location location, short yaw, short pitch, int additionalInt) {
         super(id, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
+        this.thrower = additionalInt;
+    }
+
+    public WitherSkull(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+        super(id, location, yaw, pitch, velocity);
         this.thrower = additionalInt;
     }
 
