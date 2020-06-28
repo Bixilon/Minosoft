@@ -17,17 +17,17 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketEntityStatus implements ClientboundPacket {
     int entityId;
     Status status;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 entityId = buffer.readInteger();
                 status = Status.byId(buffer.readByte());
                 break;
@@ -45,8 +45,8 @@ public class PacketEntityStatus implements ClientboundPacket {
     }
 
     public enum Status {
-        TO_DO_1(0),
-        TO_DO_2(1),
+        SPAWN_TIPPED_ARROW(0),
+        RESET_MOB_SPAWNER_MINECART_TIMER(1),
         LIVING_ENTITY_HURT(2),
         LIVING_ENTITY_DEATH(3),
         IRON_GOLEM_SWING_ARMS(4),
@@ -65,8 +65,19 @@ public class PacketEntityStatus implements ClientboundPacket {
         ANIMAL_IN_LOVE(18),
         RESET_SQUID_ROTATION(19),
         SPAWN_EXPLOSION_PARTICLE(20),
-        ENABLE_REDUCED_DEBUG_SCREEN(21),
-        DISABLE_REDUCED_DEBUG_SCREEN(22);
+        PLAY_GUARDIAN_SOUND(20),
+        ENABLE_REDUCED_DEBUG_SCREEN(22),
+        DISABLE_REDUCED_DEBUG_SCREEN(23),
+        OP_PERMISSION_LEVEL_0(24),
+        OP_PERMISSION_LEVEL_1(25),
+        OP_PERMISSION_LEVEL_2(26),
+        OP_PERMISSION_LEVEL_3(27),
+        OP_PERMISSION_LEVEL_4(28),
+        SHIELD_BLOCK_SOUND(29),
+        SHIELD_BREAK_SOUND(30),
+        FISHING_ROD_BOBBER(31),
+        ARMORSTAND_HIT(32),
+        ENTITY_THORNS_HURT(33);
 
 
         final int id;

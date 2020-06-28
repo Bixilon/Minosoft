@@ -17,14 +17,13 @@ import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.SpiderMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class Spider extends Mob implements MobInterface {
     SpiderMetaData metaData;
 
-    public Spider(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Spider(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new SpiderMetaData(buffer, v);
+        this.metaData = new SpiderMetaData(buffer);
     }
 
     @Override

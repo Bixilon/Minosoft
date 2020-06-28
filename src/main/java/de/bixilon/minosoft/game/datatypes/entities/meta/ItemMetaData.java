@@ -15,12 +15,11 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class ItemMetaData extends EntityMetaData {
 
-    public ItemMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public ItemMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
     public Slot getSlot() {

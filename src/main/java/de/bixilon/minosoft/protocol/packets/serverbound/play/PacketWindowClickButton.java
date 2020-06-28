@@ -19,12 +19,12 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketEnchantItem implements ServerboundPacket {
+public class PacketWindowClickButton implements ServerboundPacket {
 
     final byte windowId;
     final byte buttonId; // up, middle, bottom (0, 1, 2); in later versions: lectern page, etc
 
-    public PacketEnchantItem(byte windowId, byte buttonId) {
+    public PacketWindowClickButton(byte windowId, byte buttonId) {
         this.windowId = windowId;
         this.buttonId = buttonId;
         log();
@@ -32,11 +32,12 @@ public class PacketEnchantItem implements ServerboundPacket {
 
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_CLICK_WINDOW_BUTTON));
-        switch (v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CLICK_WINDOW_BUTTON));
+        switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 buffer.writeByte(windowId);
                 buffer.writeByte(buttonId);
                 break;

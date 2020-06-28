@@ -18,14 +18,13 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.AgeableMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.MobMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class Squid extends Mob implements MobInterface {
     AgeableMetaData metaData;
 
-    public Squid(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Squid(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new AgeableMetaData(buffer, v);
+        this.metaData = new AgeableMetaData(buffer);
     }
 
     @Override

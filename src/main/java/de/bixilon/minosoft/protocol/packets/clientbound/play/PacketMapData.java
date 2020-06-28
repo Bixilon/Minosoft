@@ -17,7 +17,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 import java.util.ArrayList;
@@ -42,8 +41,8 @@ public class PacketMapData implements ClientboundPacket {
     byte[] data;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 mapId = buffer.readVarInt(); // mapId
                 short length = buffer.readShort();
@@ -83,7 +82,7 @@ public class PacketMapData implements ClientboundPacket {
                     byte z = buffer.readByte();
                     pins.add(new MapPinSet(BitByte.getHigh4Bits(directionAndType), MapPlayerDirection.byId(BitByte.getLow4Bits(directionAndType)), x, z));
                 }
-                byte columns = buffer.readByte();
+                short columns = BitByte.byteToUShort(buffer.readByte());
                 if (columns > 0) {
                     byte rows = buffer.readByte();
                     byte xOffset = buffer.readByte();

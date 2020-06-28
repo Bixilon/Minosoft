@@ -43,9 +43,9 @@ public class PacketEncryptionResponse implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE));
-        switch (v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE));
+        switch (version) {
             case VERSION_1_7_10:
                 buffer.writeShort((short) secret.length);
                 buffer.writeBytes(secret);
@@ -53,6 +53,7 @@ public class PacketEncryptionResponse implements ServerboundPacket {
                 buffer.writeBytes(token);
                 break;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 buffer.writeVarInt(secret.length);
                 buffer.writeBytes(secret);
                 buffer.writeVarInt(token.length);

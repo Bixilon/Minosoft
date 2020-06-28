@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class IronGolemMetaData extends MobMetaData {
 
-    public IronGolemMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public IronGolemMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
     public boolean isCreatedByPlayer() {

@@ -43,8 +43,8 @@ public enum ProtocolVersion {
     }
 
 
-    private final int version;
-    private final Protocol protocol;
+    final int version;
+    final Protocol protocol;
 
     ProtocolVersion(Protocol protocol) {
         this.protocol = protocol;

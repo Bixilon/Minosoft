@@ -20,7 +20,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.ChunkUtil;
 import de.bixilon.minosoft.util.Util;
 
@@ -31,15 +30,15 @@ public class PacketChunkBulk implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
                 short chunkCount = buffer.readShort();
                 int dataLen = buffer.readInteger();
                 boolean containsSkyLight = buffer.readBoolean();
 
                 // decompress chunk data
-                InByteBuffer decompressed = Util.decompress(buffer.readBytes(dataLen));
+                InByteBuffer decompressed = Util.decompress(buffer.readBytes(dataLen), buffer.getVersion());
 
                 // chunk meta data
                 for (int i = 0; i < chunkCount; i++) {
@@ -48,7 +47,7 @@ public class PacketChunkBulk implements ClientboundPacket {
                     short sectionBitMask = buffer.readShort();
                     short addBitMask = buffer.readShort();
 
-                    chunkMap.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(v, decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
+                    chunkMap.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
                 }
                 break;
             }
@@ -64,7 +63,7 @@ public class PacketChunkBulk implements ClientboundPacket {
                     sectionBitMask[i] = buffer.readShort();
                 }
                 for (int i = 0; i < chunks; i++) {
-                    chunkMap.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(v, buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
+                    chunkMap.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
                 }
                 break;
             }

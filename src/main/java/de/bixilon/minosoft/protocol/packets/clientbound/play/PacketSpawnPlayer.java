@@ -21,7 +21,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.UUID;
 
@@ -31,8 +30,8 @@ public class PacketSpawnPlayer implements ClientboundPacket {
     OtherPlayer player;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
                 this.entityId = buffer.readVarInt();
                 UUID uuid = UUID.fromString(buffer.readString());
@@ -46,7 +45,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
                 short pitch = buffer.readAngle();
 
                 short currentItem = buffer.readShort();
-                HumanMetaData metaData = new HumanMetaData(buffer, v);
+                HumanMetaData metaData = new HumanMetaData(buffer);
 
                 this.player = new OtherPlayer(entityId, name, uuid, properties, location, null, yaw, pitch, currentItem, metaData);
                 break;
@@ -59,9 +58,21 @@ public class PacketSpawnPlayer implements ClientboundPacket {
                 short pitch = buffer.readAngle();
 
                 short currentItem = buffer.readShort();
-                HumanMetaData metaData = new HumanMetaData(buffer, v);
+                HumanMetaData metaData = new HumanMetaData(buffer);
 
                 this.player = new OtherPlayer(entityId, null, uuid, null, location, null, yaw, pitch, currentItem, metaData);
+                break;
+            }
+            case VERSION_1_9_4: {
+                this.entityId = buffer.readVarInt();
+                UUID uuid = buffer.readUUID();
+                Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+                short yaw = buffer.readAngle();
+                short pitch = buffer.readAngle();
+
+                HumanMetaData metaData = new HumanMetaData(buffer);
+
+                this.player = new OtherPlayer(entityId, null, uuid, null, location, null, yaw, pitch, (short) 0, metaData);
                 break;
             }
         }

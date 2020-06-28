@@ -15,13 +15,12 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.EntityRotation;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 public class ArmorStandMetaData extends MobMetaData {
 
-    public ArmorStandMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public ArmorStandMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
 

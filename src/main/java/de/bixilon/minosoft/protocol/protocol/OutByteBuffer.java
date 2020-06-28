@@ -26,9 +26,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class OutByteBuffer {
-    private final List<Byte> bytes = new ArrayList<>();
+    final List<Byte> bytes = new ArrayList<>();
+    final ProtocolVersion version;
 
-    public OutByteBuffer() {
+    public OutByteBuffer(ProtocolVersion version) {
+        this.version = version;
     }
 
     public void writeByte(byte b) {
@@ -154,15 +156,19 @@ public class OutByteBuffer {
     }
 
     public void writePosition(BlockPosition location) {
-        writeLong((((long) location.getX() & 0x3FFFFFF) << 38) | (((long) location.getZ() & 0x3FFFFFF) << 12) | ((long) location.getY() & 0xFFF));
+        if (version.getVersion() >= ProtocolVersion.VERSION_1_14_4.getVersion()) {
+            writeLong((((long) (location.getX() & 0x3FFFFFF) << 38) | ((long) (location.getZ() & 0x3FFFFFF) << 12) | (long) (location.getY() & 0xFFF)));
+        } else {
+            writeLong((((long) location.getX() & 0x3FFFFFF) << 38) | (((long) location.getZ() & 0x3FFFFFF)) | ((long) location.getY() & 0xFFF) << 26);
+        }
     }
 
     public void writeTextComponent(TextComponent component) {
         writeJson(component.getRaw());
     }
 
-    public void writeSlot(ProtocolVersion v, Slot slot) {
-        switch (v) {
+    public void writeSlot(Slot slot) {
+        switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 if (slot == null) {
@@ -176,7 +182,7 @@ public class OutByteBuffer {
         }
     }
 
-    private void writeNBT(CompoundTag nbt) {
+    void writeNBT(CompoundTag nbt) {
         // ToDo: test
         nbt.writeBytes(this);
     }

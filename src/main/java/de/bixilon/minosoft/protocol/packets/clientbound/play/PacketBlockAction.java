@@ -32,12 +32,12 @@ public class PacketBlockAction implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 // that's the only difference here
-                if (v.getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
+                if (buffer.getVersion().getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
                     position = buffer.readPosition();
                 } else {
                     position = buffer.readBlockPositionShort();

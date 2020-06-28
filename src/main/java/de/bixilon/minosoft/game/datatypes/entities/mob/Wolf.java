@@ -17,14 +17,13 @@ import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.WolfMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class Wolf extends Mob implements MobInterface {
     WolfMetaData metaData;
 
-    public Wolf(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
+    public Wolf(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new WolfMetaData(buffer, v);
+        this.metaData = new WolfMetaData(buffer);
     }
 
     @Override

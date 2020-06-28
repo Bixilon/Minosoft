@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.util;
 
 public final class OSUtil {
-    private static OS os;
+    static OS os;
 
     public static OS getOS() {
         if (os == null) {

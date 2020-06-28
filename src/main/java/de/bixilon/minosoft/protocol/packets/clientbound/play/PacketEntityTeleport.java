@@ -18,7 +18,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 
 public class PacketEntityTeleport implements ClientboundPacket {
@@ -29,8 +28,8 @@ public class PacketEntityTeleport implements ClientboundPacket {
     boolean onGround;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 this.entityId = buffer.readInteger();
                 this.location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
@@ -40,6 +39,13 @@ public class PacketEntityTeleport implements ClientboundPacket {
             case VERSION_1_8:
                 this.entityId = buffer.readVarInt();
                 this.location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
+                this.yaw = buffer.readAngle();
+                this.pitch = buffer.readAngle();
+                this.onGround = buffer.readBoolean();
+                break;
+            case VERSION_1_9_4:
+                this.entityId = buffer.readVarInt();
+                this.location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
                 this.yaw = buffer.readAngle();
                 this.pitch = buffer.readAngle();
                 this.onGround = buffer.readBoolean();

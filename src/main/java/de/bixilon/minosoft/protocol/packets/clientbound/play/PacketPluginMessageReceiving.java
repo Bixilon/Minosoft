@@ -17,7 +17,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketPluginMessageReceiving implements ClientboundPacket {
     String channel;
@@ -25,13 +24,14 @@ public class PacketPluginMessageReceiving implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 channel = buffer.readString();
                 data = buffer.readBytes(buffer.readShort()); // first read length, then the data
                 break;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 channel = buffer.readString();
                 data = buffer.readBytesLeft();
                 break;

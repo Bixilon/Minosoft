@@ -23,6 +23,7 @@ import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardManager;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.World;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -170,16 +171,16 @@ public class Player {
         }
     }
 
-    public Slot getSlot(int windowId, InventorySlots.InventoryInterface slot) {
-        return getSlot(windowId, slot.getId());
+    public Slot getSlot(int windowId, InventorySlots.InventoryInterface slot, ProtocolVersion version) {
+        return getSlot(windowId, slot.getId(version));
     }
 
     public Slot getSlot(int windowId, int slot) {
         return inventories.get(windowId).getSlot(slot);
     }
 
-    public void setSlot(int windowId, InventorySlots.InventoryInterface slot, Slot data) {
-        setSlot(windowId, slot.getId(), data);
+    public void setSlot(int windowId, InventorySlots.InventoryInterface slot, ProtocolVersion version, Slot data) {
+        setSlot(windowId, slot.getId(version), data);
     }
 
     public void setSlot(int windowId, int slot, Slot data) {

@@ -22,18 +22,18 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
 public class PacketSpawnMob implements ClientboundPacket {
     Mob mob;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-            case VERSION_1_8:
+            case VERSION_1_8: {
                 int entityId = buffer.readVarInt();
                 Mobs type = Mobs.byType(buffer.readByte());
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
@@ -44,7 +44,25 @@ public class PacketSpawnMob implements ClientboundPacket {
 
                 assert type != null;
                 try {
-                    mob = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, InByteBuffer.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer, v);
+                    mob = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, InByteBuffer.class).newInstance(entityId, location, yaw, pitch, velocity, buffer);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case VERSION_1_9_4:
+                int entityId = buffer.readVarInt();
+                UUID uuid = buffer.readUUID();
+                Mobs type = Mobs.byType(buffer.readByte());
+                Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+                short yaw = buffer.readAngle();
+                short pitch = buffer.readAngle();
+                int headYaw = buffer.readAngle();
+                Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+
+                assert type != null;
+                try {
+                    mob = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, InByteBuffer.class).newInstance(entityId, location, yaw, pitch, velocity, buffer);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
                 }

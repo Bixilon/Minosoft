@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class VillagerMetaData extends AgeableMetaData {
 
-    public VillagerMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public VillagerMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
 

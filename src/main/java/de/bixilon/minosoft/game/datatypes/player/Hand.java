@@ -11,19 +11,20 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.sounds;
+package de.bixilon.minosoft.game.datatypes.player;
 
-public enum SoundCategories {
-    MUSIC,
-    RECORD,
-    WEATHER,
-    BLOCK,
-    BUCKET,
-    BOTTLE,
-    HOSTILE,
-    NEUTRAL,
-    PLAYER,
-    AMBIENT,
-    UI,
-    OTHER
+
+public enum Hand {
+    LEFT(0),
+    RIGHT(1);
+
+    final int id;
+
+    Hand(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
 }

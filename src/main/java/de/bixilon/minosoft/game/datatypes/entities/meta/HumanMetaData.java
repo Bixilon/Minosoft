@@ -14,13 +14,12 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 public class HumanMetaData extends MobMetaData {
 
-    public HumanMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public HumanMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
 

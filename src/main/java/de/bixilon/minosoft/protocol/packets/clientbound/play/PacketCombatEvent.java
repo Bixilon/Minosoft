@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketCombatEvent implements ClientboundPacket {
     CombatEvent action;
@@ -25,23 +25,24 @@ public class PacketCombatEvent implements ClientboundPacket {
     int duration;
     int playerId;
     int entityId;
-    String message;
+    TextComponent message;
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 action = CombatEvent.byId(buffer.readVarInt());
                 switch (action) {
                     case END_COMBAT:
                         duration = buffer.readVarInt();
-                        entityId = buffer.readVarInt();
+                        entityId = buffer.readInteger();
                         break;
                     case ENTITY_DEAD:
                         playerId = buffer.readVarInt();
-                        entityId = buffer.readVarInt();
-                        message = buffer.readString();
+                        entityId = buffer.readInteger();
+                        message = buffer.readTextComponent();
                         break;
                 }
                 break;

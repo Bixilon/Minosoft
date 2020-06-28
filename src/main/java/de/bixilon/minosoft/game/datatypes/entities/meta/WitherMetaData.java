@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class WitherMetaData extends MobMetaData {
 
-    public WitherMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public WitherMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
     public int getWatchedTarget1() {

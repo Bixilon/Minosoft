@@ -19,16 +19,15 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketUpdateSignReceiving implements ClientboundPacket {
-    BlockPosition position;
     final TextComponent[] lines = new TextComponent[4];
-
+    BlockPosition position;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        // not used anymore ( >= 1.9)
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 position = buffer.readBlockPositionShort();
                 for (byte i = 0; i < 4; i++) {

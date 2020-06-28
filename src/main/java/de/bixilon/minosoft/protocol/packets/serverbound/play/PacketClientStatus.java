@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketClientStatus implements ServerboundPacket {
 
-    private final ClientStatus status;
+    final ClientStatus status;
 
     public PacketClientStatus(ClientStatus status) {
         this.status = status;
@@ -30,13 +30,14 @@ public class PacketClientStatus implements ServerboundPacket {
 
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_CLIENT_STATUS));
-        switch (v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CLIENT_STATUS));
+        switch (version) {
             case VERSION_1_7_10:
                 buffer.writeByte((byte) status.getId());
                 break;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 buffer.writeVarInt((byte) status.getId());
                 break;
         }

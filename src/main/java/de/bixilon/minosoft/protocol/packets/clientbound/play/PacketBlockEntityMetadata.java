@@ -19,7 +19,6 @@ import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketBlockEntityMetadata implements ClientboundPacket {
     BlockPosition position;
@@ -29,8 +28,8 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 position = buffer.readBlockPositionShort();
                 action_1_7_10 = Action_1_7_10.byId(buffer.readByte());

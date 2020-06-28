@@ -14,15 +14,15 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 public class InPacketBuffer extends InByteBuffer {
-    private final int command;
+    final int command;
 
-    public InPacketBuffer(byte[] bytes) {
-        super(bytes);
+    public InPacketBuffer(byte[] bytes, ProtocolVersion version) {
+        super(bytes, version);
         command = readVarInt();
     }
 
-    public InPacketBuffer(InByteBuffer buffer) {
-        this(buffer.readBytesLeft());
+    public InPacketBuffer(InByteBuffer buffer, ProtocolVersion version) {
+        this(buffer.readBytesLeft(), version);
     }
 
     public int getCommand() {

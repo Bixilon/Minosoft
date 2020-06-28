@@ -40,14 +40,14 @@ public enum Color {
 
     public static Color byId(int id) {
         for (Color c : values()) {
-            if (c.getColor() == id) {
+            if (c.getId() == id) {
                 return c;
             }
         }
         return null;
     }
 
-    public int getColor() {
+    public int getId() {
         return color;
     }
 

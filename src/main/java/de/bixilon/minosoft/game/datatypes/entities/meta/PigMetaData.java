@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PigMetaData extends AgeableMetaData {
 
-    public PigMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public PigMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
 

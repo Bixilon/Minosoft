@@ -11,43 +11,34 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.logging;
+package de.bixilon.minosoft.game.datatypes;
 
-public enum LogLevel {
-    FATAL(0),
-    INFO(1),
-    MOJANG(2),
-    WARNING(3),
-    GAME(4),
-    DEBUG(5),
-    VERBOSE(6),
-    PROTOCOL(7);
+import java.util.Map;
 
-    final int id;
+public class MapSet<K, V> implements Map.Entry<K, V> {
+    final K key;
+    V value;
 
-    LogLevel(int id) {
-        this.id = id;
+    public MapSet(K key, V value) {
+        this.key = key;
+        this.value = value;
+
     }
 
-    public int getId() {
-        return id;
+    @Override
+    public K getKey() {
+        return key;
     }
 
-    public static LogLevel byId(int id) {
-        for (LogLevel g : values()) {
-            if (g.getId() == id) {
-                return g;
-            }
-        }
-        return null;
+    @Override
+    public V getValue() {
+        return value;
     }
 
-    public static LogLevel byName(String name) {
-        for (LogLevel g : values()) {
-            if (g.name().equals(name)) {
-                return g;
-            }
-        }
-        return null;
+
+    @Override
+    public V setValue(V value) {
+        this.value = value;
+        return value;
     }
 }

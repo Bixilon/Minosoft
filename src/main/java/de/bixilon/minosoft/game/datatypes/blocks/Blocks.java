@@ -14,122 +14,123 @@
 package de.bixilon.minosoft.game.datatypes.blocks;
 
 import de.bixilon.minosoft.game.datatypes.Color;
-import de.bixilon.minosoft.game.datatypes.Identifier;
 
 public enum Blocks {
-    UNKNOWN(null, -1), // the buggy pink black block
-    AIR(new Identifier("air"), 0),
-    STONE(new Identifier("stone"), 1),
-    GRASS(new Identifier("grass"), 2),
-    DIRT(new Identifier("stone"), 3),
-    COBBLESTONE(new Identifier("stone"), 4),
-    OAK_WOOD_PLANKS(new Identifier("planks", "oak_planks"), 5),
-    SPRUCE_WOOD_PLANKS(new Identifier("planks", "spruce_planks"), 5, 1),
-    BIRCH_WOOD_PLANKS(new Identifier("planks", "birch_planks"), 5, 2),
-    JUNGLE_WOOD_PLANKS(new Identifier("planks", "jungle_planks"), 5, 3),
-    ACACIA_WOOD_PLANKS(new Identifier("planks", "acacia_planks"), 5, 4),
-    DARK_OAK_WOOD_PLANKS(new Identifier("planks", "dark_oak_planks"), 5, 5),
-    BEDROCK(new Identifier("bedrock"), 7),
-    OAK_WOOD(new Identifier("log", "oak_wood"), 17),
-    SPRUCE_WOOD(new Identifier("log", "spruce_wood"), 17, 1),
-    BIRCH_WOOD(new Identifier("log", "birch_wood"), 17, 2),
-    JUNGLE_WOOD(new Identifier("log", "jungle_wood"), 17, 3),
-    GLASS(new Identifier("glass"), 20),
-    WHITE_WOOL(new Identifier("wool", "white_wool"), 35, Color.WHITE.getColor()),
-    ORANGE_WOOL(new Identifier("wool", "orange_wool"), 35, Color.ORANGE.getColor()),
-    MAGENTA_WOOL(new Identifier("wool", "magenta_wool"), 35, Color.MAGENTA.getColor()),
-    LIGHT_BLUE_WOOL(new Identifier("wool", "light_blue_wool"), 35, Color.LIGHT_BLUE.getColor()),
-    YELLOW_WOOL(new Identifier("wool", "yellow_wool"), 35, Color.YELLOW.getColor()),
-    LIME_WOOL(new Identifier("wool", "lime_wool"), 35, Color.LIME.getColor()),
-    PINK_WOOL(new Identifier("wool", "pink_wool"), 35, Color.PINK.getColor()),
-    GRAY_WOOL(new Identifier("wool", "gray_wool"), 35, Color.GRAY.getColor()),
-    LIGHT_GRAY_WOOL(new Identifier("wool", "light_gray_wool"), 35, Color.SILVER.getColor()),
-    CYAN_WOOL(new Identifier("wool", "cyan_wool"), 35, Color.CYAN.getColor()),
-    PURPLE_WOOL(new Identifier("wool", "purple_wool"), 35, Color.PURPLE.getColor()),
-    BLUE_WOOL(new Identifier("wool", "blue_wool"), 35, Color.BLUE.getColor()),
-    BROWN_WOOL(new Identifier("wool", "brown_wool"), 35, Color.BROWN.getColor()),
-    GREEN_WOOL(new Identifier("wool", "green_wool"), 35, Color.GREEN.getColor()),
-    RED_WOOL(new Identifier("wool", "red_wool"), 35, Color.RED.getColor()),
-    BLACK_WOOL(new Identifier("wool", "black_wool"), 35, Color.BLACK.getColor()),
-    TNT(new Identifier("tnt"), 46),
-    STANDING_SIGN_SOUTH(new Identifier("standing_sign"), 63, 0),
-    STANDING_SIGN_SOUTH_SOUTH_WEST(new Identifier("standing_sign"), 63, 1),
-    STANDING_SIGN_SOUTH_WEST(new Identifier("standing_sign"), 63, 2),
-    STANDING_SIGN_WEST_SOUTH_WEST(new Identifier("standing_sign"), 63, 3),
-    STANDING_SIGN_WEST(new Identifier("standing_sign"), 63, 4),
-    STANDING_SIGN_WEST_NORTH_WEST(new Identifier("standing_sign"), 63, 5),
-    STANDING_SIGN_NORTH_WEST(new Identifier("standing_sign"), 63, 6),
-    STANDING_SIGN_NORTH_NORTH_WEST(new Identifier("standing_sign"), 63, 7),
-    STANDING_SIGN_NORTH(new Identifier("standing_sign"), 63, 8),
-    STANDING_SIGN_NORTH_NORTH_EAST(new Identifier("standing_sign"), 63, 9),
-    STANDING_SIGN_NORTH_EAST(new Identifier("standing_sign"), 63, 10),
-    STANDING_SIGN_EAST_NORTH_EAST(new Identifier("standing_sign"), 63, 11),
-    STANDING_SIGN_EAST(new Identifier("standing_sign"), 63, 12),
-    STANDING_SIGN_EAST_SOUTH_EAST(new Identifier("standing_sign"), 63, 13),
-    STANDING_SIGN_SOUTH_EAST(new Identifier("standing_sign"), 63, 14),
-    STANDING_SIGN_SOUTH_SOUTH_EAST(new Identifier("standing_sign"), 63, 15),
-    WALL_SIGN_EAST(new Identifier("wall_sign"), 68, 0),
-    WALL_SIGN_NORTH(new Identifier("wall_sign"), 68, 1),
-    WALL_SIGN_SOUTH(new Identifier("wall_sign"), 68, 2),
-    WALL_SIGN_WEST(new Identifier("wall_sign"), 68, 3),
-    DROPPER_DOWN(new Identifier("dropper"), 158, 0),
-    DROPPER_EAST(new Identifier("dropper"), 158, 1),
-    DROPPER_NORTH(new Identifier("dropper"), 158, 2),
-    DROPPER_SOUTH(new Identifier("dropper"), 158, 3),
-    DROPPER_UP(new Identifier("dropper"), 158, 4),
-    DROPPER_WEST(new Identifier("dropper"), 158, 5);
+    UNKNOWN(-1), // the buggy pink black block
+    AIR(0),
+    STONE(1),
+    GRASS(2),
+    DIRT(3),
+    COBBLESTONE(4),
+    OAK_WOOD_PLANKS(5),
+    SPRUCE_WOOD_PLANKS(OAK_WOOD_PLANKS, 1),
+    BIRCH_WOOD_PLANKS(OAK_WOOD_PLANKS, 2),
+    JUNGLE_WOOD_PLANKS(OAK_WOOD_PLANKS, 3),
+    ACACIA_WOOD_PLANKS(OAK_WOOD_PLANKS, 4),
+    DARK_OAK_WOOD_PLANKS(OAK_WOOD_PLANKS, 5),
+    BEDROCK(7),
+    OAK_WOOD(17),
+    SPRUCE_WOOD(OAK_WOOD, 1),
+    BIRCH_WOOD(OAK_WOOD, 2),
+    JUNGLE_WOOD(OAK_WOOD, 3),
+    GLASS(20),
+    WHITE_WOOL(35, Color.WHITE),
+    ORANGE_WOOL(WHITE_WOOL, Color.ORANGE),
+    MAGENTA_WOOL(WHITE_WOOL, Color.MAGENTA),
+    LIGHT_BLUE_WOOL(WHITE_WOOL, Color.LIGHT_BLUE),
+    YELLOW_WOOL(WHITE_WOOL, Color.YELLOW),
+    LIME_WOOL(WHITE_WOOL, Color.LIME),
+    PINK_WOOL(WHITE_WOOL, Color.PINK),
+    GRAY_WOOL(WHITE_WOOL, Color.GRAY),
+    LIGHT_GRAY_WOOL(WHITE_WOOL, Color.SILVER),
+    CYAN_WOOL(WHITE_WOOL, Color.CYAN),
+    PURPLE_WOOL(WHITE_WOOL, Color.PURPLE),
+    BLUE_WOOL(WHITE_WOOL, Color.BLUE),
+    BROWN_WOOL(WHITE_WOOL, Color.BROWN),
+    GREEN_WOOL(WHITE_WOOL, Color.GREEN),
+    RED_WOOL(WHITE_WOOL, Color.RED),
+    BLACK_WOOL(WHITE_WOOL, Color.BLACK),
+    TNT(46),
+    STANDING_SIGN_SOUTH(63, 0),
+    STANDING_SIGN_SOUTH_SOUTH_WEST(STANDING_SIGN_SOUTH, 1),
+    STANDING_SIGN_SOUTH_WEST(STANDING_SIGN_SOUTH, 2),
+    STANDING_SIGN_WEST_SOUTH_WEST(STANDING_SIGN_SOUTH, 3),
+    STANDING_SIGN_WEST(STANDING_SIGN_SOUTH, 4),
+    STANDING_SIGN_WEST_NORTH_WEST(STANDING_SIGN_SOUTH, 5),
+    STANDING_SIGN_NORTH_WEST(STANDING_SIGN_SOUTH, 6),
+    STANDING_SIGN_NORTH_NORTH_WEST(STANDING_SIGN_SOUTH, 7),
+    STANDING_SIGN_NORTH(STANDING_SIGN_SOUTH, 8),
+    STANDING_SIGN_NORTH_NORTH_EAST(STANDING_SIGN_SOUTH, 9),
+    STANDING_SIGN_NORTH_EAST(STANDING_SIGN_SOUTH, 10),
+    STANDING_SIGN_EAST_NORTH_EAST(STANDING_SIGN_SOUTH, 11),
+    STANDING_SIGN_EAST(STANDING_SIGN_SOUTH, 12),
+    STANDING_SIGN_EAST_SOUTH_EAST(STANDING_SIGN_SOUTH, 13),
+    STANDING_SIGN_SOUTH_EAST(STANDING_SIGN_SOUTH, 14),
+    STANDING_SIGN_SOUTH_SOUTH_EAST(STANDING_SIGN_SOUTH, 15),
+    WALL_SIGN_EAST(68, 0),
+    WALL_SIGN_NORTH(WALL_SIGN_EAST, 1),
+    WALL_SIGN_SOUTH(WALL_SIGN_EAST, 2),
+    WALL_SIGN_WEST(WALL_SIGN_EAST, 3),
+    DROPPER_DOWN(158, 0),
+    DROPPER_EAST(DROPPER_DOWN, 1),
+    DROPPER_NORTH(DROPPER_DOWN, 2),
+    DROPPER_SOUTH(DROPPER_DOWN, 3),
+    DROPPER_UP(DROPPER_DOWN, 4),
+    DROPPER_WEST(DROPPER_DOWN, 5);
 
     //ToDo all blocks
     //ToDo post water update block states
 
-    final Identifier identifier;
-    final int legacyId;
-    int legacyData;
+    final int id;
+    final int data;
 
-    Blocks(Identifier identifier, int legacyId, int legacyData) {
-        this.identifier = identifier;
-        this.legacyId = legacyId;
-        this.legacyData = legacyData;
+    Blocks(int id, int data) {
+        this.id = id;
+        this.data = data;
     }
 
-    Blocks(Identifier identifier, int legacyId) {
-        this.identifier = identifier;
-        this.legacyId = legacyId;
+    Blocks(int id, Color color) {
+        // used for wool, etc
+        this.id = id;
+        this.data = color.getId();
     }
 
-    public static Blocks byIdentifier(Identifier identifier) {
+    Blocks(Blocks block, Color color) {
+        // used for wool, etc
+        this.id = block.getId();
+        this.data = color.getId();
+    }
+
+    Blocks(Blocks block, int data) {
+        // used for existing blocks with different data values
+        this.id = block.getId();
+        this.data = data;
+    }
+
+    Blocks(int id) {
+        this.id = id;
+        this.data = 0;
+    }
+
+    public static Blocks byId(int id, int data) {
         for (Blocks b : values()) {
-            if (b.getIdentifier().equals(identifier)) {
+            if (b.getId() == id && b.getData() == data) {
                 return b;
             }
         }
         return UNKNOWN;
     }
 
-    public static Blocks byLegacy(int id, int data) {
-        for (Blocks b : values()) {
-            if (b.getLegacyId() == id && b.getLegacyData() == data) {
-                return b;
-            }
-        }
-        return UNKNOWN;
-    }
-
-    public static Blocks byLegacy(int id) {
-        return byLegacy(id, 0);
-    }
-
-    public Identifier getIdentifier() {
-        return identifier;
-    }
-
-    public int getLegacyId() {
-        return legacyId;
-    }
-
-    public int getLegacyData() {
-        return legacyData;
+    public static Blocks byId(int id) {
+        return byId(id, 0);
     }
 
 
+    public int getId() {
+        return id;
+    }
+
+    public int getData() {
+        return id;
+    }
 }

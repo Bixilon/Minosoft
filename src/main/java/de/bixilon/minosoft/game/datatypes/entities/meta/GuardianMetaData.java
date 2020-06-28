@@ -14,13 +14,12 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 public class GuardianMetaData extends MobMetaData {
 
-    public GuardianMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public GuardianMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
     public boolean isElderly() {

@@ -31,10 +31,11 @@ public class PacketResourcePackStatus implements ServerboundPacket {
 
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_RESOURCE_PACK_STATUS));
-        switch (v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_RESOURCE_PACK_STATUS));
+        switch (version) {
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 buffer.writeString(hash);
                 buffer.writeVarInt(status.getId());
                 break;

@@ -18,7 +18,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketExplosion implements ClientboundPacket {
     Location location;
@@ -29,10 +28,11 @@ public class PacketExplosion implements ClientboundPacket {
     float motionZ;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 location = new Location(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
                 radius = buffer.readFloat();
                 if (radius > 100.0F) {

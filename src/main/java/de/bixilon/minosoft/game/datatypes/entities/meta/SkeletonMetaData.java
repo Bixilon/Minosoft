@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class SkeletonMetaData extends MobMetaData {
 
-    public SkeletonMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public SkeletonMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
     public boolean isWitherSkeleton() {

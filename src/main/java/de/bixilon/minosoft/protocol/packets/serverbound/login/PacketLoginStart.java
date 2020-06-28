@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketLoginStart implements ServerboundPacket {
 
-    private final String username;
+    final String username;
 
     public PacketLoginStart(Player p) {
         username = p.getPlayerName();
@@ -35,9 +35,9 @@ public class PacketLoginStart implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
         // no version checking, is the same in all versions (1.7.x - 1.15.2)
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.LOGIN_LOGIN_START));
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.LOGIN_LOGIN_START));
         buffer.writeString(username);
         return buffer;
     }

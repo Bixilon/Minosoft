@@ -17,7 +17,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketScoreboardUpdateScore implements ClientboundPacket {
     String itemName;
@@ -27,8 +26,8 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 itemName = buffer.readString();
                 action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
@@ -40,6 +39,7 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
                 scoreValue = buffer.readInteger();
                 break;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 itemName = buffer.readString();
                 action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
                 scoreName = buffer.readString();

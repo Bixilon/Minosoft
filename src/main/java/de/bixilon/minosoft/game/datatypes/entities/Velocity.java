@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.game.datatypes.entities;
 
 public class Velocity {
-    private final short x;
-    private final short y;
-    private final short z;
+    final short x;
+    final short y;
+    final short z;
 
     public Velocity(short x, short y, short z) {
         this.x = x;

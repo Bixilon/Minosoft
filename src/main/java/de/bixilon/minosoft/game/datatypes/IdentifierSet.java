@@ -15,33 +15,8 @@ package de.bixilon.minosoft.game.datatypes;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.List;
-import java.util.Map;
-
-public class IdentifierSet implements Map.Entry<ProtocolVersion, List<String>> {
-    final ProtocolVersion version;
-    List<String> list;
-
-    public IdentifierSet(ProtocolVersion version, List<String> list) {
-        this.version = version;
-        this.list = list;
-
-    }
-
-    @Override
-    public ProtocolVersion getKey() {
-        return version;
-    }
-
-    @Override
-    public List<String> getValue() {
-        return list;
-    }
-
-
-    @Override
-    public List<String> setValue(List<String> list) {
-        this.list = list;
-        return list;
+public class IdentifierSet extends MapSet<ProtocolVersion, String> {
+    public IdentifierSet(ProtocolVersion key, String value) {
+        super(key, value);
     }
 }

@@ -24,7 +24,7 @@ import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardTeam;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKeyRequest;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
@@ -74,7 +74,7 @@ public class PacketHandler {
         }
     }
 
-    public void handle(PacketEncryptionKeyRequest pkg) {
+    public void handle(PacketEncryptionRequest pkg) {
         SecretKey secretKey = CryptManager.createNewSharedKey();
         PublicKey publicKey = CryptManager.decodePublicKey(pkg.getPublicKey());
         String serverHash = new BigInteger(CryptManager.getServerHash(pkg.getServerId(), publicKey, secretKey)).toString(16);

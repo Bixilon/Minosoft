@@ -29,8 +29,8 @@ public class World {
     final HashMap<ChunkLocation, Chunk> chunks;
     final HashMap<Integer, Entity> entities;
     final String name;
-    private final HashMap<BlockPosition, TextComponent[]> signs;
-    private final HashMap<BlockPosition, CompoundTag> blockEntityMeta;
+    final HashMap<BlockPosition, TextComponent[]> signs;
+    final HashMap<BlockPosition, CompoundTag> blockEntityMeta;
     boolean hardcore;
     boolean raining;
     Dimension dimension; // used for sky color, etc

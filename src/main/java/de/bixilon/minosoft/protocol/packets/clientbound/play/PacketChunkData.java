@@ -20,7 +20,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.ChunkUtil;
 import de.bixilon.minosoft.util.Util;
 
@@ -30,8 +29,8 @@ public class PacketChunkData implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
                 this.location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
                 boolean groundUpContinuous = buffer.readBoolean();
@@ -39,9 +38,9 @@ public class PacketChunkData implements ClientboundPacket {
                 short addBitMask = buffer.readShort();
 
                 // decompress chunk data
-                InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInteger()));
+                InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInteger()), buffer.getVersion());
 
-                chunk = ChunkUtil.readChunkPacket(v, decompressed, sectionBitMask, addBitMask, groundUpContinuous, true);
+                chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, true);
                 break;
             }
             case VERSION_1_8: {
@@ -50,7 +49,7 @@ public class PacketChunkData implements ClientboundPacket {
                 short sectionBitMask = buffer.readShort();
                 int size = buffer.readVarInt();
 
-                chunk = ChunkUtil.readChunkPacket(v, buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
+                chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
                 break;
             }
         }

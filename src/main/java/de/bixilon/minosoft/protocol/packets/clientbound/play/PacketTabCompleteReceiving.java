@@ -17,27 +17,33 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketTabCompleteReceiving implements ClientboundPacket {
     int count;
-    String match;
+    String[] match;
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-            case VERSION_1_8:
                 count = buffer.readVarInt();
-                match = buffer.readString();
+                match = new String[]{buffer.readString()};
+                break;
+            case VERSION_1_8:
+            case VERSION_1_9_4:
+                count = buffer.readVarInt();
+                match = new String[count];
+                for (int i = 0; i < count; i++) {
+                    match[i] = buffer.readString();
+                }
                 break;
         }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received tab complete for message \"%s\" (count=%d)", match.replace("\"", "\\\""), count));
+        Log.protocol(String.format("Received tab complete for message(count=%d)", count));
     }
 
     @Override
@@ -49,7 +55,7 @@ public class PacketTabCompleteReceiving implements ClientboundPacket {
         return count;
     }
 
-    public String getMatch() {
+    public String[] getMatch() {
         return match;
     }
 }

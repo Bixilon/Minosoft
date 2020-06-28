@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class BatMetaData extends MobMetaData {
 
-    public BatMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public BatMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
 

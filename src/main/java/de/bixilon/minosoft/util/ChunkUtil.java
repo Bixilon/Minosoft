@@ -18,13 +18,12 @@ import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibble;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibbleLocation;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
 public class ChunkUtil {
-    public static Chunk readChunkPacket(ProtocolVersion v, InByteBuffer buffer, short sectionBitMask, short addBitMask, boolean groundUpContinuous, boolean containsSkyLight) {
-        switch (v) {
+    public static Chunk readChunkPacket(InByteBuffer buffer, short sectionBitMask, short addBitMask, boolean groundUpContinuous, boolean containsSkyLight) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
                 //chunk
                 byte sections = BitByte.getBitCount(sectionBitMask);
@@ -75,7 +74,7 @@ public class ChunkUtil {
 
 
                                     // ToDo light, biome
-                                    Blocks block = Blocks.byLegacy(singeBlockId, singleMeta);
+                                    Blocks block = Blocks.byId(singeBlockId, singleMeta);
                                     if (block == Blocks.AIR) {
                                         arrayPos++;
                                         continue;
@@ -121,7 +120,7 @@ public class ChunkUtil {
                     for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                         for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                             for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
-                                Blocks block = Blocks.byLegacy(blockData[arrayPos] >>> 4, blockData[arrayPos] & 0xF);
+                                Blocks block = Blocks.byId(blockData[arrayPos] >>> 4, blockData[arrayPos] & 0xF);
                                 if (block == Blocks.AIR) {
                                     arrayPos++;
                                     continue;

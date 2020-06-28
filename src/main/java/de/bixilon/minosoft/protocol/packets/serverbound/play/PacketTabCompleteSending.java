@@ -23,28 +23,49 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class PacketTabCompleteSending implements ServerboundPacket {
     final String text;
     final BlockPosition position;
+    final boolean assumeCommand;
 
     public PacketTabCompleteSending(String text) {
         this.text = text;
         position = null;
+        assumeCommand = false;
         log();
     }
 
     public PacketTabCompleteSending(String text, BlockPosition position) {
         this.text = text;
         this.position = position;
+        assumeCommand = false;
+        log();
+    }
+
+
+    public PacketTabCompleteSending(String text, boolean assumeCommand, BlockPosition position) {
+        this.text = text;
+        this.position = position;
+        this.assumeCommand = assumeCommand;
         log();
     }
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_TAB_COMPLETE));
-        switch (v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_TAB_COMPLETE));
+        switch (version) {
             case VERSION_1_7_10:
                 buffer.writeString(text);
                 break;
             case VERSION_1_8:
                 buffer.writeString(text);
+                if (position == null) {
+                    buffer.writeBoolean(false);
+                } else {
+                    buffer.writeBoolean(true);
+                    buffer.writePosition(position);
+                }
+                break;
+            case VERSION_1_9_4:
+                buffer.writeString(text);
+                buffer.writeBoolean(assumeCommand);
                 if (position == null) {
                     buffer.writeBoolean(false);
                 } else {

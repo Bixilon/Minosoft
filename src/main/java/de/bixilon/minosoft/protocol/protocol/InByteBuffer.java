@@ -33,11 +33,13 @@ import java.util.Base64;
 import java.util.UUID;
 
 public class InByteBuffer {
-    private final byte[] bytes;
-    private int pos;
+    final ProtocolVersion version;
+    final byte[] bytes;
+    int pos;
 
-    public InByteBuffer(byte[] bytes) {
+    public InByteBuffer(byte[] bytes, ProtocolVersion version) {
         this.bytes = bytes;
+        this.version = version;
     }
 
     public byte readByte() {
@@ -55,7 +57,7 @@ public class InByteBuffer {
     }
 
 
-    private byte[] readBytes(int pos, int count) {
+    byte[] readBytes(int pos, int count) {
         byte[] ret = new byte[count];
         System.arraycopy(bytes, pos, ret, 0, count);
         return ret;
@@ -174,7 +176,14 @@ public class InByteBuffer {
     }
 
     public BlockPosition readPosition() {
-        // this is the correct example! wiki.vg is clearly wrong with this!
+        if (version.getVersion() >= ProtocolVersion.VERSION_1_14_4.getVersion()) {
+            // changed in 1.14, thanks for the explanation @Sainan
+            Long raw = readLong();
+            int x = (int) (raw >> 38);
+            short y = (short) (raw & 0xFFF);
+            int z = (int) (raw << 26 >> 38);
+            return new BlockPosition(x, y, z);
+        }
         Long raw = readLong();
         int x = (int) (raw >> 38);
         short y = (short) ((raw >> 26) & 0xFFF);
@@ -215,7 +224,7 @@ public class InByteBuffer {
         return Pose.byId(readVarInt());
     }
 
-    public Particle readParticle(ProtocolVersion v) {
+    public Particle readParticle() {
         Particles type = Particles.byType(readVarInt());
         try {
             if (type.getClazz() == OtherParticles.class) {
@@ -227,7 +236,7 @@ public class InByteBuffer {
             } else if (type.getClazz() == FallingDustParticle.class) {
                 return type.getClazz().getConstructor(int.class).newInstance(readVarInt());
             } else if (type.getClazz() == ItemParticle.class) {
-                return type.getClazz().getConstructor(Slot.class).newInstance(readSlot(v));
+                return type.getClazz().getConstructor(Slot.class).newInstance(readSlot());
             }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
@@ -243,7 +252,7 @@ public class InByteBuffer {
                 return new CompoundTag();
             }
             try {
-                return new CompoundTag(new InByteBuffer(Util.decompressGzip(readBytes(length))));
+                return new CompoundTag(new InByteBuffer(Util.decompressGzip(readBytes(length)), version));
             } catch (IOException e) {
                 // oh no
                 e.printStackTrace();
@@ -258,8 +267,8 @@ public class InByteBuffer {
         return readNBT(false);
     }
 
-    public Slot readSlot(ProtocolVersion v) {
-        switch (v) {
+    public Slot readSlot() {
+        switch (version) {
             case VERSION_1_7_10: {
                 short id = readShort();
                 if (id != -1) {
@@ -315,7 +324,7 @@ public class InByteBuffer {
     }
 
     public InPacketBuffer getPacketBuffer() {
-        return new InPacketBuffer(this);
+        return new InPacketBuffer(this, getVersion());
     }
 
     public byte[] readBytesLeft() {
@@ -336,5 +345,9 @@ public class InByteBuffer {
             ret[i] = readLong();
         }
         return ret;
+    }
+
+    public ProtocolVersion getVersion() {
+        return version;
     }
 }

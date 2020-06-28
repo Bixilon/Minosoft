@@ -36,9 +36,9 @@ public class PacketSteerVehicle implements ServerboundPacket {
 
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_STEER_VEHICLE));
-        switch (v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_STEER_VEHICLE));
+        switch (version) {
             case VERSION_1_7_10:
                 buffer.writeFloat(sideways);
                 buffer.writeFloat(forward);
@@ -46,6 +46,7 @@ public class PacketSteerVehicle implements ServerboundPacket {
                 buffer.writeBoolean(unmount);
                 break;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 buffer.writeFloat(sideways);
                 buffer.writeFloat(forward);
                 byte flags = 0;

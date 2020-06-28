@@ -15,12 +15,11 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.entities.StatusEffects;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class MobMetaData extends EntityMetaData {
 
-    public MobMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public MobMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
 

@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class SpiderMetaData extends MobMetaData {
 
-    public SpiderMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public SpiderMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
 

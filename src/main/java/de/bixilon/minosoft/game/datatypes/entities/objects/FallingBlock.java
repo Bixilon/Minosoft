@@ -24,12 +24,12 @@ public class FallingBlock extends EntityObject implements ObjectInterface {
     public FallingBlock(int id, Location location, short yaw, short pitch, int additionalInt) {
         super(id, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
-        block = Blocks.byLegacy(additionalInt & 0xFFF, additionalInt >>> 12);
+        block = Blocks.byId(additionalInt & 0xFFF, additionalInt >>> 12);
     }
 
     public FallingBlock(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(id, location, yaw, pitch, velocity);
-        block = Blocks.byLegacy(additionalInt & 0xFFF, additionalInt >>> 12);
+        block = Blocks.byId(additionalInt & 0xFFF, additionalInt >>> 12);
     }
 
     @Override

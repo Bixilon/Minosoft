@@ -15,13 +15,12 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.Color;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 public class SheepMetaData extends AgeableMetaData {
 
-    public SheepMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public SheepMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
 

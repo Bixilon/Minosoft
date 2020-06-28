@@ -26,6 +26,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
 public class PacketSpawnObject implements ClientboundPacket {
     EntityObject object;
@@ -54,10 +55,10 @@ public class PacketSpawnObject implements ClientboundPacket {
     }
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-            case VERSION_1_8:
+            case VERSION_1_8: {
                 int entityId = buffer.readVarInt();
                 Objects type = Objects.byType(buffer.readByte());
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
@@ -66,7 +67,7 @@ public class PacketSpawnObject implements ClientboundPacket {
                 int data = buffer.readInteger();
 
                 try {
-                    if (v.getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
+                    if (buffer.getVersion().getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
                         // velocity present AND metadata
 
                         Velocity velocity = null;
@@ -82,6 +83,29 @@ public class PacketSpawnObject implements ClientboundPacket {
                     e.printStackTrace();
                 }
                 break;
+            }
+            case VERSION_1_9_4: {
+                int entityId = buffer.readVarInt();
+                UUID uuid = buffer.readUUID();
+                Objects type = Objects.byType(buffer.readByte());
+                Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+                short pitch = buffer.readAngle();
+                short yaw = buffer.readAngle();
+                int data = buffer.readInteger();
+
+                try {
+                    // velocity present AND metadata
+
+                    Velocity velocity = null;
+                    if (data != 0) {
+                        velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+                    }
+                    object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, location, yaw, pitch, data, velocity);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
         }
     }
 }

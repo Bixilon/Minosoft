@@ -35,9 +35,9 @@ public class PacketPlayerDigging implements ServerboundPacket {
 
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_DIGGING));
-        switch (v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_DIGGING));
+        switch (version) {
             case VERSION_1_7_10:
                 buffer.writeByte((byte) status.getId());
                 if (position == null) {
@@ -51,6 +51,15 @@ public class PacketPlayerDigging implements ServerboundPacket {
                 break;
             case VERSION_1_8:
                 buffer.writeByte((byte) status.getId());
+                if (position == null) {
+                    buffer.writeLong(0L);
+                } else {
+                    buffer.writePosition(position);
+                }
+                buffer.writeByte(face);
+                break;
+            case VERSION_1_9_4:
+                buffer.writeVarInt(status.getId());
                 if (position == null) {
                     buffer.writeLong(0L);
                 } else {
@@ -73,7 +82,8 @@ public class PacketPlayerDigging implements ServerboundPacket {
         FINISHED_DIGGING(2),
         DROP_ITEM_STACK(3),
         DROP_ITEM(4),
-        SHOOT_ARROW__FINISH_EATING(5);
+        SHOOT_ARROW__FINISH_EATING(5),
+        SWAP_ITEMS_IN_HAND(6);
 
         final int id;
 

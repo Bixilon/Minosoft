@@ -17,7 +17,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
@@ -30,15 +29,25 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
-            case VERSION_1_7_10:
-            case VERSION_1_8: {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
+            case VERSION_1_7_10: {
                 byte flags = buffer.readByte();
                 creative = BitByte.isBitSet(flags, 0);
                 flying = BitByte.isBitSet(flags, 1);
                 canFly = BitByte.isBitSet(flags, 2);
                 godMode = BitByte.isBitSet(flags, 3);
+                flyingSpeed = buffer.readFloat();
+                walkingSpeed = buffer.readFloat();
+                break;
+            }
+            case VERSION_1_8:
+            case VERSION_1_9_4: {
+                byte flags = buffer.readByte();
+                godMode = BitByte.isBitSet(flags, 0);
+                flying = BitByte.isBitSet(flags, 1);
+                canFly = BitByte.isBitSet(flags, 2);
+                creative = BitByte.isBitSet(flags, 3);
                 flyingSpeed = buffer.readFloat();
                 walkingSpeed = buffer.readFloat();
                 break;

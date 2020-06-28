@@ -108,7 +108,7 @@ public class TextComponent {
         this.json = json;
     }
 
-    private static JSONObject getExtraByAttributes(String message, ChatAttributes color, List<ChatAttributes> formatting) {
+    static JSONObject getExtraByAttributes(String message, ChatAttributes color, List<ChatAttributes> formatting) {
         JSONObject ret = new JSONObject();
         ret.put("text", message);
         if (color != null) {

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketBlockChange implements ClientboundPacket {
     BlockPosition position;
@@ -27,16 +26,17 @@ public class PacketBlockChange implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 position = buffer.readBlockPosition();
-                block = Blocks.byLegacy(buffer.readVarInt(), buffer.readByte());
+                block = Blocks.byId(buffer.readVarInt(), buffer.readByte());
                 break;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 position = buffer.readPosition();
                 int blockId = buffer.readVarInt();
-                block = Blocks.byLegacy(blockId >>> 4, blockId & 0xF);
+                block = Blocks.byId(blockId >>> 4, blockId & 0xF);
                 break;
         }
     }

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.Random;
 
@@ -34,9 +33,9 @@ public class PacketParticle implements ClientboundPacket {
     int[] data;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
+    public void read(InPacketBuffer buffer) {
         Random random = new Random();
-        switch (v) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 particle = Particles.byIdentifier(new Identifier(buffer.readString()));
                 x = buffer.readFloat();

@@ -13,10 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-import de.bixilon.minosoft.game.datatypes.Identifier;
-
 public interface EntityEnumInterface {
-    Identifier getIdentifier();
 
     int getType();
 

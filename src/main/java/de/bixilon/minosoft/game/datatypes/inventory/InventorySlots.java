@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.game.datatypes.inventory;
 
+import de.bixilon.minosoft.game.datatypes.MapSet;
+import de.bixilon.minosoft.game.datatypes.VersionValueMap;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 public class InventorySlots {
     public enum PlayerInventory implements InventoryInterface {
         CRAFTING_OUTPUT(0),
@@ -72,9 +76,9 @@ public class InventorySlots {
             this.id = id;
         }
 
-        public static PlayerInventory byId(int id) {
+        public static PlayerInventory byId(int id, ProtocolVersion version) {
             for (PlayerInventory i : values()) {
-                if (i.getId() == id) {
+                if (i.getId(version) == id) {
                     return i;
                 }
             }
@@ -82,28 +86,32 @@ public class InventorySlots {
         }
 
         @Override
-        public int getId() {
+        public int getId(ProtocolVersion version) {
             return id;
         }
     }
 
     public enum EntityInventory implements InventoryInterface {
-        HELD(0),
-        BOOTS(1),
-        LEGGINGS(2),
-        CHESTPLATE(3),
-        HELMET(4);
+        MAIN_HAND(0),
+        OFF_HAND(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1)}),
+        BOOTS(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 2)}),
+        LEGGINGS(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 3)}),
+        CHESTPLATE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 3), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 4)}),
+        HELMET(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 5)});
 
+        final VersionValueMap<Integer> valueMap;
 
-        final int id;
-
-        EntityInventory(int id) {
-            this.id = id;
+        EntityInventory(MapSet<ProtocolVersion, Integer>[] values) {
+            valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static EntityInventory byId(int id) {
+        EntityInventory(int id) {
+            valueMap = new VersionValueMap<>(id);
+        }
+
+        public static EntityInventory byId(int id, ProtocolVersion version) {
             for (EntityInventory e : values()) {
-                if (e.getId() == id) {
+                if (e.getId(version) == id) {
                     return e;
                 }
             }
@@ -111,13 +119,13 @@ public class InventorySlots {
         }
 
         @Override
-        public int getId() {
-            return id;
+        public int getId(ProtocolVersion version) {
+            return valueMap.get(version);
         }
     }
 
     public interface InventoryInterface {
-        int getId();
+        int getId(ProtocolVersion version);
     }
 
 }

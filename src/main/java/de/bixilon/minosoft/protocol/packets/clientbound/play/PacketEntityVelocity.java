@@ -18,7 +18,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 
 public class PacketEntityVelocity implements ClientboundPacket {
@@ -26,13 +25,14 @@ public class PacketEntityVelocity implements ClientboundPacket {
     Velocity velocity;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public void read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 this.entityId = buffer.readInteger();
                 this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
                 break;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 this.entityId = buffer.readVarInt();
                 this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
                 break;

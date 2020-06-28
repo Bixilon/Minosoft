@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.game.datatypes.Difficulty;
 import de.bixilon.minosoft.game.datatypes.Locale;
+import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
@@ -26,28 +27,49 @@ public class PacketClientSettings implements ServerboundPacket {
     public final Locale locale;
     public final byte renderDistance;
 
+    public final Hand mainHand;
+
     public PacketClientSettings(Locale locale, int renderDistance) {
         this.locale = locale;
         this.renderDistance = (byte) renderDistance;
+        this.mainHand = Hand.RIGHT; // unused; >= 1.9
+        log();
+    }
+
+    public PacketClientSettings(Locale locale, int renderDistance, Hand mainHand) {
+        this.locale = locale;
+        this.renderDistance = (byte) renderDistance;
+        this.mainHand = mainHand;
         log();
     }
 
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_CLIENT_SETTINGS));
-        switch (v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CLIENT_SETTINGS));
+        switch (version) {
             case VERSION_1_7_10:
+                buffer.writeString(locale.getName()); // locale
+                buffer.writeByte(renderDistance); // render Distance
+                buffer.writeByte((byte) 0x00); // chat settings (nobody uses them)
+                buffer.writeBoolean(true); // chat colors
+                buffer.writeByte((byte) Difficulty.NORMAL.getId()); // difficulty
+                buffer.writeBoolean(true); // cape
+                break;
             case VERSION_1_8:
                 buffer.writeString(locale.getName()); // locale
                 buffer.writeByte(renderDistance); // render Distance
                 buffer.writeByte((byte) 0x00); // chat settings (nobody uses them)
                 buffer.writeBoolean(true); // chat colors
-                //skip this if not 1.7.10
-                if (v == ProtocolVersion.VERSION_1_7_10) {
-                    buffer.writeByte((byte) Difficulty.NORMAL.getId()); // difficulty
-                }
-                buffer.writeBoolean(true); // cape
+                buffer.writeByte((byte) 0b01111111); // skin parts
+                break;
+            case VERSION_1_9_4:
+                buffer.writeString(locale.getName()); // locale
+                buffer.writeByte(renderDistance); // render Distance
+                buffer.writeVarInt(0x00); // chat settings (nobody uses them)
+                buffer.writeBoolean(true); // chat colors
+                buffer.writeByte((byte) 0b01111111); // skin parts
+                buffer.writeVarInt(mainHand.getId());
                 break;
         }
         return buffer;

@@ -14,13 +14,12 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 public class HorseMetaData extends AgeableMetaData {
 
-    public HorseMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public HorseMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
 

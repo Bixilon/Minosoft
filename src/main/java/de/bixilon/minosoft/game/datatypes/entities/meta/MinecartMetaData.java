@@ -15,12 +15,11 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class MinecartMetaData extends EntityMetaData {
 
-    public MinecartMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public MinecartMetaData(InByteBuffer buffer) {
+        super(buffer);
     }
 
     public int getShakingPower() {
@@ -54,7 +53,7 @@ public class MinecartMetaData extends EntityMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return Blocks.byLegacy((int) sets.get(20).getData() & 0xFF, (int) sets.get(20).getData() >>> 4);
+                return Blocks.byId((int) sets.get(20).getData() & 0xFF, (int) sets.get(20).getData() >>> 4);
         }
         return Blocks.AIR;
     }

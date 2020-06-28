@@ -29,9 +29,9 @@ public class EntityMetaData {
     1.7.10: https://wiki.vg/index.php?title=Entity_metadata&oldid=5991
     1.8: https://wiki.vg/index.php?title=Entity_metadata&oldid=6611
      */
-    public EntityMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        version = v;
-        switch (v) {
+    public EntityMetaData(InByteBuffer buffer) {
+        version = buffer.getVersion();
+        switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 byte item = buffer.readByte();
@@ -59,7 +59,7 @@ public class EntityMetaData {
                             data = new Vector(buffer.readInteger(), buffer.readInteger(), buffer.readInteger());
                             break;
                         case SLOT:
-                            data = buffer.readSlot(v);
+                            data = buffer.readSlot();
                             break;
                         case POSITION:
                             data = new EntityRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());

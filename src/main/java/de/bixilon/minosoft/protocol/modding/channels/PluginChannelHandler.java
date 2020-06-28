@@ -84,7 +84,7 @@ public class PluginChannelHandler {
         }
 
         for (ChannelHandler handler : channels.get(name)) {
-            handler.handle(this, new InByteBuffer(data));
+            handler.handle(this, new InByteBuffer(data, connection.getVersion()));
         }
     }
 
