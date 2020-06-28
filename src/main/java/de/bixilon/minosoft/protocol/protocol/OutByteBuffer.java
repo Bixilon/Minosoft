@@ -164,6 +164,7 @@ public class OutByteBuffer {
     public void writeSlot(ProtocolVersion v, Slot slot) {
         switch (v) {
             case VERSION_1_7_10:
+            case VERSION_1_8:
                 if (slot == null) {
                     writeShort((short) -1);
                     return;

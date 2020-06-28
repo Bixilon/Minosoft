@@ -39,6 +39,7 @@ public class PacketMapData implements ClientboundPacket {
     //scale
     byte scale;
 
+    byte[] data;
 
     @Override
     public void read(InPacketBuffer buffer, ProtocolVersion v) {
@@ -89,7 +90,7 @@ public class PacketMapData implements ClientboundPacket {
                     byte zOffset = buffer.readByte();
 
                     int dataLength = buffer.readVarInt();
-                    byte[] data = buffer.readBytes(dataLength);
+                    data = buffer.readBytes(dataLength);
                 }
 
                 break;
