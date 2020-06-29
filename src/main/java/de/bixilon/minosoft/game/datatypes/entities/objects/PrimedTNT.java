@@ -15,9 +15,10 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.PrimedTNTMetaData;
 
 public class PrimedTNT extends EntityObject implements ObjectInterface {
-    EntityMetaData metaData;
+    PrimedTNTMetaData metaData;
 
     public PrimedTNT(int id, Location location, short yaw, short pitch, int additionalInt) {
         super(id, location, yaw, pitch, null);
@@ -40,7 +41,7 @@ public class PrimedTNT extends EntityObject implements ObjectInterface {
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = metaData;
+        this.metaData = (PrimedTNTMetaData) metaData;
     }
 
     @Override
@@ -51,5 +52,10 @@ public class PrimedTNT extends EntityObject implements ObjectInterface {
     @Override
     public float getHeight() {
         return 0.98F;
+    }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return PrimedTNTMetaData.class;
     }
 }

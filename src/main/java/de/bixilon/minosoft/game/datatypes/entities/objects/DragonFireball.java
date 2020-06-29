@@ -11,53 +11,53 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities.mob;
+package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.SnowGolemMetaData;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-public class SnowGolem extends Mob implements MobInterface {
-    SnowGolemMetaData metaData;
+public class DragonFireball extends EntityObject implements ObjectInterface {
+    final int thrower;
+    EntityMetaData metaData;
 
-    public SnowGolem(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer) {
+    public DragonFireball(int id, Location location, short yaw, short pitch, int additionalInt) {
+        super(id, location, yaw, pitch, null);
+        // objects do not spawn with metadata... reading additional info from the following int
+        this.thrower = additionalInt;
+    }
+
+    public DragonFireball(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new SnowGolemMetaData(buffer);
+        this.thrower = additionalInt;
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.SNOW_GOLEM;
+    public Objects getEntityType() {
+        return Objects.DRAGON_FIREBALL;
     }
 
     @Override
-    public SnowGolemMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (SnowGolemMetaData) metaData;
+        this.metaData = metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.7F;
+        return 0.3125F;
     }
 
     @Override
     public float getHeight() {
-        return 1.9F;
+        return 0.3125F;
     }
 
-    @Override
-    public int getMaxHealth() {
-        return 4;
+    public int getThrower() {
+        return thrower;
     }
 
-    @Override
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return SnowGolemMetaData.class;
-    }
 }

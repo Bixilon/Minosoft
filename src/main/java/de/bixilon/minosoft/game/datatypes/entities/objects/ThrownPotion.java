@@ -15,20 +15,21 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.PotionMetaData;
 
 public class ThrownPotion extends EntityObject implements ObjectInterface {
-    EntityMetaData metaData;
-    int potion; //ToDo
+    PotionMetaData metaData;
+    StatusEffects potion; //ToDo
 
     public ThrownPotion(int id, Location location, short yaw, short pitch, int additionalInt) {
         super(id, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
-        this.potion = additionalInt;
+        this.potion = StatusEffects.byId(additionalInt);
     }
 
     public ThrownPotion(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(id, location, yaw, pitch, velocity);
-        this.potion = additionalInt;
+        this.potion = StatusEffects.byId(additionalInt);
     }
 
     @Override
@@ -37,13 +38,13 @@ public class ThrownPotion extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public EntityMetaData getMetaData() {
+    public PotionMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = metaData;
+        this.metaData = (PotionMetaData) metaData;
     }
 
     @Override
@@ -56,4 +57,8 @@ public class ThrownPotion extends EntityObject implements ObjectInterface {
         return 0.25F;
     }
 
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return PotionMetaData.class;
+    }
 }

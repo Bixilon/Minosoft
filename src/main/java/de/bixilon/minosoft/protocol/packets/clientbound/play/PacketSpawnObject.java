@@ -96,10 +96,7 @@ public class PacketSpawnObject implements ClientboundPacket {
                 try {
                     // velocity present AND metadata
 
-                    Velocity velocity = null;
-                    if (data != 0) {
-                        velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-                    }
+                    Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
                     object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, location, yaw, pitch, data, velocity);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     e.printStackTrace();

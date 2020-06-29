@@ -13,24 +13,39 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.Direction;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.util.BitByte;
 
-public class ArrowMetaData extends EntityMetaData {
+public class ShulkerMetaData extends MobMetaData {
 
-    public ArrowMetaData(InByteBuffer buffer) {
+    public ShulkerMetaData(InByteBuffer buffer) {
         super(buffer);
     }
 
-    public boolean isCritical() {
+    public Direction getDirection() {
         switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(16).getData() == 0x01;
             case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(5).getData(), 0x01);
+                return (Direction) sets.get(11).getData();
         }
-        return false;
+        return null;
     }
+
+    public BlockPosition getAttachmentPosition() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return (BlockPosition) sets.get(12).getData();
+        }
+        return null;
+    }
+
+    public byte getShieldHeight() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return (byte) sets.get(13).getData();
+        }
+        return 0;
+    }
+
 
 }

@@ -22,21 +22,33 @@ public class CreeperMetaData extends MobMetaData {
     }
 
 
-    public byte getState() {
+    public int getState() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (byte) sets.get(16).getData();
+            case VERSION_1_9_4:
+                return (int) sets.get(11).getData();
         }
         return -1;
     }
 
 
-    public boolean isPowered() {
+    public boolean isCharged() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (byte) sets.get(17).getData() == 0x01;
+            case VERSION_1_9_4:
+                return (boolean) sets.get(12).getData();
+        }
+        return false;
+    }
+
+    public boolean isIgnited() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return (boolean) sets.get(13).getData();
         }
         return false;
     }

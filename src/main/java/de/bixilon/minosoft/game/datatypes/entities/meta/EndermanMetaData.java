@@ -28,6 +28,8 @@ public class EndermanMetaData extends MobMetaData {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return Blocks.byId((short) sets.get(16).getData(), (byte) sets.get(17).getData());
+            case VERSION_1_9_4:
+                return (Blocks) sets.get(11).getData();
         }
         return Blocks.AIR;
     }
@@ -37,6 +39,8 @@ public class EndermanMetaData extends MobMetaData {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (byte) sets.get(18).getData() == 0x01;
+            case VERSION_1_9_4:
+                return (boolean) sets.get(12).getData();
         }
         return false;
     }

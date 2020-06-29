@@ -26,6 +26,8 @@ public class BoatMetaData extends EntityMetaData {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (int) sets.get(17).getData();
+            case VERSION_1_9_4:
+                return (int) sets.get(5).getData();
         }
         return 0;
     }
@@ -35,6 +37,8 @@ public class BoatMetaData extends EntityMetaData {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (int) sets.get(18).getData();
+            case VERSION_1_9_4:
+                return (int) sets.get(6).getData();
         }
         return 0;
     }
@@ -44,8 +48,34 @@ public class BoatMetaData extends EntityMetaData {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (float) sets.get(19).getData();
+            case VERSION_1_9_4:
+                return (float) sets.get(7).getData();
         }
         return 0;
+    }
+
+    public int getType() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return (int) sets.get(8).getData();
+        }
+        return 0;
+    }
+
+    public boolean isRightPaddleTurning() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return (boolean) sets.get(9).getData();
+        }
+        return false;
+    }
+
+    public boolean isLeftPaddleTurning() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return (boolean) sets.get(10).getData();
+        }
+        return false;
     }
 
 }

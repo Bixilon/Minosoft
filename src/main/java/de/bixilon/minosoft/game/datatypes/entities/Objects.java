@@ -28,6 +28,7 @@ public enum Objects implements EntityEnumInterface {
     FIRE_CHARGE(64, FireCharge.class),
     ENDER_PEARL(65, Enderpearl.class),
     WITHER_SKULL(66, WitherSkull.class),
+    SHULKER_BULLET(67, ShulkerBullet.class),
     FALLING_BLOCK(70, FallingBlock.class),
     ITEM_FRAME(71, ItemFrame.class),
     EYE_OF_ENDER(72, EyeOfEnder.class),
@@ -37,7 +38,11 @@ public enum Objects implements EntityEnumInterface {
     FIREWORK(76, Firework.class),
     LEASH_KNOT(77, LeashKnot.class),
     ARMOR_STAND(78, ArmorStand.class),
-    FISHING_FLOAT(90, FishingFloat.class);
+    FISHING_FLOAT(90, FishingFloat.class),
+    SPECTRAL_ARROW(91, SpectralArrow.class),
+    DRAGON_FIREBALL(93, DragonFireball.class);
+
+    //ToDO: size changed between versions, fix it!
 
     final int type;
     final Class<? extends EntityObject> clazz;

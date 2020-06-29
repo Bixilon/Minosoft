@@ -13,24 +13,29 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.util.BitByte;
 
-public class ArrowMetaData extends EntityMetaData {
+public class CommandBlockMinecartMetaData extends EntityMetaData {
 
-    public ArrowMetaData(InByteBuffer buffer) {
+    public CommandBlockMinecartMetaData(InByteBuffer buffer) {
         super(buffer);
     }
 
-    public boolean isCritical() {
+    public String getCommand() {
         switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(16).getData() == 0x01;
             case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(5).getData(), 0x01);
+                return (String) sets.get(11).getData();
         }
-        return false;
+        return "";
+    }
+
+    public TextComponent getLastOutput() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return (TextComponent) sets.get(12).getData();
+        }
+        return null;
     }
 
 }

@@ -21,11 +21,13 @@ public class FurnaceMinecartMetaData extends EntityMetaData {
         super(buffer);
     }
 
-    public boolean getPowered() {
+    public boolean isPowered() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return (int) sets.get(16).getData() == 0x01;
+                return (byte) sets.get(16).getData() == 0x01;
+            case VERSION_1_9_4:
+                return (boolean) sets.get(11).getData();
         }
         return false;
     }

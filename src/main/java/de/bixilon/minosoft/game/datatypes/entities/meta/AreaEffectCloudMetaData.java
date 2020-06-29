@@ -13,24 +13,48 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.Color;
+import de.bixilon.minosoft.game.datatypes.particle.Particles;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.util.BitByte;
 
-public class ArrowMetaData extends EntityMetaData {
+public class AreaEffectCloudMetaData extends MobMetaData {
 
-    public ArrowMetaData(InByteBuffer buffer) {
+    public AreaEffectCloudMetaData(InByteBuffer buffer) {
         super(buffer);
     }
 
-    public boolean isCritical() {
+
+    public float getRadius() {
         switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(16).getData() == 0x01;
             case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(5).getData(), 0x01);
+                return (float) sets.get(5).getData();
+        }
+        return 0;
+    }
+
+    public Color getColor() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return Color.byId((int) sets.get(6).getData());
+        }
+        return Color.WHITE;
+    }
+
+    public boolean ignoreRadius() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return (boolean) sets.get(7).getData();
         }
         return false;
     }
+
+    public Particles getParticle() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return Particles.byType((int) sets.get(8).getData());
+        }
+        return null;
+    }
+
 
 }

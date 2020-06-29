@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 public class EnderCrystalMetaData extends EntityMetaData {
@@ -28,5 +29,21 @@ public class EnderCrystalMetaData extends EntityMetaData {
                 return (int) sets.get(8).getData();
         }
         return 0;
+    }
+
+    public BlockPosition getBeamTarget() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return (BlockPosition) sets.get(5).getData();
+        }
+        return null;
+    }
+
+    public boolean showBottom() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return (boolean) sets.get(6).getData();
+        }
+        return true;
     }
 }

@@ -15,49 +15,49 @@ package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.SnowGolemMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.ShulkerMetaData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-public class SnowGolem extends Mob implements MobInterface {
-    SnowGolemMetaData metaData;
+public class Shulker extends Mob implements MobInterface {
+    ShulkerMetaData metaData;
 
-    public SnowGolem(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer) {
+    public Shulker(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new SnowGolemMetaData(buffer);
+        this.metaData = new ShulkerMetaData(buffer);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.SNOW_GOLEM;
+        return Mobs.SHULKER;
     }
 
     @Override
-    public SnowGolemMetaData getMetaData() {
+    public ShulkerMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (SnowGolemMetaData) metaData;
+        this.metaData = (ShulkerMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.7F;
+        return 1.0F;
     }
 
     @Override
     public float getHeight() {
-        return 1.9F;
+        return 1.0F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 4;
+        return 30;
     }
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return SnowGolemMetaData.class;
+        return ShulkerMetaData.class;
     }
 }

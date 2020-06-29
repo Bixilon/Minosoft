@@ -15,17 +15,19 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-public class SlimeMetaData extends MobMetaData {
+public class SlimeMetaData extends InsentientMetaData {
 
     public SlimeMetaData(InByteBuffer buffer) {
         super(buffer);
     }
 
-    public byte getSize() {
+    public int getSize() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (byte) sets.get(16).getData();
+            case VERSION_1_9_4:
+                return (int) sets.get(11).getData();
         }
         return 0;
     }

@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.BitByte;
 
-public class BatMetaData extends MobMetaData {
+public class BatMetaData extends InsentientMetaData {
 
     public BatMetaData(InByteBuffer buffer) {
         super(buffer);
@@ -27,6 +28,8 @@ public class BatMetaData extends MobMetaData {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (byte) sets.get(16).getData() == 0x01;
+            case VERSION_1_9_4:
+                return BitByte.isBitMask((byte) sets.get(16).getData(), 0x01);
         }
         return false;
     }

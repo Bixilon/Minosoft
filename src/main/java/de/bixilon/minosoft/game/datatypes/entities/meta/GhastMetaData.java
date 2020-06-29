@@ -15,7 +15,7 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-public class GhastMetaData extends MobMetaData {
+public class GhastMetaData extends InsentientMetaData {
 
     public GhastMetaData(InByteBuffer buffer) {
         super(buffer);
@@ -26,6 +26,8 @@ public class GhastMetaData extends MobMetaData {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (byte) sets.get(16).getData() == 0x01;
+            case VERSION_1_9_4:
+                return (boolean) sets.get(11).getData();
         }
         return false;
     }

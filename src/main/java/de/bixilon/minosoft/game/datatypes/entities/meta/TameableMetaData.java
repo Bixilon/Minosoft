@@ -16,6 +16,8 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 
+import java.util.UUID;
+
 public class TameableMetaData extends AgeableMetaData {
 
     public TameableMetaData(InByteBuffer buffer) {
@@ -27,7 +29,9 @@ public class TameableMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return BitByte.isBitSet((int) sets.get(16).getData(), 0);
+                return BitByte.isBitMask((int) sets.get(16).getData(), 0x01);
+            case VERSION_1_9_4:
+                return BitByte.isBitMask((int) sets.get(12).getData(), 0x01);
         }
         return false;
     }
@@ -36,7 +40,17 @@ public class TameableMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return BitByte.isBitSet((int) sets.get(16).getData(), 2);
+                return BitByte.isBitMask((int) sets.get(16).getData(), 0x04);
+            case VERSION_1_9_4:
+                return BitByte.isBitMask((int) sets.get(12).getData(), 0x04);
+        }
+        return false;
+    }
+
+    public boolean isAngry() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return BitByte.isBitMask((int) sets.get(12).getData(), 0x02);
         }
         return false;
     }
@@ -46,6 +60,14 @@ public class TameableMetaData extends AgeableMetaData {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (String) sets.get(17).getData();
+        }
+        return null;
+    }
+
+    public UUID getOwnerUUID() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return (UUID) sets.get(13).getData();
         }
         return null;
     }

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.util.BitByte;
 
 public class HumanMetaData extends MobMetaData {
 
@@ -23,20 +23,13 @@ public class HumanMetaData extends MobMetaData {
     }
 
 
-    public boolean hideCape() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitSet((byte) sets.get(16).getData(), 1);
-        }
-        return false;
-    }
-
     public float getAbsorptionHearts() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (float) sets.get(17).getData();
+            case VERSION_1_9_4:
+                return (float) sets.get(10).getData();
         }
         return 0.0F;
     }
@@ -46,8 +39,19 @@ public class HumanMetaData extends MobMetaData {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (int) sets.get(18).getData();
+            case VERSION_1_9_4:
+                return (int) sets.get(11).getData();
         }
         return 0;
+    }
+
+
+    public Hand getMainHand() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return Hand.byId((byte) sets.get(13).getData());
+        }
+        return Hand.RIGHT;
     }
 
 

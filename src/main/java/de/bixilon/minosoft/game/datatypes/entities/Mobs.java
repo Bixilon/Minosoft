@@ -16,7 +16,7 @@ package de.bixilon.minosoft.game.datatypes.entities;
 import de.bixilon.minosoft.game.datatypes.entities.mob.*;
 
 public enum Mobs {
-    PLAYER(92, OtherPlayer.class),
+    PLAYER(105, OtherPlayer.class),
     CREEPER(50, Creeper.class),
     SKELETON(51, Skeleton.class),
     SPIDER(52, Spider.class),
@@ -35,6 +35,7 @@ public enum Mobs {
     BAT(65, Bat.class),
     WITCH(66, Witch.class),
     GUARDIAN(68, Guardian.class),
+    SHULKER(69, Shulker.class),
     PIG(90, Pig.class),
     SHEEP(91, Sheep.class),
     COW(92, Cow.class),

@@ -28,6 +28,8 @@ public class ItemFrameMetaData extends EntityMetaData {
                 return (Slot) sets.get(2).getData();
             case VERSION_1_8:
                 return (Slot) sets.get(8).getData();
+            case VERSION_1_9_4:
+                return (Slot) sets.get(5).getData();
         }
         return null;
     }
@@ -38,6 +40,8 @@ public class ItemFrameMetaData extends EntityMetaData {
                 return (byte) sets.get(3).getData();
             case VERSION_1_8:
                 return (byte) sets.get(9).getData();
+            case VERSION_1_9_4:
+                return (byte) sets.get(6).getData();
         }
         return 0;
     }

@@ -24,6 +24,15 @@ public enum Hand {
         this.id = id;
     }
 
+    public static Hand byId(int id) {
+        for (Hand h : values()) {
+            if (h.getId() == id) {
+                return h;
+            }
+        }
+        return null;
+    }
+
     public int getId() {
         return id;
     }
