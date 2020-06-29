@@ -276,7 +276,8 @@ public class InByteBuffer {
                 }
                 break;
             }
-            case VERSION_1_8: {
+            case VERSION_1_8:
+            case VERSION_1_9_4: {
                 short id = readShort();
                 if (id == -1) {
                     return null;

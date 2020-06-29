@@ -54,7 +54,8 @@ public class EntityMetaData {
             case VERSION_1_9_4:
                 byte index = buffer.readByte();
                 while (index != (byte) 0xFF) {
-                    Types type = Types.byId(buffer.readByte(), buffer.getVersion());
+                    byte type2 = buffer.readByte();
+                    Types type = Types.byId(type2, buffer.getVersion());
                     sets.put((int) index, new MetaDataSet(index, getData(type, buffer)));
                     index = buffer.readByte();
                 }
