@@ -28,7 +28,7 @@ public class PacketMultiBlockChange implements ClientboundPacket {
     ChunkLocation location;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
                 location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
@@ -46,7 +46,7 @@ public class PacketMultiBlockChange implements ClientboundPacket {
                     byte x = (byte) ((raw & 0xF0_00_00_00) >>> 28);
                     blocks.put(new InChunkLocation(x, y, z), Blocks.byId(blockId, meta));
                 }
-                break;
+                return true;
             }
             case VERSION_1_8:
             case VERSION_1_9_4: {
@@ -58,9 +58,11 @@ public class PacketMultiBlockChange implements ClientboundPacket {
                     int blockId = buffer.readVarInt();
                     blocks.put(new InChunkLocation(((pos & 0xF0) >>> 4), y, (pos & 0xF)), Blocks.byId((blockId >>> 4), (blockId & 0xF)));
                 }
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     @Override

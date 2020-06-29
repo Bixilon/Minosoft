@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.mob;
 
-
 import de.bixilon.minosoft.game.datatypes.PlayerPropertyData;
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;

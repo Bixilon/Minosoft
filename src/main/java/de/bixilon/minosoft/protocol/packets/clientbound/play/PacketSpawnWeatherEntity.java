@@ -24,7 +24,7 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
     Location location;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8: {
@@ -35,7 +35,7 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
                     throw new RuntimeException(String.format("Illegal global entity spawned (entityType=%d)!", type));
                 }
                 location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-                break;
+                return true;
             }
             case VERSION_1_9_4: {
                 entityId = buffer.readVarInt();
@@ -45,9 +45,11 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
                     throw new RuntimeException(String.format("Illegal global entity spawned (entityType=%d)!", type));
                 }
                 location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     @Override

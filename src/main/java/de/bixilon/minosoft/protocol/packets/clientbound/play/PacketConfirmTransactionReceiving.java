@@ -25,7 +25,7 @@ public class PacketConfirmTransactionReceiving implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
@@ -33,8 +33,10 @@ public class PacketConfirmTransactionReceiving implements ClientboundPacket {
                 this.windowId = buffer.readByte();
                 this.actionNumber = buffer.readShort();
                 this.accepted = buffer.readBoolean();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

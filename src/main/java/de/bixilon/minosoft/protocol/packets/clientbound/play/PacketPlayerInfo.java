@@ -33,11 +33,11 @@ public class PacketPlayerInfo implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 infos.add(new PlayerInfoBulk(buffer.readString(), buffer.readShort(), (buffer.readBoolean() ? PlayerInfoAction.UPDATE_LATENCY : PlayerInfoAction.REMOVE_PLAYER)));
-                break;
+                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 PlayerInfoAction action = PlayerInfoAction.byId(buffer.readVarInt());
@@ -78,8 +78,10 @@ public class PacketPlayerInfo implements ClientboundPacket {
                     }
                     infos.add(infoBulk);
                 }
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

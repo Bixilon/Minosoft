@@ -30,7 +30,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
     OtherPlayer player;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
                 this.entityId = buffer.readVarInt();
@@ -45,10 +45,10 @@ public class PacketSpawnPlayer implements ClientboundPacket {
                 short pitch = buffer.readAngle();
 
                 short currentItem = buffer.readShort();
-                HumanMetaData metaData = new HumanMetaData(buffer);
+                HumanMetaData metaData = new HumanMetaData(buffer.readMetaData(), buffer.getVersion());
 
                 this.player = new OtherPlayer(entityId, name, uuid, properties, location, null, yaw, pitch, currentItem, metaData);
-                break;
+                return true;
             }
             case VERSION_1_8: {
                 this.entityId = buffer.readVarInt();
@@ -58,10 +58,10 @@ public class PacketSpawnPlayer implements ClientboundPacket {
                 short pitch = buffer.readAngle();
 
                 short currentItem = buffer.readShort();
-                HumanMetaData metaData = new HumanMetaData(buffer);
+                HumanMetaData metaData = new HumanMetaData(buffer.readMetaData(), buffer.getVersion());
 
                 this.player = new OtherPlayer(entityId, null, uuid, null, location, null, yaw, pitch, currentItem, metaData);
-                break;
+                return true;
             }
             case VERSION_1_9_4: {
                 this.entityId = buffer.readVarInt();
@@ -70,12 +70,14 @@ public class PacketSpawnPlayer implements ClientboundPacket {
                 short yaw = buffer.readAngle();
                 short pitch = buffer.readAngle();
 
-                HumanMetaData metaData = new HumanMetaData(buffer);
+                HumanMetaData metaData = new HumanMetaData(buffer.readMetaData(), buffer.getVersion());
 
                 this.player = new OtherPlayer(entityId, null, uuid, null, location, null, yaw, pitch, (short) 0, metaData);
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     @Override

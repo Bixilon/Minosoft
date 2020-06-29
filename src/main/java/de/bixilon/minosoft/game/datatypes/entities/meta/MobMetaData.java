@@ -10,18 +10,19 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.entities.StatusEffects;
 import de.bixilon.minosoft.game.datatypes.player.Hand;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
+
+import java.util.HashMap;
 
 public class MobMetaData extends EntityMetaData {
 
-    public MobMetaData(InByteBuffer buffer) {
-        super(buffer);
+    public MobMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        super(sets, version);
     }
 
 

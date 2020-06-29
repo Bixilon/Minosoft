@@ -26,21 +26,23 @@ public class PacketEntityRotation implements ClientboundPacket {
     boolean onGround;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 this.entityId = buffer.readInteger();
                 this.yaw = buffer.readAngle();
                 this.pitch = buffer.readAngle();
-                break;
+                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 this.entityId = buffer.readVarInt();
                 this.yaw = buffer.readAngle();
                 this.pitch = buffer.readAngle();
                 onGround = buffer.readBoolean();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

@@ -10,7 +10,6 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.EntityRotation;
@@ -27,7 +26,7 @@ import java.util.HashMap;
 
 public class EntityMetaData {
 
-    final HashMap<Integer, MetaDataSet> sets = new HashMap<>();
+    final HashMap<Integer, MetaDataSet> sets;
     final ProtocolVersion version;
 
     /*
@@ -35,33 +34,9 @@ public class EntityMetaData {
     1.8: https://wiki.vg/index.php?title=Entity_metadata&oldid=6611
     1.9.4; https://wiki.vg/index.php?title=Entity_metadata&oldid=7955
      */
-    public EntityMetaData(InByteBuffer buffer) {
-        version = buffer.getVersion();
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8: {
-                byte item = buffer.readByte();
-
-                while (item != 0x7F) {
-                    byte index = (byte) (item & 0x1F);
-                    Types type = Types.byId((item & 0xFF) >> 5, buffer.getVersion());
-                    sets.put((int) index, new MetaDataSet(index, getData(type, buffer)));
-                    item = buffer.readByte();
-                }
-
-                break;
-            }
-            case VERSION_1_9_4:
-                byte index = buffer.readByte();
-                while (index != (byte) 0xFF) {
-                    byte type2 = buffer.readByte();
-                    Types type = Types.byId(type2, buffer.getVersion());
-                    sets.put((int) index, new MetaDataSet(index, getData(type, buffer)));
-                    index = buffer.readByte();
-                }
-        }
-
-
+    public EntityMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        this.sets = sets;
+        this.version = version;
     }
 
     public HashMap<Integer, MetaDataSet> getSets() {
@@ -163,8 +138,7 @@ public class EntityMetaData {
         return false;
     }
 
-
-    public Object getData(Types type, InByteBuffer buffer) {
+    public static Object getData(EntityMetaData.Types type, InByteBuffer buffer) {
         Object data = null;
 
         switch (type) {
@@ -241,7 +215,25 @@ public class EntityMetaData {
         return data;
     }
 
-    enum Types {
+    public static class MetaDataSet {
+        final int index;
+        final Object data;
+
+        public MetaDataSet(int index, Object data) {
+            this.index = index;
+            this.data = data;
+        }
+
+        public Object getData() {
+            return data;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+    }
+
+    public enum Types {
         BYTE(0),
         SHORT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1000)}), // got removed in 1.9
         INT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1001)}),
@@ -289,24 +281,6 @@ public class EntityMetaData {
 
         public int getId(ProtocolVersion version) {
             return valueMap.get(version);
-        }
-    }
-
-    public static class MetaDataSet {
-        final int index;
-        final Object data;
-
-        public MetaDataSet(int index, Object data) {
-            this.index = index;
-            this.data = data;
-        }
-
-        public Object getData() {
-            return data;
-        }
-
-        public int getIndex() {
-            return index;
         }
     }
 }

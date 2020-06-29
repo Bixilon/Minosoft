@@ -10,18 +10,18 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class TameableMetaData extends AgeableMetaData {
 
-    public TameableMetaData(InByteBuffer buffer) {
-        super(buffer);
+    public TameableMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        super(sets, version);
     }
 
 

@@ -24,15 +24,17 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
             case VERSION_1_9_4:
                 action = ScoreboardAnimation.byId(buffer.readByte());
                 scoreName = buffer.readString();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

@@ -33,7 +33,7 @@ public class PacketParticle implements ClientboundPacket {
     int[] data;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         Random random = new Random();
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
@@ -49,7 +49,7 @@ public class PacketParticle implements ClientboundPacket {
 
                 particleData = buffer.readFloat();
                 count = buffer.readInteger();
-                break;
+                return true;
             case VERSION_1_8:
                 particle = Particles.byType(buffer.readInteger());
                 longDistance = buffer.readBoolean();
@@ -64,8 +64,10 @@ public class PacketParticle implements ClientboundPacket {
 
                 particleData = buffer.readFloat();
                 count = buffer.readInteger();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

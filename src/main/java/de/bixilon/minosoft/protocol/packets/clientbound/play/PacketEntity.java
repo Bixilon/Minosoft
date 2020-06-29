@@ -22,16 +22,18 @@ public class PacketEntity implements ClientboundPacket {
     int entityId;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 entityId = buffer.readInteger();
-                break;
+                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 entityId = buffer.readVarInt();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

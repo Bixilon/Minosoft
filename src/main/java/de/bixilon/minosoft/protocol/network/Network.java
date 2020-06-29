@@ -143,6 +143,7 @@ public class Network {
 
                 while (queue.size() > 0) {
                     ServerboundPacket p = queue.get(0);
+                    queue.remove(0);
                     byte[] data = p.write(connection.getVersion()).getOutBytes();
                     if (compressionThreshold != -1) {
                         // compression is enabled
@@ -176,13 +177,12 @@ public class Network {
                         // enable encryption
                         secretKey = ((PacketEncryptionResponse) p).getSecretKey();
                     }
-                    queue.remove(0);
                 }
                 while (binQueueIn.size() > 0) {
 
                     // read data
                     byte[] data = binQueueIn.get(0);
-                    InPacketBuffer inPacketBuffer;
+                    binQueueIn.remove(0);
                     if (compressionThreshold != -1) {
                         // compression is enabled
                         // check if there is a need to decompress it and if so, do it!
@@ -198,23 +198,22 @@ public class Network {
                         }
                     }
 
-                    inPacketBuffer = new InPacketBuffer(data, connection.getVersion());
+                    InPacketBuffer inPacketBuffer = new InPacketBuffer(data, connection.getVersion());
                     try {
                         Packets.Clientbound p = connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
                         Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(p);
 
                         if (clazz == null) {
                             Log.warn(String.format("[IN] Received unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), ((p != null) ? p.name() : "UNKNOWN"), inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion().name(), connection.getConnectionState().name()));
-                            binQueueIn.remove(0);
                             continue;
                         }
                         try {
                             ClientboundPacket packet = clazz.getConstructor().newInstance();
-                            packet.read(inPacketBuffer);
-                            if (inPacketBuffer.getBytesLeft() > 0 && p != Packets.Clientbound.PLAY_ENTITY_METADATA) { // entity meta data uses mostly all data, but this happens in the handling thread
+                            boolean success = packet.read(inPacketBuffer);
+                            if (inPacketBuffer.getBytesLeft() > 0 || !success) {
                                 // warn not all data used
                                 Log.warn(String.format("[IN] Could not parse packet %s completely (used=%d, available=%d, total=%d)", ((p != null) ? p.name() : "null"), inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength()));
-                                binQueueIn.remove(0);
+
                                 continue;
                             }
 
@@ -234,8 +233,6 @@ public class Network {
                         Log.protocol("Received broken packet!");
                         e.printStackTrace();
                     }
-
-                    binQueueIn.remove(0);
                 }
                 try {
                     // sleep, wait for an interrupt from other thread

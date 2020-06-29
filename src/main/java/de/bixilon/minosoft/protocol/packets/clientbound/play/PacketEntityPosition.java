@@ -26,18 +26,20 @@ public class PacketEntityPosition implements ClientboundPacket {
     boolean onGround;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 this.entityId = buffer.readInteger();
                 this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                break;
+                return true;
             case VERSION_1_8:
                 this.entityId = buffer.readVarInt();
                 this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
                 this.onGround = buffer.readBoolean();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

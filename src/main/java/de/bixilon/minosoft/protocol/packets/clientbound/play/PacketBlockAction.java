@@ -32,7 +32,7 @@ public class PacketBlockAction implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
@@ -69,9 +69,10 @@ public class PacketBlockAction implements ClientboundPacket {
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
-
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

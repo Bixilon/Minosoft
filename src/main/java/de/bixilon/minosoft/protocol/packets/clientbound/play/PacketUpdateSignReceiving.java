@@ -25,7 +25,7 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
     BlockPosition position;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         // not used anymore ( >= 1.9)
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
@@ -33,14 +33,16 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
                 for (byte i = 0; i < 4; i++) {
                     lines[i] = buffer.readTextComponent();
                 }
-                break;
+                return true;
             case VERSION_1_8:
                 position = buffer.readPosition();
                 for (byte i = 0; i < 4; i++) {
                     lines[i] = buffer.readTextComponent();
                 }
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

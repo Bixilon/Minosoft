@@ -27,21 +27,23 @@ public class PacketEffect implements ClientboundPacket {
     boolean disableRelativeVolume; // normally only at MOB_ENDERDRAGON_END and MOB_WITHER_SPAWN, but we allow this everywhere
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 this.effect = EffectEffects.byId(buffer.readInteger());
                 position = buffer.readBlockPosition();
                 data = buffer.readInteger();
                 disableRelativeVolume = buffer.readBoolean();
-                break;
+                return true;
             case VERSION_1_8:
                 this.effect = EffectEffects.byId(buffer.readInteger());
                 position = buffer.readPosition();
                 data = buffer.readInteger();
                 disableRelativeVolume = buffer.readBoolean();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

@@ -25,7 +25,7 @@ public class PacketWindowProperty implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
@@ -33,8 +33,10 @@ public class PacketWindowProperty implements ClientboundPacket {
                 this.windowId = buffer.readByte();
                 this.property = buffer.readShort();
                 this.value = buffer.readShort();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

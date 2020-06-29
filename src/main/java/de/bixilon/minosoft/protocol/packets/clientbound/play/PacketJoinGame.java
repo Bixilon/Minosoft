@@ -36,7 +36,7 @@ public class PacketJoinGame implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8: {
@@ -53,10 +53,10 @@ public class PacketJoinGame implements ClientboundPacket {
                 levelType = LevelType.byType(buffer.readString());
                 // break here if 1.7.10, because this happened later
                 if (buffer.getVersion() == ProtocolVersion.VERSION_1_7_10) {
-                    break;
+                    return true;
                 }
                 reducedDebugScreen = buffer.readBoolean();
-                break;
+                return true;
             }
             case VERSION_1_9_4: {
                 this.entityId = buffer.readInteger();
@@ -71,9 +71,11 @@ public class PacketJoinGame implements ClientboundPacket {
                 maxPlayers = buffer.readByte();
                 levelType = LevelType.byType(buffer.readString());
                 reducedDebugScreen = buffer.readBoolean();
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     @Override

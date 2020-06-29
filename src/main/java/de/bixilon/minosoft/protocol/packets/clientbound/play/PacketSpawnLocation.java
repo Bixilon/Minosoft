@@ -24,15 +24,18 @@ public class PacketSpawnLocation implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 location = new BlockPosition(buffer.readInteger(), (short) buffer.readInteger(), buffer.readInteger());
-                break;
+                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 location = buffer.readPosition();
+                return true;
         }
+
+        return false;
     }
 
     @Override

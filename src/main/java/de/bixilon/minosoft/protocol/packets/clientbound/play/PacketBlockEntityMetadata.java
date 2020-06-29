@@ -28,19 +28,21 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 position = buffer.readBlockPositionShort();
                 action_1_7_10 = Action_1_7_10.byId(buffer.readByte());
                 nbt = buffer.readNBT(true);
-                break;
+                return true;
             case VERSION_1_8:
                 position = buffer.readPosition();
                 action_1_8 = Action_1_8.byId(buffer.readByte());
                 nbt = buffer.readNBT();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

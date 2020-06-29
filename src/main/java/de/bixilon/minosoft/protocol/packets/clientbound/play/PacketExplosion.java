@@ -28,7 +28,7 @@ public class PacketExplosion implements ClientboundPacket {
     float motionZ;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
@@ -49,8 +49,10 @@ public class PacketExplosion implements ClientboundPacket {
                 motionX = buffer.readFloat();
                 motionY = buffer.readFloat();
                 motionZ = buffer.readFloat();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

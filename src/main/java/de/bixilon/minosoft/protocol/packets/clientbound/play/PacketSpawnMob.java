@@ -30,7 +30,7 @@ public class PacketSpawnMob implements ClientboundPacket {
     Mob mob;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8: {
@@ -45,10 +45,10 @@ public class PacketSpawnMob implements ClientboundPacket {
                 assert type != null;
                 try {
                     mob = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, InByteBuffer.class).newInstance(entityId, location, yaw, pitch, velocity, buffer);
+                    return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
                 }
-                break;
             }
             case VERSION_1_9_4:
                 int entityId = buffer.readVarInt();
@@ -63,11 +63,13 @@ public class PacketSpawnMob implements ClientboundPacket {
                 assert type != null;
                 try {
                     mob = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, InByteBuffer.class).newInstance(entityId, location, yaw, pitch, velocity, buffer);
+                    return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
                 }
-                break;
         }
+
+        return false;
     }
 
     @Override

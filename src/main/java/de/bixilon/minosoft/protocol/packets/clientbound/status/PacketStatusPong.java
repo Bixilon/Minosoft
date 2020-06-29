@@ -22,8 +22,9 @@ public class PacketStatusPong implements ClientboundPacket {
     Long id;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         this.id = buffer.readLong();
+        return true;
     }
 
     @Override

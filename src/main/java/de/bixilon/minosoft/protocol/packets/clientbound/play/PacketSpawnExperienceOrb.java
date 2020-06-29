@@ -25,7 +25,7 @@ public class PacketSpawnExperienceOrb implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8: {
@@ -33,16 +33,18 @@ public class PacketSpawnExperienceOrb implements ClientboundPacket {
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
                 short count = buffer.readShort();
                 orb = new ExperienceOrb(entityId, location, count);
-                break;
+                return true;
             }
             case VERSION_1_9_4: {
                 int entityId = buffer.readVarInt();
                 Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
                 short count = buffer.readShort();
                 orb = new ExperienceOrb(entityId, location, count);
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     @Override

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Pose;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.particle.*;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
@@ -30,6 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class InByteBuffer {
@@ -350,5 +352,32 @@ public class InByteBuffer {
 
     public ProtocolVersion getVersion() {
         return version;
+    }
+
+    public HashMap<Integer, EntityMetaData.MetaDataSet> readMetaData() {
+        HashMap<Integer, EntityMetaData.MetaDataSet> sets = new HashMap<>();
+
+        switch (version) {
+            case VERSION_1_7_10:
+            case VERSION_1_8: {
+                byte item = readByte();
+
+                while (item != 0x7F) {
+                    byte index = (byte) (item & 0x1F);
+                    EntityMetaData.Types type = EntityMetaData.Types.byId((item & 0xFF) >> 5, version);
+                    sets.put((int) index, new EntityMetaData.MetaDataSet(index, EntityMetaData.getData(type, this)));
+                    item = readByte();
+                }
+            }
+            case VERSION_1_9_4:
+                byte index = readByte();
+                while (index != (byte) 0xFF) {
+                    byte type2 = readByte();
+                    EntityMetaData.Types type = EntityMetaData.Types.byId(type2, version);
+                    sets.put((int) index, new EntityMetaData.MetaDataSet(index, EntityMetaData.getData(type, this)));
+                    index = readByte();
+                }
+        }
+        return sets;
     }
 }

@@ -55,7 +55,7 @@ public class PacketSpawnObject implements ClientboundPacket {
     }
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8: {
@@ -75,14 +75,14 @@ public class PacketSpawnObject implements ClientboundPacket {
                             velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
                         }
                         object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, location, yaw, pitch, data, velocity);
-
+                        return true;
                     } else {
                         object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class).newInstance(entityId, location, yaw, pitch, data);
+                        return true;
                     }
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     e.printStackTrace();
                 }
-                break;
             }
             case VERSION_1_9_4: {
                 int entityId = buffer.readVarInt();
@@ -98,11 +98,12 @@ public class PacketSpawnObject implements ClientboundPacket {
 
                     Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
                     object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, location, yaw, pitch, data, velocity);
+                    return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     e.printStackTrace();
                 }
-                break;
             }
         }
+        return false;
     }
 }

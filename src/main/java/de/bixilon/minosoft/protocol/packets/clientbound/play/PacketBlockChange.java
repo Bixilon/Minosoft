@@ -26,19 +26,21 @@ public class PacketBlockChange implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 position = buffer.readBlockPosition();
                 block = Blocks.byId(buffer.readVarInt(), buffer.readByte());
-                break;
+                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 position = buffer.readPosition();
                 int blockId = buffer.readVarInt();
                 block = Blocks.byId(blockId >>> 4, blockId & 0xF);
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

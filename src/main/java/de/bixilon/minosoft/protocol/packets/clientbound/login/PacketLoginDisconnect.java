@@ -23,8 +23,9 @@ public class PacketLoginDisconnect implements ClientboundPacket {
     TextComponent reason;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         reason = buffer.readTextComponent();
+        return true;
     }
 
     @Override

@@ -25,20 +25,22 @@ public class PacketUpdateHealth implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 health = buffer.readFloat();
                 food = buffer.readShort();
                 saturation = buffer.readFloat();
-                break;
+                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 health = buffer.readFloat();
                 food = buffer.readVarInt();
                 saturation = buffer.readFloat();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

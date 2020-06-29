@@ -134,6 +134,51 @@ public class ChunkUtil {
                 }
                 return new Chunk(nibbleMap);
             }
+            case VERSION_1_9_4: {
+                byte sections = BitByte.getBitCount(sectionBitMask);
+
+                HashMap<Byte, ChunkNibble> nibbleMap = new HashMap<>();
+                for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
+                    if (!BitByte.isBitSet(sectionBitMask, c)) {
+                        continue;
+                    }
+
+                    byte bitsPerBlock = buffer.readByte();
+                    int[] palette = new int[buffer.readVarInt()];
+                    for (int i = 0; i < palette.length; i++) {
+                        palette[i] = buffer.readVarInt();
+                    }
+                    long[] data = buffer.readLongs(buffer.readVarInt());
+
+                    HashMap<ChunkNibbleLocation, Blocks> blockMap = new HashMap<>();
+                    int blocks = 0;
+/*
+                    for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
+                        for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
+                            for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
+                                Blocks block = Blocks.byId(blockData[arrayPos] >>> 4, blockData[arrayPos] & 0xF);
+                                if (block == Blocks.AIR) {
+                                    arrayPos++;
+                                    continue;
+                                }
+                                blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), block);
+                                arrayPos++;
+                            }
+                        }
+                    }
+
+ */
+
+                    byte[] light = buffer.readBytes(blocks / 2);
+                    if (containsSkyLight) {
+                        byte[] skyLight = buffer.readBytes(blocks / 2);
+                    }
+
+                    nibbleMap.put(c, new ChunkNibble(blockMap));
+                }
+                byte[] biomes = buffer.readBytes(256);
+                return new Chunk(nibbleMap);
+            }
         }
         throw new RuntimeException("Could not parse chunk!");
     }

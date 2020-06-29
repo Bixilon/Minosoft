@@ -41,7 +41,7 @@ public class PacketMapData implements ClientboundPacket {
     byte[] data;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 mapId = buffer.readVarInt(); // mapId
@@ -68,9 +68,9 @@ public class PacketMapData implements ClientboundPacket {
                         break;
                     case SCALE:
                         scale = buffer.readByte();
-                        return;
+                        break;
                 }
-                break;
+                return true;
             case VERSION_1_8:
                 mapId = buffer.readVarInt();
                 scale = buffer.readByte();
@@ -91,9 +91,10 @@ public class PacketMapData implements ClientboundPacket {
                     int dataLength = buffer.readVarInt();
                     data = buffer.readBytes(dataLength);
                 }
-
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

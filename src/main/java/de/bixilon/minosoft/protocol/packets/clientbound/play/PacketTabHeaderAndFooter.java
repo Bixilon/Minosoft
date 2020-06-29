@@ -25,14 +25,16 @@ public class PacketTabHeaderAndFooter implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_8:
             case VERSION_1_9_4:
                 header = buffer.readTextComponent();
                 footer = buffer.readTextComponent();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

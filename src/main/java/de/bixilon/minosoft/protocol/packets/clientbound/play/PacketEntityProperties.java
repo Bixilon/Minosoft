@@ -30,7 +30,7 @@ public class PacketEntityProperties implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
                 entityId = buffer.readInteger();
@@ -47,7 +47,7 @@ public class PacketEntityProperties implements ClientboundPacket {
                     }
                     properties.put(key, new EntityProperty(value));
                 }
-                break;
+                return true;
             }
             case VERSION_1_8:
             case VERSION_1_9_4: {
@@ -65,9 +65,11 @@ public class PacketEntityProperties implements ClientboundPacket {
                     }
                     properties.put(key, new EntityProperty(value));
                 }
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     @Override

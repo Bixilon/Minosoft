@@ -28,22 +28,25 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
     byte flags;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 location = buffer.readLocation();
                 yaw = buffer.readFloat();
                 pitch = buffer.readFloat();
                 onGround = buffer.readBoolean();
-                break;
+                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 location = buffer.readLocation();
                 yaw = buffer.readFloat();
                 pitch = buffer.readFloat();
                 flags = buffer.readByte();
-                break;
+                onGround = buffer.readBoolean();
+                return true;
         }
+
+        return false;
     }
 
     @Override

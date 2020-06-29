@@ -26,7 +26,7 @@ public class PacketSetSlot implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
@@ -34,8 +34,10 @@ public class PacketSetSlot implements ClientboundPacket {
                 this.windowId = buffer.readByte();
                 this.slotId = buffer.readShort();
                 this.slot = buffer.readSlot();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

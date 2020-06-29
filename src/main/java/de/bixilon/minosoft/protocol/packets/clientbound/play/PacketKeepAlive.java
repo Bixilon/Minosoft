@@ -23,16 +23,18 @@ public class PacketKeepAlive implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 id = buffer.readInteger();
-                break;
+                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 id = buffer.readVarInt();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

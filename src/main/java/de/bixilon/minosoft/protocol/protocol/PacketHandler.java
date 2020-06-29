@@ -98,7 +98,7 @@ public class PacketHandler {
 
     public void handle(PacketLoginDisconnect pkg) {
         Log.info(String.format("Disconnecting from server (reason=%s)", pkg.getReason().getColoredMessage()));
-        connection.setConnectionState(ConnectionState.DISCONNECTING);
+        connection.disconnect();
     }
 
     public void handle(PacketPlayerInfo pkg) {
@@ -176,7 +176,7 @@ public class PacketHandler {
 
     public void handle(PacketDisconnect pkg) {
         // got kicked
-        connection.setConnectionState(ConnectionState.DISCONNECTING);
+        connection.disconnect();
     }
 
     public void handle(PacketHeldItemChangeReceiving pkg) {

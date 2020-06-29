@@ -30,7 +30,7 @@ public class PacketRespawn implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
@@ -39,8 +39,10 @@ public class PacketRespawn implements ClientboundPacket {
                 difficulty = Difficulty.byId(buffer.readByte());
                 gameMode = GameMode.byId(buffer.readByte());
                 levelType = LevelType.byType(buffer.readString());
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

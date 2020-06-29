@@ -33,7 +33,7 @@ public class PacketScoreboardTeams implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 name = buffer.readString();
@@ -54,7 +54,7 @@ public class PacketScoreboardTeams implements ClientboundPacket {
                         playerNames[i] = buffer.readString();
                     }
                 }
-                break;
+                return true;
             case VERSION_1_8:
                 name = buffer.readString();
                 action = ScoreboardTeamAction.byId(buffer.readByte());
@@ -73,8 +73,10 @@ public class PacketScoreboardTeams implements ClientboundPacket {
                         playerNames[i] = buffer.readString();
                     }
                 }
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

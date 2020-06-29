@@ -24,15 +24,17 @@ public class PacketChangeGameState implements ClientboundPacket {
     float value;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
             case VERSION_1_9_4:
                 reason = Reason.byId(buffer.readByte());
                 value = buffer.readFloat();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

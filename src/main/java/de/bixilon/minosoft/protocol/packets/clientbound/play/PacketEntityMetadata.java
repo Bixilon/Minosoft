@@ -16,20 +16,22 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 
 public class PacketEntityMetadata implements ClientboundPacket {
+    HashMap<Integer, EntityMetaData.MetaDataSet> sets;
     int entityId;
-    InPacketBuffer buffer;
+    ProtocolVersion version;
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
-        this.buffer = buffer;
+    public boolean read(InPacketBuffer buffer) {
+        this.version = buffer.getVersion();
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 entityId = buffer.readInteger();
@@ -38,7 +40,11 @@ public class PacketEntityMetadata implements ClientboundPacket {
             case VERSION_1_9_4:
                 entityId = buffer.readVarInt();
                 break;
+            default:
+                return false;
         }
+        sets = buffer.readMetaData();
+        return true;
     }
 
     @Override
@@ -55,13 +61,13 @@ public class PacketEntityMetadata implements ClientboundPacket {
         return entityId;
     }
 
-    public InPacketBuffer getRawEntityData() {
-        return buffer;
+    public HashMap<Integer, EntityMetaData.MetaDataSet> getSets() {
+        return sets;
     }
 
     public EntityMetaData getEntityData(Class<? extends EntityMetaData> clazz) {
         try {
-            return clazz.getConstructor(InByteBuffer.class).newInstance(buffer);
+            return clazz.getConstructor(HashMap.class, ProtocolVersion.class).newInstance(sets, version);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }

@@ -28,28 +28,30 @@ public class PacketSpawnPainting implements ClientboundPacket {
     int direction;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 entityId = buffer.readVarInt();
                 title = buffer.readString();
                 position = buffer.readBlockPositionInteger();
                 direction = buffer.readInteger();
-                break;
+                return true;
             case VERSION_1_8:
                 entityId = buffer.readVarInt();
                 title = buffer.readString();
                 position = buffer.readPosition();
                 direction = buffer.readByte();
-                break;
+                return true;
             case VERSION_1_9_4:
                 entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID(); // ?
                 title = buffer.readString();
                 position = buffer.readPosition();
                 direction = buffer.readByte();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

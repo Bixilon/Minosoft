@@ -10,16 +10,17 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
+
+import java.util.HashMap;
 
 public class SnowGolemMetaData extends MobMetaData {
 
-    public SnowGolemMetaData(InByteBuffer buffer) {
-        super(buffer);
+    public SnowGolemMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        super(sets, version);
     }
 
     public boolean hasNoPumpkinHead() {

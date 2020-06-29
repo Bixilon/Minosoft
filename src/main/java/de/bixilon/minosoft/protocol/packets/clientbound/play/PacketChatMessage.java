@@ -26,18 +26,20 @@ public class PacketChatMessage implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 c = buffer.readTextComponent();
                 position = TextPosition.CHAT_BOX;
-                break;
+                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 c = buffer.readTextComponent();
                 position = TextPosition.byId(buffer.readByte());
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

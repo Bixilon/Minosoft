@@ -29,7 +29,7 @@ public class PacketChunkData implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
                 this.location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
@@ -41,7 +41,7 @@ public class PacketChunkData implements ClientboundPacket {
                 InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInteger()), buffer.getVersion());
 
                 chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, true);
-                break;
+                return true;
             }
             case VERSION_1_8: {
                 this.location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
@@ -50,10 +50,26 @@ public class PacketChunkData implements ClientboundPacket {
                 int size = buffer.readVarInt();
 
                 chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
-                break;
+                return true;
+            }
+            case VERSION_1_9_4: {
+                this.location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
+                boolean groundUpContinuous = buffer.readBoolean();
+                short sectionBitMask = buffer.readShort();
+                int size = buffer.readVarInt();
+
+                chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
+                int blockEntities = buffer.readVarInt();
+                for (int i = 0; i < blockEntities; i++) {
+                    buffer.readNBT();
+                    //ToDo
+                }
+                return false;
             }
         }
 
+
+        return false;
     }
 
     @Override

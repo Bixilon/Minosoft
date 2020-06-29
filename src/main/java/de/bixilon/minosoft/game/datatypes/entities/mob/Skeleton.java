@@ -16,14 +16,16 @@ package de.bixilon.minosoft.game.datatypes.entities.mob;
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.SkeletonMetaData;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class Skeleton extends Mob implements MobInterface {
     SkeletonMetaData metaData;
 
-    public Skeleton(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer) {
+    public Skeleton(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(id, location, yaw, pitch, velocity);
-        this.metaData = new SkeletonMetaData(buffer);
+        this.metaData = new SkeletonMetaData(sets, version);
     }
 
     @Override

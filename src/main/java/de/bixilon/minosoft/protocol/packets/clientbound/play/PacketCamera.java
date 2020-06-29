@@ -23,13 +23,15 @@ public class PacketCamera implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_8:
             case VERSION_1_9_4:
                 entityId = buffer.readVarInt();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

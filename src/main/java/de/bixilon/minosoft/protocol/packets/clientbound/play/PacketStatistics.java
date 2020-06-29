@@ -27,7 +27,7 @@ public class PacketStatistics implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
@@ -36,8 +36,10 @@ public class PacketStatistics implements ClientboundPacket {
                 for (int i = 0; i < length; i++) {
                     statistics.put(Statistics.byIdentifier(new Identifier(buffer.readString())), buffer.readVarInt());
                 }
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

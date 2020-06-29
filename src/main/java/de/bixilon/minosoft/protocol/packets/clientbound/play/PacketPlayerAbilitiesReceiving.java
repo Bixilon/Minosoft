@@ -29,7 +29,7 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
                 byte flags = buffer.readByte();
@@ -39,7 +39,7 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
                 godMode = BitByte.isBitSet(flags, 3);
                 flyingSpeed = buffer.readFloat();
                 walkingSpeed = buffer.readFloat();
-                break;
+                return true;
             }
             case VERSION_1_8:
             case VERSION_1_9_4: {
@@ -50,9 +50,11 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
                 creative = BitByte.isBitSet(flags, 3);
                 flyingSpeed = buffer.readFloat();
                 walkingSpeed = buffer.readFloat();
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     @Override

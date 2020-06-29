@@ -28,7 +28,7 @@ public class PacketSoundEffect implements ClientboundPacket {
     int pitch;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
@@ -36,8 +36,10 @@ public class PacketSoundEffect implements ClientboundPacket {
                 location = new Location(buffer.readInteger() * 8, buffer.readInteger() * 8, buffer.readInteger() * 8);
                 volume = buffer.readFloat();
                 pitch = (int) (buffer.readByte() * pitchCalc);
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

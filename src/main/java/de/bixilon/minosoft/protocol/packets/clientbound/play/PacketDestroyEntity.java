@@ -25,22 +25,24 @@ public class PacketDestroyEntity implements ClientboundPacket {
     int[] entityIds;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 this.entityIds = new int[buffer.readByte()];
                 for (int i = 0; i < entityIds.length; i++) {
                     entityIds[i] = buffer.readInteger();
                 }
-                break;
+                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 this.entityIds = new int[buffer.readVarInt()];
                 for (int i = 0; i < entityIds.length; i++) {
                     entityIds[i] = buffer.readVarInt();
                 }
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

@@ -27,20 +27,22 @@ public class PacketEntityEffect implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 entityId = buffer.readInteger();
                 effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readShort());
                 hideParticle = false;
-                break;
+                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 entityId = buffer.readVarInt();
                 effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readVarInt());
                 hideParticle = buffer.readBoolean();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

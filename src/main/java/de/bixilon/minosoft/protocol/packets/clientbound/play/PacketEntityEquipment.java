@@ -27,24 +27,26 @@ public class PacketEntityEquipment implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 entityId = buffer.readInteger();
                 this.slot = InventorySlots.EntityInventory.byId(buffer.readShort(), buffer.getVersion());
                 this.data = buffer.readSlot();
-                break;
+                return true;
             case VERSION_1_8:
                 entityId = buffer.readVarInt();
                 this.slot = InventorySlots.EntityInventory.byId(buffer.readShort(), buffer.getVersion());
                 this.data = buffer.readSlot();
-                break;
+                return true;
             case VERSION_1_9_4:
                 entityId = buffer.readVarInt();
                 this.slot = InventorySlots.EntityInventory.byId(buffer.readVarInt(), buffer.getVersion());
                 this.data = buffer.readSlot();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

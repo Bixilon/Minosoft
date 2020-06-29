@@ -22,8 +22,9 @@ public class PacketLoginSetCompression implements ClientboundPacket {
     int threshold;
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         threshold = buffer.readVarInt();
+        return true;
     }
 
     @Override

@@ -24,16 +24,18 @@ public class PacketOpenSignEditor implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 position = buffer.readBlockPositionInteger();
-                break;
+                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 position = buffer.readPosition();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

@@ -26,13 +26,13 @@ public class PacketScoreboardObjective implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer) {
+    public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 name = buffer.readString();
                 value = buffer.readString();
                 action = ScoreboardObjectiveAction.byId(buffer.readByte());
-                break;
+                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 name = buffer.readString();
@@ -41,8 +41,10 @@ public class PacketScoreboardObjective implements ClientboundPacket {
                     value = buffer.readString();
                     type = ScoreboardObjectiveType.byName(buffer.readString());
                 }
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override
