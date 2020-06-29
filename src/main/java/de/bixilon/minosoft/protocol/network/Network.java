@@ -214,6 +214,8 @@ public class Network {
                             if (inPacketBuffer.getBytesLeft() > 0 && p != Packets.Clientbound.PLAY_ENTITY_METADATA) { // entity meta data uses mostly all data, but this happens in the handling thread
                                 // warn not all data used
                                 Log.warn(String.format("[IN] Could not parse packet %s completely (used=%d, available=%d, total=%d)", ((p != null) ? p.name() : "null"), inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength()));
+                                binQueueIn.remove(0);
+                                continue;
                             }
 
                             if (packet instanceof PacketLoginSuccess) {
