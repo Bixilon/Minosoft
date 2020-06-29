@@ -107,7 +107,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_SIGN, PacketUpdateSignReceiving.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_ANIMATION, PacketEntityAnimation.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_STATUS, PacketEntityStatus.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_SOUND_EFFECT, PacketSoundEffect.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_NAMED_SOUND_EFFECT, PacketNamedSoundEffect.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_POSITION_AND_ROTATION, PacketPlayerPositionAndRotation.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ATTACH_ENTITY, PacketAttachEntity.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_USE_BED, PacketUseBed.class);
@@ -138,6 +138,8 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_TITLE, PacketTitle.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_COMBAT_EVENT, PacketCombatEvent.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_CAMERA, PacketCamera.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_UNLOAD_CHUNK, PacketUnloadChunk.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SOUND_EFFECT, PacketSoundEffect.class);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {

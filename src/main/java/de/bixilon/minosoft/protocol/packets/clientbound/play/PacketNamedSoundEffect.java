@@ -20,18 +20,25 @@ import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 
-public class PacketSoundEffect implements ClientboundPacket {
+public class PacketNamedSoundEffect implements ClientboundPacket {
     static final float pitchCalc = 100.0F / 63.0F;
     Location location;
-    int sound;
+    String sound;
     float volume;
     int pitch;
 
     @Override
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
+            case VERSION_1_7_10:
+            case VERSION_1_8:
+                sound = buffer.readString();
+                location = new Location(buffer.readInteger() * 8, buffer.readInteger() * 8, buffer.readInteger() * 8);
+                volume = buffer.readFloat();
+                pitch = (int) (buffer.readByte() * pitchCalc);
+                return true;
             case VERSION_1_9_4:
-                sound = buffer.readVarInt();
+                sound = buffer.readString();
                 int category = buffer.readVarInt(); //ToDo: category
                 location = new Location(buffer.readFixedPointNumberInteger() * 8, buffer.readFixedPointNumberInteger() * 8, buffer.readFixedPointNumberInteger() * 8);
                 volume = buffer.readFloat();
@@ -44,7 +51,7 @@ public class PacketSoundEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Play sound effect %d with volume=%s and pitch=%s at %s", sound, volume, pitch, location.toString()));
+        Log.protocol(String.format("Play named sound effect %s with volume=%s and pitch=%s at %s", sound, volume, pitch, location.toString()));
     }
 
     @Override
@@ -63,7 +70,7 @@ public class PacketSoundEffect implements ClientboundPacket {
         return pitch;
     }
 
-    public int getSound() {
+    public String getSound() {
         return sound;
     }
 

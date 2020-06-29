@@ -324,7 +324,7 @@ public class PacketHandler {
         //ToDo
     }
 
-    public void handle(PacketSoundEffect pkg) {
+    public void handle(PacketNamedSoundEffect pkg) {
         //ToDo
     }
 
@@ -519,6 +519,14 @@ public class PacketHandler {
     }
 
     public void handle(PacketCamera pkg) {
+        //ToDo
+    }
+
+    public void handle(PacketUnloadChunk pkg) {
+        connection.getPlayer().getWorld().unloadChunk(pkg.getLocation());
+    }
+
+    public void handle(PacketSoundEffect pkg) {
         //ToDo
     }
 }

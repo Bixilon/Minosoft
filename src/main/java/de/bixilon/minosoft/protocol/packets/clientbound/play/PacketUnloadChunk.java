@@ -13,38 +13,29 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
+public class PacketUnloadChunk implements ClientboundPacket {
+    ChunkLocation location;
 
-public class PacketSoundEffect implements ClientboundPacket {
-    static final float pitchCalc = 100.0F / 63.0F;
-    Location location;
-    int sound;
-    float volume;
-    int pitch;
 
     @Override
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_9_4:
-                sound = buffer.readVarInt();
-                int category = buffer.readVarInt(); //ToDo: category
-                location = new Location(buffer.readFixedPointNumberInteger() * 8, buffer.readFixedPointNumberInteger() * 8, buffer.readFixedPointNumberInteger() * 8);
-                volume = buffer.readFloat();
-                pitch = (int) (buffer.readByte() * pitchCalc);
+                location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
                 return true;
         }
-
         return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Play sound effect %d with volume=%s and pitch=%s at %s", sound, volume, pitch, location.toString()));
+        Log.protocol(String.format("Received unload chunk packet (location=%s)", location.toString()));
     }
 
     @Override
@@ -52,22 +43,7 @@ public class PacketSoundEffect implements ClientboundPacket {
         h.handle(this);
     }
 
-    public Location getLocation() {
+    public ChunkLocation getLocation() {
         return location;
-    }
-
-    /**
-     * @return Pitch in Percent * 100
-     */
-    public int getPitch() {
-        return pitch;
-    }
-
-    public int getSound() {
-        return sound;
-    }
-
-    public float getVolume() {
-        return volume;
     }
 }

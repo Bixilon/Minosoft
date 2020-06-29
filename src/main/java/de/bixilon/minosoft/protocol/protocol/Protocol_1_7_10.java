@@ -86,7 +86,7 @@ public class Protocol_1_7_10 extends Protocol {
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_CHUNK_BULK, 0x26);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_EXPLOSION, 0x27);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_EFFECT, 0x28);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_SOUND_EFFECT, 0x29);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_NAMED_SOUND_EFFECT, 0x29);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_PARTICLE, 0x2A);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_CHANGE_GAME_STATE, 0x2B);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_SPAWN_WEATHER_ENTITY, 0x2C);
