@@ -67,7 +67,7 @@ public class PacketEntityStatus implements ClientboundPacket {
         ANIMAL_IN_LOVE(18),
         RESET_SQUID_ROTATION(19),
         SPAWN_EXPLOSION_PARTICLE(20),
-        PLAY_GUARDIAN_SOUND(20),
+        PLAY_GUARDIAN_SOUND(21),
         ENABLE_REDUCED_DEBUG_SCREEN(22),
         DISABLE_REDUCED_DEBUG_SCREEN(23),
         OP_PERMISSION_LEVEL_0(24),
@@ -78,7 +78,7 @@ public class PacketEntityStatus implements ClientboundPacket {
         SHIELD_BLOCK_SOUND(29),
         SHIELD_BREAK_SOUND(30),
         FISHING_ROD_BOBBER(31),
-        ARMORSTAND_HIT(32),
+        ARMOR_STAND_HIT(32),
         ENTITY_THORNS_HURT(33);
 
 

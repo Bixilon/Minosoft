@@ -22,8 +22,10 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class PacketSpawnMob implements ClientboundPacket {
@@ -62,7 +64,7 @@ public class PacketSpawnMob implements ClientboundPacket {
 
                 assert type != null;
                 try {
-                    mob = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, InByteBuffer.class).newInstance(entityId, location, yaw, pitch, velocity, buffer);
+                    mob = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, HashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
                     return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
