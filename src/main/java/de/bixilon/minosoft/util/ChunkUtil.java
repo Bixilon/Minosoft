@@ -135,8 +135,7 @@ public class ChunkUtil {
                 return new Chunk(nibbleMap);
             }
             case VERSION_1_9_4: {
-                byte sections = BitByte.getBitCount(sectionBitMask);
-
+                // really big thanks to: https://wiki.vg/index.php?title=Chunk_Format&oldid=13712
                 HashMap<Byte, ChunkNibble> nibbleMap = new HashMap<>();
                 for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
                     if (!BitByte.isBitSet(sectionBitMask, c)) {
@@ -144,34 +143,66 @@ public class ChunkUtil {
                     }
 
                     byte bitsPerBlock = buffer.readByte();
-                    int[] palette = new int[buffer.readVarInt()];
-                    for (int i = 0; i < palette.length; i++) {
-                        palette[i] = buffer.readVarInt();
+                    if (bitsPerBlock < 4) {
+                        bitsPerBlock = 4;
+                    } else if (bitsPerBlock > 8) {
+                        bitsPerBlock = 13;
                     }
+                    boolean usePalette = (bitsPerBlock <= 8);
+
+                    int[] palette = null;
+                    if (usePalette) {
+                        palette = new int[buffer.readVarInt()];
+                        for (int i = 0; i < palette.length; i++) {
+                            palette[i] = buffer.readVarInt();
+                        }
+                    } else {
+                        buffer.readVarInt();
+                    }
+                    int individualValueMask = ((1 << bitsPerBlock) - 1);
+
                     long[] data = buffer.readLongs(buffer.readVarInt());
 
                     HashMap<ChunkNibbleLocation, Blocks> blockMap = new HashMap<>();
-                    int blocks = 0;
-/*
                     for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                         for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                             for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
-                                Blocks block = Blocks.byId(blockData[arrayPos] >>> 4, blockData[arrayPos] & 0xF);
+
+
+                                int blockNumber = (((nibbleY * 16) + nibbleZ) * 16) + nibbleX;
+                                int startLong = (blockNumber * bitsPerBlock) / 64;
+                                int startOffset = (blockNumber * bitsPerBlock) % 64;
+                                int endLong = ((blockNumber + 1) * bitsPerBlock - 1) / 64;
+
+
+                                int blockId;
+                                if (startLong == endLong) {
+                                    blockId = (int) (data[startLong] >>> startOffset);
+                                } else {
+                                    int endOffset = 64 - startOffset;
+                                    blockId = (int) (data[startLong] >>> startOffset | data[endLong] << endOffset);
+                                }
+                                blockId &= individualValueMask;
+
+                                if (usePalette) {
+                                    // data should always be within the palette length
+                                    // If you're reading a power of 2 minus one (15, 31, 63, 127, etc...) that's out of bounds,
+                                    // you're probably reading light data instead
+                                    blockId = palette[blockId];
+                                }
+
+                                Blocks block = Blocks.byId(blockId >>> 4, blockId & 0xF);
                                 if (block == Blocks.AIR) {
-                                    arrayPos++;
                                     continue;
                                 }
                                 blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), block);
-                                arrayPos++;
                             }
                         }
                     }
 
- */
-
-                    byte[] light = buffer.readBytes(blocks / 2);
+                    byte[] light = buffer.readBytes(2048);
                     if (containsSkyLight) {
-                        byte[] skyLight = buffer.readBytes(blocks / 2);
+                        byte[] skyLight = buffer.readBytes(2048);
                     }
 
                     nibbleMap.put(c, new ChunkNibble(blockMap));

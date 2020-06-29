@@ -131,6 +131,6 @@ public enum Blocks {
     }
 
     public int getData() {
-        return id;
+        return data;
     }
 }

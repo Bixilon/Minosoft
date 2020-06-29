@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -23,10 +25,13 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.ChunkUtil;
 import de.bixilon.minosoft.util.Util;
 
+import java.util.HashMap;
+
 public class PacketChunkData implements ClientboundPacket {
     ChunkLocation location;
     Chunk chunk;
 
+    HashMap<BlockPosition, CompoundTag> blockEntities = new HashMap<>();
 
     @Override
     public boolean read(InPacketBuffer buffer) {
@@ -55,16 +60,16 @@ public class PacketChunkData implements ClientboundPacket {
             case VERSION_1_9_4: {
                 this.location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
                 boolean groundUpContinuous = buffer.readBoolean();
-                short sectionBitMask = buffer.readShort();
+                short sectionBitMask = (short) buffer.readVarInt();
                 int size = buffer.readVarInt();
 
                 chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
-                int blockEntities = buffer.readVarInt();
-                for (int i = 0; i < blockEntities; i++) {
-                    buffer.readNBT();
-                    //ToDo
+                int blockEntitiesCount = buffer.readVarInt();
+                for (int i = 0; i < blockEntitiesCount; i++) {
+                    CompoundTag tag = buffer.readNBT();
+                    blockEntities.put(new BlockPosition(tag.getIntTag("x").getValue(), (short) tag.getIntTag("y").getValue(), tag.getIntTag("z").getValue()), tag);
                 }
-                return false;
+                return true;
             }
         }
 
@@ -83,6 +88,10 @@ public class PacketChunkData implements ClientboundPacket {
 
     public Chunk getChunk() {
         return chunk;
+    }
+
+    public HashMap<BlockPosition, CompoundTag> getBlockEntities() {
+        return blockEntities;
     }
 
     @Override

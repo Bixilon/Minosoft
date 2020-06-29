@@ -300,6 +300,8 @@ public class PacketHandler {
 
     public void handle(PacketChunkData pkg) {
         connection.getPlayer().getWorld().setChunk(pkg.getLocation(), pkg.getChunk());
+        connection.getPlayer().getWorld().setBlockEntityData(pkg.getBlockEntities());
+
     }
 
     public void handle(PacketEntityEffect pkg) {

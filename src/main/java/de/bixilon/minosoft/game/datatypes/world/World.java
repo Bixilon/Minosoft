@@ -141,4 +141,10 @@ public class World {
     public CompoundTag getBlockEntityData(BlockPosition position) {
         return blockEntityMeta.get(position);
     }
+
+    public void setBlockEntityData(HashMap<BlockPosition, CompoundTag> blockEntities) {
+        for (Map.Entry<BlockPosition, CompoundTag> entrySet : blockEntities.entrySet()) {
+            blockEntityMeta.put(entrySet.getKey(), entrySet.getValue());
+        }
+    }
 }

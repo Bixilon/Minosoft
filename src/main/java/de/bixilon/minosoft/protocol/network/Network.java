@@ -212,7 +212,7 @@ public class Network {
                             boolean success = packet.read(inPacketBuffer);
                             if (inPacketBuffer.getBytesLeft() > 0 || !success) {
                                 // warn not all data used
-                                Log.warn(String.format("[IN] Could not parse packet %s completely (used=%d, available=%d, total=%d)", ((p != null) ? p.name() : "null"), inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength()));
+                                Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", ((p != null) ? p.name() : "null"), inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
 
                                 continue;
                             }
