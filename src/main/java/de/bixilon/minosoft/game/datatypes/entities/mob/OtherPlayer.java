@@ -82,8 +82,7 @@ public class OtherPlayer extends Mob implements MobInterface {
 
     @Override
     public int getMaxHealth() {
-        return 40;
-        //ToDo: absorption
+        return (int) (40 + metaData.getAbsorptionHearts());
     }
 
     public String getName() {

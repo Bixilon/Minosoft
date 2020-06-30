@@ -368,15 +368,16 @@ public class InByteBuffer {
                     sets.put((int) index, new EntityMetaData.MetaDataSet(index, EntityMetaData.getData(type, this)));
                     item = readByte();
                 }
+                break;
             }
             case VERSION_1_9_4:
                 byte index = readByte();
                 while (index != (byte) 0xFF) {
-                    byte type2 = readByte();
-                    EntityMetaData.Types type = EntityMetaData.Types.byId(type2, version);
+                    EntityMetaData.Types type = EntityMetaData.Types.byId(readByte(), version);
                     sets.put((int) index, new EntityMetaData.MetaDataSet(index, EntityMetaData.getData(type, this)));
                     index = readByte();
                 }
+                break;
         }
         return sets;
     }

@@ -39,6 +39,83 @@ public class EntityMetaData {
         this.version = version;
     }
 
+    public static Object getData(EntityMetaData.Types type, InByteBuffer buffer) {
+        Object data = null;
+
+        switch (type) {
+            case BYTE:
+                data = buffer.readByte();
+                break;
+            case VAR_INT:
+                data = buffer.readVarInt();
+                break;
+            case SHORT:
+                data = buffer.readShort();
+                break;
+            case INT:
+                data = buffer.readInteger();
+                break;
+            case FLOAT:
+                data = buffer.readFloat();
+                break;
+            case STRING:
+                data = buffer.readString();
+                break;
+            case CHAT:
+                data = buffer.readTextComponent();
+                break;
+            case BOOLEAN:
+                data = buffer.readBoolean();
+                break;
+            case VECTOR:
+                data = new Vector(buffer.readInteger(), buffer.readInteger(), buffer.readInteger());
+                break;
+            case SLOT:
+                data = buffer.readSlot();
+                break;
+            case ROTATION:
+                data = new EntityRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+                break;
+            case POSITION:
+                data = buffer.readPosition();
+                break;
+            case OPT_CHAT:
+                if (buffer.readBoolean()) {
+                    data = buffer.readTextComponent();
+                }
+                break;
+            case OPT_POSITION:
+                if (buffer.readBoolean()) {
+                    data = buffer.readPosition();
+                }
+                break;
+            case DIRECTION:
+                data = buffer.readDirection();
+                break;
+            case OPT_UUID:
+                if (buffer.readBoolean()) {
+                    data = buffer.readUUID();
+                }
+                break;
+            case NBT:
+                data = buffer.readNBT();
+                break;
+            case PARTICLE:
+                data = buffer.readParticle();
+                break;
+            case POSE:
+                data = buffer.readPose();
+                break;
+            case BLOCK_ID:
+                int blockId = buffer.readVarInt();
+                data = Blocks.byId(blockId >> 4, blockId & 0xF);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + type);
+        }
+        return data;
+    }
+
     public HashMap<Integer, MetaDataSet> getSets() {
         return sets;
     }
@@ -138,101 +215,6 @@ public class EntityMetaData {
         return false;
     }
 
-    public static Object getData(EntityMetaData.Types type, InByteBuffer buffer) {
-        Object data = null;
-
-        switch (type) {
-            case BYTE:
-                data = buffer.readByte();
-                break;
-            case VAR_INT:
-                data = buffer.readVarInt();
-                break;
-            case SHORT:
-                data = buffer.readShort();
-                break;
-            case INT:
-                data = buffer.readInteger();
-                break;
-            case FLOAT:
-                data = buffer.readFloat();
-                break;
-            case STRING:
-                data = buffer.readString();
-                break;
-            case CHAT:
-                data = buffer.readTextComponent();
-                break;
-            case BOOLEAN:
-                data = buffer.readBoolean();
-                break;
-            case VECTOR:
-                data = new Vector(buffer.readInteger(), buffer.readInteger(), buffer.readInteger());
-                break;
-            case SLOT:
-                data = buffer.readSlot();
-                break;
-            case ROTATION:
-                data = new EntityRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-                break;
-            case POSITION:
-                data = buffer.readPosition();
-                break;
-            case OPT_CHAT:
-                if (buffer.readBoolean()) {
-                    data = buffer.readTextComponent();
-                }
-                break;
-            case OPT_POSITION:
-                if (buffer.readBoolean()) {
-                    data = buffer.readPosition();
-                }
-                break;
-            case DIRECTION:
-                data = buffer.readDirection();
-                break;
-            case OPT_UUID:
-                if (buffer.readBoolean()) {
-                    data = buffer.readUUID();
-                }
-                break;
-            case NBT:
-                data = buffer.readNBT();
-                break;
-            case PARTICLE:
-                data = buffer.readParticle();
-                break;
-            case POSE:
-                data = buffer.readPose();
-                break;
-            case BLOCK_ID:
-                int blockId = buffer.readVarInt();
-                data = Blocks.byId(blockId >> 4, blockId & 0xF);
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + type);
-        }
-        return data;
-    }
-
-    public static class MetaDataSet {
-        final int index;
-        final Object data;
-
-        public MetaDataSet(int index, Object data) {
-            this.index = index;
-            this.data = data;
-        }
-
-        public Object getData() {
-            return data;
-        }
-
-        public int getIndex() {
-            return index;
-        }
-    }
-
     public enum Types {
         BYTE(0),
         SHORT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1000)}), // got removed in 1.9
@@ -280,7 +262,29 @@ public class EntityMetaData {
         }
 
         public int getId(ProtocolVersion version) {
-            return valueMap.get(version);
+            Integer ret = valueMap.get(version);
+            if (ret == null) {
+                return -2;
+            }
+            return ret;
+        }
+    }
+
+    public static class MetaDataSet {
+        final int index;
+        final Object data;
+
+        public MetaDataSet(int index, Object data) {
+            this.index = index;
+            this.data = data;
+        }
+
+        public Object getData() {
+            return data;
+        }
+
+        public int getIndex() {
+            return index;
         }
     }
 }

@@ -27,6 +27,8 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
     boolean onGround;
     byte flags;
 
+    int teleportId;
+
     @Override
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
@@ -37,12 +39,17 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
                 onGround = buffer.readBoolean();
                 return true;
             case VERSION_1_8:
+                location = buffer.readLocation();
+                yaw = buffer.readFloat();
+                pitch = buffer.readFloat();
+                flags = buffer.readByte();
+                return true;
             case VERSION_1_9_4:
                 location = buffer.readLocation();
                 yaw = buffer.readFloat();
                 pitch = buffer.readFloat();
                 flags = buffer.readByte();
-                onGround = buffer.readBoolean();
+                teleportId = buffer.readVarInt();
                 return true;
         }
 
@@ -68,6 +75,10 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
 
     public boolean isOnGround() {
         return onGround;
+    }
+
+    public int getTeleportId() {
+        return teleportId;
     }
 
     @Override

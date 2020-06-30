@@ -50,6 +50,7 @@ public class PacketSpawnMob implements ClientboundPacket {
                     return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
+                    //ToDo: on hypixel, here comes mob id 30 which could be an armor stand, but an armor stand is an object :?
                 }
             }
             case VERSION_1_9_4:
