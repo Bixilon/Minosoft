@@ -19,13 +19,13 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 public class FallingDragonEgg extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
 
-    public FallingDragonEgg(int id, Location location, short yaw, short pitch, int additionalInt) {
-        super(id, location, yaw, pitch, null);
+    public FallingDragonEgg(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
     }
 
-    public FallingDragonEgg(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(id, location, yaw, pitch, velocity);
+    public FallingDragonEgg(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+        super(entityId, location, yaw, pitch, velocity);
     }
 
     @Override

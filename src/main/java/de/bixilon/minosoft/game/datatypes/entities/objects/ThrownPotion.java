@@ -21,14 +21,14 @@ public class ThrownPotion extends EntityObject implements ObjectInterface {
     PotionMetaData metaData;
     StatusEffects potion; //ToDo
 
-    public ThrownPotion(int id, Location location, short yaw, short pitch, int additionalInt) {
-        super(id, location, yaw, pitch, null);
+    public ThrownPotion(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
         this.potion = StatusEffects.byId(additionalInt);
     }
 
-    public ThrownPotion(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(id, location, yaw, pitch, velocity);
+    public ThrownPotion(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+        super(entityId, location, yaw, pitch, velocity);
         this.potion = StatusEffects.byId(additionalInt);
     }
 

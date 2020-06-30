@@ -20,14 +20,14 @@ public class ShulkerBullet extends EntityObject implements ObjectInterface {
     final int shooter;
     EntityMetaData metaData;
 
-    public ShulkerBullet(int id, Location location, short yaw, short pitch, int additionalInt) {
-        super(id, location, yaw, pitch, null);
+    public ShulkerBullet(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
         this.shooter = additionalInt;
     }
 
-    public ShulkerBullet(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(id, location, yaw, pitch, velocity);
+    public ShulkerBullet(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+        super(entityId, location, yaw, pitch, velocity);
         this.shooter = additionalInt;
     }
 

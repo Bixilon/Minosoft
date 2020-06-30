@@ -23,8 +23,8 @@ import java.util.HashMap;
 
 public class ZombiePigman extends Zombie {
 
-    public ZombiePigman(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity, sets, version);
+    public ZombiePigman(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity, sets, version);
     }
 
     @Override

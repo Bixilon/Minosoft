@@ -71,9 +71,9 @@ public class Protocol_1_8 extends Protocol {
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_SPAWN_EXPERIENCE_ORB, 0x11);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_VELOCITY, 0x12);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_DESTROY_ENTITIES, 0x13);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_POSITION, 0x15);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_MOVEMENT, 0x15);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_ROTATION, 0x16);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_POSITION_AND_ROTATION, 0x17);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_MOVEMENT_AND_ROTATION, 0x17);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_TELEPORT, 0x18);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_HEAD_ROTATION, 0x19);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_STATUS, 0x1A);

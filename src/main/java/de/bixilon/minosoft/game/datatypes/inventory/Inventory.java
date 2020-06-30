@@ -17,6 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
+
 public class Inventory {
     final InventoryProperties properties;
     final HashMap<Integer, Slot> slots;

@@ -23,8 +23,8 @@ import java.util.HashMap;
 public class Villager extends Mob implements MobInterface {
     VillagerMetaData metaData;
 
-    public Villager(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity);
+    public Villager(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
         this.metaData = new VillagerMetaData(sets, version);
     }
 

@@ -20,11 +20,9 @@ import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 
-public class PacketEntityPositionAndRotation implements ClientboundPacket {
+public class PacketEntityMovement implements ClientboundPacket {
     int entityId;
     RelativeLocation location;
-    short yaw;
-    short pitch;
     boolean onGround;
 
     @Override
@@ -33,15 +31,16 @@ public class PacketEntityPositionAndRotation implements ClientboundPacket {
             case VERSION_1_7_10:
                 this.entityId = buffer.readInteger();
                 this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                this.yaw = buffer.readAngle();
-                this.pitch = buffer.readAngle();
                 return true;
             case VERSION_1_8:
                 this.entityId = buffer.readVarInt();
                 this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                this.yaw = buffer.readAngle();
-                this.pitch = buffer.readAngle();
-                onGround = buffer.readBoolean();
+                this.onGround = buffer.readBoolean();
+                return true;
+            case VERSION_1_9_4:
+                this.entityId = buffer.readVarInt();
+                this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
+                this.onGround = buffer.readBoolean();
                 return true;
         }
 
@@ -50,7 +49,7 @@ public class PacketEntityPositionAndRotation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity %d moved relative %s (yaw=%s, pitch=%s)", entityId, location.toString(), yaw, pitch));
+        Log.protocol(String.format("Entity %d moved relative %s", entityId, location.toString()));
     }
 
     public int getEntityId() {
@@ -59,14 +58,6 @@ public class PacketEntityPositionAndRotation implements ClientboundPacket {
 
     public RelativeLocation getRelativeLocation() {
         return location;
-    }
-
-    public short getYaw() {
-        return yaw;
-    }
-
-    public short getPitch() {
-        return pitch;
     }
 
     @Override

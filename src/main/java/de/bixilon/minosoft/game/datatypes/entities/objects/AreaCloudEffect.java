@@ -14,48 +14,48 @@
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.meta.AreaEffectCloudMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.ItemMetaData;
 
-public class ItemStack extends EntityObject implements ObjectInterface {
-    ItemMetaData metaData;
+public class AreaCloudEffect extends EntityObject implements ObjectInterface {
+    AreaEffectCloudMetaData metaData;
 
-    public ItemStack(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+    public AreaCloudEffect(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
     }
 
-    public ItemStack(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public AreaCloudEffect(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
     }
 
     @Override
     public Objects getEntityType() {
-        return Objects.ITEM_STACK;
+        return Objects.AREA_CLOUD_EFFECT;
     }
 
     @Override
-    public ItemMetaData getMetaData() {
+    public AreaEffectCloudMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (ItemMetaData) metaData;
+        this.metaData = (AreaEffectCloudMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.25F;
+        return 2.0F * metaData.getRadius();
     }
 
     @Override
     public float getHeight() {
-        return 0.25F;
+        return 0.5F;
     }
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return ItemMetaData.class;
+        return AreaEffectCloudMetaData.class;
     }
 }

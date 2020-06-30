@@ -49,7 +49,7 @@ public class PacketSpawnExperienceOrb implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Experience orb spawned at %s(entityId=%d, count=%d)", orb.getLocation().toString(), orb.getId(), orb.getCount()));
+        Log.protocol(String.format("Experience orb spawned at %s(entityId=%d, count=%d)", orb.getLocation().toString(), orb.getEntityId(), orb.getCount()));
     }
 
     @Override

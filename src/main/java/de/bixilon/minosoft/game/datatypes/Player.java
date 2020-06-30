@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.mob.OtherPlayer;
 import de.bixilon.minosoft.game.datatypes.inventory.Inventory;
 import de.bixilon.minosoft.game.datatypes.inventory.InventoryProperties;
 import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
@@ -38,13 +38,12 @@ public class Player {
     int food;
     float saturation;
     BlockPosition spawnLocation;
-    int entityId;
     GameMode gameMode;
     World world = new World("world");
     byte selectedSlot;
     int level;
     int totalExperience;
-    HumanMetaData metaData;
+    OtherPlayer player;
     HashMap<Integer, Inventory> inventories = new HashMap<>();
     boolean spawnConfirmed = false;
 
@@ -109,14 +108,6 @@ public class Player {
         this.gameMode = gameMode;
     }
 
-    public int getEntityId() {
-        return entityId;
-    }
-
-    public void setEntityId(int entityId) {
-        this.entityId = entityId;
-    }
-
     public World getWorld() {
         return world;
     }
@@ -143,14 +134,6 @@ public class Player {
 
     public void setTotalExperience(int totalExperience) {
         this.totalExperience = totalExperience;
-    }
-
-    public HumanMetaData getMetaData() {
-        return metaData;
-    }
-
-    public void setMetaData(HumanMetaData metaData) {
-        this.metaData = metaData;
     }
 
     public Inventory getPlayerInventory() {
@@ -235,5 +218,13 @@ public class Player {
 
     public void setTabFooter(TextComponent tabFooter) {
         this.tabFooter = tabFooter;
+    }
+
+    public OtherPlayer getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(OtherPlayer player) {
+        this.player = player;
     }
 }

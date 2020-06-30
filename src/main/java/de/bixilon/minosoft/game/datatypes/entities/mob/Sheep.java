@@ -23,8 +23,8 @@ import java.util.HashMap;
 public class Sheep extends Mob implements MobInterface {
     SheepMetaData metaData;
 
-    public Sheep(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity);
+    public Sheep(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
         this.metaData = new SheepMetaData(sets, version);
     }
 

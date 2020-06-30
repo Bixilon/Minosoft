@@ -94,7 +94,7 @@ public class Protocol_1_9_4 extends Protocol {
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_JOIN_GAME, 0x23);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_MAP_DATA, 0x24);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_MOVEMENT, 0x25);
-        clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_POSITION_AND_ROTATION, 0x26);
+        clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_MOVEMENT_AND_ROTATION, 0x26);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY_ROTATION, 0x27);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_VEHICLE_MOVEMENT, 0x29);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_OPEN_SIGN_EDITOR, 0x2A);

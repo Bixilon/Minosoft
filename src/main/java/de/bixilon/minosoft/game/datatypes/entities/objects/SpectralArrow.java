@@ -21,14 +21,14 @@ public class SpectralArrow extends EntityObject implements ObjectInterface {
     final int shooter;
     ArrowMetaData metaData;
 
-    public SpectralArrow(int id, Location location, short yaw, short pitch, int additionalInt) {
-        super(id, location, yaw, pitch, null);
+    public SpectralArrow(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
         this.shooter = additionalInt;
     }
 
-    public SpectralArrow(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(id, location, yaw, pitch, velocity);
+    public SpectralArrow(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+        super(entityId, location, yaw, pitch, velocity);
         this.shooter = additionalInt;
     }
 

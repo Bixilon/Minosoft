@@ -23,8 +23,8 @@ import java.util.HashMap;
 public class Pig extends Mob implements MobInterface {
     PigMetaData metaData;
 
-    public Pig(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity);
+    public Pig(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
         this.metaData = new PigMetaData(sets, version);
     }
 

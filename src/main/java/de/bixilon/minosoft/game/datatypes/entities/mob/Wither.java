@@ -23,8 +23,8 @@ import java.util.HashMap;
 public class Wither extends Mob implements MobInterface {
     WitherMetaData metaData;
 
-    public Wither(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity);
+    public Wither(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
         this.metaData = new WitherMetaData(sets, version);
     }
 

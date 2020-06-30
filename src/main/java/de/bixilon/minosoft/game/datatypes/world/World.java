@@ -101,7 +101,7 @@ public class World {
     }
 
     public void addEntity(Entity entity) {
-        this.entities.put(entity.getId(), entity);
+        this.entities.put(entity.getEntityId(), entity);
     }
 
     public Entity getEntity(int id) {
@@ -109,7 +109,7 @@ public class World {
     }
 
     public void removeEntity(Entity entity) {
-        removeEntity(entity.getId());
+        removeEntity(entity.getEntityId());
     }
 
     public void removeEntity(int entityId) {

@@ -42,7 +42,7 @@ public class PacketSpawnObject implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Object spawned at %s (entityId=%d, type=%s)", object.getLocation().toString(), object.getId(), object.getEntityType().name()));
+        Log.protocol(String.format("Object spawned at %s (entityId=%d, type=%s)", object.getLocation().toString(), object.getEntityId(), object.getEntityType().name()));
     }
 
     public EntityObject getObject() {
@@ -95,7 +95,6 @@ public class PacketSpawnObject implements ClientboundPacket {
 
                 try {
                     // velocity present AND metadata
-
                     Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
                     object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, location, yaw, pitch, data, velocity);
                     return true;

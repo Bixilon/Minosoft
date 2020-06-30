@@ -23,8 +23,8 @@ import java.util.HashMap;
 
 public class MagmaCube extends Slime {
 
-    public MagmaCube(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity, sets, version);
+    public MagmaCube(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity, sets, version);
     }
 
 

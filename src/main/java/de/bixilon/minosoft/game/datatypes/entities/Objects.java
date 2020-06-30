@@ -18,10 +18,11 @@ import de.bixilon.minosoft.game.datatypes.entities.objects.*;
 public enum Objects implements EntityEnumInterface {
     BOAT(1, Boat.class),
     ITEM_STACK(2, ItemStack.class),
+    AREA_CLOUD_EFFECT(3, AreaCloudEffect.class),
     MINECART(10, Minecart.class),
     PRIMED_TNT(50, PrimedTNT.class),
     ENDER_CRYSTAL(51, EnderCrystal.class),
-    ARROW(60, Arrow.class),
+    ARROW(60, Arrow.class), // ToDo: Tipped Arrows
     SNOWBALL(61, Snowball.class),
     EGG(62, Egg.class),
     FIRE_BALL(63, FireBall.class),

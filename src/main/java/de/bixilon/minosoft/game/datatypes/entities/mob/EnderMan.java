@@ -23,8 +23,8 @@ import java.util.HashMap;
 public class EnderMan extends Mob implements MobInterface {
     EndermanMetaData metaData;
 
-    public EnderMan(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity);
+    public EnderMan(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
         this.metaData = new EndermanMetaData(sets, version);
     }
 

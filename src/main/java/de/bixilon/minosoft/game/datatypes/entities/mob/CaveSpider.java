@@ -22,8 +22,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import java.util.HashMap;
 
 public class CaveSpider extends Spider {
-    public CaveSpider(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity, sets, version);
+    public CaveSpider(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity, sets, version);
     }
 
 

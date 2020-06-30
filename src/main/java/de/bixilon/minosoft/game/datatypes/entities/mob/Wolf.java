@@ -23,8 +23,8 @@ import java.util.HashMap;
 public class Wolf extends Mob implements MobInterface {
     WolfMetaData metaData;
 
-    public Wolf(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity);
+    public Wolf(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
         this.metaData = new WolfMetaData(sets, version);
     }
 

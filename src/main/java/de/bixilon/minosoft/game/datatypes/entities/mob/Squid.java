@@ -24,8 +24,8 @@ import java.util.HashMap;
 public class Squid extends Mob implements MobInterface {
     AgeableMetaData metaData;
 
-    public Squid(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity);
+    public Squid(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
         this.metaData = new AgeableMetaData(sets, version);
     }
 

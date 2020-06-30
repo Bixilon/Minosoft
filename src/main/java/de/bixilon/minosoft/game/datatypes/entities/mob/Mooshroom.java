@@ -23,8 +23,8 @@ import java.util.HashMap;
 public class Mooshroom extends Mob implements MobInterface {
     AgeableMetaData metaData;
 
-    public Mooshroom(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity);
+    public Mooshroom(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
         this.metaData = new AgeableMetaData(sets, version);
     }
 

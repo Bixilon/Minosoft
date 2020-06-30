@@ -23,8 +23,8 @@ import java.util.HashMap;
 public class Horse extends Mob implements MobInterface {
     HorseMetaData metaData;
 
-    public Horse(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity);
+    public Horse(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
         this.metaData = new HorseMetaData(sets, version);
     }
 

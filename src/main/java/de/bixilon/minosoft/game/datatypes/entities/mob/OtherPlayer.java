@@ -28,8 +28,8 @@ public class OtherPlayer extends Mob implements MobInterface {
     HumanMetaData metaData;
     Pose status = Pose.STANDING;
 
-    public OtherPlayer(int id, String name, UUID uuid, PlayerPropertyData[] properties, Location location, Velocity velocity, short yaw, short pitch, short currentItem, HumanMetaData metaData) {
-        super(id, location, yaw, pitch, velocity);
+    public OtherPlayer(int entityId, String name, UUID uuid, PlayerPropertyData[] properties, Location location, Velocity velocity, short yaw, short pitch, short currentItem, HumanMetaData metaData) {
+        super(entityId, location, yaw, pitch, velocity);
         this.name = name;
         this.uuid = uuid;
         this.properties = properties;

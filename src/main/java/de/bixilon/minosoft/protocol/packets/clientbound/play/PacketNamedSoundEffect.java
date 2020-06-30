@@ -33,14 +33,14 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 sound = buffer.readString();
-                location = new Location(buffer.readInteger() * 8, buffer.readInteger() * 8, buffer.readInteger() * 8);
+                location = new Location(buffer.readInteger() * 8, buffer.readInteger() * 8, buffer.readInteger() * 8); // ToDo: check if it is not * 4
                 volume = buffer.readFloat();
                 pitch = (int) (buffer.readByte() * pitchCalc);
                 return true;
             case VERSION_1_9_4:
                 sound = buffer.readString();
                 int category = buffer.readVarInt(); //ToDo: category
-                location = new Location(buffer.readFixedPointNumberInteger() * 8, buffer.readFixedPointNumberInteger() * 8, buffer.readFixedPointNumberInteger() * 8);
+                location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
                 volume = buffer.readFloat();
                 pitch = (int) (buffer.readByte() * pitchCalc);
                 return true;

@@ -30,7 +30,7 @@ public class PacketUseEntity implements ServerboundPacket {
     final Hand hand;
 
     public PacketUseEntity(Entity entity, Click click) {
-        this.entityId = entity.getId();
+        this.entityId = entity.getEntityId();
         this.click = click;
         location = null;
         hand = Hand.RIGHT;

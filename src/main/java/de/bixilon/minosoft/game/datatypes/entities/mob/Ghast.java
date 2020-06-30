@@ -23,8 +23,8 @@ import java.util.HashMap;
 public class Ghast extends Mob implements MobInterface {
     GhastMetaData metaData;
 
-    public Ghast(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity);
+    public Ghast(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
         this.metaData = new GhastMetaData(sets, version);
     }
 

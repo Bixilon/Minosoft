@@ -23,8 +23,8 @@ import java.util.HashMap;
 public class Rabbit extends Mob implements MobInterface {
     RabbitMetaData metaData;
 
-    public Rabbit(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity);
+    public Rabbit(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
         this.metaData = new RabbitMetaData(sets, version);
     }
 

@@ -23,8 +23,8 @@ import java.util.HashMap;
 public class Slime extends Mob implements MobInterface {
     SlimeMetaData metaData;
 
-    public Slime(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity);
+    public Slime(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
         this.metaData = new SlimeMetaData(sets, version);
     }
 

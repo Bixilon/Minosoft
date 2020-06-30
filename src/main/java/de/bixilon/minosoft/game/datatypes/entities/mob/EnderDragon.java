@@ -23,8 +23,8 @@ import java.util.HashMap;
 public class EnderDragon extends Mob implements MobInterface {
     EnderDragonMetaData metaData;
 
-    public EnderDragon(int id, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(id, location, yaw, pitch, velocity);
+    public EnderDragon(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
         this.metaData = new EnderDragonMetaData(sets, version);
     }
 

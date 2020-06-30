@@ -17,8 +17,8 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.MobMetaData;
 
 public abstract class Mob extends Entity implements MobInterface {
-    public Mob(int id, Location location, short yaw, short pitch, Velocity velocity) {
-        super(id, location, yaw, pitch, velocity);
+    public Mob(int entityId, Location location, short yaw, short pitch, Velocity velocity) {
+        super(entityId, location, yaw, pitch, velocity);
     }
 
     @Override
