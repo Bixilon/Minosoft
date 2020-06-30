@@ -16,7 +16,7 @@ package de.bixilon.minosoft.game.datatypes.blocks;
 import de.bixilon.minosoft.game.datatypes.Color;
 
 public enum Blocks {
-    UNKNOWN(-1), // the buggy pink black block
+    UNKNOWN(-1), // the buggy pink black block (any other block)
     AIR(0),
     STONE(1),
     GRASS(2),

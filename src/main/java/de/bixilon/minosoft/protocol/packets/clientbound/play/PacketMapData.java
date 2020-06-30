@@ -17,6 +17,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 import java.util.ArrayList;
@@ -72,8 +73,12 @@ public class PacketMapData implements ClientboundPacket {
                 }
                 return true;
             case VERSION_1_8:
+            case VERSION_1_9_4: {
                 mapId = buffer.readVarInt();
                 scale = buffer.readByte();
+                if (buffer.getVersion().getVersion() >= ProtocolVersion.VERSION_1_9_4.getVersion()) {
+                    boolean trackPosition = buffer.readBoolean();
+                }
                 int pinCount = buffer.readVarInt();
                 pins = new ArrayList<>();
                 for (int i = 0; i < pinCount; i++) {
@@ -92,6 +97,7 @@ public class PacketMapData implements ClientboundPacket {
                     data = buffer.readBytes(dataLength);
                 }
                 return true;
+            }
         }
 
         return false;

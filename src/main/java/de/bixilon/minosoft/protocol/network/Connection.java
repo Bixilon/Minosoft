@@ -38,7 +38,7 @@ public class Connection {
     final ArrayList<ClientboundPacket> handlingQueue;
     PluginChannelHandler pluginChannelHandler;
     Thread handleThread;
-    ProtocolVersion version = ProtocolVersion.VERSION_1_7_10; // default
+    ProtocolVersion version = Protocol.getLowestVersionSupported(); // default
     Player player;
     ConnectionState state = ConnectionState.DISCONNECTED;
     ConnectionReason reason;
@@ -114,7 +114,7 @@ public class Connection {
             case DISCONNECTED:
                 if (reason == ConnectionReason.GET_VERSION) {
                     //ToDo: only for development, remove later
-                    //setVersion(ProtocolVersion.VERSION_1_9_4);
+                    setVersion(ProtocolVersion.VERSION_1_9_4);
                     setReason(ConnectionReason.CONNECT);
                     connect();
                 }
