@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.Color;
 import de.bixilon.minosoft.game.datatypes.particle.Particles;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
@@ -33,12 +32,12 @@ public class AreaEffectCloudMetaData extends MobMetaData {
         return 0;
     }
 
-    public Color getColor() {
+    public int getColor() {
         switch (version) {
             case VERSION_1_9_4:
-                return Color.byId((int) sets.get(6).getData());
+                return (int) sets.get(6).getData();
         }
-        return Color.WHITE;
+        return 0;
     }
 
     public boolean ignoreRadius() {
