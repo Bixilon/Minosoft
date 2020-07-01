@@ -60,15 +60,15 @@ public class PacketBlockAction implements ClientboundPacket {
                         clazz = ChestAction.class;
                         break;
                     case 138:
-                        // chest
+                        // beacon
                         clazz = BeaconAction.class;
                         break;
                     case 52:
-                        // chest
+                        // mob spawner
                         clazz = MobSpawnerAction.class;
                         break;
                     case 209:
-                        // chest
+                        // end gateway
                         clazz = EndGatewayAction.class;
                         break;
                     default:

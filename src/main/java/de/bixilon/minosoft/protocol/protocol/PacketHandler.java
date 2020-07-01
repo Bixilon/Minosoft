@@ -21,7 +21,7 @@ import de.bixilon.minosoft.game.datatypes.player.PlayerInfo;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfoBulk;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardObjective;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardScore;
-import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardTeam;
+import de.bixilon.minosoft.game.datatypes.scoreboard.Team;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -474,13 +474,13 @@ public class PacketHandler {
         //ToDo
     }
 
-    public void handle(PacketScoreboardTeams pkg) {
+    public void handle(PacketTeams pkg) {
         switch (pkg.getAction()) {
             case CREATE:
-                connection.getPlayer().getScoreboardManager().addTeam(new ScoreboardTeam(pkg.getName(), pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.getFriendlyFire(), pkg.getPlayerNames()));
+                connection.getPlayer().getScoreboardManager().addTeam(new Team(pkg.getName(), pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.isFriendlyFireEnabled(), pkg.isSeeingFriendlyInvisibles(), pkg.getPlayerNames()));
                 break;
             case INFORMATION_UPDATE:
-                connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).updateInformation(pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.getFriendlyFire());
+                connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).updateInformation(pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.isFriendlyFireEnabled(), pkg.isSeeingFriendlyInvisibles());
                 break;
             case REMOVE:
                 connection.getPlayer().getScoreboardManager().removeTeam(pkg.getName());
