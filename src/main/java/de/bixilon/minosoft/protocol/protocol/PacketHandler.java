@@ -545,4 +545,8 @@ public class PacketHandler {
     public void handle(PacketBossBar pkg) {
         //ToDo
     }
+
+    public void handle(PacketSetPassenger pkg) {
+        //ToDo
+    }
 }

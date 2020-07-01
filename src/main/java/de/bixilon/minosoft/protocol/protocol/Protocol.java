@@ -141,6 +141,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_UNLOAD_CHUNK, PacketUnloadChunk.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SOUND_EFFECT, PacketSoundEffect.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_BOSS_BAR, PacketBossBar.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SET_PASSENGERS, PacketSetPassenger.class);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {
