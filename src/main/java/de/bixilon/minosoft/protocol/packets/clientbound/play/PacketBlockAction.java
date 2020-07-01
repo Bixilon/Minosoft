@@ -13,10 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.blocks.actions.BlockAction;
-import de.bixilon.minosoft.game.datatypes.blocks.actions.ChestAction;
-import de.bixilon.minosoft.game.datatypes.blocks.actions.NoteBlockAction;
-import de.bixilon.minosoft.game.datatypes.blocks.actions.PistonAction;
+import de.bixilon.minosoft.game.datatypes.blocks.actions.*;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -36,6 +33,7 @@ public class PacketBlockAction implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 // that's the only difference here
                 if (buffer.getVersion().getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
                     position = buffer.readPosition();
@@ -60,6 +58,18 @@ public class PacketBlockAction implements ClientboundPacket {
                     case 146:
                         // chest
                         clazz = ChestAction.class;
+                        break;
+                    case 138:
+                        // chest
+                        clazz = BeaconAction.class;
+                        break;
+                    case 52:
+                        // chest
+                        clazz = MobSpawnerAction.class;
+                        break;
+                    case 209:
+                        // chest
+                        clazz = EndGatewayAction.class;
                         break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + buffer.readVarInt());
