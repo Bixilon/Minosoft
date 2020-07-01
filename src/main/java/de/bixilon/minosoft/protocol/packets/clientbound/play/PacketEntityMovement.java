@@ -29,7 +29,7 @@ public class PacketEntityMovement implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-                this.entityId = buffer.readInteger();
+                this.entityId = buffer.readInt();
                 this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
                 return true;
             case VERSION_1_8:

@@ -87,7 +87,7 @@ public class InByteBuffer {
         return ret;
     }
 
-    public int readInteger() {
+    public int readInt() {
         ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
         buffer.put(readBytes(Integer.BYTES));
         return buffer.getInt(0);
@@ -113,9 +113,6 @@ public class InByteBuffer {
 
     public String readString() {
         int length = readVarInt();
-        if (length > ProtocolDefinition.STRING_MAX_LEN) {
-            return null;
-        }
         return new String(readBytes(length), StandardCharsets.UTF_8);
     }
 
@@ -166,14 +163,14 @@ public class InByteBuffer {
     }
 
     public double readFixedPointNumberInteger() {
-        return readInteger() / 32.0D;
+        return readInt() / 32.0D;
     }
 
     public double readFixedPointNumberByte() {
         return readByte() / 32.0D;
     }
 
-    public JSONObject readJson() {
+    public JSONObject readJSON() {
         return new JSONObject(readString());
     }
 
@@ -191,11 +188,6 @@ public class InByteBuffer {
         short y = (short) ((raw >> 26) & 0xFFF);
         int z = (int) (raw & 0x3FFFFFF);
         return new BlockPosition(x, y, z);
-    }
-
-    @Override
-    public String toString() {
-        return "dataLen: " + bytes.length + "; pos: " + pos;
     }
 
     public TextComponent readTextComponent() {
@@ -315,15 +307,15 @@ public class InByteBuffer {
     }
 
     public BlockPosition readBlockPosition() {
-        return new BlockPosition(readInteger(), BitByte.byteToUShort(readByte()), readInteger());
+        return new BlockPosition(readInt(), BitByte.byteToUShort(readByte()), readInt());
     }
 
     public BlockPosition readBlockPositionInteger() {
-        return new BlockPosition(readInteger(), (short) (readInteger()), readInteger());
+        return new BlockPosition(readInt(), (short) (readInt()), readInt());
     }
 
     public BlockPosition readBlockPositionShort() {
-        return new BlockPosition(readInteger(), readShort(), readInteger());
+        return new BlockPosition(readInt(), readShort(), readInt());
     }
 
     public InPacketBuffer getPacketBuffer() {
@@ -334,10 +326,10 @@ public class InByteBuffer {
         return readBytes(getBytesLeft());
     }
 
-    public int[] readIntegers(int length) {
+    public int[] readInts(int length) {
         int[] ret = new int[length];
         for (int i = 0; i < length; i++) {
-            ret[i] = readInteger();
+            ret[i] = readInt();
         }
         return ret;
     }
@@ -380,5 +372,10 @@ public class InByteBuffer {
                 break;
         }
         return sets;
+    }
+
+    @Override
+    public String toString() {
+        return "dataLen: " + bytes.length + "; pos: " + pos;
     }
 }

@@ -35,7 +35,7 @@ public class PacketRespawn implements ClientboundPacket {
             case VERSION_1_7_10:
             case VERSION_1_8:
             case VERSION_1_9_4:
-                dimension = Dimension.byId(buffer.readInteger());
+                dimension = Dimension.byId(buffer.readInt());
                 difficulty = Difficulty.byId(buffer.readByte());
                 gameMode = GameMode.byId(buffer.readByte());
                 levelType = LevelType.byType(buffer.readString());

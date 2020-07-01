@@ -40,7 +40,7 @@ public class PacketJoinGame implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8: {
-                this.entityId = buffer.readInteger();
+                this.entityId = buffer.readInt();
                 byte gameModeRaw = buffer.readByte();
                 hardcore = BitByte.isBitSet(gameModeRaw, 3);
                 // remove hardcore bit and get gamemode
@@ -59,14 +59,14 @@ public class PacketJoinGame implements ClientboundPacket {
                 return true;
             }
             case VERSION_1_9_4: {
-                this.entityId = buffer.readInteger();
+                this.entityId = buffer.readInt();
                 byte gameModeRaw = buffer.readByte();
                 hardcore = BitByte.isBitSet(gameModeRaw, 3);
                 // remove hardcore bit and get gamemode
                 gameModeRaw &= ~0x8;
                 gameMode = GameMode.byId(gameModeRaw);
 
-                dimension = Dimension.byId(buffer.readInteger());
+                dimension = Dimension.byId(buffer.readInt());
                 difficulty = Difficulty.byId(buffer.readByte());
                 maxPlayers = buffer.readByte();
                 levelType = LevelType.byType(buffer.readString());

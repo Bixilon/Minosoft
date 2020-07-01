@@ -24,7 +24,7 @@ public class IntArrayTag implements Tag {
     }
 
     public IntArrayTag(InByteBuffer buffer) {
-        this.value = buffer.readIntegers(new IntTag(buffer).getValue());
+        this.value = buffer.readInts(new IntTag(buffer).getValue());
     }
 
     @Override

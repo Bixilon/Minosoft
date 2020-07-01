@@ -53,7 +53,7 @@ public class EntityMetaData {
                 data = buffer.readShort();
                 break;
             case INT:
-                data = buffer.readInteger();
+                data = buffer.readInt();
                 break;
             case FLOAT:
                 data = buffer.readFloat();
@@ -68,7 +68,7 @@ public class EntityMetaData {
                 data = buffer.readBoolean();
                 break;
             case VECTOR:
-                data = new Vector(buffer.readInteger(), buffer.readInteger(), buffer.readInteger());
+                data = new Vector(buffer.readInt(), buffer.readInt(), buffer.readInt());
                 break;
             case SLOT:
                 data = buffer.readSlot();

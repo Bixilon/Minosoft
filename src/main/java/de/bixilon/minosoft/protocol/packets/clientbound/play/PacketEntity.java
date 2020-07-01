@@ -25,7 +25,7 @@ public class PacketEntity implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-                entityId = buffer.readInteger();
+                entityId = buffer.readInt();
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:

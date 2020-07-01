@@ -27,7 +27,7 @@ public class PacketSpawnLocation implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-                location = new BlockPosition(buffer.readInteger(), (short) buffer.readInteger(), buffer.readInteger());
+                location = new BlockPosition(buffer.readInt(), (short) buffer.readInt(), buffer.readInt());
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:

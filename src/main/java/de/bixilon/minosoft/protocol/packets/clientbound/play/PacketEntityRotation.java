@@ -29,7 +29,7 @@ public class PacketEntityRotation implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-                this.entityId = buffer.readInteger();
+                this.entityId = buffer.readInt();
                 this.yaw = buffer.readAngle();
                 this.pitch = buffer.readAngle();
                 return true;

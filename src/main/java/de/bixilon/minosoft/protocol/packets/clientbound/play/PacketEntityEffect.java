@@ -30,7 +30,7 @@ public class PacketEntityEffect implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-                entityId = buffer.readInteger();
+                entityId = buffer.readInt();
                 effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readShort());
                 hideParticle = false;
                 return true;

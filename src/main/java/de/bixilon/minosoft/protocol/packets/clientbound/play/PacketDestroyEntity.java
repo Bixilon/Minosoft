@@ -30,7 +30,7 @@ public class PacketDestroyEntity implements ClientboundPacket {
             case VERSION_1_7_10:
                 this.entityIds = new int[buffer.readByte()];
                 for (int i = 0; i < entityIds.length; i++) {
-                    entityIds[i] = buffer.readInteger();
+                    entityIds[i] = buffer.readInt();
                 }
                 return true;
             case VERSION_1_8:

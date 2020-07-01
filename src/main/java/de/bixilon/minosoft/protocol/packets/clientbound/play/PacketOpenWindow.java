@@ -41,7 +41,7 @@ public class PacketOpenWindow implements ClientboundPacket {
                     // no custom name
                     title = null;
                 }
-                this.entityId = buffer.readInteger();
+                this.entityId = buffer.readInt();
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
@@ -50,7 +50,7 @@ public class PacketOpenWindow implements ClientboundPacket {
                 this.title = buffer.readTextComponent();
                 slotCount = buffer.readByte();
                 if (type == InventoryType.HORSE) {
-                    this.entityId = buffer.readInteger();
+                    this.entityId = buffer.readInt();
                 }
                 return true;
         }

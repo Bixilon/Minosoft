@@ -34,7 +34,7 @@ public class PacketChunkBulk implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
                 short chunkCount = buffer.readShort();
-                int dataLen = buffer.readInteger();
+                int dataLen = buffer.readInt();
                 boolean containsSkyLight = buffer.readBoolean();
 
                 // decompress chunk data
@@ -42,8 +42,8 @@ public class PacketChunkBulk implements ClientboundPacket {
 
                 // chunk meta data
                 for (int i = 0; i < chunkCount; i++) {
-                    int x = buffer.readInteger();
-                    int z = buffer.readInteger();
+                    int x = buffer.readInt();
+                    int z = buffer.readInt();
                     short sectionBitMask = buffer.readShort();
                     short addBitMask = buffer.readShort();
 
@@ -58,8 +58,8 @@ public class PacketChunkBulk implements ClientboundPacket {
                 int[] z = new int[chunks];
                 short[] sectionBitMask = new short[chunks];
                 for (int i = 0; i < chunks; i++) {
-                    x[i] = buffer.readInteger();
-                    z[i] = buffer.readInteger();
+                    x[i] = buffer.readInt();
+                    z[i] = buffer.readInt();
                     sectionBitMask[i] = buffer.readShort();
                 }
                 for (int i = 0; i < chunks; i++) {

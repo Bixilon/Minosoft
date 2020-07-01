@@ -28,7 +28,7 @@ public class PacketUseBed implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-                entityId = buffer.readInteger();
+                entityId = buffer.readInt();
                 position = buffer.readBlockPosition();
                 return true;
             case VERSION_1_8:

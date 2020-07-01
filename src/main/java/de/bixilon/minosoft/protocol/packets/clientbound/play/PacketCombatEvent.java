@@ -37,11 +37,11 @@ public class PacketCombatEvent implements ClientboundPacket {
                 switch (action) {
                     case END_COMBAT:
                         duration = buffer.readVarInt();
-                        entityId = buffer.readInteger();
+                        entityId = buffer.readInt();
                         break;
                     case ENTITY_DEAD:
                         playerId = buffer.readVarInt();
-                        entityId = buffer.readInteger();
+                        entityId = buffer.readInt();
                         message = buffer.readTextComponent();
                         break;
                 }

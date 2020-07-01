@@ -40,7 +40,7 @@ public class PacketExplosion implements ClientboundPacket {
                     // Sorry, Maximilian Rosenmüller
                     throw new IllegalArgumentException(String.format("Explosion to big %s > 100.0F", radius));
                 }
-                int recordCount = buffer.readInteger();
+                int recordCount = buffer.readInt();
                 records = new byte[recordCount][3];
                 for (int i = 0; i < recordCount; i++) {
                     records[i] = buffer.readBytes(3);

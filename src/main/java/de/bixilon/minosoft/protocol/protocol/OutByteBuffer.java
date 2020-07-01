@@ -37,7 +37,7 @@ public class OutByteBuffer {
         bytes.add(b);
     }
 
-    public void writeByte(byte b, List<Byte> write) {
+    public static void writeByte(byte b, List<Byte> write) {
         write.add(b);
     }
 
@@ -59,12 +59,17 @@ public class OutByteBuffer {
         }
     }
 
-    public void writeInteger(int i) {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.putInt(i);
-        for (byte b : buffer.array()) {
-            bytes.add(b);
-        }
+    public static void writeVarInt(int value, List<Byte> write) {
+        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
+        do {
+            byte temp = (byte) (value & 0b01111111);
+            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
+            value >>>= 7;
+            if (value != 0) {
+                temp |= 0b10000000;
+            }
+            writeByte(temp, write);
+        } while (value != 0);
     }
 
     public void writeLong(Long l) {
@@ -92,9 +97,6 @@ public class OutByteBuffer {
     }
 
     public void writeString(String s) {
-        if (s.length() > ProtocolDefinition.STRING_MAX_LEN) {
-            writeByte((byte) 0); // write length 0
-        }
         writeVarInt(s.length());
         for (byte b : s.getBytes(StandardCharsets.UTF_8)) {
             bytes.add(b);
@@ -110,17 +112,12 @@ public class OutByteBuffer {
         }
     }
 
-    public void writeVarInt(int value, List<Byte> write) {
-        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
-        do {
-            byte temp = (byte) (value & 0b01111111);
-            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
-            value >>>= 7;
-            if (value != 0) {
-                temp |= 0b10000000;
-            }
-            writeByte(temp, write);
-        } while (value != 0);
+    public void writeInt(int i) {
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+        buffer.putInt(i);
+        for (byte b : buffer.array()) {
+            bytes.add(b);
+        }
     }
 
     public void writeVarInt(int value) {
@@ -140,18 +137,18 @@ public class OutByteBuffer {
     }
 
     public void writeFixedPointNumberInteger(double d) {
-        writeInteger((int) (d * 32.0D));
+        writeInt((int) (d * 32.0D));
     }
 
     public void writeFixedPointNumberByte(double d) {
-        writeInteger((int) (d * 32.0D));
+        writeInt((int) (d * 32.0D));
     }
 
     public List<Byte> getBytes() {
         return bytes;
     }
 
-    public void writeJson(JSONObject j) {
+    public void writeJSON(JSONObject j) {
         writeString(j.toString());
     }
 
@@ -164,7 +161,7 @@ public class OutByteBuffer {
     }
 
     public void writeTextComponent(TextComponent component) {
-        writeJson(component.getRaw());
+        writeJSON(component.getRaw());
     }
 
     public void writeSlot(Slot slot) {
@@ -195,21 +192,21 @@ public class OutByteBuffer {
     }
 
     public void writeBlockPositionInteger(BlockPosition pos) {
-        writeInteger(pos.getX());
-        writeInteger(pos.getY());
-        writeInteger(pos.getZ());
+        writeInt(pos.getX());
+        writeInt(pos.getY());
+        writeInt(pos.getZ());
     }
 
     public void writeBlockPositionShort(BlockPosition pos) {
-        writeInteger(pos.getX());
+        writeInt(pos.getX());
         writeShort((short) pos.getY());
-        writeInteger(pos.getZ());
+        writeInt(pos.getZ());
     }
 
     public void writeBlockPositionByte(BlockPosition pos) {
-        writeInteger(pos.getX());
+        writeInt(pos.getX());
         writeByte((byte) pos.getY());
-        writeInteger(pos.getZ());
+        writeInt(pos.getZ());
     }
 
     public byte[] getOutBytes() {
@@ -222,7 +219,7 @@ public class OutByteBuffer {
 
     public void writeIntegers(int[] data) {
         for (int integer : data) {
-            writeInteger(integer);
+            writeInt(integer);
         }
     }
 

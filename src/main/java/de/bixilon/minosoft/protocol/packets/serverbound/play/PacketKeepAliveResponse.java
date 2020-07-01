@@ -34,7 +34,7 @@ public class PacketKeepAliveResponse implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_KEEP_ALIVE));
         switch (version) {
             case VERSION_1_7_10:
-                buffer.writeInteger(id);
+                buffer.writeInt(id);
                 break;
             case VERSION_1_8:
             case VERSION_1_9_4:

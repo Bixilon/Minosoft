@@ -31,14 +31,14 @@ public class PacketMultiBlockChange implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
-                location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
+                location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 short count = buffer.readShort();
-                int dataSize = buffer.readInteger(); // should be count * 4
+                int dataSize = buffer.readInt(); // should be count * 4
                 if (dataSize != count * 4) {
                     throw new IllegalArgumentException(String.format("Not enough data (%d) for %d blocks", dataSize, count));
                 }
                 for (int i = 0; i < count; i++) {
-                    int raw = buffer.readInteger();
+                    int raw = buffer.readInt();
                     byte meta = (byte) (raw & 0xF);
                     short blockId = (short) ((raw & 0xFF_F0) >>> 4);
                     byte y = (byte) ((raw & 0xFF_00_00) >>> 16);
@@ -50,7 +50,7 @@ public class PacketMultiBlockChange implements ClientboundPacket {
             }
             case VERSION_1_8:
             case VERSION_1_9_4: {
-                location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
+                location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 int count = buffer.readVarInt();
                 for (int i = 0; i < count; i++) {
                     byte pos = buffer.readByte();

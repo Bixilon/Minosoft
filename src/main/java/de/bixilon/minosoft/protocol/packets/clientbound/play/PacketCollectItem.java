@@ -27,8 +27,8 @@ public class PacketCollectItem implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-                itemId = buffer.readInteger();
-                collectorId = buffer.readInteger();
+                itemId = buffer.readInt();
+                collectorId = buffer.readInt();
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:

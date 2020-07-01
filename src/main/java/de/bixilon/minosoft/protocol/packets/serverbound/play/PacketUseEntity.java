@@ -67,11 +67,11 @@ public class PacketUseEntity implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_INTERACT_ENTITY));
         switch (version) {
             case VERSION_1_7_10:
-                buffer.writeInteger(entityId);
+                buffer.writeInt(entityId);
                 buffer.writeByte((byte) click.getId());
                 break;
             case VERSION_1_8:
-                buffer.writeInteger(entityId);
+                buffer.writeInt(entityId);
                 buffer.writeByte((byte) click.getId());
                 if (click == Click.INTERACT_AT) {
                     // position
@@ -81,7 +81,7 @@ public class PacketUseEntity implements ServerboundPacket {
                 }
                 break;
             case VERSION_1_9_4:
-                buffer.writeInteger(entityId);
+                buffer.writeInt(entityId);
                 buffer.writeByte((byte) click.getId());
                 if (click == Click.INTERACT_AT) {
                     // position

@@ -24,7 +24,7 @@ public class IntTag implements Tag {
     }
 
     public IntTag(InByteBuffer buffer) {
-        this.value = buffer.readInteger();
+        this.value = buffer.readInt();
     }
 
     @Override
@@ -34,7 +34,7 @@ public class IntTag implements Tag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeInteger(value);
+        buffer.writeInt(value);
     }
 
     public int getValue() {

@@ -48,11 +48,11 @@ public class PacketParticle implements ClientboundPacket {
                 z += buffer.readFloat() * random.nextGaussian();
 
                 particleData = buffer.readFloat();
-                count = buffer.readInteger();
+                count = buffer.readInt();
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
-                particle = Particles.byType(buffer.readInteger());
+                particle = Particles.byType(buffer.readInt());
                 longDistance = buffer.readBoolean();
                 x = buffer.readFloat();
                 y = buffer.readFloat();
@@ -64,7 +64,7 @@ public class PacketParticle implements ClientboundPacket {
                 z += buffer.readFloat() * random.nextGaussian();
 
                 particleData = buffer.readFloat();
-                count = buffer.readInteger();
+                count = buffer.readInt();
                 return true;
         }
 

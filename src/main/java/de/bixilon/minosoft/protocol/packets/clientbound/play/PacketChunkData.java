@@ -37,19 +37,19 @@ public class PacketChunkData implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
-                this.location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
+                this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 boolean groundUpContinuous = buffer.readBoolean();
                 short sectionBitMask = buffer.readShort();
                 short addBitMask = buffer.readShort();
 
                 // decompress chunk data
-                InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInteger()), buffer.getVersion());
+                InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInt()), buffer.getVersion());
 
                 chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, true);
                 return true;
             }
             case VERSION_1_8: {
-                this.location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
+                this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 boolean groundUpContinuous = buffer.readBoolean();
                 short sectionBitMask = buffer.readShort();
                 int size = buffer.readVarInt();
@@ -58,7 +58,7 @@ public class PacketChunkData implements ClientboundPacket {
                 return true;
             }
             case VERSION_1_9_4: {
-                this.location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
+                this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 boolean groundUpContinuous = buffer.readBoolean();
                 short sectionBitMask = (short) buffer.readVarInt();
                 int size = buffer.readVarInt();

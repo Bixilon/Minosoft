@@ -30,7 +30,7 @@ public class PacketEntityEquipment implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-                entityId = buffer.readInteger();
+                entityId = buffer.readInt();
                 this.slot = InventorySlots.EntityInventory.byId(buffer.readShort(), buffer.getVersion());
                 this.data = buffer.readSlot();
                 return true;

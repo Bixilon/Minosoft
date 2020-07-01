@@ -44,9 +44,9 @@ public class PacketTitle implements ClientboundPacket {
                         subText = buffer.readTextComponent();
                         break;
                     case SET_TIMES_AND_DISPLAY:
-                        fadeInTime = buffer.readInteger();
-                        stayTime = buffer.readInteger();
-                        fadeOutTime = buffer.readInteger();
+                        fadeInTime = buffer.readInt();
+                        stayTime = buffer.readInt();
+                        fadeOutTime = buffer.readInt();
                         break;
                 }
                 return true;

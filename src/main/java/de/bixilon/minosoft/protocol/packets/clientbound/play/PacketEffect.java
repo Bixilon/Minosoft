@@ -33,16 +33,16 @@ public class PacketEffect implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-                this.effect = EffectEffects.byId(buffer.readInteger(), buffer.getVersion());
+                this.effect = EffectEffects.byId(buffer.readInt(), buffer.getVersion());
                 position = buffer.readBlockPosition();
-                data = buffer.readInteger();
+                data = buffer.readInt();
                 disableRelativeVolume = buffer.readBoolean();
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
-                this.effect = EffectEffects.byId(buffer.readInteger(), buffer.getVersion());
+                this.effect = EffectEffects.byId(buffer.readInt(), buffer.getVersion());
                 position = buffer.readPosition();
-                data = buffer.readInteger();
+                data = buffer.readInt();
                 disableRelativeVolume = buffer.readBoolean();
                 return true;
         }

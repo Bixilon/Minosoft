@@ -64,7 +64,7 @@ public class PacketSpawnObject implements ClientboundPacket {
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
                 short pitch = buffer.readAngle();
                 short yaw = buffer.readAngle();
-                int data = buffer.readInteger();
+                int data = buffer.readInt();
 
                 try {
                     if (buffer.getVersion().getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
@@ -91,7 +91,7 @@ public class PacketSpawnObject implements ClientboundPacket {
                 Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
                 short pitch = buffer.readAngle();
                 short yaw = buffer.readAngle();
-                int data = buffer.readInteger();
+                int data = buffer.readInt();
 
                 try {
                     // velocity present AND metadata
