@@ -20,30 +20,11 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketPlayerAbilitiesSending implements ServerboundPacket {
-    final boolean creative;
     final boolean flying;
-    final boolean canFly;
-    final boolean godMode;
-    final float flyingSpeed;
-    final float walkingSpeed;
 
-    public PacketPlayerAbilitiesSending(boolean creative, boolean flying, boolean canFly, boolean godMode, float flyingSpeed, float walkingSpeed) {
-        this.creative = creative;
-        this.flying = flying;
-        this.canFly = canFly;
-        this.godMode = godMode;
-        this.flyingSpeed = flyingSpeed;
-        this.walkingSpeed = walkingSpeed;
-        log();
-    }
 
     public PacketPlayerAbilitiesSending(boolean flying) {
-        this.creative = false;
         this.flying = flying;
-        this.canFly = flying;
-        this.godMode = false;
-        this.flyingSpeed = 0.05F;
-        this.walkingSpeed = 0.1F;
         log();
 
     }
@@ -56,22 +37,14 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
             case VERSION_1_7_10:
             case VERSION_1_8:
             case VERSION_1_9_4:
+                // only fly matches, everything else ignored
                 byte flags = 0;
-                if (creative) {
-                    flags |= 0b1;
-                }
                 if (flying) {
                     flags |= 0b10;
                 }
-                if (canFly) {
-                    flags |= 0b100;
-                }
-                if (godMode) {
-                    flags |= 0b1000;
-                }
                 buffer.writeByte(flags);
-                buffer.writeFloat(flyingSpeed);
-                buffer.writeFloat(walkingSpeed);
+                buffer.writeFloat(0.0F);
+                buffer.writeFloat(0.0F);
                 break;
         }
         return buffer;
@@ -79,6 +52,6 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending player abilities packet: (creative=%s, flying=%s, canFly=%s, godMode=%s, flyingSpeed=%s, walkingSpeed=%s)", creative, flying, canFly, godMode, flyingSpeed, walkingSpeed));
+        Log.protocol(String.format("Sending player abilities packet: (flying=%s)", flying));
     }
 }
