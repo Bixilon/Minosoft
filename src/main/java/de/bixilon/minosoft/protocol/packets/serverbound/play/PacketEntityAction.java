@@ -44,7 +44,7 @@ public class PacketEntityAction implements ServerboundPacket {
 
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_DIGGING));
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_ENTITY_ACTION));
         switch (version) {
             case VERSION_1_7_10:
                 buffer.writeInt(entityId);
@@ -67,7 +67,6 @@ public class PacketEntityAction implements ServerboundPacket {
     }
 
     public enum EntityActions {
-
         SNEAK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 0)}),
         UN_SNEAK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1)}),
         LEAVE_BED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2)}),
