@@ -74,9 +74,6 @@ public class PacketChunkData implements ClientboundPacket {
                     CompoundTag tag = buffer.readNBT();
                     blockEntities.put(new BlockPosition(tag.getIntTag("x").getValue(), (short) tag.getIntTag("y").getValue(), tag.getIntTag("z").getValue()), tag);
                 }
-                if (buffer.getBytesLeft() > 0) {
-                    Log.debug("ERROR");
-                }
                 return true;
             }
         }
