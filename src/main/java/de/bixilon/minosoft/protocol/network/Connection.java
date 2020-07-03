@@ -23,7 +23,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
-import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketChatMessage;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest;
 import de.bixilon.minosoft.protocol.protocol.*;
@@ -35,6 +34,7 @@ public class Connection {
     final int port;
     final Network network;
     final PacketHandler handler;
+    final PacketSender sender;
     final ArrayList<ClientboundPacket> handlingQueue;
     PluginChannelHandler pluginChannelHandler;
     Thread handleThread;
@@ -49,6 +49,7 @@ public class Connection {
         network = new Network(this);
         handlingQueue = new ArrayList<>();
         handler = new PacketHandler(this);
+        sender = new PacketSender(this);
     }
 
     /**
@@ -188,10 +189,6 @@ public class Connection {
         handleThread.start();
     }
 
-    public void sendChatMessage(String message) {
-        sendPacket(new PacketChatMessage(message));
-    }
-
     public PluginChannelHandler getPluginChannelHandler() {
         return pluginChannelHandler;
     }
@@ -219,5 +216,9 @@ public class Connection {
 
     public boolean isConnected() {
         return network.isConnected();
+    }
+
+    public PacketSender getSender() {
+        return sender;
     }
 }
