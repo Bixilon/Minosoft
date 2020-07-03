@@ -25,6 +25,10 @@ public class ChunkUtil {
     public static Chunk readChunkPacket(InByteBuffer buffer, short sectionBitMask, short addBitMask, boolean groundUpContinuous, boolean containsSkyLight) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
+                if (sectionBitMask == 0x00 && groundUpContinuous) {
+                    // unload chunk
+                    return null;
+                }
                 //chunk
                 byte sections = BitByte.getBitCount(sectionBitMask);
                 int totalBytes = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
@@ -92,6 +96,10 @@ public class ChunkUtil {
                 return new Chunk(nibbleMap);
             }
             case VERSION_1_8: {
+                if (sectionBitMask == 0x00 && groundUpContinuous) {
+                    // unload chunk
+                    return null;
+                }
                 byte sections = BitByte.getBitCount(sectionBitMask);
                 int totalBlocks = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
                 int halfBytes = totalBlocks / 2; // half bytes
