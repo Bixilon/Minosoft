@@ -53,6 +53,8 @@ public class PacketChunkData implements ClientboundPacket {
                 boolean groundUpContinuous = buffer.readBoolean();
                 short sectionBitMask = buffer.readShort();
                 int size = buffer.readVarInt();
+                int lastPos = buffer.getPosition();
+                buffer.setPosition(size + lastPos);
 
                 chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
                 return true;
@@ -62,12 +64,18 @@ public class PacketChunkData implements ClientboundPacket {
                 boolean groundUpContinuous = buffer.readBoolean();
                 short sectionBitMask = (short) buffer.readVarInt();
                 int size = buffer.readVarInt();
+                int lastPos = buffer.getPosition();
 
                 chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
+                // set position of the byte buffer, because of some reasons HyPixel makes some weired stuff and sends way to much 0 bytes. (~ 190k)
+                buffer.setPosition(size + lastPos);
                 int blockEntitiesCount = buffer.readVarInt();
                 for (int i = 0; i < blockEntitiesCount; i++) {
                     CompoundTag tag = buffer.readNBT();
                     blockEntities.put(new BlockPosition(tag.getIntTag("x").getValue(), (short) tag.getIntTag("y").getValue(), tag.getIntTag("z").getValue()), tag);
+                }
+                if (buffer.getBytesLeft() > 0) {
+                    Log.debug("ERROR");
                 }
                 return true;
             }

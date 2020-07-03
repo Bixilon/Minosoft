@@ -378,4 +378,8 @@ public class InByteBuffer {
     public String toString() {
         return "dataLen: " + bytes.length + "; pos: " + pos;
     }
+
+    public byte[] getBytes() {
+        return bytes;
+    }
 }

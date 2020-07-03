@@ -55,14 +55,9 @@ public class Util {
             while (!inflater.finished()) {
                 stream.write(buffer, 0, inflater.inflate(buffer));
             }
-        } catch (DataFormatException e) {
+            stream.close();
+        } catch (IOException | DataFormatException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                stream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         return new InByteBuffer(stream.toByteArray(), version);
     }

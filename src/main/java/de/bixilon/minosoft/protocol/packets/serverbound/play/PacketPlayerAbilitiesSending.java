@@ -37,7 +37,7 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
             case VERSION_1_7_10:
             case VERSION_1_8:
             case VERSION_1_9_4:
-                // only fly matches, everything else ignored
+                // only fly matters, everything else ignored
                 byte flags = 0;
                 if (flying) {
                     flags |= 0b10;
