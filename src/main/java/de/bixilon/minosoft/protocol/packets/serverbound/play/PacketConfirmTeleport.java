@@ -19,26 +19,22 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketClientStatus implements ServerboundPacket {
+public class PacketConfirmTeleport implements ServerboundPacket {
 
-    final ClientStatus status;
+    final int teleportId;
 
-    public PacketClientStatus(ClientStatus status) {
-        this.status = status;
+    public PacketConfirmTeleport(int teleportId) {
+        this.teleportId = teleportId;
         log();
     }
 
 
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CLIENT_STATUS));
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_TELEPORT_CONFIRM));
         switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeByte((byte) status.getId());
-                break;
-            case VERSION_1_8:
             case VERSION_1_9_4:
-                buffer.writeVarInt(status.getId());
+                buffer.writeVarInt(teleportId);
                 break;
         }
         return buffer;
@@ -46,31 +42,6 @@ public class PacketClientStatus implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending client status packet (status=%s)", status.name()));
-    }
-
-    public enum ClientStatus {
-        PERFORM_RESPAWN(0),
-        REQUEST_STATISTICS(1),
-        OPEN_INVENTORY(2);
-
-        final int id;
-
-        ClientStatus(int id) {
-            this.id = id;
-        }
-
-        public static ClientStatus byId(int id) {
-            for (ClientStatus s : values()) {
-                if (s.getId() == id) {
-                    return s;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
-        }
+        Log.protocol(String.format("Confirming teleport (teleportId=%d)", teleportId));
     }
 }

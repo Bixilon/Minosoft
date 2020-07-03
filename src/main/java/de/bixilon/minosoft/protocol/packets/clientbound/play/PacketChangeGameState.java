@@ -82,10 +82,6 @@ public class PacketChangeGameState implements ClientboundPacket {
 
         final byte id;
 
-        Reason(byte id) {
-            this.id = id;
-        }
-
         Reason(int id) {
             this.id = (byte) id;
         }
@@ -99,7 +95,7 @@ public class PacketChangeGameState implements ClientboundPacket {
             return null;
         }
 
-        public int getId() {
+        public byte getId() {
             return id;
         }
     }

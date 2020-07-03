@@ -23,10 +23,10 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class PacketPlayerDigging implements ServerboundPacket {
     final DiggingStatus status;
     final BlockPosition position;
-    final byte face;
+    final DiggingFace face;
 
 
-    public PacketPlayerDigging(DiggingStatus status, BlockPosition position, byte face) {
+    public PacketPlayerDigging(DiggingStatus status, BlockPosition position, DiggingFace face) {
         this.status = status;
         this.position = position;
         this.face = face;
@@ -47,7 +47,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
                 } else {
                     buffer.writeBlockPositionByte(position);
                 }
-                buffer.writeByte(face);
+                buffer.writeByte(face.getId());
                 break;
             case VERSION_1_8:
                 buffer.writeByte((byte) status.getId());
@@ -56,7 +56,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
                 } else {
                     buffer.writePosition(position);
                 }
-                buffer.writeByte(face);
+                buffer.writeByte(face.getId());
                 break;
             case VERSION_1_9_4:
                 buffer.writeVarInt(status.getId());
@@ -65,7 +65,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
                 } else {
                     buffer.writePosition(position);
                 }
-                buffer.writeByte(face);
+                buffer.writeByte(face.getId());
                 break;
         }
         return buffer;
@@ -92,6 +92,27 @@ public class PacketPlayerDigging implements ServerboundPacket {
         }
 
         public int getId() {
+            return id;
+        }
+    }
+
+    public enum DiggingFace {
+        BOTTOM(0),
+        TOP(1),
+        NORTH(2),
+        SOUTH(3),
+        WEST(4),
+        EAST(5),
+        SPECIAL(255);
+
+
+        final byte id;
+
+        DiggingFace(int id) {
+            this.id = (byte) id;
+        }
+
+        public byte getId() {
             return id;
         }
     }
