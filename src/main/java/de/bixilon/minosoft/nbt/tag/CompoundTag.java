@@ -182,4 +182,22 @@ public class CompoundTag implements Tag {
         return (CompoundTag) data.get(key);
     }
 
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(name);
+        builder.append("{");
+
+        for (Map.Entry<String, Tag> set : data.entrySet()) {
+            builder.append(set.getKey());
+            builder.append(":");
+            builder.append(set.getValue());
+            builder.append(",");
+        }
+        builder.delete(builder.length() - 1, builder.length()); // delete last comma
+
+        builder.append("}");
+        return builder.toString();
+    }
 }

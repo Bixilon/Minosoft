@@ -40,4 +40,9 @@ public class LongTag implements Tag {
     public long getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return value + "L";
+    }
 }

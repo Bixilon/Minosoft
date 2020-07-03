@@ -19,4 +19,6 @@ public interface Tag {
     TagTypes getType();
 
     void writeBytes(OutByteBuffer buffer);
+
+    String toString();
 }

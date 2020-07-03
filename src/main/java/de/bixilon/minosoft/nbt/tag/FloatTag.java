@@ -40,4 +40,9 @@ public class FloatTag implements Tag {
     public float getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return value + "F";
+    }
 }

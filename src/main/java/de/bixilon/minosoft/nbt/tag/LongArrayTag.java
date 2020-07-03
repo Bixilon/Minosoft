@@ -42,4 +42,18 @@ public class LongArrayTag implements Tag {
     public long[] getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (long l : value) {
+            builder.append(l);
+            builder.append("L, ");
+        }
+        builder.delete(builder.length() - 1, builder.length()); // delete last comma
+        builder.append("]");
+
+        return builder.toString();
+    }
 }

@@ -40,4 +40,9 @@ public class DoubleTag implements Tag {
     public double getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return value + "D";
+    }
 }

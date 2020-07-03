@@ -42,4 +42,18 @@ public class IntArrayTag implements Tag {
     public int[] getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (int i : value) {
+            builder.append(i);
+            builder.append(", ");
+        }
+        builder.delete(builder.length() - 1, builder.length()); // delete last comma
+        builder.append("]");
+
+        return builder.toString();
+    }
 }

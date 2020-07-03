@@ -88,4 +88,18 @@ public class ListTag implements Tag {
     public List<Tag> getValue() {
         return list;
     }
+
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (Tag tag : list) {
+            builder.append(tag);
+        }
+        builder.delete(builder.length() - 1, builder.length()); // delete last comma
+        builder.append("]");
+
+        return builder.toString();
+    }
 }
