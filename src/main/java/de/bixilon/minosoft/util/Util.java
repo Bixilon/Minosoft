@@ -49,11 +49,11 @@ public class Util {
         // decompressing chunk data
         Inflater inflater = new Inflater();
         inflater.setInput(bytes, 0, bytes.length);
-        byte[] result = new byte[4096];
+        byte[] buffer = new byte[4096];
         ByteArrayOutputStream stream = new ByteArrayOutputStream(bytes.length);
         try {
             while (!inflater.finished()) {
-                stream.write(result, 0, inflater.inflate(result));
+                stream.write(buffer, 0, inflater.inflate(buffer));
             }
         } catch (DataFormatException e) {
             e.printStackTrace();
@@ -71,10 +71,11 @@ public class Util {
         // decompressing chunk data
         Deflater deflater = new Deflater();
         deflater.setInput(bytes, 0, bytes.length);
-        byte[] result = new byte[4096];
+        deflater.finish();
+        byte[] buffer = new byte[4096];
         ByteArrayOutputStream stream = new ByteArrayOutputStream(bytes.length);
         while (!deflater.finished()) {
-            stream.write(result, 0, deflater.deflate(result));
+            stream.write(buffer, 0, deflater.deflate(buffer));
         }
         try {
             stream.close();
