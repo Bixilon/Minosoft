@@ -195,7 +195,7 @@ public class Connection {
 
     public void registerDefaultChannels() {
         // MC|Brand
-        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getName(), (handler, buffer) -> {
+        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getIdentifier().get(version), (handler, buffer) -> {
             String serverVersion;
             String clientVersion = (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
             OutByteBuffer toSend = new OutByteBuffer(getVersion());
@@ -210,7 +210,7 @@ public class Connection {
             }
             Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getName()));
 
-            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getName(), toSend);
+            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getIdentifier().get(version), toSend);
         });
     }
 

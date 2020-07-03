@@ -19,13 +19,13 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketConfirmTransaction implements ServerboundPacket {
+public class PacketConfirmTransactionSending implements ServerboundPacket {
 
     final byte windowId;
     final short actionNumber;
     final boolean accepted;
 
-    public PacketConfirmTransaction(byte windowId, short actionNumber, boolean accepted) {
+    public PacketConfirmTransactionSending(byte windowId, short actionNumber, boolean accepted) {
         this.windowId = windowId;
         this.actionNumber = actionNumber;
         this.accepted = accepted;
