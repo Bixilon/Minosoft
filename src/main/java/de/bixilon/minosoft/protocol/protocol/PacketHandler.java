@@ -549,4 +549,7 @@ public class PacketHandler {
     public void handle(PacketSetPassenger pkg) {
         //ToDo
     }
+
+    public void handle(PacketSetCooldown pkg) {
+    }
 }
