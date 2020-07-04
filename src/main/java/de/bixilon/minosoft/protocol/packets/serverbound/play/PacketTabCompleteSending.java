@@ -64,6 +64,7 @@ public class PacketTabCompleteSending implements ServerboundPacket {
                 }
                 break;
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 buffer.writeString(text);
                 buffer.writeBoolean(assumeCommand);
                 if (position == null) {

@@ -33,6 +33,7 @@ public class PacketExplosion implements ClientboundPacket {
             case VERSION_1_7_10:
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 location = new Location(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
                 radius = buffer.readFloat();
                 if (radius > 100.0F) {

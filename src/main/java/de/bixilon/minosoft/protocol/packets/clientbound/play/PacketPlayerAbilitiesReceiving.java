@@ -42,7 +42,8 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
                 return true;
             }
             case VERSION_1_8:
-            case VERSION_1_9_4: {
+            case VERSION_1_9_4:
+            case VERSION_1_10: {
                 byte flags = buffer.readByte();
                 godMode = BitByte.isBitSet(flags, 0);
                 flying = BitByte.isBitSet(flags, 1);

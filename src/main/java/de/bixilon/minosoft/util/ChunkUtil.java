@@ -142,7 +142,8 @@ public class ChunkUtil {
                 }
                 return new Chunk(nibbleMap);
             }
-            case VERSION_1_9_4: {
+            case VERSION_1_9_4:
+            case VERSION_1_10: {
                 // really big thanks to: https://wiki.vg/index.php?title=Chunk_Format&oldid=13712
                 HashMap<Byte, ChunkNibble> nibbleMap = new HashMap<>();
                 for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column

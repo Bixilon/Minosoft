@@ -23,12 +23,14 @@ public class RabbitMetaData extends TameableMetaData {
     }
 
 
-    public byte getType() {
+    public int getType() {
         switch (version) {
             case VERSION_1_8:
                 return (byte) sets.get(18).getData();
             case VERSION_1_9_4:
-                return (byte) sets.get(12).getData();
+                return (int) sets.get(12).getData();
+            case VERSION_1_10:
+                return (int) sets.get(13).getData();
         }
         return 0;
     }

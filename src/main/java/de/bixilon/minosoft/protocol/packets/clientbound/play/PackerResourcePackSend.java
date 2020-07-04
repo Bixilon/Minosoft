@@ -28,6 +28,7 @@ public class PackerResourcePackSend implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 url = buffer.readString();
                 hash = buffer.readString();
                 return true;

@@ -23,15 +23,43 @@ public class OcelotMetaData extends TameableMetaData {
     }
 
 
-    public int getType() {
+    public OcelotTypes getType() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return (byte) sets.get(18).getData();
+                return OcelotTypes.byId((byte) sets.get(18).getData());
             case VERSION_1_9_4:
-                return (int) sets.get(14).getData();
+                return OcelotTypes.byId((int) sets.get(14).getData());
+            case VERSION_1_10:
+                return OcelotTypes.byId((int) sets.get(15).getData());
         }
-        return 0x00;
+        return null;
     }
 
+
+    public enum OcelotTypes {
+        UNTAMED(0),
+        TUXEDO(1),
+        TABBY(2),
+        SIAMESE(3);
+
+        final int id;
+
+        OcelotTypes(int id) {
+            this.id = id;
+        }
+
+        public static OcelotTypes byId(int id) {
+            for (OcelotTypes type : values()) {
+                if (type.getId() == id) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
 }

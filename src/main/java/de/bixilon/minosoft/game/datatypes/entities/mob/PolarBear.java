@@ -15,61 +15,59 @@ package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.SkeletonMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.PolarBearMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class Skeleton extends Mob implements MobInterface {
-    SkeletonMetaData metaData;
+public class PolarBear extends Mob implements MobInterface {
+    PolarBearMetaData metaData;
 
-    public Skeleton(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public PolarBear(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new SkeletonMetaData(sets, version);
+        this.metaData = new PolarBearMetaData(sets, version);
     }
 
     @Override
     public Mobs getEntityType() {
-        return Mobs.SKELETON;
+        return Mobs.POLAR_BEAR;
     }
 
     @Override
-    public SkeletonMetaData getMetaData() {
+    public PolarBearMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (SkeletonMetaData) metaData;
+        this.metaData = (PolarBearMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        switch (metaData.getSkeletonType()) {
-            case WITHER:
-                return 0.7F;
-            default:
-                return 0.6F;
+        if (metaData.isAdult()) {
+            return 1.4F;
+
         }
+        return 0.7F;
     }
 
     @Override
     public float getHeight() {
-        switch (metaData.getSkeletonType()) {
-            case WITHER:
-                return 2.4F;
-            default:
-                return 1.99F;
+        if (metaData.isAdult()) {
+            return 1.4F;
+
         }
+        return 0.7F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 20;
+        return 30;
     }
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return SkeletonMetaData.class;
+        return PolarBearMetaData.class;
     }
 }

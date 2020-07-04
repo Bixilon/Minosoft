@@ -38,6 +38,7 @@ public class PacketEntityMovement implements ClientboundPacket {
                 this.onGround = buffer.readBoolean();
                 return true;
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 this.entityId = buffer.readVarInt();
                 this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
                 this.onGround = buffer.readBoolean();

@@ -31,6 +31,8 @@ public class SpiderMetaData extends MobMetaData {
                 return (byte) sets.get(16).getData() == 0x01;
             case VERSION_1_9_4:
                 return BitByte.isBitMask((byte) sets.get(11).getData(), 0x01);
+            case VERSION_1_10:
+                return BitByte.isBitMask((byte) sets.get(12).getData(), 0x01);
         }
         return false;
     }

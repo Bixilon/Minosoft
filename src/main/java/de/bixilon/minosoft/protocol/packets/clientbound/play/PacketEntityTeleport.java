@@ -44,6 +44,7 @@ public class PacketEntityTeleport implements ClientboundPacket {
                 this.onGround = buffer.readBoolean();
                 return true;
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 this.entityId = buffer.readVarInt();
                 this.location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
                 this.yaw = buffer.readAngle();

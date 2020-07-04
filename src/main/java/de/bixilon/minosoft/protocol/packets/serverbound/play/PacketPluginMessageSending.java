@@ -42,6 +42,7 @@ public class PacketPluginMessageSending implements ServerboundPacket {
                 break;
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 buffer.writeString(channel); // name
                 buffer.writeBytes(data); // data
                 break;

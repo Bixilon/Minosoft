@@ -36,6 +36,7 @@ public class PacketAnimation implements ServerboundPacket {
             case VERSION_1_8:
                 break;
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 buffer.writeVarInt(hand.getId());
                 break;
         }

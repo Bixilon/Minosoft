@@ -28,6 +28,8 @@ public class ShulkerMetaData extends MobMetaData {
         switch (version) {
             case VERSION_1_9_4:
                 return (Direction) sets.get(11).getData();
+            case VERSION_1_10:
+                return (Direction) sets.get(12).getData();
         }
         return null;
     }
@@ -36,6 +38,8 @@ public class ShulkerMetaData extends MobMetaData {
         switch (version) {
             case VERSION_1_9_4:
                 return (BlockPosition) sets.get(12).getData();
+            case VERSION_1_10:
+                return (BlockPosition) sets.get(13).getData();
         }
         return null;
     }
@@ -44,6 +48,8 @@ public class ShulkerMetaData extends MobMetaData {
         switch (version) {
             case VERSION_1_9_4:
                 return (byte) sets.get(13).getData();
+            case VERSION_1_10:
+                return (byte) sets.get(14).getData();
         }
         return 0;
     }

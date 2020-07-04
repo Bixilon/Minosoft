@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.Color;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
@@ -23,12 +22,14 @@ public class TippedArrowMetaData extends ArrowMetaData {
         super(sets, version);
     }
 
-    public Color getColor() {
+    public int getColor() {
         switch (version) {
             case VERSION_1_9_4:
-                return Color.byId((int) sets.get(6).getData());
+                return (int) sets.get(6).getData();
+            case VERSION_1_10:
+                return (int) sets.get(7).getData();
         }
-        return null;
+        return 0;
     }
 
 }

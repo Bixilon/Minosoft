@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.entities.StatusEffects;
 import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
@@ -32,19 +31,23 @@ public class MobMetaData extends EntityMetaData {
             case VERSION_1_8:
             case VERSION_1_9_4:
                 return (float) sets.get(6).getData();
+            case VERSION_1_10:
+                return (float) sets.get(7).getData();
         }
         return 0.0F;
     }
 
-    public StatusEffects getPotionEffectColor() {
+    public int getPotionEffectColor() {
         // ToDo: color?
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
             case VERSION_1_9_4:
-                return StatusEffects.byId((int) sets.get(7).getData());
+                return (int) sets.get(7).getData();
+            case VERSION_1_10:
+                return (int) sets.get(8).getData();
         }
-        return null;
+        return 0;
     }
 
 
@@ -55,6 +58,8 @@ public class MobMetaData extends EntityMetaData {
                 return (byte) sets.get(8).getData() == 0x01;
             case VERSION_1_9_4:
                 return (boolean) sets.get(8).getData();
+            case VERSION_1_10:
+                return (boolean) sets.get(9).getData();
         }
         return false;
     }
@@ -66,6 +71,8 @@ public class MobMetaData extends EntityMetaData {
                 return (byte) sets.get(9).getData();
             case VERSION_1_9_4:
                 return (int) sets.get(9).getData();
+            case VERSION_1_10:
+                return (int) sets.get(10).getData();
         }
         return 0;
     }
@@ -106,6 +113,8 @@ public class MobMetaData extends EntityMetaData {
         switch (version) {
             case VERSION_1_9_4:
                 return BitByte.isBitMask((byte) sets.get(5).getData(), 0x01);
+            case VERSION_1_10:
+                return BitByte.isBitMask((byte) sets.get(6).getData(), 0x01);
         }
         return false;
     }
@@ -115,6 +124,8 @@ public class MobMetaData extends EntityMetaData {
         switch (version) {
             case VERSION_1_9_4:
                 return BitByte.isBitMask((byte) sets.get(5).getData(), 0x01) ? Hand.LEFT : Hand.RIGHT;
+            case VERSION_1_10:
+                return BitByte.isBitMask((byte) sets.get(6).getData(), 0x01) ? Hand.LEFT : Hand.RIGHT;
         }
         return Hand.RIGHT;
     }

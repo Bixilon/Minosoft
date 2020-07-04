@@ -43,6 +43,7 @@ public class PacketSpawnPainting implements ClientboundPacket {
                 direction = buffer.readByte();
                 return true;
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID(); // ?
                 title = buffer.readString();

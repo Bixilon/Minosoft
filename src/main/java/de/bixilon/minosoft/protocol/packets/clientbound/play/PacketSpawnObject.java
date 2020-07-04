@@ -84,7 +84,8 @@ public class PacketSpawnObject implements ClientboundPacket {
                     e.printStackTrace();
                 }
             }
-            case VERSION_1_9_4: {
+            case VERSION_1_9_4:
+            case VERSION_1_10: {
                 int entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
                 Objects type = Objects.byType(buffer.readByte());

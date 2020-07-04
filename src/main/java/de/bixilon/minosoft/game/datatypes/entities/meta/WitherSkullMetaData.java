@@ -27,6 +27,8 @@ public class WitherSkullMetaData extends TameableMetaData {
         switch (version) {
             case VERSION_1_9_4:
                 return (boolean) sets.get(5).getData();
+            case VERSION_1_10:
+                return (boolean) sets.get(6).getData();
         }
         return false;
     }

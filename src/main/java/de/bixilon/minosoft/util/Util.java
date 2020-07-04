@@ -46,7 +46,10 @@ public class Util {
     }
 
     public static InByteBuffer decompress(byte[] bytes, ProtocolVersion version) {
-        // decompressing chunk data
+        return new InByteBuffer(decompress(bytes), version);
+    }
+
+    public static byte[] decompress(byte[] bytes) {
         Inflater inflater = new Inflater();
         inflater.setInput(bytes, 0, bytes.length);
         byte[] buffer = new byte[4096];
@@ -59,13 +62,12 @@ public class Util {
         } catch (IOException | DataFormatException e) {
             e.printStackTrace();
         }
-        return new InByteBuffer(stream.toByteArray(), version);
+        return stream.toByteArray();
     }
 
     public static byte[] compress(byte[] bytes) {
-        // decompressing chunk data
         Deflater deflater = new Deflater();
-        deflater.setInput(bytes, 0, bytes.length);
+        deflater.setInput(bytes);
         deflater.finish();
         byte[] buffer = new byte[4096];
         ByteArrayOutputStream stream = new ByteArrayOutputStream(bytes.length);

@@ -31,11 +31,13 @@ public class ItemFrameMetaData extends EntityMetaData {
                 return (Slot) sets.get(8).getData();
             case VERSION_1_9_4:
                 return (Slot) sets.get(5).getData();
+            case VERSION_1_10:
+                return (Slot) sets.get(6).getData();
         }
         return null;
     }
 
-    public byte getRotation() {
+    public int getRotation() {
         switch (version) {
             case VERSION_1_7_10:
                 return (byte) sets.get(3).getData();
@@ -43,6 +45,8 @@ public class ItemFrameMetaData extends EntityMetaData {
                 return (byte) sets.get(9).getData();
             case VERSION_1_9_4:
                 return (byte) sets.get(6).getData();
+            case VERSION_1_10:
+                return (int) sets.get(7).getData();
         }
         return 0;
     }

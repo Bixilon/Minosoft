@@ -47,6 +47,7 @@ public class PacketSteerVehicle implements ServerboundPacket {
                 break;
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 buffer.writeFloat(sideways);
                 buffer.writeFloat(forward);
                 byte flags = 0;

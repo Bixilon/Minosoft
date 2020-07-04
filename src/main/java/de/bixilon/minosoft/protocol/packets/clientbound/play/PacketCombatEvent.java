@@ -33,6 +33,7 @@ public class PacketCombatEvent implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 action = CombatEvent.byId(buffer.readVarInt());
                 switch (action) {
                     case END_COMBAT:

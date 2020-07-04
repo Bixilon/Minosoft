@@ -27,6 +27,7 @@ public class PacketUnloadChunk implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 return true;
         }

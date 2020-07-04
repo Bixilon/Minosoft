@@ -22,23 +22,53 @@ public class SkeletonMetaData extends MobMetaData {
         super(sets, version);
     }
 
-    public boolean isWitherSkeleton() {
+    public SkeletonTypes getSkeletonType() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return (byte) sets.get(13).getData() == 0x01;
+                return SkeletonTypes.byId((byte) sets.get(13).getData());
             case VERSION_1_9_4:
-                return (byte) sets.get(11).getData() == 0x01;
+                return SkeletonTypes.byId((int) sets.get(11).getData());
+            case VERSION_1_10:
+                return SkeletonTypes.byId((int) sets.get(12).getData());
         }
-        return false;
+        return SkeletonTypes.NORMAL;
     }
 
     public boolean isSwingingArms() {
         switch (version) {
             case VERSION_1_9_4:
                 return (boolean) sets.get(12).getData();
+            case VERSION_1_10:
+                return (boolean) sets.get(13).getData();
         }
         return false;
+    }
+
+    public enum SkeletonTypes {
+        NORMAL(0),
+        WITHER(1),
+        STRAY(2);
+
+
+        final int id;
+
+        SkeletonTypes(int id) {
+            this.id = id;
+        }
+
+        public static SkeletonTypes byId(int id) {
+            for (SkeletonTypes type : values()) {
+                if (type.getId() == id) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        public int getId() {
+            return id;
+        }
     }
 
 

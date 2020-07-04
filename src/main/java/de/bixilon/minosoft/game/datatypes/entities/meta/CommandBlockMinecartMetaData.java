@@ -27,6 +27,8 @@ public class CommandBlockMinecartMetaData extends EntityMetaData {
         switch (version) {
             case VERSION_1_9_4:
                 return (String) sets.get(11).getData();
+            case VERSION_1_10:
+                return (String) sets.get(12).getData();
         }
         return "";
     }
@@ -35,6 +37,8 @@ public class CommandBlockMinecartMetaData extends EntityMetaData {
         switch (version) {
             case VERSION_1_9_4:
                 return (TextComponent) sets.get(12).getData();
+            case VERSION_1_10:
+                return (TextComponent) sets.get(13).getData();
         }
         return null;
     }

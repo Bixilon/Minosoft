@@ -30,6 +30,8 @@ public class MinecartMetaData extends EntityMetaData {
                 return (int) sets.get(17).getData();
             case VERSION_1_9_4:
                 return (int) sets.get(5).getData();
+            case VERSION_1_10:
+                return (int) sets.get(6).getData();
         }
         return 0;
     }
@@ -41,6 +43,8 @@ public class MinecartMetaData extends EntityMetaData {
                 return (int) sets.get(18).getData();
             case VERSION_1_9_4:
                 return (int) sets.get(6).getData();
+            case VERSION_1_10:
+                return (int) sets.get(7).getData();
         }
         return 0;
     }
@@ -52,6 +56,8 @@ public class MinecartMetaData extends EntityMetaData {
                 return (float) sets.get(19).getData();
             case VERSION_1_9_4:
                 return (float) sets.get(7).getData();
+            case VERSION_1_10:
+                return (float) sets.get(8).getData();
         }
         return 0;
     }
@@ -62,7 +68,9 @@ public class MinecartMetaData extends EntityMetaData {
             case VERSION_1_8:
                 return Blocks.byId((int) sets.get(20).getData() & 0xFF, (int) sets.get(20).getData() >>> 4);
             case VERSION_1_9_4:
-                return (Blocks) sets.get(8).getData();
+                return Blocks.byId((int) sets.get(8).getData() & 0xFF, (int) sets.get(8).getData() >>> 4);
+            case VERSION_1_10:
+                return Blocks.byId((int) sets.get(9).getData() & 0xFF, (int) sets.get(9).getData() >>> 4);
         }
         return Blocks.AIR;
     }
@@ -73,6 +81,8 @@ public class MinecartMetaData extends EntityMetaData {
                 return (int) sets.get(21).getData();
             case VERSION_1_9_4:
                 return (int) sets.get(9).getData();
+            case VERSION_1_10:
+                return (int) sets.get(10).getData();
         }
         return 0;
     }
@@ -83,6 +93,8 @@ public class MinecartMetaData extends EntityMetaData {
                 return (byte) sets.get(22).getData() == 0x01;
             case VERSION_1_9_4:
                 return (boolean) sets.get(10).getData();
+            case VERSION_1_10:
+                return (boolean) sets.get(11).getData();
         }
         return false;
     }

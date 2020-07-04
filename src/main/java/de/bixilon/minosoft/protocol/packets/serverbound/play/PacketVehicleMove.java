@@ -42,6 +42,7 @@ public class PacketVehicleMove implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_VEHICLE_MOVE));
         switch (version) {
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 buffer.writeDouble(x);
                 buffer.writeDouble(y);
                 buffer.writeDouble(z);

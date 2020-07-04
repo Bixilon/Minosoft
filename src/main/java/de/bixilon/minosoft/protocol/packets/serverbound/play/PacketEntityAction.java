@@ -53,6 +53,7 @@ public class PacketEntityAction implements ServerboundPacket {
                 break;
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 buffer.writeVarInt(entityId);
                 buffer.writeVarInt(action.getId(version));
                 buffer.writeVarInt(parameter);

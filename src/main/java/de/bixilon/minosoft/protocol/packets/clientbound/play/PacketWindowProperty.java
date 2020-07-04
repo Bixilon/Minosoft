@@ -30,6 +30,7 @@ public class PacketWindowProperty implements ClientboundPacket {
             case VERSION_1_7_10:
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 this.windowId = buffer.readByte();
                 this.property = buffer.readShort();
                 this.value = buffer.readShort();

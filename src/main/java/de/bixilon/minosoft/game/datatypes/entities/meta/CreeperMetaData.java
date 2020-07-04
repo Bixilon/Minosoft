@@ -30,6 +30,8 @@ public class CreeperMetaData extends MobMetaData {
                 return (byte) sets.get(16).getData();
             case VERSION_1_9_4:
                 return (int) sets.get(11).getData();
+            case VERSION_1_10:
+                return (int) sets.get(12).getData();
         }
         return -1;
     }
@@ -42,6 +44,8 @@ public class CreeperMetaData extends MobMetaData {
                 return (byte) sets.get(17).getData() == 0x01;
             case VERSION_1_9_4:
                 return (boolean) sets.get(12).getData();
+            case VERSION_1_10:
+                return (boolean) sets.get(13).getData();
         }
         return false;
     }
@@ -50,6 +54,8 @@ public class CreeperMetaData extends MobMetaData {
         switch (version) {
             case VERSION_1_9_4:
                 return (boolean) sets.get(13).getData();
+            case VERSION_1_10:
+                return (boolean) sets.get(14).getData();
         }
         return false;
     }

@@ -48,6 +48,7 @@ public enum Mobs {
     IRON_GOLEM(99, IronGolem.class),
     HORSE(100, Horse.class),
     RABBIT(101, Rabbit.class),
+    POLAR_BEAR(101, PolarBear.class),
     VILLAGER(120, Villager.class);
 
     final int type;

@@ -80,6 +80,10 @@ public class Network {
                     // wait for data or send until it should disconnect
                     // first send, then receive
 
+                    // check if still connected
+                    if (!socket.isConnected() || socket.isClosed()) {
+                        break;
+                    }
 
                     while (binQueue.size() > 0) {
                         // something to send it, send it

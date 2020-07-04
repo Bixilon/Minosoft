@@ -35,6 +35,7 @@ public class PacketTitle implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 action = TitleAction.byId(buffer.readVarInt());
                 switch (action) {
                     case SET_TITLE:

@@ -30,19 +30,23 @@ public class ZombieMetaData extends MobMetaData {
                 return ((byte) sets.get(12).getData()) == 0x01;
             case VERSION_1_9_4:
                 return ((boolean) sets.get(11).getData());
+            case VERSION_1_10:
+                return ((boolean) sets.get(12).getData());
         }
         return false;
     }
 
-    public boolean isVillager() {
+    public ZombieTypes getType() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return ((byte) sets.get(13).getData()) == 0x01;
+                return ZombieTypes.byId((byte) sets.get(13).getData());
             case VERSION_1_9_4:
-                return ((int) sets.get(12).getData()) >= 0x01; // returns the villager type
+                return ZombieTypes.byId((int) sets.get(12).getData());
+            case VERSION_1_10:
+                return ZombieTypes.byId((int) sets.get(13).getData());
         }
-        return false;
+        return ZombieTypes.ZOMBIE;
     }
 
     public boolean isConverting() {
@@ -52,6 +56,8 @@ public class ZombieMetaData extends MobMetaData {
                 return ((byte) sets.get(14).getData()) == 0x01;
             case VERSION_1_9_4:
                 return ((boolean) sets.get(13).getData());
+            case VERSION_1_10:
+                return ((boolean) sets.get(14).getData());
         }
         return false;
     }
@@ -60,8 +66,40 @@ public class ZombieMetaData extends MobMetaData {
         switch (version) {
             case VERSION_1_9_4:
                 return ((boolean) sets.get(14).getData());
+            case VERSION_1_10:
+                return ((boolean) sets.get(15).getData());
         }
         return false;
+    }
+
+    public enum ZombieTypes {
+        ZOMBIE(0),
+        FARMER(VillagerMetaData.VillagerType.FARMER.getId() + 1),
+        LIBRARIAN(VillagerMetaData.VillagerType.LIBRARIAN.getId() + 1),
+        PRIEST(VillagerMetaData.VillagerType.PRIEST.getId() + 1),
+        BLACKSMITH(VillagerMetaData.VillagerType.BLACKSMITH.getId() + 1),
+        BUTCHER(VillagerMetaData.VillagerType.BUTCHER.getId() + 1),
+        HUSK(6);
+
+
+        final int id;
+
+        ZombieTypes(int id) {
+            this.id = id;
+        }
+
+        public static ZombieTypes byId(int id) {
+            for (ZombieTypes type : values()) {
+                if (type.getId() == id) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        public int getId() {
+            return id;
+        }
     }
 
 

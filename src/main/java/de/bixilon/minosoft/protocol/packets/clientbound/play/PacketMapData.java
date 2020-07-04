@@ -73,7 +73,8 @@ public class PacketMapData implements ClientboundPacket {
                 }
                 return true;
             case VERSION_1_8:
-            case VERSION_1_9_4: {
+            case VERSION_1_9_4:
+            case VERSION_1_10: {
                 mapId = buffer.readVarInt();
                 scale = buffer.readByte();
                 if (buffer.getVersion().getVersion() >= ProtocolVersion.VERSION_1_9_4.getVersion()) {

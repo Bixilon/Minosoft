@@ -37,7 +37,8 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
                 location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
                 return true;
             }
-            case VERSION_1_9_4: {
+            case VERSION_1_9_4:
+            case VERSION_1_10: {
                 entityId = buffer.readVarInt();
                 // only thunderbolts
                 byte type = buffer.readByte();
