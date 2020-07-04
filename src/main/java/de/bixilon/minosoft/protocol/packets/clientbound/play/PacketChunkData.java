@@ -67,7 +67,7 @@ public class PacketChunkData implements ClientboundPacket {
                 int lastPos = buffer.getPosition();
 
                 chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
-                // set position of the byte buffer, because of some reasons HyPixel makes some weired stuff and sends way to much 0 bytes. (~ 190k)
+                // set position of the byte buffer, because of some reasons HyPixel makes some weired stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
                 buffer.setPosition(size + lastPos);
                 int blockEntitiesCount = buffer.readVarInt();
                 for (int i = 0; i < blockEntitiesCount; i++) {
