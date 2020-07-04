@@ -45,6 +45,7 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
                 flags = buffer.readByte();
                 return true;
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 location = buffer.readLocation();
                 yaw = buffer.readFloat();
                 pitch = buffer.readFloat();

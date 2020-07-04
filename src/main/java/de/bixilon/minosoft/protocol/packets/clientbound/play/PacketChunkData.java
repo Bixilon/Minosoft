@@ -59,7 +59,8 @@ public class PacketChunkData implements ClientboundPacket {
                 chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
                 return true;
             }
-            case VERSION_1_9_4: {
+            case VERSION_1_9_4:
+            case VERSION_1_10: {
                 this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 boolean groundUpContinuous = buffer.readBoolean();
                 short sectionBitMask = (short) buffer.readVarInt();

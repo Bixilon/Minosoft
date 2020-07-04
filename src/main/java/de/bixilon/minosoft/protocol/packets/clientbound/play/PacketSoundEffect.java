@@ -24,18 +24,26 @@ public class PacketSoundEffect implements ClientboundPacket {
     static final float pitchCalc = 100.0F / 63.0F;
     Location location;
     int sound;
+    int category;
     float volume;
-    int pitch;
+    float pitch;
 
     @Override
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_9_4:
                 sound = buffer.readVarInt();
-                int category = buffer.readVarInt(); //ToDo: category
+                category = buffer.readVarInt(); //ToDo: category
                 location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
                 volume = buffer.readFloat();
-                pitch = (int) (buffer.readByte() * pitchCalc);
+                pitch = (buffer.readByte() * pitchCalc) / 100F;
+                return true;
+            case VERSION_1_10:
+                sound = buffer.readVarInt();
+                category = buffer.readVarInt(); //ToDo: category
+                location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
+                volume = buffer.readFloat();
+                pitch = buffer.readFloat();
                 return true;
         }
 
@@ -57,9 +65,9 @@ public class PacketSoundEffect implements ClientboundPacket {
     }
 
     /**
-     * @return Pitch in Percent * 100
+     * @return Pitch in Percent
      */
-    public int getPitch() {
+    public float getPitch() {
         return pitch;
     }
 

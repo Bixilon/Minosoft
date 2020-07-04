@@ -32,6 +32,8 @@ public class TameableMetaData extends AgeableMetaData {
                 return BitByte.isBitMask((int) sets.get(16).getData(), 0x01);
             case VERSION_1_9_4:
                 return BitByte.isBitMask((int) sets.get(12).getData(), 0x01);
+            case VERSION_1_10:
+                return BitByte.isBitMask((int) sets.get(13).getData(), 0x01);
         }
         return false;
     }
@@ -43,6 +45,8 @@ public class TameableMetaData extends AgeableMetaData {
                 return BitByte.isBitMask((int) sets.get(16).getData(), 0x04);
             case VERSION_1_9_4:
                 return BitByte.isBitMask((int) sets.get(12).getData(), 0x04);
+            case VERSION_1_10:
+                return BitByte.isBitMask((int) sets.get(13).getData(), 0x04);
         }
         return false;
     }
@@ -51,6 +55,8 @@ public class TameableMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_9_4:
                 return BitByte.isBitMask((int) sets.get(12).getData(), 0x02);
+            case VERSION_1_10:
+                return BitByte.isBitMask((int) sets.get(13).getData(), 0x02);
         }
         return false;
     }
@@ -68,6 +74,8 @@ public class TameableMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_9_4:
                 return (UUID) sets.get(13).getData();
+            case VERSION_1_10:
+                return (UUID) sets.get(14).getData();
         }
         return null;
     }

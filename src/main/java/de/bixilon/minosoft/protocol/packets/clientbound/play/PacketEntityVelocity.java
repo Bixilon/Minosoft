@@ -33,6 +33,7 @@ public class PacketEntityVelocity implements ClientboundPacket {
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 this.entityId = buffer.readVarInt();
                 this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
                 return true;

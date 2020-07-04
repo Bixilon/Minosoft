@@ -38,6 +38,7 @@ public class PacketBossBar implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 uuid = buffer.readUUID();
                 action = BossBarAction.byId(buffer.readVarInt());
                 switch (action) {

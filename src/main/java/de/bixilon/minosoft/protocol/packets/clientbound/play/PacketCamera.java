@@ -27,6 +27,7 @@ public class PacketCamera implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 entityId = buffer.readVarInt();
                 return true;
         }

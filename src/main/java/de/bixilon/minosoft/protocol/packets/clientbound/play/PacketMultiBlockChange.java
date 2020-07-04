@@ -49,7 +49,8 @@ public class PacketMultiBlockChange implements ClientboundPacket {
                 return true;
             }
             case VERSION_1_8:
-            case VERSION_1_9_4: {
+            case VERSION_1_9_4:
+            case VERSION_1_10: {
                 location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 int count = buffer.readVarInt();
                 for (int i = 0; i < count; i++) {

@@ -31,6 +31,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
             case VERSION_1_7_10:
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 entityId = buffer.readVarInt();
                 animation = EntityAnimations.byId(buffer.readByte(), buffer.getVersion());
                 return true;

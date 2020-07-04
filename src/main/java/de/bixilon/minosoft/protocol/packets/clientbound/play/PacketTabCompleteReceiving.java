@@ -32,6 +32,7 @@ public class PacketTabCompleteReceiving implements ClientboundPacket {
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 count = buffer.readVarInt();
                 match = new String[count];
                 for (int i = 0; i < count; i++) {

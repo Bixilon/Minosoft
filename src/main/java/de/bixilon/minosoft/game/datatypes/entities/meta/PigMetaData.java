@@ -30,6 +30,8 @@ public class PigMetaData extends AgeableMetaData {
                 return (byte) sets.get(16).getData() == 0x01;
             case VERSION_1_9_4:
                 return (boolean) sets.get(12).getData();
+            case VERSION_1_10:
+                return (boolean) sets.get(13).getData();
         }
         return false;
     }

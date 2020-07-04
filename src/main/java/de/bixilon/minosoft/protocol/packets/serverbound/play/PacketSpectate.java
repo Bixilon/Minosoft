@@ -36,6 +36,7 @@ public class PacketSpectate implements ServerboundPacket {
         switch (version) {
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 buffer.writeUUID(entityUUID);
                 break;
         }

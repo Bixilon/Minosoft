@@ -34,6 +34,7 @@ public class PacketUseItem implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_USE_ITEM));
         switch (version) {
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 buffer.writeVarInt(hand.getId());
                 break;
         }

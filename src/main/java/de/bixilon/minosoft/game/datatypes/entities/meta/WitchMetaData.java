@@ -29,6 +29,8 @@ public class WitchMetaData extends MobMetaData {
                 return (byte) sets.get(21).getData() == 0x01;
             case VERSION_1_9_4:
                 return (boolean) sets.get(11).getData();
+            case VERSION_1_10:
+                return (boolean) sets.get(12).getData();
         }
         return false;
     }

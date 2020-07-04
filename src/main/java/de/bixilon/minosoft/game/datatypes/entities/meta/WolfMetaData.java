@@ -36,20 +36,23 @@ public class WolfMetaData extends TameableMetaData {
         }
     }
 
-
+    @Override
     public float getHealth() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (float) sets.get(18).getData();
+            default:
+                return super.getHealth();
         }
-        return 0.00F;
     }
 
     public float getDamageTaken() {
         switch (version) {
             case VERSION_1_9_4:
                 return (float) sets.get(14).getData();
+            case VERSION_1_10:
+                return (float) sets.get(15).getData();
         }
         return 0.00F;
     }
@@ -61,7 +64,9 @@ public class WolfMetaData extends TameableMetaData {
             case VERSION_1_8:
                 return ((byte) sets.get(19).getData()) == 0x01;
             case VERSION_1_9_4:
-                return ((boolean) sets.get(15).getData());
+                return (boolean) sets.get(15).getData();
+            case VERSION_1_10:
+                return (boolean) sets.get(16).getData();
         }
         return false;
     }
@@ -73,6 +78,8 @@ public class WolfMetaData extends TameableMetaData {
                 return Color.byId((byte) sets.get(20).getData());
             case VERSION_1_9_4:
                 return Color.byId((byte) sets.get(16).getData());
+            case VERSION_1_10:
+                return Color.byId((byte) sets.get(17).getData());
         }
         return Color.WHITE;
     }

@@ -40,6 +40,7 @@ public class PacketEffect implements ClientboundPacket {
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 this.effect = EffectEffects.byId(buffer.readInt(), buffer.getVersion());
                 position = buffer.readPosition();
                 data = buffer.readInt();

@@ -32,7 +32,8 @@ public class EntityMetaData {
     /*
     1.7.10: https://wiki.vg/index.php?title=Entity_metadata&oldid=5991
     1.8: https://wiki.vg/index.php?title=Entity_metadata&oldid=6611
-    1.9.4; https://wiki.vg/index.php?title=Entity_metadata&oldid=7955
+    1.9.4: https://wiki.vg/index.php?title=Entity_metadata&oldid=7955
+    1.10: https://wiki.vg/index.php?title=Entity_metadata&oldid=8241
      */
     public EntityMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         this.sets = sets;
@@ -124,6 +125,8 @@ public class EntityMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
+            case VERSION_1_10:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x01);
         }
         return false;
@@ -133,6 +136,8 @@ public class EntityMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
+            case VERSION_1_10:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x02);
         }
         return false;
@@ -142,6 +147,8 @@ public class EntityMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
+            case VERSION_1_10:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x08);
         }
         return false;
@@ -151,6 +158,8 @@ public class EntityMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
+            case VERSION_1_10:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x10);
         }
         return false;
@@ -168,6 +177,8 @@ public class EntityMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
+            case VERSION_1_10:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 0x20);
         }
         return false;
@@ -177,6 +188,8 @@ public class EntityMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
+            case VERSION_1_10:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 0x40);
         }
         return false;
@@ -186,6 +199,8 @@ public class EntityMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
+            case VERSION_1_10:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 0x80);
         }
         return false;
@@ -194,6 +209,7 @@ public class EntityMetaData {
     public String getNameTag() {
         switch (version) {
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 return (String) sets.get(2).getData();
         }
         return null;
@@ -202,6 +218,7 @@ public class EntityMetaData {
     public boolean isCustomNameVisible() {
         switch (version) {
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 return (boolean) sets.get(3).getData();
         }
         return false;
@@ -210,7 +227,16 @@ public class EntityMetaData {
     public boolean isSilent() {
         switch (version) {
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 return (boolean) sets.get(4).getData();
+        }
+        return false;
+    }
+
+    public boolean hasGravity() {
+        switch (version) {
+            case VERSION_1_10:
+                return !(boolean) sets.get(5).getData();
         }
         return false;
     }
@@ -232,8 +258,8 @@ public class EntityMetaData {
         OPT_POSITION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 9)}),
         DIRECTION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 10)}),
         OPT_UUID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 11)}),
-        BLOCK_ID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 14)}),
-        OPT_BLOCK_ID(-1),
+        BLOCK_ID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 12), new MapSet<>(ProtocolVersion.VERSION_1_10, 1003)}),
+        OPT_BLOCK_ID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 12)}),
         NBT(-1),
         PARTICLE(-1),
         VILLAGER_DATA(-1),

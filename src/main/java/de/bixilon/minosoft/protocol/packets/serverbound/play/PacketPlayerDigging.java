@@ -59,6 +59,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
                 buffer.writeByte(face.getId());
                 break;
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 buffer.writeVarInt(status.getId());
                 if (position == null) {
                     buffer.writeLong(0L);

@@ -63,7 +63,8 @@ public class PacketSpawnPlayer implements ClientboundPacket {
                 this.player = new OtherPlayer(entityId, null, uuid, null, location, null, yaw, pitch, currentItem, metaData);
                 return true;
             }
-            case VERSION_1_9_4: {
+            case VERSION_1_9_4:
+            case VERSION_1_10: {
                 this.entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
                 Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());

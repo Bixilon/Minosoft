@@ -40,6 +40,7 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 itemName = buffer.readString();
                 action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
                 scoreName = buffer.readString();

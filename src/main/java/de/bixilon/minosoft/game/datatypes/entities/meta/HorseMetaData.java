@@ -29,9 +29,11 @@ public class HorseMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x01);
+                return BitByte.isBitMask((int) sets.get(16).getData(), 0x02);
             case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x01);
+                return BitByte.isBitMask((int) sets.get(12).getData(), 0x02);
+            case VERSION_1_10:
+                return BitByte.isBitMask((int) sets.get(13).getData(), 0x02);
         }
         return false;
     }
@@ -40,9 +42,11 @@ public class HorseMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x02);
+                return BitByte.isBitMask((int) sets.get(16).getData(), 0x04);
             case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x02);
+                return BitByte.isBitMask((int) sets.get(12).getData(), 0x04);
+            case VERSION_1_10:
+                return BitByte.isBitMask((int) sets.get(13).getData(), 0x05);
         }
         return false;
     }
@@ -51,9 +55,11 @@ public class HorseMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x04);
+                return BitByte.isBitMask((int) sets.get(16).getData(), 0x08);
             case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x04);
+                return BitByte.isBitMask((int) sets.get(12).getData(), 0x08);
+            case VERSION_1_10:
+                return BitByte.isBitMask((int) sets.get(13).getData(), 0x08);
         }
         return false;
     }
@@ -62,9 +68,11 @@ public class HorseMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x08);
+                return BitByte.isBitMask((int) sets.get(16).getData(), 0x10);
             case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x08);
+                return BitByte.isBitMask((int) sets.get(12).getData(), 0x10);
+            case VERSION_1_10:
+                return BitByte.isBitMask((int) sets.get(13).getData(), 0x10);
         }
         return false;
     }
@@ -73,9 +81,11 @@ public class HorseMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x10);
+                return BitByte.isBitMask((int) sets.get(16).getData(), 0x20);
             case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x10);
+                return BitByte.isBitMask((int) sets.get(12).getData(), 0x20);
+            case VERSION_1_10:
+                return BitByte.isBitMask((int) sets.get(13).getData(), 0x20);
         }
         return false;
     }
@@ -87,6 +97,8 @@ public class HorseMetaData extends AgeableMetaData {
                 return BitByte.isBitMask((int) sets.get(16).getData(), 0x40);
             case VERSION_1_9_4:
                 return BitByte.isBitMask((int) sets.get(12).getData(), 0x40);
+            case VERSION_1_10:
+                return BitByte.isBitMask((int) sets.get(13).getData(), 0x40);
         }
         return false;
     }
@@ -98,6 +110,8 @@ public class HorseMetaData extends AgeableMetaData {
                 return BitByte.isBitMask((int) sets.get(16).getData(), 0x80);
             case VERSION_1_9_4:
                 return BitByte.isBitMask((int) sets.get(12).getData(), 0x80);
+            case VERSION_1_10:
+                return BitByte.isBitMask((int) sets.get(13).getData(), 0x80);
         }
         return false;
     }
@@ -109,6 +123,8 @@ public class HorseMetaData extends AgeableMetaData {
                 return HorseType.byId((int) sets.get(19).getData());
             case VERSION_1_9_4:
                 return HorseType.byId((int) sets.get(13).getData());
+            case VERSION_1_10:
+                return HorseType.byId((int) sets.get(14).getData());
         }
         return null;
     }
@@ -120,6 +136,8 @@ public class HorseMetaData extends AgeableMetaData {
                 return HorseColor.byId((int) sets.get(20).getData() & 0xFF);
             case VERSION_1_9_4:
                 return HorseColor.byId((int) sets.get(14).getData() & 0xFF);
+            case VERSION_1_10:
+                return HorseColor.byId((int) sets.get(15).getData() & 0xFF);
         }
         return null;
     }
@@ -131,6 +149,8 @@ public class HorseMetaData extends AgeableMetaData {
                 return HorseDots.byId((int) sets.get(20).getData() & 0xFF00);
             case VERSION_1_9_4:
                 return HorseDots.byId((int) sets.get(14).getData() & 0xFF00);
+            case VERSION_1_10:
+                return HorseDots.byId((int) sets.get(15).getData() & 0xFF00);
         }
         return null;
     }
@@ -149,6 +169,8 @@ public class HorseMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_9_4:
                 return (UUID) sets.get(15).getData();
+            case VERSION_1_10:
+                return (UUID) sets.get(16).getData();
         }
         return null;
     }
@@ -160,6 +182,8 @@ public class HorseMetaData extends AgeableMetaData {
                 return HorseArmor.byId((int) sets.get(21).getData());
             case VERSION_1_9_4:
                 return HorseArmor.byId((int) sets.get(16).getData());
+            case VERSION_1_10:
+                return HorseArmor.byId((int) sets.get(17).getData());
         }
         return null;
     }
@@ -217,72 +241,6 @@ public class HorseMetaData extends AgeableMetaData {
         }
     }
 
-    /*
-    public enum HorseColor {
-        SOLID_WHITE(0),
-        SOLID_CREAMY(1),
-        SOLID_CHESTNUT(2),
-        SOLID_BROWN(3),
-        SOLID_BLACK(4),
-        SOLID_GRAY(5),
-        SOLID_DARK_BROWN(6),
-
-        // white stockings and blaze
-        WSAB_WHITE(256),
-        WSAB_CREAMY(257),
-        WSAB_CHESTNUT(258),
-        WSAB_BROWN(259),
-        WSAB_BLACK(260),
-        WSAB_GRAY(261),
-        WSAB_DARK_BROWN(262),
-
-        // white patches
-        WP_WHITE(512),
-        WP_CREAMY(513),
-        WP_CHESTNUT(514),
-        WP_BROWN(515),
-        WP_BLACK(516),
-        WP_GRAY(517),
-        WP_DARK_BROWN(518),
-
-        // white dots
-        WD_WHITE(768),
-        WD_CREAMY(769),
-        WD_CHESTNUT(770),
-        WD_BROWN(771),
-        WD_BLACK(772),
-        WD_GRAY(773),
-        WD_DARK_BROWN(774),
-
-        // black sooty
-        BS_WHITE(1024),
-        BS_CREAMY(1025),
-        BS_CHESTNUT(1026),
-        BS_BROWN(1027),
-        BS_BLACK(1028),
-        BS_GRAY(1029),
-        BS_DARK_BROWN(1030);
-
-        final int id;
-
-        HorseColor(int id) {
-            this.id = id;
-        }
-
-        public static HorseColor byId(int id) {
-            for (HorseColor c : values()) {
-                if (c.getId() == id) {
-                    return c;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
-        }
-    }
-     */
     public enum HorseColor {
         WHITE(0),
         CREAMY(1),

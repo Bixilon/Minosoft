@@ -35,7 +35,8 @@ public class PacketSpawnExperienceOrb implements ClientboundPacket {
                 orb = new ExperienceOrb(entityId, location, count);
                 return true;
             }
-            case VERSION_1_9_4: {
+            case VERSION_1_9_4:
+            case VERSION_1_10: {
                 int entityId = buffer.readVarInt();
                 Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
                 short count = buffer.readShort();

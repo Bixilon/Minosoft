@@ -37,6 +37,7 @@ public class PacketSteerBoat implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_STEER_BOAT));
         switch (version) {
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 buffer.writeBoolean(leftPaddle);
                 buffer.writeBoolean(rightPaddle);
                 break;

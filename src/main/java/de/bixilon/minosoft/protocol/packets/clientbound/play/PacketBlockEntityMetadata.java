@@ -39,6 +39,7 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 position = buffer.readPosition();
                 action = Actions.byId(buffer.readByte(), buffer.getVersion());
                 nbt = buffer.readNBT();

@@ -38,6 +38,7 @@ public class PacketEntityMetadata implements ClientboundPacket {
                 break;
             case VERSION_1_8:
             case VERSION_1_9_4:
+            case VERSION_1_10:
                 entityId = buffer.readVarInt();
                 break;
             default:

@@ -25,7 +25,8 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
     Location location;
     String sound;
     float volume;
-    int pitch;
+    float pitch;
+    int category;
 
     @Override
     public boolean read(InPacketBuffer buffer) {
@@ -35,14 +36,21 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
                 sound = buffer.readString();
                 location = new Location(buffer.readInt() * 8, buffer.readInt() * 8, buffer.readInt() * 8); // ToDo: check if it is not * 4
                 volume = buffer.readFloat();
-                pitch = (int) (buffer.readByte() * pitchCalc);
+                pitch = (buffer.readByte() * pitchCalc) / 100F;
                 return true;
             case VERSION_1_9_4:
                 sound = buffer.readString();
-                int category = buffer.readVarInt(); //ToDo: category
+                category = buffer.readVarInt(); //ToDo: category
                 location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
                 volume = buffer.readFloat();
-                pitch = (int) (buffer.readByte() * pitchCalc);
+                pitch = (buffer.readByte() * pitchCalc) / 100F;
+                return true;
+            case VERSION_1_10:
+                sound = buffer.readString();
+                category = buffer.readVarInt(); //ToDo: category
+                location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
+                volume = buffer.readFloat();
+                pitch = buffer.readFloat();
                 return true;
         }
 
@@ -64,9 +72,9 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
     }
 
     /**
-     * @return Pitch in Percent * 100
+     * @return Pitch in Percent
      */
-    public int getPitch() {
+    public float getPitch() {
         return pitch;
     }
 

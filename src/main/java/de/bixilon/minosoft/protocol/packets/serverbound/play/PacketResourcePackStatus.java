@@ -39,6 +39,9 @@ public class PacketResourcePackStatus implements ServerboundPacket {
                 buffer.writeString(hash);
                 buffer.writeVarInt(status.getId());
                 break;
+            case VERSION_1_10:
+                buffer.writeVarInt(status.getId());
+                break;
         }
         return buffer;
     }

@@ -28,7 +28,10 @@ public class ArmorStandMetaData extends MobMetaData {
     public boolean isSmall() {
         switch (version) {
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 return BitByte.isBitMask((byte) sets.get(10).getData(), 0x01);
+            case VERSION_1_10:
+                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x01);
         }
         return false;
     }
@@ -36,7 +39,10 @@ public class ArmorStandMetaData extends MobMetaData {
     public boolean hasGravity() {
         switch (version) {
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 return BitByte.isBitMask((byte) sets.get(10).getData(), 0x02);
+            case VERSION_1_10:
+                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x02);
         }
         return false;
     }
@@ -44,7 +50,10 @@ public class ArmorStandMetaData extends MobMetaData {
     public boolean hasArms() {
         switch (version) {
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 return BitByte.isBitMask((byte) sets.get(10).getData(), 0x04);
+            case VERSION_1_10:
+                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x04);
         }
         return false;
     }
@@ -52,7 +61,10 @@ public class ArmorStandMetaData extends MobMetaData {
     public boolean removeBasePlate() {
         switch (version) {
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 return BitByte.isBitMask((byte) sets.get(10).getData(), 0x08);
+            case VERSION_1_10:
+                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x08);
         }
         return false;
     }
@@ -60,7 +72,10 @@ public class ArmorStandMetaData extends MobMetaData {
     public boolean hasMarker() {
         switch (version) {
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 return BitByte.isBitMask((byte) sets.get(10).getData(), 0x10);
+            case VERSION_1_10:
+                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x10);
         }
         return false;
     }
@@ -70,6 +85,8 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_8:
             case VERSION_1_9_4:
                 return (EntityRotation) sets.get(11).getData();
+            case VERSION_1_10:
+                return (EntityRotation) sets.get(12).getData();
         }
         return null;
     }
@@ -79,6 +96,8 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_8:
             case VERSION_1_9_4:
                 return (EntityRotation) sets.get(12).getData();
+            case VERSION_1_10:
+                return (EntityRotation) sets.get(13).getData();
         }
         return null;
     }
@@ -88,6 +107,8 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_8:
             case VERSION_1_9_4:
                 return (EntityRotation) sets.get(13).getData();
+            case VERSION_1_10:
+                return (EntityRotation) sets.get(14).getData();
         }
         return null;
     }
@@ -97,6 +118,8 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_8:
             case VERSION_1_9_4:
                 return (EntityRotation) sets.get(14).getData();
+            case VERSION_1_10:
+                return (EntityRotation) sets.get(15).getData();
         }
         return null;
     }
@@ -106,6 +129,8 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_8:
             case VERSION_1_9_4:
                 return (EntityRotation) sets.get(15).getData();
+            case VERSION_1_10:
+                return (EntityRotation) sets.get(16).getData();
         }
         return null;
     }
@@ -115,6 +140,8 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_8:
             case VERSION_1_9_4:
                 return (EntityRotation) sets.get(16).getData();
+            case VERSION_1_10:
+                return (EntityRotation) sets.get(17).getData();
         }
         return null;
     }
