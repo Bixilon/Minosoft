@@ -77,7 +77,7 @@ public class PacketMapData implements ClientboundPacket {
             case VERSION_1_10: {
                 mapId = buffer.readVarInt();
                 scale = buffer.readByte();
-                if (buffer.getVersion().getVersion() >= ProtocolVersion.VERSION_1_9_4.getVersion()) {
+                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
                     boolean trackPosition = buffer.readBoolean();
                 }
                 int pinCount = buffer.readVarInt();

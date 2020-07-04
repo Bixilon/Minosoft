@@ -113,12 +113,18 @@ public class Protocol_1_7_10 extends Protocol {
 
     }
 
-    public int getProtocolVersion() {
+    public int getProtocolVersionNumber() {
         return 5;
     }
 
+
     @Override
-    public String getName() {
+    public String getVersionString() {
         return "1.7.10";
+    }
+
+    @Override
+    public String getReleaseName() {
+        return "Realms";
     }
 }

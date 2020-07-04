@@ -125,13 +125,17 @@ public class Protocol_1_8 extends Protocol {
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_NBT_QUERY_RESPONSE, 0x49);
     }
 
-    public int getProtocolVersion() {
+    public int getProtocolVersionNumber() {
         return 47;
     }
 
     @Override
-    public String getName() {
+    public String getVersionString() {
         return "1.8.x";
     }
 
+    @Override
+    public String getReleaseName() {
+        return "Bountiful";
+    }
 }

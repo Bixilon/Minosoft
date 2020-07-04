@@ -98,7 +98,7 @@ public class Connection {
                 network.startPacketThread();
                 startHandlingThread();
                 ConnectionState next = ((reason == ConnectionReason.CONNECT) ? ConnectionState.LOGIN : ConnectionState.STATUS);
-                network.sendPacket(new PacketHandshake(getHost(), getPort(), next, (next == ConnectionState.STATUS) ? -1 : getVersion().getVersion()));
+                network.sendPacket(new PacketHandshake(getHost(), getPort(), next, (next == ConnectionState.STATUS) ? -1 : getVersion().getVersionNumber()));
                 // after sending it, switch to next state
                 setConnectionState(next);
                 break;
@@ -209,7 +209,7 @@ public class Connection {
                 serverVersion = buffer.readString();
                 toSend.writeString(clientVersion);
             }
-            Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getName()));
+            Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getVersionString()));
 
             getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getIdentifier().get(version), toSend);
         });

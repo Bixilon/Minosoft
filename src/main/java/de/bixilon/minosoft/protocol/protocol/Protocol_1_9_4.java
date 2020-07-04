@@ -136,13 +136,17 @@ public class Protocol_1_9_4 extends Protocol {
 
     }
 
-    public int getProtocolVersion() {
+    public int getProtocolVersionNumber() {
         return 110;
     }
 
     @Override
-    public String getName() {
+    public String getVersionString() {
         return "1.9.4";
     }
 
+    @Override
+    public String getReleaseName() {
+        return "Combat";
+    }
 }

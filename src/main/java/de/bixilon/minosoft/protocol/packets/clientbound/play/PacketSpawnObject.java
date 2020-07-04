@@ -67,7 +67,7 @@ public class PacketSpawnObject implements ClientboundPacket {
                 int data = buffer.readInt();
 
                 try {
-                    if (buffer.getVersion().getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
+                    if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
                         // velocity present AND metadata
 
                         Velocity velocity = null;

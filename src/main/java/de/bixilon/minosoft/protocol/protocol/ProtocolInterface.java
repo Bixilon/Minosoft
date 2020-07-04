@@ -14,7 +14,9 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 public interface ProtocolInterface {
-    String getName();
+    String getVersionString();
 
-    int getProtocolVersion();
+    int getProtocolVersionNumber();
+
+    String getReleaseName(); // Minecraft + getReleaseName() + Update
 }

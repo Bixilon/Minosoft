@@ -67,7 +67,7 @@ public class PacketHandler {
             case GET_VERSION:
                 // reconnect...
                 connection.disconnect();
-                Log.info(String.format("Server is running on version %s, reconnecting...", connection.getVersion().getName()));
+                Log.info(String.format("Server is running on version %s, reconnecting...", connection.getVersion().getVersionString()));
                 break;
             case CONNECT:
                 // do nothing
@@ -95,6 +95,7 @@ public class PacketHandler {
         connection.getPlayer().setPlayer(new OtherPlayer(pkg.getEntityId(), connection.getPlayer().getPlayerName(), connection.getPlayer().getPlayerUUID(), null, null, null, (short) 0, (short) 0, (short) 0, null));
         connection.getPlayer().getWorld().setHardcore(pkg.isHardcore());
         connection.getPlayer().getWorld().setDimension(pkg.getDimension());
+        connection.getSender().sendChatMessage("I am alive! ~ Minosoft");
     }
 
     public void handle(PacketLoginDisconnect pkg) {

@@ -175,7 +175,7 @@ public class InByteBuffer {
     }
 
     public BlockPosition readPosition() {
-        if (version.getVersion() >= ProtocolVersion.VERSION_1_14_4.getVersion()) {
+        if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
             // changed in 1.14, thanks for the explanation @Sainan
             Long raw = readLong();
             int x = (int) (raw >> 38);
