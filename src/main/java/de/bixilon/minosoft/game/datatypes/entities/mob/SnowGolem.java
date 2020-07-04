@@ -29,8 +29,8 @@ public class SnowGolem extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.SNOW_GOLEM;
+    public Entities getEntityType() {
+        return Entities.SNOW_GOLEM;
     }
 
     @Override

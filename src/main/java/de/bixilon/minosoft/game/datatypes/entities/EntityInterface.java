@@ -26,4 +26,6 @@ public interface EntityInterface {
 
     float getHeight();
 
+    Entities getEntityType();
+
 }

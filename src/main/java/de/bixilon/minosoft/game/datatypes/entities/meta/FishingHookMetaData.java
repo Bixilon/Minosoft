@@ -28,6 +28,7 @@ public class FishingHookMetaData extends MobMetaData {
             case VERSION_1_9_4:
                 return (int) sets.get(5).getData();
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return (int) sets.get(6).getData();
         }
         return -1;

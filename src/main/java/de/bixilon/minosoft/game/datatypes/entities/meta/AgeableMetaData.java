@@ -41,6 +41,8 @@ public class AgeableMetaData extends InsentientMetaData {
                 return (boolean) sets.get(11).getData();
             case VERSION_1_10:
                 return (boolean) sets.get(12).getData();
+            case VERSION_1_11_2:
+                return !(boolean) sets.get(12).getData();
         }
         return false;
     }

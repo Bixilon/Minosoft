@@ -16,6 +16,9 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.PotionMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class ThrownPotion extends EntityObject implements ObjectInterface {
     PotionMetaData metaData;
@@ -32,9 +35,15 @@ public class ThrownPotion extends EntityObject implements ObjectInterface {
         this.potion = StatusEffects.byId(additionalInt);
     }
 
+    public ThrownPotion(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new PotionMetaData(sets, version);
+        this.potion = StatusEffects.byId(0); //ToDo
+    }
+
     @Override
-    public Objects getEntityType() {
-        return Objects.THROWN_POTION;
+    public Entities getEntityType() {
+        return Entities.THROWN_POTION;
     }
 
     @Override

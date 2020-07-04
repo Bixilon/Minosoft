@@ -29,8 +29,8 @@ public class Guardian extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.GUARDIAN;
+    public Entities getEntityType() {
+        return Entities.GUARDIAN;
     }
 
     @Override

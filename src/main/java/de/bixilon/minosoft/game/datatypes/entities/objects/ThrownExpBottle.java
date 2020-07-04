@@ -14,7 +14,11 @@
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.meta.ArrowMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class ThrownExpBottle extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
@@ -28,9 +32,14 @@ public class ThrownExpBottle extends EntityObject implements ObjectInterface {
         super(entityId, location, yaw, pitch, velocity);
     }
 
+    public ThrownExpBottle(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new ArrowMetaData(sets, version); //ToDo
+    }
+
     @Override
-    public Objects getEntityType() {
-        return Objects.THROWN_EXP_BOTTLE;
+    public Entities getEntityType() {
+        return Entities.THROWN_EXP_BOTTLE;
     }
 
     @Override

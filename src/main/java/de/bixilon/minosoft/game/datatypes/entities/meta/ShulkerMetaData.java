@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.Color;
 import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -29,9 +30,10 @@ public class ShulkerMetaData extends MobMetaData {
             case VERSION_1_9_4:
                 return (Direction) sets.get(11).getData();
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return (Direction) sets.get(12).getData();
         }
-        return null;
+        return Direction.DOWN;
     }
 
     public BlockPosition getAttachmentPosition() {
@@ -39,6 +41,7 @@ public class ShulkerMetaData extends MobMetaData {
             case VERSION_1_9_4:
                 return (BlockPosition) sets.get(12).getData();
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return (BlockPosition) sets.get(13).getData();
         }
         return null;
@@ -49,9 +52,18 @@ public class ShulkerMetaData extends MobMetaData {
             case VERSION_1_9_4:
                 return (byte) sets.get(13).getData();
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return (byte) sets.get(14).getData();
         }
         return 0;
+    }
+
+    public Color getColor() {
+        switch (version) {
+            case VERSION_1_11_2:
+                return Color.byId((byte) sets.get(15).getData());
+        }
+        return Color.PURPLE;
     }
 
 

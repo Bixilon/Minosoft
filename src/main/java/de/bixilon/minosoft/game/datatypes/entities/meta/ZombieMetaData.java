@@ -31,22 +31,23 @@ public class ZombieMetaData extends MobMetaData {
             case VERSION_1_9_4:
                 return ((boolean) sets.get(11).getData());
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return ((boolean) sets.get(12).getData());
         }
         return false;
     }
 
-    public ZombieTypes getType() {
+    public VillagerMetaData.VillagerType getType() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return ZombieTypes.byId((byte) sets.get(13).getData());
+                return VillagerMetaData.VillagerType.byId((byte) sets.get(13).getData() - 1);
             case VERSION_1_9_4:
-                return ZombieTypes.byId((int) sets.get(12).getData());
+                return VillagerMetaData.VillagerType.byId((int) sets.get(12).getData() - 1);
             case VERSION_1_10:
-                return ZombieTypes.byId((int) sets.get(13).getData());
+                return VillagerMetaData.VillagerType.byId((int) sets.get(13).getData() - 1);
         }
-        return ZombieTypes.ZOMBIE;
+        return null; //ToDo: Husk support
     }
 
     public boolean isConverting() {
@@ -68,39 +69,9 @@ public class ZombieMetaData extends MobMetaData {
                 return ((boolean) sets.get(14).getData());
             case VERSION_1_10:
                 return ((boolean) sets.get(15).getData());
+            case VERSION_1_11_2:
+                return ((boolean) sets.get(16).getData());
         }
         return false;
     }
-
-    public enum ZombieTypes {
-        ZOMBIE(0),
-        FARMER(VillagerMetaData.VillagerType.FARMER.getId() + 1),
-        LIBRARIAN(VillagerMetaData.VillagerType.LIBRARIAN.getId() + 1),
-        PRIEST(VillagerMetaData.VillagerType.PRIEST.getId() + 1),
-        BLACKSMITH(VillagerMetaData.VillagerType.BLACKSMITH.getId() + 1),
-        BUTCHER(VillagerMetaData.VillagerType.BUTCHER.getId() + 1),
-        HUSK(6);
-
-
-        final int id;
-
-        ZombieTypes(int id) {
-            this.id = id;
-        }
-
-        public static ZombieTypes byId(int id) {
-            for (ZombieTypes type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
-        }
-    }
-
-
 }

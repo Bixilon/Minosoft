@@ -29,8 +29,8 @@ public class Creeper extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.CREEPER;
+    public Entities getEntityType() {
+        return Entities.CREEPER;
     }
 
     @Override

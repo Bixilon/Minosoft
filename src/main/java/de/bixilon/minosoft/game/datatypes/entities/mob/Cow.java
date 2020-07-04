@@ -29,8 +29,8 @@ public class Cow extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.COW;
+    public Entities getEntityType() {
+        return Entities.COW;
     }
 
     @Override

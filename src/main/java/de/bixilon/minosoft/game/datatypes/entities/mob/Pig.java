@@ -29,8 +29,8 @@ public class Pig extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.PIG;
+    public Entities getEntityType() {
+        return Entities.PIG;
     }
 
     @Override

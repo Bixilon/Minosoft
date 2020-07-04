@@ -15,10 +15,13 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class FireBall extends EntityObject implements ObjectInterface {
-    EntityMetaData metaData;
     final int thrower;
+    EntityMetaData metaData;
 
     public FireBall(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
@@ -31,9 +34,15 @@ public class FireBall extends EntityObject implements ObjectInterface {
         this.thrower = additionalInt;
     }
 
+    public FireBall(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new EntityMetaData(sets, version);
+        this.thrower = 0; //ToDo
+    }
+
     @Override
-    public Objects getEntityType() {
-        return Objects.FIRE_BALL;
+    public Entities getEntityType() {
+        return Entities.FIRE_BALL;
     }
 
     @Override

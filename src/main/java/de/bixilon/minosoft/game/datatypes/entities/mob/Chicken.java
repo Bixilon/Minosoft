@@ -29,8 +29,8 @@ public class Chicken extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.CHICKEN;
+    public Entities getEntityType() {
+        return Entities.CHICKEN;
     }
 
     @Override

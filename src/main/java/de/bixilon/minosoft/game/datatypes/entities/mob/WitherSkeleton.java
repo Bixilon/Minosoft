@@ -11,52 +11,55 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities.objects;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.WitherSkeletonMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Egg extends EntityObject implements ObjectInterface {
-    EntityMetaData metaData;
-    final int thrower;
+import java.util.HashMap;
 
-    public Egg(int entityId, Location location, short yaw, short pitch, int additionalInt) {
-        super(entityId, location, yaw, pitch, null);
-        // objects do not spawn with metadata... reading additional info from the following int
-        this.thrower = additionalInt;
-    }
+public class WitherSkeleton extends Mob implements MobInterface {
+    WitherSkeletonMetaData metaData;
 
-    public Egg(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public WitherSkeleton(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.thrower = additionalInt;
+        this.metaData = new WitherSkeletonMetaData(sets, version);
     }
 
     @Override
-    public Objects getEntityType() {
-        return Objects.EGG;
+    public Entities getEntityType() {
+        return Entities.WITHER_SKELETON;
     }
 
     @Override
-    public EntityMetaData getMetaData() {
+    public WitherSkeletonMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = metaData;
+        this.metaData = (WitherSkeletonMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.25F;
+        return 0.7F;
     }
 
     @Override
     public float getHeight() {
-        return 0.25F;
+        return 2.4F;
     }
 
-    public int getThrower() {
-        return thrower;
+    @Override
+    public int getMaxHealth() {
+        return 20;
+    }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return WitherSkeletonMetaData.class;
     }
 }

@@ -29,8 +29,8 @@ public class Bat extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.BAT;
+    public Entities getEntityType() {
+        return Entities.BAT;
     }
 
     @Override

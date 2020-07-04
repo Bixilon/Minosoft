@@ -29,8 +29,8 @@ public class Ghast extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.GHAST;
+    public Entities getEntityType() {
+        return Entities.GHAST;
     }
 
     @Override

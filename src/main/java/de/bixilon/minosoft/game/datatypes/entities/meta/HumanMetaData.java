@@ -32,6 +32,7 @@ public class HumanMetaData extends MobMetaData {
             case VERSION_1_9_4:
                 return (float) sets.get(10).getData();
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return (float) sets.get(11).getData();
         }
         return 0.0F;
@@ -45,6 +46,7 @@ public class HumanMetaData extends MobMetaData {
             case VERSION_1_9_4:
                 return (int) sets.get(11).getData();
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return (int) sets.get(12).getData();
         }
         return 0;
@@ -56,6 +58,7 @@ public class HumanMetaData extends MobMetaData {
             case VERSION_1_9_4:
                 return Hand.byId((byte) sets.get(13).getData());
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return Hand.byId((byte) sets.get(14).getData());
         }
         return Hand.RIGHT;

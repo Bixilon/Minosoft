@@ -115,7 +115,7 @@ public class Connection {
             case DISCONNECTED:
                 if (reason == ConnectionReason.GET_VERSION) {
                     //ToDo: only for development, remove later
-                    //setVersion(ProtocolVersion.VERSION_1_10);
+                    setVersion(ProtocolVersion.VERSION_1_11_2);
                     setReason(ConnectionReason.CONNECT);
                     connect();
                 }

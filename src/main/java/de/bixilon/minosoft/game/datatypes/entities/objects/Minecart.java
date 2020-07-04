@@ -16,6 +16,9 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.MinecartMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class Minecart extends EntityObject implements ObjectInterface {
     final MinecartType type;
@@ -31,9 +34,16 @@ public class Minecart extends EntityObject implements ObjectInterface {
         type = MinecartType.byType(additionalInt);
     }
 
+    public Minecart(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new MinecartMetaData(sets, version);
+        type = MinecartType.EMPTY; //ToDo
+    }
+
+
     @Override
-    public Objects getEntityType() {
-        return Objects.MINECART;
+    public Entities getEntityType() {
+        return Entities.MINECART_RIDE_ABLE;
     }
 
     @Override
@@ -67,12 +77,12 @@ public class Minecart extends EntityObject implements ObjectInterface {
 
     public enum MinecartType {
         EMPTY(0),
-        CHEST_MINECART(1),
-        FURNACE_MINECART(2),
-        TNT_MINECART(3),
-        SPAWNER_MINECART(4),
-        HOPPER_MINECART(5),
-        COMMAND_BLOCK_MINECART(6);
+        CHEST(1),
+        FURNACE(2),
+        TNT(3),
+        SPAWNER(4),
+        HOPPER(5),
+        COMMAND_BLOCK(6);
 
         final int id;
 

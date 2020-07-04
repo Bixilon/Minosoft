@@ -28,9 +28,10 @@ public class SnowGolemMetaData extends MobMetaData {
             case VERSION_1_9_4:
                 return BitByte.isBitMask((byte) sets.get(10).getData(), 0x10);
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return BitByte.isBitMask((byte) sets.get(12).getData(), 0x10);
         }
-        return false;
+        return true;
     }
 
 

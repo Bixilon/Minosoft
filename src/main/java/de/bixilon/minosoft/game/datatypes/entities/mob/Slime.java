@@ -29,8 +29,8 @@ public class Slime extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.SLIME;
+    public Entities getEntityType() {
+        return Entities.SLIME;
     }
 
     @Override

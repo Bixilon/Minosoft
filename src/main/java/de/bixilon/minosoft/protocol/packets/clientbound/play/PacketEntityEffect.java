@@ -19,6 +19,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.util.BitByte;
 
 public class PacketEntityEffect implements ClientboundPacket {
     int entityId;
@@ -36,11 +37,16 @@ public class PacketEntityEffect implements ClientboundPacket {
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
+                entityId = buffer.readVarInt();
+                effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readVarInt());
+                hideParticle = buffer.readBoolean();
+                return true;
             case VERSION_1_10:
             case VERSION_1_11_2:
                 entityId = buffer.readVarInt();
                 effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readVarInt());
-                hideParticle = buffer.readBoolean();
+                byte flags = buffer.readByte();
+                hideParticle = BitByte.isBitMask(flags, 0x02);
                 return true;
         }
 

@@ -29,8 +29,8 @@ public class Sheep extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.SHEEP;
+    public Entities getEntityType() {
+        return Entities.SHEEP;
     }
 
     @Override

@@ -32,6 +32,7 @@ public class EndermanMetaData extends MobMetaData {
             case VERSION_1_9_4:
                 return (Blocks) sets.get(11).getData();
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return (Blocks) sets.get(12).getData();
         }
         return Blocks.AIR;
@@ -45,6 +46,7 @@ public class EndermanMetaData extends MobMetaData {
             case VERSION_1_9_4:
                 return (boolean) sets.get(12).getData();
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return (boolean) sets.get(13).getData();
         }
         return false;

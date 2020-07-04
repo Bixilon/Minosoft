@@ -46,6 +46,11 @@ public class ExperienceOrb extends Entity {
     }
 
     @Override
+    public Entities getEntityType() {
+        return Entities.XP_ORB;
+    }
+
+    @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
         return EntityMetaData.class;
     }

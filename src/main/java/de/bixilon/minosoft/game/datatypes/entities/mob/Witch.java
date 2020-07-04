@@ -29,8 +29,8 @@ public class Witch extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.WITCH;
+    public Entities getEntityType() {
+        return Entities.WITCH;
     }
 
     @Override

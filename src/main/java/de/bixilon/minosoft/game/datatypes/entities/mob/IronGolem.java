@@ -29,8 +29,8 @@ public class IronGolem extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.IRON_GOLEM;
+    public Entities getEntityType() {
+        return Entities.IRON_GOLEM;
     }
 
     @Override

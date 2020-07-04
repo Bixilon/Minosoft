@@ -29,8 +29,8 @@ public class Horse extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.HORSE;
+    public Entities getEntityType() {
+        return Entities.HORSE;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class Horse extends Mob implements MobInterface {
 
     @Override
     public int getMaxHealth() {
-        return 100;
+        return 15;
     }
 
     @Override

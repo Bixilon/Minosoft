@@ -13,120 +13,13 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
 import java.util.HashMap;
-import java.util.UUID;
 
-public class HorseMetaData extends AgeableMetaData {
+public class HorseMetaData extends AbstractHorseMetaData {
 
     public HorseMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
-    }
-
-
-    public boolean isTame() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x02);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x02);
-            case VERSION_1_10:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x02);
-        }
-        return false;
-    }
-
-    public boolean hasSaddle() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x04);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x04);
-            case VERSION_1_10:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x05);
-        }
-        return false;
-    }
-
-    public boolean hasChest() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x08);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x08);
-            case VERSION_1_10:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x08);
-        }
-        return false;
-    }
-
-    public boolean isBred() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x10);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x10);
-            case VERSION_1_10:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x10);
-        }
-        return false;
-    }
-
-    public boolean isEating() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x20);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x20);
-            case VERSION_1_10:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x20);
-        }
-        return false;
-    }
-
-    public boolean isRearing() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x40);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x40);
-            case VERSION_1_10:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x40);
-        }
-        return false;
-    }
-
-    public boolean isMouthOpen() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x80);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x80);
-            case VERSION_1_10:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x80);
-        }
-        return false;
-    }
-
-    public HorseType getType() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return HorseType.byId((int) sets.get(19).getData());
-            case VERSION_1_9_4:
-                return HorseType.byId((int) sets.get(13).getData());
-            case VERSION_1_10:
-                return HorseType.byId((int) sets.get(14).getData());
-        }
-        return null;
     }
 
     public HorseColor getColor() {
@@ -137,9 +30,10 @@ public class HorseMetaData extends AgeableMetaData {
             case VERSION_1_9_4:
                 return HorseColor.byId((int) sets.get(14).getData() & 0xFF);
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return HorseColor.byId((int) sets.get(15).getData() & 0xFF);
         }
-        return null;
+        return HorseColor.WHITE;
     }
 
     public HorseDots getDots() {
@@ -150,29 +44,10 @@ public class HorseMetaData extends AgeableMetaData {
             case VERSION_1_9_4:
                 return HorseDots.byId((int) sets.get(14).getData() & 0xFF00);
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return HorseDots.byId((int) sets.get(15).getData() & 0xFF00);
         }
-        return null;
-    }
-
-
-    public String getOwnerName() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (String) sets.get(21).getData();
-        }
-        return null;
-    }
-
-    public UUID getOwnerUUID() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (UUID) sets.get(15).getData();
-            case VERSION_1_10:
-                return (UUID) sets.get(16).getData();
-        }
-        return null;
+        return HorseDots.NONE;
     }
 
     public HorseArmor getArmor() {
@@ -181,11 +56,12 @@ public class HorseMetaData extends AgeableMetaData {
             case VERSION_1_8:
                 return HorseArmor.byId((int) sets.get(21).getData());
             case VERSION_1_9_4:
+            case VERSION_1_11_2:
                 return HorseArmor.byId((int) sets.get(16).getData());
             case VERSION_1_10:
                 return HorseArmor.byId((int) sets.get(17).getData());
         }
-        return null;
+        return HorseArmor.NO_ARMOR;
     }
 
     public enum HorseType {

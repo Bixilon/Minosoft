@@ -29,8 +29,8 @@ public class Rabbit extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.RABBIT;
+    public Entities getEntityType() {
+        return Entities.RABBIT;
     }
 
     @Override

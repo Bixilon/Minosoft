@@ -29,8 +29,8 @@ public class Wither extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.WITHER;
+    public Entities getEntityType() {
+        return Entities.WITHER;
     }
 
     @Override

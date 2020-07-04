@@ -30,8 +30,8 @@ public class Squid extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.SQUID;
+    public Entities getEntityType() {
+        return Entities.SQUID;
     }
 
     @Override

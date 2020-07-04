@@ -14,42 +14,57 @@
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.meta.CommandBlockMinecartMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Enderpearl extends EntityObject implements ObjectInterface {
-    EntityMetaData metaData;
+import java.util.HashMap;
 
-    public Enderpearl(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+public class MinecartCommandBlock extends EntityObject implements ObjectInterface {
+    CommandBlockMinecartMetaData metaData;
+
+    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
-        // objects do not spawn with metadata... reading additional info from the following int
     }
 
-    public Enderpearl(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
     }
 
+    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new CommandBlockMinecartMetaData(sets, version);
+    }
+
+
     @Override
-    public Objects getEntityType() {
-        return Objects.ENDER_PEARL;
+    public Entities getEntityType() {
+        return Entities.MINECART_RIDE_ABLE;
     }
 
     @Override
-    public EntityMetaData getMetaData() {
+    public CommandBlockMinecartMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = metaData;
+        this.metaData = (CommandBlockMinecartMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.25F;
+        return 0.98F;
     }
 
     @Override
     public float getHeight() {
-        return 0.25F;
+        return 0.7F;
     }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return CommandBlockMinecartMetaData.class;
+    }
+
 }

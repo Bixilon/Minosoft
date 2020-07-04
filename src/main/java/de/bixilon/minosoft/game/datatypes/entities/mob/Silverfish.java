@@ -29,8 +29,8 @@ public class Silverfish extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.SILVERFISH;
+    public Entities getEntityType() {
+        return Entities.SILVERFISH;
     }
 
     @Override

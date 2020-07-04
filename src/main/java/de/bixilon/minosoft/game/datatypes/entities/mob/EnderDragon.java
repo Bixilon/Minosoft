@@ -29,8 +29,8 @@ public class EnderDragon extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.ENDER_DRAGON;
+    public Entities getEntityType() {
+        return Entities.ENDER_DRAGON;
     }
 
     @Override

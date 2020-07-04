@@ -15,6 +15,9 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class DragonFireball extends EntityObject implements ObjectInterface {
     final int thrower;
@@ -31,9 +34,16 @@ public class DragonFireball extends EntityObject implements ObjectInterface {
         this.thrower = additionalInt;
     }
 
+    public DragonFireball(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new EntityMetaData(sets, version);
+        thrower = 0; //ToDo
+    }
+
+
     @Override
-    public Objects getEntityType() {
-        return Objects.DRAGON_FIREBALL;
+    public Entities getEntityType() {
+        return Entities.DRAGON_FIRE_BALL;
     }
 
     @Override
