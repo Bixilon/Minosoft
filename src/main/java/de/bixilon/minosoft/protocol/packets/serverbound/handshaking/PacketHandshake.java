@@ -19,10 +19,10 @@ import de.bixilon.minosoft.protocol.protocol.*;
 
 public class PacketHandshake implements ServerboundPacket {
 
-    private final String address;
-    private final int port;
-    private final ConnectionState nextState;
-    private final int version;
+    final String address;
+    final int port;
+    final ConnectionState nextState;
+    final int version;
 
     public PacketHandshake(String address, int port, ConnectionState nextState, int version) {
         this.address = address;
@@ -41,10 +41,10 @@ public class PacketHandshake implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
         // no version checking, is the same in all versions (1.7.x - 1.15.2)
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.HANDSHAKING_HANDSHAKE));
-        buffer.writeVarInt((nextState == ConnectionState.STATUS ? -1 : version)); // get best protocol version
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.HANDSHAKING_HANDSHAKE));
+        buffer.writeVarInt((nextState == ConnectionState.STATUS ? -1 : version.getVersion())); // get best protocol version
         buffer.writeString(address);
         buffer.writeShort((short) port);
         buffer.writeVarInt(nextState.getId());

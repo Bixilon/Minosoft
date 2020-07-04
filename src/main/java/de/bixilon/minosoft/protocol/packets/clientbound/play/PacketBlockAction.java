@@ -13,10 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.blocks.actions.BlockAction;
-import de.bixilon.minosoft.game.datatypes.blocks.actions.ChestAction;
-import de.bixilon.minosoft.game.datatypes.blocks.actions.NoteBlockAction;
-import de.bixilon.minosoft.game.datatypes.blocks.actions.PistonAction;
+import de.bixilon.minosoft.game.datatypes.blocks.actions.*;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -32,12 +29,13 @@ public class PacketBlockAction implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 // that's the only difference here
-                if (v.getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
+                if (buffer.getVersion().getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
                     position = buffer.readPosition();
                 } else {
                     position = buffer.readBlockPositionShort();
@@ -61,6 +59,18 @@ public class PacketBlockAction implements ClientboundPacket {
                         // chest
                         clazz = ChestAction.class;
                         break;
+                    case 138:
+                        // beacon
+                        clazz = BeaconAction.class;
+                        break;
+                    case 52:
+                        // mob spawner
+                        clazz = MobSpawnerAction.class;
+                        break;
+                    case 209:
+                        // end gateway
+                        clazz = EndGatewayAction.class;
+                        break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + buffer.readVarInt());
                 }
@@ -69,9 +79,10 @@ public class PacketBlockAction implements ClientboundPacket {
                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
-
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

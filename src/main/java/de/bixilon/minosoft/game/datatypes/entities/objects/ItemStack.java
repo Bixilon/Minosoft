@@ -20,13 +20,13 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.ItemMetaData;
 public class ItemStack extends EntityObject implements ObjectInterface {
     ItemMetaData metaData;
 
-    public ItemStack(int id, Location location, short yaw, short pitch, int additionalInt) {
-        super(id, location, yaw, pitch, null);
+    public ItemStack(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
     }
 
-    public ItemStack(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(id, location, yaw, pitch, velocity);
+    public ItemStack(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+        super(entityId, location, yaw, pitch, velocity);
     }
 
     @Override

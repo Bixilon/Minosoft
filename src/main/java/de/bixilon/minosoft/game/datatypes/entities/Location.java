@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.game.datatypes.entities;
 
 public class Location {
-    private final double x;
-    private final double y;
-    private final double z;
+    final double x;
+    final double y;
+    final double z;
 
     public Location(double x, double y, double z) {
         this.x = x;

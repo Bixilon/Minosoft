@@ -23,7 +23,7 @@ public enum ConnectionState {
     DISCONNECTED(6),
     UNKNOWN(7);
 
-    private final int id;
+    final int id;
 
     ConnectionState(int id) {
         this.id = id;

@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.game.datatypes.inventory;
 
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 import java.util.HashMap;
+
 
 public class Inventory {
     final InventoryProperties properties;
@@ -37,8 +40,8 @@ public class Inventory {
         }
     }
 
-    public Slot getSlot(InventorySlots.InventoryInterface slot) {
-        return getSlot(slot.getId());
+    public Slot getSlot(InventorySlots.InventoryInterface slot, ProtocolVersion version) {
+        return getSlot(slot.getId(version));
     }
 
     public Slot getSlot(int slot) {
@@ -49,8 +52,8 @@ public class Inventory {
         slots.put(slot, data);
     }
 
-    public void setSlot(InventorySlots.InventoryInterface slot, Slot data) {
-        slots.put(slot.getId(), data);
+    public void setSlot(InventorySlots.InventoryInterface slot, ProtocolVersion version, Slot data) {
+        slots.put(slot.getId(version), data);
     }
 
     public void clear() {

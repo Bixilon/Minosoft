@@ -10,17 +10,17 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class ItemMetaData extends EntityMetaData {
 
-    public ItemMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public ItemMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        super(sets, version);
     }
 
     public Slot getSlot() {
@@ -28,6 +28,8 @@ public class ItemMetaData extends EntityMetaData {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (Slot) sets.get(10).getData();
+            case VERSION_1_9_4:
+                return (Slot) sets.get(5).getData();
         }
         return null;
     }

@@ -10,23 +10,25 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class SlimeMetaData extends MobMetaData {
+import java.util.HashMap;
 
-    public SlimeMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+public class SlimeMetaData extends InsentientMetaData {
+
+    public SlimeMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        super(sets, version);
     }
 
-    public byte getSize() {
+    public int getSize() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (byte) sets.get(16).getData();
+            case VERSION_1_9_4:
+                return (int) sets.get(11).getData();
         }
         return 0;
     }

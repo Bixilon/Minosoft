@@ -10,20 +10,26 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-package de.bixilon.minosoft.game.datatypes.sounds;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public enum SoundCategories {
-    MUSIC,
-    RECORD,
-    WEATHER,
-    BLOCK,
-    BUCKET,
-    BOTTLE,
-    HOSTILE,
-    NEUTRAL,
-    PLAYER,
-    AMBIENT,
-    UI,
-    OTHER
+import java.util.HashMap;
+
+public class EnderDragonMetaData extends InsentientMetaData {
+
+    public EnderDragonMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        super(sets, version);
+    }
+
+
+    public int getDragonPhase() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return ((int) sets.get(11).getData());
+        }
+        return 0;
+    }
+
+
 }

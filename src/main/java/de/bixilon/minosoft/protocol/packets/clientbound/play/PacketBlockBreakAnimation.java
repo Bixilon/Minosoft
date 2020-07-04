@@ -18,7 +18,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketBlockBreakAnimation implements ClientboundPacket {
     int entityId;
@@ -27,19 +26,22 @@ public class PacketBlockBreakAnimation implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 entityId = buffer.readVarInt();
                 position = buffer.readBlockPositionInteger();
                 stage = buffer.readByte();
-                break;
+                return true;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 entityId = buffer.readVarInt();
                 position = buffer.readPosition();
                 stage = buffer.readByte();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

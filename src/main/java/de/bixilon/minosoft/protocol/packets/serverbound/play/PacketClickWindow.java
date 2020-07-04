@@ -40,17 +40,18 @@ public class PacketClickWindow implements ServerboundPacket {
 
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_CLICK_WINDOW));
-        switch (v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CLICK_WINDOW));
+        switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 buffer.writeByte(windowId);
                 buffer.writeShort(slot);
                 buffer.writeByte(action.getButton());
                 buffer.writeShort(actionNumber);
                 buffer.writeByte(action.getMode());
-                buffer.writeSlot(v, clickedItem);
+                buffer.writeSlot(clickedItem);
                 break;
         }
         return buffer;

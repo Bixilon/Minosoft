@@ -19,29 +19,22 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketConfirmTransaction implements ServerboundPacket {
+public class PacketConfirmTeleport implements ServerboundPacket {
 
-    final byte windowId;
-    final short actionNumber;
-    final boolean accepted;
+    final int teleportId;
 
-    public PacketConfirmTransaction(byte windowId, short actionNumber, boolean accepted) {
-        this.windowId = windowId;
-        this.actionNumber = actionNumber;
-        this.accepted = accepted;
+    public PacketConfirmTeleport(int teleportId) {
+        this.teleportId = teleportId;
         log();
     }
 
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_WINDOW_CONFIRMATION));
-        switch (v) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                buffer.writeByte(windowId);
-                buffer.writeShort(actionNumber);
-                buffer.writeBoolean(accepted);
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_TELEPORT_CONFIRM));
+        switch (version) {
+            case VERSION_1_9_4:
+                buffer.writeVarInt(teleportId);
                 break;
         }
         return buffer;
@@ -49,6 +42,6 @@ public class PacketConfirmTransaction implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending confirm transaction packet (windowId=%d, actionNumber=%d, accepted=%s)", windowId, actionNumber, accepted));
+        Log.protocol(String.format("Confirming teleport (teleportId=%d)", teleportId));
     }
 }

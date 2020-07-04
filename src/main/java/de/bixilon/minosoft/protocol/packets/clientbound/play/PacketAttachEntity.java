@@ -17,7 +17,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketAttachEntity implements ClientboundPacket {
     int entityId;
@@ -26,15 +25,22 @@ public class PacketAttachEntity implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                this.entityId = buffer.readInteger();
-                this.vehicleId = buffer.readInteger();
+                this.entityId = buffer.readInt();
+                this.vehicleId = buffer.readInt();
                 this.leash = buffer.readBoolean();
-                break;
+                return true;
+            case VERSION_1_9_4:
+                this.entityId = buffer.readInt();
+                this.vehicleId = buffer.readInt();
+                this.leash = true;
+                return true;
         }
+
+        return false;
     }
 
     @Override

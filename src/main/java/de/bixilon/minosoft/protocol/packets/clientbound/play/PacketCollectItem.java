@@ -17,7 +17,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketCollectItem implements ClientboundPacket {
     int itemId;
@@ -25,17 +24,20 @@ public class PacketCollectItem implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-                itemId = buffer.readInteger();
-                collectorId = buffer.readInteger();
-                break;
+                itemId = buffer.readInt();
+                collectorId = buffer.readInt();
+                return true;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 itemId = buffer.readVarInt();
                 collectorId = buffer.readVarInt();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

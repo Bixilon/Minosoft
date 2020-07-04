@@ -22,10 +22,10 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class PacketStatusRequest implements ServerboundPacket {
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
         log();
         // no version checking, is the same in all versions (1.7.x - 1.15.2)
-        return new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.STATUS_REQUEST));
+        return new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.STATUS_REQUEST));
     }
 
     @Override

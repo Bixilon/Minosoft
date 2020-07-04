@@ -18,7 +18,8 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.UUID;
 
 public class PacketSpawnPainting implements ClientboundPacket {
     int entityId;
@@ -27,21 +28,30 @@ public class PacketSpawnPainting implements ClientboundPacket {
     int direction;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 entityId = buffer.readVarInt();
                 title = buffer.readString();
                 position = buffer.readBlockPositionInteger();
-                direction = buffer.readInteger();
-                break;
+                direction = buffer.readInt();
+                return true;
             case VERSION_1_8:
                 entityId = buffer.readVarInt();
                 title = buffer.readString();
                 position = buffer.readPosition();
                 direction = buffer.readByte();
-                break;
+                return true;
+            case VERSION_1_9_4:
+                entityId = buffer.readVarInt();
+                UUID uuid = buffer.readUUID(); // ?
+                title = buffer.readString();
+                position = buffer.readPosition();
+                direction = buffer.readByte();
+                return true;
         }
+
+        return false;
     }
 
     @Override

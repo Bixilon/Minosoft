@@ -10,34 +10,27 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
+
+import java.util.HashMap;
 
 public class HumanMetaData extends MobMetaData {
 
-    public HumanMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public HumanMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        super(sets, version);
     }
 
-
-    public boolean hideCape() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitSet((byte) sets.get(16).getData(), 1);
-        }
-        return false;
-    }
 
     public float getAbsorptionHearts() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (float) sets.get(17).getData();
+            case VERSION_1_9_4:
+                return (float) sets.get(10).getData();
         }
         return 0.0F;
     }
@@ -47,8 +40,19 @@ public class HumanMetaData extends MobMetaData {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (int) sets.get(18).getData();
+            case VERSION_1_9_4:
+                return (int) sets.get(11).getData();
         }
         return 0;
+    }
+
+
+    public Hand getMainHand() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return Hand.byId((byte) sets.get(13).getData());
+        }
+        return Hand.RIGHT;
     }
 
 

@@ -13,34 +13,35 @@
 
 package de.bixilon.minosoft.game.datatypes.scoreboard;
 
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketScoreboardTeams;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ScoreboardTeam {
+public class Team {
     final String name;
+    final List<String> players;
     String displayName;
     String prefix;
     String suffix;
-    PacketScoreboardTeams.ScoreboardFriendlyFire friendlyFire;
-    final List<String> players;
+    boolean friendlyFire;
+    boolean seeFriendlyInvisibles;
 
-    public ScoreboardTeam(String name, String displayName, String prefix, String suffix, PacketScoreboardTeams.ScoreboardFriendlyFire friendlyFire, String[] players) {
+    public Team(String name, String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeFriendlyInvisibles, String[] players) {
         this.name = name;
         this.displayName = displayName;
         this.prefix = prefix;
         this.suffix = suffix;
         this.friendlyFire = friendlyFire;
+        this.seeFriendlyInvisibles = seeFriendlyInvisibles;
         this.players = new ArrayList<>(Arrays.asList(players));
     }
 
-    public void updateInformation(String displayName, String prefix, String suffix, PacketScoreboardTeams.ScoreboardFriendlyFire friendlyFire) {
+    public void updateInformation(String displayName, String prefix, String suffix, boolean friendlyFire, boolean seeFriendlyInvisibles) {
         this.displayName = displayName;
         this.prefix = prefix;
         this.suffix = suffix;
         this.friendlyFire = friendlyFire;
+        this.seeFriendlyInvisibles = seeFriendlyInvisibles;
     }
 
     public String getName() {
@@ -59,8 +60,12 @@ public class ScoreboardTeam {
         return suffix;
     }
 
-    public PacketScoreboardTeams.ScoreboardFriendlyFire getFriendlyFire() {
+    public boolean isFriendlyFireEnabled() {
         return friendlyFire;
+    }
+
+    public boolean isSeeingFriendlyInvisibles() {
+        return seeFriendlyInvisibles;
     }
 
     public void addPlayers(List<String> list) {

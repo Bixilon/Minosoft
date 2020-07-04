@@ -19,7 +19,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketChatMessage implements ClientboundPacket {
     TextComponent c;
@@ -27,17 +26,20 @@ public class PacketChatMessage implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 c = buffer.readTextComponent();
                 position = TextPosition.CHAT_BOX;
-                break;
+                return true;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 c = buffer.readTextComponent();
                 position = TextPosition.byId(buffer.readByte());
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

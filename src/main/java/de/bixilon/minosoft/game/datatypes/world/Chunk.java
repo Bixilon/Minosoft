@@ -22,7 +22,7 @@ import java.util.Map;
  * Collection of 16 chunks nibbles
  */
 public class Chunk {
-    private final HashMap<Byte, ChunkNibble> nibbles;
+    final HashMap<Byte, ChunkNibble> nibbles;
 
     public Chunk(HashMap<Byte, ChunkNibble> chunks) {
         this.nibbles = chunks;
@@ -52,7 +52,7 @@ public class Chunk {
         nibbles.get(section).setBlock(location.getChunkNibbleLocation(), block);
     }
 
-    private void createSection(byte section) {
+    void createSection(byte section) {
         if (nibbles.get(section) == null) {
             // nibble was empty before, creating it
             nibbles.put(section, new ChunkNibble());

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKeyRequest;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
@@ -33,7 +33,24 @@ public abstract class Protocol implements ProtocolInterface {
 
     public Protocol() {
         serverboundPacketMapping = new HashMap<>();
+
+        serverboundPacketMapping.put(Packets.Serverbound.HANDSHAKING_HANDSHAKE, 0x00);
+        // status
+        serverboundPacketMapping.put(Packets.Serverbound.STATUS_REQUEST, 0x00);
+        serverboundPacketMapping.put(Packets.Serverbound.STATUS_PING, 0x01);
+        // login
+        serverboundPacketMapping.put(Packets.Serverbound.LOGIN_LOGIN_START, 0x00);
+        serverboundPacketMapping.put(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE, 0x01);
+
+
         clientboundPacketMapping = new HashMap<>();
+
+        clientboundPacketMapping.put(Packets.Clientbound.STATUS_RESPONSE, 0x00);
+        clientboundPacketMapping.put(Packets.Clientbound.STATUS_PONG, 0x01);
+        // login
+        clientboundPacketMapping.put(Packets.Clientbound.LOGIN_DISCONNECT, 0x00);
+        clientboundPacketMapping.put(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST, 0x01);
+        clientboundPacketMapping.put(Packets.Clientbound.LOGIN_LOGIN_SUCCESS, 0x02);
     }
 
     public static Class<? extends ClientboundPacket> getPacketByPacket(Packets.Clientbound p) {
@@ -44,10 +61,10 @@ public abstract class Protocol implements ProtocolInterface {
         return packetClassMapping.get(p);
     }
 
-    private static void initPacketClassMapping() {
+    static void initPacketClassMapping() {
         packetClassMapping.put(Packets.Clientbound.STATUS_RESPONSE, PacketStatusResponse.class);
         packetClassMapping.put(Packets.Clientbound.STATUS_PONG, PacketStatusPong.class);
-        packetClassMapping.put(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST, PacketEncryptionKeyRequest.class);
+        packetClassMapping.put(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST, PacketEncryptionRequest.class);
         packetClassMapping.put(Packets.Clientbound.LOGIN_LOGIN_SUCCESS, PacketLoginSuccess.class);
         packetClassMapping.put(Packets.Clientbound.LOGIN_DISCONNECT, PacketLoginDisconnect.class);
         packetClassMapping.put(Packets.Clientbound.LOGIN_SET_COMPRESSION, PacketLoginSetCompression.class);
@@ -66,14 +83,14 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_SET_EXPERIENCE, PacketSetExperience.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_CHANGE_GAME_STATE, PacketChangeGameState.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_MOB, PacketSpawnMob.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_POSITION_AND_ROTATION, PacketEntityPositionAndRotation.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_POSITION, PacketEntityPosition.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_MOVEMENT_AND_ROTATION, PacketEntityMovementAndRotation.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_MOVEMENT, PacketEntityMovement.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_ROTATION, PacketEntityRotation.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_DESTROY_ENTITIES, PacketDestroyEntity.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_VELOCITY, PacketEntityVelocity.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_PLAYER, PacketSpawnPlayer.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_TELEPORT, PacketEntityTeleport.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_HEAD_LOOK, PacketEntityHeadRotation.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_HEAD_ROTATION, PacketEntityHeadRotation.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_WINDOW_ITEMS, PacketWindowItems.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_METADATA, PacketEntityMetadata.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_EQUIPMENT, PacketEntityEquipment.class);
@@ -90,8 +107,8 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_SIGN, PacketUpdateSignReceiving.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_ANIMATION, PacketEntityAnimation.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_STATUS, PacketEntityStatus.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_SOUND_EFFECT, PacketSoundEffect.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_POSITION_AND_LOOK, PacketPlayerPositionAndRotation.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_NAMED_SOUND_EFFECT, PacketNamedSoundEffect.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_POSITION_AND_ROTATION, PacketPlayerPositionAndRotation.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ATTACH_ENTITY, PacketAttachEntity.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_USE_BED, PacketUseBed.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_BLOCK_ENTITY_DATA, PacketBlockEntityMetadata.class);
@@ -110,7 +127,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_EFFECT, PacketEffect.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SCOREBOARD_OBJECTIVE, PacketScoreboardObjective.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_SCORE, PacketScoreboardUpdateScore.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_TEAMS, PacketScoreboardTeams.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_TEAMS, PacketTeams.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_DISPLAY_SCOREBOARD, PacketScoreboardDisplayScoreboard.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_MAP_DATA, PacketMapData.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SERVER_DIFFICULTY, PacketServerDifficulty.class);
@@ -121,6 +138,10 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_TITLE, PacketTitle.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_COMBAT_EVENT, PacketCombatEvent.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_CAMERA, PacketCamera.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_UNLOAD_CHUNK, PacketUnloadChunk.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SOUND_EFFECT, PacketSoundEffect.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_BOSS_BAR, PacketBossBar.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SET_PASSENGERS, PacketSetPassenger.class);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {

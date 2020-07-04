@@ -13,49 +13,37 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.RelativeLocation;
+import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
+public class PacketUnloadChunk implements ClientboundPacket {
+    ChunkLocation location;
 
-public class PacketEntityPosition implements ClientboundPacket {
-    int entityId;
-    RelativeLocation location;
-    boolean onGround;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
-            case VERSION_1_7_10:
-                this.entityId = buffer.readInteger();
-                this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                break;
-            case VERSION_1_8:
-                this.entityId = buffer.readVarInt();
-                this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                this.onGround = buffer.readBoolean();
-                break;
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
+            case VERSION_1_9_4:
+                location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+                return true;
         }
+        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity %d moved relative %s", entityId, location.toString()));
-    }
-
-    public int getEntityId() {
-        return entityId;
-    }
-
-    public RelativeLocation getRelativeLocation() {
-        return location;
+        Log.protocol(String.format("Received unload chunk packet (location=%s)", location.toString()));
     }
 
     @Override
     public void handle(PacketHandler h) {
         h.handle(this);
+    }
+
+    public ChunkLocation getLocation() {
+        return location;
     }
 }

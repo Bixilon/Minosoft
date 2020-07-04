@@ -25,15 +25,17 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class PacketSpawnMob implements ClientboundPacket {
     Mob mob;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-            case VERSION_1_8:
+            case VERSION_1_8: {
                 int entityId = buffer.readVarInt();
                 Mobs type = Mobs.byType(buffer.readByte());
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
@@ -44,17 +46,38 @@ public class PacketSpawnMob implements ClientboundPacket {
 
                 assert type != null;
                 try {
-                    mob = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, InByteBuffer.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer, v);
+                    mob = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, InByteBuffer.class).newInstance(entityId, location, yaw, pitch, velocity, buffer);
+                    return true;
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
+                    e.printStackTrace();
+                    //ToDo: on hypixel, here comes mob id 30 which could be an armor stand, but an armor stand is an object :?
+                }
+            }
+            case VERSION_1_9_4:
+                int entityId = buffer.readVarInt();
+                UUID uuid = buffer.readUUID();
+                Mobs type = Mobs.byType(buffer.readByte());
+                Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+                short yaw = buffer.readAngle();
+                short pitch = buffer.readAngle();
+                int headYaw = buffer.readAngle();
+                Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+
+                assert type != null;
+                try {
+                    mob = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, HashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
+                    return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
                 }
-                break;
         }
+
+        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Mob spawned at %s (entityId=%d, type=%s)", mob.getLocation().toString(), mob.getId(), mob.getEntityType().name()));
+        Log.protocol(String.format("Mob spawned at %s (entityId=%d, type=%s)", mob.getLocation().toString(), mob.getEntityId(), mob.getEntityType().name()));
     }
 
     public Mob getMob() {

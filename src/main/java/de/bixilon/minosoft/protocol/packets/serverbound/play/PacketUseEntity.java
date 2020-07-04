@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
@@ -26,10 +27,13 @@ public class PacketUseEntity implements ServerboundPacket {
     final Click click;
     final Location location;
 
+    final Hand hand;
+
     public PacketUseEntity(Entity entity, Click click) {
-        this.entityId = entity.getId();
+        this.entityId = entity.getEntityId();
         this.click = click;
         location = null;
+        hand = Hand.RIGHT;
         log();
     }
 
@@ -37,6 +41,7 @@ public class PacketUseEntity implements ServerboundPacket {
         this.entityId = entityId;
         this.click = click;
         location = null;
+        hand = Hand.RIGHT;
         log();
     }
 
@@ -44,26 +49,46 @@ public class PacketUseEntity implements ServerboundPacket {
         this.entityId = entityId;
         this.click = click;
         this.location = location;
+        hand = Hand.RIGHT;
+        log();
+    }
+
+    public PacketUseEntity(int entityId, Click click, Location location, Hand hand) {
+        this.entityId = entityId;
+        this.click = click;
+        this.location = location;
+        this.hand = hand;
         log();
     }
 
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_INTERACT_ENTITY));
-        switch (v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_INTERACT_ENTITY));
+        switch (version) {
             case VERSION_1_7_10:
-                buffer.writeInteger(entityId);
+                buffer.writeInt(entityId);
                 buffer.writeByte((byte) click.getId());
                 break;
             case VERSION_1_8:
-                buffer.writeInteger(entityId);
+                buffer.writeInt(entityId);
                 buffer.writeByte((byte) click.getId());
                 if (click == Click.INTERACT_AT) {
                     // position
                     buffer.writeFloat((float) location.getX());
                     buffer.writeFloat((float) location.getY());
                     buffer.writeFloat((float) location.getZ());
+                }
+                break;
+            case VERSION_1_9_4:
+                buffer.writeInt(entityId);
+                buffer.writeByte((byte) click.getId());
+                if (click == Click.INTERACT_AT) {
+                    // position
+                    buffer.writeFloat((float) location.getX());
+                    buffer.writeFloat((float) location.getY());
+                    buffer.writeFloat((float) location.getZ());
+                    buffer.writeVarInt(hand.getId());
                 }
                 break;
         }

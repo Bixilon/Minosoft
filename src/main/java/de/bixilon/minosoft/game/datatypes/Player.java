@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.mob.OtherPlayer;
 import de.bixilon.minosoft.game.datatypes.inventory.Inventory;
 import de.bixilon.minosoft.game.datatypes.inventory.InventoryProperties;
 import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
@@ -23,6 +23,7 @@ import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardManager;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.World;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -37,13 +38,12 @@ public class Player {
     int food;
     float saturation;
     BlockPosition spawnLocation;
-    int entityId;
     GameMode gameMode;
     World world = new World("world");
     byte selectedSlot;
     int level;
     int totalExperience;
-    HumanMetaData metaData;
+    OtherPlayer player;
     HashMap<Integer, Inventory> inventories = new HashMap<>();
     boolean spawnConfirmed = false;
 
@@ -108,14 +108,6 @@ public class Player {
         this.gameMode = gameMode;
     }
 
-    public int getEntityId() {
-        return entityId;
-    }
-
-    public void setEntityId(int entityId) {
-        this.entityId = entityId;
-    }
-
     public World getWorld() {
         return world;
     }
@@ -144,14 +136,6 @@ public class Player {
         this.totalExperience = totalExperience;
     }
 
-    public HumanMetaData getMetaData() {
-        return metaData;
-    }
-
-    public void setMetaData(HumanMetaData metaData) {
-        this.metaData = metaData;
-    }
-
     public Inventory getPlayerInventory() {
         return getInventory(PLAYER_INVENTORY_ID);
     }
@@ -170,16 +154,16 @@ public class Player {
         }
     }
 
-    public Slot getSlot(int windowId, InventorySlots.InventoryInterface slot) {
-        return getSlot(windowId, slot.getId());
+    public Slot getSlot(int windowId, InventorySlots.InventoryInterface slot, ProtocolVersion version) {
+        return getSlot(windowId, slot.getId(version));
     }
 
     public Slot getSlot(int windowId, int slot) {
         return inventories.get(windowId).getSlot(slot);
     }
 
-    public void setSlot(int windowId, InventorySlots.InventoryInterface slot, Slot data) {
-        setSlot(windowId, slot.getId(), data);
+    public void setSlot(int windowId, InventorySlots.InventoryInterface slot, ProtocolVersion version, Slot data) {
+        setSlot(windowId, slot.getId(version), data);
     }
 
     public void setSlot(int windowId, int slot, Slot data) {
@@ -234,5 +218,13 @@ public class Player {
 
     public void setTabFooter(TextComponent tabFooter) {
         this.tabFooter = tabFooter;
+    }
+
+    public OtherPlayer getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(OtherPlayer player) {
+        this.player = player;
     }
 }

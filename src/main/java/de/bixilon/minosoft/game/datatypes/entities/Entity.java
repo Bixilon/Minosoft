@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public abstract class Entity implements EntityInterface {
-    final int id;
+    final int entityId;
     final HashMap<InventorySlots.EntityInventory, Slot> equipment;
     final List<StatusEffect> effectList;
     Location location;
@@ -32,8 +32,8 @@ public abstract class Entity implements EntityInterface {
     short headYaw;
     int attachedTo = -1;
 
-    public Entity(int id, Location location, short yaw, short pitch, Velocity velocity) {
-        this.id = id;
+    public Entity(int entityId, Location location, short yaw, short pitch, Velocity velocity) {
+        this.entityId = entityId;
         this.location = location;
         this.yaw = yaw;
         this.pitch = pitch;
@@ -42,8 +42,8 @@ public abstract class Entity implements EntityInterface {
         this.effectList = new ArrayList<>();
     }
 
-    public Entity(int id, Location location, int yaw, int pitch, Velocity velocity) {
-        this.id = id;
+    public Entity(int entityId, Location location, int yaw, int pitch, Velocity velocity) {
+        this.entityId = entityId;
         this.location = location;
         this.yaw = (short) yaw;
         this.pitch = (short) pitch;
@@ -53,8 +53,8 @@ public abstract class Entity implements EntityInterface {
     }
 
 
-    public int getId() {
-        return id;
+    public int getEntityId() {
+        return entityId;
     }
 
     public Location getLocation() {

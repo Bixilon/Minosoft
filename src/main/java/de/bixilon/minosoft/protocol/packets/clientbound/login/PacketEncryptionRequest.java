@@ -17,26 +17,28 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketEncryptionKeyRequest implements ClientboundPacket {
+public class PacketEncryptionRequest implements ClientboundPacket {
     String serverId; //normally empty
     byte[] publicKey;
     byte[] verifyToken;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 serverId = buffer.readString();
                 publicKey = buffer.readBytes(buffer.readShort()); // read length, then the bytes
                 verifyToken = buffer.readBytes(buffer.readShort()); // read length, then the bytes
-                break;
+                return true;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 serverId = buffer.readString();
                 publicKey = buffer.readBytes(buffer.readVarInt()); // read length, then the bytes
                 verifyToken = buffer.readBytes(buffer.readVarInt()); // read length, then the bytes
+                return true;
         }
+        return false;
     }
 
     @Override

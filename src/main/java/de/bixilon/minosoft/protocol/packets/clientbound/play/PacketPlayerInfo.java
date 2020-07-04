@@ -22,7 +22,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,12 +33,13 @@ public class PacketPlayerInfo implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 infos.add(new PlayerInfoBulk(buffer.readString(), buffer.readShort(), (buffer.readBoolean() ? PlayerInfoAction.UPDATE_LATENCY : PlayerInfoAction.REMOVE_PLAYER)));
-                break;
+                return true;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 PlayerInfoAction action = PlayerInfoAction.byId(buffer.readVarInt());
                 int count = buffer.readVarInt();
                 for (int i = 0; i < count; i++) {
@@ -78,8 +78,10 @@ public class PacketPlayerInfo implements ClientboundPacket {
                     }
                     infos.add(infoBulk);
                 }
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

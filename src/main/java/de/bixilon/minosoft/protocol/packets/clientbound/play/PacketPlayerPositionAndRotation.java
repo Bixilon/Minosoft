@@ -18,7 +18,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 
 public class PacketPlayerPositionAndRotation implements ClientboundPacket {
@@ -28,22 +27,33 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
     boolean onGround;
     byte flags;
 
+    int teleportId;
+
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 location = buffer.readLocation();
                 yaw = buffer.readFloat();
                 pitch = buffer.readFloat();
                 onGround = buffer.readBoolean();
-                break;
+                return true;
             case VERSION_1_8:
                 location = buffer.readLocation();
                 yaw = buffer.readFloat();
                 pitch = buffer.readFloat();
                 flags = buffer.readByte();
-                break;
+                return true;
+            case VERSION_1_9_4:
+                location = buffer.readLocation();
+                yaw = buffer.readFloat();
+                pitch = buffer.readFloat();
+                flags = buffer.readByte();
+                teleportId = buffer.readVarInt();
+                return true;
         }
+
+        return false;
     }
 
     @Override
@@ -65,6 +75,10 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
 
     public boolean isOnGround() {
         return onGround;
+    }
+
+    public int getTeleportId() {
+        return teleportId;
     }
 
     @Override

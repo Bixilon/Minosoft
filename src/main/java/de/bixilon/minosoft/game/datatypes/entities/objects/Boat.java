@@ -20,14 +20,14 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 public class Boat extends EntityObject implements ObjectInterface {
     BoatMetaData metaData;
 
-    public Boat(int id, Location location, short yaw, short pitch, int additionalInt) {
-        super(id, location, yaw, pitch, null);
+    public Boat(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
         // boat does not have any additional info
     }
 
-    public Boat(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(id, location, yaw, pitch, velocity);
+    public Boat(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+        super(entityId, location, yaw, pitch, velocity);
     }
 
     @Override

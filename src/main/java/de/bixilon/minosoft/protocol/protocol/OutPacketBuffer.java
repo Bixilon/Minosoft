@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OutPacketBuffer extends OutByteBuffer {
-    private final int command;
+    final int command;
 
-    public OutPacketBuffer(int command) {
-        super();
+    public OutPacketBuffer(ProtocolVersion version, int command) {
+        super(version);
         this.command = command;
     }
 

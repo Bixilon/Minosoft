@@ -40,4 +40,9 @@ public class ByteTag implements Tag {
     public byte getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return value + "b";
+    }
 }

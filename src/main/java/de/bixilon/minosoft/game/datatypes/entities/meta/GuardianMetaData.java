@@ -10,23 +10,25 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
+import java.util.HashMap;
+
 public class GuardianMetaData extends MobMetaData {
 
-    public GuardianMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public GuardianMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        super(sets, version);
     }
 
     public boolean isElderly() {
         switch (version) {
             case VERSION_1_8:
-                return BitByte.isBitSet((byte) sets.get(16).getData(), 1);
+                return BitByte.isBitMask((byte) sets.get(16).getData(), 0x02);
+            case VERSION_1_9_4:
+                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x04);
         }
         return false;
     }
@@ -34,16 +36,20 @@ public class GuardianMetaData extends MobMetaData {
     public boolean isRetractingSpikes() {
         switch (version) {
             case VERSION_1_8:
-                return BitByte.isBitSet((byte) sets.get(16).getData(), 2);
+                return BitByte.isBitSet((byte) sets.get(16).getData(), 0x04);
+            case VERSION_1_9_4:
+                return BitByte.isBitSet((byte) sets.get(11).getData(), 0x02);
         }
         return false;
     }
 
 
-    public int getTargetId() {
+    public int getTargetEntityId() {
         switch (version) {
             case VERSION_1_8:
                 return (int) sets.get(17).getData();
+            case VERSION_1_9_4:
+                return (int) sets.get(12).getData();
         }
         return 0;
     }

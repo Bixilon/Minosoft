@@ -21,7 +21,7 @@ import java.util.HashMap;
  * Collection of 16x16x16 blocks
  */
 public class ChunkNibble {
-    private final HashMap<ChunkNibbleLocation, Blocks> blocks;
+    final HashMap<ChunkNibbleLocation, Blocks> blocks;
 
     public ChunkNibble(HashMap<ChunkNibbleLocation, Blocks> blocks) {
         this.blocks = blocks;

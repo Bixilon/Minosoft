@@ -20,7 +20,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketOpenWindow implements ClientboundPacket {
     byte windowId;
@@ -31,8 +30,8 @@ public class PacketOpenWindow implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 this.windowId = buffer.readByte();
                 this.type = InventoryType.byId(buffer.readByte());
@@ -42,18 +41,21 @@ public class PacketOpenWindow implements ClientboundPacket {
                     // no custom name
                     title = null;
                 }
-                this.entityId = buffer.readInteger();
-                break;
+                this.entityId = buffer.readInt();
+                return true;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 this.windowId = buffer.readByte();
                 this.type = InventoryType.byName(buffer.readString());
                 this.title = buffer.readTextComponent();
                 slotCount = buffer.readByte();
                 if (type == InventoryType.HORSE) {
-                    this.entityId = buffer.readInteger();
+                    this.entityId = buffer.readInt();
                 }
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

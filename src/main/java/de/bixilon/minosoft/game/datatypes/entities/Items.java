@@ -987,6 +987,7 @@ public enum Items {
 
     final Identifier identifier;
     final int legacyId;
+    final boolean ignoreMetaData;
     int legacyData;
 
     // legacy id -2 means: 1.13+
@@ -994,24 +995,13 @@ public enum Items {
         this.identifier = identifier;
         this.legacyId = legacyId;
         this.legacyData = legacyData;
+        ignoreMetaData = false;
     }
 
     Items(Identifier identifier, int legacyId) {
         this.identifier = identifier;
         this.legacyId = legacyId;
-    }
-
-    public Identifier getIdentifier() {
-        return identifier;
-    }
-
-
-    public int getLegacyId() {
-        return legacyId;
-    }
-
-    public int getLegacyData() {
-        return legacyData;
+        ignoreMetaData = true;
     }
 
     public static Items byIdentifier(Identifier identifier) {
@@ -1024,9 +1014,13 @@ public enum Items {
     }
 
     public static Items byLegacy(int id, int data) {
-        for (Items b : values()) {
-            if (b.getLegacyId() == id && b.getLegacyData() == data) {
-                return b;
+        for (Items item : values()) {
+            if (item.getLegacyId() == id) {
+                if (item.ignoreMetaData) {
+                    return item;
+                } else if (item.getLegacyData() == data) {
+                    return item;
+                }
             }
         }
         return UNKNOWN;
@@ -1034,6 +1028,18 @@ public enum Items {
 
     public static Items byLegacy(int id) {
         return byLegacy(id, 0);
+    }
+
+    public Identifier getIdentifier() {
+        return identifier;
+    }
+
+    public int getLegacyId() {
+        return legacyId;
+    }
+
+    public int getLegacyData() {
+        return legacyData;
     }
 
 

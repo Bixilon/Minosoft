@@ -13,32 +13,28 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
+import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketEnchantItem implements ServerboundPacket {
+public class PacketUseItem implements ServerboundPacket {
+    Hand hand;
 
-    final byte windowId;
-    final byte buttonId; // up, middle, bottom (0, 1, 2); in later versions: lectern page, etc
-
-    public PacketEnchantItem(byte windowId, byte buttonId) {
-        this.windowId = windowId;
-        this.buttonId = buttonId;
+    public PacketUseItem(Hand hand) {
+        this.hand = hand;
         log();
     }
 
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_CLICK_WINDOW_BUTTON));
-        switch (v) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                buffer.writeByte(windowId);
-                buffer.writeByte(buttonId);
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_USE_ITEM));
+        switch (version) {
+            case VERSION_1_9_4:
+                buffer.writeVarInt(hand.getId());
                 break;
         }
         return buffer;
@@ -46,6 +42,6 @@ public class PacketEnchantItem implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending Click Window Packet (windowId=%d, buttonId=%d)", windowId, buttonId));
+        Log.protocol(String.format("Use hand (hand=%s)", hand.name()));
     }
 }

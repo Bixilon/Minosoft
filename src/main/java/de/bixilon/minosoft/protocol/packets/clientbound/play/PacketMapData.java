@@ -42,8 +42,8 @@ public class PacketMapData implements ClientboundPacket {
     byte[] data;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 mapId = buffer.readVarInt(); // mapId
                 short length = buffer.readShort();
@@ -69,12 +69,16 @@ public class PacketMapData implements ClientboundPacket {
                         break;
                     case SCALE:
                         scale = buffer.readByte();
-                        return;
+                        break;
                 }
-                break;
+                return true;
             case VERSION_1_8:
+            case VERSION_1_9_4: {
                 mapId = buffer.readVarInt();
                 scale = buffer.readByte();
+                if (buffer.getVersion().getVersion() >= ProtocolVersion.VERSION_1_9_4.getVersion()) {
+                    boolean trackPosition = buffer.readBoolean();
+                }
                 int pinCount = buffer.readVarInt();
                 pins = new ArrayList<>();
                 for (int i = 0; i < pinCount; i++) {
@@ -83,7 +87,7 @@ public class PacketMapData implements ClientboundPacket {
                     byte z = buffer.readByte();
                     pins.add(new MapPinSet(BitByte.getHigh4Bits(directionAndType), MapPlayerDirection.byId(BitByte.getLow4Bits(directionAndType)), x, z));
                 }
-                byte columns = buffer.readByte();
+                short columns = BitByte.byteToUShort(buffer.readByte());
                 if (columns > 0) {
                     byte rows = buffer.readByte();
                     byte xOffset = buffer.readByte();
@@ -92,9 +96,11 @@ public class PacketMapData implements ClientboundPacket {
                     int dataLength = buffer.readVarInt();
                     data = buffer.readBytes(dataLength);
                 }
-
-                break;
+                return true;
+            }
         }
+
+        return false;
     }
 
     @Override

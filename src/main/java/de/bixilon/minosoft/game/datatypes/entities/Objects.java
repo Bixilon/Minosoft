@@ -13,52 +13,46 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-import de.bixilon.minosoft.game.datatypes.Identifier;
 import de.bixilon.minosoft.game.datatypes.entities.objects.*;
 
 public enum Objects implements EntityEnumInterface {
-    BOAT(new Identifier("boat"), 1, Boat.class),
-    ITEM_STACK(null, 2, ItemStack.class),
-    MINECART(new Identifier("minecart"), 10, Minecart.class),
-    PRIMED_TNT(new Identifier("tnt"), 50, PrimedTNT.class),
-    ENDER_CRYSTAL(new Identifier("ender_crystal"), 51, EnderCrystal.class),
-    ARROW(new Identifier("arrow"), 60, Arrow.class),
-    SNOWBALL(new Identifier("snowball"), 61, Snowball.class),
-    EGG(new Identifier("egg"), 62, Egg.class),
-    FIRE_BALL(new Identifier("fire_ball"), 63, FireBall.class),
-    FIRE_CHARGE(new Identifier("fire_charge"), 64, FireCharge.class),
-    ENDER_PEARL(new Identifier("ender_pearl"), 65, Enderpearl.class),
-    WITHER_SKULL(new Identifier("wither_skull"), 66, WitherSkull.class),
-    FALLING_BLOCK(new Identifier("falling_block"), 70, FallingBlock.class),
-    ITEM_FRAME(new Identifier("item_frame"), 71, ItemFrame.class),
-    EYE_OF_ENDER(new Identifier("eye_of_ender"), 72, EyeOfEnder.class),
-    THROWN_POTION(new Identifier("thrown_potion"), 73, ThrownPotion.class),
-    FALLING_DRAGON_EGG(new Identifier("falling_dragon_eg"), 74, FallingDragonEgg.class),
-    THROWN_EXP_BOTTLE(null, 75, ThrownExpBottle.class),
-    FIREWORK(new Identifier("firework"), 76, Firework.class),
-    LEASH_KNOT(new Identifier("firework"), 77, LeashKnot.class),
-    ARMOR_STAND(new Identifier("armor_stand"), 78, ArmorStand.class),
-    FISHING_FLOAT(null, 90, FishingFloat.class);
-    //ToDo: identifier
+    BOAT(1, Boat.class),
+    ITEM_STACK(2, ItemStack.class),
+    AREA_CLOUD_EFFECT(3, AreaCloudEffect.class),
+    MINECART(10, Minecart.class),
+    PRIMED_TNT(50, PrimedTNT.class),
+    ENDER_CRYSTAL(51, EnderCrystal.class),
+    ARROW(60, Arrow.class), // ToDo: Tipped Arrows
+    SNOWBALL(61, Snowball.class),
+    EGG(62, Egg.class),
+    FIRE_BALL(63, FireBall.class),
+    FIRE_CHARGE(64, FireCharge.class),
+    ENDER_PEARL(65, Enderpearl.class),
+    WITHER_SKULL(66, WitherSkull.class),
+    SHULKER_BULLET(67, ShulkerBullet.class),
+    FALLING_BLOCK(70, FallingBlock.class),
+    ITEM_FRAME(71, ItemFrame.class),
+    EYE_OF_ENDER(72, EyeOfEnder.class),
+    THROWN_POTION(73, ThrownPotion.class),
+    FALLING_DRAGON_EGG(74, FallingDragonEgg.class),
+    THROWN_EXP_BOTTLE(75, ThrownExpBottle.class),
+    FIREWORK(76, Firework.class),
+    LEASH_KNOT(77, LeashKnot.class),
+    ARMOR_STAND(78, ArmorStand.class),
+    FISHING_FLOAT(90, FishingFloat.class),
+    SPECTRAL_ARROW(91, SpectralArrow.class),
+    DRAGON_FIREBALL(93, DragonFireball.class);
 
-    final Identifier identifier;
+    //ToDO: size changed between versions, fix it!
+
     final int type;
     final Class<? extends EntityObject> clazz;
 
-    Objects(Identifier identifier, int type, Class<? extends EntityObject> clazz) {
-        this.identifier = identifier;
+    Objects(int type, Class<? extends EntityObject> clazz) {
         this.type = type;
         this.clazz = clazz;
     }
 
-    public static Objects byIdentifier(Identifier identifier) {
-        for (Objects b : values()) {
-            if (b.getIdentifier().equals(identifier)) {
-                return b;
-            }
-        }
-        return null;
-    }
 
     public static Objects byType(int type) {
         for (Objects b : values()) {
@@ -67,11 +61,6 @@ public enum Objects implements EntityEnumInterface {
             }
         }
         return null;
-    }
-
-    @Override
-    public Identifier getIdentifier() {
-        return identifier;
     }
 
     @Override

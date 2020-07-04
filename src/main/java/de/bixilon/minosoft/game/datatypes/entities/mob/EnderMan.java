@@ -16,15 +16,16 @@ package de.bixilon.minosoft.game.datatypes.entities.mob;
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EndermanMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class EnderMan extends Mob implements MobInterface {
     EndermanMetaData metaData;
 
-    public EnderMan(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
-        super(id, location, yaw, pitch, velocity);
-        this.metaData = new EndermanMetaData(buffer, v);
+    public EnderMan(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new EndermanMetaData(sets, version);
     }
 
 

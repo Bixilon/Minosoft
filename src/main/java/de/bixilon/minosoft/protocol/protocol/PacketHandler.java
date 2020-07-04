@@ -16,15 +16,16 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.game.datatypes.GameMode;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.mob.OtherPlayer;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfo;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfoBulk;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardObjective;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardScore;
-import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardTeam;
+import de.bixilon.minosoft.game.datatypes.scoreboard.Team;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionKeyRequest;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
@@ -74,7 +75,7 @@ public class PacketHandler {
         }
     }
 
-    public void handle(PacketEncryptionKeyRequest pkg) {
+    public void handle(PacketEncryptionRequest pkg) {
         SecretKey secretKey = CryptManager.createNewSharedKey();
         PublicKey publicKey = CryptManager.decodePublicKey(pkg.getPublicKey());
         String serverHash = new BigInteger(CryptManager.getServerHash(pkg.getServerId(), publicKey, secretKey)).toString(16);
@@ -91,14 +92,14 @@ public class PacketHandler {
 
     public void handle(PacketJoinGame pkg) {
         connection.getPlayer().setGameMode(pkg.getGameMode());
-        connection.getPlayer().setEntityId(pkg.getEntityId());
+        connection.getPlayer().setPlayer(new OtherPlayer(pkg.getEntityId(), connection.getPlayer().getPlayerName(), connection.getPlayer().getPlayerUUID(), null, null, null, (short) 0, (short) 0, (short) 0, null));
         connection.getPlayer().getWorld().setHardcore(pkg.isHardcore());
         connection.getPlayer().getWorld().setDimension(pkg.getDimension());
     }
 
     public void handle(PacketLoginDisconnect pkg) {
         Log.info(String.format("Disconnecting from server (reason=%s)", pkg.getReason().getColoredMessage()));
-        connection.setConnectionState(ConnectionState.DISCONNECTING);
+        connection.disconnect();
     }
 
     public void handle(PacketPlayerInfo pkg) {
@@ -176,7 +177,7 @@ public class PacketHandler {
 
     public void handle(PacketDisconnect pkg) {
         // got kicked
-        connection.setConnectionState(ConnectionState.DISCONNECTING);
+        connection.disconnect();
     }
 
     public void handle(PacketHeldItemChangeReceiving pkg) {
@@ -207,13 +208,13 @@ public class PacketHandler {
         connection.getPlayer().getWorld().addEntity(pkg.getMob());
     }
 
-    public void handle(PacketEntityPositionAndRotation pkg) {
+    public void handle(PacketEntityMovementAndRotation pkg) {
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setLocation(pkg.getRelativeLocation());
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setYaw(pkg.getYaw());
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setPitch(pkg.getPitch());
     }
 
-    public void handle(PacketEntityPosition pkg) {
+    public void handle(PacketEntityMovement pkg) {
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setLocation(pkg.getRelativeLocation());
     }
 
@@ -229,9 +230,9 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityVelocity pkg) {
-        if (pkg.getEntityId() == connection.getPlayer().getEntityId()) {
-            // this is us
-            //ToDo
+        if (pkg.getEntityId() == connection.getPlayer().getPlayer().getEntityId()) {
+            // that's us!
+            connection.getPlayer().getPlayer().setVelocity(pkg.getVelocity());
             return;
         }
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setVelocity(pkg.getVelocity());
@@ -256,12 +257,12 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityMetadata pkg) {
-        if (pkg.getEntityId() == connection.getPlayer().getEntityId()) {
+        if (pkg.getEntityId() == connection.getPlayer().getPlayer().getEntityId()) {
             // our own meta data...set it
-            connection.getPlayer().setMetaData((HumanMetaData) pkg.getEntityData(HumanMetaData.class));
-        } else {
-            connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setMetaData(pkg.getEntityData(connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).getMetaDataClass()));
+            connection.getPlayer().getPlayer().setMetaData(pkg.getEntityData(HumanMetaData.class));
+            return;
         }
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setMetaData(pkg.getEntityData(connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).getMetaDataClass()));
     }
 
     public void handle(PacketEntityEquipment pkg) {
@@ -300,13 +301,25 @@ public class PacketHandler {
 
     public void handle(PacketChunkData pkg) {
         connection.getPlayer().getWorld().setChunk(pkg.getLocation(), pkg.getChunk());
+        connection.getPlayer().getWorld().setBlockEntityData(pkg.getBlockEntities());
+
     }
 
     public void handle(PacketEntityEffect pkg) {
+        if (pkg.getEntityId() == connection.getPlayer().getPlayer().getEntityId()) {
+            // that's us!
+            connection.getPlayer().getPlayer().addEffect(pkg.getEffect());
+            return;
+        }
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).addEffect(pkg.getEffect());
     }
 
     public void handle(PacketRemoveEntityEffect pkg) {
+        if (pkg.getEntityId() == connection.getPlayer().getPlayer().getEntityId()) {
+            // that's us!
+            connection.getPlayer().getPlayer().removeEffect(pkg.getEffect());
+            return;
+        }
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).removeEffect(pkg.getEffect());
     }
 
@@ -322,7 +335,7 @@ public class PacketHandler {
         //ToDo
     }
 
-    public void handle(PacketSoundEffect pkg) {
+    public void handle(PacketNamedSoundEffect pkg) {
         //ToDo
     }
 
@@ -341,6 +354,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketAttachEntity pkg) {
+        //ToDo check if it is us
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).attachTo(pkg.getVehicleId());
         //ToDo leash support
     }
@@ -460,13 +474,13 @@ public class PacketHandler {
         //ToDo
     }
 
-    public void handle(PacketScoreboardTeams pkg) {
+    public void handle(PacketTeams pkg) {
         switch (pkg.getAction()) {
             case CREATE:
-                connection.getPlayer().getScoreboardManager().addTeam(new ScoreboardTeam(pkg.getName(), pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.getFriendlyFire(), pkg.getPlayerNames()));
+                connection.getPlayer().getScoreboardManager().addTeam(new Team(pkg.getName(), pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.isFriendlyFireEnabled(), pkg.isSeeingFriendlyInvisibles(), pkg.getPlayerNames()));
                 break;
             case INFORMATION_UPDATE:
-                connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).updateInformation(pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.getFriendlyFire());
+                connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).updateInformation(pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.isFriendlyFireEnabled(), pkg.isSeeingFriendlyInvisibles());
                 break;
             case REMOVE:
                 connection.getPlayer().getScoreboardManager().removeTeam(pkg.getName());
@@ -518,5 +532,24 @@ public class PacketHandler {
 
     public void handle(PacketCamera pkg) {
         //ToDo
+    }
+
+    public void handle(PacketUnloadChunk pkg) {
+        connection.getPlayer().getWorld().unloadChunk(pkg.getLocation());
+    }
+
+    public void handle(PacketSoundEffect pkg) {
+        //ToDo
+    }
+
+    public void handle(PacketBossBar pkg) {
+        //ToDo
+    }
+
+    public void handle(PacketSetPassenger pkg) {
+        //ToDo
+    }
+
+    public void handle(PacketSetCooldown pkg) {
     }
 }

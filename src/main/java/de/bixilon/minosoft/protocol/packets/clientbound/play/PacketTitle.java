@@ -18,7 +18,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketTitle implements ClientboundPacket {
     TitleAction action;
@@ -32,9 +31,10 @@ public class PacketTitle implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 action = TitleAction.byId(buffer.readVarInt());
                 switch (action) {
                     case SET_TITLE:
@@ -44,13 +44,15 @@ public class PacketTitle implements ClientboundPacket {
                         subText = buffer.readTextComponent();
                         break;
                     case SET_TIMES_AND_DISPLAY:
-                        fadeInTime = buffer.readInteger();
-                        stayTime = buffer.readInteger();
-                        fadeOutTime = buffer.readInteger();
+                        fadeInTime = buffer.readInt();
+                        stayTime = buffer.readInt();
+                        fadeOutTime = buffer.readInt();
                         break;
                 }
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override

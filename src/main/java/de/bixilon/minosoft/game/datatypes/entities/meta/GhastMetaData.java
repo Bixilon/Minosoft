@@ -10,16 +10,16 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class GhastMetaData extends MobMetaData {
+import java.util.HashMap;
 
-    public GhastMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+public class GhastMetaData extends InsentientMetaData {
+
+    public GhastMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        super(sets, version);
     }
 
     public boolean isAttacking() {
@@ -27,6 +27,8 @@ public class GhastMetaData extends MobMetaData {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (byte) sets.get(16).getData() == 0x01;
+            case VERSION_1_9_4:
+                return (boolean) sets.get(11).getData();
         }
         return false;
     }

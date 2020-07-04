@@ -20,14 +20,14 @@ public class Snowball extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
     final int thrower;
 
-    public Snowball(int id, Location location, short yaw, short pitch, int additionalInt) {
-        super(id, location, yaw, pitch, null);
+    public Snowball(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
         this.thrower = additionalInt;
     }
 
-    public Snowball(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(id, location, yaw, pitch, velocity);
+    public Snowball(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+        super(entityId, location, yaw, pitch, velocity);
         this.thrower = additionalInt;
     }
 

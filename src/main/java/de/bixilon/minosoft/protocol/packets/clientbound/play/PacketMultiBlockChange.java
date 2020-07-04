@@ -20,7 +20,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
@@ -29,38 +28,41 @@ public class PacketMultiBlockChange implements ClientboundPacket {
     ChunkLocation location;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
-                location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
+                location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 short count = buffer.readShort();
-                int dataSize = buffer.readInteger(); // should be count * 4
+                int dataSize = buffer.readInt(); // should be count * 4
                 if (dataSize != count * 4) {
                     throw new IllegalArgumentException(String.format("Not enough data (%d) for %d blocks", dataSize, count));
                 }
                 for (int i = 0; i < count; i++) {
-                    int raw = buffer.readInteger();
+                    int raw = buffer.readInt();
                     byte meta = (byte) (raw & 0xF);
                     short blockId = (short) ((raw & 0xFF_F0) >>> 4);
                     byte y = (byte) ((raw & 0xFF_00_00) >>> 16);
                     byte z = (byte) ((raw & 0x0F_00_00_00) >>> 24);
                     byte x = (byte) ((raw & 0xF0_00_00_00) >>> 28);
-                    blocks.put(new InChunkLocation(x, y, z), Blocks.byLegacy(blockId, meta));
+                    blocks.put(new InChunkLocation(x, y, z), Blocks.byId(blockId, meta));
                 }
-                break;
+                return true;
             }
-            case VERSION_1_8: {
-                location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
+            case VERSION_1_8:
+            case VERSION_1_9_4: {
+                location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 int count = buffer.readVarInt();
                 for (int i = 0; i < count; i++) {
                     byte pos = buffer.readByte();
                     byte y = buffer.readByte();
                     int blockId = buffer.readVarInt();
-                    blocks.put(new InChunkLocation(((pos & 0xF0) >>> 4), y, (pos & 0xF)), Blocks.byLegacy((blockId >>> 4), (blockId & 0xF)));
+                    blocks.put(new InChunkLocation(((pos & 0xF0) >>> 4), y, (pos & 0xF)), Blocks.byId((blockId >>> 4), (blockId & 0xF)));
                 }
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     @Override

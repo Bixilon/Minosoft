@@ -36,11 +36,11 @@ public class PacketJoinGame implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-            case VERSION_1_8:
-                this.entityId = buffer.readInteger();
+            case VERSION_1_8: {
+                this.entityId = buffer.readInt();
                 byte gameModeRaw = buffer.readByte();
                 hardcore = BitByte.isBitSet(gameModeRaw, 3);
                 // remove hardcore bit and get gamemode
@@ -52,12 +52,30 @@ public class PacketJoinGame implements ClientboundPacket {
                 maxPlayers = buffer.readByte();
                 levelType = LevelType.byType(buffer.readString());
                 // break here if 1.7.10, because this happened later
-                if (v == ProtocolVersion.VERSION_1_7_10) {
-                    break;
+                if (buffer.getVersion() == ProtocolVersion.VERSION_1_7_10) {
+                    return true;
                 }
                 reducedDebugScreen = buffer.readBoolean();
-                break;
+                return true;
+            }
+            case VERSION_1_9_4: {
+                this.entityId = buffer.readInt();
+                byte gameModeRaw = buffer.readByte();
+                hardcore = BitByte.isBitSet(gameModeRaw, 3);
+                // remove hardcore bit and get gamemode
+                gameModeRaw &= ~0x8;
+                gameMode = GameMode.byId(gameModeRaw);
+
+                dimension = Dimension.byId(buffer.readInt());
+                difficulty = Difficulty.byId(buffer.readByte());
+                maxPlayers = buffer.readByte();
+                levelType = LevelType.byType(buffer.readString());
+                reducedDebugScreen = buffer.readBoolean();
+                return true;
+            }
         }
+
+        return false;
     }
 
     @Override

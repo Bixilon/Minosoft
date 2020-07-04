@@ -13,48 +13,73 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.ChunkUtil;
 import de.bixilon.minosoft.util.Util;
+
+import java.util.HashMap;
 
 public class PacketChunkData implements ClientboundPacket {
     ChunkLocation location;
     Chunk chunk;
 
+    HashMap<BlockPosition, CompoundTag> blockEntities = new HashMap<>();
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
-                this.location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
+                this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 boolean groundUpContinuous = buffer.readBoolean();
                 short sectionBitMask = buffer.readShort();
                 short addBitMask = buffer.readShort();
 
                 // decompress chunk data
-                InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInteger()));
+                InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInt()), buffer.getVersion());
 
-                chunk = ChunkUtil.readChunkPacket(v, decompressed, sectionBitMask, addBitMask, groundUpContinuous, true);
-                break;
+                chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, true);
+                return true;
             }
             case VERSION_1_8: {
-                this.location = new ChunkLocation(buffer.readInteger(), buffer.readInteger());
+                this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 boolean groundUpContinuous = buffer.readBoolean();
                 short sectionBitMask = buffer.readShort();
                 int size = buffer.readVarInt();
+                int lastPos = buffer.getPosition();
+                buffer.setPosition(size + lastPos);
 
-                chunk = ChunkUtil.readChunkPacket(v, buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
-                break;
+                chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
+                return true;
+            }
+            case VERSION_1_9_4: {
+                this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+                boolean groundUpContinuous = buffer.readBoolean();
+                short sectionBitMask = (short) buffer.readVarInt();
+                int size = buffer.readVarInt();
+                int lastPos = buffer.getPosition();
+
+                chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
+                // set position of the byte buffer, because of some reasons HyPixel makes some weired stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
+                buffer.setPosition(size + lastPos);
+                int blockEntitiesCount = buffer.readVarInt();
+                for (int i = 0; i < blockEntitiesCount; i++) {
+                    CompoundTag tag = buffer.readNBT();
+                    blockEntities.put(new BlockPosition(tag.getIntTag("x").getValue(), (short) tag.getIntTag("y").getValue(), tag.getIntTag("z").getValue()), tag);
+                }
+                return true;
             }
         }
 
+
+        return false;
     }
 
     @Override
@@ -68,6 +93,10 @@ public class PacketChunkData implements ClientboundPacket {
 
     public Chunk getChunk() {
         return chunk;
+    }
+
+    public HashMap<BlockPosition, CompoundTag> getBlockEntities() {
+        return blockEntities;
     }
 
     @Override

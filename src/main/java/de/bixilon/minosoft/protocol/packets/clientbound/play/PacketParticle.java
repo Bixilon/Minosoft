@@ -19,7 +19,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.Random;
 
@@ -34,9 +33,9 @@ public class PacketParticle implements ClientboundPacket {
     int[] data;
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
+    public boolean read(InPacketBuffer buffer) {
         Random random = new Random();
-        switch (v) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 particle = Particles.byIdentifier(new Identifier(buffer.readString()));
                 x = buffer.readFloat();
@@ -49,10 +48,11 @@ public class PacketParticle implements ClientboundPacket {
                 z += buffer.readFloat() * random.nextGaussian();
 
                 particleData = buffer.readFloat();
-                count = buffer.readInteger();
-                break;
+                count = buffer.readInt();
+                return true;
             case VERSION_1_8:
-                particle = Particles.byType(buffer.readInteger());
+            case VERSION_1_9_4:
+                particle = Particles.byType(buffer.readInt());
                 longDistance = buffer.readBoolean();
                 x = buffer.readFloat();
                 y = buffer.readFloat();
@@ -64,9 +64,11 @@ public class PacketParticle implements ClientboundPacket {
                 z += buffer.readFloat() * random.nextGaussian();
 
                 particleData = buffer.readFloat();
-                count = buffer.readInteger();
-                break;
+                count = buffer.readInt();
+                return true;
         }
+
+        return false;
     }
 
     @Override

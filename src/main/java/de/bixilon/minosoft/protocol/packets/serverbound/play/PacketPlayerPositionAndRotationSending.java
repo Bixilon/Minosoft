@@ -52,9 +52,9 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
 
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_POSITION_AND_ROTATION));
-        switch (v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_POSITION_AND_ROTATION));
+        switch (version) {
             case VERSION_1_7_10:
                 buffer.writeDouble(x);
                 buffer.writeDouble(feetY);
@@ -65,6 +65,7 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
                 buffer.writeBoolean(onGround);
                 break;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 buffer.writeDouble(x);
                 buffer.writeDouble(feetY);
                 buffer.writeDouble(z);

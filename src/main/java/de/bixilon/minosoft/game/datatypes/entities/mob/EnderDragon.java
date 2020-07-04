@@ -14,17 +14,18 @@
 package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EnderDragonMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.MobMetaData;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class EnderDragon extends Mob implements MobInterface {
-    MobMetaData metaData;
+import java.util.HashMap;
 
-    public EnderDragon(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
-        super(id, location, yaw, pitch, velocity);
-        this.metaData = new MobMetaData(buffer, v);
+public class EnderDragon extends Mob implements MobInterface {
+    EnderDragonMetaData metaData;
+
+    public EnderDragon(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new EnderDragonMetaData(sets, version);
     }
 
     @Override
@@ -33,13 +34,13 @@ public class EnderDragon extends Mob implements MobInterface {
     }
 
     @Override
-    public MobMetaData getMetaData() {
+    public EnderDragonMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (MobMetaData) metaData;
+        this.metaData = (EnderDragonMetaData) metaData;
     }
 
     @Override
@@ -55,5 +56,10 @@ public class EnderDragon extends Mob implements MobInterface {
     @Override
     public int getMaxHealth() {
         return 200;
+    }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return EnderDragonMetaData.class;
     }
 }

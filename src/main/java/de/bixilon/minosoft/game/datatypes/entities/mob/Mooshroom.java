@@ -16,15 +16,16 @@ package de.bixilon.minosoft.game.datatypes.entities.mob;
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.AgeableMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class Mooshroom extends Mob implements MobInterface {
     AgeableMetaData metaData;
 
-    public Mooshroom(int id, Location location, short yaw, short pitch, Velocity velocity, InByteBuffer buffer, ProtocolVersion v) {
-        super(id, location, yaw, pitch, velocity);
-        this.metaData = new AgeableMetaData(buffer, v);
+    public Mooshroom(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new AgeableMetaData(sets, version);
     }
 
     @Override

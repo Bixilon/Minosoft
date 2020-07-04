@@ -15,19 +15,20 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.WitherSkullMetaData;
 
 public class WitherSkull extends EntityObject implements ObjectInterface {
     final int thrower;
-    EntityMetaData metaData;
+    WitherSkullMetaData metaData;
 
-    public WitherSkull(int id, Location location, short yaw, short pitch, int additionalInt) {
-        super(id, location, yaw, pitch, null);
+    public WitherSkull(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
         this.thrower = additionalInt;
     }
 
-    public WitherSkull(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(id, location, yaw, pitch, velocity);
+    public WitherSkull(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+        super(entityId, location, yaw, pitch, velocity);
         this.thrower = additionalInt;
     }
 
@@ -37,13 +38,13 @@ public class WitherSkull extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public EntityMetaData getMetaData() {
+    public WitherSkullMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = metaData;
+        this.metaData = (WitherSkullMetaData) metaData;
     }
 
     @Override
@@ -58,5 +59,10 @@ public class WitherSkull extends EntityObject implements ObjectInterface {
 
     public int getThrower() {
         return thrower;
+    }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return WitherSkullMetaData.class;
     }
 }

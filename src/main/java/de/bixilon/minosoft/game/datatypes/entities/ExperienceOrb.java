@@ -20,8 +20,8 @@ public class ExperienceOrb extends Entity {
     final short count;
 
 
-    public ExperienceOrb(int id, Location location, short count) {
-        super(id, location, 0, 0, null);
+    public ExperienceOrb(int entityId, Location location, short count) {
+        super(entityId, location, 0, 0, null);
         this.count = count;
     }
 

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Pose;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.particle.*;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
@@ -30,14 +31,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class InByteBuffer {
-    private final byte[] bytes;
-    private int pos;
+    final ProtocolVersion version;
+    final byte[] bytes;
+    int pos;
 
-    public InByteBuffer(byte[] bytes) {
+    public InByteBuffer(byte[] bytes, ProtocolVersion version) {
         this.bytes = bytes;
+        this.version = version;
     }
 
     public byte readByte() {
@@ -55,7 +59,7 @@ public class InByteBuffer {
     }
 
 
-    private byte[] readBytes(int pos, int count) {
+    byte[] readBytes(int pos, int count) {
         byte[] ret = new byte[count];
         System.arraycopy(bytes, pos, ret, 0, count);
         return ret;
@@ -83,7 +87,7 @@ public class InByteBuffer {
         return ret;
     }
 
-    public int readInteger() {
+    public int readInt() {
         ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
         buffer.put(readBytes(Integer.BYTES));
         return buffer.getInt(0);
@@ -109,9 +113,6 @@ public class InByteBuffer {
 
     public String readString() {
         int length = readVarInt();
-        if (length > ProtocolDefinition.STRING_MAX_LEN) {
-            return null;
-        }
         return new String(readBytes(length), StandardCharsets.UTF_8);
     }
 
@@ -162,29 +163,31 @@ public class InByteBuffer {
     }
 
     public double readFixedPointNumberInteger() {
-        return readInteger() / 32.0D;
+        return readInt() / 32.0D;
     }
 
     public double readFixedPointNumberByte() {
         return readByte() / 32.0D;
     }
 
-    public JSONObject readJson() {
+    public JSONObject readJSON() {
         return new JSONObject(readString());
     }
 
     public BlockPosition readPosition() {
-        // this is the correct example! wiki.vg is clearly wrong with this!
+        if (version.getVersion() >= ProtocolVersion.VERSION_1_14_4.getVersion()) {
+            // changed in 1.14, thanks for the explanation @Sainan
+            Long raw = readLong();
+            int x = (int) (raw >> 38);
+            short y = (short) (raw & 0xFFF);
+            int z = (int) (raw << 26 >> 38);
+            return new BlockPosition(x, y, z);
+        }
         Long raw = readLong();
         int x = (int) (raw >> 38);
         short y = (short) ((raw >> 26) & 0xFFF);
         int z = (int) (raw & 0x3FFFFFF);
         return new BlockPosition(x, y, z);
-    }
-
-    @Override
-    public String toString() {
-        return "dataLen: " + bytes.length + "; pos: " + pos;
     }
 
     public TextComponent readTextComponent() {
@@ -215,7 +218,7 @@ public class InByteBuffer {
         return Pose.byId(readVarInt());
     }
 
-    public Particle readParticle(ProtocolVersion v) {
+    public Particle readParticle() {
         Particles type = Particles.byType(readVarInt());
         try {
             if (type.getClazz() == OtherParticles.class) {
@@ -227,7 +230,7 @@ public class InByteBuffer {
             } else if (type.getClazz() == FallingDustParticle.class) {
                 return type.getClazz().getConstructor(int.class).newInstance(readVarInt());
             } else if (type.getClazz() == ItemParticle.class) {
-                return type.getClazz().getConstructor(Slot.class).newInstance(readSlot(v));
+                return type.getClazz().getConstructor(Slot.class).newInstance(readSlot());
             }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
@@ -243,7 +246,7 @@ public class InByteBuffer {
                 return new CompoundTag();
             }
             try {
-                return new CompoundTag(new InByteBuffer(Util.decompressGzip(readBytes(length))));
+                return new CompoundTag(new InByteBuffer(Util.decompressGzip(readBytes(length)), version));
             } catch (IOException e) {
                 // oh no
                 e.printStackTrace();
@@ -258,8 +261,8 @@ public class InByteBuffer {
         return readNBT(false);
     }
 
-    public Slot readSlot(ProtocolVersion v) {
-        switch (v) {
+    public Slot readSlot() {
+        switch (version) {
             case VERSION_1_7_10: {
                 short id = readShort();
                 if (id != -1) {
@@ -267,7 +270,8 @@ public class InByteBuffer {
                 }
                 break;
             }
-            case VERSION_1_8: {
+            case VERSION_1_8:
+            case VERSION_1_9_4: {
                 short id = readShort();
                 if (id == -1) {
                     return null;
@@ -303,29 +307,29 @@ public class InByteBuffer {
     }
 
     public BlockPosition readBlockPosition() {
-        return new BlockPosition(readInteger(), BitByte.byteToUShort(readByte()), readInteger());
+        return new BlockPosition(readInt(), BitByte.byteToUShort(readByte()), readInt());
     }
 
     public BlockPosition readBlockPositionInteger() {
-        return new BlockPosition(readInteger(), (short) (readInteger()), readInteger());
+        return new BlockPosition(readInt(), (short) (readInt()), readInt());
     }
 
     public BlockPosition readBlockPositionShort() {
-        return new BlockPosition(readInteger(), readShort(), readInteger());
+        return new BlockPosition(readInt(), readShort(), readInt());
     }
 
     public InPacketBuffer getPacketBuffer() {
-        return new InPacketBuffer(this);
+        return new InPacketBuffer(this, getVersion());
     }
 
     public byte[] readBytesLeft() {
         return readBytes(getBytesLeft());
     }
 
-    public int[] readIntegers(int length) {
+    public int[] readInts(int length) {
         int[] ret = new int[length];
         for (int i = 0; i < length; i++) {
-            ret[i] = readInteger();
+            ret[i] = readInt();
         }
         return ret;
     }
@@ -336,5 +340,46 @@ public class InByteBuffer {
             ret[i] = readLong();
         }
         return ret;
+    }
+
+    public ProtocolVersion getVersion() {
+        return version;
+    }
+
+    public HashMap<Integer, EntityMetaData.MetaDataSet> readMetaData() {
+        HashMap<Integer, EntityMetaData.MetaDataSet> sets = new HashMap<>();
+
+        switch (version) {
+            case VERSION_1_7_10:
+            case VERSION_1_8: {
+                byte item = readByte();
+
+                while (item != 0x7F) {
+                    byte index = (byte) (item & 0x1F);
+                    EntityMetaData.Types type = EntityMetaData.Types.byId((item & 0xFF) >> 5, version);
+                    sets.put((int) index, new EntityMetaData.MetaDataSet(index, EntityMetaData.getData(type, this)));
+                    item = readByte();
+                }
+                break;
+            }
+            case VERSION_1_9_4:
+                byte index = readByte();
+                while (index != (byte) 0xFF) {
+                    EntityMetaData.Types type = EntityMetaData.Types.byId(readByte(), version);
+                    sets.put((int) index, new EntityMetaData.MetaDataSet(index, EntityMetaData.getData(type, this)));
+                    index = readByte();
+                }
+                break;
+        }
+        return sets;
+    }
+
+    @Override
+    public String toString() {
+        return "dataLen: " + bytes.length + "; pos: " + pos;
+    }
+
+    public byte[] getBytes() {
+        return bytes;
     }
 }

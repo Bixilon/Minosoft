@@ -28,7 +28,7 @@ public enum TagTypes {
     INT_ARRAY(11),
     LONG_ARRAY(12);
 
-    private final int id;
+    final int id;
 
     TagTypes(int id) {
         this.id = id;

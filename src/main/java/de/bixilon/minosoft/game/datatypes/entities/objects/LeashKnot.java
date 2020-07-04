@@ -15,17 +15,18 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.FishingHookMetaData;
 
 public class LeashKnot extends EntityObject implements ObjectInterface {
-    EntityMetaData metaData;
+    FishingHookMetaData metaData;
 
-    public LeashKnot(int id, Location location, short yaw, short pitch, int additionalInt) {
-        super(id, location, yaw, pitch, null);
+    public LeashKnot(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
     }
 
-    public LeashKnot(int id, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(id, location, yaw, pitch, velocity);
+    public LeashKnot(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+        super(entityId, location, yaw, pitch, velocity);
     }
 
     @Override
@@ -34,13 +35,13 @@ public class LeashKnot extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public EntityMetaData getMetaData() {
+    public FishingHookMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = metaData;
+        this.metaData = (FishingHookMetaData) metaData;
     }
 
     @Override
@@ -53,4 +54,8 @@ public class LeashKnot extends EntityObject implements ObjectInterface {
         return 0.5F;
     }
 
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return FishingHookMetaData.class;
+    }
 }

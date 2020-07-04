@@ -54,7 +54,7 @@ public class CryptManager {
         }
     }
 
-    private static byte[] digestOperation(byte[]... bytes) {
+    static byte[] digestOperation(byte[]... bytes) {
         try {
             MessageDigest disgest = MessageDigest.getInstance("SHA-1");
             for (byte[] b : bytes) {
@@ -90,7 +90,7 @@ public class CryptManager {
         return cipherOperation(2, key, data);
     }
 
-    private static byte[] cipherOperation(int p_75885_0_, Key key, byte[] data) {
+    static byte[] cipherOperation(int p_75885_0_, Key key, byte[] data) {
         try {
             return createTheCipherInstance(p_75885_0_, key.getAlgorithm(), key).doFinal(data);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
@@ -99,7 +99,7 @@ public class CryptManager {
         return null;
     }
 
-    private static Cipher createTheCipherInstance(int p_75886_0_, String transformation, Key key) {
+    static Cipher createTheCipherInstance(int p_75886_0_, String transformation, Key key) {
         try {
             Cipher cipher = Cipher.getInstance(transformation);
             cipher.init(p_75886_0_, key);

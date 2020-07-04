@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.MapSet;
+import de.bixilon.minosoft.game.datatypes.VersionValueMap;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
@@ -23,30 +25,32 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketBlockEntityMetadata implements ClientboundPacket {
     BlockPosition position;
-    Action_1_7_10 action_1_7_10;
-    Action_1_8 action_1_8;
+    Actions action;
     CompoundTag nbt;
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 position = buffer.readBlockPositionShort();
-                action_1_7_10 = Action_1_7_10.byId(buffer.readByte());
+                action = Actions.byId(buffer.readByte(), buffer.getVersion());
                 nbt = buffer.readNBT(true);
-                break;
+                return true;
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 position = buffer.readPosition();
-                action_1_8 = Action_1_8.byId(buffer.readByte());
+                action = Actions.byId(buffer.readByte(), buffer.getVersion());
                 nbt = buffer.readNBT();
-                break;
+                return true;
         }
+
+        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving blockEntityMeta (position=%s, action=%s)", position.toString(), ((action_1_7_10 == null) ? action_1_8.name() : action_1_7_10.name())));
+        Log.protocol(String.format("Receiving blockEntityMeta (position=%s, action=%s)", position.toString(), action.name()));
     }
 
     @Override
@@ -58,69 +62,44 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         return position;
     }
 
-    public Action_1_7_10 getAction1_7_10() {
-        return action_1_7_10;
-    }
-
-    public Action_1_8 getAction1_8() {
-        return action_1_8;
-    }
 
     public CompoundTag getNbt() {
         return nbt;
     }
 
-    public enum Action_1_7_10 {
-        SPAWNER(1),
-        COMMAND_BLOCK(2),
-        SKULL(3),
-        FLOWER_POT(4);
 
-        final int id;
+    public enum Actions {
+        SPAWNER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1)}),
+        COMMAND_BLOCK_TEXT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2)}),
+        BEACON(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 3)}),
+        SKULL(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 3), new MapSet<>(ProtocolVersion.VERSION_1_8, 4)}),
+        FLOWER_POT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4), new MapSet<>(ProtocolVersion.VERSION_1_8, 5)}),
+        BANNER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 6)}),
+        DATA_STRUCTURE_TILE_ENTITY(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 7)}),
+        END_GATEWAY_DESTINATION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 8)}),
+        SET_TEXT_ON_SIGN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 9)});
 
-        Action_1_7_10(int id) {
-            this.id = id;
+        final VersionValueMap<Integer> valueMap;
+
+        Actions(MapSet<ProtocolVersion, Integer>[] values) {
+            valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static Action_1_7_10 byId(int id) {
-            for (Action_1_7_10 a : values()) {
-                if (a.getId() == id) {
-                    return a;
+        public static Actions byId(int id, ProtocolVersion version) {
+            for (Actions actions : values()) {
+                if (actions.getId(version) == id) {
+                    return actions;
                 }
             }
             return null;
         }
 
-        public int getId() {
-            return id;
-        }
-    }
-
-    public enum Action_1_8 {
-        SPAWNER(1),
-        COMMAND_BLOCK(2),
-        BEACON(3),
-        SKULL(4),
-        FLOWER_POT(5),
-        BANNER(6);
-
-        final int id;
-
-        Action_1_8(int id) {
-            this.id = id;
-        }
-
-        public static Action_1_8 byId(int id) {
-            for (Action_1_8 a : values()) {
-                if (a.getId() == id) {
-                    return a;
-                }
+        public int getId(ProtocolVersion version) {
+            Integer ret = valueMap.get(version);
+            if (ret == null) {
+                return -2;
             }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return ret;
         }
     }
 }

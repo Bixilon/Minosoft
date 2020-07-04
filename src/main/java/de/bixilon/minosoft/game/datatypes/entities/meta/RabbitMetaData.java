@@ -10,16 +10,16 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class RabbitMetaData extends TameableMetaData {
 
-    public RabbitMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public RabbitMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        super(sets, version);
     }
 
 
@@ -27,6 +27,8 @@ public class RabbitMetaData extends TameableMetaData {
         switch (version) {
             case VERSION_1_8:
                 return (byte) sets.get(18).getData();
+            case VERSION_1_9_4:
+                return (byte) sets.get(12).getData();
         }
         return 0;
     }

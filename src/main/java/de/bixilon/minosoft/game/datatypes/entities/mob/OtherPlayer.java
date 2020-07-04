@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.mob;
 
-
 import de.bixilon.minosoft.game.datatypes.PlayerPropertyData;
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
@@ -29,8 +28,8 @@ public class OtherPlayer extends Mob implements MobInterface {
     HumanMetaData metaData;
     Pose status = Pose.STANDING;
 
-    public OtherPlayer(int id, String name, UUID uuid, PlayerPropertyData[] properties, Location location, Velocity velocity, short yaw, short pitch, short currentItem, HumanMetaData metaData) {
-        super(id, location, yaw, pitch, velocity);
+    public OtherPlayer(int entityId, String name, UUID uuid, PlayerPropertyData[] properties, Location location, Velocity velocity, short yaw, short pitch, short currentItem, HumanMetaData metaData) {
+        super(entityId, location, yaw, pitch, velocity);
         this.name = name;
         this.uuid = uuid;
         this.properties = properties;
@@ -83,8 +82,7 @@ public class OtherPlayer extends Mob implements MobInterface {
 
     @Override
     public int getMaxHealth() {
-        return 40;
-        //ToDo: absorption
+        return (int) (40 + metaData.getAbsorptionHearts());
     }
 
     public String getName() {

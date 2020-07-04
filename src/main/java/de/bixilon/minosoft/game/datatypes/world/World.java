@@ -29,8 +29,8 @@ public class World {
     final HashMap<ChunkLocation, Chunk> chunks;
     final HashMap<Integer, Entity> entities;
     final String name;
-    private final HashMap<BlockPosition, TextComponent[]> signs;
-    private final HashMap<BlockPosition, CompoundTag> blockEntityMeta;
+    final HashMap<BlockPosition, TextComponent[]> signs;
+    final HashMap<BlockPosition, CompoundTag> blockEntityMeta;
     boolean hardcore;
     boolean raining;
     Dimension dimension; // used for sky color, etc
@@ -101,7 +101,7 @@ public class World {
     }
 
     public void addEntity(Entity entity) {
-        this.entities.put(entity.getId(), entity);
+        this.entities.put(entity.getEntityId(), entity);
     }
 
     public Entity getEntity(int id) {
@@ -109,7 +109,7 @@ public class World {
     }
 
     public void removeEntity(Entity entity) {
-        removeEntity(entity.getId());
+        removeEntity(entity.getEntityId());
     }
 
     public void removeEntity(int entityId) {
@@ -140,5 +140,11 @@ public class World {
 
     public CompoundTag getBlockEntityData(BlockPosition position) {
         return blockEntityMeta.get(position);
+    }
+
+    public void setBlockEntityData(HashMap<BlockPosition, CompoundTag> blockEntities) {
+        for (Map.Entry<BlockPosition, CompoundTag> entrySet : blockEntities.entrySet()) {
+            blockEntityMeta.put(entrySet.getKey(), entrySet.getValue());
+        }
     }
 }

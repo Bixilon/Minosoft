@@ -10,16 +10,16 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class VillagerMetaData extends AgeableMetaData {
 
-    public VillagerMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public VillagerMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        super(sets, version);
     }
 
 
@@ -28,6 +28,8 @@ public class VillagerMetaData extends AgeableMetaData {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return VillagerType.byId((int) sets.get(16).getData());
+            case VERSION_1_9_4:
+                return VillagerType.byId((int) sets.get(12).getData());
         }
         return VillagerType.FARMER;
     }

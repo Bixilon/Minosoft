@@ -10,17 +10,19 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.entities.StatusEffects;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.util.BitByte;
+
+import java.util.HashMap;
 
 public class MobMetaData extends EntityMetaData {
 
-    public MobMetaData(InByteBuffer buffer, ProtocolVersion v) {
-        super(buffer, v);
+    public MobMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        super(sets, version);
     }
 
 
@@ -28,57 +30,68 @@ public class MobMetaData extends EntityMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 return (float) sets.get(6).getData();
         }
         return 0.0F;
     }
 
     public StatusEffects getPotionEffectColor() {
+        // ToDo: color?
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 return StatusEffects.byId((int) sets.get(7).getData());
         }
         return null;
     }
 
 
-    public byte getPotionEffectAmbient() {
+    public boolean isPotionEffectAmbient() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return (byte) sets.get(8).getData();
+                return (byte) sets.get(8).getData() == 0x01;
+            case VERSION_1_9_4:
+                return (boolean) sets.get(8).getData();
         }
-        return 0;
+        return false;
     }
 
-    public byte getNumberOfArrowsInEntity() {
+    public int getNumberOfArrowsInEntity() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
                 return (byte) sets.get(9).getData();
+            case VERSION_1_9_4:
+                return (int) sets.get(9).getData();
         }
         return 0;
     }
 
+    @Override
     public String getNameTag() {
         switch (version) {
             case VERSION_1_7_10:
                 return (String) sets.get(10).getData();
             case VERSION_1_8:
                 return (String) sets.get(2).getData();
+            default:
+                return super.getNameTag();
         }
-        return null;
     }
 
-    public byte getAlwaysShowNameTag() {
+    @Override
+    public boolean isCustomNameVisible() {
         switch (version) {
             case VERSION_1_7_10:
-                return (byte) sets.get(11).getData();
+                return (byte) sets.get(11).getData() == 0x01;
             case VERSION_1_8:
-                return (byte) sets.get(3).getData();
+                return (byte) sets.get(3).getData() == 0x01;
+            default:
+                return super.isCustomNameVisible();
         }
-        return 0;
     }
 
     public boolean hasAI() {
@@ -87,6 +100,23 @@ public class MobMetaData extends EntityMetaData {
                 return (byte) sets.get(15).getData() == 0x01;
         }
         return false;
+    }
+
+    public boolean hasHandActive() {
+        switch (version) {
+            case VERSION_1_9_4:
+                return BitByte.isBitMask((byte) sets.get(5).getData(), 0x01);
+        }
+        return false;
+    }
+
+    public Hand getActiveHand() {
+        //ToDo main, offhand
+        switch (version) {
+            case VERSION_1_9_4:
+                return BitByte.isBitMask((byte) sets.get(5).getData(), 0x01) ? Hand.LEFT : Hand.RIGHT;
+        }
+        return Hand.RIGHT;
     }
 
 

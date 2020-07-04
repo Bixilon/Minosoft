@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketChatMessage implements ServerboundPacket {
 
-    private final String message;
+    final String message;
 
     public PacketChatMessage(String message) {
         this.message = message;
@@ -30,11 +30,12 @@ public class PacketChatMessage implements ServerboundPacket {
 
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion v) {
-        OutPacketBuffer buffer = new OutPacketBuffer(v.getPacketCommand(Packets.Serverbound.PLAY_CHAT_MESSAGE));
-        switch (v) {
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CHAT_MESSAGE));
+        switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
+            case VERSION_1_9_4:
                 buffer.writeString(message);
                 break;
         }

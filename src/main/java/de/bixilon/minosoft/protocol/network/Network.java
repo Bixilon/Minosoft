@@ -35,20 +35,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Network {
-    private final Connection connection;
-    private final List<ServerboundPacket> queue;
-    private final List<byte[]> binQueue;
-    private final List<byte[]> binQueueIn;
+    final Connection connection;
+    final List<ServerboundPacket> queue;
+    final List<byte[]> binQueue;
+    final List<byte[]> binQueueIn;
     Thread socketThread;
-    private int compressionThreshold = -1;
-    private Socket socket;
-    private OutputStream outputStream;
-    private InputStream cipherInputStream;
-    private InputStream inputStream;
-    private Thread packetThread;
-    private boolean encryptionEnabled = false;
-    private SecretKey secretKey;
-    private boolean connected;
+    int compressionThreshold = -1;
+    Socket socket;
+    OutputStream outputStream;
+    InputStream cipherInputStream;
+    InputStream inputStream;
+    Thread packetThread;
+    boolean encryptionEnabled = false;
+    SecretKey secretKey;
+    boolean connected;
 
     public Network(Connection c) {
         this.connection = c;
@@ -143,15 +143,16 @@ public class Network {
 
                 while (queue.size() > 0) {
                     ServerboundPacket p = queue.get(0);
+                    queue.remove(0);
                     byte[] data = p.write(connection.getVersion()).getOutBytes();
                     if (compressionThreshold != -1) {
                         // compression is enabled
                         // check if there is a need to compress it and if so, do it!
-                        OutByteBuffer outRawBuffer = new OutByteBuffer();
+                        OutByteBuffer outRawBuffer = new OutByteBuffer(connection.getVersion());
                         if (data.length >= compressionThreshold) {
                             // compress it
                             byte[] compressed = Util.compress(data);
-                            OutByteBuffer buffer = new OutByteBuffer();
+                            OutByteBuffer buffer = new OutByteBuffer(connection.getVersion());
                             buffer.writeVarInt(compressed.length);
                             buffer.writeBytes(compressed);
                             outRawBuffer.writeVarInt(buffer.getBytes().size());
@@ -164,7 +165,7 @@ public class Network {
                         data = outRawBuffer.getOutBytes();
                     } else {
                         // append packet length
-                        OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer();
+                        OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer(connection.getVersion());
                         bufferWithLengthPrefix.writeVarInt(data.length);
                         bufferWithLengthPrefix.writeBytes(data);
                         data = bufferWithLengthPrefix.getOutBytes();
@@ -176,17 +177,16 @@ public class Network {
                         // enable encryption
                         secretKey = ((PacketEncryptionResponse) p).getSecretKey();
                     }
-                    queue.remove(0);
                 }
                 while (binQueueIn.size() > 0) {
 
                     // read data
                     byte[] data = binQueueIn.get(0);
-                    InPacketBuffer inPacketBuffer;
+                    binQueueIn.remove(0);
                     if (compressionThreshold != -1) {
                         // compression is enabled
                         // check if there is a need to decompress it and if so, do it!
-                        InByteBuffer rawBuffer = new InByteBuffer(data);
+                        InByteBuffer rawBuffer = new InByteBuffer(data, connection.getVersion());
                         int packetSize = rawBuffer.readVarInt();
                         byte[] left = rawBuffer.readBytesLeft();
                         if (packetSize == 0) {
@@ -194,26 +194,27 @@ public class Network {
                             data = left;
                         } else {
                             // need to decompress data
-                            data = Util.decompress(left).readBytesLeft();
+                            data = Util.decompress(left, connection.getVersion()).readBytesLeft();
                         }
                     }
 
-                    inPacketBuffer = new InPacketBuffer(data);
+                    InPacketBuffer inPacketBuffer = new InPacketBuffer(data, connection.getVersion());
                     try {
                         Packets.Clientbound p = connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
                         Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(p);
 
                         if (clazz == null) {
                             Log.warn(String.format("[IN] Received unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), ((p != null) ? p.name() : "UNKNOWN"), inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion().name(), connection.getConnectionState().name()));
-                            binQueueIn.remove(0);
                             continue;
                         }
                         try {
                             ClientboundPacket packet = clazz.getConstructor().newInstance();
-                            packet.read(inPacketBuffer, connection.getVersion());
-                            if (inPacketBuffer.getBytesLeft() > 0 && p != Packets.Clientbound.PLAY_ENTITY_METADATA) { // entity meta data uses mostly all data, but this happens in the handling thread
+                            boolean success = packet.read(inPacketBuffer);
+                            if (inPacketBuffer.getBytesLeft() > 0 || !success) {
                                 // warn not all data used
-                                Log.warn(String.format("[IN] Could not parse packet %s completely (used=%d, available=%d, total=%d)", ((p != null) ? p.name() : "null"), inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength()));
+                                Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", ((p != null) ? p.name() : "null"), inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
+
+                                continue;
                             }
 
                             if (packet instanceof PacketLoginSuccess) {
@@ -232,8 +233,6 @@ public class Network {
                         Log.protocol("Received broken packet!");
                         e.printStackTrace();
                     }
-
-                    binQueueIn.remove(0);
                 }
                 try {
                     // sleep, wait for an interrupt from other thread

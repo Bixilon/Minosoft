@@ -20,7 +20,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -31,11 +30,11 @@ public class PacketEntityProperties implements ClientboundPacket {
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
-                entityId = buffer.readInteger();
-                int count = buffer.readInteger();
+                entityId = buffer.readInt();
+                int count = buffer.readInt();
                 for (int i = 0; i < count; i++) {
                     EntityPropertyKey key = EntityPropertyKey.byIdentifier(new Identifier(buffer.readString()));
                     double value = buffer.readDouble();
@@ -48,11 +47,12 @@ public class PacketEntityProperties implements ClientboundPacket {
                     }
                     properties.put(key, new EntityProperty(value));
                 }
-                break;
+                return true;
             }
-            case VERSION_1_8: {
+            case VERSION_1_8:
+            case VERSION_1_9_4: {
                 entityId = buffer.readVarInt();
-                int count = buffer.readInteger();
+                int count = buffer.readInt();
                 for (int i = 0; i < count; i++) {
                     EntityPropertyKey key = EntityPropertyKey.byIdentifier(new Identifier(buffer.readString()));
                     double value = buffer.readDouble();
@@ -65,9 +65,11 @@ public class PacketEntityProperties implements ClientboundPacket {
                     }
                     properties.put(key, new EntityProperty(value));
                 }
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     @Override

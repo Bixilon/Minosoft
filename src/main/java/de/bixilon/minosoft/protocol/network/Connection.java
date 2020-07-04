@@ -23,7 +23,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
-import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketChatMessage;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest;
 import de.bixilon.minosoft.protocol.protocol.*;
@@ -31,17 +30,18 @@ import de.bixilon.minosoft.protocol.protocol.*;
 import java.util.ArrayList;
 
 public class Connection {
-    private final String host;
-    private final int port;
-    private final Network network;
-    private final PacketHandler handler;
-    private final ArrayList<ClientboundPacket> handlingQueue;
-    private PluginChannelHandler pluginChannelHandler;
+    final String host;
+    final int port;
+    final Network network;
+    final PacketHandler handler;
+    final PacketSender sender;
+    final ArrayList<ClientboundPacket> handlingQueue;
+    PluginChannelHandler pluginChannelHandler;
     Thread handleThread;
-    ProtocolVersion version = ProtocolVersion.VERSION_1_7_10; // default
-    private Player player;
-    private ConnectionState state = ConnectionState.DISCONNECTED;
-    private ConnectionReason reason;
+    ProtocolVersion version = Protocol.getLowestVersionSupported(); // default
+    Player player;
+    ConnectionState state = ConnectionState.DISCONNECTED;
+    ConnectionReason reason;
 
     public Connection(String host, int port) {
         this.host = host;
@@ -49,6 +49,7 @@ public class Connection {
         network = new Network(this);
         handlingQueue = new ArrayList<>();
         handler = new PacketHandler(this);
+        sender = new PacketSender(this);
     }
 
     /**
@@ -113,7 +114,8 @@ public class Connection {
                 break;
             case DISCONNECTED:
                 if (reason == ConnectionReason.GET_VERSION) {
-                    setVersion(ProtocolVersion.VERSION_1_8);
+                    //ToDo: only for development, remove later
+                    //setVersion(ProtocolVersion.VERSION_1_9_4);
                     setReason(ConnectionReason.CONNECT);
                     connect();
                 }
@@ -163,7 +165,7 @@ public class Connection {
         network.sendPacket(p);
     }
 
-    private void startHandlingThread() {
+    void startHandlingThread() {
         handleThread = new Thread(() -> {
             while (getConnectionState() != ConnectionState.DISCONNECTING) {
                 while (handlingQueue.size() > 0) {
@@ -187,9 +189,6 @@ public class Connection {
         handleThread.start();
     }
 
-    public void sendChatMessage(String message) {
-        sendPacket(new PacketChatMessage(message));
-    }
 
     public PluginChannelHandler getPluginChannelHandler() {
         return pluginChannelHandler;
@@ -197,10 +196,10 @@ public class Connection {
 
     public void registerDefaultChannels() {
         // MC|Brand
-        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getName(), (handler, buffer) -> {
+        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getIdentifier().get(version), (handler, buffer) -> {
             String serverVersion;
             String clientVersion = (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
-            OutByteBuffer toSend = new OutByteBuffer();
+            OutByteBuffer toSend = new OutByteBuffer(getVersion());
             if (getVersion() == ProtocolVersion.VERSION_1_7_10) {
                 // no length prefix
                 serverVersion = new String(buffer.readBytes(buffer.getBytesLeft()));
@@ -212,11 +211,15 @@ public class Connection {
             }
             Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getName()));
 
-            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getName(), toSend);
+            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getIdentifier().get(version), toSend);
         });
     }
 
     public boolean isConnected() {
         return network.isConnected();
+    }
+
+    public PacketSender getSender() {
+        return sender;
     }
 }

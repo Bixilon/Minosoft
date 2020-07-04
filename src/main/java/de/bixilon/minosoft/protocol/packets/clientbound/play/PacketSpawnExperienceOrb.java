@@ -19,28 +19,37 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketSpawnExperienceOrb implements ClientboundPacket {
     ExperienceOrb orb;
 
 
     @Override
-    public void read(InPacketBuffer buffer, ProtocolVersion v) {
-        switch (v) {
+    public boolean read(InPacketBuffer buffer) {
+        switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-            case VERSION_1_8:
+            case VERSION_1_8: {
                 int entityId = buffer.readVarInt();
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
                 short count = buffer.readShort();
                 orb = new ExperienceOrb(entityId, location, count);
-                break;
+                return true;
+            }
+            case VERSION_1_9_4: {
+                int entityId = buffer.readVarInt();
+                Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+                short count = buffer.readShort();
+                orb = new ExperienceOrb(entityId, location, count);
+                return true;
+            }
         }
+
+        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Experience orb spawned at %s(entityId=%d, count=%d)", orb.getLocation().toString(), orb.getId(), orb.getCount()));
+        Log.protocol(String.format("Experience orb spawned at %s(entityId=%d, count=%d)", orb.getLocation().toString(), orb.getEntityId(), orb.getCount()));
     }
 
     @Override

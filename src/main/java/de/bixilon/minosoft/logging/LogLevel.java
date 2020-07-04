@@ -23,7 +23,7 @@ public enum LogLevel {
     VERBOSE(6),
     PROTOCOL(7);
 
-    private final int id;
+    final int id;
 
     LogLevel(int id) {
         this.id = id;
