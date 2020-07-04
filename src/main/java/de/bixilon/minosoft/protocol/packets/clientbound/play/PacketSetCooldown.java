@@ -30,6 +30,7 @@ public class PacketSetCooldown implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 item = Items.byLegacy(buffer.readVarInt());
                 cooldownTicks = buffer.readVarInt();
                 return true;

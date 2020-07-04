@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketCollectItem implements ClientboundPacket {
     int itemId;
     int collectorId;
+    int count;
 
 
     @Override
@@ -36,6 +37,11 @@ public class PacketCollectItem implements ClientboundPacket {
                 itemId = buffer.readVarInt();
                 collectorId = buffer.readVarInt();
                 return true;
+            case VERSION_1_11_2:
+                itemId = buffer.readVarInt();
+                collectorId = buffer.readVarInt();
+                count = buffer.readVarInt();
+                return true;
         }
 
         return false;
@@ -43,7 +49,7 @@ public class PacketCollectItem implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Item %d was collected by %d", itemId, collectorId));
+        Log.protocol(String.format("Item %d was collected by %d (count=%s)", itemId, collectorId, ((count == 0) ? "?" : count)));
     }
 
     @Override
@@ -57,5 +63,9 @@ public class PacketCollectItem implements ClientboundPacket {
 
     public int getItemId() {
         return itemId;
+    }
+
+    public int getCount() {
+        return count;
     }
 }

@@ -53,8 +53,9 @@ public class PacketSpawnMob implements ClientboundPacket {
                     //ToDo: on hypixel, here comes mob id 30 which could be an armor stand, but an armor stand is an object :?
                 }
             }
+            return false;
             case VERSION_1_9_4:
-            case VERSION_1_10:
+            case VERSION_1_10: {
                 int entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
                 Mobs type = Mobs.byType(buffer.readByte());
@@ -71,6 +72,27 @@ public class PacketSpawnMob implements ClientboundPacket {
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
                 }
+                return false;
+            }
+            case VERSION_1_11_2: {
+                int entityId = buffer.readVarInt();
+                UUID uuid = buffer.readUUID();
+                Mobs type = Mobs.byType(buffer.readVarInt());
+                Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+                short yaw = buffer.readAngle();
+                short pitch = buffer.readAngle();
+                int headYaw = buffer.readAngle();
+                Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+
+                assert type != null;
+                try {
+                    mob = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, HashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
+                    return true;
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
         }
 
         return false;

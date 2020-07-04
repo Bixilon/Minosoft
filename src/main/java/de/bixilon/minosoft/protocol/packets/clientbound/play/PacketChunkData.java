@@ -60,7 +60,8 @@ public class PacketChunkData implements ClientboundPacket {
                 return true;
             }
             case VERSION_1_9_4:
-            case VERSION_1_10: {
+            case VERSION_1_10:
+            case VERSION_1_11_2: {
                 this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 boolean groundUpContinuous = buffer.readBoolean();
                 short sectionBitMask = (short) buffer.readVarInt();

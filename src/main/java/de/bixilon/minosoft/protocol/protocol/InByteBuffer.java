@@ -272,7 +272,8 @@ public class InByteBuffer {
             }
             case VERSION_1_8:
             case VERSION_1_9_4:
-            case VERSION_1_10: {
+            case VERSION_1_10:
+            case VERSION_1_11_2: {
                 short id = readShort();
                 if (id == -1) {
                     return null;
@@ -365,6 +366,7 @@ public class InByteBuffer {
             }
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 byte index = readByte();
                 while (index != (byte) 0xFF) {
                     EntityMetaData.Types type = EntityMetaData.Types.byId(readByte(), version);

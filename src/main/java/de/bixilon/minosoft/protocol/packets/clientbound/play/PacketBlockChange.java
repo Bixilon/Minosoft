@@ -35,6 +35,7 @@ public class PacketBlockChange implements ClientboundPacket {
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 position = buffer.readPosition();
                 int blockId = buffer.readVarInt();
                 block = Blocks.byId(blockId >>> 4, blockId & 0xF);

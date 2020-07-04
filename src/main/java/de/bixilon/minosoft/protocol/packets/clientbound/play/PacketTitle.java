@@ -13,11 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.MapSet;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketTitle implements ClientboundPacket {
     TitleAction action;
@@ -36,7 +39,8 @@ public class PacketTitle implements ClientboundPacket {
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
-                action = TitleAction.byId(buffer.readVarInt());
+            case VERSION_1_11_2:
+                action = TitleAction.byId(buffer.readVarInt(), buffer.getVersion());
                 switch (action) {
                     case SET_TITLE:
                         text = buffer.readTextComponent();
@@ -105,29 +109,39 @@ public class PacketTitle implements ClientboundPacket {
     }
 
     public enum TitleAction {
+
         SET_TITLE(0),
         SET_SUBTITLE(1),
-        SET_TIMES_AND_DISPLAY(2),
-        HIDE(3),
-        RESET(4);
+        SET_ACTION_BAR(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_11_2, 2)}),
+        SET_TIMES_AND_DISPLAY(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 2), new MapSet<>(ProtocolVersion.VERSION_1_11_2, 3)}),
+        HIDE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 3), new MapSet<>(ProtocolVersion.VERSION_1_11_2, 4)}),
+        RESET(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 4), new MapSet<>(ProtocolVersion.VERSION_1_11_2, 5)});
 
-        final int id;
+        final VersionValueMap<Integer> valueMap;
 
-        TitleAction(int id) {
-            this.id = id;
+        TitleAction(MapSet<ProtocolVersion, Integer>[] values) {
+            valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static TitleAction byId(int id) {
-            for (TitleAction a : values()) {
-                if (a.getId() == id) {
-                    return a;
+        TitleAction(int id) {
+            valueMap = new VersionValueMap<>(id);
+        }
+
+        public static TitleAction byId(int id, ProtocolVersion version) {
+            for (TitleAction action : values()) {
+                if (action.getId(version) == id) {
+                    return action;
                 }
             }
             return null;
         }
 
-        public int getId() {
-            return id;
+        public int getId(ProtocolVersion version) {
+            Integer ret = valueMap.get(version);
+            if (ret == null) {
+                return -2;
+            }
+            return ret;
         }
     }
 }
