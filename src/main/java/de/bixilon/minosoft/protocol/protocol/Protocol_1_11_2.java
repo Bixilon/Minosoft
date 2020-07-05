@@ -109,8 +109,8 @@ public class Protocol_1_11_2 extends Protocol {
         serverboundPacketMapping.put(Packets.Serverbound.PLAY_PLUGIN_MESSAGE, 0x09);
         serverboundPacketMapping.put(Packets.Serverbound.PLAY_INTERACT_ENTITY, 0x0A);
         serverboundPacketMapping.put(Packets.Serverbound.PLAY_KEEP_ALIVE, 0x0B);
-        serverboundPacketMapping.put(Packets.Serverbound.PLAY_PLAYER_POSITION, 0x0D);
-        serverboundPacketMapping.put(Packets.Serverbound.PLAY_PLAYER_POSITION_AND_ROTATION, 0x0C);
+        serverboundPacketMapping.put(Packets.Serverbound.PLAY_PLAYER_POSITION, 0x0C);
+        serverboundPacketMapping.put(Packets.Serverbound.PLAY_PLAYER_POSITION_AND_ROTATION, 0x0D);
         serverboundPacketMapping.put(Packets.Serverbound.PLAY_PLAYER_ROTATION, 0x0E);
         serverboundPacketMapping.put(Packets.Serverbound.PLAY_VEHICLE_MOVE, 0x10);
         serverboundPacketMapping.put(Packets.Serverbound.PLAY_STEER_BOAT, 0x11);
