@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.Dimension;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
@@ -35,6 +36,12 @@ public class PacketChunkData implements ClientboundPacket {
 
     @Override
     public boolean read(InPacketBuffer buffer) {
+        return false;
+    }
+
+    public boolean read(InPacketBuffer buffer, Dimension dimension) {
+        boolean containsSkyLight = dimension == Dimension.OVERWORLD;
+
         switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
                 this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
@@ -45,7 +52,7 @@ public class PacketChunkData implements ClientboundPacket {
                 // decompress chunk data
                 InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInt()), buffer.getVersion());
 
-                chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, true);
+                chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, containsSkyLight);
                 return true;
             }
             case VERSION_1_8: {
@@ -56,7 +63,7 @@ public class PacketChunkData implements ClientboundPacket {
                 int lastPos = buffer.getPosition();
                 buffer.setPosition(size + lastPos);
 
-                chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
+                chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, containsSkyLight);
                 return true;
             }
             case VERSION_1_9_4:
@@ -68,7 +75,7 @@ public class PacketChunkData implements ClientboundPacket {
                 int size = buffer.readVarInt();
                 int lastPos = buffer.getPosition();
 
-                chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, true);
+                chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, containsSkyLight);
                 // set position of the byte buffer, because of some reasons HyPixel makes some weired stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
                 buffer.setPosition(size + lastPos);
                 int blockEntitiesCount = buffer.readVarInt();
@@ -79,8 +86,7 @@ public class PacketChunkData implements ClientboundPacket {
                 return true;
             }
         }
-
-
+        
         return false;
     }
 

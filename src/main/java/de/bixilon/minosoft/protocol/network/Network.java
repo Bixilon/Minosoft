@@ -17,6 +17,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChunkData;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketLoginSetCompression;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.*;
@@ -213,7 +214,13 @@ public class Network {
                         }
                         try {
                             ClientboundPacket packet = clazz.getConstructor().newInstance();
-                            boolean success = packet.read(inPacketBuffer);
+                            boolean success;
+                            if (packet instanceof PacketChunkData) {
+                                // this packets need to know if we are in an dimension with skylight...
+                                success = ((PacketChunkData) (packet)).read(inPacketBuffer, connection.getPlayer().getWorld().getDimension());
+                            } else {
+                                success = packet.read(inPacketBuffer);
+                            }
                             if (inPacketBuffer.getBytesLeft() > 0 || !success) {
                                 // warn not all data used
                                 Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", ((p != null) ? p.name() : "null"), inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
