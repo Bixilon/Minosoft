@@ -30,8 +30,8 @@ public class Zombie extends Mob implements MobInterface {
 
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.ZOMBIE;
+    public Entities getEntityType() {
+        return Entities.ZOMBIE;
     }
 
     @Override

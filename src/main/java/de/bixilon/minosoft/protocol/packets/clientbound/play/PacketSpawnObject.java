@@ -67,7 +67,7 @@ public class PacketSpawnObject implements ClientboundPacket {
                 int data = buffer.readInt();
 
                 try {
-                    if (buffer.getVersion().getVersion() >= ProtocolVersion.VERSION_1_8.getVersion()) {
+                    if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
                         // velocity present AND metadata
 
                         Velocity velocity = null;
@@ -85,7 +85,8 @@ public class PacketSpawnObject implements ClientboundPacket {
                 }
             }
             case VERSION_1_9_4:
-            case VERSION_1_10: {
+            case VERSION_1_10:
+            case VERSION_1_11_2: {
                 int entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
                 Objects type = Objects.byType(buffer.readByte());

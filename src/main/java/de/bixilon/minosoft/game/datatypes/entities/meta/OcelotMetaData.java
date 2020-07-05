@@ -31,9 +31,10 @@ public class OcelotMetaData extends TameableMetaData {
             case VERSION_1_9_4:
                 return OcelotTypes.byId((int) sets.get(14).getData());
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return OcelotTypes.byId((int) sets.get(15).getData());
         }
-        return null;
+        return OcelotTypes.UNTAMED;
     }
 
 

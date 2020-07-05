@@ -15,6 +15,4 @@ package de.bixilon.minosoft.game.datatypes.entities;
 
 public interface MobInterface extends EntityInterface {
     int getMaxHealth();
-
-    Mobs getEntityType();
 }

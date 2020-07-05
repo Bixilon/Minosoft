@@ -82,6 +82,7 @@ public class PacketUseEntity implements ServerboundPacket {
                 break;
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 buffer.writeInt(entityId);
                 buffer.writeByte((byte) click.getId());
                 if (click == Click.INTERACT_AT) {

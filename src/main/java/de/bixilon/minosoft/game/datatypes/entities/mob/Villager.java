@@ -29,8 +29,8 @@ public class Villager extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.VILLAGER;
+    public Entities getEntityType() {
+        return Entities.VILLAGER;
     }
 
     @Override

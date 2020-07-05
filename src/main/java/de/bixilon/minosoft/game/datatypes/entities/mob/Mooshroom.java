@@ -29,8 +29,8 @@ public class Mooshroom extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.MOOSHROOM;
+    public Entities getEntityType() {
+        return Entities.MOOSHROOM;
     }
 
     @Override

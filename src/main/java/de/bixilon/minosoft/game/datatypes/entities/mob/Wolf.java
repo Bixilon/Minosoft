@@ -29,8 +29,8 @@ public class Wolf extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.WOLF;
+    public Entities getEntityType() {
+        return Entities.WOLF;
     }
 
     @Override

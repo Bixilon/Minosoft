@@ -164,6 +164,6 @@ public abstract class Protocol implements ProtocolInterface {
 
     @Override
     public int hashCode() {
-        return getProtocolVersion();
+        return getProtocolVersionNumber();
     }
 }

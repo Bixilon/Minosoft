@@ -28,6 +28,7 @@ public class PacketSetPassenger implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 this.vehicleId = buffer.readVarInt();
                 entityIds = new int[buffer.readVarInt()];
                 for (int i = 0; i < entityIds.length; i++) {

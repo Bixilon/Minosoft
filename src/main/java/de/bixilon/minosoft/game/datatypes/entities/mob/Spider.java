@@ -29,8 +29,8 @@ public class Spider extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.SPIDER;
+    public Entities getEntityType() {
+        return Entities.SPIDER;
     }
 
     @Override

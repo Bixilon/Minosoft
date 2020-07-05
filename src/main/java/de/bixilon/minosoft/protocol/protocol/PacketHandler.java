@@ -17,6 +17,7 @@ import de.bixilon.minosoft.game.datatypes.GameMode;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.mob.OtherPlayer;
+import de.bixilon.minosoft.game.datatypes.entities.objects.Painting;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfo;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfoBulk;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardObjective;
@@ -67,7 +68,7 @@ public class PacketHandler {
             case GET_VERSION:
                 // reconnect...
                 connection.disconnect();
-                Log.info(String.format("Server is running on version %s, reconnecting...", connection.getVersion().getName()));
+                Log.info(String.format("Server is running on version %s, reconnecting...", connection.getVersion().getVersionString()));
                 break;
             case CONNECT:
                 // do nothing
@@ -95,6 +96,7 @@ public class PacketHandler {
         connection.getPlayer().setPlayer(new OtherPlayer(pkg.getEntityId(), connection.getPlayer().getPlayerName(), connection.getPlayer().getPlayerUUID(), null, null, null, (short) 0, (short) 0, (short) 0, null));
         connection.getPlayer().getWorld().setHardcore(pkg.isHardcore());
         connection.getPlayer().getWorld().setDimension(pkg.getDimension());
+        connection.getSender().sendChatMessage("I am alive! ~ Minosoft");
     }
 
     public void handle(PacketLoginDisconnect pkg) {
@@ -425,6 +427,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketSpawnPainting pkg) {
+        connection.getPlayer().getWorld().addEntity(new Painting(pkg.getEntityId(), pkg.getPosition(), pkg.getDirection(), pkg.getTitle()));
     }
 
     public void handle(PacketEntity pkg) {

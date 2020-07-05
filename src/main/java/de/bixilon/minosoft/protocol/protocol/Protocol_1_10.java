@@ -130,13 +130,17 @@ public class Protocol_1_10 extends Protocol {
         serverboundPacketMapping.put(Packets.Serverbound.PLAY_USE_ITEM, 0x1D);
     }
 
-    public int getProtocolVersion() {
+    public int getProtocolVersionNumber() {
         return 210;
     }
 
     @Override
-    public String getName() {
+    public String getVersionString() {
         return "1.10.x";
     }
 
+    @Override
+    public String getReleaseName() {
+        return "Frostburn";
+    }
 }

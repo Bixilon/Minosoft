@@ -32,7 +32,7 @@ public enum ProtocolVersion {
 
     static {
         for (ProtocolVersion v : values()) {
-            versionMapping.put(v.getVersion(), v);
+            versionMapping.put(v.getVersionNumber(), v);
         }
         versionMappingArray = new ProtocolVersion[values().length];
         int counter = 0;
@@ -43,25 +43,23 @@ public enum ProtocolVersion {
     }
 
 
-    final int version;
     final Protocol protocol;
 
     ProtocolVersion(Protocol protocol) {
         this.protocol = protocol;
-        this.version = protocol.getProtocolVersion();
     }
 
     public static ProtocolVersion byId(int protocolNumber) {
         for (ProtocolVersion v : values()) {
-            if (v.getVersion() == protocolNumber) {
+            if (v.getVersionNumber() == protocolNumber) {
                 return v;
             }
         }
         return null;
     }
 
-    public int getVersion() {
-        return version;
+    public int getVersionNumber() {
+        return protocol.getProtocolVersionNumber();
     }
 
     public Protocol getProtocol() {
@@ -72,8 +70,12 @@ public enum ProtocolVersion {
         return protocol.getPacketCommand(p);
     }
 
-    public String getName() {
-        return protocol.getName();
+    public String getVersionString() {
+        return protocol.getVersionString();
+    }
+
+    public String getReleaseName() {
+        return protocol.getReleaseName();
     }
 
 }

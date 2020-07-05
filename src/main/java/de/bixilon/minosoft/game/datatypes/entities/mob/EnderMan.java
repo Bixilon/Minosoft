@@ -30,8 +30,8 @@ public class EnderMan extends Mob implements MobInterface {
 
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.ENDERMAN;
+    public Entities getEntityType() {
+        return Entities.ENDERMAN;
     }
 
     @Override

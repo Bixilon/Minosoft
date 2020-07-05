@@ -39,16 +39,17 @@ public enum InventoryAction {
 
     START_LEFT_MOUSE_DRAG(5, 0, false),
     START_RIGHT_MOUSE_DRAG(5, 4, false),
+    START_MIDDLE_MOUSE_DRAG(5, 8, false),
     ADD_SLOT_LEFT_CLICK(5, 1),
     ADD_SLOT_RIGHT_CLICK(5, 5),
     END_LEFT_MOUSE_DRAG(5, 2, false),
     END_RIGHT_MOUSE_DRAG(5, 6, false),
+    END_MIDDLE_MOUSE_DRAG(5, 10, false),
 
 
-    DOUBLE_CLICK(6, 0),
+    DOUBLE_CLICK(6, 0);
 
 
-    ;
     final byte mode;
     final byte button;
     final boolean hasSlot;

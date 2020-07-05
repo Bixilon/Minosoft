@@ -16,6 +16,9 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.ArmorStandMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class ArmorStand extends EntityObject implements ObjectInterface {
     ArmorStandMetaData metaData;
@@ -29,9 +32,14 @@ public class ArmorStand extends EntityObject implements ObjectInterface {
         super(entityId, location, yaw, pitch, velocity);
     }
 
+    public ArmorStand(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new ArmorStandMetaData(sets, version);
+    }
+
     @Override
-    public Objects getEntityType() {
-        return Objects.ARMOR_STAND;
+    public Entities getEntityType() {
+        return Entities.ARMOR_STAND;
     }
 
     @Override

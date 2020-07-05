@@ -29,8 +29,8 @@ public class Skeleton extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.SKELETON;
+    public Entities getEntityType() {
+        return Entities.SKELETON;
     }
 
     @Override

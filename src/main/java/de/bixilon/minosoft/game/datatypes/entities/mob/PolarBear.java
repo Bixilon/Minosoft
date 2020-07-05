@@ -29,8 +29,8 @@ public class PolarBear extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.POLAR_BEAR;
+    public Entities getEntityType() {
+        return Entities.POLAR_BEAR;
     }
 
     @Override

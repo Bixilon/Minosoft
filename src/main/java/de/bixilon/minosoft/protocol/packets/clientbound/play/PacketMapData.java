@@ -64,7 +64,7 @@ public class PacketMapData implements ClientboundPacket {
                             MapPlayerDirection direction = MapPlayerDirection.byId(BitByte.getHigh4Bits(data));
                             byte x = buffer.readByte();
                             byte z = buffer.readByte();
-                            pins.add(new MapPinSet(type, direction, x, z));
+                            pins.add(new MapPinSet(MapPinType.byId(type), direction, x, z));
                         }
                         break;
                     case SCALE:
@@ -74,10 +74,11 @@ public class PacketMapData implements ClientboundPacket {
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
-            case VERSION_1_10: {
+            case VERSION_1_10:
+            case VERSION_1_11_2: {
                 mapId = buffer.readVarInt();
                 scale = buffer.readByte();
-                if (buffer.getVersion().getVersion() >= ProtocolVersion.VERSION_1_9_4.getVersion()) {
+                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
                     boolean trackPosition = buffer.readBoolean();
                 }
                 int pinCount = buffer.readVarInt();
@@ -86,7 +87,7 @@ public class PacketMapData implements ClientboundPacket {
                     byte directionAndType = buffer.readByte();
                     byte x = buffer.readByte();
                     byte z = buffer.readByte();
-                    pins.add(new MapPinSet(BitByte.getHigh4Bits(directionAndType), MapPlayerDirection.byId(BitByte.getLow4Bits(directionAndType)), x, z));
+                    pins.add(new MapPinSet(MapPinType.byId(BitByte.getHigh4Bits(directionAndType)), MapPlayerDirection.byId(BitByte.getLow4Bits(directionAndType)), x, z));
                 }
                 short columns = BitByte.byteToUShort(buffer.readByte());
                 if (columns > 0) {
@@ -190,20 +191,53 @@ public class PacketMapData implements ClientboundPacket {
         }
     }
 
+    public enum MapPinType {
+        WHITE_ARROW(0),
+        GREEN_ARROW(1),
+        RED_ARROW(2),
+        BLUE_ARROW(3),
+        WHITE_CROSS(4),
+        RED_POINTER(5),
+        WHITE_CIRCLE(6),
+        BLUE_SQUARE(7), // - 15
+        SMALL_WHITE_CIRCLE(8),
+        MANSION(8),
+        TEMPLE(9);
+
+        final int id;
+
+        MapPinType(int id) {
+            this.id = id;
+        }
+
+        public static MapPinType byId(int id) {
+            for (MapPinType type : values()) {
+                if (type.getId() == id) {
+                    return type;
+                }
+            }
+            return BLUE_SQUARE;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+
     public static class MapPinSet {
-        final int type;
+        final MapPinType type;
         final MapPlayerDirection direction;
         byte x;
         byte z;
 
-        public MapPinSet(int type, MapPlayerDirection direction, byte x, byte z) {
+        public MapPinSet(MapPinType type, MapPlayerDirection direction, byte x, byte z) {
             this.type = type;
             this.direction = direction;
             this.x = x;
             this.z = z;
         }
 
-        public int getType() {
+        public MapPinType getType() {
             return type;
         }
 
@@ -219,4 +253,6 @@ public class PacketMapData implements ClientboundPacket {
             return z;
         }
     }
+
+
 }

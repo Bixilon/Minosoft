@@ -59,7 +59,8 @@ public class PacketJoinGame implements ClientboundPacket {
                 return true;
             }
             case VERSION_1_9_4:
-            case VERSION_1_10: {
+            case VERSION_1_10:
+            case VERSION_1_11_2: {
                 this.entityId = buffer.readInt();
                 byte gameModeRaw = buffer.readByte();
                 hardcore = BitByte.isBitSet(gameModeRaw, 3);

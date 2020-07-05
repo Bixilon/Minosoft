@@ -15,6 +15,9 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class Snowball extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
@@ -31,9 +34,15 @@ public class Snowball extends EntityObject implements ObjectInterface {
         this.thrower = additionalInt;
     }
 
+    public Snowball(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new EntityMetaData(sets, version);
+        this.thrower = 0; //ToDo
+    }
+
     @Override
-    public Objects getEntityType() {
-        return Objects.SNOWBALL;
+    public Entities getEntityType() {
+        return Entities.SNOWBALL;
     }
 
     @Override

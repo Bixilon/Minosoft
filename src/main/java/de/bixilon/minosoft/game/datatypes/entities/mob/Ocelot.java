@@ -29,8 +29,8 @@ public class Ocelot extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.OCELOT;
+    public Entities getEntityType() {
+        return Entities.OCELOT;
     }
 
     @Override

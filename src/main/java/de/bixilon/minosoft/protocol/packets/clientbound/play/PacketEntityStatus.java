@@ -29,6 +29,7 @@ public class PacketEntityStatus implements ClientboundPacket {
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 entityId = buffer.readInt();
                 status = Status.byId(buffer.readByte());
                 return true;
@@ -80,7 +81,9 @@ public class PacketEntityStatus implements ClientboundPacket {
         SHIELD_BREAK_SOUND(30),
         FISHING_ROD_BOBBER(31),
         ARMOR_STAND_HIT(32),
-        ENTITY_THORNS_HURT(33);
+        ENTITY_THORNS_HURT(33),
+        PUT_AWAY_GOLEM_POPPY(34),
+        TOTEM_OF_UNDYING_ANIMATION(35);
 
 
         final int id;

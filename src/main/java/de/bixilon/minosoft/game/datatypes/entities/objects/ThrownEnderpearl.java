@@ -14,48 +14,50 @@
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
-import de.bixilon.minosoft.game.datatypes.entities.meta.AreaEffectCloudMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class AreaCloudEffect extends EntityObject implements ObjectInterface {
-    AreaEffectCloudMetaData metaData;
+import java.util.HashMap;
 
-    public AreaCloudEffect(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+public class ThrownEnderpearl extends EntityObject implements ObjectInterface {
+    EntityMetaData metaData;
+
+    public ThrownEnderpearl(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
     }
 
-    public AreaCloudEffect(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public ThrownEnderpearl(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
     }
 
-    @Override
-    public Objects getEntityType() {
-        return Objects.AREA_CLOUD_EFFECT;
+    public ThrownEnderpearl(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new EntityMetaData(sets, version);
     }
 
     @Override
-    public AreaEffectCloudMetaData getMetaData() {
+    public Entities getEntityType() {
+        return Entities.THROWN_ENDERPEARL;
+    }
+
+    @Override
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (AreaEffectCloudMetaData) metaData;
+        this.metaData = metaData;
     }
 
     @Override
     public float getWidth() {
-        return 2.0F * metaData.getRadius();
+        return 0.25F;
     }
 
     @Override
     public float getHeight() {
-        return 0.5F;
-    }
-
-    @Override
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return AreaEffectCloudMetaData.class;
+        return 0.25F;
     }
 }

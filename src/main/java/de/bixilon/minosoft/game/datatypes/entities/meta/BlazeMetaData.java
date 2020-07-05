@@ -33,6 +33,8 @@ public class BlazeMetaData extends MobMetaData {
                 return BitByte.isBitMask((byte) sets.get(16).getData(), 0x01);
             case VERSION_1_10:
                 return BitByte.isBitMask((byte) sets.get(17).getData(), 0x01);
+            case VERSION_1_11_2:
+                return BitByte.isBitMask((byte) sets.get(12).getData(), 0x01);
         }
         return false;
     }

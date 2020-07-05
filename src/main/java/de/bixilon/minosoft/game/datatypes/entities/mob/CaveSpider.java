@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.Entities;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.entities.Mobs;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -28,8 +28,8 @@ public class CaveSpider extends Spider {
 
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.CAVE_SPIDER;
+    public Entities getEntityType() {
+        return Entities.CAVE_SPIDER;
     }
 
     @Override

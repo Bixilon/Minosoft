@@ -17,10 +17,13 @@ import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.FallingBlockMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class FallingBlock extends EntityObject implements ObjectInterface {
-    FallingBlockMetaData metaData;
     final Blocks block;
+    FallingBlockMetaData metaData;
 
     public FallingBlock(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
@@ -33,9 +36,16 @@ public class FallingBlock extends EntityObject implements ObjectInterface {
         block = Blocks.byId(additionalInt & 0xFFF, additionalInt >>> 12);
     }
 
+    public FallingBlock(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new FallingBlockMetaData(sets, version);
+        block = Blocks.UNKNOWN; //ToDo
+    }
+
+
     @Override
-    public Objects getEntityType() {
-        return Objects.FALLING_BLOCK;
+    public Entities getEntityType() {
+        return Entities.FALLING_BLOCK;
     }
 
     @Override

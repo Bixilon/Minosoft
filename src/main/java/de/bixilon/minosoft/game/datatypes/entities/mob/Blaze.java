@@ -29,8 +29,8 @@ public class Blaze extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.BLAZE;
+    public Entities getEntityType() {
+        return Entities.BLAZE;
     }
 
     @Override

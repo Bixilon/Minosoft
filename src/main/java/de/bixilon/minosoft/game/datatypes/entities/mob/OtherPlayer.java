@@ -38,8 +38,8 @@ public class OtherPlayer extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.PLAYER;
+    public Entities getEntityType() {
+        return Entities.PLAYER;
     }
 
     @Override

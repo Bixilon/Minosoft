@@ -38,6 +38,7 @@ public class PacketSteerBoat implements ServerboundPacket {
         switch (version) {
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 buffer.writeBoolean(leftPaddle);
                 buffer.writeBoolean(rightPaddle);
                 break;

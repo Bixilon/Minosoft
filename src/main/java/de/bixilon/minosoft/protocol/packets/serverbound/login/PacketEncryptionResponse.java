@@ -55,6 +55,7 @@ public class PacketEncryptionResponse implements ServerboundPacket {
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 buffer.writeVarInt(secret.length);
                 buffer.writeBytes(secret);
                 buffer.writeVarInt(token.length);

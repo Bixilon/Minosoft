@@ -153,7 +153,7 @@ public class OutByteBuffer {
     }
 
     public void writePosition(BlockPosition location) {
-        if (version.getVersion() >= ProtocolVersion.VERSION_1_14_4.getVersion()) {
+        if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
             writeLong((((long) (location.getX() & 0x3FFFFFF) << 38) | ((long) (location.getZ() & 0x3FFFFFF) << 12) | (long) (location.getY() & 0xFFF)));
         } else {
             writeLong((((long) location.getX() & 0x3FFFFFF) << 38) | (((long) location.getZ() & 0x3FFFFFF)) | ((long) location.getY() & 0xFFF) << 26);
@@ -170,6 +170,7 @@ public class OutByteBuffer {
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 if (slot == null) {
                     writeShort((short) -1);
                     return;

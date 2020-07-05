@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.mob;
 
+import de.bixilon.minosoft.game.datatypes.entities.Entities;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.entities.Mobs;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -29,7 +29,7 @@ public class MagmaCube extends Slime {
 
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.MAGMA_CUBE;
+    public Entities getEntityType() {
+        return Entities.MAGMA_CUBE;
     }
 }

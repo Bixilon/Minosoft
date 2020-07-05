@@ -127,6 +127,7 @@ public class EntityMetaData {
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x01);
         }
         return false;
@@ -138,6 +139,7 @@ public class EntityMetaData {
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x02);
         }
         return false;
@@ -149,6 +151,7 @@ public class EntityMetaData {
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x08);
         }
         return false;
@@ -161,6 +164,9 @@ public class EntityMetaData {
             case VERSION_1_9_4:
             case VERSION_1_10:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x10);
+            case VERSION_1_11_2:
+                // unused
+                return false;
         }
         return false;
     }
@@ -179,6 +185,7 @@ public class EntityMetaData {
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 0x20);
         }
         return false;
@@ -190,6 +197,7 @@ public class EntityMetaData {
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 0x40);
         }
         return false;
@@ -201,6 +209,7 @@ public class EntityMetaData {
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 0x80);
         }
         return false;
@@ -210,6 +219,7 @@ public class EntityMetaData {
         switch (version) {
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return (String) sets.get(2).getData();
         }
         return null;
@@ -219,6 +229,7 @@ public class EntityMetaData {
         switch (version) {
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return (boolean) sets.get(3).getData();
         }
         return false;
@@ -228,6 +239,7 @@ public class EntityMetaData {
         switch (version) {
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return (boolean) sets.get(4).getData();
         }
         return false;
@@ -236,9 +248,10 @@ public class EntityMetaData {
     public boolean hasGravity() {
         switch (version) {
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 return !(boolean) sets.get(5).getData();
         }
-        return false;
+        return true;
     }
 
     public enum Types {

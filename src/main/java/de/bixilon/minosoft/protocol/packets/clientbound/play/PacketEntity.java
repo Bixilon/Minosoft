@@ -30,6 +30,7 @@ public class PacketEntity implements ClientboundPacket {
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
+            case VERSION_1_11_2:
                 entityId = buffer.readVarInt();
                 return true;
         }

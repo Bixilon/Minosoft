@@ -26,13 +26,13 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
     final BlockPosition position;
     final byte direction;
     final Slot item;
-    final byte cursorX;
-    final byte cursorY;
-    final byte cursorZ;
+    final float cursorX;
+    final float cursorY;
+    final float cursorZ;
     final Hand hand;
 
 
-    public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Slot item, byte cursorX, byte cursorY, byte cursorZ) {
+    public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Slot item, float cursorX, float cursorY, float cursorZ) {
         this.position = position;
         this.direction = direction;
         this.item = item;
@@ -44,7 +44,7 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
     }
 
     // >= 1.9
-    public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Hand hand, byte cursorX, byte cursorY, byte cursorZ) {
+    public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Hand hand, float cursorX, float cursorY, float cursorZ) {
         this.position = position;
         this.direction = direction;
         this.item = null;
@@ -65,18 +65,18 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
                 buffer.writeByte(direction);
                 buffer.writeSlot(item);
 
-                buffer.writeByte(cursorX);
-                buffer.writeByte(cursorY);
-                buffer.writeByte(cursorZ);
+                buffer.writeByte((byte) (cursorX * 15.0F));
+                buffer.writeByte((byte) (cursorY * 15.0F));
+                buffer.writeByte((byte) (cursorZ * 15.0F));
                 break;
             case VERSION_1_8:
                 buffer.writePosition(position);
                 buffer.writeByte(direction);
                 buffer.writeSlot(item);
 
-                buffer.writeByte(cursorX);
-                buffer.writeByte(cursorY);
-                buffer.writeByte(cursorZ);
+                buffer.writeByte((byte) (cursorX * 15.0F));
+                buffer.writeByte((byte) (cursorY * 15.0F));
+                buffer.writeByte((byte) (cursorZ * 15.0F));
                 break;
             case VERSION_1_9_4:
             case VERSION_1_10:
@@ -84,9 +84,18 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
                 buffer.writeVarInt(direction);
                 buffer.writeVarInt(hand.getId());
 
-                buffer.writeByte(cursorX);
-                buffer.writeByte(cursorY);
-                buffer.writeByte(cursorZ);
+                buffer.writeByte((byte) (cursorX * 15.0F));
+                buffer.writeByte((byte) (cursorY * 15.0F));
+                buffer.writeByte((byte) (cursorZ * 15.0F));
+                break;
+            case VERSION_1_11_2:
+                buffer.writePosition(position);
+                buffer.writeVarInt(direction);
+                buffer.writeVarInt(hand.getId());
+
+                buffer.writeFloat(cursorX);
+                buffer.writeFloat(cursorY);
+                buffer.writeFloat(cursorZ);
                 break;
         }
         return buffer;

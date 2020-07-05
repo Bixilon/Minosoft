@@ -16,10 +16,13 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.ItemFrameMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class ItemFrame extends EntityObject implements ObjectInterface {
-    ItemFrameMetaData metaData;
     final FrameDirection direction;
+    ItemFrameMetaData metaData;
 
     public ItemFrame(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
@@ -32,9 +35,15 @@ public class ItemFrame extends EntityObject implements ObjectInterface {
         direction = FrameDirection.byId(additionalInt);
     }
 
+    public ItemFrame(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new ItemFrameMetaData(sets, version);
+        this.direction = FrameDirection.byId(0);
+    }
+
     @Override
-    public Objects getEntityType() {
-        return Objects.ITEM_FRAME;
+    public Entities getEntityType() {
+        return Entities.ITEM_FRAME;
     }
 
     @Override

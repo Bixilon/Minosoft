@@ -21,13 +21,18 @@ public class Protocol_1_12_2 extends Protocol {
         //ToDo
     }
 
-    public int getProtocolVersion() {
+    public int getProtocolVersionNumber() {
         return 340;
     }
 
     @Override
-    public String getName() {
+    public String getVersionString() {
         return "1.12.2";
+    }
+
+    @Override
+    public String getReleaseName() {
+        return "World of Color";
     }
 
 }

@@ -16,6 +16,9 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.FishingHookMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class LeashKnot extends EntityObject implements ObjectInterface {
     FishingHookMetaData metaData;
@@ -29,9 +32,14 @@ public class LeashKnot extends EntityObject implements ObjectInterface {
         super(entityId, location, yaw, pitch, velocity);
     }
 
+    public LeashKnot(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new FishingHookMetaData(sets, version);
+    }
+
     @Override
-    public Objects getEntityType() {
-        return Objects.LEASH_KNOT;
+    public Entities getEntityType() {
+        return Entities.LEASH_KNOT;
     }
 
     @Override

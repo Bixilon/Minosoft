@@ -29,8 +29,8 @@ public class Shulker extends Mob implements MobInterface {
     }
 
     @Override
-    public Mobs getEntityType() {
-        return Mobs.SHULKER;
+    public Entities getEntityType() {
+        return Entities.SHULKER;
     }
 
     @Override

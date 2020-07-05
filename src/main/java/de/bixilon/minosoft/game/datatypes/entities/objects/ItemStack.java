@@ -16,6 +16,9 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.ItemMetaData;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.HashMap;
 
 public class ItemStack extends EntityObject implements ObjectInterface {
     ItemMetaData metaData;
@@ -29,9 +32,14 @@ public class ItemStack extends EntityObject implements ObjectInterface {
         super(entityId, location, yaw, pitch, velocity);
     }
 
+    public ItemStack(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new ItemMetaData(sets, version);
+    }
+
     @Override
-    public Objects getEntityType() {
-        return Objects.ITEM_STACK;
+    public Entities getEntityType() {
+        return Entities.ITEM;
     }
 
     @Override
