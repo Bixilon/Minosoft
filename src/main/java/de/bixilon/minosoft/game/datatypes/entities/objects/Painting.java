@@ -15,12 +15,15 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
 public class Painting extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
+    int direction;
+    String title;
 
     public Painting(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
@@ -34,6 +37,12 @@ public class Painting extends EntityObject implements ObjectInterface {
     public Painting(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new EntityMetaData(sets, version);
+    }
+
+    public Painting(int entityId, BlockPosition position, int direction, String title) {
+        super(entityId, new Location(position.getX(), position.getY(), position.getZ()), (short) 0, (short) 0, null);
+        this.direction = direction;
+        this.title = title;
     }
 
     @Override
