@@ -33,6 +33,7 @@ public class MobMetaData extends EntityMetaData {
                 return (float) sets.get(6).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (float) sets.get(7).getData();
         }
         return 1.0F;
@@ -47,6 +48,7 @@ public class MobMetaData extends EntityMetaData {
                 return (int) sets.get(7).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (int) sets.get(8).getData();
         }
         return 0;
@@ -62,6 +64,7 @@ public class MobMetaData extends EntityMetaData {
                 return (boolean) sets.get(8).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (boolean) sets.get(9).getData();
         }
         return false;
@@ -76,6 +79,7 @@ public class MobMetaData extends EntityMetaData {
                 return (int) sets.get(9).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (int) sets.get(10).getData();
         }
         return 0;
@@ -119,6 +123,7 @@ public class MobMetaData extends EntityMetaData {
                 return BitByte.isBitMask((byte) sets.get(5).getData(), 0x01);
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return BitByte.isBitMask((byte) sets.get(6).getData(), 0x01);
         }
         return false;
@@ -131,6 +136,7 @@ public class MobMetaData extends EntityMetaData {
                 return BitByte.isBitMask((byte) sets.get(5).getData(), 0x02) ? Hand.LEFT : Hand.RIGHT;
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return BitByte.isBitMask((byte) sets.get(6).getData(), 0x02) ? Hand.LEFT : Hand.RIGHT;
         }
         return Hand.RIGHT;

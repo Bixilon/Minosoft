@@ -17,7 +17,7 @@ import de.bixilon.minosoft.util.BitByte;
 
 import java.util.HashMap;
 
-public class VindicatorMetaData extends MobMetaData {
+public class VindicatorMetaData extends AbstractIllagerMetaData {
 
     public VindicatorMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -26,9 +26,11 @@ public class VindicatorMetaData extends MobMetaData {
     public boolean hasTarget() {
         switch (version) {
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return BitByte.isBitMask((byte) sets.get(12).getData(), 0x01);
+            default:
+                return super.hasTarget();
         }
-        return false;
     }
 
 

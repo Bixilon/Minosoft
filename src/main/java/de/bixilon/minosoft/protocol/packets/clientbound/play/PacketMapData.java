@@ -75,7 +75,8 @@ public class PacketMapData implements ClientboundPacket {
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
-            case VERSION_1_11_2: {
+            case VERSION_1_11_2:
+            case VERSION_1_12_2: {
                 mapId = buffer.readVarInt();
                 scale = buffer.readByte();
                 if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
@@ -87,7 +88,11 @@ public class PacketMapData implements ClientboundPacket {
                     byte directionAndType = buffer.readByte();
                     byte x = buffer.readByte();
                     byte z = buffer.readByte();
-                    pins.add(new MapPinSet(MapPinType.byId(BitByte.getHigh4Bits(directionAndType)), MapPlayerDirection.byId(BitByte.getLow4Bits(directionAndType)), x, z));
+                    if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+                        pins.add(new MapPinSet(MapPinType.byId(BitByte.getHigh4Bits(directionAndType)), MapPlayerDirection.byId(BitByte.getLow4Bits(directionAndType)), x, z));
+                    } else {
+                        pins.add(new MapPinSet(MapPinType.byId(BitByte.getLow4Bits(directionAndType)), MapPlayerDirection.byId(BitByte.getHigh4Bits(directionAndType)), x, z));
+                    }
                 }
                 short columns = BitByte.byteToUShort(buffer.readByte());
                 if (columns > 0) {

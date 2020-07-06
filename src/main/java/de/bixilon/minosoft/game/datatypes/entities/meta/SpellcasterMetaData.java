@@ -13,29 +13,22 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
 import java.util.HashMap;
 
-public class IronGolemMetaData extends MobMetaData {
+public class SpellcasterMetaData extends MobMetaData {
 
-    public IronGolemMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public SpellcasterMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
 
-    public boolean isCreatedByPlayer() {
+    public byte getSpell() {
         switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(16).getData() == 0x01;
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x01);
-            case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
-                return BitByte.isBitMask((byte) sets.get(12).getData(), 0x01);
+                return (byte) sets.get(13).getData();
         }
-        return false;
+        return 0;
     }
 
 

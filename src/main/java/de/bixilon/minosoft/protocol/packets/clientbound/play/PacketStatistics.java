@@ -34,6 +34,7 @@ public class PacketStatistics implements ClientboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 int length = buffer.readVarInt();
                 for (int i = 0; i < length; i++) {
                     statistics.put(Statistics.byIdentifier(new Identifier(buffer.readString())), buffer.readVarInt());

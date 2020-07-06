@@ -13,21 +13,22 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.util.BitByte;
 
 import java.util.HashMap;
 
-public class EvokerMetaData extends MobMetaData {
+public class AbstractIllagerMetaData extends MobMetaData {
 
-    public EvokerMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public AbstractIllagerMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
 
-    public byte getSpell() {
+    public boolean hasTarget() {
         switch (version) {
-            case VERSION_1_11_2:
-                return (byte) sets.get(13).getData();
+            case VERSION_1_12_2:
+                return BitByte.isBitMask((byte) sets.get(12).getData(), 0x01);
         }
-        return 0;
+        return false;
     }
 
 

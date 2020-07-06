@@ -30,6 +30,7 @@ public class PacketServerDifficulty implements ClientboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 difficulty = Difficulty.byId(buffer.readByte());
                 return true;
         }

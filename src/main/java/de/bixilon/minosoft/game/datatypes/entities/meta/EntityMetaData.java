@@ -128,6 +128,7 @@ public class EntityMetaData {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x01);
         }
         return false;
@@ -140,6 +141,7 @@ public class EntityMetaData {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x02);
         }
         return false;
@@ -152,6 +154,7 @@ public class EntityMetaData {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x08);
         }
         return false;
@@ -164,9 +167,6 @@ public class EntityMetaData {
             case VERSION_1_9_4:
             case VERSION_1_10:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x10);
-            case VERSION_1_11_2:
-                // unused
-                return false;
         }
         return false;
     }
@@ -186,6 +186,7 @@ public class EntityMetaData {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 0x20);
         }
         return false;
@@ -198,6 +199,7 @@ public class EntityMetaData {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 0x40);
         }
         return false;
@@ -210,6 +212,7 @@ public class EntityMetaData {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 0x80);
         }
         return false;
@@ -220,6 +223,7 @@ public class EntityMetaData {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (String) sets.get(2).getData();
         }
         return null;
@@ -230,6 +234,7 @@ public class EntityMetaData {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (boolean) sets.get(3).getData();
         }
         return false;
@@ -240,6 +245,7 @@ public class EntityMetaData {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (boolean) sets.get(4).getData();
         }
         return false;
@@ -249,6 +255,7 @@ public class EntityMetaData {
         switch (version) {
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return !(boolean) sets.get(5).getData();
         }
         return true;
@@ -273,7 +280,7 @@ public class EntityMetaData {
         OPT_UUID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 11)}),
         BLOCK_ID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 12), new MapSet<>(ProtocolVersion.VERSION_1_10, 1003)}),
         OPT_BLOCK_ID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 12)}),
-        NBT(-1),
+        NBT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_12_2, 13)}),
         PARTICLE(-1),
         VILLAGER_DATA(-1),
         OPT_VAR_INT(-1),

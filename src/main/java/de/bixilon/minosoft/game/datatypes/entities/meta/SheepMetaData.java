@@ -34,6 +34,7 @@ public class SheepMetaData extends AgeableMetaData {
                 return Color.byId((byte) sets.get(12).getData() & 0xF);
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return Color.byId((byte) sets.get(13).getData() & 0xF);
         }
         return Color.WHITE;
@@ -48,6 +49,7 @@ public class SheepMetaData extends AgeableMetaData {
                 return BitByte.isBitMask((byte) sets.get(12).getData(), 0x10);
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return BitByte.isBitMask((byte) sets.get(13).getData(), 0x10);
         }
         return false;

@@ -15,52 +15,52 @@ package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.SpellcasterMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.ParrotMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class Evoker extends Mob implements MobInterface {
-    SpellcasterMetaData metaData;
+public class Parrot extends Mob implements MobInterface {
+    ParrotMetaData metaData;
 
-    public Evoker(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public Parrot(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new SpellcasterMetaData(sets, version);
+        this.metaData = new ParrotMetaData(sets, version);
     }
 
 
     @Override
     public Entities getEntityType() {
-        return Entities.EVOCATION_ILLAGER;
+        return Entities.PARROT;
     }
 
     @Override
-    public SpellcasterMetaData getMetaData() {
+    public ParrotMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (SpellcasterMetaData) metaData;
+        this.metaData = (ParrotMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.6F;
+        return 0.5F;
     }
 
     @Override
     public float getHeight() {
-        return 1.95F;
+        return 0.9F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 24;
+        return 6;
     }
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return SpellcasterMetaData.class;
+        return ParrotMetaData.class;
     }
 }

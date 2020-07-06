@@ -21,7 +21,12 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketKeepAliveResponse implements ServerboundPacket {
 
-    final int id;
+    final long id;
+
+    public PacketKeepAliveResponse(long id) {
+        this.id = id;
+        log();
+    }
 
     public PacketKeepAliveResponse(int id) {
         this.id = id;
@@ -34,13 +39,16 @@ public class PacketKeepAliveResponse implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_KEEP_ALIVE));
         switch (version) {
             case VERSION_1_7_10:
-                buffer.writeInt(id);
+                buffer.writeInt((int) id);
                 break;
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
-                buffer.writeVarInt(id);
+                buffer.writeVarInt((int) id);
+                break;
+            case VERSION_1_12_2:
+                buffer.writeLong(id);
                 break;
         }
         return buffer;
@@ -48,6 +56,6 @@ public class PacketKeepAliveResponse implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending keep alive back (%s)", id));
+        Log.protocol(String.format("Sending keep alive back (%d)", id));
     }
 }

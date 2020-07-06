@@ -32,6 +32,7 @@ public class MinecartMetaData extends EntityMetaData {
                 return (int) sets.get(5).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (int) sets.get(6).getData();
         }
         return 0;
@@ -46,6 +47,7 @@ public class MinecartMetaData extends EntityMetaData {
                 return (int) sets.get(6).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (int) sets.get(7).getData();
         }
         return 0;
@@ -60,6 +62,7 @@ public class MinecartMetaData extends EntityMetaData {
                 return (float) sets.get(7).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (float) sets.get(8).getData();
         }
         return 0;
@@ -74,6 +77,7 @@ public class MinecartMetaData extends EntityMetaData {
                 return Blocks.byId((int) sets.get(8).getData() & 0xFF, (int) sets.get(8).getData() >>> 4);
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return Blocks.byId((int) sets.get(9).getData() & 0xFF, (int) sets.get(9).getData() >>> 4);
         }
         return Blocks.AIR;
@@ -87,6 +91,7 @@ public class MinecartMetaData extends EntityMetaData {
                 return (int) sets.get(9).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (int) sets.get(10).getData();
         }
         return 0;
@@ -100,6 +105,7 @@ public class MinecartMetaData extends EntityMetaData {
                 return (boolean) sets.get(10).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (boolean) sets.get(11).getData();
         }
         return false;

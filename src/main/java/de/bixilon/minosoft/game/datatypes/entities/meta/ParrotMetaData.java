@@ -13,30 +13,49 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
 import java.util.HashMap;
 
-public class IronGolemMetaData extends MobMetaData {
+public class ParrotMetaData extends TameableMetaData {
 
-    public IronGolemMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public ParrotMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
 
-    public boolean isCreatedByPlayer() {
+    public ParrotVariants getVariant() {
         switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(16).getData() == 0x01;
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x01);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
             case VERSION_1_12_2:
-                return BitByte.isBitMask((byte) sets.get(12).getData(), 0x01);
+                return ParrotVariants.byId((Integer) sets.get(15).getData());
         }
-        return false;
+        return ParrotVariants.RED_BLUE;
     }
 
+
+    public enum ParrotVariants {
+        RED_BLUE(0),
+        BLUE(1),
+        GREEN(2),
+        YELLOW_BLUE(3),
+        SILVER(4);
+
+        final int id;
+
+        ParrotVariants(int id) {
+            this.id = id;
+        }
+
+        public static ParrotVariants byId(int id) {
+            for (ParrotVariants variant : values()) {
+                if (variant.getId() == id) {
+                    return variant;
+                }
+            }
+            return null;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
 
 }

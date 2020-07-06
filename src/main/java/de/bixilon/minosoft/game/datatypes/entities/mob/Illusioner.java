@@ -15,38 +15,37 @@ package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.SpellcasterMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class Evoker extends Mob implements MobInterface {
-    SpellcasterMetaData metaData;
+public class Illusioner extends Mob implements MobInterface {
+    EntityMetaData metaData;
 
-    public Evoker(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public Illusioner(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new SpellcasterMetaData(sets, version);
+        this.metaData = new EntityMetaData(sets, version);
     }
 
 
     @Override
     public Entities getEntityType() {
-        return Entities.EVOCATION_ILLAGER;
+        return Entities.ILLUSIONER;
     }
 
     @Override
-    public SpellcasterMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (SpellcasterMetaData) metaData;
+        this.metaData = metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.6F;
+        return 0.F;
     }
 
     @Override
@@ -56,11 +55,11 @@ public class Evoker extends Mob implements MobInterface {
 
     @Override
     public int getMaxHealth() {
-        return 24;
+        return 32;
     }
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return SpellcasterMetaData.class;
+        return EntityMetaData.class;
     }
 }

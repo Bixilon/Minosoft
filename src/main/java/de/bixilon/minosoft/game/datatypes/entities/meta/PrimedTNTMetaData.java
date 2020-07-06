@@ -28,6 +28,7 @@ public class PrimedTNTMetaData extends EntityMetaData {
                 return (int) sets.get(5).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (int) sets.get(6).getData();
         }
         return 0;

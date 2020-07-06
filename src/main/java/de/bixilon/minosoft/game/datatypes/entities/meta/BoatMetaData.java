@@ -31,6 +31,7 @@ public class BoatMetaData extends EntityMetaData {
                 return (int) sets.get(5).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (int) sets.get(6).getData();
         }
         return 0;
@@ -45,6 +46,7 @@ public class BoatMetaData extends EntityMetaData {
                 return (int) sets.get(6).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (int) sets.get(7).getData();
         }
         return 1;
@@ -59,6 +61,7 @@ public class BoatMetaData extends EntityMetaData {
                 return (float) sets.get(7).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (float) sets.get(8).getData();
         }
         return 0;
@@ -70,6 +73,7 @@ public class BoatMetaData extends EntityMetaData {
                 return BoatMaterial.byId((int) sets.get(8).getData());
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return BoatMaterial.byId((int) sets.get(9).getData());
         }
         return BoatMaterial.OAK;
@@ -81,6 +85,7 @@ public class BoatMetaData extends EntityMetaData {
                 return (boolean) sets.get(9).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (boolean) sets.get(10).getData();
         }
         return false;
@@ -92,6 +97,7 @@ public class BoatMetaData extends EntityMetaData {
                 return (boolean) sets.get(10).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (boolean) sets.get(11).getData();
         }
         return false;

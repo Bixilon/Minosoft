@@ -33,6 +33,7 @@ public class ChestedHorseMetaData extends AbstractHorseMetaData {
             case VERSION_1_10:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x08);
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return BitByte.isBitMask((int) sets.get(15).getData(), 0x08);
         }
         return false;

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketKeepAlive implements ClientboundPacket {
-    int id;
+    long id;
 
 
     @Override
@@ -34,6 +34,9 @@ public class PacketKeepAlive implements ClientboundPacket {
             case VERSION_1_11_2:
                 id = buffer.readVarInt();
                 return true;
+            case VERSION_1_12_2:
+                id = buffer.readLong();
+                return true;
         }
 
         return false;
@@ -41,7 +44,7 @@ public class PacketKeepAlive implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Keep alive packet received (%s)", id));
+        Log.protocol(String.format("Keep alive packet received (%d)", id));
     }
 
     @Override
@@ -49,7 +52,7 @@ public class PacketKeepAlive implements ClientboundPacket {
         h.handle(this);
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 }

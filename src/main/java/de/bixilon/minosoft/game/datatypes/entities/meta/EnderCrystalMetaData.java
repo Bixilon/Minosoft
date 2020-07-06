@@ -38,6 +38,7 @@ public class EnderCrystalMetaData extends EntityMetaData {
                 return (BlockPosition) sets.get(5).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (BlockPosition) sets.get(6).getData();
         }
         return null;
@@ -49,6 +50,7 @@ public class EnderCrystalMetaData extends EntityMetaData {
                 return (boolean) sets.get(6).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (boolean) sets.get(7).getData();
         }
         return true;
