@@ -17,6 +17,7 @@ package de.bixilon.minosoft.protocol.protocol;
 public class Protocol_1_12_2 extends Protocol {
 
     Protocol_1_12_2() {
+        // https://wiki.vg/index.php?title=Protocol&oldid=14204
         super();
         clientboundPacketMapping.put(Packets.Clientbound.LOGIN_SET_COMPRESSION, 0x03);
 

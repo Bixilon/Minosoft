@@ -142,6 +142,9 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_SOUND_EFFECT, PacketSoundEffect.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_BOSS_BAR, PacketBossBar.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SET_PASSENGERS, PacketSetPassenger.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_CRAFT_RECIPE_RESPONSE, PacketCraftRecipeResponse.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_UNLOCK_RECIPES, PacketUnlockRecipes.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SELECT_ADVANCEMENT_TAB, PacketSelectAdvancementTab.class);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {

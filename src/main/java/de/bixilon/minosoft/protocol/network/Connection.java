@@ -42,6 +42,7 @@ public class Connection {
     Player player;
     ConnectionState state = ConnectionState.DISCONNECTED;
     ConnectionReason reason;
+    ConnectionPing connectionStatusPing;
 
     public Connection(String host, int port) {
         this.host = host;
@@ -71,7 +72,6 @@ public class Connection {
             reason = ConnectionReason.GET_VERSION;
         }
         network.connect();
-
     }
 
     public String getHost() {
@@ -105,7 +105,8 @@ public class Connection {
             case STATUS:
                 // send status request and ping
                 network.sendPacket(new PacketStatusRequest());
-                network.sendPacket(new PacketStatusPing(0));
+                connectionStatusPing = new ConnectionPing();
+                network.sendPacket(new PacketStatusPing(connectionStatusPing));
                 break;
             case LOGIN:
                 network.sendPacket(new PacketLoginStart(player));
@@ -221,5 +222,9 @@ public class Connection {
 
     public PacketSender getSender() {
         return sender;
+    }
+
+    public ConnectionPing getConnectionStatusPing() {
+        return connectionStatusPing;
     }
 }

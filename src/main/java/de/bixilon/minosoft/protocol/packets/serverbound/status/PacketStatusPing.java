@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.serverbound.status;
 
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.ConnectionPing;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -28,6 +29,10 @@ public class PacketStatusPing implements ServerboundPacket {
 
     public PacketStatusPing(int id) {
         this.id = (long) id;
+    }
+
+    public PacketStatusPing(ConnectionPing ping) {
+        this.id = ping.getPingId();
     }
 
     @Override
