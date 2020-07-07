@@ -65,7 +65,8 @@ public class Packets {
         PLAY_ANIMATION,
         PLAY_SPECTATE,
         PLAY_PLAYER_BLOCK_PLACEMENT,
-        PLAY_USE_ITEM
+        PLAY_USE_ITEM,
+        PLAY_UPDATE_COMMAND_BLOCK_MINECART
 
     }
 
