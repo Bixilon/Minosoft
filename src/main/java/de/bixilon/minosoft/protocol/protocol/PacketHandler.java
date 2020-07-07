@@ -571,4 +571,7 @@ public class PacketHandler {
 
     public void handle(PacketSelectAdvancementTab pkg) {
     }
+
+    public void handle(PacketAdvancements pkg) {
+    }
 }
