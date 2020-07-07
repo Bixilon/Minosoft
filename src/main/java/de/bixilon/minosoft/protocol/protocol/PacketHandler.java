@@ -181,7 +181,7 @@ public class PacketHandler {
         connection.getPlayer().setSpawnLocation(pkg.getSpawnLocation());
     }
 
-    public void handle(PacketChatMessage pkg) {
+    public void handle(PacketChatMessageReceiving pkg) {
     }
 
     public void handle(PacketDisconnect pkg) {
@@ -574,4 +574,5 @@ public class PacketHandler {
 
     public void handle(PacketAdvancements pkg) {
     }
+
 }

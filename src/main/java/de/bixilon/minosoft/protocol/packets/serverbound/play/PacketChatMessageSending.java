@@ -11,52 +11,42 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.packets.clientbound.play;
+package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.game.datatypes.TextPosition;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketChatMessage implements ClientboundPacket {
-    TextComponent c;
-    TextPosition position;
+public class PacketChatMessageSending implements ServerboundPacket {
+
+    final String message;
+
+    public PacketChatMessageSending(String message) {
+        this.message = message;
+        log();
+    }
 
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
-        switch (buffer.getVersion()) {
+    public OutPacketBuffer write(ProtocolVersion version) {
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CHAT_MESSAGE));
+        switch (version) {
             case VERSION_1_7_10:
-                c = buffer.readTextComponent();
-                position = TextPosition.CHAT_BOX;
-                return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
-                c = buffer.readTextComponent();
-                position = TextPosition.byId(buffer.readByte());
-                return true;
+                buffer.writeString(message);
+                break;
         }
-
-        return false;
+        return buffer;
     }
 
     @Override
     public void log() {
-        Log.game(String.format("[CHAT] %s", c.getColoredMessage()));
-    }
-
-    public TextComponent getChatComponent() {
-        return c;
-    }
-
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+        Log.protocol(String.format("Sending Chat message: %s", message));
     }
 }

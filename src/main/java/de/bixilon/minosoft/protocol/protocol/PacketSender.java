@@ -31,7 +31,7 @@ public class PacketSender {
     }
 
     public void sendChatMessage(String message) {
-        connection.sendPacket(new PacketChatMessage(message));
+        connection.sendPacket(new PacketChatMessageSending(message));
     }
 
     public void spectateEntity(UUID entityUUID) {
