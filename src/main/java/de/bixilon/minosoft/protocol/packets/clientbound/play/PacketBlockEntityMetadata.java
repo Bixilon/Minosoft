@@ -41,6 +41,7 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 position = buffer.readPosition();
                 action = Actions.byId(buffer.readByte(), buffer.getVersion());
                 nbt = buffer.readNBT();
@@ -80,7 +81,8 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         DATA_STRUCTURE_TILE_ENTITY(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 7)}),
         END_GATEWAY_DESTINATION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 8)}),
         SET_TEXT_ON_SIGN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 9)}),
-        DECLARE_SHULKER_BOX(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_11_2, 10)});
+        DECLARE_SHULKER_BOX(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_11_2, 10)}),
+        SET_BED_COLOR(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_12_2, 11)});
 
         final VersionValueMap<Integer> valueMap;
 

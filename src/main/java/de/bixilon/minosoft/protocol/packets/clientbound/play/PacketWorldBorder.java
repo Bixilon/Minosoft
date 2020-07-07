@@ -43,6 +43,7 @@ public class PacketWorldBorder implements ClientboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 action = WorldBorderAction.byId(buffer.readVarInt());
                 switch (action) {
                     case SET_SIZE:

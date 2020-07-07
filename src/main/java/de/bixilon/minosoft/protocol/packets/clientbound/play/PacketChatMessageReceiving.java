@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketChatMessage implements ClientboundPacket {
+public class PacketChatMessageReceiving implements ClientboundPacket {
     TextComponent c;
     TextPosition position;
 
@@ -36,6 +36,7 @@ public class PacketChatMessage implements ClientboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 c = buffer.readTextComponent();
                 position = TextPosition.byId(buffer.readByte());
                 return true;

@@ -146,6 +146,7 @@ public class PacketEffect implements ClientboundPacket {
         BONE_MEAL_PARTICLES(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 2005)}),
         SPAWN_FALL_PARTICLES(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2006), new MapSet<>(ProtocolVersion.VERSION_1_9_4, -1)}), // data: fall damage (particle speed)
         DRAGON_BREATH(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 2006)}),
+        INSTANT_SPLASH_POTION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_12_2, 2007)}),
 
         END_GATEWAY_SPAWN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 3000)}),
         MOB_ENDER_DRAGON_GROWL(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 3001)});

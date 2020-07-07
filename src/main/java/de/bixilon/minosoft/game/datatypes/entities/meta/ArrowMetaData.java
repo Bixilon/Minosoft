@@ -32,6 +32,7 @@ public class ArrowMetaData extends EntityMetaData {
                 return BitByte.isBitMask((byte) sets.get(5).getData(), 0x01);
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return BitByte.isBitMask((byte) sets.get(6).getData(), 0x01);
         }
         return false;

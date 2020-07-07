@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.ChatColor;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -31,6 +32,7 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 action = ScoreboardAnimation.byId(buffer.readByte());
                 scoreName = buffer.readString();
                 return true;
@@ -53,7 +55,23 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
     public enum ScoreboardAnimation {
         LIST(0),
         SIDEBAR(1),
-        BELOW_NAME(2);
+        BELOW_NAME(2),
+        TEAM_BLACK(ChatColor.BLACK.getColor() + 3),
+        TEAM_DARK_BLUE(ChatColor.DARK_BLUE.getColor() + 3),
+        TEAM_DARK_GREEN(ChatColor.DARK_GREEN.getColor() + 3),
+        TEAM_DARK_AQUA(ChatColor.DARK_AQUA.getColor() + 3),
+        TEAM_DARK_RED(ChatColor.DARK_RED.getColor() + 3),
+        TEAM_DARK_PURPLE(ChatColor.DARK_PURPLE.getColor() + 3),
+        TEAM_GOLD(ChatColor.GOLD.getColor() + 3),
+        TEAM_GRAY(ChatColor.GRAY.getColor() + 3),
+        TEAM_DARK_GRAY(ChatColor.DARK_GRAY.getColor() + 3),
+        TEAM_BLUE(ChatColor.BLUE.getColor() + 3),
+        TEAM_GREEN(ChatColor.GREEN.getColor() + 3),
+        TEAM_AQUA(ChatColor.AQUA.getColor() + 3),
+        TEAM_RED(ChatColor.RED.getColor() + 3),
+        TEAM_PURPLE(ChatColor.PURPLE.getColor() + 3),
+        TEAM_YELLOW(ChatColor.YELLOW.getColor() + 3),
+        TEAM_WHITE(ChatColor.WHITE.getColor() + 3);
 
         final int id;
 

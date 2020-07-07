@@ -53,6 +53,7 @@ public enum Entities {
     EVOCATION_ILLAGER(34, Evoker.class),
     VEX(35, Vex.class),
     VINDICATION_ILLAGER(36, Vindicator.class),
+    ILLUSIONER(37, Illusioner.class),
     MINECART_COMMAND_BLOCK(40, MinecartCommandBlock.class),
     BOAT(41, Boat.class),
     MINECART_RIDE_ABLE(42, Minecart.class),
@@ -91,7 +92,8 @@ public enum Entities {
     POLAR_BEAR(102, PolarBear.class),
     LLAMA(103, Llama.class),
     LLAMA_SPIT(104, LlamaSpit.class),
-    PLAYER(105, OtherPlayer.class),
+    PLAYER(-1, OtherPlayer.class),
+    PARROT(105, Parrot.class),
     VILLAGER(120, Villager.class),
     ENDER_CRYSTAL(200, EnderCrystal.class),
 

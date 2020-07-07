@@ -31,6 +31,7 @@ public class PacketDisconnect implements ClientboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 reason = buffer.readTextComponent();
                 return true;
         }

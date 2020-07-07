@@ -51,6 +51,7 @@ public class PacketUpdateSignSending implements ServerboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 buffer.writePosition(position);
                 for (int i = 0; i < 4; i++) {
                     buffer.writeString(lines[i].getRawMessage());

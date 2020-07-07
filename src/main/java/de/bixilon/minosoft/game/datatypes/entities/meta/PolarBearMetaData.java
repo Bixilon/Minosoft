@@ -27,6 +27,7 @@ public class PolarBearMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (boolean) sets.get(13).getData();
         }
         return false;

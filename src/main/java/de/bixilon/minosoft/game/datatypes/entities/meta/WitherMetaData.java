@@ -31,6 +31,7 @@ public class WitherMetaData extends MobMetaData {
                 return (int) sets.get(11).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (int) sets.get(12).getData();
         }
         return 0;
@@ -45,6 +46,7 @@ public class WitherMetaData extends MobMetaData {
                 return (int) sets.get(12).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (int) sets.get(13).getData();
         }
         return 0;
@@ -59,6 +61,7 @@ public class WitherMetaData extends MobMetaData {
                 return (int) sets.get(13).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (int) sets.get(14).getData();
         }
         return 0;
@@ -73,6 +76,7 @@ public class WitherMetaData extends MobMetaData {
                 return (int) sets.get(14).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return (int) sets.get(15).getData();
         }
         return 0;

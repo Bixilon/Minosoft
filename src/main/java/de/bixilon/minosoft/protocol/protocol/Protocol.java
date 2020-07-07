@@ -77,7 +77,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_HEALTH, PacketUpdateHealth.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_PLUGIN_MESSAGE, PacketPluginMessageReceiving.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_POSITION, PacketSpawnLocation.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_CHAT_MESSAGE, PacketChatMessage.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_CHAT_MESSAGE, PacketChatMessageReceiving.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_DISCONNECT, PacketDisconnect.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_HELD_ITEM_CHANGE, PacketHeldItemChangeReceiving.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SET_EXPERIENCE, PacketSetExperience.class);
@@ -142,6 +142,10 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_SOUND_EFFECT, PacketSoundEffect.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_BOSS_BAR, PacketBossBar.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SET_PASSENGERS, PacketSetPassenger.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_CRAFT_RECIPE_RESPONSE, PacketCraftRecipeResponse.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_UNLOCK_RECIPES, PacketUnlockRecipes.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SELECT_ADVANCEMENT_TAB, PacketSelectAdvancementTab.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ADVANCEMENTS, PacketAdvancements.class);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {

@@ -65,7 +65,8 @@ public class PacketSpawnPlayer implements ClientboundPacket {
             }
             case VERSION_1_9_4:
             case VERSION_1_10:
-            case VERSION_1_11_2: {
+            case VERSION_1_11_2:
+            case VERSION_1_12_2: {
                 this.entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
                 Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());

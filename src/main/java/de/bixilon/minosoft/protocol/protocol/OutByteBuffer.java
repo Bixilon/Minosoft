@@ -171,6 +171,7 @@ public class OutByteBuffer {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 if (slot == null) {
                     writeShort((short) -1);
                     return;

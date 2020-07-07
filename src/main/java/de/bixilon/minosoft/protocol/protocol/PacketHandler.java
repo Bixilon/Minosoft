@@ -18,6 +18,7 @@ import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.mob.OtherPlayer;
 import de.bixilon.minosoft.game.datatypes.entities.objects.Painting;
+import de.bixilon.minosoft.game.datatypes.player.PingBars;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfo;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfoBulk;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardObjective;
@@ -59,7 +60,13 @@ public class PacketHandler {
     }
 
     public void handle(PacketStatusPong pkg) {
-        Log.debug("Pong: " + pkg.getID());
+        ConnectionPing ping = connection.getConnectionStatusPing();
+        if (ping.getPingId() != pkg.getID()) {
+            Log.warn(String.format("Server sent unknown ping answer (pingId=%d, expected=%d)", pkg.getID(), ping.getPingId()));
+            return;
+        }
+        long pingDifference = System.currentTimeMillis() - ping.getSendingTime();
+        Log.debug(String.format("Pong received (ping=%dms, pingBars=%s)", pingDifference, PingBars.byPing(pingDifference)));
         switch (connection.getReason()) {
             case PING:
                 // pong arrived, closing connection
@@ -174,7 +181,7 @@ public class PacketHandler {
         connection.getPlayer().setSpawnLocation(pkg.getSpawnLocation());
     }
 
-    public void handle(PacketChatMessage pkg) {
+    public void handle(PacketChatMessageReceiving pkg) {
     }
 
     public void handle(PacketDisconnect pkg) {
@@ -555,4 +562,17 @@ public class PacketHandler {
 
     public void handle(PacketSetCooldown pkg) {
     }
+
+    public void handle(PacketCraftRecipeResponse pkg) {
+    }
+
+    public void handle(PacketUnlockRecipes pkg) {
+    }
+
+    public void handle(PacketSelectAdvancementTab pkg) {
+    }
+
+    public void handle(PacketAdvancements pkg) {
+    }
+
 }

@@ -10,25 +10,23 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+package de.bixilon.minosoft.game.datatypes.player.advancements;
 
-import java.util.HashMap;
+public class CriterionProgress {
+    final boolean archived;
+    final Long archiveTime;
 
-public class EvokerMetaData extends MobMetaData {
-
-    public EvokerMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
-        super(sets, version);
+    public CriterionProgress(boolean archived, Long archiveTime) {
+        this.archived = archived;
+        this.archiveTime = archiveTime;
     }
 
-    public byte getSpell() {
-        switch (version) {
-            case VERSION_1_11_2:
-                return (byte) sets.get(13).getData();
-        }
-        return 0;
+    public boolean isArchived() {
+        return archived;
     }
 
-
+    public Long getArchiveTime() {
+        return archiveTime;
+    }
 }

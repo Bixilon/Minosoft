@@ -15,17 +15,17 @@ package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.EvokerMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.SpellcasterMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
 public class Evoker extends Mob implements MobInterface {
-    EvokerMetaData metaData;
+    SpellcasterMetaData metaData;
 
     public Evoker(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new EvokerMetaData(sets, version);
+        this.metaData = new SpellcasterMetaData(sets, version);
     }
 
 
@@ -35,13 +35,13 @@ public class Evoker extends Mob implements MobInterface {
     }
 
     @Override
-    public EvokerMetaData getMetaData() {
+    public SpellcasterMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (EvokerMetaData) metaData;
+        this.metaData = (SpellcasterMetaData) metaData;
     }
 
     @Override
@@ -61,6 +61,6 @@ public class Evoker extends Mob implements MobInterface {
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return EvokerMetaData.class;
+        return SpellcasterMetaData.class;
     }
 }

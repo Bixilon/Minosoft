@@ -77,6 +77,7 @@ public class PacketTeams implements ClientboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 name = buffer.readString();
                 action = TeamActions.byId(buffer.readByte());
                 if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {

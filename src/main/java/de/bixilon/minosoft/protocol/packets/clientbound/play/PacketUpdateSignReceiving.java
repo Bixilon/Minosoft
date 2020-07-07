@@ -36,6 +36,7 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
                 return true;
             case VERSION_1_8:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 position = buffer.readPosition();
                 for (byte i = 0; i < 4; i++) {
                     lines[i] = buffer.readTextComponent();

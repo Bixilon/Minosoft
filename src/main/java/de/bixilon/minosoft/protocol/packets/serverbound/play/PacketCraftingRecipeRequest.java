@@ -19,26 +19,24 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketChatMessage implements ServerboundPacket {
+public class PacketCraftingRecipeRequest implements ServerboundPacket {
+    final byte windowId;
+    final int recipeId;
 
-    final String message;
-
-    public PacketChatMessage(String message) {
-        this.message = message;
+    public PacketCraftingRecipeRequest(byte windowId, int recipeId) {
+        this.windowId = windowId;
+        this.recipeId = recipeId;
         log();
     }
 
 
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CHAT_MESSAGE));
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CRAFT_RECIPE_REQUEST));
         switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-                buffer.writeString(message);
+            case VERSION_1_12_2:
+                buffer.writeByte(windowId);
+                buffer.writeVarInt(recipeId);
                 break;
         }
         return buffer;
@@ -46,6 +44,7 @@ public class PacketChatMessage implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending Chat message: %s", message));
+        Log.protocol(String.format("Sending entity action packet (windowId=%d, recipeId=%d)", windowId, recipeId));
     }
+
 }

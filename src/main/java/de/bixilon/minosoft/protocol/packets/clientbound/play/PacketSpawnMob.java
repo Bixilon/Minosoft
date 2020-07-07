@@ -55,7 +55,8 @@ public class PacketSpawnMob implements ClientboundPacket {
             }
             return false;
             case VERSION_1_9_4:
-            case VERSION_1_10: {
+            case VERSION_1_10:
+            case VERSION_1_12_2: {
                 int entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
                 Entities type = Entities.byType(buffer.readByte());

@@ -26,6 +26,7 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
     public VillagerMetaData.VillagerType getType() {
         switch (version) {
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return VillagerMetaData.VillagerType.byId((int) sets.get(16).getData() + 1);
         }
         return VillagerMetaData.VillagerType.FARMER;
@@ -35,6 +36,7 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
     public boolean isConverting() {
         switch (version) {
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
                 return ((boolean) sets.get(15).getData());
         }
         return false;
