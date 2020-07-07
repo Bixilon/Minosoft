@@ -82,9 +82,15 @@ public class PacketEntityStatus implements ClientboundPacket {
         SHIELD_BREAK_SOUND(30),
         FISHING_ROD_BOBBER(31),
         ARMOR_STAND_HIT(32),
-        ENTITY_THORNS_HURT(33),
+        ENTITY_HURT_THORNS(33),
         PUT_AWAY_GOLEM_POPPY(34),
-        TOTEM_OF_UNDYING_ANIMATION(35);
+        TOTEM_OF_UNDYING_ANIMATION(35),
+        ENTITY_HURT_DROWN(36),
+        ENTITY_HURT_BURN(37),
+        SPAWN_CLOUD_PARTICLE(43),
+        ENTITY_HURT_BERRY_BUSH(44),
+        PORTAL_PARTICLE_CHORUS(46);
+        //ToDo: 1.11+ (for each entity)
 
 
         final int id;
