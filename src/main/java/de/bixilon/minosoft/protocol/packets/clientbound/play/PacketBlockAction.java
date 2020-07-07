@@ -46,7 +46,8 @@ public class PacketBlockAction implements ClientboundPacket {
                 byte byte1 = buffer.readByte();
                 byte byte2 = buffer.readByte();
                 Class<? extends BlockAction> clazz;
-                switch (buffer.readVarInt()) {
+                int actionId = buffer.readVarInt();
+                switch (actionId) {
                     case 25:
                         // noteblock
                         clazz = NoteBlockAction.class;
@@ -59,7 +60,23 @@ public class PacketBlockAction implements ClientboundPacket {
                     case 54:
                     case 130:
                     case 146:
-                        // chest
+                    case 219:
+                    case 220:
+                    case 221:
+                    case 222:
+                    case 223:
+                    case 224:
+                    case 225:
+                    case 226:
+                    case 227:
+                    case 228:
+                    case 229:
+                    case 230:
+                    case 231:
+                    case 232:
+                    case 233:
+                    case 234:
+                        // chest, shulker box
                         clazz = ChestAction.class;
                         break;
                     case 138:
@@ -75,7 +92,7 @@ public class PacketBlockAction implements ClientboundPacket {
                         clazz = EndGatewayAction.class;
                         break;
                     default:
-                        throw new IllegalStateException("Unexpected value: " + buffer.readVarInt());
+                        throw new IllegalStateException(String.format("Unexpected block action value: %d", actionId));
                 }
                 try {
                     data = clazz.getConstructor(byte.class, byte.class).newInstance(byte1, byte2);
