@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -20,9 +21,9 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketScoreboardObjective implements ClientboundPacket {
     String name;
-    String value;
+    TextComponent value;
     ScoreboardObjectiveAction action;
-    ScoreboardObjectiveType type;
+    ScoreboardObjectiveTypes type;
 
 
     @Override
@@ -30,7 +31,7 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 name = buffer.readString();
-                value = buffer.readString();
+                value = buffer.readTextComponent();
                 action = ScoreboardObjectiveAction.byId(buffer.readByte());
                 return true;
             case VERSION_1_8:
@@ -41,8 +42,16 @@ public class PacketScoreboardObjective implements ClientboundPacket {
                 name = buffer.readString();
                 action = ScoreboardObjectiveAction.byId(buffer.readByte());
                 if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
-                    value = buffer.readString();
-                    type = ScoreboardObjectiveType.byName(buffer.readString());
+                    value = buffer.readTextComponent();
+                    type = ScoreboardObjectiveTypes.byName(buffer.readString());
+                }
+                return true;
+            case VERSION_1_13_2:
+                name = buffer.readString();
+                action = ScoreboardObjectiveAction.byId(buffer.readByte());
+                if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
+                    value = buffer.readTextComponent();
+                    type = ScoreboardObjectiveTypes.byId(buffer.readVarInt());
                 }
                 return true;
         }
@@ -64,7 +73,7 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         return name;
     }
 
-    public String getValue() {
+    public TextComponent getValue() {
         return value;
     }
 
@@ -97,20 +106,31 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         }
     }
 
-    public enum ScoreboardObjectiveType {
-        INTEGER("integer"),
-        HEARTS("hearts");
+    public enum ScoreboardObjectiveTypes {
+        INTEGER(0, "integer"),
+        HEARTS(1, "hearts");
 
+        final int id;
         final String name;
 
-        ScoreboardObjectiveType(String name) {
+        ScoreboardObjectiveTypes(int id, String name) {
+            this.id = id;
             this.name = name;
         }
 
-        public static ScoreboardObjectiveType byName(String name) {
-            for (ScoreboardObjectiveType a : values()) {
-                if (a.getName().equals(name)) {
-                    return a;
+        public static ScoreboardObjectiveTypes byName(String name) {
+            for (ScoreboardObjectiveTypes type : values()) {
+                if (type.getName().equals(name)) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        public static ScoreboardObjectiveTypes byId(int id) {
+            for (ScoreboardObjectiveTypes type : values()) {
+                if (type.getId() == id) {
+                    return type;
                 }
             }
             return null;
@@ -118,6 +138,10 @@ public class PacketScoreboardObjective implements ClientboundPacket {
 
         public String getName() {
             return name;
+        }
+
+        public int getId() {
+            return id;
         }
     }
 }

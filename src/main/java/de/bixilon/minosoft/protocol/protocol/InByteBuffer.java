@@ -275,7 +275,7 @@ public class InByteBuffer {
                 }
                 return new Slot(id, readByte(), readShort(), readNBT(version == ProtocolVersion.VERSION_1_7_10)); // compression
             case VERSION_1_13_2:
-                if (!readBoolean()) {
+                if (readBoolean()) {
                     // nothing here
                     return new Slot(readVarInt(), readByte(), readNBT()); // ToDo: item metadata
                 }
