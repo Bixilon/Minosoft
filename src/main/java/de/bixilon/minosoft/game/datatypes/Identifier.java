@@ -19,10 +19,17 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import java.util.HashMap;
 
 public class Identifier extends VersionValueMap<String> {
+    String mod = "minecraft";
 
     public Identifier(String legacy, String water) {
         values.put(Protocol.getLowestVersionSupported(), legacy);
         values.put(ProtocolVersion.VERSION_1_13_2, water);
+    }
+
+    public Identifier(String legacy, String water, String mod) {
+        values.put(Protocol.getLowestVersionSupported(), legacy);
+        values.put(ProtocolVersion.VERSION_1_13_2, water);
+        this.mod = mod;
     }
 
     public Identifier(HashMap<ProtocolVersion, String> names) {
@@ -35,5 +42,20 @@ public class Identifier extends VersionValueMap<String> {
 
     public Identifier(String name) {
         super(name);
+    }
+
+    public boolean isValidName(String name, ProtocolVersion version) {
+        name = name.toLowerCase();
+        if (name.indexOf(":") != 0) {
+            String[] splittedName = name.split(":", 2);
+            if (!mod.equals(splittedName[0])) {
+                // mod is not correct
+                return false;
+            }
+            name = splittedName[1];
+            // split and check mod
+        }
+
+        return get(version).equals(name);
     }
 }

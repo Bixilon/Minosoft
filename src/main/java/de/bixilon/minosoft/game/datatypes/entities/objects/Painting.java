@@ -23,7 +23,7 @@ import java.util.HashMap;
 public class Painting extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
     int direction;
-    String title;
+    Paintings painting;
 
     public Painting(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
@@ -39,10 +39,10 @@ public class Painting extends EntityObject implements ObjectInterface {
         this.metaData = new EntityMetaData(sets, version);
     }
 
-    public Painting(int entityId, BlockPosition position, int direction, String title) {
+    public Painting(int entityId, BlockPosition position, int direction, Paintings painting) {
         super(entityId, new Location(position.getX(), position.getY(), position.getZ()), (short) 0, (short) 0, null);
         this.direction = direction;
-        this.title = title;
+        this.painting = painting;
     }
 
     @Override
@@ -70,6 +70,14 @@ public class Painting extends EntityObject implements ObjectInterface {
     public float getHeight() {
         //ToDo
         return 1.0F;
+    }
+
+    public Paintings getPainting() {
+        return painting;
+    }
+
+    public int getDirection() {
+        return direction;
     }
 
     @Override
