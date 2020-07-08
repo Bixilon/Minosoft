@@ -28,6 +28,7 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 if (buffer.readBoolean()) {
                     tab = AdvancementTabs.byName(buffer.readString(), buffer.getVersion());
                 }

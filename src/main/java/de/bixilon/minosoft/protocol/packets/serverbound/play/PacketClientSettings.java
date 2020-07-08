@@ -67,6 +67,7 @@ public class PacketClientSettings implements ServerboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeString(locale.getName()); // locale
                 buffer.writeByte(renderDistance); // render Distance
                 buffer.writeVarInt(0x00); // chat settings (nobody uses them)

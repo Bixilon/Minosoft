@@ -90,6 +90,7 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
                 break;
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writePosition(position);
                 buffer.writeVarInt(direction);
                 buffer.writeVarInt(hand.getId());

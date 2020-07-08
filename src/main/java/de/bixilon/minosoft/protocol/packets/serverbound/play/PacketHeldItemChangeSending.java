@@ -44,6 +44,7 @@ public class PacketHeldItemChangeSending implements ServerboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeShort(slot);
                 break;
         }

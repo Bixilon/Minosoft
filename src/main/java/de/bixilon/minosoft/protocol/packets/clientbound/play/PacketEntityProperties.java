@@ -53,7 +53,8 @@ public class PacketEntityProperties implements ClientboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
-            case VERSION_1_12_2: {
+            case VERSION_1_12_2:
+            case VERSION_1_13_2: {
                 entityId = buffer.readVarInt();
                 int count = buffer.readInt();
                 for (int i = 0; i < count; i++) {

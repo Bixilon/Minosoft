@@ -204,10 +204,27 @@ public class PacketMapData implements ClientboundPacket {
         WHITE_CROSS(4),
         RED_POINTER(5),
         WHITE_CIRCLE(6),
-        BLUE_SQUARE(7), // - 15
+        BLUE_SQUARE(7),
         SMALL_WHITE_CIRCLE(8),
         MANSION(8),
-        TEMPLE(9);
+        TEMPLE(9),
+        WHITE_BANNER(10),
+        ORANGE_BANNER(11),
+        MAGENTA_BANNER(12),
+        LIGHT_BLUE_BANNER(13),
+        YELLOW_BANNER(14),
+        LIME_BANNER(15),
+        PINK_BANNER(16),
+        GRAY_BANNER(17),
+        LIGHT_GRAY_BANNER(18),
+        CYAN_BANNER(19),
+        PURPLE_BANNER(20),
+        BLUE_BANNER(21),
+        BROWN_BANNER(22),
+        GREEN_BANNER(23),
+        RED_BANNER(24),
+        BLACK_BANNER(25),
+        TREASURE_MARKER(26);
 
         final int id;
 

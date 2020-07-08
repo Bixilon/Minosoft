@@ -42,6 +42,7 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 position = buffer.readPosition();
                 action = Actions.byId(buffer.readByte(), buffer.getVersion());
                 nbt = buffer.readNBT();
@@ -76,7 +77,8 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         COMMAND_BLOCK_TEXT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2)}),
         BEACON(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 3)}),
         SKULL(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 3), new MapSet<>(ProtocolVersion.VERSION_1_8, 4)}),
-        FLOWER_POT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4), new MapSet<>(ProtocolVersion.VERSION_1_8, 5)}),
+        FLOWER_POT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4), new MapSet<>(ProtocolVersion.VERSION_1_8, 5), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 1000)}),
+        DECLARE_CONDUIT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 5)}),
         BANNER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 6)}),
         DATA_STRUCTURE_TILE_ENTITY(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 7)}),
         END_GATEWAY_DESTINATION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 8)}),

@@ -41,6 +41,7 @@ public class PacketBossBar implements ClientboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 uuid = buffer.readUUID();
                 action = BossBarAction.byId(buffer.readVarInt());
                 switch (action) {
@@ -137,6 +138,10 @@ public class PacketBossBar implements ClientboundPacket {
 
     public boolean isDragonBar() {
         return BitByte.isBitMask(flags, 0x02);
+    }
+
+    public boolean createFog() {
+        return BitByte.isBitMask(flags, 0x04);
     }
 
     public enum BossBarAction {

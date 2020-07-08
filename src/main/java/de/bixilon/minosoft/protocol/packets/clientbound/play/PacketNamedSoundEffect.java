@@ -48,6 +48,7 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 sound = buffer.readString();
                 category = buffer.readVarInt(); //ToDo: category
                 location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);

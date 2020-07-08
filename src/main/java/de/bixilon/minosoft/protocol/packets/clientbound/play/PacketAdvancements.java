@@ -41,6 +41,7 @@ public class PacketAdvancements implements ClientboundPacket {
     public boolean read(InPacketBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 reset = buffer.readBoolean();
                 int length = buffer.readVarInt();
                 for (int i = 0; i < length; i++) {
