@@ -59,14 +59,15 @@ public class PluginChannelHandler {
     }
 
     public void handle(String name, byte[] data) {
-        if (name.equals("REGISTER")) {
+        DefaultPluginChannels defaultPluginChannel = DefaultPluginChannels.byName(name, connection.getVersion());
+        if (defaultPluginChannel == DefaultPluginChannels.REGISTER) {
             // register this channel
             String toRegisterName = new String(data);
             registeredClientChannels.add(toRegisterName);
             Log.debug(String.format("Server registered plugin channel \"%s\"", toRegisterName));
             return;
         }
-        if (name.equals("UNREGISTER")) {
+        if (defaultPluginChannel == DefaultPluginChannels.UNREGISTER) {
             // register this channel
             String toUnregisterName = new String(data);
             registeredClientChannels.remove(toUnregisterName);
@@ -101,7 +102,7 @@ public class PluginChannelHandler {
             // channel is a default channel, can not register
             throw new IllegalArgumentException(String.format("Can not register default Minecraft plugin channel (name=%s)", name));
         }
-        sendRawData("REGISTER", name.getBytes());
+        sendRawData(DefaultPluginChannels.REGISTER.getIdentifier().get(connection.getVersion()), name.getBytes());
         registeredServerChannels.add(name);
     }
 
@@ -110,7 +111,7 @@ public class PluginChannelHandler {
             // channel is a default channel, can not unregister
             throw new IllegalArgumentException(String.format("Can not unregister default Minecraft plugin channel (name=%s)", name));
         }
-        sendRawData("UNREGISTER", name.getBytes());
+        sendRawData(DefaultPluginChannels.UNREGISTER.getIdentifier().get(connection.getVersion()), name.getBytes());
         registeredServerChannels.remove(name);
     }
 

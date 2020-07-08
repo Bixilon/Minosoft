@@ -17,7 +17,9 @@ import de.bixilon.minosoft.game.datatypes.Identifier;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public enum DefaultPluginChannels {
-    MC_BRAND(new Identifier("MC|Brand", "minecraft:brand"));
+    MC_BRAND(new Identifier("MC|Brand", "minecraft:brand")),
+    REGISTER(new Identifier("REGISTER", "minecraft:register")),
+    UNREGISTER(new Identifier("UNREGISTER", "minecraft:unregister"));
 
 
     final Identifier identifier;
