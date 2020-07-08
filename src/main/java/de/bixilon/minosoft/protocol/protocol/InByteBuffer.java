@@ -263,32 +263,22 @@ public class InByteBuffer {
 
     public Slot readSlot() {
         switch (version) {
-            case VERSION_1_7_10: {
-                short id = readShort();
-                if (id != -1) {
-                    return new Slot(id, readByte(), readShort(), readNBT(true));
-                }
-                break;
-            }
+            case VERSION_1_7_10:
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
-            case VERSION_1_12_2: {
+            case VERSION_1_12_2:
                 short id = readShort();
                 if (id == -1) {
                     return null;
                 }
-                return new Slot(id, readByte(), readShort(), readNBT());
-            }
-                /*
-
-        if (readBoolean()) {
-            return new Slot(readVarInt(), readByte(), readNBT());
-        }
-        //else no data
-        return null;
-                 */
+                return new Slot(id, readByte(), readShort(), readNBT(version == ProtocolVersion.VERSION_1_7_10)); // compression
+            case VERSION_1_13_2:
+                if (!readBoolean()) {
+                    // nothing here
+                    return new Slot(readVarInt(), readByte(), readNBT()); // ToDo: item metadata
+                }
         }
         return null;
     }

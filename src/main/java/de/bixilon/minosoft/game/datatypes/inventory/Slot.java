@@ -29,7 +29,7 @@ public class Slot {
         this.nbt = nbt;
     }
 
-    public Slot(short itemId, byte itemCount, short itemMetadata, CompoundTag nbt) {
+    public Slot(int itemId, byte itemCount, short itemMetadata, CompoundTag nbt) {
         this.itemId = itemId;
         this.itemMetadata = itemMetadata;
         this.itemCount = itemCount;
