@@ -577,4 +577,7 @@ public class PacketHandler {
 
     public void handle(PacketNBTQueryResponse pkg) {
     }
+
+    public void handle(PacketFacePlayer pkg) {
+    }
 }

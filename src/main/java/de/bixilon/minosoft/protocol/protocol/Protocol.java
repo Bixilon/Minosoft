@@ -146,6 +146,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_SELECT_ADVANCEMENT_TAB, PacketSelectAdvancementTab.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ADVANCEMENTS, PacketAdvancements.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_NBT_QUERY_RESPONSE, PacketNBTQueryResponse.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_FACE_PLAYER, PacketFacePlayer.class);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {
