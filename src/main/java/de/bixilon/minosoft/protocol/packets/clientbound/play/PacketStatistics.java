@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Identifier;
+import de.bixilon.minosoft.game.datatypes.StatisticCategories;
 import de.bixilon.minosoft.game.datatypes.Statistics;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -34,12 +34,21 @@ public class PacketStatistics implements ClientboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
-            case VERSION_1_12_2:
+            case VERSION_1_12_2: {
                 int length = buffer.readVarInt();
                 for (int i = 0; i < length; i++) {
-                    statistics.put(Statistics.byIdentifier(new Identifier(buffer.readString())), buffer.readVarInt());
+                    statistics.put(Statistics.byName(buffer.readString(), buffer.getVersion()), buffer.readVarInt());
                 }
                 return true;
+            }
+            case VERSION_1_13_2: {
+                int length = buffer.readVarInt();
+                for (int i = 0; i < length; i++) {
+                    StatisticCategories category = StatisticCategories.byId(buffer.readVarInt());
+                    statistics.put(Statistics.byId(buffer.readVarInt()), buffer.readVarInt());
+                }
+                return true;
+            }
         }
 
         return false;

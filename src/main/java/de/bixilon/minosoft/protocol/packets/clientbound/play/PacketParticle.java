@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Identifier;
 import de.bixilon.minosoft.game.datatypes.particle.Particles;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -37,7 +36,7 @@ public class PacketParticle implements ClientboundPacket {
         Random random = new Random();
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-                particle = Particles.byIdentifier(new Identifier(buffer.readString()));
+                particle = Particles.byName(buffer.readString(), buffer.getVersion());
                 x = buffer.readFloat();
                 y = buffer.readFloat();
                 z = buffer.readFloat();
@@ -55,7 +54,7 @@ public class PacketParticle implements ClientboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
-                particle = Particles.byType(buffer.readInt());
+                particle = Particles.byId(buffer.readInt());
                 longDistance = buffer.readBoolean();
                 x = buffer.readFloat();
                 y = buffer.readFloat();

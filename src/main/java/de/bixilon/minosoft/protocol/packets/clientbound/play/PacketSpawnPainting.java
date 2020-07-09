@@ -34,13 +34,13 @@ public class PacketSpawnPainting implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 entityId = buffer.readVarInt();
-                painting = Paintings.byIdentifier(buffer.readString(), buffer.getVersion());
+                painting = Paintings.byName(buffer.readString(), buffer.getVersion());
                 position = buffer.readBlockPositionInteger();
                 direction = buffer.readInt();
                 return true;
             case VERSION_1_8:
                 entityId = buffer.readVarInt();
-                painting = Paintings.byIdentifier(buffer.readString(), buffer.getVersion());
+                painting = Paintings.byName(buffer.readString(), buffer.getVersion());
                 position = buffer.readPosition();
                 direction = buffer.readByte();
                 return true;
@@ -50,7 +50,7 @@ public class PacketSpawnPainting implements ClientboundPacket {
             case VERSION_1_12_2:
                 entityId = buffer.readVarInt();
                 uuid = buffer.readUUID();
-                painting = Paintings.byIdentifier(buffer.readString(), buffer.getVersion());
+                painting = Paintings.byName(buffer.readString(), buffer.getVersion());
                 position = buffer.readPosition();
                 direction = buffer.readByte();
                 return true;

@@ -13,9 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Identifier;
 import de.bixilon.minosoft.game.datatypes.entities.EntityProperty;
-import de.bixilon.minosoft.game.datatypes.entities.EntityPropertyKey;
+import de.bixilon.minosoft.game.datatypes.entities.EntityPropertyKeys;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -25,9 +24,8 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class PacketEntityProperties implements ClientboundPacket {
+    final HashMap<EntityPropertyKeys, EntityProperty> properties = new HashMap<>();
     int entityId;
-    final HashMap<EntityPropertyKey, EntityProperty> properties = new HashMap<>();
-
 
     @Override
     public boolean read(InPacketBuffer buffer) {
@@ -36,7 +34,7 @@ public class PacketEntityProperties implements ClientboundPacket {
                 entityId = buffer.readInt();
                 int count = buffer.readInt();
                 for (int i = 0; i < count; i++) {
-                    EntityPropertyKey key = EntityPropertyKey.byIdentifier(new Identifier(buffer.readString()));
+                    EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString(), buffer.getVersion());
                     double value = buffer.readDouble();
                     short listLength = buffer.readShort();
                     for (int ii = 0; ii < listLength; ii++) {
@@ -58,7 +56,7 @@ public class PacketEntityProperties implements ClientboundPacket {
                 entityId = buffer.readVarInt();
                 int count = buffer.readInt();
                 for (int i = 0; i < count; i++) {
-                    EntityPropertyKey key = EntityPropertyKey.byIdentifier(new Identifier(buffer.readString()));
+                    EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString(), buffer.getVersion());
                     double value = buffer.readDouble();
                     int listLength = buffer.readVarInt();
                     for (int ii = 0; ii < listLength; ii++) {

@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 public enum Statistics {
     ACHIEVEMENT_OPEN_INVENTORY(new Identifier("achievement.openInventory")),
     ACHIEVEMENT_MINE_WOOD(new Identifier("achievement.mineWood")),
@@ -48,42 +50,85 @@ public enum Statistics {
     ACHIEVEMENT_FULL_BEACON(new Identifier("achievement.fullBeacon")),
     ACHIEVEMENT_EXPLORE_ALL_BIOMES(new Identifier("achievement.exploreAllBiomes")),
 
-    STAT_LEAVE_GAME(new Identifier("stat.leaveGame")),
-    STAT_PLAY_ONE_MINUTE(new Identifier("stat.playOneMinute")),
-    STAT_WALK_ONE_CM(new Identifier("stat.walkOneCm")),
-    STAT_SWIM_ONE_CM(new Identifier("stat.swimOneCm")),
-    STAT_FALL_ONE_CM(new Identifier("stat.fallOneCm")),
-    STAT_CLIMB_ONE_CM(new Identifier("stat.climbOneCm")),
-    STAT_FLY_ONE_CM(new Identifier("stat.flyOneCm")),
-    STAT_DIVE_ONE_CM(new Identifier("stat.diveOneCm")),
-    STAT_MINECART__ONE__CM(new Identifier("stat.minecartOneCm")),
-    STAT_BOAT__ONE__CM(new Identifier("stat.boatOneCm")),
-    STAT_PIG__ONE__CM(new Identifier("stat.pigOneCm")),
-    STAT_HORSE__ONE__CM(new Identifier("stat.horseOneCm")),
-    STAT_JUMP(new Identifier("stat.jump")),
-    STAT_DROP(new Identifier("stat.drop")),
-    STAT_DAMAGE_DEALT(new Identifier("stat.damageDealt")),
-    STAT_DAMAGE_TAKEN(new Identifier("stat.damageTaken")),
-    STAT_DEATHS(new Identifier("stat.deaths")),
-    STAT_MOB_KILLS(new Identifier("stat.mobKills")),
-    STAT_ANIMALS_BRED(new Identifier("stat.animalsBred")),
-    STAT_PLAYER_KILLS(new Identifier("stat.playerKills")),
-    STAT_FISH_CAUGHT(new Identifier("stat.fishCaught")),
-    STAT_JUNK_FISHED(new Identifier("stat.junkFished")),
-    STAT_TREASURE_FISHED(new Identifier("stat.treasureFished")),
-
-    ;
+    LEAVE_GAME(new Identifier("stat.leaveGame", "minecraft.leave_game"), 0),
+    PLAY_ONE_MINUTE(new Identifier("stat.playOneMinute", "minecraft.play_one_minute"), 1),
+    TIME_SINCE_DEATH(new Identifier("minecraft.time_since_death", "minecraft.time_since_death"), 2),
+    SNEAK_TIME(new Identifier("minecraft.sneak_Time"), 3),
+    WALK_ONE_CM(new Identifier("stat.walkOneCm", "minecraft.walk_one_cm"), 4),
+    SNEAK_ONE_CM(new Identifier("minecraft.crouch_one_cm"), 5),
+    SPRINT_ONE_CM(new Identifier("minecraft.sprint_one_cm"), 6),
+    SWIM_ONE_CM(new Identifier("stat.swimOneCm", "minecraft.swim_one_cm"), 7),
+    FALL_ONE_CM(new Identifier("stat.fallOneCm", "minecraft.fall_one_cm"), 8),
+    CLIMB_ONE_CM(new Identifier("stat.climbOneCm", "minecraft.climb_one_cm"), 9),
+    FLY_ONE_CM(new Identifier("stat.flyOneCm", "minecraft.fly_one_cm"), 10),
+    DIVE_ONE_CM(new Identifier("stat.diveOneCm", "minecraft.dive_one_cm"), 11),
+    MINECART_ONE_CM(new Identifier("stat.minecartOneCm", "minecraft.minecart_one_cm"), 12),
+    BOAT_ONE_CM(new Identifier("stat.boatOneCm", "minecraft.boat_one_cm"), 13),
+    PIG_ONE_CM(new Identifier("stat.pigOneCm", "minecraft.pig_one_cm"), 14),
+    HORSE_ONE_CM(new Identifier("stat.horseOneCm", "minecraft.horse_one_cm"), 15),
+    AVIATE_ONE_CM(new Identifier("minecraft.aviate_one_cm", "minecraft.aviate_one_cm"), 16),
+    JUMP(new Identifier("stat.jump", "minecraft.jump"), 17),
+    DROP(new Identifier("stat.drop", "minecraft.drop"), 18),
+    DAMAGE_DEALT(new Identifier("stat.damageDealt", "minecraft.damage_dealt"), 19),
+    DAMAGE_TAKEN(new Identifier("stat.damageTaken", "minecraft.damage_taken"), 20),
+    DEATHS(new Identifier("stat.deaths", "minecraft.deaths"), 21),
+    MOB_KILLS(new Identifier("stat.mobKills", "minecraft.mob_kills"), 22),
+    ANIMALS_BRED(new Identifier("stat.animalsBred", "minecraft.animals_bred"), 23),
+    PLAYER_KILLS(new Identifier("stat.playerKills", "minecraft.player_kills"), 24),
+    FISH_CAUGHT(new Identifier("stat.fishCaught", "minecraft.fish_caught"), 25),
+    JUNK_FISHED(new Identifier("stat.junkFished")),
+    TREASURE_FISHED(new Identifier("stat.treasureFished")),
+    TALKED_TO_VILLAGER(new Identifier("minecraft.traded_with_villager"), 26),
+    TRADED_WITH_VILLAGER(new Identifier("minecraft.traded_with_villager"), 27),
+    EAT_CAKE_SLICE(new Identifier("minecraft.eat_cake_slice"), 28),
+    FILL_CAULDRON(new Identifier("minecraft.fill_cauldron"), 29),
+    USE_CAULDRON(new Identifier("minecraft.use_cauldron"), 30),
+    CLEAN_ARMOR(new Identifier("minecraft.clean_armor"), 31),
+    CLEAN_BANNER(new Identifier("minecraft.clean_banner"), 32),
+    INTERACT_WITH_BREWING_STAND(new Identifier("minecraft.interact_with_brewingstand"), 33),
+    INTERACT_WITH_BEACON(new Identifier("minecraft.interact_with_beacon"), 34),
+    INSPECT_DROPPER(new Identifier("minecraft.inspect_dropper"), 35),
+    INSPECT_HOPPER(new Identifier("minecraft.inspect_hopper"), 36),
+    INSPECT_DISPENSER(new Identifier("minecraft.inspect_dispenser"), 37),
+    PLAY_NOTE_BLOCK(new Identifier("minecraft.play_noteblock"), 38),
+    TUNE_NOTEBLOCK(new Identifier("minecraft.tune_noteblock"), 39),
+    POT_FLOWER(new Identifier("minecraft.pot_flower"), 40),
+    TRIGGER_TRAPPED_CHEST(new Identifier("minecraft.trigger_trapped_chest"), 41),
+    OPEN_ENDER_CHEST(new Identifier("minecraft.open_enderchest"), 42),
+    ENCHANT_ITEM(new Identifier("minecraft.enchant_item"), 43),
+    PLAY_RECORD(new Identifier("minecraft.play_record"), 44),
+    INTERACT_WITH_FURNACE(new Identifier("minecraft.interact_with_furnace"), 45),
+    INTERACT_WITH_CRAFTING_TABLE(new Identifier("minecraft.interact_with_crafting_table"), 46),
+    OPEN_CHEST(new Identifier("minecraft.open_chest"), 47),
+    SLEEP_IN_BED(new Identifier("minecraft.sleep_in_bed"), 48),
+    OPEN_SHULKER_BOX(new Identifier("minecraft.open_shulker_box"), 49);
 
     final Identifier identifier;
+    final int id;
+
+    Statistics(Identifier identifier, int id) {
+        this.identifier = identifier;
+        this.id = id;
+    }
 
     Statistics(Identifier identifier) {
         this.identifier = identifier;
+        this.id = -1;
     }
 
-    public static Statistics byIdentifier(Identifier identifier) {
-        for (Statistics s : values()) {
-            if (s.getIdentifier().equals(identifier)) {
-                return s;
+    public static Statistics byName(String name, ProtocolVersion version) {
+        for (Statistics statistic : values()) {
+            if (statistic.getIdentifier().isValidName(name, version)) {
+                return statistic;
+            }
+        }
+        return null;
+    }
+
+    public static Statistics byId(int id) {
+        for (Statistics statistic : values()) {
+            if (statistic.getId() == id) {
+                return statistic;
             }
         }
         return null;
@@ -93,4 +138,7 @@ public enum Statistics {
         return identifier;
     }
 
+    public int getId() {
+        return id;
+    }
 }

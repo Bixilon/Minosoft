@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.particle;
 
 import de.bixilon.minosoft.game.datatypes.Identifier;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public enum Particles {
     AMBIENT_ENTITY_EFFECT(new Identifier("ambient_entity_effect", "ambiententityeffect"), 0),
@@ -97,19 +98,19 @@ public enum Particles {
         this.clazz = OtherParticles.class;
     }
 
-    public static Particles byIdentifier(Identifier identifier) {
-        for (Particles b : values()) {
-            if (b.getIdentifier().equals(identifier)) {
-                return b;
+    public static Particles byName(String name, ProtocolVersion version) {
+        for (Particles particle : values()) {
+            if (particle.getIdentifier().isValidName(name, version)) {
+                return particle;
             }
         }
         return null;
     }
 
-    public static Particles byType(int type) {
-        for (Particles b : values()) {
-            if (b.getId() == type) {
-                return b;
+    public static Particles byId(int id) {
+        for (Particles particle : values()) {
+            if (particle.getId() == id) {
+                return particle;
             }
         }
         return null;

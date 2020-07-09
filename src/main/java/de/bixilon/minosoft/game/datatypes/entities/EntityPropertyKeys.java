@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.game.datatypes.Identifier;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public enum EntityPropertyKey {
+public enum EntityPropertyKeys {
     MAX_HEALTH(new Identifier("generic.maxHealth")),
     FOLLOW_RANGE(new Identifier("generic.followRange")),
     KNOCKBACK_RESISTANCE(new Identifier("generic.knockbackResistance")),
@@ -26,14 +27,14 @@ public enum EntityPropertyKey {
 
     final Identifier identifier;
 
-    EntityPropertyKey(Identifier identifier) {
+    EntityPropertyKeys(Identifier identifier) {
         this.identifier = identifier;
     }
 
-    public static EntityPropertyKey byIdentifier(Identifier identifier) {
-        for (EntityPropertyKey b : values()) {
-            if (b.getIdentifier().equals(identifier)) {
-                return b;
+    public static EntityPropertyKeys byName(String name, ProtocolVersion version) {
+        for (EntityPropertyKeys propertyKey : values()) {
+            if (propertyKey.getIdentifier().isValidName(name, version)) {
+                return propertyKey;
             }
         }
         return null;

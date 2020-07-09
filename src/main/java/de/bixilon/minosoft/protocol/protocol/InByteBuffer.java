@@ -219,7 +219,7 @@ public class InByteBuffer {
     }
 
     public Particle readParticle() {
-        Particles type = Particles.byType(readVarInt());
+        Particles type = Particles.byId(readVarInt());
         try {
             if (type.getClazz() == OtherParticles.class) {
                 return type.getClazz().getConstructor(Particles.class).newInstance(type);

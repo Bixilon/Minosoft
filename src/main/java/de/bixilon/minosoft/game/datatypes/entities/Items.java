@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.game.datatypes.Identifier;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public enum Items {
     UNKNOWN(null, -1), // the buggy pink black item
@@ -1004,10 +1005,10 @@ public enum Items {
         ignoreMetaData = true;
     }
 
-    public static Items byIdentifier(Identifier identifier) {
-        for (Items b : values()) {
-            if (b.getIdentifier().equals(identifier)) {
-                return b;
+    public static Items byName(String name, ProtocolVersion version) {
+        for (Items item : values()) {
+            if (item.getIdentifier().isValidName(name, version)) {
+                return item;
             }
         }
         return UNKNOWN;

@@ -62,7 +62,7 @@ public enum Paintings {
         return null;
     }
 
-    public static Paintings byIdentifier(String name, ProtocolVersion version) {
+    public static Paintings byName(String name, ProtocolVersion version) {
         for (Paintings painting : values()) {
             if (painting.getIdentifier().isValidName(name, version)) {
                 return painting;
