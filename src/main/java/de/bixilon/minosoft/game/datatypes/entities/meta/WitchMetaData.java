@@ -31,7 +31,6 @@ public class WitchMetaData extends MobMetaData {
                 return (boolean) sets.get(11).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
-            case VERSION_1_12_2:
                 return (boolean) sets.get(12).getData();
         }
         return false;
@@ -40,6 +39,7 @@ public class WitchMetaData extends MobMetaData {
     public boolean isDrinkingPotion() {
         switch (version) {
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (boolean) sets.get(12).getData();
         }
         return false;

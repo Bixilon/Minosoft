@@ -26,6 +26,7 @@ public class AbstractIllagerMetaData extends MobMetaData {
     public boolean hasTarget() {
         switch (version) {
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(12).getData(), 0x01);
         }
         return false;

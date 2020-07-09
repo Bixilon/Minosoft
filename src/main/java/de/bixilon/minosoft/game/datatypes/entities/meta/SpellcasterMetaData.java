@@ -26,6 +26,7 @@ public class SpellcasterMetaData extends MobMetaData {
         switch (version) {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (byte) sets.get(13).getData();
         }
         return 0;

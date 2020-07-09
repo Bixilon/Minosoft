@@ -12,41 +12,39 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class PigMetaData extends AgeableMetaData {
+public class DolphinMetaData extends InsentientMetaData {
 
-    public PigMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public DolphinMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
 
-
-    public boolean hasSaddle() {
+    public BlockPosition isTreasure() {
         switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(16).getData() == 0x01;
-            case VERSION_1_9_4:
-                return (boolean) sets.get(12).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
+            case VERSION_1_13_2:
+                return (BlockPosition) sets.get(12).getData();
+        }
+        return new BlockPosition(0, (short) 0, 0);
+    }
+
+    public boolean canFireTreasure() {
+        switch (version) {
             case VERSION_1_13_2:
                 return (boolean) sets.get(13).getData();
         }
         return false;
     }
 
-    public int getTotalBoostTime() {
+    public boolean hasFish() {
         switch (version) {
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
             case VERSION_1_13_2:
-                return (int) sets.get(14).getData();
+                return (boolean) sets.get(14).getData();
         }
-        return 0;
+        return false;
     }
 
 }

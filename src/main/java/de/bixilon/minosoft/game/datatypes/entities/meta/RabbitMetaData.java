@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
@@ -23,18 +24,51 @@ public class RabbitMetaData extends TameableMetaData {
     }
 
 
-    public int getType() {
+    public BlockPosition getHomePosition() {
         switch (version) {
-            case VERSION_1_8:
-                return (byte) sets.get(18).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(12).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                return (int) sets.get(13).getData();
+            case VERSION_1_13_2:
+                return (BlockPosition) sets.get(13).getData();
         }
-        return 0;
+        return new BlockPosition(0, (short) 0, 0);
     }
 
+    public boolean hasEgg() {
+        switch (version) {
+            case VERSION_1_13_2:
+                return (boolean) sets.get(14).getData();
+        }
+        return false;
+    }
+
+    public boolean isLayingEgg() {
+        switch (version) {
+            case VERSION_1_13_2:
+                return (boolean) sets.get(15).getData();
+        }
+        return false;
+    }
+
+    public BlockPosition getTravelPosition() {
+        switch (version) {
+            case VERSION_1_13_2:
+                return (BlockPosition) sets.get(16).getData();
+        }
+        return new BlockPosition(0, (short) 0, 0);
+    }
+
+    public boolean isGoingHome() {
+        switch (version) {
+            case VERSION_1_13_2:
+                return (boolean) sets.get(17).getData();
+        }
+        return false;
+    }
+
+    public boolean isTraveling() {
+        switch (version) {
+            case VERSION_1_13_2:
+                return (boolean) sets.get(18).getData();
+        }
+        return false;
+    }
 }

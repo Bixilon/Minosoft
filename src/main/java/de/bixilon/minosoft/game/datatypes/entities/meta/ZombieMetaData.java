@@ -33,6 +33,7 @@ public class ZombieMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return ((boolean) sets.get(12).getData());
         }
         return false;
@@ -72,7 +73,16 @@ public class ZombieMetaData extends MobMetaData {
                 return ((boolean) sets.get(15).getData());
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return ((boolean) sets.get(16).getData());
+        }
+        return false;
+    }
+
+    public boolean isBecomingADrowned() {
+        switch (version) {
+            case VERSION_1_13_2:
+                return ((boolean) sets.get(15).getData());
         }
         return false;
     }

@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class FishingHookMetaData extends MobMetaData {
+public class FishingHookMetaData extends EntityMetaData {
 
     public FishingHookMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -30,6 +30,7 @@ public class FishingHookMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (int) sets.get(6).getData();
         }
         return -1;

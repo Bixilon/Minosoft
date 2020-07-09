@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class WitherSkullMetaData extends TameableMetaData {
+public class WitherSkullMetaData extends EntityMetaData {
 
     public WitherSkullMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -30,6 +30,7 @@ public class WitherSkullMetaData extends TameableMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (boolean) sets.get(6).getData();
         }
         return false;

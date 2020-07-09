@@ -54,6 +54,7 @@ public class WolfMetaData extends TameableMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (float) sets.get(15).getData();
         }
         return getHealth();
@@ -70,6 +71,7 @@ public class WolfMetaData extends TameableMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (boolean) sets.get(16).getData();
         }
         return false;
@@ -85,6 +87,7 @@ public class WolfMetaData extends TameableMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return Color.byId((byte) sets.get(17).getData());
         }
         return Color.RED;

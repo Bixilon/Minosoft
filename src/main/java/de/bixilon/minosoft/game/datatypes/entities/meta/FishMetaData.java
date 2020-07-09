@@ -16,37 +16,17 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class PigMetaData extends AgeableMetaData {
+public class FishMetaData extends InsentientMetaData {
 
-    public PigMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public FishMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
 
-
-    public boolean hasSaddle() {
+    public boolean fromBucket() {
         switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(16).getData() == 0x01;
-            case VERSION_1_9_4:
-                return (boolean) sets.get(12).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
             case VERSION_1_13_2:
-                return (boolean) sets.get(13).getData();
+                return (boolean) sets.get(12).getData();
         }
         return false;
     }
-
-    public int getTotalBoostTime() {
-        switch (version) {
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(14).getData();
-        }
-        return 0;
-    }
-
 }

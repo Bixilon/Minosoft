@@ -34,6 +34,8 @@ public class AbstractHorseMetaData extends AgeableMetaData {
                 return BitByte.isBitMask((int) sets.get(12).getData(), 0x02);
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x02);
         }
         return false;
@@ -48,6 +50,8 @@ public class AbstractHorseMetaData extends AgeableMetaData {
                 return BitByte.isBitMask((int) sets.get(12).getData(), 0x04);
             case VERSION_1_10:
             case VERSION_1_11_2:
+            case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x04);
         }
         return false;
@@ -64,6 +68,7 @@ public class AbstractHorseMetaData extends AgeableMetaData {
             case VERSION_1_11_2:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x10);
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x08);
         }
         return false;
@@ -80,6 +85,7 @@ public class AbstractHorseMetaData extends AgeableMetaData {
             case VERSION_1_11_2:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x20);
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x10);
         }
         return false;
@@ -96,6 +102,7 @@ public class AbstractHorseMetaData extends AgeableMetaData {
             case VERSION_1_11_2:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x40);
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x20);
         }
         return false;
@@ -112,6 +119,7 @@ public class AbstractHorseMetaData extends AgeableMetaData {
             case VERSION_1_11_2:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x80);
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x40);
         }
         return false;
@@ -147,6 +155,7 @@ public class AbstractHorseMetaData extends AgeableMetaData {
                 return (UUID) sets.get(16).getData();
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (UUID) sets.get(14).getData();
         }
         return null;

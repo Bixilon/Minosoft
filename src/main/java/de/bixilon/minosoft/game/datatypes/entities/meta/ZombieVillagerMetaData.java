@@ -28,6 +28,8 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
                 return VillagerMetaData.VillagerType.byId((int) sets.get(16).getData() + 1);
+            case VERSION_1_13_2:
+                return VillagerMetaData.VillagerType.byId((int) sets.get(17).getData() + 1);
         }
         return VillagerMetaData.VillagerType.FARMER;
     }
@@ -38,6 +40,9 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
                 return ((boolean) sets.get(15).getData());
+            case VERSION_1_13_2:
+                return ((boolean) sets.get(16).getData());
+
         }
         return false;
     }
