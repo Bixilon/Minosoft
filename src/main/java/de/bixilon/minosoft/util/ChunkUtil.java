@@ -63,16 +63,16 @@ public class ChunkUtil {
                                     // get block meta and shift and add (merge) id if needed
                                     if (arrayPos % 2 == 0) {
                                         // high bits
-                                        singleMeta = BitByte.getLow4Bits(meta[arrayPos / 2]);
+                                        singleMeta = (byte) (meta[arrayPos / 2] & 0xF);
                                         if (BitByte.isBitSet(addBitMask, c)) {
-                                            singeBlockId = (short) ((singeBlockId << 4) | BitByte.getHigh4Bits(addBlockTypes[arrayPos / 2]));
+                                            singeBlockId = (short) ((singeBlockId << 4) | (addBlockTypes[arrayPos / 2] >>> 4));
                                         }
                                     } else {
                                         // low 4 bits
-                                        singleMeta = BitByte.getHigh4Bits(meta[arrayPos / 2]);
+                                        singleMeta = (byte) (meta[arrayPos / 2] >>> 4);
 
                                         if (BitByte.isBitSet(addBitMask, c)) {
-                                            singeBlockId = (short) ((singeBlockId << 4) | BitByte.getLow4Bits(addBlockTypes[arrayPos / 2]));
+                                            singeBlockId = (short) ((singeBlockId << 4) | (addBlockTypes[arrayPos / 2] & 0xF));
                                         }
                                     }
 

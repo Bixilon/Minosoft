@@ -60,8 +60,8 @@ public class PacketMapData implements ClientboundPacket {
                         length--; // minus the dataData
                         for (int i = 0; i < length / 3; i++) { // loop over all sets ( 1 set: 3 bytes)
                             byte data = buffer.readByte();
-                            byte type = BitByte.getLow4Bits(data);
-                            MapPlayerDirection direction = MapPlayerDirection.byId(BitByte.getHigh4Bits(data));
+                            byte type = (byte) (data & 0xF);
+                            MapPlayerDirection direction = MapPlayerDirection.byId(data >>> 4);
                             byte x = buffer.readByte();
                             byte z = buffer.readByte();
                             pins.add(new MapPinSet(MapPinType.byId(type), direction, x, z));
@@ -89,9 +89,9 @@ public class PacketMapData implements ClientboundPacket {
                     byte x = buffer.readByte();
                     byte z = buffer.readByte();
                     if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-                        pins.add(new MapPinSet(MapPinType.byId(BitByte.getHigh4Bits(directionAndType)), MapPlayerDirection.byId(BitByte.getLow4Bits(directionAndType)), x, z));
+                        pins.add(new MapPinSet(MapPinType.byId(directionAndType >>> 4), MapPlayerDirection.byId(directionAndType & 0xF), x, z));
                     } else {
-                        pins.add(new MapPinSet(MapPinType.byId(BitByte.getLow4Bits(directionAndType)), MapPlayerDirection.byId(BitByte.getHigh4Bits(directionAndType)), x, z));
+                        pins.add(new MapPinSet(MapPinType.byId(directionAndType & 0xF), MapPlayerDirection.byId(directionAndType >>> 4), x, z));
                     }
                 }
                 short columns = BitByte.byteToUShort(buffer.readByte());
