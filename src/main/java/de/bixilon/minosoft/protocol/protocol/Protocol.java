@@ -27,6 +27,9 @@ import java.util.Map;
 public abstract class Protocol implements ProtocolInterface {
     static final HashMap<Packets.Clientbound, Class<? extends ClientboundPacket>> packetClassMapping = new HashMap<>();
 
+    static {
+        initPacketClassMapping();
+    }
 
     public final HashMap<Packets.Serverbound, Integer> serverboundPacketMapping;
     public final HashMap<Packets.Clientbound, Integer> clientboundPacketMapping;
@@ -54,10 +57,6 @@ public abstract class Protocol implements ProtocolInterface {
     }
 
     public static Class<? extends ClientboundPacket> getPacketByPacket(Packets.Clientbound p) {
-        if (packetClassMapping.size() == 0) {
-            // init
-            initPacketClassMapping();
-        }
         return packetClassMapping.get(p);
     }
 
@@ -146,6 +145,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_UNLOCK_RECIPES, PacketUnlockRecipes.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SELECT_ADVANCEMENT_TAB, PacketSelectAdvancementTab.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ADVANCEMENTS, PacketAdvancements.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_NBT_QUERY_RESPONSE, PacketNBTQueryResponse.class);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {

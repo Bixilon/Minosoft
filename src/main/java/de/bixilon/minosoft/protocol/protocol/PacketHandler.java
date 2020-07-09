@@ -575,4 +575,6 @@ public class PacketHandler {
     public void handle(PacketAdvancements pkg) {
     }
 
+    public void handle(PacketNBTQueryResponse pkg) {
+    }
 }
