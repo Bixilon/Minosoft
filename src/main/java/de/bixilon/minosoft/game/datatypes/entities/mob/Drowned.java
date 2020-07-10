@@ -11,64 +11,62 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities.objects;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
-import de.bixilon.minosoft.game.datatypes.entities.meta.CommandBlockMinecartMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.ZombieMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class MinecartCommandBlock extends EntityObject implements ObjectInterface {
-    CommandBlockMinecartMetaData metaData;
+public class Drowned extends Mob implements MobInterface {
+    ZombieMetaData metaData;
 
-    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, int additionalInt) {
-        super(entityId, location, yaw, pitch, null);
-    }
-
-    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public Drowned(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-    }
-
-    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new CommandBlockMinecartMetaData(sets, version);
+        this.metaData = new ZombieMetaData(sets, version);
     }
 
 
     @Override
     public Entities getEntityType() {
-        return Entities.MINECART_COMMAND_BLOCK;
+        return Entities.DROWNED;
     }
 
     @Override
-    public CommandBlockMinecartMetaData getMetaData() {
+    public ZombieMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (CommandBlockMinecartMetaData) metaData;
+        this.metaData = (ZombieMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.98F;
+        if (metaData.isChild()) {
+            return 0.3F;
+        }
+        return 0.6F;
     }
 
     @Override
     public float getHeight() {
-        return 0.7F;
+        if (metaData.isChild()) {
+            return 0.975F;
+        }
+        return 1.95F;
+    }
+
+    @Override
+    public int getMaxHealth() {
+        return 20;
     }
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return CommandBlockMinecartMetaData.class;
+        return ZombieMetaData.class;
     }
-
-    public Minecart.MinecartType getType() {
-        return Minecart.MinecartType.COMMAND_BLOCK;
-    }
-
 }

@@ -102,10 +102,10 @@ public enum Entities {
     COD(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 8)}, Cod.class),
     DOLPHIN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 12)}, Dolphin.class),
     DROWNED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 14)}, Drowned.class),
-    ENDERMITE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 19)}, Endermite.class),
+    ENDERMITE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 67), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 19)}, Endermite.class),
     MINECART_FURNACE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 42)}, MinecartFurnace.class),
     MINECART_HOPPER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 43)}, MinecartHopper.class),
-    MINECART_SPAWNER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 44)}, MinecarSpawner.class),
+    MINECART_SPAWNER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 44)}, MinecartSpawner.class),
     MINECART_TNT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 45)}, MinecartTNT.class),
     PUFFERFISH(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 52)}, Pufferfish.class),
     SALMON(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 57)}, Salmon.class),
@@ -132,16 +132,15 @@ public enum Entities {
 
     public static Entities byId(int id, ProtocolVersion version) {
         for (Entities entity : values()) {
-            if (entity.getType() == id) {
+            if (entity.getValueMap().get(version) == id) {
                 return entity;
             }
         }
         return null;
     }
 
-
-    public int getType() {
-        return type;
+    public VersionValueMap<Integer> getValueMap() {
+        return valueMap;
     }
 
     public Class<? extends Entity> getClazz() {

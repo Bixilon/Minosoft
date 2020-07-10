@@ -11,64 +11,55 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities.objects;
+package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
-import de.bixilon.minosoft.game.datatypes.entities.meta.CommandBlockMinecartMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.PhantomMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class MinecartCommandBlock extends EntityObject implements ObjectInterface {
-    CommandBlockMinecartMetaData metaData;
+public class Phantom extends Mob implements MobInterface {
+    PhantomMetaData metaData;
 
-    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, int additionalInt) {
-        super(entityId, location, yaw, pitch, null);
-    }
-
-    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public Phantom(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new PhantomMetaData(sets, version);
     }
-
-    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new CommandBlockMinecartMetaData(sets, version);
-    }
-
 
     @Override
     public Entities getEntityType() {
-        return Entities.MINECART_COMMAND_BLOCK;
+        return Entities.PHANTOM;
     }
 
     @Override
-    public CommandBlockMinecartMetaData getMetaData() {
+    public PhantomMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (CommandBlockMinecartMetaData) metaData;
+        this.metaData = (PhantomMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.98F;
+        return 0.9F;
     }
 
     @Override
     public float getHeight() {
-        return 0.7F;
+        return 0.5F;
+    }
+
+    @Override
+    public int getMaxHealth() {
+        return 20;
     }
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return CommandBlockMinecartMetaData.class;
+        return PhantomMetaData.class;
     }
-
-    public Minecart.MinecartType getType() {
-        return Minecart.MinecartType.COMMAND_BLOCK;
-    }
-
 }

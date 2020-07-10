@@ -16,17 +16,43 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class PufferFishMetaData extends FishMetaData {
+public class PufferfishMetaData extends FishMetaData {
 
-    public PufferFishMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public PufferfishMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
 
-    public int getPuffState() {
+    public PufferStates getPufferState() {
         switch (version) {
             case VERSION_1_13_2:
-                return (int) sets.get(13).getData();
+                return PufferStates.byId((int) sets.get(13).getData());
         }
-        return 0;
+        return PufferStates.UN_PUFFED;
+    }
+
+    public enum PufferStates {
+        UN_PUFFED(0),
+        SEMI_PUFFED(1),
+        FULLY_PUFFED(2);
+
+
+        final int id;
+
+        PufferStates(int id) {
+            this.id = id;
+        }
+
+        public static PufferStates byId(int id) {
+            for (PufferStates state : values()) {
+                if (state.getId() == id) {
+                    return state;
+                }
+            }
+            return null;
+        }
+
+        public int getId() {
+            return id;
+        }
     }
 }

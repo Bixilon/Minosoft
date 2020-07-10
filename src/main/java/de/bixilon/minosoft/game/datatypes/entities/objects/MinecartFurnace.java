@@ -14,42 +14,42 @@
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
-import de.bixilon.minosoft.game.datatypes.entities.meta.CommandBlockMinecartMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.FurnaceMinecartMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class MinecartCommandBlock extends EntityObject implements ObjectInterface {
-    CommandBlockMinecartMetaData metaData;
+public class MinecartFurnace extends EntityObject implements ObjectInterface {
+    FurnaceMinecartMetaData metaData;
 
-    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+    public MinecartFurnace(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
     }
 
-    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public MinecartFurnace(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
     }
 
-    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public MinecartFurnace(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new CommandBlockMinecartMetaData(sets, version);
+        this.metaData = new FurnaceMinecartMetaData(sets, version);
     }
 
 
     @Override
     public Entities getEntityType() {
-        return Entities.MINECART_COMMAND_BLOCK;
+        return Entities.MINECART_FURNACE;
     }
 
     @Override
-    public CommandBlockMinecartMetaData getMetaData() {
+    public FurnaceMinecartMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (CommandBlockMinecartMetaData) metaData;
+        this.metaData = (FurnaceMinecartMetaData) metaData;
     }
 
     @Override
@@ -64,11 +64,11 @@ public class MinecartCommandBlock extends EntityObject implements ObjectInterfac
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return CommandBlockMinecartMetaData.class;
+        return FurnaceMinecartMetaData.class;
     }
 
     public Minecart.MinecartType getType() {
-        return Minecart.MinecartType.COMMAND_BLOCK;
+        return Minecart.MinecartType.FURNACE;
     }
 
 }
