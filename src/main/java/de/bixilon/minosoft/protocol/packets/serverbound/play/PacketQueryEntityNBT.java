@@ -11,37 +11,38 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.packets.serverbound.login;
+package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketLoginStart implements ServerboundPacket {
+public class PacketQueryEntityNBT implements ServerboundPacket {
+    final int transactionId;
+    final int entityId;
 
-    final String username;
-
-    public PacketLoginStart(Player p) {
-        username = p.getPlayerName();
+    public PacketQueryEntityNBT(int transactionId, int entityId) {
+        this.transactionId = transactionId;
+        this.entityId = entityId;
     }
 
-    public PacketLoginStart(String username) {
-        this.username = username;
-    }
 
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
-        // no version checking, is the same in all versions (1.7.x - 1.15.2)
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.LOGIN_LOGIN_START));
-        buffer.writeString(username);
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_ENTITY_NBT_REQUEST));
+        switch (version) {
+            case VERSION_1_13_2:
+                buffer.writeVarInt(transactionId);
+                buffer.writeVarInt(entityId);
+                break;
+        }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending login start (username=%s)", username));
+        Log.protocol(String.format("Querying entity nbt (transactionId=%d, entityId=%d)", transactionId, entityId));
     }
 }

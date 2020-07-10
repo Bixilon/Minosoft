@@ -25,7 +25,6 @@ public class PacketAnimation implements ServerboundPacket {
 
     public PacketAnimation(Hand hand) {
         this.hand = hand;
-        log();
     }
 
 

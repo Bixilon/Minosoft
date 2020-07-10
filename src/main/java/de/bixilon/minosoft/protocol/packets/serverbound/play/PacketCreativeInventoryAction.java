@@ -28,7 +28,6 @@ public class PacketCreativeInventoryAction implements ServerboundPacket {
     public PacketCreativeInventoryAction(short slot, Slot clickedItem) {
         this.slot = slot;
         this.clickedItem = clickedItem;
-        log();
     }
 
 

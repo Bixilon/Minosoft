@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketCraftRecipeResponse implements ClientboundPacket {
     byte windowId;
     int recipeId;
-
+    String recipeName;
 
     @Override
     public boolean read(InPacketBuffer buffer) {
@@ -29,6 +29,10 @@ public class PacketCraftRecipeResponse implements ClientboundPacket {
             case VERSION_1_12_2:
                 windowId = buffer.readByte();
                 recipeId = buffer.readVarInt();
+                return true;
+            case VERSION_1_13_2:
+                windowId = buffer.readByte();
+                recipeName = buffer.readString();
                 return true;
         }
 

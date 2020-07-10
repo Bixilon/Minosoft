@@ -27,7 +27,6 @@ public class PacketWindowClickButton implements ServerboundPacket {
     public PacketWindowClickButton(byte windowId, byte buttonId) {
         this.windowId = windowId;
         this.buttonId = buttonId;
-        log();
     }
 
 

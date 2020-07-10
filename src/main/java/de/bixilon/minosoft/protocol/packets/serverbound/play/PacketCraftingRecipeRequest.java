@@ -26,7 +26,6 @@ public class PacketCraftingRecipeRequest implements ServerboundPacket {
     public PacketCraftingRecipeRequest(byte windowId, int recipeId) {
         this.windowId = windowId;
         this.recipeId = recipeId;
-        log();
     }
 
 

@@ -25,7 +25,6 @@ public class PacketUseItem implements ServerboundPacket {
 
     public PacketUseItem(Hand hand) {
         this.hand = hand;
-        log();
     }
 
 

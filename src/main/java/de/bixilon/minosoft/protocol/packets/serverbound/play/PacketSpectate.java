@@ -26,7 +26,6 @@ public class PacketSpectate implements ServerboundPacket {
 
     public PacketSpectate(UUID entityUUID) {
         this.entityUUID = entityUUID;
-        log();
     }
 
 

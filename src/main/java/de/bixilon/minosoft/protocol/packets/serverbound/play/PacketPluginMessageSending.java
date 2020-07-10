@@ -27,7 +27,6 @@ public class PacketPluginMessageSending implements ServerboundPacket {
     public PacketPluginMessageSending(String channel, byte[] data) {
         this.channel = channel;
         this.data = data;
-        log();
     }
 
 

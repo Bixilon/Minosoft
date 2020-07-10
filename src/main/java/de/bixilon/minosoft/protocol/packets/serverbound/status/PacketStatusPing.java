@@ -37,7 +37,6 @@ public class PacketStatusPing implements ServerboundPacket {
 
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
-        log();
         // no version checking, is the same in all versions (1.7.x - 1.15.2)
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.STATUS_PING));
         buffer.writeLong(id);

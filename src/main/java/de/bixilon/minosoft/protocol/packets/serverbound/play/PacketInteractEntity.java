@@ -34,7 +34,6 @@ public class PacketInteractEntity implements ServerboundPacket {
         this.click = click;
         location = null;
         hand = Hand.RIGHT;
-        log();
     }
 
     public PacketInteractEntity(int entityId, Click click) {
@@ -42,7 +41,6 @@ public class PacketInteractEntity implements ServerboundPacket {
         this.click = click;
         location = null;
         hand = Hand.RIGHT;
-        log();
     }
 
     public PacketInteractEntity(int entityId, Click click, Location location) {
@@ -50,7 +48,6 @@ public class PacketInteractEntity implements ServerboundPacket {
         this.click = click;
         this.location = location;
         hand = Hand.RIGHT;
-        log();
     }
 
     public PacketInteractEntity(int entityId, Click click, Location location, Hand hand) {
@@ -58,7 +55,6 @@ public class PacketInteractEntity implements ServerboundPacket {
         this.click = click;
         this.location = location;
         this.hand = hand;
-        log();
     }
 
 

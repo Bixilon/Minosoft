@@ -25,12 +25,10 @@ public class PacketHeldItemChangeSending implements ServerboundPacket {
 
     public PacketHeldItemChangeSending(short slot) {
         this.slot = slot;
-        log();
     }
 
     public PacketHeldItemChangeSending(int slot) {
         this.slot = (byte) slot;
-        log();
     }
 
 

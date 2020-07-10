@@ -25,7 +25,6 @@ public class PacketConfirmTeleport implements ServerboundPacket {
 
     public PacketConfirmTeleport(int teleportId) {
         this.teleportId = teleportId;
-        log();
     }
 
 

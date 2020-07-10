@@ -25,7 +25,6 @@ public class PacketChatMessageSending implements ServerboundPacket {
 
     public PacketChatMessageSending(String message) {
         this.message = message;
-        log();
     }
 
 

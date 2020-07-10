@@ -30,7 +30,6 @@ public class PacketPlayerDigging implements ServerboundPacket {
         this.status = status;
         this.position = position;
         this.face = face;
-        log();
     }
 
 

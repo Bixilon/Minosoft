@@ -31,7 +31,6 @@ public class PacketSteerVehicle implements ServerboundPacket {
         this.forward = forward;
         this.jump = jump;
         this.unmount = unmount;
-        log();
     }
 
 

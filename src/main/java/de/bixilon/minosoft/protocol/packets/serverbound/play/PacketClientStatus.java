@@ -25,7 +25,6 @@ public class PacketClientStatus implements ServerboundPacket {
 
     public PacketClientStatus(ClientStatus status) {
         this.status = status;
-        log();
     }
 
 

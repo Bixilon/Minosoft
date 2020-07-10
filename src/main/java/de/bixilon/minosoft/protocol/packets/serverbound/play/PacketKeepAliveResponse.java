@@ -25,12 +25,10 @@ public class PacketKeepAliveResponse implements ServerboundPacket {
 
     public PacketKeepAliveResponse(long id) {
         this.id = id;
-        log();
     }
 
     public PacketKeepAliveResponse(int id) {
         this.id = id;
-        log();
     }
 
 

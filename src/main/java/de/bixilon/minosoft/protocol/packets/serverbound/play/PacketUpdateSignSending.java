@@ -28,7 +28,6 @@ public class PacketUpdateSignSending implements ServerboundPacket {
     public PacketUpdateSignSending(BlockPosition position, TextComponent[] lines) {
         this.position = position;
         this.lines = lines;
-        log();
     }
 
 

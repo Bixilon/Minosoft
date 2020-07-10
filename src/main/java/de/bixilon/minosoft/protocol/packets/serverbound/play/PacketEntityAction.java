@@ -31,14 +31,12 @@ public class PacketEntityAction implements ServerboundPacket {
         this.entityId = entityId;
         this.action = action;
         this.parameter = 0;
-        log();
     }
 
     public PacketEntityAction(int entityId, EntityActions action, int parameter) {
         this.entityId = entityId;
         this.action = action;
         this.parameter = parameter;
-        log();
     }
 
 

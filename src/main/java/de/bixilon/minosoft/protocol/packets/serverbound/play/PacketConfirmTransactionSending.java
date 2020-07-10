@@ -29,7 +29,6 @@ public class PacketConfirmTransactionSending implements ServerboundPacket {
         this.windowId = windowId;
         this.actionNumber = actionNumber;
         this.accepted = accepted;
-        log();
     }
 
 

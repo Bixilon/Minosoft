@@ -148,6 +148,7 @@ public class Network {
 
                 while (queue.size() > 0) {
                     ServerboundPacket p = queue.get(0);
+                    p.log();
                     queue.remove(0);
                     byte[] data = p.write(connection.getVersion()).getOutBytes();
                     if (compressionThreshold != -1) {

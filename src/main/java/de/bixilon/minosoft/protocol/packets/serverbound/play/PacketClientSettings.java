@@ -33,14 +33,12 @@ public class PacketClientSettings implements ServerboundPacket {
         this.locale = locale;
         this.renderDistance = (byte) renderDistance;
         this.mainHand = Hand.RIGHT; // unused; >= 1.9
-        log();
     }
 
     public PacketClientSettings(Locale locale, int renderDistance, Hand mainHand) {
         this.locale = locale;
         this.renderDistance = (byte) renderDistance;
         this.mainHand = mainHand;
-        log();
     }
 
 

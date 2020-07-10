@@ -11,24 +11,32 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.packets.serverbound.status;
+package de.bixilon.minosoft.game.datatypes;
 
-import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+public enum Recipes {
+    TODO(0, new Identifier("todo"));
 
-public class PacketStatusRequest implements ServerboundPacket {
+    final int id;
+    final Identifier identifier;
 
-    @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        // no version checking, is the same in all versions (1.7.x - 1.15.2)
-        return new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.STATUS_REQUEST));
+    Recipes(int id, Identifier identifier) {
+        this.id = id;
+        this.identifier = identifier;
     }
 
-    @Override
-    public void log() {
-        Log.protocol("Sending status request packet");
+    public static Recipes byId(int id) {
+        return TODO;
+    }
+
+    public static Recipes byName(String name) {
+        return TODO;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Identifier getIdentifier() {
+        return identifier;
     }
 }

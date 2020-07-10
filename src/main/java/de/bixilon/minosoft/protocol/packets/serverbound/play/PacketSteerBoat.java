@@ -28,7 +28,6 @@ public class PacketSteerBoat implements ServerboundPacket {
     public PacketSteerBoat(boolean leftPaddle, boolean rightPaddle) {
         this.leftPaddle = leftPaddle;
         this.rightPaddle = rightPaddle;
-        log();
     }
 
 

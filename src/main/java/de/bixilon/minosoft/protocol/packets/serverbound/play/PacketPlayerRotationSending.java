@@ -28,7 +28,6 @@ public class PacketPlayerRotationSending implements ServerboundPacket {
         this.yaw = yaw;
         this.pitch = pitch;
         this.onGround = onGround;
-        log();
     }
 
 

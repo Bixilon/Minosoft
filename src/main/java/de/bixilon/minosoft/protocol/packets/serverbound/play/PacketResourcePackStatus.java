@@ -26,7 +26,6 @@ public class PacketResourcePackStatus implements ServerboundPacket {
     public PacketResourcePackStatus(String hash, ResourcePackStatus status) {
         this.hash = hash;
         this.status = status;
-        log();
     }
 
 

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.Recipes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -22,8 +23,8 @@ public class PacketUnlockRecipes implements ClientboundPacket {
     UnlockRecipeActions action;
     boolean isCraftingBookOpen;
     boolean isFilteringActive;
-    int[] listed;
-    int[] tagged;
+    Recipes[] listed;
+    Recipes[] tagged;
 
 
     @Override
@@ -33,19 +34,33 @@ public class PacketUnlockRecipes implements ClientboundPacket {
                 action = UnlockRecipeActions.byId(buffer.readVarInt());
                 isCraftingBookOpen = buffer.readBoolean();
                 isFilteringActive = buffer.readBoolean();
-                listed = new int[buffer.readVarInt()];
+                listed = new Recipes[buffer.readVarInt()];
                 for (int i = 0; i < listed.length; i++) {
-                    listed[i] = buffer.readVarInt();
+                    listed[i] = Recipes.byId(buffer.readVarInt());
                 }
                 if (action == UnlockRecipeActions.INITIALIZE) {
-                    tagged = new int[buffer.readVarInt()];
+                    tagged = new Recipes[buffer.readVarInt()];
                     for (int i = 0; i < tagged.length; i++) {
-                        tagged[i] = buffer.readVarInt();
+                        tagged[i] = Recipes.byId(buffer.readVarInt());
+                    }
+                }
+                return true;
+            case VERSION_1_13_2:
+                action = UnlockRecipeActions.byId(buffer.readVarInt());
+                isCraftingBookOpen = buffer.readBoolean();
+                isFilteringActive = buffer.readBoolean();
+                listed = new Recipes[buffer.readVarInt()];
+                for (int i = 0; i < listed.length; i++) {
+                    listed[i] = Recipes.byName(buffer.readString());
+                }
+                if (action == UnlockRecipeActions.INITIALIZE) {
+                    tagged = new Recipes[buffer.readVarInt()];
+                    for (int i = 0; i < tagged.length; i++) {
+                        tagged[i] = Recipes.byName(buffer.readString());
                     }
                 }
                 return true;
         }
-
         return false;
     }
 
@@ -59,6 +74,25 @@ public class PacketUnlockRecipes implements ClientboundPacket {
         h.handle(this);
     }
 
+    public boolean isCraftingBookOpen() {
+        return isCraftingBookOpen;
+    }
+
+    public boolean isFilteringActive() {
+        return isFilteringActive;
+    }
+
+    public Recipes[] getListed() {
+        return listed;
+    }
+
+    public Recipes[] getTagged() {
+        return tagged;
+    }
+
+    public UnlockRecipeActions getAction() {
+        return action;
+    }
 
     public enum UnlockRecipeActions {
         INITIALIZE(0),

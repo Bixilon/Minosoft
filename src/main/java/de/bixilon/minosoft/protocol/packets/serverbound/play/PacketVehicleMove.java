@@ -33,7 +33,6 @@ public class PacketVehicleMove implements ServerboundPacket {
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
-        log();
     }
 
 

@@ -26,13 +26,11 @@ public class PacketAdvancementTab implements ServerboundPacket {
     public PacketAdvancementTab(AdvancementTabStatus action) {
         this.action = action;
         tabToOpen = null;
-        log();
     }
 
     public PacketAdvancementTab(AdvancementTabStatus action, String tabToOpen) {
         this.action = action;
         this.tabToOpen = tabToOpen;
-        log();
     }
 
     @Override

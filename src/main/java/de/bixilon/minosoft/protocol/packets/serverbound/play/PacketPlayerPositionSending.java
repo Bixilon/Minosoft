@@ -32,7 +32,6 @@ public class PacketPlayerPositionSending implements ServerboundPacket {
         this.headY = headY;
         this.z = z;
         this.onGround = onGround;
-        log();
     }
 
     public PacketPlayerPositionSending(double x, double feetY, double z, boolean onGround) {
@@ -41,7 +40,6 @@ public class PacketPlayerPositionSending implements ServerboundPacket {
         this.headY = feetY - 1.62F;
         this.z = z;
         this.onGround = onGround;
-        log();
     }
 
 

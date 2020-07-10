@@ -34,7 +34,6 @@ public class PacketEncryptionResponse implements ServerboundPacket {
         this.secretKey = secret;
         this.secret = CryptManager.encryptData(key, secret.getEncoded());
         this.token = CryptManager.encryptData(key, token);
-        log();
     }
 
 
