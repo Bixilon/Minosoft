@@ -37,7 +37,7 @@ public class PacketSpawnMob implements ClientboundPacket {
             case VERSION_1_7_10:
             case VERSION_1_8: {
                 int entityId = buffer.readVarInt();
-                Entities type = Entities.byType(buffer.readByte());
+                Entities type = Entities.byId(buffer.readByte());
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
                 short yaw = buffer.readAngle();
                 short pitch = buffer.readAngle();
@@ -58,7 +58,7 @@ public class PacketSpawnMob implements ClientboundPacket {
             case VERSION_1_10: {
                 int entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
-                Entities type = Entities.byType(buffer.readByte());
+                Entities type = Entities.byId(buffer.readByte());
                 Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
                 short yaw = buffer.readAngle();
                 short pitch = buffer.readAngle();
@@ -79,7 +79,7 @@ public class PacketSpawnMob implements ClientboundPacket {
             case VERSION_1_13_2: {
                 int entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
-                Entities type = Entities.byType(buffer.readVarInt());
+                Entities type = Entities.byId(buffer.readVarInt());
                 Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
                 short yaw = buffer.readAngle();
                 short pitch = buffer.readAngle();

@@ -43,7 +43,7 @@ public class DragonFireball extends EntityObject implements ObjectInterface {
 
     @Override
     public Entities getEntityType() {
-        return Entities.DRAGON_FIRE_BALL;
+        return Entities.DRAGON_FIREBALL;
     }
 
     @Override

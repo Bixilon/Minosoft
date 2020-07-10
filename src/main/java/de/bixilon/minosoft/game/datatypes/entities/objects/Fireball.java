@@ -11,59 +11,61 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities.mob;
+package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
-import de.bixilon.minosoft.game.datatypes.entities.meta.EndermanMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class EnderMan extends Mob implements MobInterface {
-    EndermanMetaData metaData;
+public class Fireball extends EntityObject implements ObjectInterface {
+    final int thrower;
+    EntityMetaData metaData;
 
-    public EnderMan(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
-        super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new EndermanMetaData(sets, version);
+    public Fireball(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, location, yaw, pitch, null);
+        // objects do not spawn with metadata... reading additional info from the following int
+        this.thrower = additionalInt;
     }
 
+    public Fireball(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.thrower = additionalInt;
+    }
+
+    public Fireball(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new EntityMetaData(sets, version);
+        this.thrower = 0; //ToDo
+    }
 
     @Override
     public Entities getEntityType() {
-        return Entities.ENDERMAN;
+        return Entities.FIREBALL;
     }
 
     @Override
-    public EndermanMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (EndermanMetaData) metaData;
+        this.metaData = metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.6F;
+        return 1.0F;
     }
 
     @Override
     public float getHeight() {
-        if (metaData.isScreaming()) {
-            return 3.25F;
-        }
-        return 2.9F;
+        return 1.0F;
     }
 
-    @Override
-    public int getMaxHealth() {
-        return 40;
-    }
-
-    @Override
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return EndermanMetaData.class;
+    public int getThrower() {
+        return thrower;
     }
 }

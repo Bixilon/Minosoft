@@ -19,22 +19,22 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class FireBall extends EntityObject implements ObjectInterface {
+public class SmallFireball extends EntityObject implements ObjectInterface {
     final int thrower;
     EntityMetaData metaData;
 
-    public FireBall(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+    public SmallFireball(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
         this.thrower = additionalInt;
     }
 
-    public FireBall(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public SmallFireball(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
         this.thrower = additionalInt;
     }
 
-    public FireBall(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public SmallFireball(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new EntityMetaData(sets, version);
         this.thrower = 0; //ToDo
@@ -42,7 +42,7 @@ public class FireBall extends EntityObject implements ObjectInterface {
 
     @Override
     public Entities getEntityType() {
-        return Entities.FIRE_BALL;
+        return Entities.SMALL_FIREBALL;
     }
 
     @Override
@@ -57,12 +57,12 @@ public class FireBall extends EntityObject implements ObjectInterface {
 
     @Override
     public float getWidth() {
-        return 1.0F;
+        return 0.3125F;
     }
 
     @Override
     public float getHeight() {
-        return 1.0F;
+        return 0.3125F;
     }
 
     public int getThrower() {
