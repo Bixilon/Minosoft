@@ -84,7 +84,13 @@ public class MojangAuthentication {
         payload.put("accessToken", accessToken);
         payload.put("clientToken", clientToken);
 
-        HttpResponse<String> response = HTTP.postJson(MojangURLs.REFRESH.getUrl(), payload);
+        HttpResponse<String> response;
+        try {
+            response = HTTP.postJson(MojangURLs.REFRESH.getUrl(), payload);
+        } catch (Exception e) {
+            Log.mojang(String.format("Could not connect to mojang server: %s", e.getCause().toString()));
+            return null;
+        }
         if (response == null) {
             Log.mojang("Failed to refresh session");
             return null;

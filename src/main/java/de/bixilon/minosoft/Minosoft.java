@@ -62,11 +62,12 @@ public class Minosoft {
             throw new RuntimeException("No accounts in config file!");
         }
         MojangAccount account = accountList.get(0);
-        if (!account.refreshToken()) {
+        if (account.refreshToken()) {
             // could not login
-            System.exit(1);
+            account.saveToConfig();
+        } else {
+            Log.mojang("Could not refresh session, you will not be able to join premium servers!");
         }
-        account.saveToConfig();
         c.setPlayer(new Player(account));
         c.connect();
     }
