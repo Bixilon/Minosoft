@@ -41,7 +41,7 @@ public class PacketEntityProperties implements ClientboundPacket {
                         UUID uuid = buffer.readUUID();
                         double amount = buffer.readDouble();
                         ModifierAction operation = ModifierAction.byId(buffer.readByte());
-                        //ToDo: modifiers
+                        // ToDo: modifiers
                     }
                     properties.put(key, new EntityProperty(value));
                 }
@@ -63,7 +63,7 @@ public class PacketEntityProperties implements ClientboundPacket {
                         UUID uuid = buffer.readUUID();
                         double amount = buffer.readDouble();
                         ModifierAction operation = ModifierAction.byId(buffer.readByte());
-                        //ToDo: modifiers
+                        // ToDo: modifiers
                     }
                     properties.put(key, new EntityProperty(value));
                 }

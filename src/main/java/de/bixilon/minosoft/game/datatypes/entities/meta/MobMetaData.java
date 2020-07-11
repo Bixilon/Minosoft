@@ -136,7 +136,7 @@ public class MobMetaData extends EntityMetaData {
     }
 
     public Hand getActiveHand() {
-        //ToDo main, offhand
+        // ToDo main, offhand
         switch (version) {
             case VERSION_1_9_4:
                 return BitByte.isBitMask((byte) sets.get(5).getData(), 0x02) ? Hand.LEFT : Hand.RIGHT;

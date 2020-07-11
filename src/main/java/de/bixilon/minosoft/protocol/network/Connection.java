@@ -115,7 +115,7 @@ public class Connection {
                 break;
             case DISCONNECTED:
                 if (reason == ConnectionReason.GET_VERSION) {
-                    //ToDo: only for development, remove later
+                    // ToDo: only for development, remove later
                     setVersion(ProtocolVersion.VERSION_1_13_2);
                     setReason(ConnectionReason.CONNECT);
                     connect();
@@ -197,7 +197,7 @@ public class Connection {
 
     public void registerDefaultChannels() {
         // MC|Brand
-        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getIdentifier().get(version), (handler, buffer) -> {
+        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version), (handler, buffer) -> {
             String serverVersion;
             String clientVersion = (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
             OutByteBuffer toSend = new OutByteBuffer(getVersion());
@@ -212,7 +212,7 @@ public class Connection {
             }
             Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getVersionString()));
 
-            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getIdentifier().get(version), toSend);
+            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version), toSend);
         });
     }
 

@@ -16,28 +16,33 @@ package de.bixilon.minosoft.game.datatypes.inventory;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.entities.Items;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class Slot {
-    int itemId;
+    String identifier;
     int itemCount;
     short itemMetadata;
     CompoundTag nbt;
 
-    public Slot(int itemId, int itemCount, CompoundTag nbt) {
-        this.itemId = itemId;
+    public Slot(String identifier, int itemCount, CompoundTag nbt) {
+        this.identifier = identifier;
         this.itemCount = itemCount;
         this.nbt = nbt;
     }
 
-    public Slot(int itemId, byte itemCount, short itemMetadata, CompoundTag nbt) {
-        this.itemId = itemId;
+    public Slot(String identifier, byte itemCount, short itemMetadata, CompoundTag nbt) {
+        this.identifier = identifier;
         this.itemMetadata = itemMetadata;
         this.itemCount = itemCount;
         this.nbt = nbt;
     }
 
-    public int getItemId() {
-        return this.itemId;
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    public int getItemId(ProtocolVersion version) {
+        return Items.getItemId(identifier, version);
     }
 
     public int getItemCount() {
@@ -53,10 +58,9 @@ public class Slot {
     }
 
     public String getDisplayName() {
-        String itemName = Items.byLegacy(getItemId(), getItemMetadata()).name();
         if (nbt != null && nbt.containsKey("display") && nbt.getCompoundTag("display").containsKey("Name")) { // check if object has nbt data, and a custom display name
-            return String.format("%s (%s)", new TextComponent(nbt.getCompoundTag("display").getStringTag("Name").getValue()).getColoredMessage(), itemName);
+            return String.format("%s (%s)", new TextComponent(nbt.getCompoundTag("display").getStringTag("Name").getValue()).getColoredMessage(), identifier);
         }
-        return itemName; //ToDo display name per Item (from language file)
+        return identifier; // ToDo display name per Item (from language file)
     }
 }

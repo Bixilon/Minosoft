@@ -224,7 +224,7 @@ public class TextComponent {
         STRIKETHROUGH("\u001b[9m", "m"),
         UNDERLINED("\u001b[4m", "n"),
         ITALIC("\u001b[3m", "o"),
-        OBFUSCATED("\u001b[47;1m", "k"); //ToDo
+        OBFUSCATED("\u001b[47;1m", "k"); // ToDo
 
         final String consolePrefix;
         final ChatColor color;

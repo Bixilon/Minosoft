@@ -33,7 +33,7 @@ public class PacketSoundEffect implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_9_4:
                 sound = buffer.readVarInt();
-                category = buffer.readVarInt(); //ToDo: category
+                category = buffer.readVarInt(); // ToDo: category
                 location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
                 volume = buffer.readFloat();
                 pitch = (buffer.readByte() * pitchCalc) / 100F;
@@ -43,7 +43,7 @@ public class PacketSoundEffect implements ClientboundPacket {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 sound = buffer.readVarInt();
-                category = buffer.readVarInt(); //ToDo: category
+                category = buffer.readVarInt(); // ToDo: category
                 location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
                 volume = buffer.readFloat();
                 pitch = buffer.readFloat();

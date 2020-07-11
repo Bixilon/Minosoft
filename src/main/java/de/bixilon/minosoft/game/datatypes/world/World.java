@@ -125,7 +125,7 @@ public class World {
     }
 
     public void updateSign(BlockPosition position, TextComponent[] lines) {
-        //ToDo check if block is really a sign
+        // ToDo check if block is really a sign
         signs.put(position, lines);
     }
 
@@ -134,7 +134,7 @@ public class World {
     }
 
     public void setBlockEntityData(BlockPosition position, CompoundTag nbt) {
-        //ToDo check if block is really a block entity (command block, spawner, skull, flower pot)
+        // ToDo check if block is really a block entity (command block, spawner, skull, flower pot)
         blockEntityMeta.put(position, nbt);
     }
 

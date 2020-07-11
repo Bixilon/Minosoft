@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketSetSlot implements ClientboundPacket {
     byte windowId;
     short slotId;
-    Slot slot; //ToDo use enum Slots
+    Slot slot; // ToDo use enum Slots
 
 
     @Override

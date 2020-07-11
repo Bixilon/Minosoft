@@ -18,7 +18,7 @@ public class Protocol_1_15_2 extends Protocol {
 
     Protocol_1_15_2() {
         super();
-        //ToDo
+        // ToDo
     }
 
     public int getProtocolVersionNumber() {

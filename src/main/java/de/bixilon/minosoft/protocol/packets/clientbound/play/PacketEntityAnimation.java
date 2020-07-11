@@ -61,7 +61,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
         SWING_LEFT_ARM(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 3)}),
         CRITICAL_EFFECT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4)}),
         MAGIC_CRITICAL_EFFECT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 5)}),
-        UNKNOWN_1(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 102), new MapSet<>(ProtocolVersion.VERSION_1_8, -1)}), // name currently unknown //ToDo
+        UNKNOWN_1(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 102), new MapSet<>(ProtocolVersion.VERSION_1_8, -1)}), // name currently unknown // ToDo
         SNEAK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 104), new MapSet<>(ProtocolVersion.VERSION_1_8, -1)}),
         UN_SNEAK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 105), new MapSet<>(ProtocolVersion.VERSION_1_8, -1)});
 

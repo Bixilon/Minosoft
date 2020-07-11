@@ -18,29 +18,29 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class Identifier extends VersionValueMap<String> {
+public class ChangeableIdentifier extends VersionValueMap<String> {
     String mod = "minecraft";
 
-    public Identifier(String legacy, String water) {
+    public ChangeableIdentifier(String legacy, String water) {
         values.put(Protocol.getLowestVersionSupported(), legacy);
         values.put(ProtocolVersion.VERSION_1_13_2, water);
     }
 
-    public Identifier(String legacy, String water, String mod) {
+    public ChangeableIdentifier(String legacy, String water, String mod) {
         values.put(Protocol.getLowestVersionSupported(), legacy);
         values.put(ProtocolVersion.VERSION_1_13_2, water);
         this.mod = mod;
     }
 
-    public Identifier(HashMap<ProtocolVersion, String> names) {
+    public ChangeableIdentifier(HashMap<ProtocolVersion, String> names) {
         this.values = names;
     }
 
-    public Identifier(IdentifierSet... sets) {
+    public ChangeableIdentifier(IdentifierSet... sets) {
         super(sets, true);
     }
 
-    public Identifier(String name) {
+    public ChangeableIdentifier(String name) {
         super(name);
     }
 

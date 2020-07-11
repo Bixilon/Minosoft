@@ -46,7 +46,7 @@ public enum Objects implements EntityEnumInterface {
     DRAGON_FIREBALL(93, DragonFireball.class),
     TRIDENT(94, Trident.class);
 
-    //ToDO: size changed between versions, fix it!
+    // ToDo: size changed between versions, fix it!
 
     final int type;
     final Class<? extends EntityObject> clazz;

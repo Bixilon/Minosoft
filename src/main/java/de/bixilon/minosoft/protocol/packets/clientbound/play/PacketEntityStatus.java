@@ -91,7 +91,7 @@ public class PacketEntityStatus implements ClientboundPacket {
         SPAWN_CLOUD_PARTICLE(43),
         ENTITY_HURT_BERRY_BUSH(44),
         PORTAL_PARTICLE_CHORUS(46);
-        //ToDo: 1.11+ (for each entity)
+        // ToDo: 1.11+ (for each entity)
 
 
         final int id;

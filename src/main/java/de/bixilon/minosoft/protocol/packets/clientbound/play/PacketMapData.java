@@ -173,7 +173,7 @@ public class PacketMapData implements ClientboundPacket {
 
 
     public enum MapPlayerDirection {
-        //ToDo
+        // ToDo
         TO_DO(0);
 
         final int id;

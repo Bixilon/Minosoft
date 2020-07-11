@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.entities.Items;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Pose;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
@@ -273,11 +274,11 @@ public class InByteBuffer {
                 if (id == -1) {
                     return null;
                 }
-                return new Slot(id, readByte(), readShort(), readNBT(version == ProtocolVersion.VERSION_1_7_10)); // compression
+                return new Slot(Items.getIdentifier(id, version), readByte(), readShort(), readNBT(version == ProtocolVersion.VERSION_1_7_10)); // compression
             case VERSION_1_13_2:
                 if (readBoolean()) {
                     // nothing here
-                    return new Slot(readVarInt(), readByte(), readNBT()); // ToDo: item metadata
+                    return new Slot(Items.getIdentifier(readVarInt(), version), readByte(), readNBT());
                 }
         }
         return null;

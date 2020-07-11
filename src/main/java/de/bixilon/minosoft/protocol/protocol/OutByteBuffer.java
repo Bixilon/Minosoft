@@ -176,7 +176,7 @@ public class OutByteBuffer {
                     writeShort((short) -1);
                     return;
                 }
-                writeShort((short) slot.getItemId());
+                writeShort((short) slot.getItemId(version));
                 writeByte((byte) slot.getItemCount());
                 writeShort(slot.getItemMetadata());
                 writeNBT(slot.getNbt());
@@ -186,7 +186,7 @@ public class OutByteBuffer {
                     writeBoolean(false);
                     return;
                 }
-                writeVarInt(slot.getItemId());
+                writeVarInt(slot.getItemId(version));
                 writeByte((byte) slot.getItemCount());
                 writeNBT(slot.getNbt());
 

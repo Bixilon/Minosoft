@@ -78,8 +78,8 @@ public enum Blocks {
     DROPPER_UP(DROPPER_DOWN, 4),
     DROPPER_WEST(DROPPER_DOWN, 5);
 
-    //ToDo all blocks
-    //ToDo post water update block states
+    // ToDo all blocks
+    // ToDo post water update block states
 
     final int id;
     final int data;

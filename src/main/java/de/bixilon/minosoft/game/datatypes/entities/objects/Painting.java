@@ -62,13 +62,13 @@ public class Painting extends EntityObject implements ObjectInterface {
 
     @Override
     public float getWidth() {
-        //ToDo
+        // ToDo
         return 1.0F;
     }
 
     @Override
     public float getHeight() {
-        //ToDo
+        // ToDo
         return 1.0F;
     }
 

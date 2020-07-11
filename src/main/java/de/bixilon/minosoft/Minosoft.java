@@ -16,11 +16,15 @@ package de.bixilon.minosoft;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
+import de.bixilon.minosoft.game.datatypes.entities.Items;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevel;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.OSUtil;
+import de.bixilon.minosoft.util.Util;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +53,9 @@ public class Minosoft {
         // set log level from config
         Log.setLevel(LogLevel.byName(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
         Log.info(String.format("Logging info with level: %s", Log.getLevel().name()));
+        Log.info("Loading all mappings...");
+        loadMappings();
+        Log.info("Mappings loaded");
 
         checkClientToken();
 
@@ -110,6 +117,29 @@ public class Minosoft {
         if (config.getString(GameConfiguration.CLIENT_TOKEN) == null || config.getString(GameConfiguration.CLIENT_TOKEN).equals("randomGenerated")) {
             config.putString(GameConfiguration.CLIENT_TOKEN, UUID.randomUUID().toString());
             config.saveToFile(Config.configFileName);
+        }
+    }
+
+    private static void loadMappings() {
+
+        try {
+            for (ProtocolVersion version : ProtocolVersion.versionMappingArray) {
+                if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+                    // skip them, use mapping of 1.12
+                    continue;
+                }
+                if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+                    JSONObject data = Util.readJsonFromFile(Config.homeDir + String.format("assets/mapping/%s/registries.json", version.getVersionString()));
+                    Items.load(version, data.getJSONObject("minecraft:item").getJSONObject("entries"));
+                } else {
+                    // special rule: multiple files for registers
+                    Items.load(version, Util.readJsonFromFile(Config.homeDir + String.format("assets/mapping/%s/items.json", version.getVersionString())));
+
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

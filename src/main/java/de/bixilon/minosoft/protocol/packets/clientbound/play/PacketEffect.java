@@ -81,7 +81,7 @@ public class PacketEffect implements ClientboundPacket {
         }
         return null;
     }
-    //ToDo all other dataTypes
+    // ToDo all other dataTypes
 
 
     public boolean isDisableRelativeVolume() {

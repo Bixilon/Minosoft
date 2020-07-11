@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Identifier;
+import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -53,29 +53,29 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
     }
 
     public enum AdvancementTabs {
-        STORY(new Identifier("story/root")),
-        NETHER(new Identifier("nether/root")),
-        END(new Identifier("end/root")),
-        ADVENTURE(new Identifier("adventure/root")),
-        HUSBANDRY(new Identifier("husbandry/root"));
+        STORY(new ChangeableIdentifier("story/root")),
+        NETHER(new ChangeableIdentifier("nether/root")),
+        END(new ChangeableIdentifier("end/root")),
+        ADVENTURE(new ChangeableIdentifier("adventure/root")),
+        HUSBANDRY(new ChangeableIdentifier("husbandry/root"));
 
-        final Identifier identifier;
+        final ChangeableIdentifier changeableIdentifier;
 
-        AdvancementTabs(Identifier identifier) {
-            this.identifier = identifier;
+        AdvancementTabs(ChangeableIdentifier changeableIdentifier) {
+            this.changeableIdentifier = changeableIdentifier;
         }
 
         public static AdvancementTabs byName(String name, ProtocolVersion version) {
             for (AdvancementTabs advancementTab : values()) {
-                if (advancementTab.getIdentifier().get(version).equals(name)) {
+                if (advancementTab.getChangeableIdentifier().get(version).equals(name)) {
                     return advancementTab;
                 }
             }
             return null;
         }
 
-        public Identifier getIdentifier() {
-            return identifier;
+        public ChangeableIdentifier getChangeableIdentifier() {
+            return changeableIdentifier;
         }
     }
 }

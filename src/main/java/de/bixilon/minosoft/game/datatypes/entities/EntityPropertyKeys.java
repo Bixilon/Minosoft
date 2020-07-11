@@ -13,34 +13,34 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-import de.bixilon.minosoft.game.datatypes.Identifier;
+import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public enum EntityPropertyKeys {
-    MAX_HEALTH(new Identifier("generic.maxHealth")),
-    FOLLOW_RANGE(new Identifier("generic.followRange")),
-    KNOCKBACK_RESISTANCE(new Identifier("generic.knockbackResistance")),
-    MOVEMENT_SPEED(new Identifier("generic.movementSpeed")),
-    ATTACK_DAMAGE(new Identifier("generic.attackDamage")),
-    HORSE_JUMP_STRENGTH(new Identifier("horse.jumpStrength")),
-    ZOMBIE_SPAWN_REINFORCEMENT(new Identifier("zombie.spawnReinforcements"));
+    MAX_HEALTH(new ChangeableIdentifier("generic.maxHealth")),
+    FOLLOW_RANGE(new ChangeableIdentifier("generic.followRange")),
+    KNOCKBACK_RESISTANCE(new ChangeableIdentifier("generic.knockbackResistance")),
+    MOVEMENT_SPEED(new ChangeableIdentifier("generic.movementSpeed")),
+    ATTACK_DAMAGE(new ChangeableIdentifier("generic.attackDamage")),
+    HORSE_JUMP_STRENGTH(new ChangeableIdentifier("horse.jumpStrength")),
+    ZOMBIE_SPAWN_REINFORCEMENT(new ChangeableIdentifier("zombie.spawnReinforcements"));
 
-    final Identifier identifier;
+    final ChangeableIdentifier changeableIdentifier;
 
-    EntityPropertyKeys(Identifier identifier) {
-        this.identifier = identifier;
+    EntityPropertyKeys(ChangeableIdentifier changeableIdentifier) {
+        this.changeableIdentifier = changeableIdentifier;
     }
 
     public static EntityPropertyKeys byName(String name, ProtocolVersion version) {
         for (EntityPropertyKeys propertyKey : values()) {
-            if (propertyKey.getIdentifier().isValidName(name, version)) {
+            if (propertyKey.getChangeableIdentifier().isValidName(name, version)) {
                 return propertyKey;
             }
         }
         return null;
     }
 
-    public Identifier getIdentifier() {
-        return identifier;
+    public ChangeableIdentifier getChangeableIdentifier() {
+        return changeableIdentifier;
     }
 }

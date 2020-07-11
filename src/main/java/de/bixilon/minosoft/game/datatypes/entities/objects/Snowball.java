@@ -37,7 +37,7 @@ public class Snowball extends EntityObject implements ObjectInterface {
     public Snowball(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new EntityMetaData(sets, version);
-        this.thrower = 0; //ToDo
+        this.thrower = 0; // ToDo
     }
 
     @Override

@@ -32,7 +32,7 @@ public class SnowGolemMetaData extends MobMetaData {
                 return BitByte.isBitMask((byte) sets.get(12).getData(), 0x10);
             case VERSION_1_12_2:
             case VERSION_1_13_2:
-                //ToDo: obviously wrong
+                // ToDo: obviously wrong
                 return BitByte.isBitMask((byte) sets.get(12).getData(), 0x01);
         }
         return true;

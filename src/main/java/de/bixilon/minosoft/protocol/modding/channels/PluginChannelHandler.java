@@ -102,7 +102,7 @@ public class PluginChannelHandler {
             // channel is a default channel, can not register
             throw new IllegalArgumentException(String.format("Can not register default Minecraft plugin channel (name=%s)", name));
         }
-        sendRawData(DefaultPluginChannels.REGISTER.getIdentifier().get(connection.getVersion()), name.getBytes());
+        sendRawData(DefaultPluginChannels.REGISTER.getChangeableIdentifier().get(connection.getVersion()), name.getBytes());
         registeredServerChannels.add(name);
     }
 
@@ -111,7 +111,7 @@ public class PluginChannelHandler {
             // channel is a default channel, can not unregister
             throw new IllegalArgumentException(String.format("Can not unregister default Minecraft plugin channel (name=%s)", name));
         }
-        sendRawData(DefaultPluginChannels.UNREGISTER.getIdentifier().get(connection.getVersion()), name.getBytes());
+        sendRawData(DefaultPluginChannels.UNREGISTER.getChangeableIdentifier().get(connection.getVersion()), name.getBytes());
         registeredServerChannels.remove(name);
     }
 

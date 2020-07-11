@@ -39,7 +39,7 @@ public class FallingBlock extends EntityObject implements ObjectInterface {
     public FallingBlock(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new FallingBlockMetaData(sets, version);
-        block = Blocks.UNKNOWN; //ToDo
+        block = Blocks.UNKNOWN; // ToDo
     }
 
 
@@ -69,7 +69,7 @@ public class FallingBlock extends EntityObject implements ObjectInterface {
     }
 
     public Blocks getBlock() {
-        //ToDo depends on protocol version
+        // ToDo depends on protocol version
         return block;
     }
 

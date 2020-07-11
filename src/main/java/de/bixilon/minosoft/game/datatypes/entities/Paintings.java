@@ -13,42 +13,42 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-import de.bixilon.minosoft.game.datatypes.Identifier;
+import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public enum Paintings {
-    KEBAB(new Identifier("kebab"), 0),
-    AZTEC(new Identifier("aztec"), 1),
-    ALBAN(new Identifier("alban"), 2),
-    AZTEC2(new Identifier("aztec2"), 3),
-    BOMB(new Identifier("bomb"), 4),
-    PLANT(new Identifier("plant"), 5),
-    WASTELAND(new Identifier("wasteland"), 6),
-    POOL(new Identifier("pool"), 7),
-    COURBET(new Identifier("courbet"), 8),
-    SEA(new Identifier("sea"), 9),
-    SUNSET(new Identifier("sunset"), 10),
-    CREEBET(new Identifier("creebet"), 11),
-    WANDERER(new Identifier("wanderer"), 12),
-    GRAHAM(new Identifier("graham"), 13),
-    MATCH(new Identifier("match"), 14),
-    BUST(new Identifier("bust"), 15),
-    STAGE(new Identifier("stage"), 16),
-    VOID(new Identifier("void"), 17),
-    SKULL_AND_ROSES(new Identifier("skull_and_roses"), 18),
-    WITHER(new Identifier("wither"), 19),
-    FIGHTERS(new Identifier("fighters"), 20),
-    POINTER(new Identifier("pointer"), 21),
-    PIG_SCENE(new Identifier("pigscene"), 22),
-    BURNING_SKULL(new Identifier("burning_skull"), 23),
-    SKELETON(new Identifier("skeleton"), 24),
-    DONKEY_KONG(new Identifier("donkey_kong"), 25);
+    KEBAB(new ChangeableIdentifier("kebab"), 0),
+    AZTEC(new ChangeableIdentifier("aztec"), 1),
+    ALBAN(new ChangeableIdentifier("alban"), 2),
+    AZTEC2(new ChangeableIdentifier("aztec2"), 3),
+    BOMB(new ChangeableIdentifier("bomb"), 4),
+    PLANT(new ChangeableIdentifier("plant"), 5),
+    WASTELAND(new ChangeableIdentifier("wasteland"), 6),
+    POOL(new ChangeableIdentifier("pool"), 7),
+    COURBET(new ChangeableIdentifier("courbet"), 8),
+    SEA(new ChangeableIdentifier("sea"), 9),
+    SUNSET(new ChangeableIdentifier("sunset"), 10),
+    CREEBET(new ChangeableIdentifier("creebet"), 11),
+    WANDERER(new ChangeableIdentifier("wanderer"), 12),
+    GRAHAM(new ChangeableIdentifier("graham"), 13),
+    MATCH(new ChangeableIdentifier("match"), 14),
+    BUST(new ChangeableIdentifier("bust"), 15),
+    STAGE(new ChangeableIdentifier("stage"), 16),
+    VOID(new ChangeableIdentifier("void"), 17),
+    SKULL_AND_ROSES(new ChangeableIdentifier("skull_and_roses"), 18),
+    WITHER(new ChangeableIdentifier("wither"), 19),
+    FIGHTERS(new ChangeableIdentifier("fighters"), 20),
+    POINTER(new ChangeableIdentifier("pointer"), 21),
+    PIG_SCENE(new ChangeableIdentifier("pigscene"), 22),
+    BURNING_SKULL(new ChangeableIdentifier("burning_skull"), 23),
+    SKELETON(new ChangeableIdentifier("skeleton"), 24),
+    DONKEY_KONG(new ChangeableIdentifier("donkey_kong"), 25);
 
-    final Identifier identifier;
+    final ChangeableIdentifier changeableIdentifier;
     final int id;
 
-    Paintings(Identifier identifier, int id) {
-        this.identifier = identifier;
+    Paintings(ChangeableIdentifier changeableIdentifier, int id) {
+        this.changeableIdentifier = changeableIdentifier;
         this.id = id;
     }
 
@@ -64,7 +64,7 @@ public enum Paintings {
 
     public static Paintings byName(String name, ProtocolVersion version) {
         for (Paintings painting : values()) {
-            if (painting.getIdentifier().isValidName(name, version)) {
+            if (painting.getChangeableIdentifier().isValidName(name, version)) {
                 return painting;
             }
         }
@@ -76,7 +76,7 @@ public enum Paintings {
         return id;
     }
 
-    public Identifier getIdentifier() {
-        return identifier;
+    public ChangeableIdentifier getChangeableIdentifier() {
+        return changeableIdentifier;
     }
 }

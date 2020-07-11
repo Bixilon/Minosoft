@@ -16,28 +16,28 @@ package de.bixilon.minosoft.game.datatypes;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public enum StatisticCategories {
-    MINED(new Identifier("minecraft.mined"), 0),
-    CRAFTED(new Identifier("minecraft.crafted"), 1),
-    USED(new Identifier("minecraft.used"), 2),
-    BROKEN(new Identifier("minecraft.broken"), 3),
-    PICKED_UP(new Identifier("minecraft.picked_up"), 4),
-    DROPPED(new Identifier("minecraft.dropped"), 5),
-    KILLED(new Identifier("minecraft.killed"), 6),
-    KILLED_BY(new Identifier("minecraft.killed_by"), 7),
-    CUSTOM(new Identifier("minecraft.custom"), 8);
+    MINED(new ChangeableIdentifier("minecraft.mined"), 0),
+    CRAFTED(new ChangeableIdentifier("minecraft.crafted"), 1),
+    USED(new ChangeableIdentifier("minecraft.used"), 2),
+    BROKEN(new ChangeableIdentifier("minecraft.broken"), 3),
+    PICKED_UP(new ChangeableIdentifier("minecraft.picked_up"), 4),
+    DROPPED(new ChangeableIdentifier("minecraft.dropped"), 5),
+    KILLED(new ChangeableIdentifier("minecraft.killed"), 6),
+    KILLED_BY(new ChangeableIdentifier("minecraft.killed_by"), 7),
+    CUSTOM(new ChangeableIdentifier("minecraft.custom"), 8);
 
 
-    final Identifier identifier;
+    final ChangeableIdentifier changeableIdentifier;
     final int id;
 
-    StatisticCategories(Identifier identifier, int id) {
-        this.identifier = identifier;
+    StatisticCategories(ChangeableIdentifier changeableIdentifier, int id) {
+        this.changeableIdentifier = changeableIdentifier;
         this.id = id;
     }
 
     public static StatisticCategories byName(String name, ProtocolVersion version) {
         for (StatisticCategories category : values()) {
-            if (category.getIdentifier().isValidName(name, version)) {
+            if (category.getChangeableIdentifier().isValidName(name, version)) {
                 return category;
             }
         }
@@ -53,8 +53,8 @@ public enum StatisticCategories {
         return null;
     }
 
-    public Identifier getIdentifier() {
-        return identifier;
+    public ChangeableIdentifier getChangeableIdentifier() {
+        return changeableIdentifier;
     }
 
     public int getId() {

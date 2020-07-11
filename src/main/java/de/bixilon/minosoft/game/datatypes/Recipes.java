@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.game.datatypes;
 
 public enum Recipes {
-    TODO(0, new Identifier("todo"));
+    TODO(0, new ChangeableIdentifier("todo"));
 
     final int id;
-    final Identifier identifier;
+    final ChangeableIdentifier changeableIdentifier;
 
-    Recipes(int id, Identifier identifier) {
+    Recipes(int id, ChangeableIdentifier changeableIdentifier) {
         this.id = id;
-        this.identifier = identifier;
+        this.changeableIdentifier = changeableIdentifier;
     }
 
     public static Recipes byId(int id) {
@@ -36,7 +36,7 @@ public enum Recipes {
         return id;
     }
 
-    public Identifier getIdentifier() {
-        return identifier;
+    public ChangeableIdentifier getChangeableIdentifier() {
+        return changeableIdentifier;
     }
 }

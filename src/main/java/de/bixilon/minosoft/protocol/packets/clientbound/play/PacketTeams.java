@@ -171,7 +171,7 @@ public class PacketTeams implements ClientboundPacket {
                 seeFriendlyInvisibles = true;
                 break;
         }
-        //ToDo: seeFriendlyInvisibles for case 0 and 1
+        // ToDo: seeFriendlyInvisibles for case 0 and 1
     }
 
     public enum TeamActions {

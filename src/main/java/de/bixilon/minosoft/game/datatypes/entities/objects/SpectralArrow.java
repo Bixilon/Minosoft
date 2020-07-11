@@ -38,7 +38,7 @@ public class SpectralArrow extends EntityObject implements ObjectInterface {
     public SpectralArrow(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new ArrowMetaData(sets, version);
-        this.shooter = 0; //ToDo
+        this.shooter = 0; // ToDo
     }
 
     @Override

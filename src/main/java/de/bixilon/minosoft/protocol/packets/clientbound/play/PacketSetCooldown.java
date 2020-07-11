@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.Items;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -21,7 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketSetCooldown implements ClientboundPacket {
 
-    Items item;
+    int item;
     int cooldownTicks;
 
 
@@ -33,7 +32,7 @@ public class PacketSetCooldown implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
-                item = Items.byLegacy(buffer.readVarInt());
+                item = buffer.readVarInt();
                 cooldownTicks = buffer.readVarInt();
                 return true;
         }
@@ -43,7 +42,7 @@ public class PacketSetCooldown implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving item cooldown (item=%s, coolDown=%dt)", item.name(), cooldownTicks));
+        Log.protocol(String.format("Receiving item cooldown (item=%s, coolDown=%dt)", item, cooldownTicks));
     }
 
     @Override
@@ -51,7 +50,7 @@ public class PacketSetCooldown implements ClientboundPacket {
         h.handle(this);
     }
 
-    public Items getItem() {
+    public int getItem() {
         return item;
     }
 

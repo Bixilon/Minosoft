@@ -15,7 +15,7 @@ package de.bixilon.minosoft.game.datatypes.player;
 
 public enum PlayerProperties {
     TEXTURES("textures");
-    //ToDo
+    // ToDo
 
     final String name;
 

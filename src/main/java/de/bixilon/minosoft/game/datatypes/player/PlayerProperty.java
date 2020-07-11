@@ -39,7 +39,7 @@ public class PlayerProperty {
     }
 
     public boolean isSigned() {
-        //ToDo check signature
+        // ToDo check signature
         return signature != null;
     }
 
