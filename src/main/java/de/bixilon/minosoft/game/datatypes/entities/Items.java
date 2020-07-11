@@ -16,7 +16,6 @@ package de.bixilon.minosoft.game.datatypes.entities;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -27,7 +26,11 @@ public class Items {
     static HashMap<ProtocolVersion, HashMap<Integer, String>> itemProtocolMap = new HashMap<>();
 
     public static String getIdentifierByLegacy(int id, int metaData, ProtocolVersion version) {
-        return getIdentifier((id << 4 | metaData), version);
+        int itemId = id << 4;
+        if (metaData > 0 && metaData <= 15) {
+            itemId |= metaData;
+        }
+        return getIdentifier(itemId, version);
     }
 
     public static String getIdentifier(int id, ProtocolVersion version) {
@@ -37,10 +40,20 @@ public class Items {
         return itemProtocolMap.get(version).get(id);
     }
 
-    public static void load(ProtocolVersion version, JSONObject json) throws IOException {
+    public static void load(ProtocolVersion version, JSONObject json) {
         HashMap<Integer, String> versionMapping = new HashMap<>();
-        if (version == ProtocolVersion.VERSION_1_13_2) {
-            // old format
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            // old format (with metadata
+            for (Iterator<String> it = json.keys(); it.hasNext(); ) {
+                String identifier = it.next();
+                JSONObject identifierJSON = json.getJSONObject(identifier);
+                int itemId = identifierJSON.getInt("protocol_id") << 4;
+                if (identifierJSON.has("protocol_meta")) {
+                    itemId |= identifierJSON.getInt("protocol_meta");
+                }
+                versionMapping.put(itemId, identifier);
+            }
+        } else {
             for (Iterator<String> it = json.keys(); it.hasNext(); ) {
                 String identifier = it.next();
                 versionMapping.put(json.getJSONObject(identifier).getInt("protocol_id"), identifier);

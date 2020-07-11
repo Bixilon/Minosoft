@@ -24,6 +24,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.OSUtil;
 import de.bixilon.minosoft.util.Util;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -121,7 +122,6 @@ public class Minosoft {
     }
 
     private static void loadMappings() {
-
         try {
             for (ProtocolVersion version : ProtocolVersion.versionMappingArray) {
                 if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
@@ -137,8 +137,8 @@ public class Minosoft {
 
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | JSONException e) {
+            Log.fatal("Error occurred while loading version mapping: " + e.getLocalizedMessage());
             System.exit(1);
         }
     }
