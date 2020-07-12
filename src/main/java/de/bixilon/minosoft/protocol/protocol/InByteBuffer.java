@@ -274,10 +274,12 @@ public class InByteBuffer {
                 if (id == -1) {
                     return null;
                 }
-                return new Slot(Items.getIdentifier(id, version), readByte(), readShort(), readNBT(version == ProtocolVersion.VERSION_1_7_10)); // compression
+                byte count = readByte();
+                short metaData = readShort();
+                CompoundTag nbt = readNBT(version == ProtocolVersion.VERSION_1_7_10);
+                return new Slot(Items.getIdentifierByLegacy(id, metaData, version), count, metaData, nbt);
             case VERSION_1_13_2:
                 if (readBoolean()) {
-                    // nothing here
                     return new Slot(Items.getIdentifier(readVarInt(), version), readByte(), readNBT());
                 }
         }

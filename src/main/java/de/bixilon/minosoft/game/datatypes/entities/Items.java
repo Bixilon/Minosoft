@@ -16,13 +16,12 @@ package de.bixilon.minosoft.game.datatypes.entities;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class Items {
 
     // ProtocolVersion-> itemId << 4 | metaData, Identifier
+    static List<String> identifiers = new ArrayList<>();
     static HashMap<ProtocolVersion, HashMap<Integer, String>> itemProtocolMap = new HashMap<>();
 
     public static String getIdentifierByLegacy(int id, int metaData, ProtocolVersion version) {
@@ -30,7 +29,12 @@ public class Items {
         if (metaData > 0 && metaData <= 15) {
             itemId |= metaData;
         }
-        return getIdentifier(itemId, version);
+        String identifier = getIdentifier(itemId, version);
+        if (identifier == null) {
+            // ignore meta data?
+            return getIdentifier(id << 4, version);
+        }
+        return identifier;
     }
 
     public static String getIdentifier(int id, ProtocolVersion version) {
@@ -42,22 +46,25 @@ public class Items {
 
     public static void load(ProtocolVersion version, JSONObject json) {
         HashMap<Integer, String> versionMapping = new HashMap<>();
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            // old format (with metadata
-            for (Iterator<String> it = json.keys(); it.hasNext(); ) {
-                String identifier = it.next();
-                JSONObject identifierJSON = json.getJSONObject(identifier);
-                int itemId = identifierJSON.getInt("protocol_id") << 4;
+        // old format (with metadata
+        for (Iterator<String> it = json.keys(); it.hasNext(); ) {
+            String identifier = it.next();
+            if (identifiers.contains(identifier)) {
+                identifier = identifiers.get(identifiers.indexOf(identifier));
+            } else {
+                identifiers.add(identifier);
+            }
+            JSONObject identifierJSON = json.getJSONObject(identifier);
+            int itemId;
+            if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+                itemId = identifierJSON.getInt("protocol_id") << 4;
                 if (identifierJSON.has("protocol_meta")) {
                     itemId |= identifierJSON.getInt("protocol_meta");
                 }
-                versionMapping.put(itemId, identifier);
+            } else {
+                itemId = json.getJSONObject(identifier).getInt("protocol_id");
             }
-        } else {
-            for (Iterator<String> it = json.keys(); it.hasNext(); ) {
-                String identifier = it.next();
-                versionMapping.put(json.getJSONObject(identifier).getInt("protocol_id"), identifier);
-            }
+            versionMapping.put(itemId, identifier);
         }
         itemProtocolMap.put(version, versionMapping);
     }
