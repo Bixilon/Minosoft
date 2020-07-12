@@ -22,6 +22,7 @@ import de.bixilon.minosoft.logging.LogLevel;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.util.FolderUtil;
 import de.bixilon.minosoft.util.OSUtil;
 import de.bixilon.minosoft.util.Util;
 import org.json.JSONException;
@@ -54,6 +55,9 @@ public class Minosoft {
         // set log level from config
         Log.setLevel(LogLevel.byName(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
         Log.info(String.format("Logging info with level: %s", Log.getLevel().name()));
+        Log.info("Checking assets...");
+        checkAssets();
+        Log.info("Assets checking done");
         Log.info("Loading all mappings...");
         loadMappings();
         Log.info("Mappings loaded");
@@ -142,4 +146,14 @@ public class Minosoft {
             System.exit(1);
         }
     }
+
+    private static void checkAssets() {
+        try {
+            FolderUtil.copyFolder(Minosoft.class.getResource("/assets").toURI(), Config.homeDir + "assets/");
+        } catch (Exception e) {
+            Log.fatal("Error occurred while checking assets: " + e.getLocalizedMessage());
+            System.exit(1);
+        }
+    }
+
 }

@@ -61,7 +61,7 @@ public class PacketScoreboardObjective implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\"", action.name(), name, value));
+        Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\"", action.name(), name, value.getColoredMessage()));
     }
 
     @Override

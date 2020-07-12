@@ -201,6 +201,11 @@ public class TextComponent {
         return "";
     }
 
+    @Override
+    public String toString() {
+        return getColoredMessage();
+    }
+
     public enum ChatAttributes {
         BLACK("\033[38;2;0;0;0m", ChatColor.BLACK),
         DARK_BLUE("\033[38;2;0;0;170m", ChatColor.DARK_BLUE),
