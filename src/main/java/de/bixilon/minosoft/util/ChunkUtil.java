@@ -18,6 +18,7 @@ import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibble;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibbleLocation;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
@@ -158,7 +159,7 @@ public class ChunkUtil {
                     if (bitsPerBlock < 4) {
                         bitsPerBlock = 4;
                     } else if (bitsPerBlock > 8) {
-                        bitsPerBlock = 13;
+                        bitsPerBlock = (byte) ((buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) ? 14 : 13);
                     }
                     boolean usePalette = (bitsPerBlock <= 8);
 
@@ -202,8 +203,13 @@ public class ChunkUtil {
                                     // you're probably reading light data instead
                                     blockId = palette[blockId];
                                 }
-
-                                Blocks block = Blocks.byId(blockId >>> 4, blockId & 0xF);
+                                Blocks block;
+                                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+                                    // no meta data anymore
+                                    block = Blocks.byId(blockId);
+                                } else {
+                                    block = Blocks.byId(blockId >>> 4, blockId & 0xF);
+                                }
                                 if (block == Blocks.AIR) {
                                     continue;
                                 }

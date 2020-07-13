@@ -15,9 +15,9 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.game.datatypes.entities.Items;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Pose;
+import de.bixilon.minosoft.game.datatypes.entities.items.Items;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.particle.*;
@@ -277,10 +277,10 @@ public class InByteBuffer {
                 byte count = readByte();
                 short metaData = readShort();
                 CompoundTag nbt = readNBT(version == ProtocolVersion.VERSION_1_7_10);
-                return new Slot(Items.getIdentifierByLegacy(id, metaData, version), count, metaData, nbt);
+                return new Slot(Items.getItemByLegacy(id, metaData, version), count, metaData, nbt);
             case VERSION_1_13_2:
                 if (readBoolean()) {
-                    return new Slot(Items.getIdentifier(readVarInt(), version), readByte(), readNBT());
+                    return new Slot(Items.getItem(readVarInt(), version), readByte(), readNBT());
                 }
         }
         return null;

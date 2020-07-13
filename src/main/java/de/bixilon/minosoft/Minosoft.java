@@ -16,7 +16,7 @@ package de.bixilon.minosoft;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
-import de.bixilon.minosoft.game.datatypes.entities.Items;
+import de.bixilon.minosoft.game.datatypes.entities.items.Items;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevel;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -132,13 +133,24 @@ public class Minosoft {
                     // skip them, use mapping of 1.12
                     continue;
                 }
+                String fileName;
                 if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-                    JSONObject data = Util.readJsonFromFile(Config.homeDir + String.format("assets/mapping/%s/registries.json", version.getVersionString()));
-                    Items.load(version, data.getJSONObject("minecraft:item").getJSONObject("entries"));
+                    fileName = Config.homeDir + String.format("assets/mapping/%s/registries.json", version.getVersionString());
                 } else {
-                    // special rule: multiple files for registers
-                    Items.load(version, Util.readJsonFromFile(Config.homeDir + String.format("assets/mapping/%s/items.json", version.getVersionString())));
+                    fileName = Config.homeDir + String.format("assets/mapping/%s/items.json", version.getVersionString());
+                }
+                JSONObject data = Util.readJsonFromFile(fileName);
+                for (Iterator<String> mods = data.keys(); mods.hasNext(); ) {
+                    // key = mod name
+                    String mod = mods.next();
+                    JSONObject modJSON = data.getJSONObject(mod);
 
+                    if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+                        Items.load(mod, modJSON.getJSONObject("item").getJSONObject("entries"), version);
+                    } else {
+                        // special rule: multiple files for registers
+                        Items.load(mod, modJSON, version);
+                    }
                 }
             }
         } catch (IOException | JSONException e) {
