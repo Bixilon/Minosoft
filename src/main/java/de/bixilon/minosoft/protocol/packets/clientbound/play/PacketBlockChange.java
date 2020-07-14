@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketBlockChange implements ClientboundPacket {
     BlockPosition position;
-    Blocks block;
+    Block block;
 
 
     @Override
@@ -30,16 +31,16 @@ public class PacketBlockChange implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 position = buffer.readBlockPosition();
-                block = Blocks.byId(buffer.readVarInt(), buffer.readByte());
+                block = Blocks.getBlockByLegacy(buffer.readVarInt(), buffer.readByte());
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 position = buffer.readPosition();
-                int blockId = buffer.readVarInt();
-                block = Blocks.byId(blockId >>> 4, blockId & 0xF);
+                block = Blocks.getBlock(buffer.readVarInt(), buffer.getVersion());
                 return true;
         }
 
@@ -48,7 +49,7 @@ public class PacketBlockChange implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Block change received at %s (block=%s)", position.toString(), block.name()));
+        Log.protocol(String.format("Block change received at %s (block=%s)", position.toString(), block));
     }
 
     @Override
@@ -60,7 +61,7 @@ public class PacketBlockChange implements ClientboundPacket {
         return position;
     }
 
-    public Blocks getBlock() {
+    public Block getBlock() {
         return block;
     }
 }

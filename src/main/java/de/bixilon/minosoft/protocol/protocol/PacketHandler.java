@@ -391,7 +391,7 @@ public class PacketHandler {
             int y = ((int) pkg.getLocation().getY()) + record[1];
             int z = ((int) pkg.getLocation().getY()) + record[2];
             BlockPosition blockPosition = new BlockPosition(x, (short) y, z);
-            connection.getPlayer().getWorld().setBlock(blockPosition, Blocks.AIR);
+            connection.getPlayer().getWorld().setBlock(blockPosition, Blocks.nullBlock);
         }
         // ToDo: motion support
     }

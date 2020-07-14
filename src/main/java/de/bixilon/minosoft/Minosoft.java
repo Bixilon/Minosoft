@@ -15,7 +15,9 @@ package de.bixilon.minosoft;
 
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
+import de.bixilon.minosoft.game.datatypes.Mappings;
 import de.bixilon.minosoft.game.datatypes.Player;
+import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.items.Items;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevel;
@@ -30,9 +32,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Minosoft {
     static Configuration config;
@@ -127,29 +127,29 @@ public class Minosoft {
     }
 
     private static void loadMappings() {
+        HashMap<String, Mappings> mappingsHashMap = new HashMap<>();
+        mappingsHashMap.put("registries", Mappings.REGISTRIES);
+        mappingsHashMap.put("blocks", Mappings.BLOCKS);
         try {
             for (ProtocolVersion version : ProtocolVersion.versionMappingArray) {
                 if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
                     // skip them, use mapping of 1.12
                     continue;
                 }
-                String fileName;
-                if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-                    fileName = Config.homeDir + String.format("assets/mapping/%s/registries.json", version.getVersionString());
-                } else {
-                    fileName = Config.homeDir + String.format("assets/mapping/%s/items.json", version.getVersionString());
-                }
-                JSONObject data = Util.readJsonFromFile(fileName);
-                for (Iterator<String> mods = data.keys(); mods.hasNext(); ) {
-                    // key = mod name
-                    String mod = mods.next();
-                    JSONObject modJSON = data.getJSONObject(mod);
-
-                    if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-                        Items.load(mod, modJSON.getJSONObject("item").getJSONObject("entries"), version);
-                    } else {
-                        // special rule: multiple files for registers
-                        Items.load(mod, modJSON, version);
+                for (Map.Entry<String, Mappings> mappingSet : mappingsHashMap.entrySet()) {
+                    JSONObject data = Util.readJsonFromFile(Config.homeDir + String.format("assets/mapping/%s/%s.json", version.getVersionString(), mappingSet.getKey()));
+                    for (Iterator<String> mods = data.keys(); mods.hasNext(); ) {
+                        // key = mod name
+                        String mod = mods.next();
+                        JSONObject modJSON = data.getJSONObject(mod);
+                        switch (mappingSet.getValue()) {
+                            case REGISTRIES:
+                                Items.load(mod, modJSON.getJSONObject("item").getJSONObject("entries"), version);
+                                break;
+                            case BLOCKS:
+                                Blocks.load(mod, modJSON, version);
+                                break;
+                        }
                     }
                 }
             }

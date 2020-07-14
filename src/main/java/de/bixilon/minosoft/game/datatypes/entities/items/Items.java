@@ -27,15 +27,15 @@ public class Items {
     static ArrayList<Item> itemList = new ArrayList<>();
     static HashMap<ProtocolVersion, BiMap<Integer, Item>> itemMap = new HashMap<>(); // version -> (protocolId > Item)
 
-    public static Item getItemByLegacy(int protocolId, int protocolMetaData, ProtocolVersion version) {
+    public static Item getItemByLegacy(int protocolId, int protocolMetaData) {
         int itemId = protocolId << 4;
         if (protocolMetaData > 0 && protocolMetaData <= 15) {
             itemId |= protocolMetaData;
         }
-        Item item = getItem(itemId, version);
+        Item item = getItem(itemId, ProtocolVersion.VERSION_1_12_2);
         if (item == null) {
             // ignore meta data?
-            return getItem(protocolId << 4, version);
+            return getItem(protocolId << 4, ProtocolVersion.VERSION_1_12_2);
         }
         return item;
     }
@@ -55,15 +55,13 @@ public class Items {
                 itemList.add(item);
             }
             JSONObject identifierJSON = json.getJSONObject(identifierName);
-            int itemId;
+            int itemId = identifierJSON.getInt("id");
             if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
                 // old format (with metadata)
-                itemId = identifierJSON.getInt("protocol_id") << 4;
-                if (identifierJSON.has("protocol_meta")) {
-                    itemId |= identifierJSON.getInt("protocol_meta");
+                itemId <<= 4;
+                if (identifierJSON.has("meta")) {
+                    itemId |= identifierJSON.getInt("meta");
                 }
-            } else {
-                itemId = identifierJSON.getInt("protocol_id");
             }
             versionMapping.put(itemId, item);
         }
@@ -80,7 +78,11 @@ public class Items {
     }
 
     public static int getItemId(Item item, ProtocolVersion version) {
-        return itemMap.get(version).inverse().get(item);
+        int itemId = itemMap.get(version).inverse().get(item);
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return itemId >> 4;
+        }
+        return itemId;
     }
 
 }

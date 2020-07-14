@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
+import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
@@ -22,24 +23,24 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import java.util.HashMap;
 
 public class FallingBlock extends EntityObject implements ObjectInterface {
-    final Blocks block;
+    final Block block;
     FallingBlockMetaData metaData;
 
     public FallingBlock(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
-        block = Blocks.byId(additionalInt & 0xFFF, additionalInt >>> 12);
+        block = Blocks.getBlockByLegacy(additionalInt & 0xFFF, additionalInt >>> 12);
     }
 
     public FallingBlock(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
-        block = Blocks.byId(additionalInt & 0xFFF, additionalInt >>> 12);
+        block = Blocks.getBlockByLegacy(additionalInt & 0xFFF, additionalInt >>> 12);
     }
 
     public FallingBlock(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new FallingBlockMetaData(sets, version);
-        block = Blocks.UNKNOWN; // ToDo
+        block = Blocks.nullBlock; // ToDo
     }
 
 
@@ -68,7 +69,7 @@ public class FallingBlock extends EntityObject implements ObjectInterface {
         return 0.98F;
     }
 
-    public Blocks getBlock() {
+    public Block getBlock() {
         // ToDo depends on protocol version
         return block;
     }

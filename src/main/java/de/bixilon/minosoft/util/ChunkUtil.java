@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util;
 
+import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibble;
@@ -53,7 +54,7 @@ public class ChunkUtil {
                 for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
                     if (BitByte.isBitSet(sectionBitMask, c)) {
 
-                        HashMap<ChunkNibbleLocation, Blocks> blockMap = new HashMap<>();
+                        HashMap<ChunkNibbleLocation, Block> blockMap = new HashMap<>();
 
                         for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                             for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
@@ -79,8 +80,8 @@ public class ChunkUtil {
 
 
                                     // ToDo light, biome
-                                    Blocks block = Blocks.byId(singeBlockId, singleMeta);
-                                    if (block == Blocks.AIR) {
+                                    Block block = Blocks.getBlockByLegacy(singeBlockId, singleMeta);
+                                    if (block == Blocks.nullBlock) {
                                         arrayPos++;
                                         continue;
                                     }
@@ -124,13 +125,13 @@ public class ChunkUtil {
                     if (!BitByte.isBitSet(sectionBitMask, c)) {
                         continue;
                     }
-                    HashMap<ChunkNibbleLocation, Blocks> blockMap = new HashMap<>();
+                    HashMap<ChunkNibbleLocation, Block> blockMap = new HashMap<>();
 
                     for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                         for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                             for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
-                                Blocks block = Blocks.byId(blockData[arrayPos] >>> 4, blockData[arrayPos] & 0xF);
-                                if (block == Blocks.AIR) {
+                                Block block = Blocks.getBlockByLegacy(blockData[arrayPos]);
+                                if (block == Blocks.nullBlock) {
                                     arrayPos++;
                                     continue;
                                 }
@@ -176,7 +177,7 @@ public class ChunkUtil {
 
                     long[] data = buffer.readLongs(buffer.readVarInt());
 
-                    HashMap<ChunkNibbleLocation, Blocks> blockMap = new HashMap<>();
+                    HashMap<ChunkNibbleLocation, Block> blockMap = new HashMap<>();
                     for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                         for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                             for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
@@ -203,14 +204,14 @@ public class ChunkUtil {
                                     // you're probably reading light data instead
                                     blockId = palette[blockId];
                                 }
-                                Blocks block;
+                                Block block;
                                 if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
                                     // no meta data anymore
-                                    block = Blocks.byId(blockId);
+                                    block = Blocks.getBlock(blockId, buffer.getVersion());
                                 } else {
-                                    block = Blocks.byId(blockId >>> 4, blockId & 0xF);
+                                    block = Blocks.getBlockByLegacy(blockId >>> 4, blockId & 0xF);
                                 }
-                                if (block == Blocks.AIR) {
+                                if (block == Blocks.nullBlock) {
                                     continue;
                                 }
                                 blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), block);

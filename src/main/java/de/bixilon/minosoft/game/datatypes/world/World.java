@@ -15,6 +15,7 @@ package de.bixilon.minosoft.game.datatypes.world;
 
 import de.bixilon.minosoft.game.datatypes.Dimension;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
@@ -55,15 +56,15 @@ public class World {
         return chunks;
     }
 
-    public Blocks getBlock(BlockPosition pos) {
+    public Block getBlock(BlockPosition pos) {
         ChunkLocation loc = pos.getChunkLocation();
         if (getChunk(loc) != null) {
             return getChunk(loc).getBlock(pos.getInChunkLocation());
         }
-        return Blocks.AIR;
+        return Blocks.nullBlock;
     }
 
-    public void setBlock(BlockPosition pos, Blocks block) {
+    public void setBlock(BlockPosition pos, Block block) {
         if (getChunk(pos.getChunkLocation()) != null) {
             getChunk(pos.getChunkLocation()).setBlock(pos.getInChunkLocation(), block);
         }
