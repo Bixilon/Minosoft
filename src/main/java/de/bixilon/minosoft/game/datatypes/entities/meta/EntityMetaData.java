@@ -107,11 +107,7 @@ public class EntityMetaData {
                 break;
             case BLOCK_ID:
                 int blockId = buffer.readVarInt();
-                if (buffer.getVersion().getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-                    data = Blocks.getBlockByLegacy(blockId);
-                } else {
-                    data = Blocks.getBlock(blockId, buffer.getVersion());
-                }
+                data = Blocks.getBlock(blockId, buffer.getVersion());
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + type);

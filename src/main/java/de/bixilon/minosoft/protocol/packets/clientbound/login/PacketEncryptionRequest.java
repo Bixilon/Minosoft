@@ -36,6 +36,7 @@ public class PacketEncryptionRequest implements ClientboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 serverId = buffer.readString();
                 publicKey = buffer.readBytes(buffer.readVarInt()); // read length, then the bytes
                 verifyToken = buffer.readBytes(buffer.readVarInt()); // read length, then the bytes

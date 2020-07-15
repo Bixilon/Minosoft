@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.game.datatypes.GameMode;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
@@ -53,8 +54,13 @@ public class PacketHandler {
 
     public void handle(PacketStatusResponse pkg) {
         if (connection.getReason() == ConnectionReason.GET_VERSION) {
-            // now we know the version, set it
-            connection.setVersion(ProtocolVersion.byId(pkg.getResponse().getProtocolNumber()));
+            // now we know the version, set it, if the config allows it
+            int version = Minosoft.getConfig().getInteger("debug.version");
+            if (version == -1) {
+                connection.setVersion(ProtocolVersion.byId(pkg.getResponse().getProtocolNumber()));
+            } else {
+                connection.setVersion(ProtocolVersion.byId(version));
+            }
         }
         Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getColoredMessage()));
     }

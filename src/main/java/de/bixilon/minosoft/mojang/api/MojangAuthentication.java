@@ -69,7 +69,7 @@ public class MojangAuthentication {
         }
         if (response.statusCode() != 204) {
             JSONObject jsonResponse = new JSONObject(response.body());
-            Log.mojang(String.format("Failed to join server with error code %d: %s", response.statusCode(), jsonResponse.getString("errorMessage")));
+            Log.mojang(String.format("Failed to join server with error code %d: %s", response.statusCode(), jsonResponse.has("errorMessage") ? jsonResponse.getString("errorMessage") : "null"));
             return;
         }
         // joined
