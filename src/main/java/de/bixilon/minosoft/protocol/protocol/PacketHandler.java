@@ -477,7 +477,7 @@ public class PacketHandler {
                 ScoreboardObjective objective = connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName());
                 // ToDo handle correctly
                 if (objective == null) {
-                    Log.warn(String.format("Server tried to remove score with was not created before (itemName=\"%s\", scoreName=\"%s\")!", pkg.getItemName(), pkg.getScoreName()));
+                    Log.warn(String.format("Server tried to remove score witch was not created before (itemName=\"%s\", scoreName=\"%s\")!", pkg.getItemName(), pkg.getScoreName()));
                 } else {
                     objective.removeScore(pkg.getItemName());
                 }

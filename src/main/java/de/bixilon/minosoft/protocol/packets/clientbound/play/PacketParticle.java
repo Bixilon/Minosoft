@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.particle.Particle;
 import de.bixilon.minosoft.game.datatypes.particle.Particles;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -23,6 +24,7 @@ import java.util.Random;
 
 public class PacketParticle implements ClientboundPacket {
     Particles particle;
+    Particle particleDataClass;
     boolean longDistance = false;
     float x;
     float y;
@@ -68,6 +70,22 @@ public class PacketParticle implements ClientboundPacket {
                 particleData = buffer.readFloat();
                 count = buffer.readInt();
                 return true;
+            case VERSION_1_13_2:
+                particle = Particles.byId(buffer.readInt());
+                longDistance = buffer.readBoolean();
+                x = buffer.readFloat();
+                y = buffer.readFloat();
+                z = buffer.readFloat();
+
+                // offset
+                x += buffer.readFloat() * random.nextGaussian();
+                y += buffer.readFloat() * random.nextGaussian();
+                z += buffer.readFloat() * random.nextGaussian();
+
+                particleData = buffer.readFloat();
+                count = buffer.readInt();
+                particleDataClass = buffer.readParticleData(particle);
+                return true;
         }
 
         return false;
@@ -75,7 +93,7 @@ public class PacketParticle implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received particle spawn at %s %s %s (particle=%s, data=%s, count=%d", x, y, z, particle.name(), particleData, count));
+        Log.protocol(String.format("Received particle spawn at %s %s %s (particle=%s, data=%s, count=%d, dataClass=%s)", x, y, z, particle.name(), particleData, count, particleDataClass));
     }
 
     @Override

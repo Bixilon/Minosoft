@@ -49,7 +49,7 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
                 scoreName = buffer.readString();
 
                 if (action == ScoreboardUpdateScoreAction.REMOVE) {
-                    break;
+                    return true;
                 }
                 // not present id action == REMOVE
                 scoreValue = buffer.readVarInt();
