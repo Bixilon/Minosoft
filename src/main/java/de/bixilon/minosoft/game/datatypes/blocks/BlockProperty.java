@@ -28,9 +28,11 @@ public enum BlockProperty {
 
     // furnace, ...
     LIT,
+    UN_LIT,
 
     // sign, fence
     WATERLOGGED,
+    NOT_WATERLOGGED,
 
     // half (flowers)
     HALF_UPPER,
@@ -71,10 +73,13 @@ public enum BlockProperty {
     TYPE_NORMAL,
     TYPE_STICKY,
     EXTENDED,
+    NOT_EXTENDED,
     SHORT,
+    LONG,
 
     // rails
     POWERED,
+    NOT_POWERED,
     STRAIGHT,
     INNER_LEFT,
     INNER_RIGHT,
@@ -92,12 +97,14 @@ public enum BlockProperty {
     ASCENDING_SOUTH,
 
     SNOWY,
+    NOT_SNOWY,
 
     STAGE_0,
     STAGE_1,
 
     // dispenser
     TRIGGERED,
+    NOT_TRIGGERED,
 
     // leaves
     DISTANCE_0,
@@ -109,19 +116,23 @@ public enum BlockProperty {
     DISTANCE_6,
     DISTANCE_7,
     PERSISTENT,
+    NOT_PERSISTENT,
 
     // bed
     HEAD,
     FOOT,
     OCCUPIED,
+    NOT_OCCUPIED,
 
     // tnt
     UNSTABLE,
+    STABLE,
 
     // door
     HINGE_LEFT,
     HINGE_RIGHT,
     OPEN,
+    CLOSED,
 
     // fire
     NORTH,
@@ -129,7 +140,9 @@ public enum BlockProperty {
     EAST,
     WEST,
     UP,
+    NOT_UP,
     DOWN,
+    NOT_DOWN,
     AGE_0,
     AGE_1,
     AGE_2,
@@ -238,9 +251,11 @@ public enum BlockProperty {
     LAYERS_8,
 
     IN_WALL,
+    NOT_IN_WALL,
 
     // scaffolding
     BOTTOM,
+    NOT_BOTTOM,
 
     // log, portal
     AXIS_X,
@@ -249,10 +264,13 @@ public enum BlockProperty {
 
     // trapwire
     DISARMED,
+    ARMED,
     ATTACHED,
+    NOT_ATTACHED,
 
     // daylight, etc
     INVERTED,
+    NOT_INVERTED,
 
     // button
     FLOOR,
@@ -269,9 +287,11 @@ public enum BlockProperty {
 
     // command block
     CONDITIONAL,
+    UNCONDITIONAL,
 
     // double column
     DRAG,
+    NOT_DRAG,
 
     // bell
     SINGLE_WALL,
@@ -279,6 +299,7 @@ public enum BlockProperty {
 
     // lantern
     HANGING,
+    NOT_HANGING,
 
     // sea pickle
     PICKLES_1,
@@ -288,11 +309,15 @@ public enum BlockProperty {
 
     // lectern
     HAS_BOOK,
+    NO_BOOK,
 
     // brewing stand
     HAS_BOTTLE_0,
+    NO_BOTTLE_0,
     HAS_BOTTLE_1,
+    NO_BOTTLE_1,
     HAS_BOTTLE_2,
+    NO_BOTTLE_2,
 
     // chest
     TYPE_SINGLE,
@@ -315,6 +340,7 @@ public enum BlockProperty {
 
     // repeater
     LOCKED,
+    UNLOCKED,
     DELAY_1,
     DELAY_2,
     DELAY_3,
@@ -322,12 +348,15 @@ public enum BlockProperty {
 
     // end portal frame
     EYE,
+    NO_EYE,
 
     // jukebox
     HAS_RECORD,
+    HAS_NO_RECORD,
 
     // campfire
     SIGNAL_FIRE,
+    NOT_SIGNAL_FIRE,
 
     // turtle eggs
     EGGS_1,
@@ -339,6 +368,7 @@ public enum BlockProperty {
     HATCH_1,
     HATCH_2,
 
-    ENABLED
+    ENABLED,
+    DISABLED
 
 }

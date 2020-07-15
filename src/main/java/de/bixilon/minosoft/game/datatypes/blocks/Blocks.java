@@ -116,12 +116,6 @@ public class Blocks {
         }
         propertiesMapping.put("note", propertyHashMap);
 
-
-        propertyHashMap = new HashMap<>();
-        propertyHashMap.put("true", BlockProperty.SNOWY);
-        propertyHashMap.put("false", BlockProperty.NONE);
-        propertiesMapping.put("snowy", propertyHashMap);
-
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("0", BlockProperty.STAGE_0);
         propertyHashMap.put("1", BlockProperty.STAGE_1);
@@ -160,148 +154,154 @@ public class Blocks {
         propertiesMapping.put("north", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
+        propertyHashMap.put("true", BlockProperty.SNOWY);
+        propertyHashMap.put("false", BlockProperty.NOT_SNOWY);
+        propertiesMapping.put("snowy", propertyHashMap);
+
+
+        propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.UP);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_UP);
         propertiesMapping.put("up", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.DOWN);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_DOWN);
         propertiesMapping.put("down", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.IN_WALL);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_IN_WALL);
         propertiesMapping.put("in_wall", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.EXTENDED);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_EXTENDED);
         propertiesMapping.put("extended", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.POWERED);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_POWERED);
         propertiesMapping.put("powered", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.OPEN);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.CLOSED);
         propertiesMapping.put("open", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.BOTTOM);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_BOTTOM);
         propertiesMapping.put("bottom", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.OCCUPIED);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_OCCUPIED);
         propertiesMapping.put("occupied", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.ATTACHED);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_ATTACHED);
         propertiesMapping.put("attached", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.DISARMED);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.ARMED);
         propertiesMapping.put("disarmed", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.INVERTED);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_INVERTED);
         propertiesMapping.put("inverted", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.TRIGGERED);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_TRIGGERED);
         propertiesMapping.put("triggered", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.CONDITIONAL);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.UNCONDITIONAL);
         propertiesMapping.put("conditional", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.DRAG);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_DRAG);
         propertiesMapping.put("drag", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.UNSTABLE);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.STABLE);
         propertiesMapping.put("unstable", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.HANGING);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_HANGING);
         propertiesMapping.put("hanging", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.HAS_BOOK);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NO_BOOK);
         propertiesMapping.put("has_book", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.HAS_BOTTLE_0);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NO_BOTTLE_0);
         propertiesMapping.put("has_bottle_0", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.HAS_BOTTLE_1);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NO_BOTTLE_1);
         propertiesMapping.put("has_bottle_1", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.HAS_BOTTLE_2);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NO_BOTTLE_2);
         propertiesMapping.put("has_bottle_2", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.PERSISTENT);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_PERSISTENT);
         propertiesMapping.put("persistent", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.LIT);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.UN_LIT);
         propertiesMapping.put("lit", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.WATERLOGGED);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_WATERLOGGED);
         propertiesMapping.put("waterlogged", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.LOCKED);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.UNLOCKED);
         propertiesMapping.put("locked", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.EYE);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NO_EYE);
         propertiesMapping.put("eye", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.ENABLED);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.DISABLED);
         propertiesMapping.put("enabled", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.HAS_RECORD);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.HAS_NO_RECORD);
         propertiesMapping.put("has_record", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.SHORT);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.LONG);
         propertiesMapping.put("short", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperty.SIGNAL_FIRE);
-        propertyHashMap.put("false", BlockProperty.NONE);
+        propertyHashMap.put("false", BlockProperty.NOT_SIGNAL_FIRE);
         propertiesMapping.put("signal_fire", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
