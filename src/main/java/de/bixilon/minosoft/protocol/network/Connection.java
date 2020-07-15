@@ -95,7 +95,6 @@ public class Connection {
         switch (state) {
             case HANDSHAKING:
                 // connection established, starting threads and logging in
-                network.startPacketThread();
                 startHandlingThread();
                 ConnectionState next = ((reason == ConnectionReason.CONNECT) ? ConnectionState.LOGIN : ConnectionState.STATUS);
                 network.sendPacket(new PacketHandshake(getHost(), getPort(), next, (next == ConnectionState.STATUS) ? -1 : getVersion().getVersionNumber()));
