@@ -13,36 +13,12 @@
 
 package de.bixilon.minosoft.nbt.tag;
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-public class IntTag implements NBTTag {
-    final int value;
+public interface NBTTag {
+    TagTypes getType();
 
-    public IntTag(int value) {
-        this.value = value;
-    }
+    void writeBytes(OutByteBuffer buffer);
 
-    public IntTag(InByteBuffer buffer) {
-        this.value = buffer.readInt();
-    }
-
-    @Override
-    public TagTypes getType() {
-        return TagTypes.INT;
-    }
-
-    @Override
-    public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeInt(value);
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(value);
-    }
+    String toString();
 }

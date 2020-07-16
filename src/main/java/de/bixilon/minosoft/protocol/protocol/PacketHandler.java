@@ -586,4 +586,8 @@ public class PacketHandler {
 
     public void handle(PacketFacePlayer pkg) {
     }
+
+    public void handle(PacketTags pkg) {
+        //ToDo
+    }
 }

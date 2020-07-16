@@ -16,7 +16,7 @@ package de.bixilon.minosoft.nbt.tag;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-public class IntArrayTag implements Tag {
+public class IntArrayTag implements NBTTag {
     final int[] value;
 
     public IntArrayTag(int[] value) {

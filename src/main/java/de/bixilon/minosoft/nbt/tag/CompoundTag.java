@@ -19,11 +19,11 @@ import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CompoundTag implements Tag {
+public class CompoundTag implements NBTTag {
     final String name;
-    final HashMap<String, Tag> data;
+    final HashMap<String, NBTTag> data;
 
-    public CompoundTag(String name, HashMap<String, Tag> data) {
+    public CompoundTag(String name, HashMap<String, NBTTag> data) {
         this.name = name;
         this.data = data;
     }
@@ -121,7 +121,7 @@ public class CompoundTag implements Tag {
     }
 
     public void writeBytesSubTag(OutByteBuffer buffer) {
-        for (Map.Entry<String, Tag> set : data.entrySet()) {
+        for (Map.Entry<String, NBTTag> set : data.entrySet()) {
             buffer.writeByte((byte) set.getValue().getType().getId());
             buffer.writeShort((short) set.getKey().length());
             buffer.writeStringNoLength(set.getKey());
@@ -189,7 +189,7 @@ public class CompoundTag implements Tag {
         builder.append(name);
         builder.append("{");
 
-        for (Map.Entry<String, Tag> set : data.entrySet()) {
+        for (Map.Entry<String, NBTTag> set : data.entrySet()) {
             builder.append(set.getKey());
             builder.append(":");
             builder.append(set.getValue());

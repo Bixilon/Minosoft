@@ -395,4 +395,12 @@ public class InByteBuffer {
     public byte[] getBytes() {
         return bytes;
     }
+
+    public int[] readVarIntArray(int length) {
+        int[] ret = new int[length];
+        for (int i = 0; i < length; i++) {
+            ret[i] = readVarInt();
+        }
+        return ret;
+    }
 }

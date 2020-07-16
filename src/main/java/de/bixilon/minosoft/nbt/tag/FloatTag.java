@@ -16,7 +16,7 @@ package de.bixilon.minosoft.nbt.tag;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-public class FloatTag implements Tag {
+public class FloatTag implements NBTTag {
     final float value;
 
     public FloatTag(float value) {
