@@ -64,4 +64,16 @@ public class Slot {
         }
         return item.toString(); // ToDo display name per Item (from language file)
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        Slot their = (Slot) obj;
+
+        // ToDo: check nbt
+
+        return their.getItem().equals(getItem()) && their.getItemCount() == getItemCount() && their.getItemMetadata() == getItemMetadata();
+    }
 }

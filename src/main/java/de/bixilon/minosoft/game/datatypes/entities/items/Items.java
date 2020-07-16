@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.items;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import org.json.JSONObject;
@@ -25,7 +24,7 @@ import java.util.Iterator;
 public class Items {
 
     static ArrayList<Item> itemList = new ArrayList<>();
-    static HashMap<ProtocolVersion, BiMap<Integer, Item>> itemMap = new HashMap<>(); // version -> (protocolId > Item)
+    static HashMap<ProtocolVersion, HashBiMap<Integer, Item>> itemMap = new HashMap<>(); // version -> (protocolId > Item)
 
     public static Item getItemByLegacy(int protocolId, int protocolMetaData) {
         int itemId = protocolId << 4;
@@ -45,7 +44,7 @@ public class Items {
     }
 
     public static void load(String mod, JSONObject json, ProtocolVersion version) {
-        BiMap<Integer, Item> versionMapping = HashBiMap.create();
+        HashBiMap<Integer, Item> versionMapping = HashBiMap.create();
         for (Iterator<String> identifiers = json.keys(); identifiers.hasNext(); ) {
             String identifierName = identifiers.next();
             Item item = getItem(mod, identifierName);

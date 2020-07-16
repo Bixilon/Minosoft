@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Recipes;
+import de.bixilon.minosoft.game.datatypes.recipes.Recipe;
+import de.bixilon.minosoft.game.datatypes.recipes.Recipes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -23,8 +24,8 @@ public class PacketUnlockRecipes implements ClientboundPacket {
     UnlockRecipeActions action;
     boolean isCraftingBookOpen;
     boolean isFilteringActive;
-    Recipes[] listed;
-    Recipes[] tagged;
+    Recipe[] listed;
+    Recipe[] tagged;
 
 
     @Override
@@ -34,14 +35,14 @@ public class PacketUnlockRecipes implements ClientboundPacket {
                 action = UnlockRecipeActions.byId(buffer.readVarInt());
                 isCraftingBookOpen = buffer.readBoolean();
                 isFilteringActive = buffer.readBoolean();
-                listed = new Recipes[buffer.readVarInt()];
+                listed = new Recipe[buffer.readVarInt()];
                 for (int i = 0; i < listed.length; i++) {
-                    listed[i] = Recipes.byId(buffer.readVarInt());
+                    listed[i] = Recipes.getRecipeById(buffer.readVarInt());
                 }
                 if (action == UnlockRecipeActions.INITIALIZE) {
-                    tagged = new Recipes[buffer.readVarInt()];
+                    tagged = new Recipe[buffer.readVarInt()];
                     for (int i = 0; i < tagged.length; i++) {
-                        tagged[i] = Recipes.byId(buffer.readVarInt());
+                        tagged[i] = Recipes.getRecipeById(buffer.readVarInt());
                     }
                 }
                 return true;
@@ -49,14 +50,14 @@ public class PacketUnlockRecipes implements ClientboundPacket {
                 action = UnlockRecipeActions.byId(buffer.readVarInt());
                 isCraftingBookOpen = buffer.readBoolean();
                 isFilteringActive = buffer.readBoolean();
-                listed = new Recipes[buffer.readVarInt()];
+                listed = new Recipe[buffer.readVarInt()];
                 for (int i = 0; i < listed.length; i++) {
-                    listed[i] = Recipes.byName(buffer.readString());
+                    listed[i] = Recipes.getRecipe(buffer.readString(), buffer.getVersion());
                 }
                 if (action == UnlockRecipeActions.INITIALIZE) {
-                    tagged = new Recipes[buffer.readVarInt()];
+                    tagged = new Recipe[buffer.readVarInt()];
                     for (int i = 0; i < tagged.length; i++) {
-                        tagged[i] = Recipes.byName(buffer.readString());
+                        tagged[i] = Recipes.getRecipe(buffer.readString(), buffer.getVersion());
                     }
                 }
                 return true;
@@ -82,11 +83,11 @@ public class PacketUnlockRecipes implements ClientboundPacket {
         return isFilteringActive;
     }
 
-    public Recipes[] getListed() {
+    public Recipe[] getListed() {
         return listed;
     }
 
-    public Recipes[] getTagged() {
+    public Recipe[] getTagged() {
         return tagged;
     }
 

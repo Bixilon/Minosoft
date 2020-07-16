@@ -16,6 +16,7 @@ package de.bixilon.minosoft.protocol.network;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
+import de.bixilon.minosoft.game.datatypes.recipes.Recipes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
@@ -116,6 +117,9 @@ public class Connection {
                 if (reason == ConnectionReason.GET_VERSION) {
                     setReason(ConnectionReason.CONNECT);
                     connect();
+                } else {
+                    // unregister all custom recipes
+                    Recipes.removeCustomRecipes(getVersion());
                 }
         }
     }

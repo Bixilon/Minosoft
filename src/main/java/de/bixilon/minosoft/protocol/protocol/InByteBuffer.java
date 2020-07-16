@@ -21,6 +21,7 @@ import de.bixilon.minosoft.game.datatypes.entities.items.Items;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.particle.*;
+import de.bixilon.minosoft.game.datatypes.recipes.Ingredient;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.util.BitByte;
@@ -402,5 +403,25 @@ public class InByteBuffer {
             ret[i] = readVarInt();
         }
         return ret;
+    }
+
+    public Ingredient readIngredient() {
+        return new Ingredient(readSlotArray(readVarInt()));
+    }
+
+    public Ingredient[] readIngredientArray(int length) {
+        Ingredient[] ret = new Ingredient[length];
+        for (int i = 0; i < length; i++) {
+            ret[i] = readIngredient();
+        }
+        return ret;
+    }
+
+    public Slot[] readSlotArray(int length) {
+        Slot[] res = new Slot[length];
+        for (int i = 0; i < length; i++) {
+            res[i] = readSlot();
+        }
+        return res;
     }
 }

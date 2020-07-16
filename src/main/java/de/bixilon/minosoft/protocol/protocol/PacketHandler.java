@@ -590,4 +590,7 @@ public class PacketHandler {
     public void handle(PacketTags pkg) {
         //ToDo
     }
+
+    public void handle(PacketDeclareRecipes pkg) {
+    }
 }

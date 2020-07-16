@@ -148,6 +148,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_NBT_QUERY_RESPONSE, PacketNBTQueryResponse.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_FACE_PLAYER, PacketFacePlayer.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_TAGS, PacketTags.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_DECLARE_RECIPES, PacketDeclareRecipes.class);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {

@@ -17,16 +17,16 @@ public class Block {
     final String mod;
     final String identifier;
     final BlockRotation rotation;
-    final BlockProperty[] properties;
+    final BlockProperties[] properties;
 
-    public Block(String mod, String identifier, BlockProperty[] properties, BlockRotation rotation) {
+    public Block(String mod, String identifier, BlockProperties[] properties, BlockRotation rotation) {
         this.mod = mod;
         this.identifier = identifier;
         this.properties = properties;
         this.rotation = rotation;
     }
 
-    public Block(String mod, String identifier, BlockProperty[] properties) {
+    public Block(String mod, String identifier, BlockProperties[] properties) {
         this.mod = mod;
         this.identifier = identifier;
         this.properties = properties;
@@ -36,14 +36,14 @@ public class Block {
     public Block(String mod, String identifier, BlockRotation rotation) {
         this.mod = mod;
         this.identifier = identifier;
-        this.properties = new BlockProperty[0];
+        this.properties = new BlockProperties[0];
         this.rotation = rotation;
     }
 
     public Block(String mod, String identifier) {
         this.mod = mod;
         this.identifier = identifier;
-        this.properties = new BlockProperty[0];
+        this.properties = new BlockProperties[0];
         this.rotation = BlockRotation.NONE;
     }
 
@@ -59,7 +59,7 @@ public class Block {
         return rotation;
     }
 
-    public BlockProperty[] getProperties() {
+    public BlockProperties[] getProperties() {
         return properties;
     }
 
@@ -78,7 +78,7 @@ public class Block {
                 out.append(" (");
             }
             out.append("properties={");
-            for (BlockProperty property : properties) {
+            for (BlockProperties property : properties) {
                 out.append(property.name());
                 out.append(",");
             }

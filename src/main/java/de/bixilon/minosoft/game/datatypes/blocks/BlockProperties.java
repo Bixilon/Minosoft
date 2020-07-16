@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.blocks;
 
-public enum BlockProperty {
+public enum BlockProperties {
     NONE,
 
     // farmland
