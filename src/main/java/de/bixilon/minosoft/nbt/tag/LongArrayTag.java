@@ -51,7 +51,7 @@ public class LongArrayTag implements NBTTag {
             builder.append(l);
             builder.append("L, ");
         }
-        builder.delete(builder.length() - 1, builder.length()); // delete last comma
+        builder.delete(builder.length() - 2, builder.length()); // delete last comma
         builder.append("]");
 
         return builder.toString();

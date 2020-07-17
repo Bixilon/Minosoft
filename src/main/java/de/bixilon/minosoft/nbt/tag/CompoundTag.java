@@ -204,11 +204,11 @@ public class CompoundTag implements NBTTag {
 
         for (Map.Entry<String, NBTTag> set : data.entrySet()) {
             builder.append(set.getKey());
-            builder.append(":");
+            builder.append(": ");
             builder.append(set.getValue());
-            builder.append(",");
+            builder.append(", ");
         }
-        builder.delete(builder.length() - 1, builder.length()); // delete last comma
+        builder.delete(builder.length() - 2, builder.length()); // delete last comma
 
         builder.append("}");
         return builder.toString();
