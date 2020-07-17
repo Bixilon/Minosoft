@@ -23,12 +23,12 @@ public class Team {
     final String name;
     final List<String> players;
     TextComponent displayName;
-    String prefix;
-    String suffix;
+    TextComponent prefix;
+    TextComponent suffix;
     boolean friendlyFire;
     boolean seeFriendlyInvisibles;
 
-    public Team(String name, TextComponent displayName, String prefix, String suffix, boolean friendlyFire, boolean seeFriendlyInvisibles, String[] players) {
+    public Team(String name, TextComponent displayName, TextComponent prefix, TextComponent suffix, boolean friendlyFire, boolean seeFriendlyInvisibles, String[] players) {
         this.name = name;
         this.displayName = displayName;
         this.prefix = prefix;
@@ -38,7 +38,7 @@ public class Team {
         this.players = new ArrayList<>(Arrays.asList(players));
     }
 
-    public void updateInformation(TextComponent displayName, String prefix, String suffix, boolean friendlyFire, boolean seeFriendlyInvisibles) {
+    public void updateInformation(TextComponent displayName, TextComponent prefix, TextComponent suffix, boolean friendlyFire, boolean seeFriendlyInvisibles) {
         this.displayName = displayName;
         this.prefix = prefix;
         this.suffix = suffix;
@@ -54,11 +54,11 @@ public class Team {
         return displayName;
     }
 
-    public String getPrefix() {
+    public TextComponent getPrefix() {
         return prefix;
     }
 
-    public String getSuffix() {
+    public TextComponent getSuffix() {
         return suffix;
     }
 

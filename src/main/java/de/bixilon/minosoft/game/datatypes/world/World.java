@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.game.datatypes.world;
 
 import de.bixilon.minosoft.game.datatypes.Dimension;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
@@ -30,7 +29,6 @@ public class World {
     final HashMap<ChunkLocation, Chunk> chunks;
     final HashMap<Integer, Entity> entities;
     final String name;
-    final HashMap<BlockPosition, TextComponent[]> signs;
     final HashMap<BlockPosition, CompoundTag> blockEntityMeta;
     boolean hardcore;
     boolean raining;
@@ -40,7 +38,6 @@ public class World {
         this.name = name;
         chunks = new HashMap<>();
         entities = new HashMap<>();
-        signs = new HashMap<>();
         blockEntityMeta = new HashMap<>();
     }
 
@@ -123,15 +120,6 @@ public class World {
 
     public void setDimension(Dimension dimension) {
         this.dimension = dimension;
-    }
-
-    public void updateSign(BlockPosition position, TextComponent[] lines) {
-        // ToDo check if block is really a sign
-        signs.put(position, lines);
-    }
-
-    public TextComponent[] getSignText(BlockPosition position) {
-        return signs.get(position);
     }
 
     public void setBlockEntityData(BlockPosition position, CompoundTag nbt) {

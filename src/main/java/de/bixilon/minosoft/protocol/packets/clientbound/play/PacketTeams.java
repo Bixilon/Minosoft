@@ -25,8 +25,8 @@ public class PacketTeams implements ClientboundPacket {
     String name;
     TeamActions action;
     TextComponent displayName;
-    String prefix;
-    String suffix;
+    TextComponent prefix;
+    TextComponent suffix;
     boolean friendlyFire;
     boolean seeFriendlyInvisibles;
     TeamCollisionRules collisionRule = TeamCollisionRules.NEVER;
@@ -43,8 +43,8 @@ public class PacketTeams implements ClientboundPacket {
                 action = TeamActions.byId(buffer.readByte());
                 if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {
                     displayName = buffer.readTextComponent();
-                    prefix = buffer.readString();
-                    suffix = buffer.readString();
+                    prefix = buffer.readTextComponent();
+                    suffix = buffer.readTextComponent();
                     setFriendlyFireByLegacy(buffer.readByte());
                 }
                 if (action == TeamActions.CREATE || action == TeamActions.PLAYER_ADD || action == TeamActions.PLAYER_REMOVE) {
@@ -60,8 +60,8 @@ public class PacketTeams implements ClientboundPacket {
                 action = TeamActions.byId(buffer.readByte());
                 if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {
                     displayName = buffer.readTextComponent();
-                    prefix = buffer.readString();
-                    suffix = buffer.readString();
+                    prefix = buffer.readTextComponent();
+                    suffix = buffer.readTextComponent();
                     setFriendlyFireByLegacy(buffer.readByte());
                     nameTagVisibility = TeamNameTagVisibilities.byName(buffer.readString());
                     color = TextComponent.ChatAttributes.byColor(ChatColor.byId(buffer.readByte()));
@@ -82,8 +82,8 @@ public class PacketTeams implements ClientboundPacket {
                 action = TeamActions.byId(buffer.readByte());
                 if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {
                     displayName = buffer.readTextComponent();
-                    prefix = buffer.readString();
-                    suffix = buffer.readString();
+                    prefix = buffer.readTextComponent();
+                    suffix = buffer.readTextComponent();
                     byte friendlyFireRaw = buffer.readByte();
                     friendlyFire = BitByte.isBitMask(friendlyFireRaw, 0x01);
                     seeFriendlyInvisibles = BitByte.isBitMask(friendlyFireRaw, 0x02);
@@ -110,8 +110,8 @@ public class PacketTeams implements ClientboundPacket {
                     nameTagVisibility = TeamNameTagVisibilities.byName(buffer.readString());
                     collisionRule = TeamCollisionRules.byName(buffer.readString());
                     color = TextComponent.ChatAttributes.byColor(ChatColor.byId(buffer.readByte()));
-                    prefix = buffer.readString();
-                    suffix = buffer.readString();
+                    prefix = buffer.readTextComponent();
+                    suffix = buffer.readTextComponent();
                 }
                 if (action == TeamActions.CREATE || action == TeamActions.PLAYER_ADD || action == TeamActions.PLAYER_REMOVE) {
                     int playerCount = buffer.readVarInt();
@@ -148,11 +148,11 @@ public class PacketTeams implements ClientboundPacket {
         return displayName;
     }
 
-    public String getPrefix() {
+    public TextComponent getPrefix() {
         return prefix;
     }
 
-    public String getSuffix() {
+    public TextComponent getSuffix() {
         return suffix;
     }
 

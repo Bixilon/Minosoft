@@ -76,7 +76,7 @@ public class PacketDeclareRecipes implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received unlock crafting recipe packet (recipeLength=%d)", recipes.length));
+        Log.protocol(String.format("Received declare recipe packet (recipeLength=%d)", recipes.length));
     }
 
     @Override

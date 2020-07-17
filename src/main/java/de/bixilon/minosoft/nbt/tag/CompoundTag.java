@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.nbt.tag;
 
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
@@ -180,6 +181,18 @@ public class CompoundTag implements NBTTag {
 
     public CompoundTag getCompoundTag(String key) {
         return (CompoundTag) data.get(key);
+    }
+
+    public void writeTag(String name, NBTTag tag) {
+        data.put(name, tag);
+    }
+
+    // abstract functions
+
+    public void writeBlockPosition(BlockPosition position) {
+        data.put("x", new IntTag(position.getX()));
+        data.put("y", new IntTag(position.getY()));
+        data.put("z", new IntTag(position.getZ()));
     }
 
 

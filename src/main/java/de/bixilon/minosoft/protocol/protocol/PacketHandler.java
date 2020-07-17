@@ -27,6 +27,8 @@ import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardScore;
 import de.bixilon.minosoft.game.datatypes.scoreboard.Team;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.nbt.tag.StringTag;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
@@ -339,7 +341,12 @@ public class PacketHandler {
     }
 
     public void handle(PacketUpdateSignReceiving pkg) {
-        connection.getPlayer().getWorld().updateSign(pkg.getPosition(), pkg.getLines());
+        CompoundTag nbt = new CompoundTag();
+        nbt.writeBlockPosition(pkg.getPosition());
+        nbt.writeTag("id", new StringTag("minecraft:sign"));
+        for (int i = 0; i < 4; i++) {
+            nbt.writeTag(String.format("Text%d", (i + 1)), new StringTag(pkg.getLines()[i].getRaw().toString()));
+        }
     }
 
     public void handle(PacketEntityAnimation pkg) {
