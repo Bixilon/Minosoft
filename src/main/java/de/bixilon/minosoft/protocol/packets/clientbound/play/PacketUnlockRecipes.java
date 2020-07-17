@@ -23,7 +23,9 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketUnlockRecipes implements ClientboundPacket {
     UnlockRecipeActions action;
     boolean isCraftingBookOpen;
-    boolean isFilteringActive;
+    boolean isSmeltingBookOpen;
+    boolean isCraftingFilteringActive;
+    boolean isSmeltingFilteringActive;
     Recipe[] listed;
     Recipe[] tagged;
 
@@ -34,7 +36,7 @@ public class PacketUnlockRecipes implements ClientboundPacket {
             case VERSION_1_12_2:
                 action = UnlockRecipeActions.byId(buffer.readVarInt());
                 isCraftingBookOpen = buffer.readBoolean();
-                isFilteringActive = buffer.readBoolean();
+                isCraftingFilteringActive = buffer.readBoolean();
                 listed = new Recipe[buffer.readVarInt()];
                 for (int i = 0; i < listed.length; i++) {
                     listed[i] = Recipes.getRecipeById(buffer.readVarInt());
@@ -49,7 +51,9 @@ public class PacketUnlockRecipes implements ClientboundPacket {
             case VERSION_1_13_2:
                 action = UnlockRecipeActions.byId(buffer.readVarInt());
                 isCraftingBookOpen = buffer.readBoolean();
-                isFilteringActive = buffer.readBoolean();
+                isCraftingFilteringActive = buffer.readBoolean();
+                isSmeltingBookOpen = buffer.readBoolean();
+                isSmeltingFilteringActive = buffer.readBoolean();
                 listed = new Recipe[buffer.readVarInt()];
                 for (int i = 0; i < listed.length; i++) {
                     listed[i] = Recipes.getRecipe(buffer.readString(), buffer.getVersion());
@@ -67,7 +71,7 @@ public class PacketUnlockRecipes implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received unlock crafting recipe packet (action=%s, isCraftingBookOpen=%s, isFilteringActive=%s, listedLength=%d, taggedLength=%s)", action.name(), isCraftingBookOpen, isFilteringActive, listed.length, ((tagged == null) ? 0 : tagged.length)));
+        Log.protocol(String.format("Received unlock crafting recipe packet (action=%s, isCraftingBookOpen=%s, isFilteringActive=%s, isSmeltingBookOpen=%s, isSmeltingFilteringActive=%s listedLength=%d, taggedLength=%s)", action.name(), isCraftingBookOpen, isCraftingFilteringActive, isSmeltingBookOpen, isSmeltingFilteringActive, listed.length, ((tagged == null) ? 0 : tagged.length)));
     }
 
     @Override
@@ -79,8 +83,8 @@ public class PacketUnlockRecipes implements ClientboundPacket {
         return isCraftingBookOpen;
     }
 
-    public boolean isFilteringActive() {
-        return isFilteringActive;
+    public boolean isCraftingFilteringActive() {
+        return isCraftingFilteringActive;
     }
 
     public Recipe[] getListed() {
