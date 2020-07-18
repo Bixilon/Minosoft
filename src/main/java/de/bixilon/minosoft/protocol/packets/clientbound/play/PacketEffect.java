@@ -18,7 +18,7 @@ import de.bixilon.minosoft.game.datatypes.VersionValueMap;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
@@ -30,7 +30,7 @@ public class PacketEffect implements ClientboundPacket {
     boolean disableRelativeVolume; // normally only at MOB_ENDERDRAGON_END and MOB_WITHER_SPAWN, but we allow this everywhere
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 this.effect = EffectEffects.byId(buffer.readInt(), buffer.getVersion());

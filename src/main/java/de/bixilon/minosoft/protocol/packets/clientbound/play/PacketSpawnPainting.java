@@ -17,7 +17,7 @@ import de.bixilon.minosoft.game.datatypes.entities.Paintings;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.UUID;
@@ -30,7 +30,7 @@ public class PacketSpawnPainting implements ClientboundPacket {
     int direction;
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 entityId = buffer.readVarInt();

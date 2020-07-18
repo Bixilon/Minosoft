@@ -16,14 +16,14 @@ package de.bixilon.minosoft.protocol.packets.clientbound.login;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketLoginDisconnect implements ClientboundPacket {
     TextComponent reason;
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         reason = buffer.readTextComponent();
         return true;
     }

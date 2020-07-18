@@ -35,7 +35,7 @@ public class PacketChunkData implements ClientboundPacket {
     HashMap<BlockPosition, CompoundTag> blockEntities = new HashMap<>();
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         return false;
     }
 

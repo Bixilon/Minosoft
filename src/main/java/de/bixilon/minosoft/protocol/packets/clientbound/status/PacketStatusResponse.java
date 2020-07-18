@@ -16,14 +16,14 @@ package de.bixilon.minosoft.protocol.packets.clientbound.status;
 import de.bixilon.minosoft.ServerListPing;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketStatusResponse implements ClientboundPacket {
     ServerListPing response;
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         // no version checking, is the same in all versions (1.7.x - 1.15.2)
         response = new ServerListPing(buffer.readJSON());
         return true;

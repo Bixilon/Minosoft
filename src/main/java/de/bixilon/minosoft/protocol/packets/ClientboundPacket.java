@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.protocol.packets;
 
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 // packet to send to client
 public interface ClientboundPacket extends Packet {
-    boolean read(InPacketBuffer buffer);
+    boolean read(InByteBuffer buffer);
 
     void handle(PacketHandler h);
 }

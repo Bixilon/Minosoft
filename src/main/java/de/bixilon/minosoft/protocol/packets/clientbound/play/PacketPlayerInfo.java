@@ -20,7 +20,7 @@ import de.bixilon.minosoft.game.datatypes.player.PlayerProperties;
 import de.bixilon.minosoft.game.datatypes.player.PlayerProperty;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class PacketPlayerInfo implements ClientboundPacket {
 
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 infos.add(new PlayerInfoBulk(buffer.readString(), buffer.readShort(), (buffer.readBoolean() ? PlayerInfoAction.UPDATE_LATENCY : PlayerInfoAction.REMOVE_PLAYER)));
