@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
@@ -59,12 +60,10 @@ public class PacketMapData implements ClientboundPacket {
                         pins = new ArrayList<>();
                         length--; // minus the dataData
                         for (int i = 0; i < length / 3; i++) { // loop over all sets ( 1 set: 3 bytes)
-                            byte data = buffer.readByte();
-                            byte type = (byte) (data & 0xF);
-                            MapPlayerDirection direction = MapPlayerDirection.byId(data >>> 4);
+                            byte directionAndType = buffer.readByte();
                             byte x = buffer.readByte();
                             byte z = buffer.readByte();
-                            pins.add(new MapPinSet(MapPinType.byId(type), direction, x, z));
+                            pins.add(new MapPinSet(MapPinType.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
                         }
                         break;
                     case SCALE:
@@ -89,10 +88,38 @@ public class PacketMapData implements ClientboundPacket {
                     byte x = buffer.readByte();
                     byte z = buffer.readByte();
                     if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-                        pins.add(new MapPinSet(MapPinType.byId(directionAndType >>> 4), MapPlayerDirection.byId(directionAndType & 0xF), x, z));
+                        pins.add(new MapPinSet(MapPinType.byId(directionAndType >>> 4), directionAndType & 0xF, x, z));
                     } else {
-                        pins.add(new MapPinSet(MapPinType.byId(directionAndType & 0xF), MapPlayerDirection.byId(directionAndType >>> 4), x, z));
+                        pins.add(new MapPinSet(MapPinType.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
                     }
+                }
+                short columns = BitByte.byteToUShort(buffer.readByte());
+                if (columns > 0) {
+                    byte rows = buffer.readByte();
+                    byte xOffset = buffer.readByte();
+                    byte zOffset = buffer.readByte();
+
+                    int dataLength = buffer.readVarInt();
+                    data = buffer.readBytes(dataLength);
+                }
+                return true;
+            }
+            case VERSION_1_13_2: {
+                mapId = buffer.readVarInt();
+                scale = buffer.readByte();
+                boolean trackPosition = buffer.readBoolean();
+                int pinCount = buffer.readVarInt();
+                pins = new ArrayList<>();
+                for (int i = 0; i < pinCount; i++) {
+                    MapPinType type = MapPinType.byId(buffer.readVarInt());
+                    byte x = buffer.readByte();
+                    byte z = buffer.readByte();
+                    byte direction = buffer.readByte();
+                    TextComponent displayName = null;
+                    if (buffer.readBoolean()) {
+                        displayName = buffer.readTextComponent();
+                    }
+                    pins.add(new MapPinSet(type, direction, x, z, displayName));
                 }
                 short columns = BitByte.byteToUShort(buffer.readByte());
                 if (columns > 0) {
@@ -172,30 +199,6 @@ public class PacketMapData implements ClientboundPacket {
     }
 
 
-    public enum MapPlayerDirection {
-        // ToDo
-        TO_DO(0);
-
-        final int id;
-
-        MapPlayerDirection(int id) {
-            this.id = id;
-        }
-
-        public static MapPlayerDirection byId(int id) {
-            for (MapPlayerDirection d : values()) {
-                if (d.getId() == id) {
-                    return d;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
-        }
-    }
-
     public enum MapPinType {
         WHITE_ARROW(0),
         GREEN_ARROW(1),
@@ -248,22 +251,32 @@ public class PacketMapData implements ClientboundPacket {
 
     public static class MapPinSet {
         final MapPinType type;
-        final MapPlayerDirection direction;
-        byte x;
-        byte z;
+        final byte direction;
+        final byte x;
+        final byte z;
+        final TextComponent displayName;
 
-        public MapPinSet(MapPinType type, MapPlayerDirection direction, byte x, byte z) {
+        public MapPinSet(MapPinType type, int direction, byte x, byte z) {
             this.type = type;
-            this.direction = direction;
+            this.direction = (byte) direction;
             this.x = x;
             this.z = z;
+            displayName = null;
+        }
+
+        public MapPinSet(MapPinType type, int direction, byte x, byte z, TextComponent displayName) {
+            this.type = type;
+            this.direction = (byte) direction;
+            this.x = x;
+            this.z = z;
+            this.displayName = displayName;
         }
 
         public MapPinType getType() {
             return type;
         }
 
-        public MapPlayerDirection getDirection() {
+        public byte getDirection() {
             return direction;
         }
 
