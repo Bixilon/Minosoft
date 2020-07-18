@@ -22,6 +22,7 @@ import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketStopSound;
 import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
@@ -214,6 +215,14 @@ public class Connection {
             Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getVersionString()));
 
             getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version), toSend);
+        });
+
+        // MC|StopSound
+        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.STOP_SOUND.getChangeableIdentifier().get(version), (handler, buffer) -> {
+            // it is basically a packet, handle it like a packet:
+            PacketStopSound packet = new PacketStopSound();
+            packet.read(buffer);
+            handle(packet);
         });
     }
 

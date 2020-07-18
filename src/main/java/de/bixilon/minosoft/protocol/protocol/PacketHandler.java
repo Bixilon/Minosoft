@@ -600,4 +600,7 @@ public class PacketHandler {
 
     public void handle(PacketDeclareRecipes pkg) {
     }
+
+    public void handle(PacketStopSound pkg) {
+    }
 }

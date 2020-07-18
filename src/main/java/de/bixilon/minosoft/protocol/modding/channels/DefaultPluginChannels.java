@@ -18,6 +18,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public enum DefaultPluginChannels {
     MC_BRAND(new ChangeableIdentifier("MC|Brand", "minecraft:brand")),
+    STOP_SOUND(new ChangeableIdentifier("MC|StopSound")),
     REGISTER(new ChangeableIdentifier("REGISTER", "minecraft:register")),
     UNREGISTER(new ChangeableIdentifier("UNREGISTER", "minecraft:unregister"));
 
