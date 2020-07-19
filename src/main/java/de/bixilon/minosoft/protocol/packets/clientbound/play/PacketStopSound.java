@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.SoundCategories;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -20,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.BitByte;
 
 public class PacketStopSound implements ClientboundPacket {
-    Integer soundId;
+    SoundCategories category;
     String soundIdentifier;
 
 
@@ -30,17 +31,17 @@ public class PacketStopSound implements ClientboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
-                buffer.readString(); // category
+                category = SoundCategories.valueOf(buffer.readString().toUpperCase());
                 soundIdentifier = buffer.readString();
                 return true;
             case VERSION_1_12_2:
                 soundIdentifier = buffer.readString();
-                buffer.readString(); // category
+                category = SoundCategories.valueOf(buffer.readString().toUpperCase());
                 return true;
             case VERSION_1_13_2:
                 byte flags = buffer.readByte();
                 if (BitByte.isBitMask(flags, 0x01)) {
-                    soundId = buffer.readVarInt();
+                    category = SoundCategories.byId(buffer.readVarInt());
                 }
                 if (BitByte.isBitMask(flags, 0x02)) {
                     soundIdentifier = buffer.readString();
@@ -53,7 +54,7 @@ public class PacketStopSound implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received stop sound (soundId=%d, soundIdentifier=%s)", soundId, soundIdentifier));
+        Log.protocol(String.format("Received stop sound (category=%d, soundIdentifier=%s)", category, soundIdentifier));
     }
 
     @Override
@@ -61,8 +62,8 @@ public class PacketStopSound implements ClientboundPacket {
         h.handle(this);
     }
 
-    public Integer getSoundId() {
-        return soundId;
+    public SoundCategories getSoundId() {
+        return category;
     }
 
     public String getSoundIdentifier() {

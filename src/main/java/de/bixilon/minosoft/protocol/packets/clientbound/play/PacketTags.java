@@ -17,7 +17,6 @@ import de.bixilon.minosoft.game.datatypes.Tag;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketTags implements ClientboundPacket {
@@ -38,7 +37,7 @@ public class PacketTags implements ClientboundPacket {
         return false;
     }
 
-    private Tag[] readTags(InPacketBuffer buffer) {
+    private Tag[] readTags(InByteBuffer buffer) {
         Tag[] ret = new Tag[buffer.readVarInt()];
         switch (buffer.getVersion()) {
             case VERSION_1_13_2:

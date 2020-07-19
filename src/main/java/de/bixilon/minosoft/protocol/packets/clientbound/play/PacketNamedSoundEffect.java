@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.SoundCategories;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -26,7 +27,7 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
     String sound;
     float volume;
     float pitch;
-    int category;
+    SoundCategories category;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -40,7 +41,7 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
                 return true;
             case VERSION_1_9_4:
                 sound = buffer.readString();
-                category = buffer.readVarInt(); // ToDo: category
+                category = SoundCategories.byId(buffer.readVarInt());
                 location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
                 volume = buffer.readFloat();
                 pitch = (buffer.readByte() * pitchCalc) / 100F;
@@ -50,7 +51,7 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 sound = buffer.readString();
-                category = buffer.readVarInt(); // ToDo: category
+                category = SoundCategories.byId(buffer.readVarInt());
                 location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
                 volume = buffer.readFloat();
                 pitch = buffer.readFloat();
