@@ -124,7 +124,7 @@ public class Blocks {
         propertyHashMap.put("true", BlockProperties.EAST);
         propertyHashMap.put("up", BlockProperties.EAST_UP);
         propertyHashMap.put("side", BlockProperties.EAST_SIDE);
-        propertyHashMap.put("false", BlockProperties.NONE);
+        propertyHashMap.put("false", BlockProperties.NOT_EAST);
         propertyHashMap.put("none", BlockProperties.NONE);
         propertiesMapping.put("east", propertyHashMap);
 
@@ -132,7 +132,7 @@ public class Blocks {
         propertyHashMap.put("true", BlockProperties.WEST);
         propertyHashMap.put("up", BlockProperties.WEST_UP);
         propertyHashMap.put("side", BlockProperties.WEST_SIDE);
-        propertyHashMap.put("false", BlockProperties.NONE);
+        propertyHashMap.put("false", BlockProperties.NOT_WEST);
         propertyHashMap.put("none", BlockProperties.NONE);
         propertiesMapping.put("west", propertyHashMap);
 
@@ -140,7 +140,7 @@ public class Blocks {
         propertyHashMap.put("true", BlockProperties.SOUTH);
         propertyHashMap.put("up", BlockProperties.SOUTH_UP);
         propertyHashMap.put("side", BlockProperties.SOUTH_SIDE);
-        propertyHashMap.put("false", BlockProperties.NONE);
+        propertyHashMap.put("false", BlockProperties.NOT_SOUTH);
         propertyHashMap.put("none", BlockProperties.NONE);
         propertiesMapping.put("south", propertyHashMap);
 
@@ -148,7 +148,7 @@ public class Blocks {
         propertyHashMap.put("true", BlockProperties.NORTH);
         propertyHashMap.put("up", BlockProperties.NORTH_UP);
         propertyHashMap.put("side", BlockProperties.NORTH_SIDE);
-        propertyHashMap.put("false", BlockProperties.NONE);
+        propertyHashMap.put("false", BlockProperties.NOT_NORTH);
         propertyHashMap.put("none", BlockProperties.NONE);
         propertiesMapping.put("north", propertyHashMap);
 
@@ -302,6 +302,11 @@ public class Blocks {
         propertyHashMap.put("true", BlockProperties.SIGNAL_FIRE);
         propertyHashMap.put("false", BlockProperties.NOT_SIGNAL_FIRE);
         propertiesMapping.put("signal_fire", propertyHashMap);
+
+        propertyHashMap = new HashMap<>();
+        propertyHashMap.put("true", BlockProperties.IN_AIR);
+        propertyHashMap.put("false", BlockProperties.ON_GROUND);
+        propertiesMapping.put("in_air", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("harp", BlockProperties.HARP);
@@ -466,7 +471,6 @@ public class Blocks {
                     if (propertiesJSON.has("facing")) {
                         rotation = rotationMapping.get(propertiesJSON.getString("facing"));
                         propertiesJSON.remove("facing");
-
                     } else if (propertiesJSON.has("rotation")) {
                         rotation = rotationMapping.get(propertiesJSON.getString("rotation"));
                         propertiesJSON.remove("rotation");
@@ -493,7 +497,9 @@ public class Blocks {
                         blockList.add(block);
                     }
 
-                    versionMapping.put(getBlockId(statesJSON, version), block);
+                    int blockId = getBlockId(statesJSON, version);
+                    checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping, version);
+                    versionMapping.put(blockId, block);
                 } else {
                     // no properties, directly add block
                     Block block = getBlock(mod, identifierName);
@@ -504,7 +510,9 @@ public class Blocks {
                         blockList.add(block);
                     }
 
-                    versionMapping.put(getBlockId(statesJSON, version), block);
+                    int blockId = getBlockId(statesJSON, version);
+                    checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping, version);
+                    versionMapping.put(blockId, block);
                 }
             }
         }
@@ -560,6 +568,18 @@ public class Blocks {
             }
         }
         return false;
+    }
+
+    public static void checkAndCrashIfBlockIsIn(int blockId, String identifierName, HashBiMap<Integer, Block> versionMapping, ProtocolVersion version) {
+        if (versionMapping.containsKey(blockId)) {
+            String blockIdString;
+            if (version == ProtocolVersion.VERSION_1_12_2) {
+                blockIdString = String.format("%d:%d", blockId >> 4, blockId & 0xF);
+            } else {
+                blockIdString = String.valueOf(blockId);
+            }
+            throw new RuntimeException(String.format("Block Id %s is already present for %s! (identifier=%s, version=%s)", blockIdString, versionMapping.get(blockId), identifierName, version.name()));
+        }
     }
 
 

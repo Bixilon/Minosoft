@@ -136,9 +136,13 @@ public enum BlockProperties {
 
     // fire
     NORTH,
+    NOT_NORTH,
     SOUTH,
+    NOT_SOUTH,
     EAST,
+    NOT_EAST,
     WEST,
+    NOT_WEST,
     UP,
     NOT_UP,
     DOWN,
@@ -267,6 +271,8 @@ public enum BlockProperties {
     ARMED,
     ATTACHED,
     NOT_ATTACHED,
+    IN_AIR,
+    ON_GROUND,
 
     // daylight, etc
     INVERTED,
