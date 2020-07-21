@@ -15,17 +15,24 @@ package de.bixilon.minosoft;
 
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
+import de.bixilon.minosoft.game.datatypes.Mappings;
 import de.bixilon.minosoft.game.datatypes.Player;
+import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
+import de.bixilon.minosoft.game.datatypes.entities.items.Items;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevel;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.util.FolderUtil;
 import de.bixilon.minosoft.util.OSUtil;
+import de.bixilon.minosoft.util.Util;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Minosoft {
     static Configuration config;
@@ -49,6 +56,12 @@ public class Minosoft {
         // set log level from config
         Log.setLevel(LogLevel.byName(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
         Log.info(String.format("Logging info with level: %s", Log.getLevel().name()));
+        Log.info("Checking assets...");
+        checkAssets();
+        Log.info("Assets checking done");
+        Log.info("Loading all mappings...");
+        loadMappings();
+        Log.info("Mappings loaded");
 
         checkClientToken();
 
@@ -62,11 +75,12 @@ public class Minosoft {
             throw new RuntimeException("No accounts in config file!");
         }
         MojangAccount account = accountList.get(0);
-        if (!account.refreshToken()) {
+        if (account.refreshToken()) {
             // could not login
-            System.exit(1);
+            account.saveToConfig();
+        } else {
+            Log.mojang("Could not refresh session, you will not be able to join premium servers!");
         }
-        account.saveToConfig();
         c.setPlayer(new Player(account));
         c.connect();
     }
@@ -111,4 +125,47 @@ public class Minosoft {
             config.saveToFile(Config.configFileName);
         }
     }
+
+    private static void loadMappings() {
+        HashMap<String, Mappings> mappingsHashMap = new HashMap<>();
+        mappingsHashMap.put("registries", Mappings.REGISTRIES);
+        mappingsHashMap.put("blocks", Mappings.BLOCKS);
+        try {
+            for (ProtocolVersion version : ProtocolVersion.versionMappingArray) {
+                if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+                    // skip them, use mapping of 1.12
+                    continue;
+                }
+                for (Map.Entry<String, Mappings> mappingSet : mappingsHashMap.entrySet()) {
+                    JSONObject data = Util.readJsonFromFile(Config.homeDir + String.format("assets/mapping/%s/%s.json", version.getVersionString(), mappingSet.getKey()));
+                    for (Iterator<String> mods = data.keys(); mods.hasNext(); ) {
+                        // key = mod name
+                        String mod = mods.next();
+                        JSONObject modJSON = data.getJSONObject(mod);
+                        switch (mappingSet.getValue()) {
+                            case REGISTRIES:
+                                Items.load(mod, modJSON.getJSONObject("item").getJSONObject("entries"), version);
+                                break;
+                            case BLOCKS:
+                                Blocks.load(mod, modJSON, version);
+                                break;
+                        }
+                    }
+                }
+            }
+        } catch (IOException | JSONException e) {
+            Log.fatal("Error occurred while loading version mapping: " + e.getLocalizedMessage());
+            System.exit(1);
+        }
+    }
+
+    private static void checkAssets() {
+        try {
+            FolderUtil.copyFolder(Minosoft.class.getResource("/assets").toURI(), Config.homeDir + "assets/");
+        } catch (Exception e) {
+            Log.fatal("Error occurred while checking assets: " + e.getLocalizedMessage());
+            System.exit(1);
+        }
+    }
+
 }

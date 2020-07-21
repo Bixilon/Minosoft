@@ -13,17 +13,18 @@
 
 package de.bixilon.minosoft.nbt.tag;
 
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CompoundTag implements Tag {
+public class CompoundTag implements NBTTag {
     final String name;
-    final HashMap<String, Tag> data;
+    final HashMap<String, NBTTag> data;
 
-    public CompoundTag(String name, HashMap<String, Tag> data) {
+    public CompoundTag(String name, HashMap<String, NBTTag> data) {
         this.name = name;
         this.data = data;
     }
@@ -121,7 +122,7 @@ public class CompoundTag implements Tag {
     }
 
     public void writeBytesSubTag(OutByteBuffer buffer) {
-        for (Map.Entry<String, Tag> set : data.entrySet()) {
+        for (Map.Entry<String, NBTTag> set : data.entrySet()) {
             buffer.writeByte((byte) set.getValue().getType().getId());
             buffer.writeShort((short) set.getKey().length());
             buffer.writeStringNoLength(set.getKey());
@@ -182,6 +183,18 @@ public class CompoundTag implements Tag {
         return (CompoundTag) data.get(key);
     }
 
+    public void writeTag(String name, NBTTag tag) {
+        data.put(name, tag);
+    }
+
+    // abstract functions
+
+    public void writeBlockPosition(BlockPosition position) {
+        data.put("x", new IntTag(position.getX()));
+        data.put("y", new IntTag(position.getY()));
+        data.put("z", new IntTag(position.getZ()));
+    }
+
 
     @Override
     public String toString() {
@@ -189,13 +202,13 @@ public class CompoundTag implements Tag {
         builder.append(name);
         builder.append("{");
 
-        for (Map.Entry<String, Tag> set : data.entrySet()) {
+        for (Map.Entry<String, NBTTag> set : data.entrySet()) {
             builder.append(set.getKey());
-            builder.append(":");
+            builder.append(": ");
             builder.append(set.getValue());
-            builder.append(",");
+            builder.append(", ");
         }
-        builder.delete(builder.length() - 1, builder.length()); // delete last comma
+        builder.delete(builder.length() - 2, builder.length()); // delete last comma
 
         builder.append("}");
         return builder.toString();

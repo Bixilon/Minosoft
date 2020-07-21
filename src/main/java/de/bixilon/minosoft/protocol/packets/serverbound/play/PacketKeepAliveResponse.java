@@ -25,12 +25,10 @@ public class PacketKeepAliveResponse implements ServerboundPacket {
 
     public PacketKeepAliveResponse(long id) {
         this.id = id;
-        log();
     }
 
     public PacketKeepAliveResponse(int id) {
         this.id = id;
-        log();
     }
 
 
@@ -48,6 +46,7 @@ public class PacketKeepAliveResponse implements ServerboundPacket {
                 buffer.writeVarInt((int) id);
                 break;
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeLong(id);
                 break;
         }

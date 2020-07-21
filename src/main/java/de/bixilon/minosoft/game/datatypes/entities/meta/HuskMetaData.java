@@ -25,6 +25,6 @@ public class HuskMetaData extends ZombieMetaData {
 
     @Override
     public VillagerMetaData.VillagerType getType() {
-        return null; //ToDo: husk support
+        return null; // ToDo: husk support
     }
 }

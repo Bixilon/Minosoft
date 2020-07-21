@@ -33,12 +33,25 @@ public class OutByteBuffer {
         this.version = version;
     }
 
-    public void writeByte(byte b) {
-        bytes.add(b);
-    }
-
     public static void writeByte(byte b, List<Byte> write) {
         write.add(b);
+    }
+
+    public static void writeVarInt(int value, List<Byte> write) {
+        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
+        do {
+            byte temp = (byte) (value & 0b01111111);
+            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
+            value >>>= 7;
+            if (value != 0) {
+                temp |= 0b10000000;
+            }
+            writeByte(temp, write);
+        } while (value != 0);
+    }
+
+    public void writeByte(byte b) {
+        bytes.add(b);
     }
 
     public void writeBytes(byte[] b) {
@@ -57,19 +70,6 @@ public class OutByteBuffer {
         for (byte b : buffer.array()) {
             bytes.add(b);
         }
-    }
-
-    public static void writeVarInt(int value, List<Byte> write) {
-        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
-        do {
-            byte temp = (byte) (value & 0b01111111);
-            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
-            value >>>= 7;
-            if (value != 0) {
-                temp |= 0b10000000;
-            }
-            writeByte(temp, write);
-        } while (value != 0);
     }
 
     public void writeLong(Long l) {
@@ -176,10 +176,20 @@ public class OutByteBuffer {
                     writeShort((short) -1);
                     return;
                 }
-                writeShort((short) slot.getItemId());
+                writeShort((short) slot.getItemId(version));
                 writeByte((byte) slot.getItemCount());
                 writeShort(slot.getItemMetadata());
                 writeNBT(slot.getNbt());
+                break;
+            case VERSION_1_13_2:
+                if (slot == null) {
+                    writeBoolean(false);
+                    return;
+                }
+                writeVarInt(slot.getItemId(version));
+                writeByte((byte) slot.getItemCount());
+                writeNBT(slot.getNbt());
+
         }
     }
 

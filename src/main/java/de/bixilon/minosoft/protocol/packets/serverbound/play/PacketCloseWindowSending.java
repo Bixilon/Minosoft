@@ -25,7 +25,6 @@ public class PacketCloseWindowSending implements ServerboundPacket {
 
     public PacketCloseWindowSending(byte windowId) {
         this.windowId = windowId;
-        log();
     }
 
 
@@ -39,6 +38,7 @@ public class PacketCloseWindowSending implements ServerboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeByte(windowId);
                 break;
         }

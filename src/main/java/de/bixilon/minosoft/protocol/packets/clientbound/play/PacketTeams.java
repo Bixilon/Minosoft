@@ -17,16 +17,16 @@ import de.bixilon.minosoft.game.datatypes.ChatColor;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.BitByte;
 
 public class PacketTeams implements ClientboundPacket {
     String name;
     TeamActions action;
-    String displayName;
-    String prefix;
-    String suffix;
+    TextComponent displayName;
+    TextComponent prefix;
+    TextComponent suffix;
     boolean friendlyFire;
     boolean seeFriendlyInvisibles;
     TeamCollisionRules collisionRule = TeamCollisionRules.NEVER;
@@ -36,15 +36,15 @@ public class PacketTeams implements ClientboundPacket {
 
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 name = buffer.readString();
                 action = TeamActions.byId(buffer.readByte());
                 if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {
-                    displayName = buffer.readString();
-                    prefix = buffer.readString();
-                    suffix = buffer.readString();
+                    displayName = buffer.readTextComponent();
+                    prefix = buffer.readTextComponent();
+                    suffix = buffer.readTextComponent();
                     setFriendlyFireByLegacy(buffer.readByte());
                 }
                 if (action == TeamActions.CREATE || action == TeamActions.PLAYER_ADD || action == TeamActions.PLAYER_REMOVE) {
@@ -59,9 +59,9 @@ public class PacketTeams implements ClientboundPacket {
                 name = buffer.readString();
                 action = TeamActions.byId(buffer.readByte());
                 if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {
-                    displayName = buffer.readString();
-                    prefix = buffer.readString();
-                    suffix = buffer.readString();
+                    displayName = buffer.readTextComponent();
+                    prefix = buffer.readTextComponent();
+                    suffix = buffer.readTextComponent();
                     setFriendlyFireByLegacy(buffer.readByte());
                     nameTagVisibility = TeamNameTagVisibilities.byName(buffer.readString());
                     color = TextComponent.ChatAttributes.byColor(ChatColor.byId(buffer.readByte()));
@@ -81,15 +81,37 @@ public class PacketTeams implements ClientboundPacket {
                 name = buffer.readString();
                 action = TeamActions.byId(buffer.readByte());
                 if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {
-                    displayName = buffer.readString();
-                    prefix = buffer.readString();
-                    suffix = buffer.readString();
+                    displayName = buffer.readTextComponent();
+                    prefix = buffer.readTextComponent();
+                    suffix = buffer.readTextComponent();
                     byte friendlyFireRaw = buffer.readByte();
                     friendlyFire = BitByte.isBitMask(friendlyFireRaw, 0x01);
                     seeFriendlyInvisibles = BitByte.isBitMask(friendlyFireRaw, 0x02);
                     nameTagVisibility = TeamNameTagVisibilities.byName(buffer.readString());
                     collisionRule = TeamCollisionRules.byName(buffer.readString());
                     color = TextComponent.ChatAttributes.byColor(ChatColor.byId(buffer.readByte()));
+                }
+                if (action == TeamActions.CREATE || action == TeamActions.PLAYER_ADD || action == TeamActions.PLAYER_REMOVE) {
+                    int playerCount = buffer.readVarInt();
+                    playerNames = new String[playerCount];
+                    for (int i = 0; i < playerCount; i++) {
+                        playerNames[i] = buffer.readString();
+                    }
+                }
+                return true;
+            case VERSION_1_13_2:
+                name = buffer.readString();
+                action = TeamActions.byId(buffer.readByte());
+                if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {
+                    displayName = buffer.readTextComponent();
+                    byte friendlyFireRaw = buffer.readByte();
+                    friendlyFire = BitByte.isBitMask(friendlyFireRaw, 0x01);
+                    seeFriendlyInvisibles = BitByte.isBitMask(friendlyFireRaw, 0x02);
+                    nameTagVisibility = TeamNameTagVisibilities.byName(buffer.readString());
+                    collisionRule = TeamCollisionRules.byName(buffer.readString());
+                    color = TextComponent.ChatAttributes.byColor(ChatColor.byId(buffer.readByte()));
+                    prefix = buffer.readTextComponent();
+                    suffix = buffer.readTextComponent();
                 }
                 if (action == TeamActions.CREATE || action == TeamActions.PLAYER_ADD || action == TeamActions.PLAYER_REMOVE) {
                     int playerCount = buffer.readVarInt();
@@ -106,7 +128,7 @@ public class PacketTeams implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, seeFriendlyInvisibiles=%s, playerCount=%s)", name, action.name(), displayName, prefix, suffix, friendlyFire, seeFriendlyInvisibles, ((playerNames == null) ? "null" : playerNames.length)));
+        Log.protocol(String.format("Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, seeFriendlyInvisibiles=%s, playerCount=%s)", name, action.name(), ((displayName == null) ? null : displayName.getColoredMessage()), prefix, suffix, friendlyFire, seeFriendlyInvisibles, ((playerNames == null) ? "null" : playerNames.length)));
     }
 
     @Override
@@ -122,15 +144,15 @@ public class PacketTeams implements ClientboundPacket {
         return action;
     }
 
-    public String getDisplayName() {
+    public TextComponent getDisplayName() {
         return displayName;
     }
 
-    public String getPrefix() {
+    public TextComponent getPrefix() {
         return prefix;
     }
 
-    public String getSuffix() {
+    public TextComponent getSuffix() {
         return suffix;
     }
 
@@ -171,7 +193,7 @@ public class PacketTeams implements ClientboundPacket {
                 seeFriendlyInvisibles = true;
                 break;
         }
-        //ToDo: seeFriendlyInvisibles for case 0 and 1
+        // ToDo: seeFriendlyInvisibles for case 0 and 1
     }
 
     public enum TeamActions {

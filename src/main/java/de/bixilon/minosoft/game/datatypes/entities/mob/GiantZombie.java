@@ -28,7 +28,7 @@ public class GiantZombie extends Zombie {
 
     @Override
     public Entities getEntityType() {
-        return Entities.GIANT_ZOMBIE;
+        return Entities.GIANT;
     }
 
     @Override

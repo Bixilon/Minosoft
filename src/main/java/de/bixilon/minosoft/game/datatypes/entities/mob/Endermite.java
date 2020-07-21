@@ -14,56 +14,48 @@
 package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.entities.*;
-import de.bixilon.minosoft.game.datatypes.entities.meta.EndermanMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class EnderMan extends Mob implements MobInterface {
-    EndermanMetaData metaData;
+public class Endermite extends Mob implements MobInterface {
+    EntityMetaData metaData;
 
-    public EnderMan(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public Endermite(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new EndermanMetaData(sets, version);
+        this.metaData = new EntityMetaData(sets, version);
     }
 
 
     @Override
     public Entities getEntityType() {
-        return Entities.ENDERMAN;
+        return Entities.ENDERMITE;
     }
 
     @Override
-    public EndermanMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (EndermanMetaData) metaData;
+        this.metaData = metaData;
     }
 
     @Override
     public float getWidth() {
-        return 0.6F;
+        return 0.4F;
     }
 
     @Override
     public float getHeight() {
-        if (metaData.isScreaming()) {
-            return 3.25F;
-        }
-        return 2.9F;
+        return 0.3F;
     }
 
     @Override
     public int getMaxHealth() {
-        return 40;
+        return 8;
     }
 
-    @Override
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return EndermanMetaData.class;
-    }
 }

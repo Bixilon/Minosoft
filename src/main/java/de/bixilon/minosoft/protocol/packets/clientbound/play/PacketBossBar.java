@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.BitByte;
 
@@ -35,12 +35,13 @@ public class PacketBossBar implements ClientboundPacket {
 
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 uuid = buffer.readUUID();
                 action = BossBarAction.byId(buffer.readVarInt());
                 switch (action) {
@@ -137,6 +138,10 @@ public class PacketBossBar implements ClientboundPacket {
 
     public boolean isDragonBar() {
         return BitByte.isBitMask(flags, 0x02);
+    }
+
+    public boolean createFog() {
+        return BitByte.isBitMask(flags, 0x04);
     }
 
     public enum BossBarAction {

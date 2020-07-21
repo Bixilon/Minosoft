@@ -39,7 +39,7 @@ public class MinecartCommandBlock extends EntityObject implements ObjectInterfac
 
     @Override
     public Entities getEntityType() {
-        return Entities.MINECART_RIDE_ABLE;
+        return Entities.MINECART_COMMAND_BLOCK;
     }
 
     @Override
@@ -65,6 +65,10 @@ public class MinecartCommandBlock extends EntityObject implements ObjectInterfac
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
         return CommandBlockMinecartMetaData.class;
+    }
+
+    public Minecart.MinecartType getType() {
+        return Minecart.MinecartType.COMMAND_BLOCK;
     }
 
 }

@@ -29,7 +29,13 @@ public enum ChatColor {
     RED(0x0C),
     PURPLE(0x0D),
     YELLOW(0x0E),
-    WHITE(0x0F);
+    WHITE(0x0F),
+    OBFUSCATED(16),
+    BOLD(17),
+    STRIKETHROUGH(18),
+    UNDERLINED(19),
+    ITALIC(20),
+    RESET(21);
 
 
     final int color;

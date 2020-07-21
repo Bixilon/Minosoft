@@ -25,6 +25,7 @@ public class ParrotMetaData extends TameableMetaData {
     public ParrotVariants getVariant() {
         switch (version) {
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return ParrotVariants.byId((Integer) sets.get(15).getData());
         }
         return ParrotVariants.RED_BLUE;

@@ -27,7 +27,6 @@ public class PacketWindowClickButton implements ServerboundPacket {
     public PacketWindowClickButton(byte windowId, byte buttonId) {
         this.windowId = windowId;
         this.buttonId = buttonId;
-        log();
     }
 
 
@@ -41,6 +40,7 @@ public class PacketWindowClickButton implements ServerboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeByte(windowId);
                 buffer.writeByte(buttonId);
                 break;

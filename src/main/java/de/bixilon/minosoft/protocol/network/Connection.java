@@ -16,11 +16,13 @@ package de.bixilon.minosoft.protocol.network;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
+import de.bixilon.minosoft.game.datatypes.recipes.Recipes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketStopSound;
 import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
@@ -95,7 +97,6 @@ public class Connection {
         switch (state) {
             case HANDSHAKING:
                 // connection established, starting threads and logging in
-                network.startPacketThread();
                 startHandlingThread();
                 ConnectionState next = ((reason == ConnectionReason.CONNECT) ? ConnectionState.LOGIN : ConnectionState.STATUS);
                 network.sendPacket(new PacketHandshake(getHost(), getPort(), next, (next == ConnectionState.STATUS) ? -1 : getVersion().getVersionNumber()));
@@ -115,10 +116,11 @@ public class Connection {
                 break;
             case DISCONNECTED:
                 if (reason == ConnectionReason.GET_VERSION) {
-                    //ToDo: only for development, remove later
-                    setVersion(ProtocolVersion.VERSION_1_12_2);
                     setReason(ConnectionReason.CONNECT);
                     connect();
+                } else {
+                    // unregister all custom recipes
+                    Recipes.removeCustomRecipes(getVersion());
                 }
         }
     }
@@ -197,7 +199,7 @@ public class Connection {
 
     public void registerDefaultChannels() {
         // MC|Brand
-        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getIdentifier().get(version), (handler, buffer) -> {
+        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version), (handler, buffer) -> {
             String serverVersion;
             String clientVersion = (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
             OutByteBuffer toSend = new OutByteBuffer(getVersion());
@@ -212,7 +214,15 @@ public class Connection {
             }
             Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getVersionString()));
 
-            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getIdentifier().get(version), toSend);
+            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version), toSend);
+        });
+
+        // MC|StopSound
+        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.STOP_SOUND.getChangeableIdentifier().get(version), (handler, buffer) -> {
+            // it is basically a packet, handle it like a packet:
+            PacketStopSound packet = new PacketStopSound();
+            packet.read(buffer);
+            handle(packet);
         });
     }
 

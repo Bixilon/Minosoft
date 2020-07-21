@@ -31,7 +31,7 @@ public class Vindicator extends Mob implements MobInterface {
 
     @Override
     public Entities getEntityType() {
-        return Entities.VINDICATION_ILLAGER;
+        return Entities.VINDICATOR;
     }
 
     @Override

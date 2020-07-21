@@ -31,14 +31,12 @@ public class PacketEntityAction implements ServerboundPacket {
         this.entityId = entityId;
         this.action = action;
         this.parameter = 0;
-        log();
     }
 
     public PacketEntityAction(int entityId, EntityActions action, int parameter) {
         this.entityId = entityId;
         this.action = action;
         this.parameter = parameter;
-        log();
     }
 
 
@@ -56,6 +54,7 @@ public class PacketEntityAction implements ServerboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeVarInt(entityId);
                 buffer.writeVarInt(action.getId(version));
                 buffer.writeVarInt(parameter);

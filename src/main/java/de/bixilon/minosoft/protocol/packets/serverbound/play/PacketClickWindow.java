@@ -35,7 +35,6 @@ public class PacketClickWindow implements ServerboundPacket {
         this.action = action;
         this.actionNumber = actionNumber;
         this.clickedItem = clickedItem;
-        log();
     }
 
 

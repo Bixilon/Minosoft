@@ -34,6 +34,7 @@ public class InsentientMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(11).getData(), 0x01);
             default:
                 return super.hasAI();
@@ -47,6 +48,7 @@ public class InsentientMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(11).getData(), 0x02);
         }
         return false;

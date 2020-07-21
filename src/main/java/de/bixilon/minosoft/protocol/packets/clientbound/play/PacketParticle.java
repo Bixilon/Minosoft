@@ -13,17 +13,18 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Identifier;
+import de.bixilon.minosoft.game.datatypes.particle.Particle;
 import de.bixilon.minosoft.game.datatypes.particle.Particles;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.Random;
 
 public class PacketParticle implements ClientboundPacket {
     Particles particle;
+    Particle particleDataClass;
     boolean longDistance = false;
     float x;
     float y;
@@ -33,11 +34,11 @@ public class PacketParticle implements ClientboundPacket {
     int[] data;
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         Random random = new Random();
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
-                particle = Particles.byIdentifier(new Identifier(buffer.readString()));
+                particle = Particles.byName(buffer.readString(), buffer.getVersion());
                 x = buffer.readFloat();
                 y = buffer.readFloat();
                 z = buffer.readFloat();
@@ -55,7 +56,7 @@ public class PacketParticle implements ClientboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
-                particle = Particles.byType(buffer.readInt());
+                particle = Particles.byId(buffer.readInt());
                 longDistance = buffer.readBoolean();
                 x = buffer.readFloat();
                 y = buffer.readFloat();
@@ -69,6 +70,22 @@ public class PacketParticle implements ClientboundPacket {
                 particleData = buffer.readFloat();
                 count = buffer.readInt();
                 return true;
+            case VERSION_1_13_2:
+                particle = Particles.byId(buffer.readInt());
+                longDistance = buffer.readBoolean();
+                x = buffer.readFloat();
+                y = buffer.readFloat();
+                z = buffer.readFloat();
+
+                // offset
+                x += buffer.readFloat() * random.nextGaussian();
+                y += buffer.readFloat() * random.nextGaussian();
+                z += buffer.readFloat() * random.nextGaussian();
+
+                particleData = buffer.readFloat();
+                count = buffer.readInt();
+                particleDataClass = buffer.readParticleData(particle);
+                return true;
         }
 
         return false;
@@ -76,7 +93,7 @@ public class PacketParticle implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received particle spawn at %s %s %s (particle=%s, data=%s, count=%d", x, y, z, particle.name(), particleData, count));
+        Log.protocol(String.format("Received particle spawn at %s %s %s (particle=%s, data=%s, count=%d, dataClass=%s)", x, y, z, particle.name(), particleData, count, particleDataClass));
     }
 
     @Override

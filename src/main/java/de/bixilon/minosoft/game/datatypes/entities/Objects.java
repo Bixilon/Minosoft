@@ -25,7 +25,7 @@ public enum Objects implements EntityEnumInterface {
     ARROW(60, Arrow.class), // ToDo: Tipped Arrows
     SNOWBALL(61, Snowball.class),
     EGG(62, ThrownEgg.class),
-    FIRE_BALL(63, FireBall.class),
+    FIREBALL(63, Fireball.class),
     FIRE_CHARGE(64, FireCharge.class),
     ENDER_PEARL(65, ThrownEnderpearl.class),
     WITHER_SKULL(66, WitherSkull.class),
@@ -43,9 +43,10 @@ public enum Objects implements EntityEnumInterface {
     EVOCATION_FANGS(78, EvocationFangs.class),
     FISHING_FLOAT(90, FishingFloat.class),
     SPECTRAL_ARROW(91, SpectralArrow.class),
-    DRAGON_FIREBALL(93, DragonFireball.class);
+    DRAGON_FIREBALL(93, DragonFireball.class),
+    TRIDENT(94, Trident.class);
 
-    //ToDO: size changed between versions, fix it!
+    // ToDo: size changed between versions, fix it!
 
     final int type;
     final Class<? extends EntityObject> clazz;

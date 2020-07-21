@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.BitByte;
 
@@ -29,7 +29,7 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
 
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
                 byte flags = buffer.readByte();
@@ -45,7 +45,8 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
-            case VERSION_1_12_2: {
+            case VERSION_1_12_2:
+            case VERSION_1_13_2: {
                 byte flags = buffer.readByte();
                 godMode = BitByte.isBitSet(flags, 0);
                 flying = BitByte.isBitSet(flags, 1);

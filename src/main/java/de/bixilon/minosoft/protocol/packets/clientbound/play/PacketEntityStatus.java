@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketEntityStatus implements ClientboundPacket {
@@ -23,7 +23,7 @@ public class PacketEntityStatus implements ClientboundPacket {
     Status status;
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
@@ -31,6 +31,7 @@ public class PacketEntityStatus implements ClientboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 entityId = buffer.readInt();
                 status = Status.byId(buffer.readByte());
                 return true;
@@ -90,7 +91,7 @@ public class PacketEntityStatus implements ClientboundPacket {
         SPAWN_CLOUD_PARTICLE(43),
         ENTITY_HURT_BERRY_BUSH(44),
         PORTAL_PARTICLE_CHORUS(46);
-        //ToDo: 1.11+ (for each entity)
+        // ToDo: 1.11+ (for each entity)
 
 
         final int id;

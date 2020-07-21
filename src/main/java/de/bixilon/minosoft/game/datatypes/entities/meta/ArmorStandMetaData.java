@@ -33,6 +33,7 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(11).getData(), 0x01);
         }
         return false;
@@ -44,7 +45,6 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_9_4:
                 return BitByte.isBitMask((byte) sets.get(10).getData(), 0x02);
             case VERSION_1_10:
-            case VERSION_1_12_2:
                 return BitByte.isBitMask((byte) sets.get(11).getData(), 0x02);
             default:
                 return super.hasGravity();
@@ -59,6 +59,7 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(11).getData(), 0x04);
         }
         return true;
@@ -72,6 +73,7 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(11).getData(), 0x08);
         }
         return false;
@@ -85,6 +87,7 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(11).getData(), 0x10);
         }
         return false;
@@ -98,6 +101,7 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (EntityRotation) sets.get(12).getData();
         }
         return new EntityRotation(0, 0, 0);
@@ -111,6 +115,7 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (EntityRotation) sets.get(13).getData();
         }
         return new EntityRotation(0, 0, 0);
@@ -124,6 +129,7 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (EntityRotation) sets.get(14).getData();
         }
         return new EntityRotation(-10, 0, -10);
@@ -137,6 +143,7 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (EntityRotation) sets.get(15).getData();
         }
         return new EntityRotation(-15, 0, 10);
@@ -150,6 +157,7 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (EntityRotation) sets.get(16).getData();
         }
         return new EntityRotation(-1, 0, -1);
@@ -163,6 +171,7 @@ public class ArmorStandMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (EntityRotation) sets.get(17).getData();
         }
         return new EntityRotation(1, 0, 1);

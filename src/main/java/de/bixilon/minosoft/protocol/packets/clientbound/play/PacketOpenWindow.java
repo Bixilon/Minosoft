@@ -18,7 +18,7 @@ import de.bixilon.minosoft.game.datatypes.inventory.InventoryProperties;
 import de.bixilon.minosoft.game.datatypes.inventory.InventoryType;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketOpenWindow implements ClientboundPacket {
@@ -30,7 +30,7 @@ public class PacketOpenWindow implements ClientboundPacket {
 
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 this.windowId = buffer.readByte();
@@ -48,6 +48,7 @@ public class PacketOpenWindow implements ClientboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 this.windowId = buffer.readByte();
                 this.type = InventoryType.byName(buffer.readString());
                 this.title = buffer.readTextComponent();

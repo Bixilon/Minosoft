@@ -22,43 +22,39 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketUseEntity implements ServerboundPacket {
+public class PacketInteractEntity implements ServerboundPacket {
     final int entityId;
     final Click click;
     final Location location;
 
     final Hand hand;
 
-    public PacketUseEntity(Entity entity, Click click) {
+    public PacketInteractEntity(Entity entity, Click click) {
         this.entityId = entity.getEntityId();
         this.click = click;
         location = null;
         hand = Hand.RIGHT;
-        log();
     }
 
-    public PacketUseEntity(int entityId, Click click) {
+    public PacketInteractEntity(int entityId, Click click) {
         this.entityId = entityId;
         this.click = click;
         location = null;
         hand = Hand.RIGHT;
-        log();
     }
 
-    public PacketUseEntity(int entityId, Click click, Location location) {
+    public PacketInteractEntity(int entityId, Click click, Location location) {
         this.entityId = entityId;
         this.click = click;
         this.location = location;
         hand = Hand.RIGHT;
-        log();
     }
 
-    public PacketUseEntity(int entityId, Click click, Location location, Hand hand) {
+    public PacketInteractEntity(int entityId, Click click, Location location, Hand hand) {
         this.entityId = entityId;
         this.click = click;
         this.location = location;
         this.hand = hand;
-        log();
     }
 
 
@@ -84,6 +80,7 @@ public class PacketUseEntity implements ServerboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeInt(entityId);
                 buffer.writeByte((byte) click.getId());
                 if (click == Click.INTERACT_AT) {

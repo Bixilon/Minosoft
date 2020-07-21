@@ -56,7 +56,7 @@ public class Log {
                     // something to print
                     System.out.println(queue.get(0));
 
-                    //ToDo: log to file
+                    // ToDo: log to file
 
                     queue.remove(0);
                 }

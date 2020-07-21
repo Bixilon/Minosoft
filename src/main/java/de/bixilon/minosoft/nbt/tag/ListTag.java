@@ -19,11 +19,11 @@ import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListTag implements Tag {
+public class ListTag implements NBTTag {
     final TagTypes type;
-    final List<Tag> list;
+    final List<NBTTag> list;
 
-    public ListTag(TagTypes type, List<Tag> list) {
+    public ListTag(TagTypes type, List<NBTTag> list) {
         this.type = type;
         this.list = list;
     }
@@ -80,12 +80,12 @@ public class ListTag implements Tag {
 
         new IntTag(list.size()).writeBytes(buffer);
 
-        for (Tag tag : list) {
-            tag.writeBytes(buffer);
+        for (NBTTag NBTTag : list) {
+            NBTTag.writeBytes(buffer);
         }
     }
 
-    public List<Tag> getValue() {
+    public List<NBTTag> getValue() {
         return list;
     }
 
@@ -94,8 +94,8 @@ public class ListTag implements Tag {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
-        for (Tag tag : list) {
-            builder.append(tag);
+        for (NBTTag NBTTag : list) {
+            builder.append(NBTTag);
         }
         builder.delete(builder.length() - 1, builder.length()); // delete last comma
         builder.append("]");

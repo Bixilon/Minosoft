@@ -32,7 +32,6 @@ public class PacketCraftingBookData implements ServerboundPacket {
         this.recipeId = recipeId;
         craftingBookOpen = false;
         craftingFilter = false;
-        log();
     }
 
     public PacketCraftingBookData(BookDataStatus action, boolean craftingBookOpen, boolean craftingFilter) {
@@ -40,7 +39,6 @@ public class PacketCraftingBookData implements ServerboundPacket {
         this.recipeId = 0;
         this.craftingBookOpen = craftingBookOpen;
         this.craftingFilter = craftingFilter;
-        log();
     }
 
 

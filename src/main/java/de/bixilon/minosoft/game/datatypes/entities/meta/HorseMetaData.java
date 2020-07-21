@@ -32,6 +32,7 @@ public class HorseMetaData extends AbstractHorseMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return HorseColor.byId((int) sets.get(15).getData() & 0xFF);
         }
         return HorseColor.WHITE;
@@ -47,6 +48,7 @@ public class HorseMetaData extends AbstractHorseMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return HorseDots.byId((int) sets.get(15).getData() & 0xFF00);
         }
         return HorseDots.NONE;
@@ -60,6 +62,7 @@ public class HorseMetaData extends AbstractHorseMetaData {
             case VERSION_1_9_4:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return HorseArmor.byId((int) sets.get(16).getData());
             case VERSION_1_10:
                 return HorseArmor.byId((int) sets.get(17).getData());

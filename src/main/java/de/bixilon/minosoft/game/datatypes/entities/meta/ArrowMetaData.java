@@ -16,6 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class ArrowMetaData extends EntityMetaData {
 
@@ -33,9 +34,26 @@ public class ArrowMetaData extends EntityMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(6).getData(), 0x01);
         }
         return false;
+    }
+
+    public boolean isNoClip() {
+        switch (version) {
+            case VERSION_1_13_2:
+                return BitByte.isBitMask((byte) sets.get(6).getData(), 0x02);
+        }
+        return false;
+    }
+
+    public UUID getShooterUUID() {
+        switch (version) {
+            case VERSION_1_13_2:
+                return (UUID) sets.get(7).getData();
+        }
+        return null;
     }
 
 }

@@ -10,30 +10,23 @@
  *
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-package de.bixilon.minosoft.game.datatypes;
-
-import de.bixilon.minosoft.protocol.protocol.Protocol;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class Identifier extends VersionValueMap<String> {
+public class FishMetaData extends InsentientMetaData {
 
-    public Identifier(String legacy, String water) {
-        values.put(Protocol.getLowestVersionSupported(), legacy);
-        values.put(ProtocolVersion.VERSION_1_13_2, water);
+    public FishMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+        super(sets, version);
     }
 
-    public Identifier(HashMap<ProtocolVersion, String> names) {
-        this.values = names;
-    }
-
-    public Identifier(IdentifierSet... sets) {
-        super(sets, true);
-    }
-
-    public Identifier(String name) {
-        super(name);
+    public boolean fromBucket() {
+        switch (version) {
+            case VERSION_1_13_2:
+                return (boolean) sets.get(12).getData();
+        }
+        return false;
     }
 }

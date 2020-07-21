@@ -40,7 +40,6 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
         this.cursorX = cursorX;
         this.cursorY = cursorY;
         this.cursorZ = cursorZ;
-        log();
     }
 
     // >= 1.9
@@ -52,7 +51,6 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
         this.cursorX = cursorX;
         this.cursorY = cursorY;
         this.cursorZ = cursorZ;
-        log();
     }
 
 
@@ -90,6 +88,7 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
                 break;
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writePosition(position);
                 buffer.writeVarInt(direction);
                 buffer.writeVarInt(hand.getId());

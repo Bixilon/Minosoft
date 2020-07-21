@@ -17,7 +17,7 @@ import de.bixilon.minosoft.game.datatypes.MapSet;
 import de.bixilon.minosoft.game.datatypes.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
@@ -26,7 +26,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
     EntityAnimations animation;
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
             case VERSION_1_8:
@@ -34,6 +34,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 entityId = buffer.readVarInt();
                 animation = EntityAnimations.byId(buffer.readByte(), buffer.getVersion());
                 return true;
@@ -60,7 +61,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
         SWING_LEFT_ARM(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 3)}),
         CRITICAL_EFFECT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4)}),
         MAGIC_CRITICAL_EFFECT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 5)}),
-        UNKNOWN_1(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 102), new MapSet<>(ProtocolVersion.VERSION_1_8, -1)}), // name currently unknown //ToDo
+        UNKNOWN_1(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 102), new MapSet<>(ProtocolVersion.VERSION_1_8, -1)}), // name currently unknown // ToDo
         SNEAK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 104), new MapSet<>(ProtocolVersion.VERSION_1_8, -1)}),
         UN_SNEAK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 105), new MapSet<>(ProtocolVersion.VERSION_1_8, -1)});
 

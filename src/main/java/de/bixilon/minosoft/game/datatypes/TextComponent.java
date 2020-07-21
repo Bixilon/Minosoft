@@ -201,6 +201,11 @@ public class TextComponent {
         return "";
     }
 
+    @Override
+    public String toString() {
+        return getColoredMessage();
+    }
+
     public enum ChatAttributes {
         BLACK("\033[38;2;0;0;0m", ChatColor.BLACK),
         DARK_BLUE("\033[38;2;0;0;170m", ChatColor.DARK_BLUE),
@@ -224,7 +229,7 @@ public class TextComponent {
         STRIKETHROUGH("\u001b[9m", "m"),
         UNDERLINED("\u001b[4m", "n"),
         ITALIC("\u001b[3m", "o"),
-        OBFUSCATED("\u001b[47;1m", "k"); //ToDo
+        OBFUSCATED("\u001b[47;1m", "k"); // ToDo
 
         final String consolePrefix;
         final ChatColor color;

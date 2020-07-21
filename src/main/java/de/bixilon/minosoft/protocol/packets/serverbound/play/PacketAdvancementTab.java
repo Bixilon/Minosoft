@@ -26,13 +26,11 @@ public class PacketAdvancementTab implements ServerboundPacket {
     public PacketAdvancementTab(AdvancementTabStatus action) {
         this.action = action;
         tabToOpen = null;
-        log();
     }
 
     public PacketAdvancementTab(AdvancementTabStatus action, String tabToOpen) {
         this.action = action;
         this.tabToOpen = tabToOpen;
-        log();
     }
 
     @Override
@@ -40,6 +38,7 @@ public class PacketAdvancementTab implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_ADVANCEMENT_TAB));
         switch (version) {
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeVarInt(action.getId());
                 if (action == AdvancementTabStatus.OPEN_TAB) {
                     buffer.writeString(tabToOpen);

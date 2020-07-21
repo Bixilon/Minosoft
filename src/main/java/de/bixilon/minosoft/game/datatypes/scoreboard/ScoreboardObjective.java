@@ -13,14 +13,16 @@
 
 package de.bixilon.minosoft.game.datatypes.scoreboard;
 
+import de.bixilon.minosoft.game.datatypes.TextComponent;
+
 import java.util.HashMap;
 
 public class ScoreboardObjective {
     final String objectiveName;
     final HashMap<String, ScoreboardScore> scores;
-    String objectiveValue;
+    TextComponent objectiveValue;
 
-    public ScoreboardObjective(String objectiveName, String objectiveValue) {
+    public ScoreboardObjective(String objectiveName, TextComponent objectiveValue) {
         this.objectiveName = objectiveName;
         this.objectiveValue = objectiveValue;
         this.scores = new HashMap<>();
@@ -30,7 +32,7 @@ public class ScoreboardObjective {
         return objectiveName;
     }
 
-    public String getObjectiveValue() {
+    public TextComponent getObjectiveValue() {
         return objectiveValue;
     }
 
@@ -56,7 +58,7 @@ public class ScoreboardObjective {
         return scores.get(itemName);
     }
 
-    public void setValue(String value) {
+    public void setValue(TextComponent value) {
         objectiveValue = value;
     }
 }

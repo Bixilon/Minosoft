@@ -30,6 +30,8 @@ public class TippedArrowMetaData extends ArrowMetaData {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
                 return (int) sets.get(7).getData();
+            case VERSION_1_13_2:
+                return (int) sets.get(8).getData();
         }
         return 0;
     }

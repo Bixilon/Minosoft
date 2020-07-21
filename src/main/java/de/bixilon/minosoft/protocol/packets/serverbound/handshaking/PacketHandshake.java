@@ -29,7 +29,6 @@ public class PacketHandshake implements ServerboundPacket {
         this.port = port;
         this.nextState = nextState;
         this.version = version;
-        log();
     }
 
     public PacketHandshake(String address, int version) {
@@ -37,7 +36,6 @@ public class PacketHandshake implements ServerboundPacket {
         this.version = version;
         this.port = ProtocolDefinition.DEFAULT_PORT;
         this.nextState = ConnectionState.STATUS;
-        log();
     }
 
     @Override

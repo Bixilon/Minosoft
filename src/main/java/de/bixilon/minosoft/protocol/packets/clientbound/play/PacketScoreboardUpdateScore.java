@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketScoreboardUpdateScore implements ClientboundPacket {
@@ -26,7 +26,7 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
 
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 itemName = buffer.readString();
@@ -43,12 +43,13 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 itemName = buffer.readString();
                 action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
                 scoreName = buffer.readString();
 
                 if (action == ScoreboardUpdateScoreAction.REMOVE) {
-                    break;
+                    return true;
                 }
                 // not present id action == REMOVE
                 scoreValue = buffer.readVarInt();

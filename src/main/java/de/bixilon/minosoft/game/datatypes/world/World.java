@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.world;
 
 import de.bixilon.minosoft.game.datatypes.Dimension;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
@@ -29,7 +29,6 @@ public class World {
     final HashMap<ChunkLocation, Chunk> chunks;
     final HashMap<Integer, Entity> entities;
     final String name;
-    final HashMap<BlockPosition, TextComponent[]> signs;
     final HashMap<BlockPosition, CompoundTag> blockEntityMeta;
     boolean hardcore;
     boolean raining;
@@ -39,7 +38,6 @@ public class World {
         this.name = name;
         chunks = new HashMap<>();
         entities = new HashMap<>();
-        signs = new HashMap<>();
         blockEntityMeta = new HashMap<>();
     }
 
@@ -55,15 +53,15 @@ public class World {
         return chunks;
     }
 
-    public Blocks getBlock(BlockPosition pos) {
+    public Block getBlock(BlockPosition pos) {
         ChunkLocation loc = pos.getChunkLocation();
         if (getChunk(loc) != null) {
             return getChunk(loc).getBlock(pos.getInChunkLocation());
         }
-        return Blocks.AIR;
+        return Blocks.nullBlock;
     }
 
-    public void setBlock(BlockPosition pos, Blocks block) {
+    public void setBlock(BlockPosition pos, Block block) {
         if (getChunk(pos.getChunkLocation()) != null) {
             getChunk(pos.getChunkLocation()).setBlock(pos.getInChunkLocation(), block);
         }
@@ -124,17 +122,8 @@ public class World {
         this.dimension = dimension;
     }
 
-    public void updateSign(BlockPosition position, TextComponent[] lines) {
-        //ToDo check if block is really a sign
-        signs.put(position, lines);
-    }
-
-    public TextComponent[] getSignText(BlockPosition position) {
-        return signs.get(position);
-    }
-
     public void setBlockEntityData(BlockPosition position, CompoundTag nbt) {
-        //ToDo check if block is really a block entity (command block, spawner, skull, flower pot)
+        // ToDo check if block is really a block entity (command block, spawner, skull, flower pot)
         blockEntityMeta.put(position, nbt);
     }
 

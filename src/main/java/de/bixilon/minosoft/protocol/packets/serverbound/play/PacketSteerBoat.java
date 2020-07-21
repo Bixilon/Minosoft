@@ -28,7 +28,6 @@ public class PacketSteerBoat implements ServerboundPacket {
     public PacketSteerBoat(boolean leftPaddle, boolean rightPaddle) {
         this.leftPaddle = leftPaddle;
         this.rightPaddle = rightPaddle;
-        log();
     }
 
 
@@ -40,6 +39,7 @@ public class PacketSteerBoat implements ServerboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeBoolean(leftPaddle);
                 buffer.writeBoolean(rightPaddle);
                 break;

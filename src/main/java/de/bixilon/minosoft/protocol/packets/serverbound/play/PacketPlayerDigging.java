@@ -30,7 +30,6 @@ public class PacketPlayerDigging implements ServerboundPacket {
         this.status = status;
         this.position = position;
         this.face = face;
-        log();
     }
 
 
@@ -62,6 +61,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeVarInt(status.getId());
                 if (position == null) {
                     buffer.writeLong(0L);

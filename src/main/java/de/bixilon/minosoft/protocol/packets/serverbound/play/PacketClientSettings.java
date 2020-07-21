@@ -33,14 +33,12 @@ public class PacketClientSettings implements ServerboundPacket {
         this.locale = locale;
         this.renderDistance = (byte) renderDistance;
         this.mainHand = Hand.RIGHT; // unused; >= 1.9
-        log();
     }
 
     public PacketClientSettings(Locale locale, int renderDistance, Hand mainHand) {
         this.locale = locale;
         this.renderDistance = (byte) renderDistance;
         this.mainHand = mainHand;
-        log();
     }
 
 
@@ -67,6 +65,7 @@ public class PacketClientSettings implements ServerboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeString(locale.getName()); // locale
                 buffer.writeByte(renderDistance); // render Distance
                 buffer.writeVarInt(0x00); // chat settings (nobody uses them)

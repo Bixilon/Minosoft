@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 public class ThrownPotion extends EntityObject implements ObjectInterface {
     PotionMetaData metaData;
-    StatusEffects potion; //ToDo
+    StatusEffects potion; // ToDo
 
     public ThrownPotion(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
@@ -38,7 +38,7 @@ public class ThrownPotion extends EntityObject implements ObjectInterface {
     public ThrownPotion(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new PotionMetaData(sets, version);
-        this.potion = StatusEffects.byId(0); //ToDo
+        this.potion = StatusEffects.byId(0); // ToDo
     }
 
     @Override

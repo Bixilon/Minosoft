@@ -13,45 +13,65 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.recipes.Recipe;
+import de.bixilon.minosoft.game.datatypes.recipes.Recipes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketUnlockRecipes implements ClientboundPacket {
     UnlockRecipeActions action;
     boolean isCraftingBookOpen;
-    boolean isFilteringActive;
-    int[] listed;
-    int[] tagged;
+    boolean isSmeltingBookOpen;
+    boolean isCraftingFilteringActive;
+    boolean isSmeltingFilteringActive;
+    Recipe[] listed;
+    Recipe[] tagged;
 
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_12_2:
                 action = UnlockRecipeActions.byId(buffer.readVarInt());
                 isCraftingBookOpen = buffer.readBoolean();
-                isFilteringActive = buffer.readBoolean();
-                listed = new int[buffer.readVarInt()];
+                isCraftingFilteringActive = buffer.readBoolean();
+                listed = new Recipe[buffer.readVarInt()];
                 for (int i = 0; i < listed.length; i++) {
-                    listed[i] = buffer.readVarInt();
+                    listed[i] = Recipes.getRecipeById(buffer.readVarInt());
                 }
                 if (action == UnlockRecipeActions.INITIALIZE) {
-                    tagged = new int[buffer.readVarInt()];
+                    tagged = new Recipe[buffer.readVarInt()];
                     for (int i = 0; i < tagged.length; i++) {
-                        tagged[i] = buffer.readVarInt();
+                        tagged[i] = Recipes.getRecipeById(buffer.readVarInt());
+                    }
+                }
+                return true;
+            case VERSION_1_13_2:
+                action = UnlockRecipeActions.byId(buffer.readVarInt());
+                isCraftingBookOpen = buffer.readBoolean();
+                isCraftingFilteringActive = buffer.readBoolean();
+                isSmeltingBookOpen = buffer.readBoolean();
+                isSmeltingFilteringActive = buffer.readBoolean();
+                listed = new Recipe[buffer.readVarInt()];
+                for (int i = 0; i < listed.length; i++) {
+                    listed[i] = Recipes.getRecipe(buffer.readString(), buffer.getVersion());
+                }
+                if (action == UnlockRecipeActions.INITIALIZE) {
+                    tagged = new Recipe[buffer.readVarInt()];
+                    for (int i = 0; i < tagged.length; i++) {
+                        tagged[i] = Recipes.getRecipe(buffer.readString(), buffer.getVersion());
                     }
                 }
                 return true;
         }
-
         return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received unlock crafting recipe packet (action=%s, isCraftingBookOpen=%s, isFilteringActive=%s, listedLength=%d, taggedLength=%s)", action.name(), isCraftingBookOpen, isFilteringActive, listed.length, ((tagged == null) ? 0 : tagged.length)));
+        Log.protocol(String.format("Received unlock crafting recipe packet (action=%s, isCraftingBookOpen=%s, isFilteringActive=%s, isSmeltingBookOpen=%s, isSmeltingFilteringActive=%s listedLength=%d, taggedLength=%s)", action.name(), isCraftingBookOpen, isCraftingFilteringActive, isSmeltingBookOpen, isSmeltingFilteringActive, listed.length, ((tagged == null) ? 0 : tagged.length)));
     }
 
     @Override
@@ -59,6 +79,25 @@ public class PacketUnlockRecipes implements ClientboundPacket {
         h.handle(this);
     }
 
+    public boolean isCraftingBookOpen() {
+        return isCraftingBookOpen;
+    }
+
+    public boolean isCraftingFilteringActive() {
+        return isCraftingFilteringActive;
+    }
+
+    public Recipe[] getListed() {
+        return listed;
+    }
+
+    public Recipe[] getTagged() {
+        return tagged;
+    }
+
+    public UnlockRecipeActions getAction() {
+        return action;
+    }
 
     public enum UnlockRecipeActions {
         INITIALIZE(0),

@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
@@ -33,6 +34,7 @@ public class MinecartMetaData extends EntityMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (int) sets.get(6).getData();
         }
         return 0;
@@ -48,6 +50,7 @@ public class MinecartMetaData extends EntityMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (int) sets.get(7).getData();
         }
         return 0;
@@ -63,24 +66,26 @@ public class MinecartMetaData extends EntityMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (float) sets.get(8).getData();
         }
         return 0;
     }
 
-    public Blocks getBlock() {
+    public Block getBlock() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return Blocks.byId((int) sets.get(20).getData() & 0xFF, (int) sets.get(20).getData() >>> 4);
+                return Blocks.getBlockByLegacy((int) sets.get(20).getData());
             case VERSION_1_9_4:
-                return Blocks.byId((int) sets.get(8).getData() & 0xFF, (int) sets.get(8).getData() >>> 4);
+                return Blocks.getBlockByLegacy((int) sets.get(8).getData());
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
-                return Blocks.byId((int) sets.get(9).getData() & 0xFF, (int) sets.get(9).getData() >>> 4);
+            case VERSION_1_13_2:
+                return Blocks.getBlock((int) sets.get(9).getData(), version);
         }
-        return Blocks.AIR;
+        return Blocks.nullBlock;
     }
 
     public int getBlockYPosition() {
@@ -92,6 +97,7 @@ public class MinecartMetaData extends EntityMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (int) sets.get(10).getData();
         }
         return 0;
@@ -106,6 +112,7 @@ public class MinecartMetaData extends EntityMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (boolean) sets.get(11).getData();
         }
         return false;

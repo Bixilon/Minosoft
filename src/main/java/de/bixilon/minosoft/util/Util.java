@@ -15,10 +15,9 @@ package de.bixilon.minosoft.util;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import org.json.JSONObject;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -36,8 +35,7 @@ public class Util {
     public static void sleep(int ms) {
         try {
             Thread.sleep(ms);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (InterruptedException ignored) {
         }
     }
 
@@ -108,6 +106,24 @@ public class Util {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String readFile(String fileName) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        StringBuilder stringBuilder = new StringBuilder();
+        String line = null;
+        String ls = System.getProperty("line.separator");
+        while ((line = reader.readLine()) != null) {
+            stringBuilder.append(line);
+            stringBuilder.append(ls);
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        reader.close();
+        return stringBuilder.toString();
+    }
+
+    public static JSONObject readJsonFromFile(String fileName) throws IOException {
+        return new JSONObject(readFile(fileName));
     }
 
 }

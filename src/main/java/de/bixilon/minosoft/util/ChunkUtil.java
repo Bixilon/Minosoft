@@ -13,11 +13,13 @@
 
 package de.bixilon.minosoft.util;
 
+import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibble;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibbleLocation;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
@@ -52,7 +54,7 @@ public class ChunkUtil {
                 for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
                     if (BitByte.isBitSet(sectionBitMask, c)) {
 
-                        HashMap<ChunkNibbleLocation, Blocks> blockMap = new HashMap<>();
+                        HashMap<ChunkNibbleLocation, Block> blockMap = new HashMap<>();
 
                         for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                             for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
@@ -63,23 +65,23 @@ public class ChunkUtil {
                                     // get block meta and shift and add (merge) id if needed
                                     if (arrayPos % 2 == 0) {
                                         // high bits
-                                        singleMeta = BitByte.getLow4Bits(meta[arrayPos / 2]);
+                                        singleMeta = (byte) (meta[arrayPos / 2] & 0xF);
                                         if (BitByte.isBitSet(addBitMask, c)) {
-                                            singeBlockId = (short) ((singeBlockId << 4) | BitByte.getHigh4Bits(addBlockTypes[arrayPos / 2]));
+                                            singeBlockId = (short) ((singeBlockId << 4) | (addBlockTypes[arrayPos / 2] >>> 4));
                                         }
                                     } else {
                                         // low 4 bits
-                                        singleMeta = BitByte.getHigh4Bits(meta[arrayPos / 2]);
+                                        singleMeta = (byte) (meta[arrayPos / 2] >>> 4);
 
                                         if (BitByte.isBitSet(addBitMask, c)) {
-                                            singeBlockId = (short) ((singeBlockId << 4) | BitByte.getLow4Bits(addBlockTypes[arrayPos / 2]));
+                                            singeBlockId = (short) ((singeBlockId << 4) | (addBlockTypes[arrayPos / 2] & 0xF));
                                         }
                                     }
 
 
                                     // ToDo light, biome
-                                    Blocks block = Blocks.byId(singeBlockId, singleMeta);
-                                    if (block == Blocks.AIR) {
+                                    Block block = Blocks.getBlockByLegacy(singeBlockId, singleMeta);
+                                    if (block == Blocks.nullBlock) {
                                         arrayPos++;
                                         continue;
                                     }
@@ -123,13 +125,13 @@ public class ChunkUtil {
                     if (!BitByte.isBitSet(sectionBitMask, c)) {
                         continue;
                     }
-                    HashMap<ChunkNibbleLocation, Blocks> blockMap = new HashMap<>();
+                    HashMap<ChunkNibbleLocation, Block> blockMap = new HashMap<>();
 
                     for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                         for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                             for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
-                                Blocks block = Blocks.byId(blockData[arrayPos] >>> 4, blockData[arrayPos] & 0xF);
-                                if (block == Blocks.AIR) {
+                                Block block = Blocks.getBlockByLegacy(blockData[arrayPos]);
+                                if (block == Blocks.nullBlock) {
                                     arrayPos++;
                                     continue;
                                 }
@@ -145,7 +147,8 @@ public class ChunkUtil {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
-            case VERSION_1_12_2: {
+            case VERSION_1_12_2:
+            case VERSION_1_13_2: {
                 // really big thanks to: https://wiki.vg/index.php?title=Chunk_Format&oldid=13712
                 HashMap<Byte, ChunkNibble> nibbleMap = new HashMap<>();
                 for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
@@ -157,7 +160,7 @@ public class ChunkUtil {
                     if (bitsPerBlock < 4) {
                         bitsPerBlock = 4;
                     } else if (bitsPerBlock > 8) {
-                        bitsPerBlock = 13;
+                        bitsPerBlock = (byte) ((buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) ? 14 : 13);
                     }
                     boolean usePalette = (bitsPerBlock <= 8);
 
@@ -174,7 +177,7 @@ public class ChunkUtil {
 
                     long[] data = buffer.readLongs(buffer.readVarInt());
 
-                    HashMap<ChunkNibbleLocation, Blocks> blockMap = new HashMap<>();
+                    HashMap<ChunkNibbleLocation, Block> blockMap = new HashMap<>();
                     for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                         for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                             for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
@@ -201,9 +204,14 @@ public class ChunkUtil {
                                     // you're probably reading light data instead
                                     blockId = palette[blockId];
                                 }
-
-                                Blocks block = Blocks.byId(blockId >>> 4, blockId & 0xF);
-                                if (block == Blocks.AIR) {
+                                Block block;
+                                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+                                    // no meta data anymore
+                                    block = Blocks.getBlock(blockId, buffer.getVersion());
+                                } else {
+                                    block = Blocks.getBlockByLegacy(blockId >>> 4, blockId & 0xF);
+                                }
+                                if (block == Blocks.nullBlock) {
                                     continue;
                                 }
                                 blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), block);

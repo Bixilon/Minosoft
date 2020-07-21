@@ -31,7 +31,7 @@ public class Evoker extends Mob implements MobInterface {
 
     @Override
     public Entities getEntityType() {
-        return Entities.EVOCATION_ILLAGER;
+        return Entities.EVOKER;
     }
 
     @Override

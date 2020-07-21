@@ -36,7 +36,6 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
         this.yaw = yaw;
         this.pitch = pitch;
         this.onGround = onGround;
-        log();
     }
 
     public PacketPlayerPositionAndRotationSending(double x, double feetY, double z, float yaw, float pitch, boolean onGround) {
@@ -47,7 +46,6 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
         this.yaw = yaw;
         this.pitch = pitch;
         this.onGround = onGround;
-        log();
     }
 
 
@@ -69,6 +67,7 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeDouble(x);
                 buffer.writeDouble(feetY);
                 buffer.writeDouble(z);

@@ -28,7 +28,6 @@ public class PacketPlayerRotationSending implements ServerboundPacket {
         this.yaw = yaw;
         this.pitch = pitch;
         this.onGround = onGround;
-        log();
     }
 
 
@@ -42,6 +41,7 @@ public class PacketPlayerRotationSending implements ServerboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeFloat(yaw);
                 buffer.writeFloat(pitch);
                 buffer.writeBoolean(onGround);

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.mob.OtherPlayer;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.UUID;
@@ -30,7 +30,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
     OtherPlayer player;
 
     @Override
-    public boolean read(InPacketBuffer buffer) {
+    public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10: {
                 this.entityId = buffer.readVarInt();
@@ -66,7 +66,8 @@ public class PacketSpawnPlayer implements ClientboundPacket {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
-            case VERSION_1_12_2: {
+            case VERSION_1_12_2:
+            case VERSION_1_13_2: {
                 this.entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
                 Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
@@ -85,7 +86,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Player spawned at %s (name=%s, uuid=%s)", player.getLocation().toString(), player.getName(), player.getUUID()));
+        Log.protocol(String.format("Player spawned at %s (entityId=%d, name=%s, uuid=%s)", player.getLocation().toString(), entityId, player.getName(), player.getUUID()));
     }
 
     public int getEntityId() {

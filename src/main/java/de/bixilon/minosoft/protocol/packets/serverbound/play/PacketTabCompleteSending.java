@@ -29,14 +29,12 @@ public class PacketTabCompleteSending implements ServerboundPacket {
         this.text = text;
         position = null;
         assumeCommand = false;
-        log();
     }
 
     public PacketTabCompleteSending(String text, BlockPosition position) {
         this.text = text;
         this.position = position;
         assumeCommand = false;
-        log();
     }
 
 
@@ -44,7 +42,6 @@ public class PacketTabCompleteSending implements ServerboundPacket {
         this.text = text;
         this.position = position;
         this.assumeCommand = assumeCommand;
-        log();
     }
 
     @Override

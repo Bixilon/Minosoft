@@ -58,12 +58,12 @@ public class ItemFrame extends EntityObject implements ObjectInterface {
 
     @Override
     public float getWidth() {
-        return 1.0F; //ToDo
+        return 1.0F; // ToDo
     }
 
     @Override
     public float getHeight() {
-        return 1.0F; //ToDo
+        return 1.0F; // ToDo
     }
 
     @Override

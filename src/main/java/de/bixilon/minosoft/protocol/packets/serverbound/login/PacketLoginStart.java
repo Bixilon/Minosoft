@@ -26,12 +26,10 @@ public class PacketLoginStart implements ServerboundPacket {
 
     public PacketLoginStart(Player p) {
         username = p.getPlayerName();
-        log();
     }
 
     public PacketLoginStart(String username) {
         this.username = username;
-        log();
     }
 
     @Override

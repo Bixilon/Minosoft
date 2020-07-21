@@ -35,6 +35,7 @@ public class HumanMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (float) sets.get(11).getData();
         }
         return 0.0F;
@@ -50,6 +51,7 @@ public class HumanMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (int) sets.get(12).getData();
         }
         return 0;
@@ -63,6 +65,7 @@ public class HumanMetaData extends MobMetaData {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return Hand.byId((byte) sets.get(14).getData());
         }
         return Hand.RIGHT;
@@ -71,6 +74,7 @@ public class HumanMetaData extends MobMetaData {
     public CompoundTag getLeftShoulderEntityData() {
         switch (version) {
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (CompoundTag) sets.get(15).getData();
         }
         return null;
@@ -79,6 +83,7 @@ public class HumanMetaData extends MobMetaData {
     public CompoundTag getRightShoulderEntityData() {
         switch (version) {
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 return (CompoundTag) sets.get(16).getData();
         }
         return null;

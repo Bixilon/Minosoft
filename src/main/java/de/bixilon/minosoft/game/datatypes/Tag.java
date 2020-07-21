@@ -11,14 +11,22 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.nbt.tag;
+package de.bixilon.minosoft.game.datatypes;
 
-import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
+public class Tag {
+    final String identifier;
+    final int[] idList;
 
-public interface Tag {
-    TagTypes getType();
+    public Tag(String identifier, int[] idList) {
+        this.identifier = identifier;
+        this.idList = idList;
+    }
 
-    void writeBytes(OutByteBuffer buffer);
+    public String getIdentifier() {
+        return identifier;
+    }
 
-    String toString();
+    public int[] getIdList() {
+        return idList;
+    }
 }
