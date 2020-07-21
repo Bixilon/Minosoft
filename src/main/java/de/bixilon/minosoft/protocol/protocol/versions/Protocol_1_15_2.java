@@ -11,12 +11,14 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol;
+package de.bixilon.minosoft.protocol.protocol.versions;
 
+
+import de.bixilon.minosoft.protocol.protocol.Protocol;
 
 public class Protocol_1_15_2 extends Protocol {
 
-    Protocol_1_15_2() {
+    public Protocol_1_15_2() {
         super();
         // ToDo
     }

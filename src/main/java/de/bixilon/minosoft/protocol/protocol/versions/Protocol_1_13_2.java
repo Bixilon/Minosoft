@@ -11,12 +11,15 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol;
+package de.bixilon.minosoft.protocol.protocol.versions;
 
+
+import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.Protocol;
 
 public class Protocol_1_13_2 extends Protocol {
 
-    Protocol_1_13_2() {
+    public Protocol_1_13_2() {
         super();
         clientboundPacketMapping.put(Packets.Clientbound.LOGIN_SET_COMPRESSION, 0x03);
         clientboundPacketMapping.put(Packets.Clientbound.LOGIN_PLUGIN_REQUEST, 0x04);
@@ -58,6 +61,7 @@ public class Protocol_1_13_2 extends Protocol {
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_CHUNK_DATA, 0x22);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_EFFECT, 0x23);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_PARTICLE, 0x24);
+
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_JOIN_GAME, 0x25);
         clientboundPacketMapping.put(Packets.Clientbound.PLAY_MAP_DATA, 0x26);
         //clientboundPacketMapping.put(Packets.Clientbound.PLAY_ENTITY, 0x27);
