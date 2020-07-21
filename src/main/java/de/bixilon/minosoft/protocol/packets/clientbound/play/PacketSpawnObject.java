@@ -13,10 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
-import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.entities.Objects;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
+import de.bixilon.minosoft.game.datatypes.entities.*;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -28,7 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public class PacketSpawnObject implements ClientboundPacket {
-    EntityObject object;
+    Entity object;
 
     public static EntityMetaData getEntityData(Class<? extends EntityMetaData> clazz, InByteBuffer buffer, ProtocolVersion v) {
         try {
@@ -44,7 +41,7 @@ public class PacketSpawnObject implements ClientboundPacket {
         Log.protocol(String.format("Object spawned at %s (entityId=%d, type=%s)", object.getLocation().toString(), object.getEntityId(), object.getEntityType().name()));
     }
 
-    public EntityObject getObject() {
+    public Entity getObject() {
         return object;
     }
 
@@ -91,6 +88,24 @@ public class PacketSpawnObject implements ClientboundPacket {
                 int entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
                 Objects type = Objects.byType(buffer.readByte());
+                Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+                short pitch = buffer.readAngle();
+                short yaw = buffer.readAngle();
+                int data = buffer.readInt();
+
+                try {
+                    // velocity present AND metadata
+                    Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+                    object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, location, yaw, pitch, data, velocity);
+                    return true;
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+            }
+            case VERSION_1_14_4: {
+                int entityId = buffer.readVarInt();
+                UUID uuid = buffer.readUUID();
+                Entities type = Entities.byId(buffer.readVarInt(), buffer.getVersion());
                 Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
                 short pitch = buffer.readAngle();
                 short yaw = buffer.readAngle();
