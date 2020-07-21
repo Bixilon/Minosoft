@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import de.bixilon.minosoft.protocol.protocol.versions.*;
+
 import java.util.TreeMap;
 
 public enum ProtocolVersion {
