@@ -72,7 +72,6 @@ public class Packets {
 
         Serverbound() {
             this.state = ConnectionState.valueOf(name().split("_")[0]);
-
         }
 
         public ConnectionState getState() {
@@ -191,7 +190,6 @@ public class Packets {
 
         Clientbound() {
             this.state = ConnectionState.valueOf(name().split("_")[0]);
-
         }
 
         public ConnectionState getState() {

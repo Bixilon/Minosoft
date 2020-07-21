@@ -65,7 +65,7 @@ public class PacketEntityAction implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending entity action packet (entityId=%d, action=%s, parameter=%d)", entityId, action.name(), parameter));
+        Log.protocol(String.format("Sending entity action packet (entityId=%d, action=%s, parameter=%d)", entityId, action, parameter));
     }
 
     public enum EntityActions {

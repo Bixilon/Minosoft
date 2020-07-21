@@ -38,6 +38,6 @@ public class StatusEffect {
 
     @Override
     public String toString() {
-        return String.format("%s (amplifier: %d, duration: %d)", effect.name(), amplifier, duration);
+        return String.format("%s (amplifier: %d, duration: %d)", effect, amplifier, duration);
     }
 }

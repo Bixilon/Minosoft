@@ -50,7 +50,7 @@ public class PacketResourcePackStatus implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending resource pack status (status=%s, hash=%s)", status.name(), hash));
+        Log.protocol(String.format("Sending resource pack status (status=%s, hash=%s)", status, hash));
     }
 
     public enum ResourcePackStatus {

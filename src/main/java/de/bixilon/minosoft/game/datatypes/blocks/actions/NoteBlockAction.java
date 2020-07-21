@@ -24,7 +24,7 @@ public class NoteBlockAction implements BlockAction {
 
     @Override
     public String toString() {
-        return String.format("NOTEBLOCK_%s:%d", instrument.name(), pitch);
+        return String.format("NOTEBLOCK_%s:%d", instrument, pitch);
     }
 
     public enum Instruments {

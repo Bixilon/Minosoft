@@ -97,7 +97,7 @@ public class PacketInteractEntity implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Interacting with entity (entityId=%d, click=%s)", entityId, click.name()));
+        Log.protocol(String.format("Interacting with entity (entityId=%d, click=%s)", entityId, click));
     }
 
     public enum Click {

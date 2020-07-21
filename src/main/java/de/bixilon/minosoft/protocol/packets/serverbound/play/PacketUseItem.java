@@ -45,6 +45,6 @@ public class PacketUseItem implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Use hand (hand=%s)", hand.name()));
+        Log.protocol(String.format("Use hand (hand=%s)", hand));
     }
 }

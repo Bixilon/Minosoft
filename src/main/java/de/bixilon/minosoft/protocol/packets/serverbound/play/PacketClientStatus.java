@@ -49,7 +49,7 @@ public class PacketClientStatus implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending client status packet (status=%s)", status.name()));
+        Log.protocol(String.format("Sending client status packet (status=%s)", status));
     }
 
     public enum ClientStatus {

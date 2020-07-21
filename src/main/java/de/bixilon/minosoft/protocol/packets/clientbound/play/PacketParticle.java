@@ -93,7 +93,7 @@ public class PacketParticle implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received particle spawn at %s %s %s (particle=%s, data=%s, count=%d, dataClass=%s)", x, y, z, particle.name(), particleData, count, particleDataClass));
+        Log.protocol(String.format("Received particle spawn at %s %s %s (particle=%s, data=%s, count=%d, dataClass=%s)", x, y, z, particle, particleData, count, particleDataClass));
     }
 
     @Override

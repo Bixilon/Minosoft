@@ -58,13 +58,13 @@ public class PacketCombatEvent implements ClientboundPacket {
     public void log() {
         switch (action) {
             case ENTER_COMBAT:
-                Log.protocol(String.format("Received combat packet (action=%s)", action.name()));
+                Log.protocol(String.format("Received combat packet (action=%s)", action));
                 break;
             case END_COMBAT:
-                Log.protocol(String.format("Received combat packet (action=%s, duration=%d, entityId=%d)", action.name(), duration, entityId));
+                Log.protocol(String.format("Received combat packet (action=%s, duration=%d, entityId=%d)", action, duration, entityId));
                 break;
             case ENTITY_DEAD:
-                Log.protocol(String.format("Received combat packet (action=%s, playerId=%d, entityId=%d, message=\"%s\")", action.name(), playerId, entityId, message));
+                Log.protocol(String.format("Received combat packet (action=%s, playerId=%d, entityId=%d, message=\"%s\")", action, playerId, entityId, message));
                 break;
 
         }

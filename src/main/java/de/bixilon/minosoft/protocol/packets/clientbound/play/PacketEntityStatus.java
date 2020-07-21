@@ -42,7 +42,7 @@ public class PacketEntityStatus implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity status: (entityId=%d, animation=%s)", entityId, status.name()));
+        Log.protocol(String.format("Entity status: (entityId=%d, animation=%s)", entityId, status));
     }
 
     @Override

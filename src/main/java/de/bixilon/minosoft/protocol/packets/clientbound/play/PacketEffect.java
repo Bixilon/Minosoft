@@ -55,7 +55,7 @@ public class PacketEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received effect packet at %s (effect=%s, data=%d, disableRelativeVolume=%s)", position.toString(), effect.name(), data, disableRelativeVolume));
+        Log.protocol(String.format("Received effect packet at %s (effect=%s, data=%d, disableRelativeVolume=%s)", position.toString(), effect, data, disableRelativeVolume));
     }
 
     @Override

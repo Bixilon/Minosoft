@@ -56,10 +56,10 @@ public class PacketEntityEquipment implements ClientboundPacket {
     @Override
     public void log() {
         if (data != null) {
-            Log.protocol(String.format("Entity equipment changed (entityId=%d, slot=%s): %dx %s", entityId, slot.name(), data.getItemCount(), data.getDisplayName()));
+            Log.protocol(String.format("Entity equipment changed (entityId=%d, slot=%s): %dx %s", entityId, slot, data.getItemCount(), data.getDisplayName()));
         } else {
             // null means nothing, means air
-            Log.protocol(String.format("Entity equipment changed (entityId=%d, slot=%s): AIR", entityId, slot.name()));
+            Log.protocol(String.format("Entity equipment changed (entityId=%d, slot=%s): AIR", entityId, slot));
         }
     }
 

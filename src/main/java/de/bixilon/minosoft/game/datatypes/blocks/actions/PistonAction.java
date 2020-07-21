@@ -26,7 +26,7 @@ public class PistonAction implements BlockAction {
 
     @Override
     public String toString() {
-        return String.format("PISTON_%s:%s", status.name(), direction.name());
+        return String.format("PISTON_%s:%s", status, direction);
     }
 
     public enum PistonStates {

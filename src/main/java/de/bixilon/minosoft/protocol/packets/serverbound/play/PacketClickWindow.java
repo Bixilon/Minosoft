@@ -61,7 +61,7 @@ public class PacketClickWindow implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Clicking in window (windowId=%d, slot=%d, action=%s)", windowId, slot, action.name()));
+        Log.protocol(String.format("Clicking in window (windowId=%d, slot=%d, action=%s)", windowId, slot, action));
     }
 
 }

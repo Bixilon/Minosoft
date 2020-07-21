@@ -20,8 +20,7 @@ public enum ConnectionState {
     LOGIN(2),
     PLAY(3),
     DISCONNECTING(5),
-    DISCONNECTED(6),
-    UNKNOWN(7);
+    DISCONNECTED(6);
 
     final int id;
 
@@ -33,12 +32,12 @@ public enum ConnectionState {
         return this.id;
     }
 
-    public static ConnectionState getById(int id) {
+    public static ConnectionState byId(int id) {
         for (ConnectionState state : values()) {
             if (state.getId() == id) {
                 return state;
             }
         }
-        return ConnectionState.UNKNOWN;
+        return null;
     }
 }

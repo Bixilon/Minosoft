@@ -50,7 +50,7 @@ public class Protocol_1_14_4 extends Protocol {
         registerPacket(Packets.Clientbound.PLAY_SET_COOLDOWN, 0x17);
         registerPacket(Packets.Clientbound.PLAY_PLUGIN_MESSAGE, 0x18);
         registerPacket(Packets.Clientbound.PLAY_NAMED_SOUND_EFFECT, 0x19);
-        registerPacket(Packets.Clientbound.PLAY_DISCONNECT, 0x1AA);
+        registerPacket(Packets.Clientbound.PLAY_DISCONNECT, 0x1A);
         registerPacket(Packets.Clientbound.PLAY_ENTITY_STATUS, 0x1B);
         registerPacket(Packets.Clientbound.PLAY_EXPLOSION, 0x1C);
         registerPacket(Packets.Clientbound.PLAY_UNLOAD_CHUNK, 0x1D);

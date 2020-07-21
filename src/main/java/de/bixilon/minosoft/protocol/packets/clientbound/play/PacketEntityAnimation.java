@@ -45,7 +45,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Play entity animation (entityId=%d, animation=%s)", entityId, animation.name()));
+        Log.protocol(String.format("Play entity animation (entityId=%d, animation=%s)", entityId, animation));
     }
 
     @Override

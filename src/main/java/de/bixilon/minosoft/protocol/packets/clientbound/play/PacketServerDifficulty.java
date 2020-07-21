@@ -46,7 +46,7 @@ public class PacketServerDifficulty implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received server difficulty (difficulty=%s)", difficulty.name()));
+        Log.protocol(String.format("Received server difficulty (difficulty=%s)", difficulty));
     }
 
     @Override

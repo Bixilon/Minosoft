@@ -68,7 +68,7 @@ public class PacketSpawnPainting implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Spawning painting at %s (entityId=%d, painting=%s, direction=%d)", position.toString(), entityId, painting.name(), direction));
+        Log.protocol(String.format("Spawning painting at %s (entityId=%d, painting=%s, direction=%d)", position.toString(), entityId, painting, direction));
     }
 
     @Override

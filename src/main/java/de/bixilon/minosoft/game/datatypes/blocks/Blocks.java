@@ -578,7 +578,7 @@ public class Blocks {
             } else {
                 blockIdString = String.valueOf(blockId);
             }
-            throw new RuntimeException(String.format("Block Id %s is already present for %s! (identifier=%s, version=%s)", blockIdString, versionMapping.get(blockId), identifierName, version.name()));
+            throw new RuntimeException(String.format("Block Id %s is already present for %s! (identifier=%s, version=%s)", blockIdString, versionMapping.get(blockId), identifierName, version));
         }
     }
 

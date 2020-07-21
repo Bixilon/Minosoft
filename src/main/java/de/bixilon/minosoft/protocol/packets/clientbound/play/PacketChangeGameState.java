@@ -55,10 +55,10 @@ public class PacketChangeGameState implements ClientboundPacket {
                 Log.game("Received weather packet: Stopping rain...");
                 break;
             case CHANGE_GAMEMODE:
-                Log.game(String.format("Received game mode change: Now in %s", GameMode.byId(getValue().intValue()).name()));
+                Log.game(String.format("Received game mode change: Now in %s", GameMode.byId(getValue().intValue())));
                 break;
             default:
-                Log.protocol(String.format("Received game status change (%s)", getReason().name()));
+                Log.protocol(String.format("Received game status change (%s)", getReason()));
                 break;
         }
     }

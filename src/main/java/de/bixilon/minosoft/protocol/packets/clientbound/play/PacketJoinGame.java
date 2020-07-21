@@ -100,7 +100,7 @@ public class PacketJoinGame implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", entityId, gameMode.name(), dimension.name(), difficulty.name(), hardcore, viewDistance));
+        Log.protocol(String.format("Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", entityId, gameMode, dimension, difficulty, hardcore, viewDistance));
     }
 
     @Override

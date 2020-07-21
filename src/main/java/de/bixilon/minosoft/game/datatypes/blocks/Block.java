@@ -69,7 +69,7 @@ public class Block {
         if (rotation != BlockRotation.NONE) {
             out.append(" (");
             out.append("rotation=");
-            out.append(getRotation().name());
+            out.append(getRotation());
         }
         if (properties.length > 0) {
             if (out.length() > 0) {
@@ -79,7 +79,7 @@ public class Block {
             }
             out.append("properties={");
             for (BlockProperties property : properties) {
-                out.append(property.name());
+                out.append(property);
                 out.append(",");
             }
             // remove last ,
@@ -89,6 +89,6 @@ public class Block {
         if (out.length() > 0) {
             out.append(")");
         }
-        return String.format("%s:%s%s", getMod(), getIdentifier(), out.toString());
+        return String.format("%s:%s%s", getMod(), getIdentifier(), out);
     }
 }

@@ -45,7 +45,7 @@ public class PacketFacePlayer implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received face player packet (face=%s, location=%s, entityId=%d, entityFace=%s)", face.name(), location.toString(), entityId, ((entityFace != null) ? entityFace.name() : null)));
+        Log.protocol(String.format("Received face player packet (face=%s, location=%s, entityId=%d, entityFace=%s)", face, location.toString(), entityId, entityFace));
     }
 
     @Override

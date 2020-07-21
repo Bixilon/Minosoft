@@ -49,7 +49,7 @@ public class PacketAdvancementTab implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending advancement tab packet (action=%s, tabToOpen=%s)", action.name(), tabToOpen));
+        Log.protocol(String.format("Sending advancement tab packet (action=%s, tabToOpen=%s)", action, tabToOpen));
 
     }
 
