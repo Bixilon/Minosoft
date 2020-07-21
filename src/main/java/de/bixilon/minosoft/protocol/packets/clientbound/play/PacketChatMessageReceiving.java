@@ -38,6 +38,7 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 c = buffer.readTextComponent();
                 position = TextPosition.byId(buffer.readByte());
                 return true;

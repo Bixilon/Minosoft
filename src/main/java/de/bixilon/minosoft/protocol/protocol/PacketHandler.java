@@ -450,9 +450,6 @@ public class PacketHandler {
         connection.getPlayer().getWorld().addEntity(new Painting(pkg.getEntityId(), pkg.getPosition(), pkg.getDirection(), pkg.getPainting()));
     }
 
-    public void handle(PacketEntity pkg) {
-    }
-
     public void handle(PacketParticle pkg) {
         // ToDo
     }

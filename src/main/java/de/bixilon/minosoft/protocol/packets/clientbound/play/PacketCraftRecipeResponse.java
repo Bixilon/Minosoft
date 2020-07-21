@@ -31,6 +31,7 @@ public class PacketCraftRecipeResponse implements ClientboundPacket {
                 recipeId = buffer.readVarInt();
                 return true;
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 windowId = buffer.readByte();
                 recipeName = buffer.readString();
                 return true;

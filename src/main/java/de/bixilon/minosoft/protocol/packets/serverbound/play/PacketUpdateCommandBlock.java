@@ -43,6 +43,7 @@ public class PacketUpdateCommandBlock implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_UPDATE_COMMAND_BLOCK));
         switch (version) {
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writePosition(position);
                 buffer.writeString(command);
                 buffer.writeVarInt(type.getId());

@@ -47,6 +47,7 @@ public class PacketScoreboardObjective implements ClientboundPacket {
                 }
                 return true;
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 name = buffer.readString();
                 action = ScoreboardObjectiveAction.byId(buffer.readByte());
                 if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {

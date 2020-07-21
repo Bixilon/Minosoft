@@ -38,6 +38,7 @@ public class PacketBlockAction implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 // that's the only difference here
                 if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
                     position = buffer.readPosition();

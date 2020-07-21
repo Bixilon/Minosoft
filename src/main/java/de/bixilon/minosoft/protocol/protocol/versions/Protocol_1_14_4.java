@@ -101,6 +101,7 @@ public class Protocol_1_14_4 extends Protocol {
         registerPacket(Packets.Clientbound.PLAY_TEAMS, 0x4B);
         registerPacket(Packets.Clientbound.PLAY_UPDATE_SCORE, 0x4C);
         registerPacket(Packets.Clientbound.PLAY_SPAWN_POSITION, 0x4D);
+        registerPacket(Packets.Clientbound.PLAY_TIME_UPDATE, 0x4E);
         registerPacket(Packets.Clientbound.PLAY_TITLE, 0x4F);
         registerPacket(Packets.Clientbound.PLAY_ENTITY_SOUND_EFFECT, 0x50);
         registerPacket(Packets.Clientbound.PLAY_SOUND_EFFECT, 0x51);

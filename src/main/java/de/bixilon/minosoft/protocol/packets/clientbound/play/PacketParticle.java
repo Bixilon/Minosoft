@@ -71,6 +71,7 @@ public class PacketParticle implements ClientboundPacket {
                 count = buffer.readInt();
                 return true;
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 particle = Particles.byId(buffer.readInt());
                 longDistance = buffer.readBoolean();
                 x = buffer.readFloat();

@@ -39,6 +39,7 @@ public class PacketAdvancementTab implements ServerboundPacket {
         switch (version) {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeVarInt(action.getId());
                 if (action == AdvancementTabStatus.OPEN_TAB) {
                     buffer.writeString(tabToOpen);

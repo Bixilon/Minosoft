@@ -34,6 +34,7 @@ public class PacketConfirmTransactionReceiving implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 this.windowId = buffer.readByte();
                 this.actionNumber = buffer.readShort();
                 this.accepted = buffer.readBoolean();

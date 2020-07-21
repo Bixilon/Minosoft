@@ -30,6 +30,7 @@ public class PacketFacePlayer implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 face = PlayerFaces.byId(buffer.readVarInt());
                 location = buffer.readLocation();
                 if (buffer.readBoolean()) {

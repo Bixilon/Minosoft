@@ -34,6 +34,7 @@ public class PacketQueryEntityNBT implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_ENTITY_NBT_REQUEST));
         switch (version) {
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeVarInt(transactionId);
                 buffer.writeVarInt(entityId);
                 break;

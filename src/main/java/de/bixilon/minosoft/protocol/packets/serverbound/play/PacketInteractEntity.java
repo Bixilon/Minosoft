@@ -81,6 +81,7 @@ public class PacketInteractEntity implements ServerboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeInt(entityId);
                 buffer.writeByte((byte) click.getId());
                 if (click == Click.INTERACT_AT) {

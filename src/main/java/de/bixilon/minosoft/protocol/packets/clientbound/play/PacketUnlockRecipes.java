@@ -49,6 +49,7 @@ public class PacketUnlockRecipes implements ClientboundPacket {
                 }
                 return true;
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 action = UnlockRecipeActions.byId(buffer.readVarInt());
                 isCraftingBookOpen = buffer.readBoolean();
                 isCraftingFilteringActive = buffer.readBoolean();

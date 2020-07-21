@@ -100,6 +100,7 @@ public class PacketTeams implements ClientboundPacket {
                 }
                 return true;
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 name = buffer.readString();
                 action = TeamActions.byId(buffer.readByte());
                 if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {

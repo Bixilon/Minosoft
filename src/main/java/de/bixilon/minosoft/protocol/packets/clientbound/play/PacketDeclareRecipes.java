@@ -31,6 +31,7 @@ public class PacketDeclareRecipes implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 recipes = new Recipe[buffer.readVarInt()];
                 for (int i = 0; i < recipes.length; i++) {
                     Recipe recipe;

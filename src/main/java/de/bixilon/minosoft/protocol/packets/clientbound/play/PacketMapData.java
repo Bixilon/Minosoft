@@ -37,6 +37,7 @@ public class PacketMapData implements ClientboundPacket {
     // players
     List<MapPinSet> pins;
 
+    boolean locked = false;
     //scale
     byte scale;
 
@@ -108,6 +109,9 @@ public class PacketMapData implements ClientboundPacket {
                 mapId = buffer.readVarInt();
                 scale = buffer.readByte();
                 boolean trackPosition = buffer.readBoolean();
+                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+                    locked = buffer.readBoolean();
+                }
                 int pinCount = buffer.readVarInt();
                 pins = new ArrayList<>();
                 for (int i = 0; i < pinCount; i++) {

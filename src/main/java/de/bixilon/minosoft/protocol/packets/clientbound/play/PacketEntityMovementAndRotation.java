@@ -48,6 +48,7 @@ public class PacketEntityMovementAndRotation implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 this.entityId = buffer.readVarInt();
                 this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
                 this.yaw = buffer.readAngle();

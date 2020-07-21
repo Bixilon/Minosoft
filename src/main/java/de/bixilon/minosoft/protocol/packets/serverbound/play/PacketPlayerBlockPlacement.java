@@ -30,6 +30,7 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
     final float cursorY;
     final float cursorZ;
     final Hand hand;
+    boolean insideBlock;
 
 
     public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Slot item, float cursorX, float cursorY, float cursorZ) {
@@ -51,6 +52,18 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
         this.cursorX = cursorX;
         this.cursorY = cursorY;
         this.cursorZ = cursorZ;
+    }
+
+    // >= 1.14
+    public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Hand hand, float cursorX, float cursorY, float cursorZ, boolean insideBlock) {
+        this.position = position;
+        this.direction = direction;
+        this.item = null;
+        this.hand = hand;
+        this.cursorX = cursorX;
+        this.cursorY = cursorY;
+        this.cursorZ = cursorZ;
+        this.insideBlock = insideBlock;
     }
 
 
@@ -96,6 +109,16 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
                 buffer.writeFloat(cursorX);
                 buffer.writeFloat(cursorY);
                 buffer.writeFloat(cursorZ);
+                break;
+            case VERSION_1_14_4:
+                buffer.writeVarInt(hand.getId());
+                buffer.writePosition(position);
+                buffer.writeVarInt(direction);
+
+                buffer.writeFloat(cursorX);
+                buffer.writeFloat(cursorY);
+                buffer.writeFloat(cursorZ);
+                buffer.writeBoolean(insideBlock);
                 break;
         }
         return buffer;
