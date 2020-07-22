@@ -497,6 +497,11 @@ public class Blocks {
                         blockList.add(block);
                     }
 
+                    // set nullBlock
+                    if (block.getIdentifier().equals("air")) {
+                        nullBlock = block;
+                    }
+
                     int blockId = getBlockId(statesJSON, version);
                     checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping, version);
                     versionMapping.put(blockId, block);

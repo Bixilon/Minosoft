@@ -18,6 +18,7 @@ import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibble;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibbleLocation;
+import de.bixilon.minosoft.game.datatypes.world.palette.Palette;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
@@ -148,32 +149,20 @@ public class ChunkUtil {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
-            case VERSION_1_13_2: {
+            case VERSION_1_13_2:
+            case VERSION_1_14_4: {
                 // really big thanks to: https://wiki.vg/index.php?title=Chunk_Format&oldid=13712
                 HashMap<Byte, ChunkNibble> nibbleMap = new HashMap<>();
                 for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
                     if (!BitByte.isBitSet(sectionBitMask, c)) {
                         continue;
                     }
-
-                    byte bitsPerBlock = buffer.readByte();
-                    if (bitsPerBlock < 4) {
-                        bitsPerBlock = 4;
-                    } else if (bitsPerBlock > 8) {
-                        bitsPerBlock = (byte) ((buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) ? 14 : 13);
+                    if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+                        buffer.readShort(); // block count
                     }
-                    boolean usePalette = (bitsPerBlock <= 8);
-
-                    int[] palette = null;
-                    if (usePalette) {
-                        palette = new int[buffer.readVarInt()];
-                        for (int i = 0; i < palette.length; i++) {
-                            palette[i] = buffer.readVarInt();
-                        }
-                    } else {
-                        buffer.readVarInt();
-                    }
-                    int individualValueMask = ((1 << bitsPerBlock) - 1);
+                    Palette palette = Palette.choosePalette(buffer.readByte());
+                    palette.read(buffer);
+                    int individualValueMask = ((1 << palette.getBitsPerBlock()) - 1);
 
                     long[] data = buffer.readLongs(buffer.readVarInt());
 
@@ -184,9 +173,9 @@ public class ChunkUtil {
 
 
                                 int blockNumber = (((nibbleY * 16) + nibbleZ) * 16) + nibbleX;
-                                int startLong = (blockNumber * bitsPerBlock) / 64;
-                                int startOffset = (blockNumber * bitsPerBlock) % 64;
-                                int endLong = ((blockNumber + 1) * bitsPerBlock - 1) / 64;
+                                int startLong = (blockNumber * palette.getBitsPerBlock()) / 64;
+                                int startOffset = (blockNumber * palette.getBitsPerBlock()) % 64;
+                                int endLong = ((blockNumber + 1) * palette.getBitsPerBlock() - 1) / 64;
 
 
                                 int blockId;
@@ -198,19 +187,7 @@ public class ChunkUtil {
                                 }
                                 blockId &= individualValueMask;
 
-                                if (usePalette) {
-                                    // data should always be within the palette length
-                                    // If you're reading a power of 2 minus one (15, 31, 63, 127, etc...) that's out of bounds,
-                                    // you're probably reading light data instead
-                                    blockId = palette[blockId];
-                                }
-                                Block block;
-                                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-                                    // no meta data anymore
-                                    block = Blocks.getBlock(blockId, buffer.getVersion());
-                                } else {
-                                    block = Blocks.getBlockByLegacy(blockId >>> 4, blockId & 0xF);
-                                }
+                                Block block = palette.byId(blockId);
                                 if (block == Blocks.nullBlock) {
                                     continue;
                                 }
@@ -219,9 +196,11 @@ public class ChunkUtil {
                         }
                     }
 
-                    byte[] light = buffer.readBytes(2048);
-                    if (containsSkyLight) {
-                        byte[] skyLight = buffer.readBytes(2048);
+                    if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+                        byte[] light = buffer.readBytes(2048);
+                        if (containsSkyLight) {
+                            byte[] skyLight = buffer.readBytes(2048);
+                        }
                     }
 
                     nibbleMap.put(c, new ChunkNibble(blockMap));

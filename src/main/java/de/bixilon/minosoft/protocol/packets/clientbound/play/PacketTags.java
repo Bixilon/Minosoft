@@ -48,6 +48,7 @@ public class PacketTags implements ClientboundPacket {
         Tag[] ret = new Tag[buffer.readVarInt()];
         switch (buffer.getVersion()) {
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 for (int i = 0; i < ret.length; i++) {
                     ret[i] = new Tag(buffer.readString(), buffer.readVarIntArray(buffer.readVarInt()));
                 }
