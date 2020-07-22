@@ -22,6 +22,7 @@ import de.bixilon.minosoft.game.datatypes.entities.objects.Painting;
 import de.bixilon.minosoft.game.datatypes.player.PingBars;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfo;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfoBulk;
+import de.bixilon.minosoft.game.datatypes.recipes.Recipes;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardObjective;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardScore;
 import de.bixilon.minosoft.game.datatypes.scoreboard.Team;
@@ -596,6 +597,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketDeclareRecipes pkg) {
+        Recipes.registerCustomRecipes(pkg.getRecipes());
     }
 
     public void handle(PacketStopSound pkg) {

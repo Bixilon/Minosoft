@@ -57,12 +57,12 @@ public class PacketUnlockRecipes implements ClientboundPacket {
                 isSmeltingFilteringActive = buffer.readBoolean();
                 listed = new Recipe[buffer.readVarInt()];
                 for (int i = 0; i < listed.length; i++) {
-                    listed[i] = Recipes.getRecipe(buffer.readString(), buffer.getVersion());
+                    listed[i] = Recipes.getRecipe(buffer.readString());
                 }
                 if (action == UnlockRecipeActions.INITIALIZE) {
                     tagged = new Recipe[buffer.readVarInt()];
                     for (int i = 0; i < tagged.length; i++) {
-                        tagged[i] = Recipes.getRecipe(buffer.readString(), buffer.getVersion());
+                        tagged[i] = Recipes.getRecipe(buffer.readString());
                     }
                 }
                 return true;

@@ -14,37 +14,26 @@ package de.bixilon.minosoft.game.datatypes.recipes;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Recipes {
-    static ArrayList<Recipe> recipeList = new ArrayList<>();
-    static HashBiMap<Integer, Recipe> recipeIdMap = HashBiMap.create(); // ids for version <= VERSION_1_12_2
-    static HashMap<ProtocolVersion, HashBiMap<String, Recipe>> recipeNameMap = new HashMap<>(); // names for version >= VERSION_1_13_2
-
-    static {
-        for (ProtocolVersion version : ProtocolVersion.versionMappingArray) {
-            if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-                // add to list
-                recipeNameMap.put(version, HashBiMap.create());
-            }
-        }
-    }
+    final static ArrayList<Recipe> recipeList = new ArrayList<>();
+    final static HashBiMap<Integer, Recipe> recipeIdMap = HashBiMap.create(); // ids for version <= VERSION_1_12_2
+    final static HashBiMap<String, Recipe> recipeNameMap = HashBiMap.create();
 
 
     public static Recipe getRecipeById(int id) {
         return recipeIdMap.get(id);
     }
 
-    public static Recipe getRecipe(String identifier, ProtocolVersion version) {
-        return recipeNameMap.get(version).get(identifier);
+    public static Recipe getRecipe(String identifier) {
+        return recipeNameMap.get(identifier);
     }
 
-    public static Recipe getRecipe(RecipeProperties property, Slot result, String group, Ingredient[] ingredients) {
+    public static Recipe getRecipe(RecipeTypes property, Slot result, String group, Ingredient[] ingredients) {
         for (Recipe recipe : recipeList) {
-            if (recipe.getProperty() == property && recipe.getResult().equals(result) && recipe.getGroup().equals(group) && ingredientsEquals(recipe.getIngredients(), ingredients)) {
+            if (recipe.getType() == property && recipe.getResult().equals(result) && recipe.getGroup().equals(group) && ingredientsEquals(recipe.getIngredients(), ingredients)) {
                 return recipe;
             }
         }
@@ -73,12 +62,12 @@ public class Recipes {
     }
 
     // we don't want that recipes from 1 server will appear on an other. You must call this function before reconnecting do avoid issues
-    public static void removeCustomRecipes(ProtocolVersion version) {
-        recipeNameMap.get(version).clear();
+    public static void removeCustomRecipes() {
+        recipeNameMap.clear();
     }
 
-    public static void registerCustomRecipe(ProtocolVersion version, Recipe recipe, String identifier) {
-        recipeNameMap.get(version).put(identifier, recipe);
+    public static void registerCustomRecipes(HashBiMap<String, Recipe> recipes) {
+        recipeNameMap.putAll(recipes);
     }
 
 }

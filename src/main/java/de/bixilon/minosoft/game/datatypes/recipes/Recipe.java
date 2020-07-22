@@ -16,7 +16,7 @@ package de.bixilon.minosoft.game.datatypes.recipes;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 
 public class Recipe {
-    final RecipeProperties property;
+    final RecipeTypes type;
     Slot result;
     String group;
     Ingredient[] ingredients;
@@ -25,24 +25,31 @@ public class Recipe {
     float experience;
     int cookingTime;
 
-    public Recipe(RecipeProperties property, String group, Ingredient[] ingredients, Slot result) {
-        this.property = property;
+    public Recipe(RecipeTypes type, String group, Ingredient[] ingredients, Slot result) {
+        this.type = type;
         this.group = group;
         this.ingredients = ingredients;
         this.result = result;
     }
 
-    public Recipe(int width, int height, RecipeProperties property, String group, Ingredient[] ingredients, Slot result) {
+    public Recipe(int width, int height, RecipeTypes type, String group, Ingredient[] ingredients, Slot result) {
         this.width = width;
         this.height = height;
-        this.property = property;
+        this.type = type;
         this.group = group;
         this.ingredients = ingredients;
         this.result = result;
     }
 
-    public Recipe(RecipeProperties property, String group, Ingredient ingredient, Slot result, float experience, int cookingTime) {
-        this.property = property;
+    public Recipe(RecipeTypes type, String group, Ingredient ingredient, Slot result) {
+        this.type = type;
+        this.group = group;
+        this.ingredients = new Ingredient[]{ingredient};
+        this.result = result;
+    }
+
+    public Recipe(RecipeTypes type, String group, Ingredient ingredient, Slot result, float experience, int cookingTime) {
+        this.type = type;
         this.group = group;
         this.ingredients = new Ingredient[]{ingredient};
         this.result = result;
@@ -50,12 +57,12 @@ public class Recipe {
         this.cookingTime = cookingTime;
     }
 
-    public Recipe(RecipeProperties property) {
-        this.property = property;
+    public Recipe(RecipeTypes type) {
+        this.type = type;
     }
 
-    public RecipeProperties getProperty() {
-        return property;
+    public RecipeTypes getType() {
+        return type;
     }
 
     public Slot getResult() {

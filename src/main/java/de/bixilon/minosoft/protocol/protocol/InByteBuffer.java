@@ -284,6 +284,7 @@ public class InByteBuffer {
                 CompoundTag nbt = readNBT(version == ProtocolVersion.VERSION_1_7_10);
                 return new Slot(Items.getItemByLegacy(id, metaData), count, metaData, nbt);
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 if (readBoolean()) {
                     return new Slot(Items.getItem(readVarInt(), version), readByte(), readNBT());
                 }

@@ -120,7 +120,7 @@ public class Connection {
                     connect();
                 } else {
                     // unregister all custom recipes
-                    Recipes.removeCustomRecipes(getVersion());
+                    Recipes.removeCustomRecipes();
                 }
         }
     }

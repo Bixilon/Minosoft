@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.recipes;
 
-public enum RecipeProperties {
+public enum RecipeTypes {
     SHAPELESS("crafting_shapeless"),
     SHAPED("crafting_shaped"),
     SPECIAL_ARMOR_DYE("crafting_special_armordye"),
@@ -29,16 +29,24 @@ public enum RecipeProperties {
     SPECIAL_BANNER_ADD_PATTERN("crafting_special_banneraddpattern"),
     SPECIAL_SHIELD_DECORATION("crafting_special_shielddecoration"),
     SPECIAL_SHULKER_BOX_COLORING("crafting_special_shulkerboxcoloring"),
-    SMELTING("smelting");
+    SPECIAL_SUSPICIOUS_STEW("crafting_special_suspiciousstew"),
+    SMELTING("smelting"),
+    BLASTING("blasting"),
+    SMOKING("smoking"),
+    CAMPFIRE("campfire_cooking"),
+    STONE_CUTTING("stonecutting");
 
     final String name;
 
-    RecipeProperties(String name) {
+    RecipeTypes(String name) {
         this.name = name;
     }
 
-    public static RecipeProperties byName(String name) {
-        for (RecipeProperties recipeProperty : values()) {
+    public static RecipeTypes byName(String name) {
+        if (name.contains(":")) {
+            name = name.split(":", 2)[1];
+        }
+        for (RecipeTypes recipeProperty : values()) {
             if (recipeProperty.getName().equals(name)) {
                 return recipeProperty;
             }
