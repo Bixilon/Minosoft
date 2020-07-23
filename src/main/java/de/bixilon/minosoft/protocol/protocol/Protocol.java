@@ -25,50 +25,9 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusRespo
 import java.util.HashMap;
 
 public abstract class Protocol implements ProtocolInterface {
-    static final HashMap<Packets.Clientbound, Class<? extends ClientboundPacket>> packetClassMapping = new HashMap<>();
+    static final HashBiMap<Packets.Clientbound, Class<? extends ClientboundPacket>> packetClassMapping = HashBiMap.create();
 
     static {
-        initPacketClassMapping();
-    }
-
-    protected final HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
-    protected final HashMap<ConnectionState, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
-
-    public Protocol() {
-        serverboundPacketMapping = new HashMap<>();
-        serverboundPacketMapping.put(ConnectionState.HANDSHAKING, HashBiMap.create());
-        serverboundPacketMapping.put(ConnectionState.STATUS, HashBiMap.create());
-        serverboundPacketMapping.put(ConnectionState.LOGIN, HashBiMap.create());
-        serverboundPacketMapping.put(ConnectionState.PLAY, HashBiMap.create());
-
-        registerPacket(Packets.Serverbound.HANDSHAKING_HANDSHAKE, 0x00);
-        // status
-        registerPacket(Packets.Serverbound.STATUS_REQUEST, 0x00);
-        registerPacket(Packets.Serverbound.STATUS_PING, 0x01);
-        // login
-        registerPacket(Packets.Serverbound.LOGIN_LOGIN_START, 0x00);
-        registerPacket(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE, 0x01);
-
-
-        clientboundPacketMapping = new HashMap<>();
-        clientboundPacketMapping.put(ConnectionState.HANDSHAKING, HashBiMap.create());
-        clientboundPacketMapping.put(ConnectionState.STATUS, HashBiMap.create());
-        clientboundPacketMapping.put(ConnectionState.LOGIN, HashBiMap.create());
-        clientboundPacketMapping.put(ConnectionState.PLAY, HashBiMap.create());
-
-        registerPacket(Packets.Clientbound.STATUS_RESPONSE, 0x00);
-        registerPacket(Packets.Clientbound.STATUS_PONG, 0x01);
-        // login
-        registerPacket(Packets.Clientbound.LOGIN_DISCONNECT, 0x00);
-        registerPacket(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST, 0x01);
-        registerPacket(Packets.Clientbound.LOGIN_LOGIN_SUCCESS, 0x02);
-    }
-
-    public static Class<? extends ClientboundPacket> getPacketByPacket(Packets.Clientbound p) {
-        return packetClassMapping.get(p);
-    }
-
-    static void initPacketClassMapping() {
         packetClassMapping.put(Packets.Clientbound.STATUS_RESPONSE, PacketStatusResponse.class);
         packetClassMapping.put(Packets.Clientbound.STATUS_PONG, PacketStatusPong.class);
         packetClassMapping.put(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST, PacketEncryptionRequest.class);
@@ -161,6 +120,43 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_LIGHT, PacketUpdateLight.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_VIEW_DISTANCE, PacketUpdateViewDistance.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_VIEW_POSITION, PacketUpdateViewPosition.class);
+    }
+
+    protected final HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
+    protected final HashMap<ConnectionState, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
+
+    public Protocol() {
+        serverboundPacketMapping = new HashMap<>();
+        serverboundPacketMapping.put(ConnectionState.HANDSHAKING, HashBiMap.create());
+        serverboundPacketMapping.put(ConnectionState.STATUS, HashBiMap.create());
+        serverboundPacketMapping.put(ConnectionState.LOGIN, HashBiMap.create());
+        serverboundPacketMapping.put(ConnectionState.PLAY, HashBiMap.create());
+
+        registerPacket(Packets.Serverbound.HANDSHAKING_HANDSHAKE, 0x00);
+        // status
+        registerPacket(Packets.Serverbound.STATUS_REQUEST, 0x00);
+        registerPacket(Packets.Serverbound.STATUS_PING, 0x01);
+        // login
+        registerPacket(Packets.Serverbound.LOGIN_LOGIN_START, 0x00);
+        registerPacket(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE, 0x01);
+
+
+        clientboundPacketMapping = new HashMap<>();
+        clientboundPacketMapping.put(ConnectionState.HANDSHAKING, HashBiMap.create());
+        clientboundPacketMapping.put(ConnectionState.STATUS, HashBiMap.create());
+        clientboundPacketMapping.put(ConnectionState.LOGIN, HashBiMap.create());
+        clientboundPacketMapping.put(ConnectionState.PLAY, HashBiMap.create());
+
+        registerPacket(Packets.Clientbound.STATUS_RESPONSE, 0x00);
+        registerPacket(Packets.Clientbound.STATUS_PONG, 0x01);
+        // login
+        registerPacket(Packets.Clientbound.LOGIN_DISCONNECT, 0x00);
+        registerPacket(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST, 0x01);
+        registerPacket(Packets.Clientbound.LOGIN_LOGIN_SUCCESS, 0x02);
+    }
+
+    public static Class<? extends ClientboundPacket> getPacketByPacket(Packets.Clientbound p) {
+        return packetClassMapping.get(p);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {
