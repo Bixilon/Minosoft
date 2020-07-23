@@ -151,5 +151,4 @@ public class Protocol_1_12_2 extends Protocol {
     public String getReleaseName() {
         return "World of Color";
     }
-
 }

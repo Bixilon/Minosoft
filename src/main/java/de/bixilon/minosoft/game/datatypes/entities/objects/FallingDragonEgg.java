@@ -58,5 +58,4 @@ public class FallingDragonEgg extends EntityObject implements ObjectInterface {
     public float getHeight() {
         return 0.98F;
     }
-
 }

@@ -41,6 +41,4 @@ public class SpiderMetaData extends LivingMetaData {
         }
         return false;
     }
-
-
 }

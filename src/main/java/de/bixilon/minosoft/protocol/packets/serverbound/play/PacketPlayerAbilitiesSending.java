@@ -25,9 +25,7 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
 
     public PacketPlayerAbilitiesSending(boolean flying) {
         this.flying = flying;
-
     }
-
 
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {

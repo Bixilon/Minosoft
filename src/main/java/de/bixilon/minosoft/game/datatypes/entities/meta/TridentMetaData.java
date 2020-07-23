@@ -31,5 +31,4 @@ public class TridentMetaData extends AbstractArrowMetaData {
         }
         return 0;
     }
-
 }

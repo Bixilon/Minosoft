@@ -52,5 +52,4 @@ public class DolphinMetaData extends WaterMobMetaData {
         }
         return false;
     }
-
 }

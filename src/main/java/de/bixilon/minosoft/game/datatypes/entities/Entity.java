@@ -63,7 +63,6 @@ public abstract class Entity implements EntityInterface {
 
     public void setLocation(Location location) {
         this.location = location;
-
     }
 
     public void setLocation(RelativeLocation relativeLocation) {
@@ -85,7 +84,6 @@ public abstract class Entity implements EntityInterface {
 
     public void setYaw(short yaw) {
         this.yaw = yaw;
-
     }
 
     public short getPitch() {
@@ -94,7 +92,6 @@ public abstract class Entity implements EntityInterface {
 
     public void setPitch(short pitch) {
         this.pitch = pitch;
-
     }
 
     public void setEquipment(InventorySlots.EntityInventory slot, Slot data) {

@@ -69,5 +69,4 @@ public class GuardianMetaData extends MonsterMetaData {
         }
         return 0;
     }
-
 }

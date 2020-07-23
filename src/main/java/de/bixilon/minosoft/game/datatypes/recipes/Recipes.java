@@ -69,5 +69,4 @@ public class Recipes {
     public static void registerCustomRecipes(HashBiMap<String, Recipe> recipes) {
         recipeNameMap.putAll(recipes);
     }
-
 }

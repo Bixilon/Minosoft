@@ -135,7 +135,6 @@ public class CompoundTag implements NBTTag {
                 continue;
             }
             set.getValue().writeBytes(buffer);
-
         }
     }
 

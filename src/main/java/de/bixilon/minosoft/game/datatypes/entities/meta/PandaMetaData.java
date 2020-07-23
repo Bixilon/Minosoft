@@ -79,5 +79,4 @@ public class PandaMetaData extends AnimalMetaData {
         }
         return false;
     }
-
 }

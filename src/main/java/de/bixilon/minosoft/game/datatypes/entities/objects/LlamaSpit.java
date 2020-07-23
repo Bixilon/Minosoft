@@ -58,5 +58,4 @@ public class LlamaSpit extends EntityObject implements ObjectInterface {
     public float getHeight() {
         return 0.25F;
     }
-
 }

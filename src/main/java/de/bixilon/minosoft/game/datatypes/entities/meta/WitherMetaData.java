@@ -93,6 +93,4 @@ public class WitherMetaData extends MonsterMetaData {
         }
         return 0;
     }
-
-
 }

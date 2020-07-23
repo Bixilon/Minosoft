@@ -292,6 +292,4 @@ public class PacketMapData implements ClientboundPacket {
             return z;
         }
     }
-
-
 }

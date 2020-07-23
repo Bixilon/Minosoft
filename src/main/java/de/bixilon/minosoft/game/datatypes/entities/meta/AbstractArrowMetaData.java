@@ -69,5 +69,4 @@ public class AbstractArrowMetaData extends EntityMetaData {
         }
         return 0;
     }
-
 }

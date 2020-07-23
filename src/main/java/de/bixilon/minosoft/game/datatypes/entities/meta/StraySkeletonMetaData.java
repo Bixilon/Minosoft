@@ -26,6 +26,4 @@ public class StraySkeletonMetaData extends SkeletonMetaData {
     public SkeletonTypes getSkeletonType() {
         return SkeletonTypes.STRAY;
     }
-
-
 }

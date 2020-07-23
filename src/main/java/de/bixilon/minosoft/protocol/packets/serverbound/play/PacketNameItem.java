@@ -44,5 +44,4 @@ public class PacketNameItem implements ServerboundPacket {
     public void log() {
         Log.protocol(String.format("Sending name item packet (name=\"%s\")", name));
     }
-
 }

@@ -78,6 +78,4 @@ public class PacketEntityMetadata implements ClientboundPacket {
         }
         return null;
     }
-
 }
-

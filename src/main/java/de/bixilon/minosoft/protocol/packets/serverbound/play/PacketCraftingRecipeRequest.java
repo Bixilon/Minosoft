@@ -47,5 +47,4 @@ public class PacketCraftingRecipeRequest implements ServerboundPacket {
     public void log() {
         Log.protocol(String.format("Sending entity action packet (windowId=%d, recipeId=%d)", windowId, recipeId));
     }
-
 }

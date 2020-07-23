@@ -98,5 +98,4 @@ public class ItemFrame extends EntityObject implements ObjectInterface {
             return id;
         }
     }
-
 }

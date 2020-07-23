@@ -146,9 +146,7 @@ public class Entities {
             version = ProtocolVersion.VERSION_1_12_2;
         }
         return getClassByIdentifier(entityMapping.get(version).get(id));
-
     }
-
 
     public static String getIdentifierByClass(Class<? extends Entity> clazz) {
         return entityClassMap.inverse().get(clazz);

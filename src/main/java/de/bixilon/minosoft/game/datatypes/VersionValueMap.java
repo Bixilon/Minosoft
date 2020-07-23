@@ -24,9 +24,7 @@ public class VersionValueMap<V> {
     HashMap<ProtocolVersion, V> values = new HashMap<>();
 
     public VersionValueMap() {
-        
     }
-
 
     public VersionValueMap(MapSet<ProtocolVersion, V>[] sets, boolean unused) {
         for (MapSet<ProtocolVersion, V> set : sets) {

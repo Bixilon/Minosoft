@@ -74,6 +74,4 @@ public class CreeperMetaData extends MonsterMetaData {
         }
         return false;
     }
-
-
 }

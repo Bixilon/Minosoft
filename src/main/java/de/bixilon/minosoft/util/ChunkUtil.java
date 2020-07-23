@@ -92,9 +92,7 @@ public class ChunkUtil {
                             }
                         }
                         nibbleMap.put(c, new ChunkNibble(blockMap));
-
                     }
-
                 }
                 return new Chunk(nibbleMap);
             }
@@ -227,5 +225,4 @@ public class ChunkUtil {
         }
         // ToDo
     }
-
 }

@@ -31,6 +31,4 @@ public class AbstractIllagerMetaData extends RaidParticipantMetaData {
         }
         return false;
     }
-
-
 }

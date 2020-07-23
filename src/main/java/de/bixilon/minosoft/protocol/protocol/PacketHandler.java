@@ -98,7 +98,6 @@ public class PacketHandler {
         String serverHash = new BigInteger(CryptManager.getServerHash(pkg.getServerId(), publicKey, secretKey)).toString(16);
         connection.getPlayer().getAccount().join(serverHash);
         connection.sendPacket(new PacketEncryptionResponse(secretKey, pkg.getVerifyToken(), publicKey));
-
     }
 
     public void handle(PacketLoginSuccess pkg) {
@@ -161,7 +160,6 @@ public class PacketHandler {
                     connection.getPlayer().getPlayerInfos().get(bulk.getUUID()).setDisplayName(bulk.getDisplayName());
                     break;
             }
-
         }
     }
 
@@ -320,7 +318,6 @@ public class PacketHandler {
     public void handle(PacketChunkData pkg) {
         connection.getPlayer().getWorld().setChunk(pkg.getLocation(), pkg.getChunk());
         connection.getPlayer().getWorld().setBlockEntityData(pkg.getBlockEntities());
-
     }
 
     public void handle(PacketEntityEffect pkg) {
@@ -487,7 +484,6 @@ public class PacketHandler {
                     objective.removeScore(pkg.getItemName());
                 }
                 break;
-
         }
     }
 

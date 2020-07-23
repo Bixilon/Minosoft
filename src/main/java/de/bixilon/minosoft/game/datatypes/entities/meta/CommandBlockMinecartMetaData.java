@@ -52,5 +52,4 @@ public class CommandBlockMinecartMetaData extends EntityMetaData {
         }
         return null;
     }
-
 }

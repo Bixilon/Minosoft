@@ -21,5 +21,4 @@ public class SalmonMetaData extends AbstractFishMetaData {
     public SalmonMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
-
 }

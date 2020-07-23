@@ -37,6 +37,4 @@ public class FishingHookMetaData extends EntityMetaData {
         }
         return -1;
     }
-
-
 }

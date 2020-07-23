@@ -95,6 +95,4 @@ public class PacketUpdateCommandBlock implements ServerboundPacket {
             return id;
         }
     }
-
-
 }

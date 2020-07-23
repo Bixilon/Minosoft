@@ -46,6 +46,4 @@ public class WitchMetaData extends RaidParticipantMetaData {
         }
         return false;
     }
-
-
 }

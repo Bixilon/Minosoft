@@ -50,5 +50,4 @@ public enum Color {
     public int getId() {
         return color;
     }
-
 }

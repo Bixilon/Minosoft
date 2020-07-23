@@ -29,6 +29,4 @@ public class AbstractMerchantMetaData extends AgeableMetaData {
         }
         return 0;
     }
-
-
 }

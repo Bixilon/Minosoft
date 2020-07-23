@@ -67,7 +67,6 @@ public class PacketCombatEvent implements ClientboundPacket {
             case ENTITY_DEAD:
                 Log.protocol(String.format("Received combat packet (action=%s, playerId=%d, entityId=%d, message=\"%s\")", action, playerId, entityId, message));
                 break;
-
         }
     }
 

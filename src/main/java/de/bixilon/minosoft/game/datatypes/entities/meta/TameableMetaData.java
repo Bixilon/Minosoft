@@ -99,5 +99,4 @@ public class TameableMetaData extends AnimalMetaData {
         }
         return null;
     }
-
 }

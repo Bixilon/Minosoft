@@ -52,5 +52,4 @@ public class PigMetaData extends AnimalMetaData {
         }
         return 0;
     }
-
 }

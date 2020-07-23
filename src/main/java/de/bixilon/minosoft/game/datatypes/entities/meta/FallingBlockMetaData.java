@@ -37,5 +37,4 @@ public class FallingBlockMetaData extends EntityMetaData {
         }
         return new BlockPosition(0, (short) 0, 0);
     }
-
 }

@@ -65,6 +65,4 @@ public class VillagerMetaData extends AbstractMerchantMetaData {
         }
         return new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, 1);
     }
-
-
 }

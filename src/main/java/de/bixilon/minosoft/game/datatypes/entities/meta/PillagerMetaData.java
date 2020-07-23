@@ -21,5 +21,4 @@ public class PillagerMetaData extends AbstractIllagerMetaData {
     public PillagerMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
-
 }

@@ -39,5 +39,4 @@ public class FurnaceMinecartMetaData extends EntityMetaData {
         }
         return false;
     }
-
 }

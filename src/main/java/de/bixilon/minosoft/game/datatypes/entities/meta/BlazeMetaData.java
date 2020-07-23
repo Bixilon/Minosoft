@@ -42,6 +42,4 @@ public class BlazeMetaData extends MonsterMetaData {
         }
         return false;
     }
-
-
 }

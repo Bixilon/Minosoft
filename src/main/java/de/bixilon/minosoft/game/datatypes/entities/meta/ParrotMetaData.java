@@ -60,5 +60,4 @@ public class ParrotMetaData extends TameableMetaData {
             return id;
         }
     }
-
 }

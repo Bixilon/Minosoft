@@ -33,6 +33,4 @@ public class SpellcasterMetaData extends LivingMetaData {
         }
         return 0;
     }
-
-
 }

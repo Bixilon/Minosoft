@@ -60,7 +60,6 @@ public class Slime extends Mob implements MobInterface {
                 return 4;
             case 4:
                 return 16;
-
         }
         return 0;
     }

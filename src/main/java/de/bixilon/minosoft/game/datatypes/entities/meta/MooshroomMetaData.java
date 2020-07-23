@@ -53,6 +53,4 @@ public class MooshroomMetaData extends AnimalMetaData {
             return typeName;
         }
     }
-
-
 }

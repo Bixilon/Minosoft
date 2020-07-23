@@ -21,5 +21,4 @@ public class ThrowableMetaData extends EntityMetaData {
     public ThrowableMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
-
 }

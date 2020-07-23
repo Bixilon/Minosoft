@@ -178,5 +178,4 @@ public class HorseMetaData extends AbstractHorseMetaData {
             return id;
         }
     }
-
 }

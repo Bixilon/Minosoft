@@ -93,5 +93,4 @@ public class PacketFacePlayer implements ClientboundPacket {
             return id;
         }
     }
-
 }

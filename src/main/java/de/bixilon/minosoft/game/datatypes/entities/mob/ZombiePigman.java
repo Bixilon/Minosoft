@@ -41,5 +41,4 @@ public class ZombiePigman extends Zombie {
         }
         return 1.95F;
     }
-
 }

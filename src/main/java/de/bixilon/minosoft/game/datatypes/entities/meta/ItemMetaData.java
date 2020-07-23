@@ -40,5 +40,4 @@ public class ItemMetaData extends EntityMetaData {
         }
         return null;
     }
-
 }

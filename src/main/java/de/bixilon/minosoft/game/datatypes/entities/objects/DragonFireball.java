@@ -66,5 +66,4 @@ public class DragonFireball extends EntityObject implements ObjectInterface {
     public int getThrower() {
         return thrower;
     }
-
 }

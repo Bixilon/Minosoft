@@ -169,5 +169,4 @@ public class Minosoft {
             System.exit(1);
         }
     }
-
 }

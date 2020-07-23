@@ -31,6 +31,4 @@ public class PhantomMetaData extends InsentientMetaData {
         }
         return 0;
     }
-
-
 }

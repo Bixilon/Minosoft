@@ -129,7 +129,6 @@ public class Protocol_1_11_2 extends Protocol {
         registerPacket(Packets.Serverbound.PLAY_SPECTATE, 0x1B);
         registerPacket(Packets.Serverbound.PLAY_PLAYER_BLOCK_PLACEMENT, 0x1C);
         registerPacket(Packets.Serverbound.PLAY_USE_ITEM, 0x1D);
-
     }
 
     public int getProtocolVersionNumber() {

@@ -116,5 +116,4 @@ public class PacketBlockAction implements ClientboundPacket {
     public void handle(PacketHandler h) {
         h.handle(this);
     }
-
 }

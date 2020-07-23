@@ -172,13 +172,14 @@ public class Connection {
         handleThread = new Thread(() -> {
             while (getConnectionState() != ConnectionState.DISCONNECTING) {
                 while (handlingQueue.size() > 0) {
+                    ClientboundPacket packet = handlingQueue.get(0);
                     try {
-                        handlingQueue.get(0).log();
-                        handlingQueue.get(0).handle(getHandler());
+                        packet.log();
+                        packet.handle(getHandler());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    handlingQueue.remove(0);
+                    handlingQueue.remove(packet);
                 }
                 try {
                     // sleep, wait for an interrupt from other thread

@@ -22,7 +22,6 @@ public class MapSet<K, V> implements Map.Entry<K, V> {
     public MapSet(K key, V value) {
         this.key = key;
         this.value = value;
-
     }
 
     @Override

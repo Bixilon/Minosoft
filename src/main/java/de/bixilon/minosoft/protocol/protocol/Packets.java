@@ -77,7 +77,6 @@ public class Packets {
         public ConnectionState getState() {
             return state;
         }
-
     }
 
     public enum Clientbound {

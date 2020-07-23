@@ -60,5 +60,4 @@ public class FireworkMetaData extends EntityMetaData {
         }
         return false;
     }
-
 }

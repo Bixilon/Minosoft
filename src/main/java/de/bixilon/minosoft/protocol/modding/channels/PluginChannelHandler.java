@@ -114,5 +114,4 @@ public class PluginChannelHandler {
         sendRawData(DefaultPluginChannels.UNREGISTER.getChangeableIdentifier().get(connection.getVersion()), name.getBytes());
         registeredServerChannels.remove(name);
     }
-
 }

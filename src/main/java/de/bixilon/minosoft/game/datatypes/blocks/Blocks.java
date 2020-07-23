@@ -435,8 +435,6 @@ public class Blocks {
         rotationMapping.put("ascending_south", BlockRotation.ASCENDING_SOUTH);
         rotationMapping.put("north_south", BlockRotation.NORTH_SOUTH);
         rotationMapping.put("east_west", BlockRotation.EAST_WEST);
-
-
     }
 
     public static Block getBlockByLegacy(int protocolId, int protocolMetaData) {

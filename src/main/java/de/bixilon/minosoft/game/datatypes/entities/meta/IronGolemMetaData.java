@@ -40,6 +40,4 @@ public class IronGolemMetaData extends GolemMetaData {
         }
         return false;
     }
-
-
 }

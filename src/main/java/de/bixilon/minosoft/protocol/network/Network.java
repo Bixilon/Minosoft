@@ -83,10 +83,10 @@ public class Network {
 
 
                     while (queue.size() > 0) {
-                        ServerboundPacket p = queue.get(0);
-                        p.log();
-                        queue.remove(0);
-                        byte[] data = p.write(connection.getVersion()).getOutBytes();
+                        ServerboundPacket packet = queue.get(0);
+                        packet.log();
+                        queue.remove(packet);
+                        byte[] data = packet.write(connection.getVersion()).getOutBytes();
                         if (compressionThreshold != -1) {
                             // compression is enabled
                             // check if there is a need to compress it and if so, do it!
@@ -115,9 +115,9 @@ public class Network {
 
                         outputStream.write(data);
                         outputStream.flush();
-                        if (p instanceof PacketEncryptionResponse) {
+                        if (packet instanceof PacketEncryptionResponse) {
                             // enable encryption
-                            secretKey = ((PacketEncryptionResponse) p).getSecretKey();
+                            secretKey = ((PacketEncryptionResponse) packet).getSecretKey();
                             enableEncryption(secretKey);
                         }
                     }
@@ -201,7 +201,6 @@ public class Network {
                         }
                     }
                     Util.sleep(1);
-
                 }
                 socket.close();
                 connected = false;
@@ -238,5 +237,4 @@ public class Network {
     public void disconnect() {
         socketThread.interrupt();
     }
-
 }

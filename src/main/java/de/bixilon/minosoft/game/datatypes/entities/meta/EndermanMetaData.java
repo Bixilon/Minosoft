@@ -60,6 +60,4 @@ public class EndermanMetaData extends LivingMetaData {
         }
         return false;
     }
-
-
 }

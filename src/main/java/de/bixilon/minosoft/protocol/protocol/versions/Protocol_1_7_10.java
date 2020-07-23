@@ -113,7 +113,6 @@ public class Protocol_1_7_10 extends Protocol {
         registerPacket(Packets.Clientbound.PLAY_TEAMS, 0x3E);
         registerPacket(Packets.Clientbound.PLAY_PLUGIN_MESSAGE, 0x3F);
         registerPacket(Packets.Clientbound.PLAY_DISCONNECT, 0x40);
-
     }
 
     public int getProtocolVersionNumber() {

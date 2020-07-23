@@ -57,6 +57,4 @@ public class InsentientMetaData extends LivingMetaData {
         }
         return false;
     }
-
-
 }

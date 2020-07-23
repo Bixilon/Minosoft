@@ -66,7 +66,6 @@ public class Log {
                     Thread.sleep(100);
                 } catch (InterruptedException ignored) {
                 }
-
             }
         });
         logThread.setName("Log-Thread");

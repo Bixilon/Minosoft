@@ -69,6 +69,4 @@ public class EnderDragonMetaData extends InsentientMetaData {
             return id;
         }
     }
-
-
 }

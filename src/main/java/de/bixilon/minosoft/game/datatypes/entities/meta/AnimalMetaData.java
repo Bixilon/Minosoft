@@ -21,5 +21,4 @@ public class AnimalMetaData extends AgeableMetaData {
     public AnimalMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
-
 }

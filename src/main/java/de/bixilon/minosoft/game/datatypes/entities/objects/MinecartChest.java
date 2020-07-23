@@ -38,5 +38,4 @@ public class MinecartChest extends Minecart {
     public MinecartType getType() {
         return MinecartType.CHEST;
     }
-
 }

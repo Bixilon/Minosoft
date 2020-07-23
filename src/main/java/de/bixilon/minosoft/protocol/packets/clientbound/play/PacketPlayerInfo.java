@@ -96,7 +96,6 @@ public class PacketPlayerInfo implements ClientboundPacket {
                 Log.game(String.format("[TAB] Player info bulk (uuid=%s, name=%s, ping=%d)", property.getUUID(), property.getName(), property.getPing()));
             } else {
                 Log.game(String.format("[TAB] Player info bulk (uuid=%s, action=%s, name=%s, gameMode=%s, ping=%d, displayName=%s)", property.getUUID(), property.getAction(), property.getName(), property.getGameMode(), property.getPing(), property.getDisplayName()));
-
             }
         }
     }

@@ -98,6 +98,4 @@ public class HumanMetaData extends LivingMetaData {
         }
         return null;
     }
-
-
 }

@@ -158,5 +158,4 @@ public class BoatMetaData extends EntityMetaData {
             return id;
         }
     }
-
 }

@@ -98,5 +98,4 @@ public class WolfMetaData extends TameableMetaData {
         }
         return Color.RED;
     }
-
 }

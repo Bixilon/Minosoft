@@ -41,5 +41,4 @@ public class BatMetaData extends AmbientMetaData {
         }
         return false;
     }
-
 }

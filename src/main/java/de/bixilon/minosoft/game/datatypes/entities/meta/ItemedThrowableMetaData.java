@@ -30,5 +30,4 @@ public class ItemedThrowableMetaData extends ThrowableMetaData {
         }
         return null;
     }
-
 }

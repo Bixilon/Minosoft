@@ -128,7 +128,6 @@ public class Configuration {
                 // not yet existing, creating it
                 temp.computeIfAbsent(spilt[i], k -> new LinkedHashMap<String, Object>());
                 temp = (LinkedHashMap<String, Object>) temp.get(spilt[i]);
-
             }
             temp.put(spilt[spilt.length - 1], value);
             return;
@@ -159,7 +158,6 @@ public class Configuration {
             accounts.add(new MojangAccount((String) entry.get("accessToken"), set.getKey(), UUID.fromString((String) entry.get("uuid")), (String) entry.get("playerName"), (String) entry.get("mojangUserName")));
         }
         return accounts;
-
     }
 }
 

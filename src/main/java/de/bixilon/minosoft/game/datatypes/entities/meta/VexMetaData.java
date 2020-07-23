@@ -34,6 +34,4 @@ public class VexMetaData extends MonsterMetaData {
         }
         return false;
     }
-
-
 }

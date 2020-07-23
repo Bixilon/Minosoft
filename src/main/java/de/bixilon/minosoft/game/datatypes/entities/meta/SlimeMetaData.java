@@ -39,6 +39,4 @@ public class SlimeMetaData extends InsentientMetaData {
         }
         return 0;
     }
-
-
 }

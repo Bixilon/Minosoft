@@ -196,6 +196,4 @@ public class ArmorStandMetaData extends LivingMetaData {
         }
         return new EntityRotation(1, 0, 1);
     }
-
-
 }

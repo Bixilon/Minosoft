@@ -136,7 +136,6 @@ public class Protocol_1_9_4 extends Protocol {
         registerPacket(Packets.Clientbound.PLAY_ENTITY_TELEPORT, 0x49);
         registerPacket(Packets.Clientbound.PLAY_ENTITY_PROPERTIES, 0x4A);
         registerPacket(Packets.Clientbound.PLAY_ENTITY_EFFECT, 0x4B);
-
     }
 
     public int getProtocolVersionNumber() {

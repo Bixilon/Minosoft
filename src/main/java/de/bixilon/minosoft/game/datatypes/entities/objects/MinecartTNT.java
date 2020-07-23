@@ -39,5 +39,4 @@ public class MinecartTNT extends Minecart implements ObjectInterface {
     public MinecartType getType() {
         return MinecartType.TNT;
     }
-
 }

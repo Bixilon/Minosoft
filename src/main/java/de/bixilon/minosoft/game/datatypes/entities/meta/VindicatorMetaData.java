@@ -32,6 +32,4 @@ public class VindicatorMetaData extends AbstractIllagerMetaData {
                 return super.hasTarget();
         }
     }
-
-
 }

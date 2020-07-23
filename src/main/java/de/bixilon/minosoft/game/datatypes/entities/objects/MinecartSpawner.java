@@ -39,5 +39,4 @@ public class MinecartSpawner extends Minecart implements ObjectInterface {
     public MinecartType getType() {
         return MinecartType.SPAWNER;
     }
-
 }

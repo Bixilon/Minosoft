@@ -66,7 +66,6 @@ public class ListTag implements NBTTag {
                     break;
             }
         }
-
     }
 
     @Override

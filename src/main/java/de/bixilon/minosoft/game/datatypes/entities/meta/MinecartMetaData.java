@@ -129,5 +129,4 @@ public class MinecartMetaData extends EntityMetaData {
         }
         return false;
     }
-
 }

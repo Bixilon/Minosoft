@@ -26,6 +26,4 @@ public class WitherSkeletonMetaData extends SkeletonMetaData {
     public SkeletonTypes getSkeletonType() {
         return SkeletonTypes.WITHER;
     }
-
-
 }

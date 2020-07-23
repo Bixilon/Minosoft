@@ -44,5 +44,4 @@ public class PacketSelectTrade implements ServerboundPacket {
     public void log() {
         Log.protocol(String.format("Sending select trade packet (id=%d)", id));
     }
-
 }

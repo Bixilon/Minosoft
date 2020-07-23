@@ -37,5 +37,4 @@ public class TippedArrowMetaData extends AbstractArrowMetaData {
         }
         return -1;
     }
-
 }

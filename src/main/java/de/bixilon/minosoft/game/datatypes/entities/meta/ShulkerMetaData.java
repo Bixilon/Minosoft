@@ -81,6 +81,4 @@ public class ShulkerMetaData extends GolemMetaData {
         }
         return Color.PURPLE;
     }
-
-
 }

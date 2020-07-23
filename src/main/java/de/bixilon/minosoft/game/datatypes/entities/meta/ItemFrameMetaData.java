@@ -60,5 +60,4 @@ public class ItemFrameMetaData extends HangingMetaData {
         }
         return 0;
     }
-
 }

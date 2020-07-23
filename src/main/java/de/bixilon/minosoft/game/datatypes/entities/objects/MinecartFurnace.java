@@ -67,5 +67,4 @@ public class MinecartFurnace extends EntityObject implements ObjectInterface {
     public Minecart.MinecartType getType() {
         return Minecart.MinecartType.FURNACE;
     }
-
 }

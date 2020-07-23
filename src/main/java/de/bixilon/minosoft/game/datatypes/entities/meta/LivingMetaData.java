@@ -170,5 +170,4 @@ public class LivingMetaData extends EntityMetaData {
         }
         return false;
     }
-
 }

@@ -125,5 +125,4 @@ public class Util {
     public static JSONObject readJsonFromFile(String fileName) throws IOException {
         return new JSONObject(readFile(fileName));
     }
-
 }

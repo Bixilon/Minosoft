@@ -21,5 +21,4 @@ public class EvokerMetaData extends SpellcasterMetaData {
     public EvokerMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
-
 }

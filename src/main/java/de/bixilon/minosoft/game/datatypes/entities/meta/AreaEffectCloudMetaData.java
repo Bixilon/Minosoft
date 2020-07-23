@@ -104,6 +104,4 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
         }
         return 0;
     }
-
-
 }

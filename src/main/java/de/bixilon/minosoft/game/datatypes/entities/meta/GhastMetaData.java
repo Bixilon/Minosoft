@@ -39,6 +39,4 @@ public class GhastMetaData extends FlyingMetaData {
         }
         return false;
     }
-
-
 }

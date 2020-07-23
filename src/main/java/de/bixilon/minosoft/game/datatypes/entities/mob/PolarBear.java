@@ -45,7 +45,6 @@ public class PolarBear extends Mob implements MobInterface {
     public float getWidth() {
         if (metaData.isAdult()) {
             return 1.4F;
-
         }
         return 0.7F;
     }
@@ -54,7 +53,6 @@ public class PolarBear extends Mob implements MobInterface {
     public float getHeight() {
         if (metaData.isAdult()) {
             return 1.4F;
-
         }
         return 0.7F;
     }

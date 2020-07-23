@@ -376,5 +376,4 @@ public enum BlockProperties {
 
     ENABLED,
     DISABLED
-
 }

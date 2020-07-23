@@ -37,5 +37,4 @@ public class PotionMetaData extends EntityMetaData {
         }
         return null;
     }
-
 }

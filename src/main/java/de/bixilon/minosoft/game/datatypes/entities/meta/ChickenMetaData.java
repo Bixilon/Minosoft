@@ -21,5 +21,4 @@ public class ChickenMetaData extends AnimalMetaData {
     public ChickenMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
-
 }

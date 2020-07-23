@@ -21,5 +21,4 @@ public class RavagerMetaData extends RaidParticipantMetaData {
     public RavagerMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
-
 }

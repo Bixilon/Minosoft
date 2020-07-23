@@ -32,5 +32,4 @@ public class PolarBearMetaData extends AgeableMetaData {
         }
         return false;
     }
-
 }

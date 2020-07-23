@@ -44,7 +44,6 @@ public class OtherPlayer extends Mob implements MobInterface {
                 return 0.6F;
             case SLEEPING:
                 return 0.2F;
-
         }
     }
 
@@ -60,7 +59,6 @@ public class OtherPlayer extends Mob implements MobInterface {
                 return 0.6F;
             case SLEEPING:
                 return 0.2F;
-
         }
     }
 
@@ -104,5 +102,4 @@ public class OtherPlayer extends Mob implements MobInterface {
     public Class<? extends EntityMetaData> getMetaDataClass() {
         return HumanMetaData.class;
     }
-
 }

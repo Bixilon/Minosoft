@@ -21,5 +21,4 @@ public class IllusionerMetaData extends SpellcasterMetaData {
     public IllusionerMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
-
 }

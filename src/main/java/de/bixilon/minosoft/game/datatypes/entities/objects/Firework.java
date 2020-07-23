@@ -64,5 +64,4 @@ public class Firework extends EntityObject implements ObjectInterface {
     public Class<? extends EntityMetaData> getMetaDataClass() {
         return FireworkMetaData.class;
     }
-
 }

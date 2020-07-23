@@ -39,6 +39,4 @@ public class SnowGolemMetaData extends GolemMetaData {
         }
         return true;
     }
-
-
 }

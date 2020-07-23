@@ -39,5 +39,4 @@ public class MinecartHopper extends Minecart implements ObjectInterface {
     public Minecart.MinecartType getType() {
         return MinecartType.HOPPER;
     }
-
 }

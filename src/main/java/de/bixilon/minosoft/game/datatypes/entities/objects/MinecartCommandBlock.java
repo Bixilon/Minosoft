@@ -67,5 +67,4 @@ public class MinecartCommandBlock extends EntityObject implements ObjectInterfac
     public Minecart.MinecartType getType() {
         return Minecart.MinecartType.COMMAND_BLOCK;
     }
-
 }

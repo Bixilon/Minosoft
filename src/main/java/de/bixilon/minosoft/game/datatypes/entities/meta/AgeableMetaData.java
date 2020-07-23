@@ -50,6 +50,4 @@ public class AgeableMetaData extends CreatureMetaData {
         }
         return false;
     }
-
-
 }

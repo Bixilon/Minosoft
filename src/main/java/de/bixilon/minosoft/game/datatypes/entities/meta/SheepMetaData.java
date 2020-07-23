@@ -60,5 +60,4 @@ public class SheepMetaData extends AnimalMetaData {
         }
         return false;
     }
-
 }

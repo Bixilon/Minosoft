@@ -73,6 +73,4 @@ public class SkeletonMetaData extends MonsterMetaData {
             return id;
         }
     }
-
-
 }
