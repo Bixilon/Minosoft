@@ -44,7 +44,7 @@ public class Entities {
         registerEntityClass("minecraft:ender_pearl", ThrownEnderpearl.class);
         registerEntityClass("minecraft:eye_of_ender", EyeOfEnder.class);
         registerEntityClass("minecraft:potion", ThrownPotion.class);
-        registerEntityClass("minecraft:experience_bottle", ThrownExpBottle.class);
+        registerEntityClass("minecraft:experience_bottle", ThrownExperienceBottle.class);
         registerEntityClass("minecraft:item_frame", ItemFrame.class);
         registerEntityClass("minecraft:wither_skull", WitherSkull.class);
         registerEntityClass("minecraft:tnt", PrimedTNT.class);
@@ -123,6 +123,12 @@ public class Entities {
         registerEntityClass("minecraft:lightning_bolt", LightningBolt.class);
         registerEntityClass("minecraft:fishing_bobber", FishingBobber.class);
         registerEntityClass("minecraft:trident", Trident.class);
+        registerEntityClass("minecraft:fox", Fox.class);
+        registerEntityClass("minecraft:panda", Panda.class);
+        registerEntityClass("minecraft:cat", Cat.class);
+        registerEntityClass("minecraft:wandering_trader", WanderingTrader.class);
+        registerEntityClass("minecraft:pillager", Pillager.class);
+        registerEntityClass("minecraft:ravager", Ravager.class);
 
         // not a thing anymore
         registerEntityClass("minecraft:falling_dragon_Egg", FallingDragonEgg.class);

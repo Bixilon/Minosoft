@@ -40,7 +40,7 @@ public class MinecartFurnace extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public FurnaceMinecartMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

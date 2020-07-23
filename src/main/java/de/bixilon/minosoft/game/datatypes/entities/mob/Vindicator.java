@@ -32,7 +32,7 @@ public class Vindicator extends Mob implements MobInterface {
     }
 
     @Override
-    public VindicatorMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

@@ -17,7 +17,7 @@ import de.bixilon.minosoft.util.BitByte;
 
 import java.util.HashMap;
 
-public class AbstractIllagerMetaData extends MobMetaData {
+public class AbstractIllagerMetaData extends RaidParticipantMetaData {
 
     public AbstractIllagerMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);

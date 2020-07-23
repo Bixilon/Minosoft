@@ -32,7 +32,7 @@ public class Witch extends Mob implements MobInterface {
     }
 
     @Override
-    public WitchMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

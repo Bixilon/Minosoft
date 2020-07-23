@@ -32,7 +32,7 @@ public class StraySkeleton extends Mob implements MobInterface {
     }
 
     @Override
-    public StraySkeletonMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

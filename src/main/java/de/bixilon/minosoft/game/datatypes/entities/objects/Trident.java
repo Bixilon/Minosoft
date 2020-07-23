@@ -41,7 +41,7 @@ public class Trident extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public TridentMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

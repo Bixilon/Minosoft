@@ -32,7 +32,7 @@ public class WitherSkeleton extends Mob implements MobInterface {
     }
 
     @Override
-    public WitherSkeletonMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

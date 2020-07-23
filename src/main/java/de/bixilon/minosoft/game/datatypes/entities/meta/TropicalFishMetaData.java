@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class TropicalFishMetaData extends FishMetaData {
+public class TropicalFishMetaData extends AbstractFishMetaData {
 
     public TropicalFishMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -26,6 +26,8 @@ public class TropicalFishMetaData extends FishMetaData {
         switch (version) {
             case VERSION_1_13_2:
                 return (int) sets.get(13).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(15).getData();
         }
         return 0;
     }

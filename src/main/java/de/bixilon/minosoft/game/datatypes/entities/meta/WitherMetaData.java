@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class WitherMetaData extends MobMetaData {
+public class WitherMetaData extends MonsterMetaData {
 
     public WitherMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -34,6 +34,8 @@ public class WitherMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(12).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(14).getData();
         }
         return 0;
     }
@@ -50,6 +52,8 @@ public class WitherMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(13).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(15).getData();
         }
         return 0;
     }
@@ -66,6 +70,8 @@ public class WitherMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(14).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(16).getData();
         }
         return 0;
     }
@@ -82,6 +88,8 @@ public class WitherMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(15).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(17).getData();
         }
         return 0;
     }

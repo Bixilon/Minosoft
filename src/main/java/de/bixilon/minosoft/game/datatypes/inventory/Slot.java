@@ -38,6 +38,15 @@ public class Slot {
         this.nbt = nbt;
     }
 
+    public Slot(Item item) {
+        this.item = item;
+    }
+
+    public Slot(Item item, byte itemCount) {
+        this.item = item;
+        this.itemCount = itemCount;
+    }
+
     public Item getItem() {
         return item;
     }

@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class OcelotMetaData extends TameableMetaData {
+public class OcelotMetaData extends AnimalMetaData {
 
     public OcelotMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -37,6 +37,14 @@ public class OcelotMetaData extends TameableMetaData {
                 return OcelotTypes.byId((int) sets.get(15).getData());
         }
         return OcelotTypes.UNTAMED;
+    }
+
+    public boolean isTrusting() {
+        switch (version) {
+            case VERSION_1_14_4:
+                return (boolean) sets.get(15).getData();
+        }
+        return false;
     }
 
 

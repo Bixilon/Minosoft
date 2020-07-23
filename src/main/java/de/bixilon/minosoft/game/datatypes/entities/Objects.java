@@ -36,7 +36,7 @@ public enum Objects implements EntityEnumInterface {
     EYE_OF_ENDER(72, EyeOfEnder.class),
     THROWN_POTION(73, ThrownPotion.class),
     FALLING_DRAGON_EGG(74, FallingDragonEgg.class),
-    THROWN_EXP_BOTTLE(75, ThrownExpBottle.class),
+    THROWN_EXP_BOTTLE(75, ThrownExperienceBottle.class),
     FIREWORK(76, Firework.class),
     LEASH_KNOT(77, LeashKnot.class),
     ARMOR_STAND(78, ArmorStand.class),

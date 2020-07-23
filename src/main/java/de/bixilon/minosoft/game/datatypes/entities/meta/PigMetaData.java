@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class PigMetaData extends AgeableMetaData {
+public class PigMetaData extends AnimalMetaData {
 
     public PigMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -35,6 +35,8 @@ public class PigMetaData extends AgeableMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (boolean) sets.get(13).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(15).getData();
         }
         return false;
     }
@@ -45,6 +47,8 @@ public class PigMetaData extends AgeableMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(14).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(16).getData();
         }
         return 0;
     }

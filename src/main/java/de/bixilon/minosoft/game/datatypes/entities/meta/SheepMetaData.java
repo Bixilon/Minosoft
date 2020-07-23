@@ -18,7 +18,7 @@ import de.bixilon.minosoft.util.BitByte;
 
 import java.util.HashMap;
 
-public class SheepMetaData extends AgeableMetaData {
+public class SheepMetaData extends AnimalMetaData {
 
     public SheepMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -37,6 +37,8 @@ public class SheepMetaData extends AgeableMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return Color.byId((byte) sets.get(13).getData() & 0xF);
+            case VERSION_1_14_4:
+                return Color.byId((byte) sets.get(15).getData() & 0xF);
         }
         return Color.WHITE;
     }
@@ -53,6 +55,8 @@ public class SheepMetaData extends AgeableMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(13).getData(), 0x10);
+            case VERSION_1_14_4:
+                return BitByte.isBitMask((byte) sets.get(15).getData(), 0x10);
         }
         return false;
     }

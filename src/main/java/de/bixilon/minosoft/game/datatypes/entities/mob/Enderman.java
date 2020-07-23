@@ -32,7 +32,7 @@ public class Enderman extends Mob implements MobInterface {
     }
 
     @Override
-    public EndermanMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

@@ -32,7 +32,7 @@ public class SnowGolem extends Mob implements MobInterface {
     }
 
     @Override
-    public SnowGolemMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

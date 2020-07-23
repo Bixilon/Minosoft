@@ -32,7 +32,7 @@ public class Mule extends Mob implements MobInterface {
     }
 
     @Override
-    public MuleMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

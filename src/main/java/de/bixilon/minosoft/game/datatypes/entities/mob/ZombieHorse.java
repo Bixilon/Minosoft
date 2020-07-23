@@ -32,7 +32,7 @@ public class ZombieHorse extends Mob implements MobInterface {
     }
 
     @Override
-    public ZombieHorseMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

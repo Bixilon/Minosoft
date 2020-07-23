@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class ShulkerMetaData extends MobMetaData {
+public class ShulkerMetaData extends GolemMetaData {
 
     public ShulkerMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -34,6 +34,8 @@ public class ShulkerMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (Direction) sets.get(12).getData();
+            case VERSION_1_14_4:
+                return (Direction) sets.get(14).getData();
         }
         return Direction.DOWN;
     }
@@ -47,6 +49,8 @@ public class ShulkerMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (BlockPosition) sets.get(13).getData();
+            case VERSION_1_14_4:
+                return (BlockPosition) sets.get(15).getData();
         }
         return null;
     }
@@ -60,6 +64,8 @@ public class ShulkerMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (byte) sets.get(14).getData();
+            case VERSION_1_14_4:
+                return (byte) sets.get(16).getData();
         }
         return 0;
     }
@@ -70,6 +76,8 @@ public class ShulkerMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return Color.byId((byte) sets.get(15).getData());
+            case VERSION_1_14_4:
+                return Color.byId((byte) sets.get(17).getData());
         }
         return Color.PURPLE;
     }

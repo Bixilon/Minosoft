@@ -32,7 +32,7 @@ public class Phantom extends Mob implements MobInterface {
     }
 
     @Override
-    public PhantomMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

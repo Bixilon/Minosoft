@@ -17,7 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class ItemFrameMetaData extends EntityMetaData {
+public class ItemFrameMetaData extends HangingMetaData {
 
     public ItemFrameMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -36,6 +36,8 @@ public class ItemFrameMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (Slot) sets.get(6).getData();
+            case VERSION_1_14_4:
+                return (Slot) sets.get(7).getData();
         }
         return null;
     }
@@ -53,6 +55,8 @@ public class ItemFrameMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(7).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(8).getData();
         }
         return 0;
     }

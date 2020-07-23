@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class WitchMetaData extends MobMetaData {
+public class WitchMetaData extends RaidParticipantMetaData {
 
     public WitchMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -41,6 +41,8 @@ public class WitchMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (boolean) sets.get(12).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(15).getData();
         }
         return false;
     }

@@ -36,6 +36,8 @@ public class MinecartMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(6).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(7).getData();
         }
         return 0;
     }
@@ -52,8 +54,10 @@ public class MinecartMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(7).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(8).getData();
         }
-        return 0;
+        return 1;
     }
 
     public float getMultiplier() {
@@ -68,6 +72,8 @@ public class MinecartMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (float) sets.get(8).getData();
+            case VERSION_1_14_4:
+                return (float) sets.get(9).getData();
         }
         return 0;
     }
@@ -84,6 +90,8 @@ public class MinecartMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return Blocks.getBlock((int) sets.get(9).getData(), version);
+            case VERSION_1_14_4:
+                return Blocks.getBlock((int) sets.get(10).getData(), version);
         }
         return Blocks.nullBlock;
     }
@@ -99,8 +107,10 @@ public class MinecartMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(10).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(10).getData();
         }
-        return 0;
+        return 6;
     }
 
     public boolean isShowingBlock() {
@@ -114,6 +124,8 @@ public class MinecartMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (boolean) sets.get(11).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(12).getData();
         }
         return false;
     }

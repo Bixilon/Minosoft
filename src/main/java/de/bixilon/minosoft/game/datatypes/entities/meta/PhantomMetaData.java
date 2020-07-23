@@ -26,6 +26,8 @@ public class PhantomMetaData extends InsentientMetaData {
         switch (version) {
             case VERSION_1_13_2:
                 return (int) sets.get(12).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(14).getData();
         }
         return 0;
     }

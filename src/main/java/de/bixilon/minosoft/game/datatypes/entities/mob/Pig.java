@@ -32,7 +32,7 @@ public class Pig extends Mob implements MobInterface {
     }
 
     @Override
-    public PigMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

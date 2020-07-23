@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class WitherSkullMetaData extends EntityMetaData {
+public class WitherSkullMetaData extends AbstractFireballMetaData {
 
     public WitherSkullMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -32,6 +32,8 @@ public class WitherSkullMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (boolean) sets.get(6).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(7).getData();
         }
         return false;
     }

@@ -44,7 +44,7 @@ public class Minecart extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public MinecartMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

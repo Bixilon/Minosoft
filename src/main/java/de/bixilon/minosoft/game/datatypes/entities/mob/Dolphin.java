@@ -32,7 +32,7 @@ public class Dolphin extends Mob implements MobInterface {
     }
 
     @Override
-    public DolphinMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

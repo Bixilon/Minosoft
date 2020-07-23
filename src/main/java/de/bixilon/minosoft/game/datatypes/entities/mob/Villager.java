@@ -32,7 +32,7 @@ public class Villager extends Mob implements MobInterface {
     }
 
     @Override
-    public VillagerMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

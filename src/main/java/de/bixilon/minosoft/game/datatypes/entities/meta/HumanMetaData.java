@@ -18,14 +18,14 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class HumanMetaData extends MobMetaData {
+public class HumanMetaData extends LivingMetaData {
 
     public HumanMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
 
 
-    public float getAbsorptionHearts() {
+    public float getAdditionalHearts() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
@@ -37,6 +37,8 @@ public class HumanMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (float) sets.get(11).getData();
+            case VERSION_1_14_4:
+                return (float) sets.get(13).getData();
         }
         return 0.0F;
     }
@@ -53,6 +55,8 @@ public class HumanMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(12).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(14).getData();
         }
         return 0;
     }
@@ -67,6 +71,8 @@ public class HumanMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return Hand.byId((byte) sets.get(14).getData());
+            case VERSION_1_14_4:
+                return Hand.byId((byte) sets.get(16).getData());
         }
         return Hand.RIGHT;
     }
@@ -76,6 +82,8 @@ public class HumanMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (CompoundTag) sets.get(15).getData();
+            case VERSION_1_14_4:
+                return (CompoundTag) sets.get(17).getData();
         }
         return null;
     }
@@ -85,6 +93,8 @@ public class HumanMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (CompoundTag) sets.get(16).getData();
+            case VERSION_1_14_4:
+                return (CompoundTag) sets.get(18).getData();
         }
         return null;
     }

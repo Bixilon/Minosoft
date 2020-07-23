@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class TridentMetaData extends ArrowMetaData {
+public class TridentMetaData extends AbstractArrowMetaData {
 
     public TridentMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -26,6 +26,8 @@ public class TridentMetaData extends ArrowMetaData {
         switch (version) {
             case VERSION_1_13_2:
                 return (int) sets.get(8).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(10).getData();
         }
         return 0;
     }

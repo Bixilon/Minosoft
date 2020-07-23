@@ -18,21 +18,27 @@ import de.bixilon.minosoft.game.datatypes.VersionValueMap;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class VillagerData {
-    final int type;
-    final int profession;
+    final VillagerTypes type;
+    final VillagerProfessions profession;
     final int level;
 
-    public VillagerData(int type, int profession, int level) {
+    public VillagerData(int type, int profession, int level, ProtocolVersion version) {
+        this.type = VillagerTypes.byId(type);
+        this.profession = VillagerProfessions.byId(profession, version);
+        this.level = level;
+    }
+
+    public VillagerData(VillagerTypes type, VillagerProfessions profession, int level) {
         this.type = type;
         this.profession = profession;
         this.level = level;
     }
 
-    public int getType() {
+    public VillagerTypes getType() {
         return type;
     }
 
-    public int getProfession() {
+    public VillagerProfessions getProfession() {
         return profession;
     }
 

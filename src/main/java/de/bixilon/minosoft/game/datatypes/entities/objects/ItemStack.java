@@ -41,7 +41,7 @@ public class ItemStack extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public ItemMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

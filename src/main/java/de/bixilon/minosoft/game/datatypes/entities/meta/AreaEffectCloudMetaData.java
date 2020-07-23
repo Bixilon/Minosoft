@@ -33,6 +33,8 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (float) sets.get(6).getData();
+            case VERSION_1_14_4:
+                return (float) sets.get(7).getData();
         }
         return 0.5F;
     }
@@ -46,6 +48,8 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(7).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(8).getData();
         }
         return 0;
     }
@@ -59,6 +63,8 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (boolean) sets.get(8).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(9).getData();
         }
         return false;
     }
@@ -73,6 +79,8 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
                 return Particles.byId((int) sets.get(9).getData());
             case VERSION_1_13_2:
                 return (Particles) sets.get(9).getData();
+            case VERSION_1_14_4:
+                return (Particles) sets.get(10).getData();
         }
         return Particles.EFFECT;
     }

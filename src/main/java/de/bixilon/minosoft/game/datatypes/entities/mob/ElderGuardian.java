@@ -32,7 +32,7 @@ public class ElderGuardian extends Mob implements MobInterface {
     }
 
     @Override
-    public ElderGuardianMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

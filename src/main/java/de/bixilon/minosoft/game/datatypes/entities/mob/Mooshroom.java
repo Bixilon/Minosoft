@@ -17,28 +17,28 @@ import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
-import de.bixilon.minosoft.game.datatypes.entities.meta.AgeableMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.MooshroomMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
 public class Mooshroom extends Mob implements MobInterface {
-    AgeableMetaData metaData;
+    MooshroomMetaData metaData;
 
     public Mooshroom(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new AgeableMetaData(sets, version);
+        this.metaData = new MooshroomMetaData(sets, version);
     }
 
     @Override
-    public AgeableMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (AgeableMetaData) metaData;
+        this.metaData = (MooshroomMetaData) metaData;
     }
 
     @Override
@@ -64,6 +64,6 @@ public class Mooshroom extends Mob implements MobInterface {
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return AgeableMetaData.class;
+        return MooshroomMetaData.class;
     }
 }

@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class TippedArrowMetaData extends ArrowMetaData {
+public class TippedArrowMetaData extends AbstractArrowMetaData {
 
     public TippedArrowMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -32,8 +32,10 @@ public class TippedArrowMetaData extends ArrowMetaData {
                 return (int) sets.get(7).getData();
             case VERSION_1_13_2:
                 return (int) sets.get(8).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(10).getData();
         }
-        return 0;
+        return -1;
     }
 
 }

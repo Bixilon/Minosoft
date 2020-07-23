@@ -17,15 +17,15 @@ import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
-import de.bixilon.minosoft.game.datatypes.entities.meta.ArrowMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.TippedArrowMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
 public class Arrow extends EntityObject implements ObjectInterface {
     final int shooter;
-    ArrowMetaData metaData;
+    TippedArrowMetaData metaData;
 
     public Arrow(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
@@ -40,18 +40,18 @@ public class Arrow extends EntityObject implements ObjectInterface {
 
     public Arrow(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new ArrowMetaData(sets, version);
+        this.metaData = new TippedArrowMetaData(sets, version);
         shooter = 0; // ToDo
     }
 
     @Override
-    public ArrowMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (ArrowMetaData) metaData;
+        this.metaData = (TippedArrowMetaData) metaData;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class Arrow extends EntityObject implements ObjectInterface {
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return ArrowMetaData.class;
+        return TippedArrowMetaData.class;
     }
 
     public int getShooter() {

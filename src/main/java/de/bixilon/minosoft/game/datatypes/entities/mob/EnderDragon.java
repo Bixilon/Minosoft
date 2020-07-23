@@ -32,7 +32,7 @@ public class EnderDragon extends Mob implements MobInterface {
     }
 
     @Override
-    public EnderDragonMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class SpellcasterMetaData extends MobMetaData {
+public class SpellcasterMetaData extends LivingMetaData {
 
     public SpellcasterMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -28,6 +28,8 @@ public class SpellcasterMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (byte) sets.get(13).getData();
+            case VERSION_1_14_4:
+                return (byte) sets.get(15).getData();
         }
         return 0;
     }

@@ -31,19 +31,48 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
                 return VillagerData.VillagerProfessions.byId((int) sets.get(16).getData(), version);
             case VERSION_1_13_2:
                 return VillagerData.VillagerProfessions.byId((int) sets.get(17).getData(), version);
+            case VERSION_1_14_4:
+                return getVillageData().getProfession();
             default:
                 return super.getProfession();
         }
     }
+
+    public VillagerData.VillagerTypes getType() {
+        switch (version) {
+            case VERSION_1_14_4:
+                return getVillageData().getType();
+        }
+        return VillagerData.VillagerTypes.PLAINS;
+    }
+
+    public int getLevel() {
+        switch (version) {
+            case VERSION_1_14_4:
+                return getVillageData().getLevel();
+        }
+        return -1;
+    }
+
+    public VillagerData getVillageData() {
+        switch (version) {
+            case VERSION_1_14_4:
+                return (VillagerData) sets.get(18).getData();
+        }
+        return new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, 1);
+    }
+
 
     @Override
     public boolean isConverting() {
         switch (version) {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
-                return ((boolean) sets.get(15).getData());
+                return (boolean) sets.get(15).getData();
             case VERSION_1_13_2:
-                return ((boolean) sets.get(16).getData());
+                return (boolean) sets.get(16).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(17).getData();
             default:
                 return super.isConverting();
         }

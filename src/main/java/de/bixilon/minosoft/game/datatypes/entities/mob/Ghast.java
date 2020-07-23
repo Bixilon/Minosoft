@@ -32,7 +32,7 @@ public class Ghast extends Mob implements MobInterface {
     }
 
     @Override
-    public GhastMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

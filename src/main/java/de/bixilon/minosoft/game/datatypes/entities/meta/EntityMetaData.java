@@ -14,6 +14,7 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.*;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
+import de.bixilon.minosoft.game.datatypes.entities.Pose;
 import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -33,6 +34,7 @@ public class EntityMetaData {
     1.9.4: https://wiki.vg/index.php?title=Entity_metadata&oldid=7955
     1.10: https://wiki.vg/index.php?title=Entity_metadata&oldid=8241
     1.13: https://wiki.vg/index.php?title=Entity_metadata&oldid=14800
+    1.14.4: https://wiki.vg/index.php?title=Entity_metadata&oldid=15239
      */
     public EntityMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         this.sets = sets;
@@ -114,7 +116,7 @@ public class EntityMetaData {
                 data = buffer.readVarInt() - 1;
                 break;
             case VILLAGER_DATA:
-                data = new VillagerData(buffer.readVarInt(), buffer.readVarInt(), buffer.readVarInt());
+                data = new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getVersion()), buffer.readVarInt());
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
@@ -135,6 +137,7 @@ public class EntityMetaData {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x01);
         }
         return false;
@@ -149,6 +152,7 @@ public class EntityMetaData {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x02);
         }
         return false;
@@ -163,6 +167,7 @@ public class EntityMetaData {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x08);
         }
         return false;
@@ -182,6 +187,7 @@ public class EntityMetaData {
     public boolean isSwimming() {
         switch (version) {
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 return BitByte.isBitMask((byte) sets.get(0).getData(), 0x10);
         }
         return false;
@@ -204,6 +210,7 @@ public class EntityMetaData {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 0x20);
         }
         return false;
@@ -211,13 +218,12 @@ public class EntityMetaData {
 
     public boolean isGlowing() {
         switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 0x40);
         }
         return false;
@@ -225,13 +231,12 @@ public class EntityMetaData {
 
     public boolean isFlyingWithElytra() {
         switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 return BitByte.isBitSet((byte) sets.get(0).getData(), 0x80);
         }
         return false;
@@ -245,6 +250,7 @@ public class EntityMetaData {
             case VERSION_1_12_2:
                 return new TextComponent((String) sets.get(2).getData());
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 return (TextComponent) sets.get(2).getData();
         }
         return null;
@@ -257,6 +263,7 @@ public class EntityMetaData {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 return (boolean) sets.get(3).getData();
         }
         return false;
@@ -269,6 +276,7 @@ public class EntityMetaData {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 return (boolean) sets.get(4).getData();
         }
         return false;
@@ -280,9 +288,18 @@ public class EntityMetaData {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 return !(boolean) sets.get(5).getData();
         }
         return true;
+    }
+
+    public Pose getPose() {
+        switch (version) {
+            case VERSION_1_14_4:
+                return (Pose) sets.get(6).getData();
+        }
+        return Pose.STANDING;
     }
 
     public enum Types {

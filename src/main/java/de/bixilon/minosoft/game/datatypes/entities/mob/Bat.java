@@ -32,7 +32,7 @@ public class Bat extends Mob implements MobInterface {
     }
 
     @Override
-    public BatMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

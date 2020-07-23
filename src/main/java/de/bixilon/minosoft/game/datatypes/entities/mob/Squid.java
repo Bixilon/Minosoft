@@ -17,45 +17,38 @@ import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
-import de.bixilon.minosoft.game.datatypes.entities.meta.AgeableMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.MobMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.SquidMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
 public class Squid extends Mob implements MobInterface {
-    AgeableMetaData metaData;
+    SquidMetaData metaData;
 
     public Squid(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new AgeableMetaData(sets, version);
+        this.metaData = new SquidMetaData(sets, version);
     }
 
     @Override
-    public MobMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (AgeableMetaData) metaData;
+        this.metaData = (SquidMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        if (metaData.isAdult()) {
-            return 0.8F;
-        }
-        return 0.4F;
+        return 0.8F;
     }
 
     @Override
     public float getHeight() {
-        if (metaData.isAdult()) {
-            return 0.8F;
-        }
-        return 0.4F;
+        return 0.8F;
     }
 
     @Override
@@ -65,6 +58,6 @@ public class Squid extends Mob implements MobInterface {
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return AgeableMetaData.class;
+        return SquidMetaData.class;
     }
 }

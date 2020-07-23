@@ -18,16 +18,17 @@ import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.IllusionerMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
 public class Illusioner extends Mob implements MobInterface {
-    EntityMetaData metaData;
+    IllusionerMetaData metaData;
 
     public Illusioner(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new EntityMetaData(sets, version);
+        this.metaData = new IllusionerMetaData(sets, version);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class Illusioner extends Mob implements MobInterface {
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = metaData;
+        this.metaData = (IllusionerMetaData) metaData;
     }
 
     @Override
@@ -57,6 +58,6 @@ public class Illusioner extends Mob implements MobInterface {
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return EntityMetaData.class;
+        return IllusionerMetaData.class;
     }
 }

@@ -17,16 +17,18 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class DolphinMetaData extends InsentientMetaData {
+public class DolphinMetaData extends WaterMobMetaData {
 
     public DolphinMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
 
-    public BlockPosition isTreasure() {
+    public BlockPosition getTreasurePosition() {
         switch (version) {
             case VERSION_1_13_2:
                 return (BlockPosition) sets.get(12).getData();
+            case VERSION_1_14_4:
+                return (BlockPosition) sets.get(14).getData();
         }
         return new BlockPosition(0, (short) 0, 0);
     }
@@ -35,6 +37,8 @@ public class DolphinMetaData extends InsentientMetaData {
         switch (version) {
             case VERSION_1_13_2:
                 return (boolean) sets.get(13).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(15).getData();
         }
         return false;
     }
@@ -43,6 +47,8 @@ public class DolphinMetaData extends InsentientMetaData {
         switch (version) {
             case VERSION_1_13_2:
                 return (boolean) sets.get(14).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(16).getData();
         }
         return false;
     }

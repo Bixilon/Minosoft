@@ -47,7 +47,7 @@ public class FallingBlock extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public FallingBlockMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

@@ -32,7 +32,7 @@ public class Blaze extends Mob implements MobInterface {
     }
 
     @Override
-    public BlazeMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

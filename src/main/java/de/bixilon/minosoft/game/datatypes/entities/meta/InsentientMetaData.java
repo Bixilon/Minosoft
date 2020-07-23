@@ -17,7 +17,7 @@ import de.bixilon.minosoft.util.BitByte;
 
 import java.util.HashMap;
 
-public class InsentientMetaData extends MobMetaData {
+public class InsentientMetaData extends LivingMetaData {
 
     public InsentientMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -36,6 +36,8 @@ public class InsentientMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(11).getData(), 0x01);
+            case VERSION_1_14_4:
+                return !BitByte.isBitMask((byte) sets.get(13).getData(), 0x01);
             default:
                 return super.hasAI();
         }
@@ -50,6 +52,8 @@ public class InsentientMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(11).getData(), 0x02);
+            case VERSION_1_14_4:
+                return BitByte.isBitMask((byte) sets.get(13).getData(), 0x02);
         }
         return false;
     }

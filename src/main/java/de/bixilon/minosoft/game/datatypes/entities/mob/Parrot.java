@@ -32,7 +32,7 @@ public class Parrot extends Mob implements MobInterface {
     }
 
     @Override
-    public ParrotMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

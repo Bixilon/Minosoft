@@ -32,7 +32,7 @@ public class Spider extends Mob implements MobInterface {
     }
 
     @Override
-    public SpiderMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

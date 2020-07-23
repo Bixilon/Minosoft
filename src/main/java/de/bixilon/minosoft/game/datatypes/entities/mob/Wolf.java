@@ -32,7 +32,7 @@ public class Wolf extends Mob implements MobInterface {
     }
 
     @Override
-    public WolfMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

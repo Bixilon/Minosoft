@@ -45,7 +45,7 @@ public class WitherSkull extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public WitherSkullMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

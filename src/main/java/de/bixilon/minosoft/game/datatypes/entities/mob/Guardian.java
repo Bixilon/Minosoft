@@ -32,7 +32,7 @@ public class Guardian extends Mob implements MobInterface {
     }
 
     @Override
-    public GuardianMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

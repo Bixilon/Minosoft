@@ -16,17 +16,9 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class FishMetaData extends InsentientMetaData {
+public class MonsterMetaData extends CreatureMetaData {
 
-    public FishMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public MonsterMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
-    }
-
-    public boolean fromBucket() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (boolean) sets.get(12).getData();
-        }
-        return false;
     }
 }

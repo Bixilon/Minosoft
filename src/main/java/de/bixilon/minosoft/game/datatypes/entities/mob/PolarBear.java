@@ -32,7 +32,7 @@ public class PolarBear extends Mob implements MobInterface {
     }
 
     @Override
-    public PolarBearMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

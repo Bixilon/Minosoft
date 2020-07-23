@@ -17,28 +17,28 @@ import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
+import de.bixilon.minosoft.game.datatypes.entities.meta.CodMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.FishMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
 public class Cod extends Mob implements MobInterface {
-    FishMetaData metaData;
+    CodMetaData metaData;
 
     public Cod(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new FishMetaData(sets, version);
+        this.metaData = new CodMetaData(sets, version);
     }
 
     @Override
-    public FishMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (FishMetaData) metaData;
+        this.metaData = (CodMetaData) metaData;
     }
 
     @Override
@@ -58,6 +58,6 @@ public class Cod extends Mob implements MobInterface {
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return FishMetaData.class;
+        return CodMetaData.class;
     }
 }

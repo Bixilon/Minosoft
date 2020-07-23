@@ -18,7 +18,6 @@ import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.ZombieMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.ZombieVillagerMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
@@ -33,7 +32,7 @@ public class ZombieVillager extends Mob implements MobInterface {
     }
 
     @Override
-    public ZombieMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

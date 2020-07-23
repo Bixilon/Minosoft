@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class EndermanMetaData extends MobMetaData {
+public class EndermanMetaData extends LivingMetaData {
 
     public EndermanMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -37,6 +37,8 @@ public class EndermanMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (Block) sets.get(12).getData();
+            case VERSION_1_14_4:
+                return (Block) sets.get(14).getData();
         }
         return Blocks.nullBlock;
     }
@@ -53,6 +55,8 @@ public class EndermanMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (boolean) sets.get(13).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(15).getData();
         }
         return false;
     }

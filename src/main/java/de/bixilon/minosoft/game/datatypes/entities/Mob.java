@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.MobMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.LivingMetaData;
 
 public abstract class Mob extends Entity implements MobInterface {
     public Mob(int entityId, Location location, short yaw, short pitch, Velocity velocity) {
@@ -23,6 +23,6 @@ public abstract class Mob extends Entity implements MobInterface {
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return MobMetaData.class;
+        return LivingMetaData.class;
     }
 }

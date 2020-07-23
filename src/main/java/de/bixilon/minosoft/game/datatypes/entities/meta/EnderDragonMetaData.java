@@ -23,17 +23,51 @@ public class EnderDragonMetaData extends InsentientMetaData {
     }
 
 
-    public int getDragonPhase() {
+    public DragonPhases getDragonPhase() {
         switch (version) {
             case VERSION_1_9_4:
-                return ((int) sets.get(11).getData());
+                return DragonPhases.byId((int) sets.get(11).getData());
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
-                return ((int) sets.get(12).getData());
+                return DragonPhases.byId((int) sets.get(12).getData());
+            case VERSION_1_14_4:
+                return DragonPhases.byId((int) sets.get(14).getData());
         }
-        return 0;
+        return DragonPhases.HOVERING;
+    }
+
+    public enum DragonPhases {
+        CIRCLING(0),
+        STRAFING(1),
+        FLYING_TO_PORTAL_TO_LAND(2),
+        LANDING_ON_PORTAL(3),
+        TAKING_OFF_THE_PORTAL(4),
+        LANDED_BREATH_ATTACK(5),
+        LANDED_ROAR(6),
+        CHARGING_PLAYER(7),
+        FLYING_TO_DIE(8),
+        HOVERING(10);
+
+        final int id;
+
+        DragonPhases(int id) {
+            this.id = id;
+        }
+
+        public static DragonPhases byId(int id) {
+            for (DragonPhases phase : values()) {
+                if (phase.getId() == id) {
+                    return phase;
+                }
+            }
+            return null;
+        }
+
+        public int getId() {
+            return id;
+        }
     }
 
 

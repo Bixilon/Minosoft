@@ -34,6 +34,8 @@ public class SlimeMetaData extends InsentientMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(12).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(14).getData();
         }
         return 0;
     }

@@ -41,7 +41,7 @@ public class LeashKnot extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public FishingHookMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

@@ -32,7 +32,7 @@ public class Shulker extends Mob implements MobInterface {
     }
 
     @Override
-    public ShulkerMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

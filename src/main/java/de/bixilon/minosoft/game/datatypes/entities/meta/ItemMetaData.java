@@ -35,6 +35,8 @@ public class ItemMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (Slot) sets.get(6).getData();
+            case VERSION_1_14_4:
+                return (Slot) sets.get(7).getData();
         }
         return null;
     }

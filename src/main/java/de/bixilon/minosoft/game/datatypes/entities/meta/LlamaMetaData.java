@@ -29,6 +29,8 @@ public class LlamaMetaData extends ChestedHorseMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(16).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(18).getData();
         }
         return 0;
     }
@@ -39,6 +41,8 @@ public class LlamaMetaData extends ChestedHorseMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return Color.byId((int) sets.get(17).getData());
+            case VERSION_1_14_4:
+                return Color.byId((int) sets.get(19).getData());
         }
         return null;
     }
@@ -48,7 +52,9 @@ public class LlamaMetaData extends ChestedHorseMetaData {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
-                return LlamaVariants.byId((int) sets.get(17).getData());
+                return LlamaVariants.byId((int) sets.get(18).getData());
+            case VERSION_1_14_4:
+                return LlamaVariants.byId((int) sets.get(20).getData());
         }
         return null;
     }

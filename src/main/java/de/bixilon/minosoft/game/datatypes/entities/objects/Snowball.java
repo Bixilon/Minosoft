@@ -18,13 +18,14 @@ import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.SnowballMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
 public class Snowball extends EntityObject implements ObjectInterface {
-    EntityMetaData metaData;
     final int thrower;
+    SnowballMetaData metaData;
 
     public Snowball(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
@@ -39,7 +40,7 @@ public class Snowball extends EntityObject implements ObjectInterface {
 
     public Snowball(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new EntityMetaData(sets, version);
+        this.metaData = new SnowballMetaData(sets, version);
         this.thrower = 0; // ToDo
     }
 
@@ -50,7 +51,7 @@ public class Snowball extends EntityObject implements ObjectInterface {
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = metaData;
+        this.metaData = (SnowballMetaData) metaData;
     }
 
     @Override
@@ -65,5 +66,10 @@ public class Snowball extends EntityObject implements ObjectInterface {
 
     public int getThrower() {
         return thrower;
+    }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return SnowballMetaData.class;
     }
 }

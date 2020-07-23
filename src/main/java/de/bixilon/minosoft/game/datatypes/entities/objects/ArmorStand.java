@@ -41,7 +41,7 @@ public class ArmorStand extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public ArmorStandMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

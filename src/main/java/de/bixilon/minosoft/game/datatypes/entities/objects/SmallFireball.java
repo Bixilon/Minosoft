@@ -18,13 +18,14 @@ import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.SmallFireballMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
 public class SmallFireball extends EntityObject implements ObjectInterface {
     final int thrower;
-    EntityMetaData metaData;
+    SmallFireballMetaData metaData;
 
     public SmallFireball(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
@@ -39,7 +40,7 @@ public class SmallFireball extends EntityObject implements ObjectInterface {
 
     public SmallFireball(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new EntityMetaData(sets, version);
+        this.metaData = new SmallFireballMetaData(sets, version);
         this.thrower = 0; // ToDo
     }
 
@@ -50,7 +51,7 @@ public class SmallFireball extends EntityObject implements ObjectInterface {
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = metaData;
+        this.metaData = (SmallFireballMetaData) metaData;
     }
 
     @Override
@@ -65,5 +66,10 @@ public class SmallFireball extends EntityObject implements ObjectInterface {
 
     public int getThrower() {
         return thrower;
+    }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return SmallFireballMetaData.class;
     }
 }

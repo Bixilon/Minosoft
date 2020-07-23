@@ -17,13 +17,14 @@ import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EnderPearlMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
 public class ThrownEnderpearl extends EntityObject implements ObjectInterface {
-    EntityMetaData metaData;
+    EnderPearlMetaData metaData;
 
     public ThrownEnderpearl(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
@@ -36,7 +37,7 @@ public class ThrownEnderpearl extends EntityObject implements ObjectInterface {
 
     public ThrownEnderpearl(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new EntityMetaData(sets, version);
+        this.metaData = new EnderPearlMetaData(sets, version);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class ThrownEnderpearl extends EntityObject implements ObjectInterface {
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = metaData;
+        this.metaData = (EnderPearlMetaData) metaData;
     }
 
     @Override
@@ -57,5 +58,10 @@ public class ThrownEnderpearl extends EntityObject implements ObjectInterface {
     @Override
     public float getHeight() {
         return 0.25F;
+    }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return EnderPearlMetaData.class;
     }
 }

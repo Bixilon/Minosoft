@@ -17,7 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class TurtleMetaData extends AgeableMetaData {
+public class TurtleMetaData extends AnimalMetaData {
 
     public TurtleMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -28,6 +28,8 @@ public class TurtleMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_13_2:
                 return (BlockPosition) sets.get(13).getData();
+            case VERSION_1_14_4:
+                return (BlockPosition) sets.get(15).getData();
         }
         return new BlockPosition(0, (short) 0, 0);
     }
@@ -36,6 +38,8 @@ public class TurtleMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_13_2:
                 return (boolean) sets.get(14).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(16).getData();
         }
         return false;
     }
@@ -44,6 +48,8 @@ public class TurtleMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_13_2:
                 return (boolean) sets.get(15).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(17).getData();
         }
         return false;
     }
@@ -52,6 +58,8 @@ public class TurtleMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_13_2:
                 return (BlockPosition) sets.get(16).getData();
+            case VERSION_1_14_4:
+                return (BlockPosition) sets.get(18).getData();
         }
         return new BlockPosition(0, (short) 0, 0);
     }
@@ -60,6 +68,8 @@ public class TurtleMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_13_2:
                 return (boolean) sets.get(17).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(19).getData();
         }
         return false;
     }
@@ -68,6 +78,8 @@ public class TurtleMetaData extends AgeableMetaData {
         switch (version) {
             case VERSION_1_13_2:
                 return (boolean) sets.get(18).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(20).getData();
         }
         return false;
     }

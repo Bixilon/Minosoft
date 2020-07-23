@@ -32,7 +32,7 @@ public class Vex extends Mob implements MobInterface {
     }
 
     @Override
-    public VexMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

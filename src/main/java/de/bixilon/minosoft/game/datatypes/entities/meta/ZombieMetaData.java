@@ -17,7 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class ZombieMetaData extends MobMetaData {
+public class ZombieMetaData extends MonsterMetaData {
 
     public ZombieMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -28,14 +28,16 @@ public class ZombieMetaData extends MobMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return ((byte) sets.get(12).getData()) == 0x01;
+                return (byte) sets.get(12).getData() == 0x01;
             case VERSION_1_9_4:
-                return ((boolean) sets.get(11).getData());
+                return (boolean) sets.get(11).getData();
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
-                return ((boolean) sets.get(12).getData());
+                return (boolean) sets.get(12).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(14).getData();
         }
         return false;
     }
@@ -60,11 +62,11 @@ public class ZombieMetaData extends MobMetaData {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return ((byte) sets.get(14).getData()) == 0x01;
+                return (byte) sets.get(14).getData() == 0x01;
             case VERSION_1_9_4:
-                return ((boolean) sets.get(13).getData());
+                return (boolean) sets.get(13).getData();
             case VERSION_1_10:
-                return ((boolean) sets.get(14).getData());
+                return (boolean) sets.get(14).getData();
         }
         return false;
     }
@@ -72,13 +74,13 @@ public class ZombieMetaData extends MobMetaData {
     public boolean areHandsHeldUp() {
         switch (version) {
             case VERSION_1_9_4:
-                return ((boolean) sets.get(14).getData());
+                return (boolean) sets.get(14).getData();
             case VERSION_1_10:
-                return ((boolean) sets.get(15).getData());
+                return (boolean) sets.get(15).getData();
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
-                return ((boolean) sets.get(16).getData());
+                return (boolean) sets.get(16).getData();
         }
         return false;
     }
@@ -87,6 +89,8 @@ public class ZombieMetaData extends MobMetaData {
         switch (version) {
             case VERSION_1_13_2:
                 return ((boolean) sets.get(15).getData());
+            case VERSION_1_14_4:
+                return (boolean) sets.get(16).getData();
         }
         return false;
     }

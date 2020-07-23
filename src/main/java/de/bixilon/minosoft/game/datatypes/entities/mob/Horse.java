@@ -32,7 +32,7 @@ public class Horse extends Mob implements MobInterface {
     }
 
     @Override
-    public HorseMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

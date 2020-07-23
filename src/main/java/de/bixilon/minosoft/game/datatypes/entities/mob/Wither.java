@@ -32,7 +32,7 @@ public class Wither extends Mob implements MobInterface {
     }
 
     @Override
-    public WitherMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

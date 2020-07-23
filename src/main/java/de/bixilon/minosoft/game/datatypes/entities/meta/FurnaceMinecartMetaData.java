@@ -34,6 +34,8 @@ public class FurnaceMinecartMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (boolean) sets.get(12).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(13).getData();
         }
         return false;
     }

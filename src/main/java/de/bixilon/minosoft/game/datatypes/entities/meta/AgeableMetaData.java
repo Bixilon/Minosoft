@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class AgeableMetaData extends InsentientMetaData {
+public class AgeableMetaData extends CreatureMetaData {
 
     public AgeableMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -45,6 +45,8 @@ public class AgeableMetaData extends InsentientMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return !(boolean) sets.get(12).getData();
+            case VERSION_1_14_4:
+                return !(boolean) sets.get(14).getData();
         }
         return false;
     }

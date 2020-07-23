@@ -32,7 +32,7 @@ public class Skeleton extends Mob implements MobInterface {
     }
 
     @Override
-    public SkeletonMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

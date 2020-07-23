@@ -32,7 +32,7 @@ public class Turtle extends Mob implements MobInterface {
     }
 
     @Override
-    public TurtleMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

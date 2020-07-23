@@ -18,27 +18,27 @@ import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.MobMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.SilverfishMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
 public class Silverfish extends Mob implements MobInterface {
-    MobMetaData metaData;
+    SilverfishMetaData metaData;
 
     public Silverfish(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new MobMetaData(sets, version);
+        this.metaData = new SilverfishMetaData(sets, version);
     }
 
     @Override
-    public MobMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (MobMetaData) metaData;
+        this.metaData = (SilverfishMetaData) metaData;
     }
 
     @Override
@@ -54,5 +54,10 @@ public class Silverfish extends Mob implements MobInterface {
     @Override
     public int getMaxHealth() {
         return 8;
+    }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return SilverfishMetaData.class;
     }
 }

@@ -13,47 +13,22 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
 import java.util.HashMap;
-import java.util.UUID;
 
-public class ArrowMetaData extends EntityMetaData {
+public class AbstractFishMetaData extends WaterMobMetaData {
 
-    public ArrowMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public AbstractFishMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
 
-    public boolean isCritical() {
+    public boolean fromBucket() {
         switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(16).getData() == 0x01;
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(5).getData(), 0x01);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
             case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(6).getData(), 0x01);
+                return (boolean) sets.get(12).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(14).getData();
         }
         return false;
     }
-
-    public boolean isNoClip() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(6).getData(), 0x02);
-        }
-        return false;
-    }
-
-    public UUID getShooterUUID() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (UUID) sets.get(7).getData();
-        }
-        return null;
-    }
-
 }

@@ -17,7 +17,7 @@ import de.bixilon.minosoft.util.BitByte;
 
 import java.util.HashMap;
 
-public class BatMetaData extends InsentientMetaData {
+public class BatMetaData extends AmbientMetaData {
 
     public BatMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -36,6 +36,8 @@ public class BatMetaData extends InsentientMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(12).getData(), 0x01);
+            case VERSION_1_14_4:
+                return BitByte.isBitMask((byte) sets.get(14).getData(), 0x01);
         }
         return false;
     }

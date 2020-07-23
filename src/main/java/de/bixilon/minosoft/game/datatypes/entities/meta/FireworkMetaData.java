@@ -35,18 +35,30 @@ public class FireworkMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (Slot) sets.get(6).getData();
+            case VERSION_1_14_4:
+                return (Slot) sets.get(7).getData();
         }
         return null;
     }
 
-    public int getBoostedEntityId() {
+    public int getEntityIdOfUser() {
         switch (version) {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(7).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(8).getData();
         }
         return 0;
+    }
+
+    public boolean wasShotFromAngle() {
+        switch (version) {
+            case VERSION_1_14_4:
+                return (boolean) sets.get(9).getData();
+        }
+        return false;
     }
 
 }

@@ -31,7 +31,9 @@ public class FishingHookMetaData extends EntityMetaData {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
-                return (int) sets.get(6).getData();
+                return (int) sets.get(6).getData() - 1;
+            case VERSION_1_14_4:
+                return (int) sets.get(7).getData() - 1;
         }
         return -1;
     }

@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class SkeletonMetaData extends MobMetaData {
+public class SkeletonMetaData extends MonsterMetaData {
 
     public SkeletonMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);

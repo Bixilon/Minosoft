@@ -32,7 +32,7 @@ public class Llama extends Mob implements MobInterface {
     }
 
     @Override
-    public LlamaMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

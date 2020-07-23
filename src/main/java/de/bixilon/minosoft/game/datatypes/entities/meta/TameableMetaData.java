@@ -18,7 +18,7 @@ import de.bixilon.minosoft.util.BitByte;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class TameableMetaData extends AgeableMetaData {
+public class TameableMetaData extends AnimalMetaData {
 
     public TameableMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -37,6 +37,8 @@ public class TameableMetaData extends AgeableMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x01);
+            case VERSION_1_14_4:
+                return BitByte.isBitMask((int) sets.get(15).getData(), 0x01);
         }
         return false;
     }
@@ -53,6 +55,8 @@ public class TameableMetaData extends AgeableMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x04);
+            case VERSION_1_14_4:
+                return BitByte.isBitMask((int) sets.get(15).getData(), 0x04);
         }
         return false;
     }
@@ -66,6 +70,8 @@ public class TameableMetaData extends AgeableMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return BitByte.isBitMask((int) sets.get(13).getData(), 0x02);
+            case VERSION_1_14_4:
+                return BitByte.isBitMask((int) sets.get(15).getData(), 0x02);
         }
         return false;
     }
@@ -88,6 +94,8 @@ public class TameableMetaData extends AgeableMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (UUID) sets.get(14).getData();
+            case VERSION_1_14_4:
+                return (UUID) sets.get(16).getData();
         }
         return null;
     }

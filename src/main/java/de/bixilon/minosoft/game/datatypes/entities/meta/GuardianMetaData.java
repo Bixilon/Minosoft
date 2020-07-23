@@ -17,7 +17,7 @@ import de.bixilon.minosoft.util.BitByte;
 
 import java.util.HashMap;
 
-public class GuardianMetaData extends MobMetaData {
+public class GuardianMetaData extends MonsterMetaData {
 
     public GuardianMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -46,6 +46,8 @@ public class GuardianMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return BitByte.isBitSet((byte) sets.get(12).getData(), 0x02);
+            case VERSION_1_14_4:
+                return (boolean) sets.get(14).getData();
         }
         return false;
     }
@@ -62,6 +64,8 @@ public class GuardianMetaData extends MobMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(13).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(15).getData();
         }
         return 0;
     }

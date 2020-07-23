@@ -41,7 +41,7 @@ public class EnderCrystal extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public EnderCrystalMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

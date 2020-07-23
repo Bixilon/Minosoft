@@ -32,7 +32,7 @@ public class Slime extends Mob implements MobInterface {
     }
 
     @Override
-    public SlimeMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

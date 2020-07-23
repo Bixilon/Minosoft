@@ -32,6 +32,8 @@ public class FallingBlockMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (BlockPosition) sets.get(6).getData();
+            case VERSION_1_14_4:
+                return (BlockPosition) sets.get(7).getData();
         }
         return new BlockPosition(0, (short) 0, 0);
     }

@@ -32,7 +32,7 @@ public class Ocelot extends Mob implements MobInterface {
     }
 
     @Override
-    public OcelotMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

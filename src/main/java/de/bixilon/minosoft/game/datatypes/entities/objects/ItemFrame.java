@@ -45,7 +45,7 @@ public class ItemFrame extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public ItemFrameMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

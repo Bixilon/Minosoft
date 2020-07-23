@@ -32,7 +32,7 @@ public class Husk extends Mob implements MobInterface {
     }
 
     @Override
-    public HuskMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

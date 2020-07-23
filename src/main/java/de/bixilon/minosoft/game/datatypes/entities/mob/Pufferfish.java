@@ -32,7 +32,7 @@ public class Pufferfish extends Mob implements MobInterface {
     }
 
     @Override
-    public PufferfishMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

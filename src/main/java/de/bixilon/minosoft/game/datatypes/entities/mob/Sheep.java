@@ -32,7 +32,7 @@ public class Sheep extends Mob implements MobInterface {
     }
 
     @Override
-    public SheepMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

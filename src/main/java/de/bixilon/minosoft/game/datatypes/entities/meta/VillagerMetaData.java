@@ -17,7 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class VillagerMetaData extends AgeableMetaData {
+public class VillagerMetaData extends AbstractMerchantMetaData {
 
     public VillagerMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
@@ -36,8 +36,34 @@ public class VillagerMetaData extends AgeableMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return VillagerData.VillagerProfessions.byId((int) sets.get(13).getData(), version);
+            case VERSION_1_14_4:
+                return getVillageData().getProfession();
         }
         return VillagerData.VillagerProfessions.FARMER;
+    }
+
+    public VillagerData.VillagerTypes getType() {
+        switch (version) {
+            case VERSION_1_14_4:
+                return getVillageData().getType();
+        }
+        return VillagerData.VillagerTypes.PLAINS;
+    }
+
+    public int getLevel() {
+        switch (version) {
+            case VERSION_1_14_4:
+                return getVillageData().getLevel();
+        }
+        return -1;
+    }
+
+    public VillagerData getVillageData() {
+        switch (version) {
+            case VERSION_1_14_4:
+                return (VillagerData) sets.get(13).getData();
+        }
+        return new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, 1);
     }
 
 

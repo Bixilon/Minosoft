@@ -32,7 +32,7 @@ public class Creeper extends Mob implements MobInterface {
     }
 
     @Override
-    public CreeperMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

@@ -41,7 +41,7 @@ public class AreaEffectCloud extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public AreaEffectCloudMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

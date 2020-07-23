@@ -40,7 +40,7 @@ public class MinecartCommandBlock extends EntityObject implements ObjectInterfac
     }
 
     @Override
-    public CommandBlockMinecartMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

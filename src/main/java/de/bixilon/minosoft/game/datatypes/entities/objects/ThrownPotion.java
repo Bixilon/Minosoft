@@ -42,7 +42,7 @@ public class ThrownPotion extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public PotionMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

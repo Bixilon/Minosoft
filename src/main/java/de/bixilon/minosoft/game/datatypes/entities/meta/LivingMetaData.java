@@ -19,9 +19,9 @@ import de.bixilon.minosoft.util.BitByte;
 
 import java.util.HashMap;
 
-public class MobMetaData extends EntityMetaData {
+public class LivingMetaData extends EntityMetaData {
 
-    public MobMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public LivingMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
         super(sets, version);
     }
 
@@ -37,6 +37,8 @@ public class MobMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (float) sets.get(7).getData();
+            case VERSION_1_14_4:
+                return (float) sets.get(8).getData();
         }
         return 1.0F;
     }
@@ -53,6 +55,8 @@ public class MobMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(8).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(9).getData();
         }
         return 0;
     }
@@ -70,6 +74,8 @@ public class MobMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (boolean) sets.get(9).getData();
+            case VERSION_1_14_4:
+                return (boolean) sets.get(10).getData();
         }
         return false;
     }
@@ -86,6 +92,8 @@ public class MobMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return (int) sets.get(10).getData();
+            case VERSION_1_14_4:
+                return (int) sets.get(11).getData();
         }
         return 0;
     }
@@ -131,6 +139,8 @@ public class MobMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(6).getData(), 0x01);
+            case VERSION_1_14_4:
+                return BitByte.isBitMask((byte) sets.get(7).getData(), 0x01);
         }
         return false;
     }
@@ -145,14 +155,18 @@ public class MobMetaData extends EntityMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(6).getData(), 0x02) ? Hand.LEFT : Hand.RIGHT;
+            case VERSION_1_14_4:
+                return BitByte.isBitMask((byte) sets.get(7).getData(), 0x02) ? Hand.LEFT : Hand.RIGHT;
         }
         return Hand.RIGHT;
     }
 
-    public boolean isRiptideAttack() {
+    public boolean isRiptideSpinAttack() {
         switch (version) {
             case VERSION_1_13_2:
                 return BitByte.isBitMask((byte) sets.get(6).getData(), 0x04);
+            case VERSION_1_14_4:
+                return BitByte.isBitMask((byte) sets.get(7).getData(), 0x04);
         }
         return false;
     }

@@ -66,7 +66,7 @@ public class OtherPlayer extends Mob implements MobInterface {
 
 
     @Override
-    public HumanMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 
@@ -77,7 +77,7 @@ public class OtherPlayer extends Mob implements MobInterface {
 
     @Override
     public int getMaxHealth() {
-        return (int) (40 + metaData.getAbsorptionHearts());
+        return (int) (40 + metaData.getAdditionalHearts());
     }
 
     public String getName() {

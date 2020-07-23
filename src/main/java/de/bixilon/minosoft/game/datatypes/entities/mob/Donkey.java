@@ -32,7 +32,7 @@ public class Donkey extends Mob implements MobInterface {
     }
 
     @Override
-    public DonkeyMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 

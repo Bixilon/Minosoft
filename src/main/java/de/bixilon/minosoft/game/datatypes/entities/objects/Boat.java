@@ -42,7 +42,7 @@ public class Boat extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public BoatMetaData getMetaData() {
+    public EntityMetaData getMetaData() {
         return metaData;
     }
 
