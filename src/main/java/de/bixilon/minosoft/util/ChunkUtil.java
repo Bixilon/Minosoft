@@ -196,7 +196,7 @@ public class ChunkUtil {
                         }
                     }
 
-                    if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+                    if (buffer.getVersion().getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
                         byte[] light = buffer.readBytes(2048);
                         if (containsSkyLight) {
                             byte[] skyLight = buffer.readBytes(2048);
@@ -210,6 +210,22 @@ public class ChunkUtil {
             }
         }
         throw new RuntimeException("Could not parse chunk!");
+    }
+
+    public static void readSkyLightPacket(InByteBuffer buffer, int skyLightMask, int blockLightMask, int emptyBlockLightMask, int emptySkyLightMask) {
+        for (byte c = 0; c < 18; c++) { // light sections
+            if (!BitByte.isBitSet(skyLightMask, c)) {
+                continue;
+            }
+            byte[] skyLight = buffer.readBytes(buffer.readVarInt());
+        }
+        for (byte c = 0; c < 18; c++) { // light sections
+            if (!BitByte.isBitSet(blockLightMask, c)) {
+                continue;
+            }
+            byte[] blockLight = buffer.readBytes(buffer.readVarInt());
+        }
+        // ToDo
     }
 
 }

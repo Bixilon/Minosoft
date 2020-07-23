@@ -602,4 +602,7 @@ public class PacketHandler {
 
     public void handle(PacketStopSound pkg) {
     }
+
+    public void handle(PacketUpdateLight pkg) {
+    }
 }
