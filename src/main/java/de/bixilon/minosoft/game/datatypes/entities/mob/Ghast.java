@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.mob;
 
-import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Mob;
+import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.GhastMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -26,11 +29,6 @@ public class Ghast extends Mob implements MobInterface {
     public Ghast(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new GhastMetaData(sets, version);
-    }
-
-    @Override
-    public Entities getEntityType() {
-        return Entities.GHAST;
     }
 
     @Override

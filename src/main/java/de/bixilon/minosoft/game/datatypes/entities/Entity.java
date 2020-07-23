@@ -147,4 +147,8 @@ public abstract class Entity implements EntityInterface {
     public void detach() {
         attachedTo = -1;
     }
+
+    public String getIdentifier() {
+        return Entities.getIdentifierByClass(this.getClass());
+    }
 }

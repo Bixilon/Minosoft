@@ -46,11 +46,6 @@ public class Painting extends EntityObject implements ObjectInterface {
     }
 
     @Override
-    public Entities getEntityType() {
-        return Entities.PAINTING;
-    }
-
-    @Override
     public EntityMetaData getMetaData() {
         return metaData;
     }

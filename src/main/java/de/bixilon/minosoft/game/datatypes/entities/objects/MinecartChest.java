@@ -11,7 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities.mob;
+package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
@@ -20,23 +20,23 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
-public class CaveSpider extends Spider {
-    public CaveSpider(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+public class MinecartChest extends Minecart {
+
+    public MinecartChest(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, location, yaw, pitch, additionalInt);
+    }
+
+    public MinecartChest(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+        super(entityId, location, yaw, pitch, additionalInt, velocity);
+    }
+
+    public MinecartChest(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity, sets, version);
     }
 
     @Override
-    public float getWidth() {
-        return 0.7F;
+    public MinecartType getType() {
+        return MinecartType.CHEST;
     }
 
-    @Override
-    public float getHeight() {
-        return 0.5F;
-    }
-
-    @Override
-    public int getMaxHealth() {
-        return 12;
-    }
 }

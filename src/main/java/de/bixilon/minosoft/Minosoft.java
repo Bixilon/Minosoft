@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Mappings;
 import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
+import de.bixilon.minosoft.game.datatypes.entities.Entities;
 import de.bixilon.minosoft.game.datatypes.entities.items.Items;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevel;
@@ -145,6 +146,7 @@ public class Minosoft {
                         switch (mappingSet.getValue()) {
                             case REGISTRIES:
                                 Items.load(mod, modJSON.getJSONObject("item").getJSONObject("entries"), version);
+                                Entities.load(mod, modJSON.getJSONObject("entity_type").getJSONObject("entries"), version);
                                 break;
                             case BLOCKS:
                                 Blocks.load(mod, modJSON, version);

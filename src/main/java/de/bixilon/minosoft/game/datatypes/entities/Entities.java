@@ -13,137 +13,152 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-import de.bixilon.minosoft.game.datatypes.MapSet;
-import de.bixilon.minosoft.game.datatypes.VersionValueMap;
+import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.game.datatypes.entities.mob.*;
 import de.bixilon.minosoft.game.datatypes.entities.objects.*;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import org.json.JSONObject;
 
-public enum Entities {
-    ITEM(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 32)}, ItemStack.class),
-    XP_ORB(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 22)}, ExperienceOrb.class),
-    AREA_EFFECT_CLOUD(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 3), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 0)}, AreaEffectCloud.class),
-    ELDER_GUARDIAN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 4), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 15)}, ElderGuardian.class),
-    WITHER_SKELETON(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 5), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 84)}, WitherSkeleton.class),
-    STRAY_SKELETON(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 6), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 71)}, StraySkeleton.class),
-    THROWN_EGG(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 7), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 74)}, ThrownEgg.class),
-    LEASH_KNOT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 8), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 35)}, LeashKnot.class),
-    PAINTING(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 9), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 49)}, Painting.class),
-    ARROW(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 10), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 2)}, Arrow.class),
-    SNOWBALL(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 11), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 67)}, Snowball.class),
-    FIREBALL(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 12), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 34)}, Fireball.class),
-    SMALL_FIREBALL(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 13), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 65)}, SmallFireball.class),
-    THROWN_ENDERPEARL(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 14), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 75)}, ThrownEnderpearl.class),
-    EYE_OF_ENDER_SIGNAL(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 15), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 23)}, EyeOfEnder.class),
-    THROWN_POTION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 16), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 77)}, ThrownPotion.class),
-    THROWN_EXP_BOTTLE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 17), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 76)}, ThrownExpBottle.class),
-    ITEM_FRAME(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 18), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 33)}, ItemFrame.class),
-    WITHER_SKULL(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 19), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 85)}, WitherSkull.class),
-    PRIMED_TNT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 20), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 55)}, PrimedTNT.class),
-    FALLING_BLOCK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 21), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 24)}, FallingBlock.class),
-    FIREWORK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 22), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 25)}, Firework.class),
-    HUSK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 23), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 30)}, Husk.class),
-    SPECTRAL_ARROW(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 24), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 68)}, SpectralArrow.class),
-    SHULKER_BULLET(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 25), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 60)}, ShulkerBullet.class),
-    DRAGON_FIREBALL(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 26), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 13)}, DragonFireball.class),
-    ZOMBIE_VILLAGER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 27), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 89)}, ZombieVillager.class),
-    SKELETON_HORSE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 28), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 63)}, SkeletonHorse.class),
-    ZOMBIE_HORSE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 29), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 88)}, ZombieHorse.class),
-    ARMOR_STAND(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 30), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 1)}, ArmorStand.class),
-    DONKEY(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 31), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 11)}, Donkey.class),
-    MULE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 32), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 46)}, Mule.class),
-    EVOCATION_FANGS(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 33), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 20)}, EvocationFangs.class),
-    EVOKER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 34), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 21)}, Evoker.class),
-    VEX(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 35), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 78)}, Vex.class),
-    VINDICATOR(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 36), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 81)}, Vindicator.class),
-    ILLUSIONER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 37), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 31)}, Illusioner.class),
-    MINECART_COMMAND_BLOCK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 40), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 41)}, MinecartCommandBlock.class),
-    BOAT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 41), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 5)}, Boat.class),
-    MINECART_RIDE_ABLE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 42), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 39)}, Minecart.class),
-    MINECART_CHEST(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 43), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 40)}, Minecart.class),
-    CREEPER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 50), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 10)}, Creeper.class),
-    SKELETON(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 51), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 62)}, Skeleton.class),
-    SPIDER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 52), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 69)}, Spider.class),
-    GIANT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 53), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 27)}, GiantZombie.class),
-    ZOMBIE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 54), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 87)}, Zombie.class),
-    SLIME(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 55), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 64)}, Slime.class),
-    GHAST(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 56), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 26)}, Ghast.class),
-    ZOMBIE_PIGMAN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 57), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 53)}, ZombiePigman.class),
-    ENDERMAN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 58), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 18)}, Enderman.class),
-    CAVE_SPIDER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 9), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 6)}, CaveSpider.class),
-    SILVERFISH(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 60), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 61)}, Silverfish.class),
-    BLAZE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 61), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 4)}, Blaze.class),
-    MAGMA_CUBE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 62), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 38)}, MagmaCube.class),
-    ENDER_DRAGON(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 63), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 17)}, EnderDragon.class),
-    WITHER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 64), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 83)}, Wither.class),
-    BAT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 65), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 3)}, Bat.class),
-    WITCH(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 66), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 82)}, Witch.class),
-    GUARDIAN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 68), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 28)}, Guardian.class),
-    SHULKER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 69), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 59)}, Shulker.class),
-    PIG(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 90), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 51)}, Pig.class),
-    SHEEP(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 91), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 58)}, Sheep.class),
-    COW(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 92), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 9)}, Cow.class),
-    CHICKEN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 93), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 7)}, Chicken.class),
-    SQUID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 94), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 70)}, Squid.class),
-    WOLF(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 95), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 86)}, Wolf.class),
-    MOOSHROOM(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 96), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 47)}, Mooshroom.class),
-    SNOW_GOLEM(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 97), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 66)}, SnowGolem.class),
-    OCELOT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 98), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 48)}, Ocelot.class),
-    IRON_GOLEM(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 99), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 80)}, IronGolem.class),
-    HORSE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 100), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 29)}, Horse.class),
-    RABBIT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 101), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 56)}, Rabbit.class),
-    POLAR_BEAR(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 102), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 54)}, PolarBear.class),
-    LLAMA(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 103), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 36)}, Llama.class),
-    LLAMA_SPIT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 104), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 37)}, LlamaSpit.class),
-    PLAYER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, -1), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 92)}, OtherPlayer.class),
-    PARROT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_12_2, 105), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 50)}, Parrot.class),
-    VILLAGER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 120), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 79)}, Villager.class),
-    ENDER_CRYSTAL(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 200), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 16)}, EnderCrystal.class),
-    COD(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 8)}, Cod.class),
-    DOLPHIN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 12)}, Dolphin.class),
-    DROWNED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 14)}, Drowned.class),
-    ENDERMITE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 67), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 19)}, Endermite.class),
-    MINECART_FURNACE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 42)}, MinecartFurnace.class),
-    MINECART_HOPPER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 43)}, MinecartHopper.class),
-    MINECART_SPAWNER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 44)}, MinecartSpawner.class),
-    MINECART_TNT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 45)}, MinecartTNT.class),
-    PUFFERFISH(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 52)}, Pufferfish.class),
-    SALMON(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 57)}, Salmon.class),
-    TROPICAL_FISH(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 72)}, TropicalFish.class),
-    TURTLE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 73)}, Turtle.class),
-    PHANTOM(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 90)}, Phantom.class),
-    LIGHTNING_BOLT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 91)}, LightningBolt.class),
-    FISHING_BOBBER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 93)}, FishingBobber.class),
-    TRIDENT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 94)}, Trident.class),
+import java.util.HashMap;
+import java.util.Iterator;
 
-    // not a thing anymore
-    FALLING_DRAGON_EGG(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, -1)}, FallingDragonEgg.class),
-    FIRE_CHARGE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, -1)}, FireCharge.class),
-    FISHING_FLOAT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, -1)}, FishingFloat.class);
+public class Entities {
 
-    final VersionValueMap<Integer> valueMap;
-    final Class<? extends Entity> clazz;
+    static HashBiMap<String, Class<? extends Entity>> entityClassMap = HashBiMap.create();
+    static HashMap<ProtocolVersion, HashBiMap<Integer, String>> entityMapping = new HashMap<>();
 
-    Entities(MapSet<ProtocolVersion, Integer>[] values, Class<? extends Entity> clazz) {
-        valueMap = new VersionValueMap<>(values, true);
-        this.clazz = clazz;
+    static {
+        registerEntityClass("minecraft:item", ItemStack.class);
+        registerEntityClass("minecraft:experience_orb", ExperienceOrb.class);
+        registerEntityClass("minecraft:area_effect_cloud", AreaEffectCloud.class);
+        registerEntityClass("minecraft:elder_guardian", ElderGuardian.class);
+        registerEntityClass("minecraft:wither_skeleton", WitherSkeleton.class);
+        registerEntityClass("minecraft:stray", StraySkeleton.class);
+        registerEntityClass("minecraft:egg", ThrownEgg.class);
+        registerEntityClass("minecraft:leash_knot", LeashKnot.class);
+        registerEntityClass("minecraft:painting", Painting.class);
+        registerEntityClass("minecraft:arrow", Arrow.class);
+        registerEntityClass("minecraft:snowball", Snowball.class);
+        registerEntityClass("minecraft:fireball", Fireball.class);
+        registerEntityClass("minecraft:small_fireball", SmallFireball.class);
+        registerEntityClass("minecraft:ender_pearl", ThrownEnderpearl.class);
+        registerEntityClass("minecraft:eye_of_ender", EyeOfEnder.class);
+        registerEntityClass("minecraft:potion", ThrownPotion.class);
+        registerEntityClass("minecraft:experience_bottle", ThrownExpBottle.class);
+        registerEntityClass("minecraft:item_frame", ItemFrame.class);
+        registerEntityClass("minecraft:wither_skull", WitherSkull.class);
+        registerEntityClass("minecraft:tnt", PrimedTNT.class);
+        registerEntityClass("minecraft:falling_block", FallingBlock.class);
+        registerEntityClass("minecraft:firework", Firework.class);
+        registerEntityClass("minecraft:husk", Husk.class);
+        registerEntityClass("minecraft:spectral_arrow", SpectralArrow.class);
+        registerEntityClass("minecraft:shulker_bullet", ShulkerBullet.class);
+        registerEntityClass("minecraft:dragon_fireball", DragonFireball.class);
+        registerEntityClass("minecraft:zombie_villager", ZombieVillager.class);
+        registerEntityClass("minecraft:skeleton_horse", SkeletonHorse.class);
+        registerEntityClass("minecraft:zombie_horse", ZombieHorse.class);
+        registerEntityClass("minecraft:armor_stand", ArmorStand.class);
+        registerEntityClass("minecraft:donkey", Donkey.class);
+        registerEntityClass("minecraft:mule", Mule.class);
+        registerEntityClass("minecraft:evoker_fangs", EvocationFangs.class);
+        registerEntityClass("minecraft:evoker", Evoker.class);
+        registerEntityClass("minecraft:vex", Vex.class);
+        registerEntityClass("minecraft:vindicator", Vindicator.class);
+        registerEntityClass("minecraft:illusioner", Illusioner.class);
+        registerEntityClass("minecraft:command_block_minecart", MinecartCommandBlock.class);
+        registerEntityClass("minecraft:boat", Boat.class);
+        registerEntityClass("minecraft:minecart", Minecart.class);
+        registerEntityClass("minecraft:chest_minecart", MinecartChest.class);
+        registerEntityClass("minecraft:creeper", Creeper.class);
+        registerEntityClass("minecraft:skeleton", Skeleton.class);
+        registerEntityClass("minecraft:spider", Spider.class);
+        registerEntityClass("minecraft:giant", GiantZombie.class);
+        registerEntityClass("minecraft:zombie", Zombie.class);
+        registerEntityClass("minecraft:slime", Slime.class);
+        registerEntityClass("minecraft:ghast", Ghast.class);
+        registerEntityClass("minecraft:zombie_pigman", ZombiePigman.class);
+        registerEntityClass("minecraft:enderman", Enderman.class);
+        registerEntityClass("minecraft:cave_spider", CaveSpider.class);
+        registerEntityClass("minecraft:silverfish", Silverfish.class);
+        registerEntityClass("minecraft:blaze", Blaze.class);
+        registerEntityClass("minecraft:magma_cube", MagmaCube.class);
+        registerEntityClass("minecraft:ender_dragon", EnderDragon.class);
+        registerEntityClass("minecraft:wither", Wither.class);
+        registerEntityClass("minecraft:bat", Bat.class);
+        registerEntityClass("minecraft:witch", Witch.class);
+        registerEntityClass("minecraft:guardian", Guardian.class);
+        registerEntityClass("minecraft:shulker", Shulker.class);
+        registerEntityClass("minecraft:pig", Pig.class);
+        registerEntityClass("minecraft:sheep", Sheep.class);
+        registerEntityClass("minecraft:cow", Cow.class);
+        registerEntityClass("minecraft:chicken", Chicken.class);
+        registerEntityClass("minecraft:squid", Squid.class);
+        registerEntityClass("minecraft:wolf", Wolf.class);
+        registerEntityClass("minecraft:mooshroom", Mooshroom.class);
+        registerEntityClass("minecraft:snow_golem", SnowGolem.class);
+        registerEntityClass("minecraft:ocelot", Ocelot.class);
+        registerEntityClass("minecraft:iron_golem", IronGolem.class);
+        registerEntityClass("minecraft:horse", Horse.class);
+        registerEntityClass("minecraft:rabbit", Rabbit.class);
+        registerEntityClass("minecraft:polar_bear", PolarBear.class);
+        registerEntityClass("minecraft:llama", Llama.class);
+        registerEntityClass("minecraft:llama_spit", LlamaSpit.class);
+        registerEntityClass("minecraft:player", OtherPlayer.class);
+        registerEntityClass("minecraft:parrot", Parrot.class);
+        registerEntityClass("minecraft:villager", Villager.class);
+        registerEntityClass("minecraft:end_crystal", EnderCrystal.class);
+        registerEntityClass("minecraft:cod", Cod.class);
+        registerEntityClass("minecraft:dolphin", Dolphin.class);
+        registerEntityClass("minecraft:drowned", Drowned.class);
+        registerEntityClass("minecraft:endermite", Endermite.class);
+        registerEntityClass("minecraft:furnace_minecart", MinecartFurnace.class);
+        registerEntityClass("minecraft:hopper_minecart", MinecartHopper.class);
+        registerEntityClass("minecraft:spawner_minecart", MinecartSpawner.class);
+        registerEntityClass("minecraft:tnt_minecart", MinecartTNT.class);
+        registerEntityClass("minecraft:pufferfish", Pufferfish.class);
+        registerEntityClass("minecraft:salmon", Salmon.class);
+        registerEntityClass("minecraft:tropical_fish", TropicalFish.class);
+        registerEntityClass("minecraft:turtle", Turtle.class);
+        registerEntityClass("minecraft:phantom", Phantom.class);
+        registerEntityClass("minecraft:lightning_bolt", LightningBolt.class);
+        registerEntityClass("minecraft:fishing_bobber", FishingBobber.class);
+        registerEntityClass("minecraft:trident", Trident.class);
+
+        // not a thing anymore
+        registerEntityClass("minecraft:falling_dragon_Egg", FallingDragonEgg.class);
+        registerEntityClass("minecraft:fire_charge", FireCharge.class);
+        registerEntityClass("minecraft:fishing_float", FishingFloat.class);
+    }
+
+    private static void registerEntityClass(String identifier, Class<? extends Entity> clazz) {
+        entityClassMap.put(identifier, clazz);
     }
 
 
-    public static Entities byId(int id, ProtocolVersion version) {
-        for (Entities entity : values()) {
-            if (entity.getValueMap().get(version) == id) {
-                return entity;
-            }
+    public static Class<? extends Entity> byId(int id, ProtocolVersion version) {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            version = ProtocolVersion.VERSION_1_12_2;
         }
-        return null;
+        return getClassByIdentifier(entityMapping.get(version).get(id));
+
     }
 
-    public VersionValueMap<Integer> getValueMap() {
-        return valueMap;
+
+    public static String getIdentifierByClass(Class<? extends Entity> clazz) {
+        return entityClassMap.inverse().get(clazz);
     }
 
-    public Class<? extends Entity> getClazz() {
-        return clazz;
+
+    public static Class<? extends Entity> getClassByIdentifier(String identifier) {
+        return entityClassMap.get(identifier);
+    }
+
+    public static void load(String mod, JSONObject json, ProtocolVersion version) {
+        HashBiMap<Integer, String> versionMapping = HashBiMap.create();
+        for (Iterator<String> identifiers = json.keys(); identifiers.hasNext(); ) {
+            String identifierName = identifiers.next();
+            versionMapping.put(json.getJSONObject(identifierName).getInt("id"), mod + ":" + identifierName);
+        }
+        entityMapping.put(version, versionMapping);
     }
 }

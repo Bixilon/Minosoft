@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.mob;
 
-import de.bixilon.minosoft.game.datatypes.entities.Entities;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
@@ -24,11 +23,6 @@ import java.util.HashMap;
 public class GiantZombie extends Zombie {
     public GiantZombie(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity, sets, version);
-    }
-
-    @Override
-    public Entities getEntityType() {
-        return Entities.GIANT;
     }
 
     @Override

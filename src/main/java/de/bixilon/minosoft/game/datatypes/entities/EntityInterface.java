@@ -25,7 +25,4 @@ public interface EntityInterface {
     float getWidth();
 
     float getHeight();
-
-    Entities getEntityType();
-
 }

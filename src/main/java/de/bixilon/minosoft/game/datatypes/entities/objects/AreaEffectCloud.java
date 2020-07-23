@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
-import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.AreaEffectCloudMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -35,12 +38,6 @@ public class AreaEffectCloud extends EntityObject implements ObjectInterface {
     public AreaEffectCloud(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new AreaEffectCloudMetaData(sets, version);
-    }
-
-
-    @Override
-    public Entities getEntityType() {
-        return Entities.AREA_EFFECT_CLOUD;
     }
 
     @Override

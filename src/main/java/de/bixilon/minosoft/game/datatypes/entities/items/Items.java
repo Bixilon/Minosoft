@@ -77,8 +77,11 @@ public class Items {
     }
 
     public static int getItemId(Item item, ProtocolVersion version) {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            version = ProtocolVersion.VERSION_1_12_2;
+        }
         int itemId = itemMap.get(version).inverse().get(item);
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
             return itemId >> 4;
         }
         return itemId;

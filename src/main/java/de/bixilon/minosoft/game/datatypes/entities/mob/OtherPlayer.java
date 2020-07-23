@@ -38,11 +38,6 @@ public class OtherPlayer extends Mob implements MobInterface {
     }
 
     @Override
-    public Entities getEntityType() {
-        return Entities.PLAYER;
-    }
-
-    @Override
     public float getWidth() {
         switch (status) {
             default:

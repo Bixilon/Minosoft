@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
-import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.WitherSkullMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -39,12 +42,6 @@ public class WitherSkull extends EntityObject implements ObjectInterface {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new WitherSkullMetaData(sets, version);
         this.thrower = 0; // ToDo
-    }
-
-
-    @Override
-    public Entities getEntityType() {
-        return Entities.WITHER_SKULL;
     }
 
     @Override

@@ -38,7 +38,7 @@ public class PacketSpawnObject implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Object spawned at %s (entityId=%d, type=%s)", object.getLocation().toString(), object.getEntityId(), object.getEntityType()));
+        Log.protocol(String.format("Object spawned at %s (entityId=%d, type=%s)", object.getLocation().toString(), object.getEntityId(), object.getIdentifier()));
     }
 
     public Entity getObject() {
@@ -105,7 +105,7 @@ public class PacketSpawnObject implements ClientboundPacket {
             case VERSION_1_14_4: {
                 int entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
-                Entities type = Entities.byId(buffer.readVarInt(), buffer.getVersion());
+                Class<? extends Entity> type = Entities.byId(buffer.readVarInt(), buffer.getVersion());
                 Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
                 short pitch = buffer.readAngle();
                 short yaw = buffer.readAngle();
@@ -114,7 +114,7 @@ public class PacketSpawnObject implements ClientboundPacket {
                 try {
                     // velocity present AND metadata
                     Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-                    object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, location, yaw, pitch, data, velocity);
+                    object = type.getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, location, yaw, pitch, data, velocity);
                     return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     e.printStackTrace();

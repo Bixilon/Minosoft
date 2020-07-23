@@ -15,7 +15,10 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
-import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.FallingBlockMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -41,12 +44,6 @@ public class FallingBlock extends EntityObject implements ObjectInterface {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new FallingBlockMetaData(sets, version);
         block = Blocks.nullBlock; // ToDo
-    }
-
-
-    @Override
-    public Entities getEntityType() {
-        return Entities.FALLING_BLOCK;
     }
 
     @Override

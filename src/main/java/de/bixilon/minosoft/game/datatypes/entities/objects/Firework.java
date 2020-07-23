@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
-import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.FireworkMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -35,11 +38,6 @@ public class Firework extends EntityObject implements ObjectInterface {
     public Firework(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new FireworkMetaData(sets, version);
-    }
-
-    @Override
-    public Entities getEntityType() {
-        return Entities.FIREWORK;
     }
 
     @Override
