@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
@@ -23,15 +24,16 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
     }
 
     @Override
-    public VillagerMetaData.VillagerType getType() {
+    public VillagerData.VillagerProfessions getProfession() {
         switch (version) {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
-                return VillagerMetaData.VillagerType.byId((int) sets.get(16).getData() + 1);
+                return VillagerData.VillagerProfessions.byId((int) sets.get(16).getData(), version);
             case VERSION_1_13_2:
-                return VillagerMetaData.VillagerType.byId((int) sets.get(17).getData() + 1);
+                return VillagerData.VillagerProfessions.byId((int) sets.get(17).getData(), version);
+            default:
+                return super.getProfession();
         }
-        return VillagerMetaData.VillagerType.FARMER;
     }
 
     @Override
@@ -42,8 +44,8 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
                 return ((boolean) sets.get(15).getData());
             case VERSION_1_13_2:
                 return ((boolean) sets.get(16).getData());
-
+            default:
+                return super.isConverting();
         }
-        return false;
     }
 }

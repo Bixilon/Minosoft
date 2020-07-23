@@ -376,7 +376,8 @@ public class InByteBuffer {
                 break;
             }
             case VERSION_1_12_2:
-            case VERSION_1_13_2: {
+            case VERSION_1_13_2:
+            case VERSION_1_14_4: {
                 byte index = readByte();
                 while (index != (byte) 0xFF) {
                     EntityMetaData.Types type = EntityMetaData.Types.byId(readVarInt(), version);

@@ -109,7 +109,7 @@ public class PacketMapData implements ClientboundPacket {
                 mapId = buffer.readVarInt();
                 scale = buffer.readByte();
                 boolean trackPosition = buffer.readBoolean();
-                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
                     locked = buffer.readBoolean();
                 }
                 int pinCount = buffer.readVarInt();

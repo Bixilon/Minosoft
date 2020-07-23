@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
@@ -23,49 +24,20 @@ public class VillagerMetaData extends AgeableMetaData {
     }
 
 
-    public VillagerType getVillagerType() {
+    public VillagerData.VillagerProfessions getProfession() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return VillagerType.byId((int) sets.get(16).getData());
+                return VillagerData.VillagerProfessions.byId((int) sets.get(16).getData(), version);
             case VERSION_1_9_4:
-                return VillagerType.byId((int) sets.get(12).getData());
+                return VillagerData.VillagerProfessions.byId((int) sets.get(12).getData(), version);
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
-                return VillagerType.byId((int) sets.get(13).getData());
+                return VillagerData.VillagerProfessions.byId((int) sets.get(13).getData(), version);
         }
-        return VillagerType.FARMER;
-    }
-
-    public enum VillagerType {
-        FARMER(0),
-        LIBRARIAN(1),
-        PRIEST(2),
-        BLACKSMITH(3),
-        BUTCHER(4),
-        NITWIT(5);
-
-
-        final int id;
-
-        VillagerType(int id) {
-            this.id = id;
-        }
-
-        public static VillagerType byId(int id) {
-            for (VillagerType t : values()) {
-                if (t.getId() == id) {
-                    return t;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
-        }
+        return VillagerData.VillagerProfessions.FARMER;
     }
 
 

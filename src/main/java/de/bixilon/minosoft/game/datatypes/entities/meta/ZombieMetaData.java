@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
@@ -39,17 +40,20 @@ public class ZombieMetaData extends MobMetaData {
         return false;
     }
 
-    public VillagerMetaData.VillagerType getType() {
+    public VillagerData.VillagerProfessions getProfession() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return VillagerMetaData.VillagerType.byId((byte) sets.get(13).getData() - 1);
-            case VERSION_1_9_4:
-                return VillagerMetaData.VillagerType.byId((int) sets.get(12).getData() - 1);
             case VERSION_1_10:
-                return VillagerMetaData.VillagerType.byId((int) sets.get(13).getData() - 1);
+                byte set = (byte) sets.get(13).getData();
+                if (version == ProtocolVersion.VERSION_1_10 && set == 6) {
+                    return VillagerData.VillagerProfessions.HUSK;
+                }
+                return VillagerData.VillagerProfessions.byId(set - 1, version);
+            case VERSION_1_9_4:
+                return VillagerData.VillagerProfessions.byId((int) sets.get(12).getData() - 1, version);
         }
-        return null; // ToDo: Husk support
+        return VillagerData.VillagerProfessions.NONE;
     }
 
     public boolean isConverting() {

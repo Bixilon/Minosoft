@@ -14,6 +14,7 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.*;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
+import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
@@ -108,6 +109,12 @@ public class EntityMetaData {
             case BLOCK_ID:
                 int blockId = buffer.readVarInt();
                 data = Blocks.getBlock(blockId, buffer.getVersion());
+                break;
+            case OPT_VAR_INT:
+                data = buffer.readVarInt() - 1;
+                break;
+            case VILLAGER_DATA:
+                data = new VillagerData(buffer.readVarInt(), buffer.readVarInt(), buffer.readVarInt());
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
@@ -299,9 +306,9 @@ public class EntityMetaData {
         OPT_BLOCK_ID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 12), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 13)}),
         NBT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_12_2, 13), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 14)}),
         PARTICLE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 15)}),
-        VILLAGER_DATA(-1),
-        OPT_VAR_INT(-1),
-        POSE(-1);
+        VILLAGER_DATA(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 16)}),
+        OPT_VAR_INT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 17)}),
+        POSE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 18)});
 
         final VersionValueMap<Integer> valueMap;
 

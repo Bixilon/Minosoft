@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
@@ -24,7 +25,7 @@ public class HuskMetaData extends ZombieMetaData {
 
 
     @Override
-    public VillagerMetaData.VillagerType getType() {
-        return null; // ToDo: husk support
+    public VillagerData.VillagerProfessions getProfession() {
+        return VillagerData.VillagerProfessions.HUSK;
     }
 }
