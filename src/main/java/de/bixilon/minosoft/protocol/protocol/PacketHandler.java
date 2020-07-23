@@ -605,4 +605,10 @@ public class PacketHandler {
 
     public void handle(PacketUpdateLight pkg) {
     }
+
+    public void handle(PacketUpdateViewPosition pkg) {
+    }
+
+    public void handle(PacketUpdateViewDistance pkg) {
+    }
 }
