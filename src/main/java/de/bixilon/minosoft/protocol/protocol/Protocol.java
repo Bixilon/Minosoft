@@ -120,6 +120,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_LIGHT, PacketUpdateLight.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_VIEW_DISTANCE, PacketUpdateViewDistance.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_VIEW_POSITION, PacketUpdateViewPosition.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_OPEN_HORSE_WINDOW, PacketOpenHorseWindow.class);
     }
 
     protected final HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;

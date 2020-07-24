@@ -607,4 +607,7 @@ public class PacketHandler {
 
     public void handle(PacketUpdateViewDistance pkg) {
     }
+
+    public void handle(PacketOpenHorseWindow pkg) {
+    }
 }

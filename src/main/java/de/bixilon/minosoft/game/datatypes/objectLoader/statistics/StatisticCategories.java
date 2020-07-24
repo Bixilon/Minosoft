@@ -11,8 +11,9 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes;
+package de.bixilon.minosoft.game.datatypes.objectLoader.statistics;
 
+import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public enum StatisticCategories {
