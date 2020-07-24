@@ -41,6 +41,7 @@ public class PacketClientStatus implements ServerboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeVarInt(status.getId());
                 break;
         }
@@ -49,7 +50,7 @@ public class PacketClientStatus implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending client status packet (status=%s)", status.name()));
+        Log.protocol(String.format("Sending client status packet (status=%s)", status));
     }
 
     public enum ClientStatus {

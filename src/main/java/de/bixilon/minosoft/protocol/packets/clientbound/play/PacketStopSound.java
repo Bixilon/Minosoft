@@ -39,6 +39,7 @@ public class PacketStopSound implements ClientboundPacket {
                 category = SoundCategories.valueOf(buffer.readString().toUpperCase());
                 return true;
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 byte flags = buffer.readByte();
                 if (BitByte.isBitMask(flags, 0x01)) {
                     category = SoundCategories.byId(buffer.readVarInt());

@@ -48,7 +48,6 @@ public class MojangAuthentication {
 
     public static MojangAccount login(String username, String password) {
         return login(Minosoft.getConfig().getString(GameConfiguration.CLIENT_TOKEN), username, password);
-
     }
 
     public static void joinServer(MojangAccount account, String serverId) {

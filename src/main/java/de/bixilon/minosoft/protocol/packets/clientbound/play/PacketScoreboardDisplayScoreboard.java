@@ -34,6 +34,7 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 action = ScoreboardAnimation.byId(buffer.readByte());
                 scoreName = buffer.readString();
                 return true;
@@ -44,7 +45,7 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received display scoreboard packet (position=%s, scoreName=\"%s\"", action.name(), scoreName));
+        Log.protocol(String.format("Received display scoreboard packet (position=%s, scoreName=\"%s\"", action, scoreName));
     }
 
     @Override

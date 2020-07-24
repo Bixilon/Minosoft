@@ -189,7 +189,6 @@ public class OutByteBuffer {
                 writeVarInt(slot.getItemId(version));
                 writeByte((byte) slot.getItemCount());
                 writeNBT(slot.getNbt());
-
         }
     }
 

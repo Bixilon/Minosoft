@@ -83,10 +83,10 @@ public class Network {
 
 
                     while (queue.size() > 0) {
-                        ServerboundPacket p = queue.get(0);
-                        p.log();
-                        queue.remove(0);
-                        byte[] data = p.write(connection.getVersion()).getOutBytes();
+                        ServerboundPacket packet = queue.get(0);
+                        packet.log();
+                        queue.remove(packet);
+                        byte[] data = packet.write(connection.getVersion()).getOutBytes();
                         if (compressionThreshold != -1) {
                             // compression is enabled
                             // check if there is a need to compress it and if so, do it!
@@ -115,16 +115,15 @@ public class Network {
 
                         outputStream.write(data);
                         outputStream.flush();
-                        if (p instanceof PacketEncryptionResponse) {
+                        if (packet instanceof PacketEncryptionResponse) {
                             // enable encryption
-                            secretKey = ((PacketEncryptionResponse) p).getSecretKey();
+                            secretKey = ((PacketEncryptionResponse) packet).getSecretKey();
                             enableEncryption(secretKey);
                         }
                     }
 
 
                     // everything sent for now, waiting for data
-
                     if (inputStream.available() > 0) { // available seems not to work in CipherInputStream
                         int numRead = 0;
                         int length = 0;
@@ -164,7 +163,7 @@ public class Network {
                             Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(p);
 
                             if (clazz == null) {
-                                Log.warn(String.format("[IN] Received unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), ((p != null) ? p.name() : "UNKNOWN"), inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion().name(), connection.getConnectionState().name()));
+                                Log.warn(String.format("[IN] Received unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), p, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
                                 continue;
                             }
                             try {
@@ -178,7 +177,7 @@ public class Network {
                                 }
                                 if (inPacketBuffer.getBytesLeft() > 0 || !success) {
                                     // warn not all data used
-                                    Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", ((p != null) ? p.name() : "null"), inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
+                                    Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", p, inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
 
                                     continue;
                                 }
@@ -201,7 +200,6 @@ public class Network {
                         }
                     }
                     Util.sleep(1);
-
                 }
                 socket.close();
                 connected = false;
@@ -238,5 +236,4 @@ public class Network {
     public void disconnect() {
         socketThread.interrupt();
     }
-
 }

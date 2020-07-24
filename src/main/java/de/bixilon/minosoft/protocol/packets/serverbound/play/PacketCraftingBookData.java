@@ -26,6 +26,10 @@ public class PacketCraftingBookData implements ServerboundPacket {
 
     final boolean craftingBookOpen;
     final boolean craftingFilter;
+    boolean blastingBookOpen;
+    boolean blastingFilter;
+    boolean smokingBookOpen;
+    boolean smokingFilter;
 
     public PacketCraftingBookData(BookDataStatus action, int recipeId) {
         this.action = action;
@@ -41,12 +45,22 @@ public class PacketCraftingBookData implements ServerboundPacket {
         this.craftingFilter = craftingFilter;
     }
 
+    public PacketCraftingBookData(BookDataStatus action, boolean craftingBookOpen, boolean craftingFilter, boolean blastingBookOpen, boolean smokingFilter) {
+        this.action = action;
+        this.smokingFilter = smokingFilter;
+        this.recipeId = 0;
+        this.craftingBookOpen = craftingBookOpen;
+        this.craftingFilter = craftingFilter;
+        this.blastingBookOpen = blastingBookOpen;
+    }
+
 
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_RECIPE_BOOK_DATA));
         switch (version) {
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
                 buffer.writeVarInt(action.getId());
                 switch (action) {
                     case DISPLAY_RECIPE:
@@ -57,6 +71,22 @@ public class PacketCraftingBookData implements ServerboundPacket {
                         buffer.writeBoolean(craftingFilter);
                         break;
                 }
+                break;
+            case VERSION_1_14_4:
+                buffer.writeVarInt(action.getId());
+                switch (action) {
+                    case DISPLAY_RECIPE:
+                        buffer.writeVarInt(recipeId);
+                        break;
+                    case CRAFTING_BOOK_STATUS:
+                        buffer.writeBoolean(craftingBookOpen);
+                        buffer.writeBoolean(craftingFilter);
+                        buffer.writeBoolean(blastingBookOpen);
+                        buffer.writeBoolean(blastingFilter);
+                        buffer.writeBoolean(smokingBookOpen);
+                        buffer.writeBoolean(smokingFilter);
+                        break;
+                }
         }
         return buffer;
     }
@@ -65,10 +95,10 @@ public class PacketCraftingBookData implements ServerboundPacket {
     public void log() {
         switch (action) {
             case DISPLAY_RECIPE:
-                Log.protocol(String.format("Sending crafting book status (action=%s, recipeId=%d)", action.name(), recipeId));
+                Log.protocol(String.format("Sending crafting book status (action=%s, recipeId=%d)", action, recipeId));
                 break;
             case CRAFTING_BOOK_STATUS:
-                Log.protocol(String.format("Sending crafting book status (action=%s, craftingBookOpen=%s, craftingFilter=%s)", action.name(), craftingBookOpen, craftingFilter));
+                Log.protocol(String.format("Sending crafting book status (action=%s, craftingBookOpen=%s, craftingFilter=%s)", action, craftingBookOpen, craftingFilter));
                 break;
         }
     }

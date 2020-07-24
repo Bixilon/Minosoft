@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -41,7 +41,8 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
-            case VERSION_1_13_2: {
+            case VERSION_1_13_2:
+            case VERSION_1_14_4: {
                 entityId = buffer.readVarInt();
                 // only thunderbolts
                 byte type = buffer.readByte();

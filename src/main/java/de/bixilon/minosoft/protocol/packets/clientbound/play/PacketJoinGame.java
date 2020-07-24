@@ -30,6 +30,7 @@ public class PacketJoinGame implements ClientboundPacket {
     GameMode gameMode;
     Dimension dimension;
     Difficulty difficulty;
+    int viewDistance = -1;
     int maxPlayers;
     LevelType levelType;
     boolean reducedDebugScreen;
@@ -77,6 +78,21 @@ public class PacketJoinGame implements ClientboundPacket {
                 reducedDebugScreen = buffer.readBoolean();
                 return true;
             }
+            case VERSION_1_14_4: {
+                this.entityId = buffer.readInt();
+                byte gameModeRaw = buffer.readByte();
+                hardcore = BitByte.isBitSet(gameModeRaw, 3);
+                // remove hardcore bit and get gamemode
+                gameModeRaw &= ~0x8;
+                gameMode = GameMode.byId(gameModeRaw);
+
+                dimension = Dimension.byId(buffer.readInt());
+                maxPlayers = buffer.readByte();
+                levelType = LevelType.byType(buffer.readString());
+                viewDistance = buffer.readVarInt();
+                reducedDebugScreen = buffer.readBoolean();
+                return true;
+            }
         }
 
         return false;
@@ -84,7 +100,7 @@ public class PacketJoinGame implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s)", entityId, gameMode.name(), dimension.name(), difficulty.name(), hardcore));
+        Log.protocol(String.format("Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", entityId, gameMode, dimension, difficulty, hardcore, viewDistance));
     }
 
     @Override
@@ -118,5 +134,9 @@ public class PacketJoinGame implements ClientboundPacket {
 
     public Dimension getDimension() {
         return dimension;
+    }
+
+    public int getViewDistance() {
+        return viewDistance;
     }
 }

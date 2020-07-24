@@ -31,6 +31,7 @@ public class PacketHeldItemChangeReceiving implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 slot = buffer.readByte();
                 return true;
         }

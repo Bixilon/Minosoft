@@ -42,6 +42,7 @@ public class PacketTitle implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 action = TitleAction.byId(buffer.readVarInt(), buffer.getVersion());
                 switch (action) {
                     case SET_TITLE:
@@ -66,17 +67,17 @@ public class PacketTitle implements ClientboundPacket {
     public void log() {
         switch (action) {
             case SET_TITLE:
-                Log.protocol(String.format("Received title (action=%s, text=%s)", action.name(), text.getColoredMessage()));
+                Log.protocol(String.format("Received title (action=%s, text=%s)", action, text.getColoredMessage()));
                 break;
             case SET_SUBTITLE:
-                Log.protocol(String.format("Received title (action=%s, subText=%s)", action.name(), subText.getColoredMessage()));
+                Log.protocol(String.format("Received title (action=%s, subText=%s)", action, subText.getColoredMessage()));
                 break;
             case SET_TIMES_AND_DISPLAY:
-                Log.protocol(String.format("Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", action.name(), fadeInTime, stayTime, fadeOutTime));
+                Log.protocol(String.format("Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", action, fadeInTime, stayTime, fadeOutTime));
                 break;
             case HIDE:
             case RESET:
-                Log.protocol(String.format("Received title (action=%s)", action.name()));
+                Log.protocol(String.format("Received title (action=%s)", action));
                 break;
         }
     }

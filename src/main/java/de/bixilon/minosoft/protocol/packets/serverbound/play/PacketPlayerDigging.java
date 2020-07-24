@@ -62,6 +62,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeVarInt(status.getId());
                 if (position == null) {
                     buffer.writeLong(0L);
@@ -76,7 +77,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Send player digging packet (status=%s, position=%s, face=%s)", status.name(), position.toString(), face.name()));
+        Log.protocol(String.format("Send player digging packet (status=%s, position=%s, face=%s)", status, position.toString(), face));
     }
 
     public enum DiggingStatus {
@@ -92,6 +93,16 @@ public class PacketPlayerDigging implements ServerboundPacket {
 
         DiggingStatus(int id) {
             this.id = id;
+        }
+
+
+        public static DiggingStatus byId(int id) {
+            for (DiggingStatus status : values()) {
+                if (status.getId() == id) {
+                    return status;
+                }
+            }
+            return null;
         }
 
         public int getId() {

@@ -55,6 +55,7 @@ public class PacketEntityAction implements ServerboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeVarInt(entityId);
                 buffer.writeVarInt(action.getId(version));
                 buffer.writeVarInt(parameter);
@@ -65,7 +66,7 @@ public class PacketEntityAction implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending entity action packet (entityId=%d, action=%s, parameter=%d)", entityId, action.name(), parameter));
+        Log.protocol(String.format("Sending entity action packet (entityId=%d, action=%s, parameter=%d)", entityId, action, parameter));
     }
 
     public enum EntityActions {

@@ -36,6 +36,7 @@ public class PacketKeepAlive implements ClientboundPacket {
                 return true;
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 id = buffer.readLong();
                 return true;
         }

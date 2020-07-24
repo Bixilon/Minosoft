@@ -14,10 +14,13 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.GameMode;
+import de.bixilon.minosoft.game.datatypes.MapSet;
+import de.bixilon.minosoft.game.datatypes.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketChangeGameState implements ClientboundPacket {
     Reason reason;
@@ -33,7 +36,8 @@ public class PacketChangeGameState implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
-                reason = Reason.byId(buffer.readByte());
+            case VERSION_1_14_4:
+                reason = Reason.byId(buffer.readByte(), buffer.getVersion());
                 value = buffer.readFloat();
                 return true;
         }
@@ -51,10 +55,10 @@ public class PacketChangeGameState implements ClientboundPacket {
                 Log.game("Received weather packet: Stopping rain...");
                 break;
             case CHANGE_GAMEMODE:
-                Log.game(String.format("Received game mode change: Now in %s", GameMode.byId(getValue().intValue()).name()));
+                Log.game(String.format("Received game mode change: Now in %s", GameMode.byId(getValue().intValue())));
                 break;
             default:
-                Log.protocol(String.format("Received game status change (%s)", getReason().name()));
+                Log.protocol(String.format("Received game status change (%s)", getReason()));
                 break;
         }
     }
@@ -73,35 +77,40 @@ public class PacketChangeGameState implements ClientboundPacket {
     }
 
     public enum Reason {
-        INVALID_BED(0),
-        END_RAIN(1),
-        START_RAIN(2),
-        CHANGE_GAMEMODE(3),
-        ENTER_CREDITS(4),
-        DEMO_MESSAGES(5),
-        ARROW_HITTING_PLAYER(6),
-        FADE_VALUE(7),
-        FADE_TIME(8),
-        PLAY_PUFFERFISH_STING_SOUND(9),
-        PLAY_ELDER_GUARDIAN_MOB_APPEARANCE(10);
+        INVALID_BED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 0)}),
+        END_RAIN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1), new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2)}),
+        START_RAIN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2), new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1)}),
+        CHANGE_GAMEMODE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 3)}),
+        ENTER_CREDITS(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4)}),
+        DEMO_MESSAGES(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 5)}),
+        ARROW_HITTING_PLAYER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 6)}),
+        FADE_VALUE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 7)}),
+        FADE_TIME(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 8)}),
+        PLAY_PUFFERFISH_STING_SOUND(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 9)}),
+        PLAY_ELDER_GUARDIAN_MOB_APPEARANCE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 10)});
 
-        final byte id;
 
-        Reason(int id) {
-            this.id = (byte) id;
+        final VersionValueMap<Integer> valueMap;
+
+        Reason(MapSet<ProtocolVersion, Integer>[] values) {
+            valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static Reason byId(byte id) {
-            for (Reason g : values()) {
-                if (g.getId() == id) {
-                    return g;
+        public static Reason byId(int id, ProtocolVersion version) {
+            for (Reason reason : values()) {
+                if (reason.getId(version) == id) {
+                    return reason;
                 }
             }
             return null;
         }
 
-        public byte getId() {
-            return id;
+        public int getId(ProtocolVersion version) {
+            Integer ret = valueMap.get(version);
+            if (ret == null) {
+                return -2;
+            }
+            return ret;
         }
     }
 }

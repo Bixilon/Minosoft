@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
@@ -22,45 +23,11 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public abstract class Protocol implements ProtocolInterface {
-    static final HashMap<Packets.Clientbound, Class<? extends ClientboundPacket>> packetClassMapping = new HashMap<>();
+    static final HashBiMap<Packets.Clientbound, Class<? extends ClientboundPacket>> packetClassMapping = HashBiMap.create();
 
     static {
-        initPacketClassMapping();
-    }
-
-    public final HashMap<Packets.Serverbound, Integer> serverboundPacketMapping;
-    public final HashMap<Packets.Clientbound, Integer> clientboundPacketMapping;
-
-    public Protocol() {
-        serverboundPacketMapping = new HashMap<>();
-
-        serverboundPacketMapping.put(Packets.Serverbound.HANDSHAKING_HANDSHAKE, 0x00);
-        // status
-        serverboundPacketMapping.put(Packets.Serverbound.STATUS_REQUEST, 0x00);
-        serverboundPacketMapping.put(Packets.Serverbound.STATUS_PING, 0x01);
-        // login
-        serverboundPacketMapping.put(Packets.Serverbound.LOGIN_LOGIN_START, 0x00);
-        serverboundPacketMapping.put(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE, 0x01);
-
-
-        clientboundPacketMapping = new HashMap<>();
-
-        clientboundPacketMapping.put(Packets.Clientbound.STATUS_RESPONSE, 0x00);
-        clientboundPacketMapping.put(Packets.Clientbound.STATUS_PONG, 0x01);
-        // login
-        clientboundPacketMapping.put(Packets.Clientbound.LOGIN_DISCONNECT, 0x00);
-        clientboundPacketMapping.put(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST, 0x01);
-        clientboundPacketMapping.put(Packets.Clientbound.LOGIN_LOGIN_SUCCESS, 0x02);
-    }
-
-    public static Class<? extends ClientboundPacket> getPacketByPacket(Packets.Clientbound p) {
-        return packetClassMapping.get(p);
-    }
-
-    static void initPacketClassMapping() {
         packetClassMapping.put(Packets.Clientbound.STATUS_RESPONSE, PacketStatusResponse.class);
         packetClassMapping.put(Packets.Clientbound.STATUS_PONG, PacketStatusPong.class);
         packetClassMapping.put(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST, PacketEncryptionRequest.class);
@@ -150,24 +117,70 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_TAGS, PacketTags.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_DECLARE_RECIPES, PacketDeclareRecipes.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_STOP_SOUND, PacketStopSound.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_LIGHT, PacketUpdateLight.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_VIEW_DISTANCE, PacketUpdateViewDistance.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_UPDATE_VIEW_POSITION, PacketUpdateViewPosition.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_OPEN_HORSE_WINDOW, PacketOpenHorseWindow.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_TRADE_LIST, PacketTradeList.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_OPEN_BOOK, PacketOpenBook.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ACKNOWLEDGE_PLAYER_DIGGING, PacketAcknowledgePlayerDigging.class);
+    }
+
+    protected final HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
+    protected final HashMap<ConnectionState, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
+
+    public Protocol() {
+        serverboundPacketMapping = new HashMap<>();
+        serverboundPacketMapping.put(ConnectionState.HANDSHAKING, HashBiMap.create());
+        serverboundPacketMapping.put(ConnectionState.STATUS, HashBiMap.create());
+        serverboundPacketMapping.put(ConnectionState.LOGIN, HashBiMap.create());
+        serverboundPacketMapping.put(ConnectionState.PLAY, HashBiMap.create());
+
+        registerPacket(Packets.Serverbound.HANDSHAKING_HANDSHAKE, 0x00);
+        // status
+        registerPacket(Packets.Serverbound.STATUS_REQUEST, 0x00);
+        registerPacket(Packets.Serverbound.STATUS_PING, 0x01);
+        // login
+        registerPacket(Packets.Serverbound.LOGIN_LOGIN_START, 0x00);
+        registerPacket(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE, 0x01);
+
+
+        clientboundPacketMapping = new HashMap<>();
+        clientboundPacketMapping.put(ConnectionState.HANDSHAKING, HashBiMap.create());
+        clientboundPacketMapping.put(ConnectionState.STATUS, HashBiMap.create());
+        clientboundPacketMapping.put(ConnectionState.LOGIN, HashBiMap.create());
+        clientboundPacketMapping.put(ConnectionState.PLAY, HashBiMap.create());
+
+        registerPacket(Packets.Clientbound.STATUS_RESPONSE, 0x00);
+        registerPacket(Packets.Clientbound.STATUS_PONG, 0x01);
+        // login
+        registerPacket(Packets.Clientbound.LOGIN_DISCONNECT, 0x00);
+        registerPacket(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST, 0x01);
+        registerPacket(Packets.Clientbound.LOGIN_LOGIN_SUCCESS, 0x02);
+    }
+
+    public static Class<? extends ClientboundPacket> getPacketByPacket(Packets.Clientbound p) {
+        return packetClassMapping.get(p);
     }
 
     public static ProtocolVersion getLowestVersionSupported() {
         return ProtocolVersion.VERSION_1_7_10;
     }
 
-
-    public int getPacketCommand(Packets.Serverbound p) {
-        return serverboundPacketMapping.get(p);
+    protected void registerPacket(Packets.Serverbound packet, int id) {
+        serverboundPacketMapping.get(packet.getState()).put(packet, id);
     }
 
-    public Packets.Clientbound getPacketByCommand(ConnectionState s, int command) {
-        for (Map.Entry<Packets.Clientbound, Integer> set : clientboundPacketMapping.entrySet()) {
-            if (set.getValue() == command && set.getKey().name().startsWith(s.name())) {
-                return set.getKey();
-            }
-        }
-        return null;
+    protected void registerPacket(Packets.Clientbound packet, int id) {
+        clientboundPacketMapping.get(packet.getState()).put(packet, id);
+    }
+
+    public int getPacketCommand(Packets.Serverbound p) {
+        return serverboundPacketMapping.get(p.getState()).get(p);
+    }
+
+    public Packets.Clientbound getPacketByCommand(ConnectionState state, int command) {
+        return clientboundPacketMapping.get(state).inverse().get(command);
     }
 
     @Override

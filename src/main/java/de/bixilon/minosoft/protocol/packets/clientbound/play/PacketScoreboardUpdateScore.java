@@ -44,6 +44,7 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 itemName = buffer.readString();
                 action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
                 scoreName = buffer.readString();
@@ -61,7 +62,7 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received scoreboard score update (itemName=\"%s\", action=%s, scoreName=\"%s\", scoreValue=%d", itemName, action.name(), scoreName, scoreValue));
+        Log.protocol(String.format("Received scoreboard score update (itemName=\"%s\", action=%s, scoreName=\"%s\", scoreValue=%d", itemName, action, scoreName, scoreValue));
     }
 
     @Override

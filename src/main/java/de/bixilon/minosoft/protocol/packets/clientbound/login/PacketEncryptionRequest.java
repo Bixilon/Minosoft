@@ -19,6 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketEncryptionRequest implements ClientboundPacket {
+
     String serverId; //normally empty
     byte[] publicKey;
     byte[] verifyToken;
@@ -37,6 +38,7 @@ public class PacketEncryptionRequest implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 serverId = buffer.readString();
                 publicKey = buffer.readBytes(buffer.readVarInt()); // read length, then the bytes
                 verifyToken = buffer.readBytes(buffer.readVarInt()); // read length, then the bytes

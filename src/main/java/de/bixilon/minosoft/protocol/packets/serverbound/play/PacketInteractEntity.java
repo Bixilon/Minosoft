@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.Entity;
-import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entity;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
 import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -81,6 +81,7 @@ public class PacketInteractEntity implements ServerboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeInt(entityId);
                 buffer.writeByte((byte) click.getId());
                 if (click == Click.INTERACT_AT) {
@@ -97,7 +98,7 @@ public class PacketInteractEntity implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Interacting with entity (entityId=%d, click=%s)", entityId, click.name()));
+        Log.protocol(String.format("Interacting with entity (entityId=%d, click=%s)", entityId, click));
     }
 
     public enum Click {

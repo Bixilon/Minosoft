@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.network;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
-import de.bixilon.minosoft.game.datatypes.recipes.Recipes;
+import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
@@ -92,7 +92,7 @@ public class Connection {
         if (this.state == state) {
             return;
         }
-        Log.verbose("ConnectionStatus changed: " + state.name());
+        Log.verbose("ConnectionStatus changed: " + state);
         this.state = state;
         switch (state) {
             case HANDSHAKING:
@@ -120,7 +120,7 @@ public class Connection {
                     connect();
                 } else {
                     // unregister all custom recipes
-                    Recipes.removeCustomRecipes(getVersion());
+                    Recipes.removeCustomRecipes();
                 }
         }
     }
@@ -172,13 +172,14 @@ public class Connection {
         handleThread = new Thread(() -> {
             while (getConnectionState() != ConnectionState.DISCONNECTING) {
                 while (handlingQueue.size() > 0) {
+                    ClientboundPacket packet = handlingQueue.get(0);
                     try {
-                        handlingQueue.get(0).log();
-                        handlingQueue.get(0).handle(getHandler());
+                        packet.log();
+                        packet.handle(getHandler());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    handlingQueue.remove(0);
+                    handlingQueue.remove(packet);
                 }
                 try {
                     // sleep, wait for an interrupt from other thread

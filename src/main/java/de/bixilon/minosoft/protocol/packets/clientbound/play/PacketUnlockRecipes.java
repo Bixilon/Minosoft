@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.recipes.Recipe;
-import de.bixilon.minosoft.game.datatypes.recipes.Recipes;
+import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipe;
+import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -49,6 +49,7 @@ public class PacketUnlockRecipes implements ClientboundPacket {
                 }
                 return true;
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 action = UnlockRecipeActions.byId(buffer.readVarInt());
                 isCraftingBookOpen = buffer.readBoolean();
                 isCraftingFilteringActive = buffer.readBoolean();
@@ -56,12 +57,12 @@ public class PacketUnlockRecipes implements ClientboundPacket {
                 isSmeltingFilteringActive = buffer.readBoolean();
                 listed = new Recipe[buffer.readVarInt()];
                 for (int i = 0; i < listed.length; i++) {
-                    listed[i] = Recipes.getRecipe(buffer.readString(), buffer.getVersion());
+                    listed[i] = Recipes.getRecipe(buffer.readString());
                 }
                 if (action == UnlockRecipeActions.INITIALIZE) {
                     tagged = new Recipe[buffer.readVarInt()];
                     for (int i = 0; i < tagged.length; i++) {
-                        tagged[i] = Recipes.getRecipe(buffer.readString(), buffer.getVersion());
+                        tagged[i] = Recipes.getRecipe(buffer.readString());
                     }
                 }
                 return true;
@@ -71,7 +72,7 @@ public class PacketUnlockRecipes implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received unlock crafting recipe packet (action=%s, isCraftingBookOpen=%s, isFilteringActive=%s, isSmeltingBookOpen=%s, isSmeltingFilteringActive=%s listedLength=%d, taggedLength=%s)", action.name(), isCraftingBookOpen, isCraftingFilteringActive, isSmeltingBookOpen, isSmeltingFilteringActive, listed.length, ((tagged == null) ? 0 : tagged.length)));
+        Log.protocol(String.format("Received unlock crafting recipe packet (action=%s, isCraftingBookOpen=%s, isFilteringActive=%s, isSmeltingBookOpen=%s, isSmeltingFilteringActive=%s listedLength=%d, taggedLength=%s)", action, isCraftingBookOpen, isCraftingFilteringActive, isSmeltingBookOpen, isSmeltingFilteringActive, listed.length, ((tagged == null) ? 0 : tagged.length)));
     }
 
     @Override

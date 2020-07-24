@@ -71,6 +71,7 @@ public class PacketParticle implements ClientboundPacket {
                 count = buffer.readInt();
                 return true;
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 particle = Particles.byId(buffer.readInt());
                 longDistance = buffer.readBoolean();
                 x = buffer.readFloat();
@@ -93,7 +94,7 @@ public class PacketParticle implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received particle spawn at %s %s %s (particle=%s, data=%s, count=%d, dataClass=%s)", x, y, z, particle.name(), particleData, count, particleDataClass));
+        Log.protocol(String.format("Received particle spawn at %s %s %s (particle=%s, data=%s, count=%d, dataClass=%s)", x, y, z, particle, particleData, count, particleDataClass));
     }
 
     @Override

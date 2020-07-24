@@ -15,10 +15,11 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.game.datatypes.GameMode;
-import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
-import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.mob.OtherPlayer;
-import de.bixilon.minosoft.game.datatypes.entities.objects.Painting;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.meta.HumanMetaData;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.mob.OtherPlayer;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.objects.Painting;
+import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
 import de.bixilon.minosoft.game.datatypes.player.PingBars;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfo;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfoBulk;
@@ -97,7 +98,6 @@ public class PacketHandler {
         String serverHash = new BigInteger(CryptManager.getServerHash(pkg.getServerId(), publicKey, secretKey)).toString(16);
         connection.getPlayer().getAccount().join(serverHash);
         connection.sendPacket(new PacketEncryptionResponse(secretKey, pkg.getVerifyToken(), publicKey));
-
     }
 
     public void handle(PacketLoginSuccess pkg) {
@@ -160,7 +160,6 @@ public class PacketHandler {
                     connection.getPlayer().getPlayerInfos().get(bulk.getUUID()).setDisplayName(bulk.getDisplayName());
                     break;
             }
-
         }
     }
 
@@ -319,7 +318,6 @@ public class PacketHandler {
     public void handle(PacketChunkData pkg) {
         connection.getPlayer().getWorld().setChunk(pkg.getLocation(), pkg.getChunk());
         connection.getPlayer().getWorld().setBlockEntityData(pkg.getBlockEntities());
-
     }
 
     public void handle(PacketEntityEffect pkg) {
@@ -450,9 +448,6 @@ public class PacketHandler {
         connection.getPlayer().getWorld().addEntity(new Painting(pkg.getEntityId(), pkg.getPosition(), pkg.getDirection(), pkg.getPainting()));
     }
 
-    public void handle(PacketEntity pkg) {
-    }
-
     public void handle(PacketParticle pkg) {
         // ToDo
     }
@@ -489,7 +484,6 @@ public class PacketHandler {
                     objective.removeScore(pkg.getItemName());
                 }
                 break;
-
         }
     }
 
@@ -599,8 +593,30 @@ public class PacketHandler {
     }
 
     public void handle(PacketDeclareRecipes pkg) {
+        Recipes.registerCustomRecipes(pkg.getRecipes());
     }
 
     public void handle(PacketStopSound pkg) {
+    }
+
+    public void handle(PacketUpdateLight pkg) {
+    }
+
+    public void handle(PacketUpdateViewPosition pkg) {
+    }
+
+    public void handle(PacketUpdateViewDistance pkg) {
+    }
+
+    public void handle(PacketOpenHorseWindow pkg) {
+    }
+
+    public void handle(PacketTradeList pkg) {
+    }
+
+    public void handle(PacketOpenBook pkg) {
+    }
+
+    public void handle(PacketAcknowledgePlayerDigging pkg) {
     }
 }

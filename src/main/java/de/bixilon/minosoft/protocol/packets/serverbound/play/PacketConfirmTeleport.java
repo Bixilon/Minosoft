@@ -37,6 +37,7 @@ public class PacketConfirmTeleport implements ServerboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeVarInt(teleportId);
                 break;
         }

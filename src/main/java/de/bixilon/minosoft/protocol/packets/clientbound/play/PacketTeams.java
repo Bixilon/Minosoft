@@ -100,6 +100,7 @@ public class PacketTeams implements ClientboundPacket {
                 }
                 return true;
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 name = buffer.readString();
                 action = TeamActions.byId(buffer.readByte());
                 if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {
@@ -128,7 +129,7 @@ public class PacketTeams implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, seeFriendlyInvisibiles=%s, playerCount=%s)", name, action.name(), ((displayName == null) ? null : displayName.getColoredMessage()), prefix, suffix, friendlyFire, seeFriendlyInvisibles, ((playerNames == null) ? "null" : playerNames.length)));
+        Log.protocol(String.format("Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, seeFriendlyInvisibiles=%s, playerCount=%s)", name, action, displayName, prefix, suffix, friendlyFire, seeFriendlyInvisibles, ((playerNames == null) ? null : playerNames.length)));
     }
 
     @Override

@@ -66,8 +66,17 @@ public class Packets {
         PLAY_SPECTATE,
         PLAY_PLAYER_BLOCK_PLACEMENT,
         PLAY_USE_ITEM,
-        PLAY_UPDATE_COMMAND_BLOCK_MINECART
+        PLAY_UPDATE_COMMAND_BLOCK_MINECART;
 
+        final ConnectionState state;
+
+        Serverbound() {
+            this.state = ConnectionState.valueOf(name().split("_")[0]);
+        }
+
+        public ConnectionState getState() {
+            return state;
+        }
     }
 
     public enum Clientbound {
@@ -174,6 +183,16 @@ public class Packets {
         PLAY_UPDATE_SIGN,
         PLAY_STATISTICS,
         PLAY_SPAWN_OBJECT,
-        PLAY_TITLE
+        PLAY_TITLE;
+
+        final ConnectionState state;
+
+        Clientbound() {
+            this.state = ConnectionState.valueOf(name().split("_")[0]);
+        }
+
+        public ConnectionState getState() {
+            return state;
+        }
     }
 }

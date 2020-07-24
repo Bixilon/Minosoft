@@ -42,6 +42,7 @@ public class PacketBossBar implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 uuid = buffer.readUUID();
                 action = BossBarAction.byId(buffer.readVarInt());
                 switch (action) {
@@ -78,22 +79,22 @@ public class PacketBossBar implements ClientboundPacket {
     public void log() {
         switch (action) {
             case ADD:
-                Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\", health=%s, color=%s, divisions=%s, dragonBar=%s, darkenSky=%s)", action.name(), uuid.toString(), title.getColoredMessage(), health, color.name(), divisions.name(), isDragonBar(), shouldDarkenSky()));
+                Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\", health=%s, color=%s, divisions=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), title.getColoredMessage(), health, color, divisions, isDragonBar(), shouldDarkenSky()));
                 break;
             case REMOVE:
-                Log.protocol(String.format("Received boss bar (action=%s, uuid=%s)", action.name(), uuid.toString()));
+                Log.protocol(String.format("Received boss bar (action=%s, uuid=%s)", action, uuid.toString()));
                 break;
             case UPDATE_HEALTH:
-                Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, health=%s)", action.name(), uuid.toString(), health));
+                Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, health=%s)", action, uuid.toString(), health));
                 break;
             case UPDATE_TITLE:
-                Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\")", action.name(), uuid.toString(), title.getColoredMessage()));
+                Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\")", action, uuid.toString(), title.getColoredMessage()));
                 break;
             case UPDATE_STYLE:
-                Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, color=%s, divisions=%s)", action.name(), uuid.toString(), color.name(), divisions.name()));
+                Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, color=%s, divisions=%s)", action, uuid.toString(), color, divisions));
                 break;
             case UPDATE_FLAGS:
-                Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, dragonBar=%s, darkenSky=%s)", action.name(), uuid.toString(), isDragonBar(), shouldDarkenSky()));
+                Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), isDragonBar(), shouldDarkenSky()));
                 break;
         }
     }

@@ -37,6 +37,7 @@ public class PacketUseItem implements ServerboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeVarInt(hand.getId());
                 break;
         }
@@ -45,6 +46,6 @@ public class PacketUseItem implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Use hand (hand=%s)", hand.name()));
+        Log.protocol(String.format("Use hand (hand=%s)", hand));
     }
 }

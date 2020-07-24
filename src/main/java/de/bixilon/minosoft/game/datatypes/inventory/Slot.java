@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.game.datatypes.inventory;
 
 import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.game.datatypes.entities.items.Item;
-import de.bixilon.minosoft.game.datatypes.entities.items.Items;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.items.Item;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.items.Items;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
@@ -36,6 +36,15 @@ public class Slot {
         this.itemMetadata = itemMetadata;
         this.itemCount = itemCount;
         this.nbt = nbt;
+    }
+
+    public Slot(Item item) {
+        this.item = item;
+    }
+
+    public Slot(Item item, byte itemCount) {
+        this.item = item;
+        this.itemCount = itemCount;
     }
 
     public Item getItem() {
@@ -60,7 +69,7 @@ public class Slot {
 
     public String getDisplayName() {
         if (nbt != null && nbt.containsKey("display") && nbt.getCompoundTag("display").containsKey("Name")) { // check if object has nbt data, and a custom display name
-            return String.format("%s (%s)", new TextComponent(nbt.getCompoundTag("display").getStringTag("Name").getValue()).getColoredMessage(), item.toString());
+            return String.format("%s (%s)", new TextComponent(nbt.getCompoundTag("display").getStringTag("Name").getValue()).getColoredMessage(), item);
         }
         return item.toString(); // ToDo display name per Item (from language file)
     }
@@ -75,5 +84,10 @@ public class Slot {
         // ToDo: check nbt
 
         return their.getItem().equals(getItem()) && their.getItemCount() == getItemCount() && their.getItemMetadata() == getItemMetadata();
+    }
+
+    @Override
+    public String toString() {
+        return getDisplayName();
     }
 }

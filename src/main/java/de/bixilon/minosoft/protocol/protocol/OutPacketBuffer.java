@@ -42,5 +42,4 @@ public class OutPacketBuffer extends OutByteBuffer {
         }
         return ret;
     }
-
 }

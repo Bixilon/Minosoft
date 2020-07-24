@@ -52,5 +52,4 @@ public class BitByte {
     public static byte uShortToByte(short s) {
         return (byte) (s);
     }
-
 }

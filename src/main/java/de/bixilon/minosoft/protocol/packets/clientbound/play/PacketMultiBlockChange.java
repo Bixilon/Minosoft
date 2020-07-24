@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
 import de.bixilon.minosoft.game.datatypes.world.InChunkLocation;
 import de.bixilon.minosoft.logging.Log;
@@ -54,7 +54,8 @@ public class PacketMultiBlockChange implements ClientboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
-            case VERSION_1_13_2: {
+            case VERSION_1_13_2:
+            case VERSION_1_14_4: {
                 location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 int count = buffer.readVarInt();
                 for (int i = 0; i < count; i++) {
@@ -72,7 +73,7 @@ public class PacketMultiBlockChange implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Multi block change received at %s (size=%d)", location.toString(), blocks.size()));
+        Log.protocol(String.format("Multi block change received at %s (size=%d)", location, blocks.size()));
     }
 
     @Override

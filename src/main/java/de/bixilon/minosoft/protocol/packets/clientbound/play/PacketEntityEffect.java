@@ -13,18 +13,21 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.StatusEffect;
-import de.bixilon.minosoft.game.datatypes.entities.StatusEffects;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.StatusEffect;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.StatusEffects;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 public class PacketEntityEffect implements ClientboundPacket {
     int entityId;
     StatusEffect effect;
-    boolean hideParticle;
+    boolean isAmbient;
+    boolean hideParticles;
+    boolean showIcon;
 
 
     @Override
@@ -33,22 +36,29 @@ public class PacketEntityEffect implements ClientboundPacket {
             case VERSION_1_7_10:
                 entityId = buffer.readInt();
                 effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readShort());
-                hideParticle = false;
+                hideParticles = false;
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 entityId = buffer.readVarInt();
                 effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readVarInt());
-                hideParticle = buffer.readBoolean();
+                hideParticles = buffer.readBoolean();
                 return true;
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 entityId = buffer.readVarInt();
                 effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readVarInt());
                 byte flags = buffer.readByte();
-                hideParticle = BitByte.isBitMask(flags, 0x02);
+                isAmbient = BitByte.isBitMask(flags, 0x01);
+                hideParticles = !BitByte.isBitMask(flags, 0x02);
+                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+                    showIcon = BitByte.isBitMask(flags, 0x04);
+                } else {
+                    showIcon = true;
+                }
                 return true;
         }
 
@@ -71,5 +81,17 @@ public class PacketEntityEffect implements ClientboundPacket {
 
     public StatusEffect getEffect() {
         return effect;
+    }
+
+    public boolean hideParticles() {
+        return hideParticles;
+    }
+
+    public boolean showIcon() {
+        return showIcon;
+    }
+
+    public boolean isAmbient() {
+        return isAmbient;
     }
 }

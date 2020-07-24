@@ -32,6 +32,7 @@ public class PacketEntityStatus implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 entityId = buffer.readInt();
                 status = Status.byId(buffer.readByte());
                 return true;
@@ -42,7 +43,7 @@ public class PacketEntityStatus implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity status: (entityId=%d, animation=%s)", entityId, status.name()));
+        Log.protocol(String.format("Entity status: (entityId=%d, animation=%s)", entityId, status));
     }
 
     @Override

@@ -43,6 +43,7 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 position = buffer.readPosition();
                 action = Actions.byId(buffer.readByte(), buffer.getVersion());
                 nbt = buffer.readNBT();
@@ -54,7 +55,7 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving blockEntityMeta (position=%s, action=%s)", position.toString(), action.name()));
+        Log.protocol(String.format("Receiving blockEntityMeta (position=%s, action=%s)", position, action));
     }
 
     @Override
@@ -84,7 +85,9 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         END_GATEWAY_DESTINATION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 8)}),
         SET_TEXT_ON_SIGN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 9)}),
         DECLARE_SHULKER_BOX(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_11_2, 10)}),
-        SET_BED_COLOR(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_12_2, 11)});
+        SET_BED_COLOR(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_12_2, 11)}),
+        SET_DATA_JIGSAW(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 12)}),
+        SET_ITEMS_IN_CAMPFIRE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 13)});
 
         final VersionValueMap<Integer> valueMap;
 

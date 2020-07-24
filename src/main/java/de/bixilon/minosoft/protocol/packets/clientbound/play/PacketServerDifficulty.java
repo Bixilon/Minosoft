@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketServerDifficulty implements ClientboundPacket {
     Difficulty difficulty;
+    boolean locked;
 
 
     @Override
@@ -34,6 +35,10 @@ public class PacketServerDifficulty implements ClientboundPacket {
             case VERSION_1_13_2:
                 difficulty = Difficulty.byId(buffer.readByte());
                 return true;
+            case VERSION_1_14_4:
+                difficulty = Difficulty.byId(buffer.readByte());
+                locked = buffer.readBoolean();
+                return true;
         }
 
         return false;
@@ -41,7 +46,7 @@ public class PacketServerDifficulty implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received server difficulty (difficulty=%s)", difficulty.name()));
+        Log.protocol(String.format("Received server difficulty (difficulty=%s)", difficulty));
     }
 
     @Override

@@ -13,30 +13,39 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.recipes.Ingredient;
-import de.bixilon.minosoft.game.datatypes.recipes.Recipe;
-import de.bixilon.minosoft.game.datatypes.recipes.RecipeProperties;
-import de.bixilon.minosoft.game.datatypes.recipes.Recipes;
+import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Ingredient;
+import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipe;
+import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.RecipeTypes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketDeclareRecipes implements ClientboundPacket {
-    Recipe[] recipes;
+    HashBiMap<String, Recipe> recipes = HashBiMap.create();
 
 
     @Override
     public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_13_2:
-                recipes = new Recipe[buffer.readVarInt()];
-                for (int i = 0; i < recipes.length; i++) {
+            case VERSION_1_14_4:
+                int length = buffer.readVarInt();
+                for (int i = 0; i < length; i++) {
                     Recipe recipe;
-                    String identifier = buffer.readString();
-                    String name = buffer.readString();
-                    RecipeProperties type = RecipeProperties.byName(name);
+                    String identifier;
+                    String typeName;
+                    if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+                        typeName = buffer.readString();
+                        identifier = buffer.readString();
+                    } else {
+                        identifier = buffer.readString();
+                        typeName = buffer.readString();
+                    }
+                    RecipeTypes type = RecipeTypes.byName(typeName);
                     switch (type) {
                         case SHAPELESS: {
                             String group = buffer.readString();
@@ -54,7 +63,10 @@ public class PacketDeclareRecipes implements ClientboundPacket {
                             recipe = new Recipe(width, height, type, group, ingredients, result);
                             break;
                         }
-                        case SMELTING: {
+                        case SMELTING:
+                        case BLASTING:
+                        case SMOKING:
+                        case CAMPFIRE: {
                             String group = buffer.readString();
                             Ingredient ingredient = buffer.readIngredient();
                             Slot result = buffer.readSlot();
@@ -63,11 +75,18 @@ public class PacketDeclareRecipes implements ClientboundPacket {
                             recipe = new Recipe(type, group, ingredient, result, experience, cookingTime);
                             break;
                         }
+                        case STONE_CUTTING: {
+                            String group = buffer.readString();
+                            Ingredient ingredient = buffer.readIngredient();
+                            Slot result = buffer.readSlot();
+                            recipe = new Recipe(type, group, ingredient, result);
+                            break;
+                        }
                         default:
                             recipe = new Recipe(type);
                             break;
                     }
-                    Recipes.registerCustomRecipe(buffer.getVersion(), recipe, identifier);
+                    recipes.put(identifier, recipe);
                 }
                 return true;
         }
@@ -76,11 +95,15 @@ public class PacketDeclareRecipes implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received declare recipe packet (recipeLength=%d)", recipes.length));
+        Log.protocol(String.format("Received declare recipe packet (recipeLength=%d)", recipes.size()));
     }
 
     @Override
     public void handle(PacketHandler h) {
         h.handle(this);
+    }
+
+    public HashBiMap<String, Recipe> getRecipes() {
+        return recipes;
     }
 }

@@ -45,6 +45,7 @@ public class PacketVehicleMove implements ServerboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeDouble(x);
                 buffer.writeDouble(y);
                 buffer.writeDouble(z);

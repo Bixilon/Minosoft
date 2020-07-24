@@ -34,6 +34,7 @@ public class PacketWindowItems implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 windowId = buffer.readByte();
                 data = new Slot[buffer.readShort()];
                 for (int i = 0; i < data.length; i++) {

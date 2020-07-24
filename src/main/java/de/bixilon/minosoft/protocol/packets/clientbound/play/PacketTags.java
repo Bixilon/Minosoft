@@ -23,6 +23,7 @@ public class PacketTags implements ClientboundPacket {
     Tag[] blockTags;
     Tag[] itemTags;
     Tag[] fluidTags;
+    Tag[] entityTags;
 
 
     @Override
@@ -33,6 +34,12 @@ public class PacketTags implements ClientboundPacket {
                 itemTags = readTags(buffer);
                 fluidTags = readTags(buffer);
                 return true;
+            case VERSION_1_14_4:
+                blockTags = readTags(buffer);
+                itemTags = readTags(buffer);
+                fluidTags = readTags(buffer);
+                entityTags = readTags(buffer);
+                return true;
         }
         return false;
     }
@@ -41,6 +48,7 @@ public class PacketTags implements ClientboundPacket {
         Tag[] ret = new Tag[buffer.readVarInt()];
         switch (buffer.getVersion()) {
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 for (int i = 0; i < ret.length; i++) {
                     ret[i] = new Tag(buffer.readString(), buffer.readVarIntArray(buffer.readVarInt()));
                 }
@@ -51,7 +59,7 @@ public class PacketTags implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received tags (blockLength=%d, itemLength=%d, fluidLength=%d)", blockTags.length, itemTags.length, fluidTags.length));
+        Log.protocol(String.format("Received tags (blockLength=%d, itemLength=%d, fluidLength=%d, entityLength=%d)", blockTags.length, itemTags.length, fluidTags.length, ((entityTags == null) ? 0 : entityTags.length)));
     }
 
     @Override

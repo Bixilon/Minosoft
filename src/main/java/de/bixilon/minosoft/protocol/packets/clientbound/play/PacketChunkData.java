@@ -23,6 +23,7 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.ChunkUtil;
 import de.bixilon.minosoft.util.Util;
 
@@ -31,6 +32,7 @@ import java.util.HashMap;
 public class PacketChunkData implements ClientboundPacket {
     ChunkLocation location;
     Chunk chunk;
+    CompoundTag heightMap;
 
     HashMap<BlockPosition, CompoundTag> blockEntities = new HashMap<>();
 
@@ -70,10 +72,14 @@ public class PacketChunkData implements ClientboundPacket {
             case VERSION_1_10:
             case VERSION_1_11_2:
             case VERSION_1_12_2:
-            case VERSION_1_13_2: {
+            case VERSION_1_13_2:
+            case VERSION_1_14_4: {
                 this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 boolean groundUpContinuous = buffer.readBoolean();
                 short sectionBitMask = (short) buffer.readVarInt();
+                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+                    heightMap = buffer.readNBT();
+                }
                 int size = buffer.readVarInt();
                 int lastPos = buffer.getPosition();
 
@@ -107,6 +113,10 @@ public class PacketChunkData implements ClientboundPacket {
 
     public HashMap<BlockPosition, CompoundTag> getBlockEntities() {
         return blockEntities;
+    }
+
+    public CompoundTag getHeightMap() {
+        return heightMap;
     }
 
     @Override

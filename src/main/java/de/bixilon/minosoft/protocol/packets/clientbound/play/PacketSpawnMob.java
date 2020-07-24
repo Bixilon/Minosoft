@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.Entities;
-import de.bixilon.minosoft.game.datatypes.entities.Entity;
-import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entity;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Velocity;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -36,7 +36,7 @@ public class PacketSpawnMob implements ClientboundPacket {
             case VERSION_1_7_10:
             case VERSION_1_8: {
                 int entityId = buffer.readVarInt();
-                Entities type = Entities.byId(buffer.readByte(), buffer.getVersion());
+                Class<? extends Entity> type = Entities.byId(buffer.readByte(), buffer.getVersion());
                 Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
                 short yaw = buffer.readAngle();
                 short pitch = buffer.readAngle();
@@ -45,11 +45,10 @@ public class PacketSpawnMob implements ClientboundPacket {
 
                 assert type != null;
                 try {
-                    entity = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, InByteBuffer.class).newInstance(entityId, location, yaw, pitch, velocity, buffer);
+                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, HashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
                     return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
-                    // ToDo: on hypixel, here comes mob id 30 which could be an armor stand, but an armor stand is an object :?
                 }
             }
             return false;
@@ -57,7 +56,7 @@ public class PacketSpawnMob implements ClientboundPacket {
             case VERSION_1_10: {
                 int entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
-                Entities type = Entities.byId(buffer.readByte(), buffer.getVersion());
+                Class<? extends Entity> type = Entities.byId(buffer.readByte(), buffer.getVersion());
                 Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
                 short yaw = buffer.readAngle();
                 short pitch = buffer.readAngle();
@@ -66,7 +65,7 @@ public class PacketSpawnMob implements ClientboundPacket {
 
                 assert type != null;
                 try {
-                    entity = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, HashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
+                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, HashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
                     return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
@@ -75,10 +74,11 @@ public class PacketSpawnMob implements ClientboundPacket {
             }
             case VERSION_1_11_2:
             case VERSION_1_12_2:
-            case VERSION_1_13_2: {
+            case VERSION_1_13_2:
+            case VERSION_1_14_4: {
                 int entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
-                Entities type = Entities.byId(buffer.readVarInt(), buffer.getVersion());
+                Class<? extends Entity> type = Entities.byId(buffer.readVarInt(), buffer.getVersion());
                 Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
                 short yaw = buffer.readAngle();
                 short pitch = buffer.readAngle();
@@ -87,7 +87,7 @@ public class PacketSpawnMob implements ClientboundPacket {
 
                 assert type != null;
                 try {
-                    entity = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, HashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
+                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, HashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
                     return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
@@ -101,7 +101,7 @@ public class PacketSpawnMob implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Mob spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity.getEntityType().name()));
+        Log.protocol(String.format("Mob spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity.getIdentifier()));
     }
 
     public Entity getMob() {

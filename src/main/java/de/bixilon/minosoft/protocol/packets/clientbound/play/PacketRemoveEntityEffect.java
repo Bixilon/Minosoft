@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.StatusEffects;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.StatusEffects;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -37,6 +37,7 @@ public class PacketRemoveEntityEffect implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 entityId = buffer.readVarInt();
                 effect = StatusEffects.byId(buffer.readByte());
                 return true;
@@ -47,7 +48,7 @@ public class PacketRemoveEntityEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.game(String.format("Entity effect removed (entityId=%d, effect=%s)", entityId, effect.name()));
+        Log.game(String.format("Entity effect removed (entityId=%d, effect=%s)", entityId, effect));
     }
 
     @Override

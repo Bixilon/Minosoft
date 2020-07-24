@@ -35,6 +35,7 @@ public class PacketSetBeaconEffect implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_SET_BEACON_EFFECT));
         switch (version) {
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeVarInt(primaryEffectId);
                 buffer.writeVarInt(secondaryEffectId);
                 break;
@@ -46,5 +47,4 @@ public class PacketSetBeaconEffect implements ServerboundPacket {
     public void log() {
         Log.protocol(String.format("Sending beacon effect select packet (primaryEffectId=%d, secondaryEffectId=%d)", primaryEffectId, secondaryEffectId));
     }
-
 }

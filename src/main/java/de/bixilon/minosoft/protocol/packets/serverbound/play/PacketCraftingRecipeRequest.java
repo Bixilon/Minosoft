@@ -34,6 +34,8 @@ public class PacketCraftingRecipeRequest implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CRAFT_RECIPE_REQUEST));
         switch (version) {
             case VERSION_1_12_2:
+            case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeByte(windowId);
                 buffer.writeVarInt(recipeId);
                 break;
@@ -45,5 +47,4 @@ public class PacketCraftingRecipeRequest implements ServerboundPacket {
     public void log() {
         Log.protocol(String.format("Sending entity action packet (windowId=%d, recipeId=%d)", windowId, recipeId));
     }
-
 }

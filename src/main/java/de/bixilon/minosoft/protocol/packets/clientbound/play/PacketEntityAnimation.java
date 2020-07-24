@@ -35,6 +35,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 entityId = buffer.readVarInt();
                 animation = EntityAnimations.byId(buffer.readByte(), buffer.getVersion());
                 return true;
@@ -45,7 +46,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Play entity animation (entityId=%d, animation=%s)", entityId, animation.name()));
+        Log.protocol(String.format("Play entity animation (entityId=%d, animation=%s)", entityId, animation));
     }
 
     @Override

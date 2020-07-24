@@ -49,6 +49,7 @@ public class PacketOpenWindow implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 this.windowId = buffer.readByte();
                 this.type = InventoryType.byName(buffer.readString());
                 this.title = buffer.readTextComponent();
@@ -64,7 +65,7 @@ public class PacketOpenWindow implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received inventory open packet (windowId=%d, type=%s, title=%s, entityId=%d, slotCount=%d)", windowId, type.name(), ((title == null) ? "null" : title), entityId, slotCount));
+        Log.protocol(String.format("Received inventory open packet (windowId=%d, type=%s, title=%s, entityId=%d, slotCount=%d)", windowId, type, title, entityId, slotCount));
     }
 
     @Override

@@ -39,6 +39,7 @@ public class PacketAdvancementTab implements ServerboundPacket {
         switch (version) {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeVarInt(action.getId());
                 if (action == AdvancementTabStatus.OPEN_TAB) {
                     buffer.writeString(tabToOpen);
@@ -49,8 +50,7 @@ public class PacketAdvancementTab implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending advancement tab packet (action=%s, tabToOpen=%s)", action.name(), tabToOpen));
-
+        Log.protocol(String.format("Sending advancement tab packet (action=%s, tabToOpen=%s)", action, tabToOpen));
     }
 
     public enum AdvancementTabStatus {

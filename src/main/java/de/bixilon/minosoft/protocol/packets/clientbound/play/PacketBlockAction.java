@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.blocks.actions.*;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.actions.*;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -38,6 +38,7 @@ public class PacketBlockAction implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 // that's the only difference here
                 if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
                     position = buffer.readPosition();
@@ -115,5 +116,4 @@ public class PacketBlockAction implements ClientboundPacket {
     public void handle(PacketHandler h) {
         h.handle(this);
     }
-
 }

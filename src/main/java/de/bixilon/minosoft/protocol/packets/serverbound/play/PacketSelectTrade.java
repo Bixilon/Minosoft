@@ -33,6 +33,7 @@ public class PacketSelectTrade implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_SELECT_TRADE));
         switch (version) {
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 buffer.writeVarInt(id);
                 break;
         }
@@ -43,5 +44,4 @@ public class PacketSelectTrade implements ServerboundPacket {
     public void log() {
         Log.protocol(String.format("Sending select trade packet (id=%d)", id));
     }
-
 }

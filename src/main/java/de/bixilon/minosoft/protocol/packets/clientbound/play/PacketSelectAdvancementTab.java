@@ -29,6 +29,7 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 if (buffer.readBoolean()) {
                     tab = AdvancementTabs.byName(buffer.readString(), buffer.getVersion());
                 }
@@ -40,7 +41,7 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received select advancement tab (tab=%s)", ((tab == null) ? null : tab.name())));
+        Log.protocol(String.format("Received select advancement tab (tab=%s)", tab));
     }
 
     @Override

@@ -25,9 +25,7 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
 
     public PacketPlayerAbilitiesSending(boolean flying) {
         this.flying = flying;
-
     }
-
 
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
@@ -40,6 +38,7 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 // only fly matters, everything else ignored
                 byte flags = 0;
                 if (flying) {

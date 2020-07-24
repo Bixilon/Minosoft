@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -30,6 +30,7 @@ public class PacketFacePlayer implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_13_2:
+            case VERSION_1_14_4:
                 face = PlayerFaces.byId(buffer.readVarInt());
                 location = buffer.readLocation();
                 if (buffer.readBoolean()) {
@@ -45,7 +46,7 @@ public class PacketFacePlayer implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received face player packet (face=%s, location=%s, entityId=%d, entityFace=%s)", face.name(), location.toString(), entityId, ((entityFace != null) ? entityFace.name() : null)));
+        Log.protocol(String.format("Received face player packet (face=%s, location=%s, entityId=%d, entityFace=%s)", face, location.toString(), entityId, entityFace));
     }
 
     @Override
@@ -92,5 +93,4 @@ public class PacketFacePlayer implements ClientboundPacket {
             return id;
         }
     }
-
 }
