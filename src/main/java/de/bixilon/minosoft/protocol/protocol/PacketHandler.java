@@ -616,4 +616,7 @@ public class PacketHandler {
 
     public void handle(PacketOpenBook pkg) {
     }
+
+    public void handle(PacketAcknowledgePlayerDigging pkg) {
+    }
 }

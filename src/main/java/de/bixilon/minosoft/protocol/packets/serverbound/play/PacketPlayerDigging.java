@@ -95,6 +95,16 @@ public class PacketPlayerDigging implements ServerboundPacket {
             this.id = id;
         }
 
+
+        public static DiggingStatus byId(int id) {
+            for (DiggingStatus status : values()) {
+                if (status.getId() == id) {
+                    return status;
+                }
+            }
+            return null;
+        }
+
         public int getId() {
             return id;
         }
