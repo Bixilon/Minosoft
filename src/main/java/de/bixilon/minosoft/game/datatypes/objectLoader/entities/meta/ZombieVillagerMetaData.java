@@ -46,12 +46,8 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
         return VillagerData.VillagerTypes.PLAINS;
     }
 
-    public int getLevel() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return getVillageData().getLevel();
-        }
-        return -1;
+    public VillagerData.VillagerLevels getLevel() {
+        return getVillageData().getLevel();
     }
 
     public VillagerData getVillageData() {
@@ -59,7 +55,7 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
             case VERSION_1_14_4:
                 return (VillagerData) sets.get(18).getData();
         }
-        return new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, 1);
+        return new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE);
     }
 
 

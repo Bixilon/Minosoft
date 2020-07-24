@@ -20,15 +20,15 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class VillagerData {
     final VillagerTypes type;
     final VillagerProfessions profession;
-    final int level;
+    final VillagerLevels level;
 
     public VillagerData(int type, int profession, int level, ProtocolVersion version) {
         this.type = VillagerTypes.byId(type);
         this.profession = VillagerProfessions.byId(profession, version);
-        this.level = level;
+        this.level = VillagerLevels.byId(level);
     }
 
-    public VillagerData(VillagerTypes type, VillagerProfessions profession, int level) {
+    public VillagerData(VillagerTypes type, VillagerProfessions profession, VillagerLevels level) {
         this.type = type;
         this.profession = profession;
         this.level = level;
@@ -42,7 +42,7 @@ public class VillagerData {
         return profession;
     }
 
-    public int getLevel() {
+    public VillagerLevels getLevel() {
         return level;
     }
 
@@ -106,6 +106,33 @@ public class VillagerData {
             for (VillagerTypes type : values()) {
                 if (type.getId() == id) {
                     return type;
+                }
+            }
+            return null;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+
+    public enum VillagerLevels {
+        NOVICE(0),
+        APPRENTICE(1),
+        JOURNEYMAN(2),
+        EXPERT(4),
+        MASTER(5);
+
+        final int id;
+
+        VillagerLevels(int id) {
+            this.id = id;
+        }
+
+        public static VillagerLevels byId(int id) {
+            for (VillagerLevels level : values()) {
+                if (level.getId() == id) {
+                    return level;
                 }
             }
             return null;

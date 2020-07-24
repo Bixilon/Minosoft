@@ -36,26 +36,17 @@ public class VillagerMetaData extends AbstractMerchantMetaData {
             case VERSION_1_12_2:
             case VERSION_1_13_2:
                 return VillagerData.VillagerProfessions.byId((int) sets.get(13).getData(), version);
-            case VERSION_1_14_4:
+            default:
                 return getVillageData().getProfession();
         }
-        return VillagerData.VillagerProfessions.FARMER;
     }
 
     public VillagerData.VillagerTypes getType() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return getVillageData().getType();
-        }
-        return VillagerData.VillagerTypes.PLAINS;
+        return getVillageData().getType();
     }
 
-    public int getLevel() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return getVillageData().getLevel();
-        }
-        return -1;
+    public VillagerData.VillagerLevels getLevel() {
+        return getVillageData().getLevel();
     }
 
     public VillagerData getVillageData() {
@@ -63,6 +54,6 @@ public class VillagerMetaData extends AbstractMerchantMetaData {
             case VERSION_1_14_4:
                 return (VillagerData) sets.get(13).getData();
         }
-        return new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, 1);
+        return new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE);
     }
 }

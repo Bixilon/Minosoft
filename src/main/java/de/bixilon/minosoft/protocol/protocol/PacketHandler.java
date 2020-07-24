@@ -610,4 +610,7 @@ public class PacketHandler {
 
     public void handle(PacketOpenHorseWindow pkg) {
     }
+
+    public void handle(PacketTradeList pkg) {
+    }
 }

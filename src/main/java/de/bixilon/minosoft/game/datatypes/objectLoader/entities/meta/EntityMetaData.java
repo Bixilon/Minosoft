@@ -116,7 +116,7 @@ public class EntityMetaData {
                 data = buffer.readVarInt() - 1;
                 break;
             case VILLAGER_DATA:
-                data = new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getVersion()), buffer.readVarInt());
+                data = new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getVersion()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
