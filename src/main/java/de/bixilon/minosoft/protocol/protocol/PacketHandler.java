@@ -613,4 +613,7 @@ public class PacketHandler {
 
     public void handle(PacketTradeList pkg) {
     }
+
+    public void handle(PacketOpenBook pkg) {
+    }
 }
