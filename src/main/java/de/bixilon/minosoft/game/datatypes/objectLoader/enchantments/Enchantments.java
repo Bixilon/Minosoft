@@ -26,7 +26,7 @@ public class Enchantments {
     static ArrayList<Enchantment> enchantmentList = new ArrayList<>();
     static HashMap<ProtocolVersion, HashBiMap<Integer, Enchantment>> enchantmentMap = new HashMap<>();
 
-    public static Enchantment getEnchantmentBdyI(int protocolId, ProtocolVersion version) {
+    public static Enchantment getEnchantmentBdyId(int protocolId, ProtocolVersion version) {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
             version = ProtocolVersion.VERSION_1_12_2;
         }

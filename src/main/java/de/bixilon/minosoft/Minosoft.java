@@ -21,6 +21,7 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.objectLoader.enchantments.Enchantments;
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.items.Items;
+import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.Statistics;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevel;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
@@ -149,6 +150,7 @@ public class Minosoft {
                                 Items.load(mod, modJSON.getJSONObject("item").getJSONObject("entries"), version);
                                 Entities.load(mod, modJSON.getJSONObject("entity_type").getJSONObject("entries"), version);
                                 Enchantments.load(mod, modJSON.getJSONObject("enchantment").getJSONObject("entries"), version);
+                                Statistics.load(mod, modJSON.getJSONObject("custom_stat").getJSONObject("entries"), version);
                                 break;
                             case BLOCKS:
                                 Blocks.load(mod, modJSON, version);

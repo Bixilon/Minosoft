@@ -14,7 +14,8 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.StatisticCategories;
-import de.bixilon.minosoft.game.datatypes.Statistics;
+import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.Statistic;
+import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.Statistics;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -23,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import java.util.HashMap;
 
 public class PacketStatistics implements ClientboundPacket {
-    HashMap<Statistics, Integer> statistics = new HashMap<>();
+    HashMap<Statistic, Integer> statistics = new HashMap<>();
 
 
     @Override
@@ -37,7 +38,7 @@ public class PacketStatistics implements ClientboundPacket {
             case VERSION_1_12_2: {
                 int length = buffer.readVarInt();
                 for (int i = 0; i < length; i++) {
-                    statistics.put(Statistics.byName(buffer.readString(), buffer.getVersion()), buffer.readVarInt());
+                    statistics.put(Statistics.getStatisticByIdentifier(buffer.readString(), buffer.getVersion()), buffer.readVarInt());
                 }
                 return true;
             }
@@ -46,7 +47,7 @@ public class PacketStatistics implements ClientboundPacket {
                 int length = buffer.readVarInt();
                 for (int i = 0; i < length; i++) {
                     StatisticCategories category = StatisticCategories.byId(buffer.readVarInt());
-                    statistics.put(Statistics.byId(buffer.readVarInt()), buffer.readVarInt());
+                    statistics.put(Statistics.getStatisticById(buffer.readVarInt(), buffer.getVersion()), buffer.readVarInt());
                 }
                 return true;
             }
@@ -65,7 +66,7 @@ public class PacketStatistics implements ClientboundPacket {
         h.handle(this);
     }
 
-    public HashMap<Statistics, Integer> getStatistics() {
+    public HashMap<Statistic, Integer> getStatistics() {
         return statistics;
     }
 }
