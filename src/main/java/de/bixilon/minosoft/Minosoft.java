@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Mappings;
 import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
+import de.bixilon.minosoft.game.datatypes.enchantments.Enchantments;
 import de.bixilon.minosoft.game.datatypes.entities.Entities;
 import de.bixilon.minosoft.game.datatypes.entities.items.Items;
 import de.bixilon.minosoft.logging.Log;
@@ -147,6 +148,7 @@ public class Minosoft {
                             case REGISTRIES:
                                 Items.load(mod, modJSON.getJSONObject("item").getJSONObject("entries"), version);
                                 Entities.load(mod, modJSON.getJSONObject("entity_type").getJSONObject("entries"), version);
+                                Enchantments.load(mod, modJSON.getJSONObject("enchantment").getJSONObject("entries"), version);
                                 break;
                             case BLOCKS:
                                 Blocks.load(mod, modJSON, version);
@@ -154,6 +156,7 @@ public class Minosoft {
                         }
                     }
                 }
+                Log.verbose(String.format("Loaded mappings for version %s (%s)", version, version.getReleaseName()));
             }
         } catch (IOException | JSONException e) {
             Log.fatal("Error occurred while loading version mapping: " + e.getLocalizedMessage());

@@ -124,7 +124,6 @@ public class Network {
 
 
                     // everything sent for now, waiting for data
-
                     if (inputStream.available() > 0) { // available seems not to work in CipherInputStream
                         int numRead = 0;
                         int length = 0;
