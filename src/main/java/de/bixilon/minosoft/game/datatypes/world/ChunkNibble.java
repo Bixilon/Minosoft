@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.world;
 
-import de.bixilon.minosoft.game.datatypes.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 
 import java.util.HashMap;
 

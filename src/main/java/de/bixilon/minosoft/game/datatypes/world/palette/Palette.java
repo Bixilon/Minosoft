@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.world.palette;
 
-import de.bixilon.minosoft.game.datatypes.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 public interface Palette {

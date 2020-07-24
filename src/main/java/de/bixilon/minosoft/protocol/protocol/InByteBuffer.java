@@ -15,13 +15,13 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.entities.Pose;
-import de.bixilon.minosoft.game.datatypes.entities.items.Items;
-import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Pose;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.items.Items;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Ingredient;
 import de.bixilon.minosoft.game.datatypes.particle.*;
-import de.bixilon.minosoft.game.datatypes.recipes.Ingredient;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.util.BitByte;

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;

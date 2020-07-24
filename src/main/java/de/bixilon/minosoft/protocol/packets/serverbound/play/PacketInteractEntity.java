@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.Entity;
-import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entity;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
 import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;

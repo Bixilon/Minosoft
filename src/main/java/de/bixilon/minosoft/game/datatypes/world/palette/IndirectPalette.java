@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.game.datatypes.world.palette;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.game.datatypes.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.blocks.Blocks;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 

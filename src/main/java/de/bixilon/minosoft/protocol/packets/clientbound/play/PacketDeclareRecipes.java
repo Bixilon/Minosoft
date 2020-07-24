@@ -15,9 +15,9 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.recipes.Ingredient;
-import de.bixilon.minosoft.game.datatypes.recipes.Recipe;
-import de.bixilon.minosoft.game.datatypes.recipes.RecipeTypes;
+import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Ingredient;
+import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipe;
+import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.RecipeTypes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;

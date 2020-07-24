@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.network;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
-import de.bixilon.minosoft.game.datatypes.recipes.Recipes;
+import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
