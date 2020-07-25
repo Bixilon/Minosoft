@@ -24,8 +24,8 @@ public class PacketCloseWindowReceiving implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                this.windowId = buffer.readByte();
-                return true;
+        this.windowId = buffer.readByte();
+        return true;
     }
 
     @Override

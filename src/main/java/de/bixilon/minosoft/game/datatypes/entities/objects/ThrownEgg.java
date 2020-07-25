@@ -24,8 +24,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import java.util.HashMap;
 
 public class ThrownEgg extends EntityObject implements ObjectInterface {
-    EggMetaData metaData;
     final int thrower;
+    EggMetaData metaData;
 
     public ThrownEgg(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);

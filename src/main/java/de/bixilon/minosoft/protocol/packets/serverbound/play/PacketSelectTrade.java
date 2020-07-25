@@ -31,7 +31,7 @@ public class PacketSelectTrade implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_SELECT_TRADE));
-                buffer.writeVarInt(id);
+        buffer.writeVarInt(id);
         return buffer;
     }
 

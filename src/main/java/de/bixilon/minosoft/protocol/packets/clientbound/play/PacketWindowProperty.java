@@ -26,10 +26,10 @@ public class PacketWindowProperty implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                this.windowId = buffer.readByte();
-                this.property = buffer.readShort();
-                this.value = buffer.readShort();
-                return true;
+        this.windowId = buffer.readByte();
+        this.property = buffer.readShort();
+        this.value = buffer.readShort();
+        return true;
     }
 
     @Override

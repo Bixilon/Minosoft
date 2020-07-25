@@ -28,10 +28,6 @@ public enum ConnectionState {
         this.id = id;
     }
 
-    public int getId() {
-        return this.id;
-    }
-
     public static ConnectionState byId(int id) {
         for (ConnectionState state : values()) {
             if (state.getId() == id) {
@@ -39,5 +35,9 @@ public enum ConnectionState {
             }
         }
         return null;
+    }
+
+    public int getId() {
+        return this.id;
     }
 }

@@ -25,8 +25,8 @@ public class PacketUnloadChunk implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                location = new ChunkLocation(buffer.readInt(), buffer.readInt());
-                return true;
+        location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+        return true;
     }
 
     @Override

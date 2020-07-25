@@ -31,7 +31,7 @@ public class PacketNameItem implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_NAME_ITEM));
-                buffer.writeString(name);
+        buffer.writeString(name);
         return buffer;
     }
 

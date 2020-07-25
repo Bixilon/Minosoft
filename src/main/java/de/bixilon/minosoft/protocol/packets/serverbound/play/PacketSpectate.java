@@ -32,7 +32,7 @@ public class PacketSpectate implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_SPECTATE));
-                buffer.writeUUID(entityUUID);
+        buffer.writeUUID(entityUUID);
         return buffer;
     }
 

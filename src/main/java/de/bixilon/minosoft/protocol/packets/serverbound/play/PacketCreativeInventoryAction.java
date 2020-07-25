@@ -34,8 +34,8 @@ public class PacketCreativeInventoryAction implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CREATIVE_INVENTORY_ACTION));
-                buffer.writeShort(slot);
-                buffer.writeSlot(clickedItem);
+        buffer.writeShort(slot);
+        buffer.writeSlot(clickedItem);
         return buffer;
     }
 

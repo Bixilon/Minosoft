@@ -31,7 +31,7 @@ public class PacketUseItem implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_USE_ITEM));
-                buffer.writeVarInt(hand.getId());
+        buffer.writeVarInt(hand.getId());
         return buffer;
     }
 

@@ -41,6 +41,7 @@ public class ChunkLocation {
         ChunkLocation that = (ChunkLocation) obj;
         return getX() == that.getX() && getZ() == that.getZ();
     }
+
     @Override
     public String toString() {
         return String.format("%d %d", getX(), getZ());

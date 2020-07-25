@@ -15,6 +15,7 @@ package de.bixilon.minosoft;
 
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
+
 public class ServerListPing {
     final JsonObject raw;
 

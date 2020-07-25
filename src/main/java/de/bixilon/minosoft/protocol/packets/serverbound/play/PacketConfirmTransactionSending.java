@@ -35,9 +35,9 @@ public class PacketConfirmTransactionSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_WINDOW_CONFIRMATION));
-                buffer.writeByte(windowId);
-                buffer.writeShort(actionNumber);
-                buffer.writeBoolean(accepted);
+        buffer.writeByte(windowId);
+        buffer.writeShort(actionNumber);
+        buffer.writeBoolean(accepted);
         return buffer;
     }
 

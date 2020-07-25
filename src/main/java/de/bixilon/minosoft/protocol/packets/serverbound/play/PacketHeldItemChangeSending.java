@@ -35,7 +35,7 @@ public class PacketHeldItemChangeSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_HELD_ITEM_CHANGE));
-                buffer.writeShort(slot);
+        buffer.writeShort(slot);
         return buffer;
     }
 

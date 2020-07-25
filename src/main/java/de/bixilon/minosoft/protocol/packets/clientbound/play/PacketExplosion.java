@@ -29,23 +29,23 @@ public class PacketExplosion implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                location = new Location(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-                radius = buffer.readFloat();
-                if (radius > 100.0F) {
-                    // maybe somebody tries to crash me?
-                    // Sorry, Maximilian Rosenmüller
-                    throw new IllegalArgumentException(String.format("Explosion to big %s > 100.0F", radius));
-                }
-                int recordCount = buffer.readInt();
-                records = new byte[recordCount][3];
-                for (int i = 0; i < recordCount; i++) {
-                    records[i] = buffer.readBytes(3);
-                }
+        location = new Location(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        radius = buffer.readFloat();
+        if (radius > 100.0F) {
+            // maybe somebody tries to crash me?
+            // Sorry, Maximilian Rosenmüller
+            throw new IllegalArgumentException(String.format("Explosion to big %s > 100.0F", radius));
+        }
+        int recordCount = buffer.readInt();
+        records = new byte[recordCount][3];
+        for (int i = 0; i < recordCount; i++) {
+            records[i] = buffer.readBytes(3);
+        }
 
-                motionX = buffer.readFloat();
-                motionY = buffer.readFloat();
-                motionZ = buffer.readFloat();
-                return true;
+        motionX = buffer.readFloat();
+        motionY = buffer.readFloat();
+        motionZ = buffer.readFloat();
+        return true;
     }
 
     @Override

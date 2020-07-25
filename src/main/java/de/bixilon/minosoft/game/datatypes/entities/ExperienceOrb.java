@@ -16,8 +16,8 @@ package de.bixilon.minosoft.game.datatypes.entities;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 
 public class ExperienceOrb extends Entity {
-    EntityMetaData metaData;
     final short count;
+    EntityMetaData metaData;
 
 
     public ExperienceOrb(int entityId, Location location, short count) {

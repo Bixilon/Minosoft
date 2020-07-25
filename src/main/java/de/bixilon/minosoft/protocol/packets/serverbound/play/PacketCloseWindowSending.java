@@ -31,7 +31,7 @@ public class PacketCloseWindowSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CLOSE_WINDOW));
-                buffer.writeByte(windowId);
+        buffer.writeByte(windowId);
         return buffer;
     }
 

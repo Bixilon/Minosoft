@@ -23,8 +23,8 @@ public class PacketHeldItemChangeReceiving implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                slot = buffer.readByte();
-                return true;
+        slot = buffer.readByte();
+        return true;
     }
 
     @Override

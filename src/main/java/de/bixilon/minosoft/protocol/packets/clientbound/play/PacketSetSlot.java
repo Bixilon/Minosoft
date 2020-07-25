@@ -27,10 +27,10 @@ public class PacketSetSlot implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                this.windowId = buffer.readByte();
-                this.slotId = buffer.readShort();
-                this.slot = buffer.readSlot();
-                return true;
+        this.windowId = buffer.readByte();
+        this.slotId = buffer.readShort();
+        this.slot = buffer.readSlot();
+        return true;
     }
 
     @Override

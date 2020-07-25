@@ -24,8 +24,8 @@ public class PacketUpdateViewPosition implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
-                return true;
+        location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
+        return true;
     }
 
     @Override

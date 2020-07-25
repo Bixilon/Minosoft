@@ -26,9 +26,9 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                action = ScoreboardAnimation.byId(buffer.readByte());
-                scoreName = buffer.readString();
-                return true;
+        action = ScoreboardAnimation.byId(buffer.readByte());
+        scoreName = buffer.readString();
+        return true;
     }
 
     @Override

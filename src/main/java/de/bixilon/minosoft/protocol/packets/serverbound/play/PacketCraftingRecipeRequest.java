@@ -32,8 +32,8 @@ public class PacketCraftingRecipeRequest implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CRAFT_RECIPE_REQUEST));
-                buffer.writeByte(windowId);
-                buffer.writeVarInt(recipeId);
+        buffer.writeByte(windowId);
+        buffer.writeVarInt(recipeId);
         return buffer;
     }
 

@@ -26,9 +26,9 @@ public class PacketNBTQueryResponse implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                transactionId = buffer.readVarInt();
-                tag = buffer.readNBT();
-                return true;
+        transactionId = buffer.readVarInt();
+        tag = buffer.readNBT();
+        return true;
     }
 
     @Override

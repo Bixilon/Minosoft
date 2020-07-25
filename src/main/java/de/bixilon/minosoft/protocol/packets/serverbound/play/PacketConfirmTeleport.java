@@ -31,7 +31,7 @@ public class PacketConfirmTeleport implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_TELEPORT_CONFIRM));
-                buffer.writeVarInt(teleportId);
+        buffer.writeVarInt(teleportId);
         return buffer;
     }
 

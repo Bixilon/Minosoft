@@ -25,12 +25,12 @@ public class PacketSetPassenger implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                this.vehicleId = buffer.readVarInt();
-                entityIds = new int[buffer.readVarInt()];
-                for (int i = 0; i < entityIds.length; i++) {
-                    entityIds[i] = buffer.readVarInt();
-                }
-                return true;
+        this.vehicleId = buffer.readVarInt();
+        entityIds = new int[buffer.readVarInt()];
+        for (int i = 0; i < entityIds.length; i++) {
+            entityIds[i] = buffer.readVarInt();
+        }
+        return true;
     }
 
     @Override

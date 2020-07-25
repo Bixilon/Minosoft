@@ -26,10 +26,10 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                if (buffer.readBoolean()) {
-                    tab = AdvancementTabs.byName(buffer.readString(), buffer.getVersion());
-                }
-                return true;
+        if (buffer.readBoolean()) {
+            tab = AdvancementTabs.byName(buffer.readString(), buffer.getVersion());
+        }
+        return true;
     }
 
     @Override

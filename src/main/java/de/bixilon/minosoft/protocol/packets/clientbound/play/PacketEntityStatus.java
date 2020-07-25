@@ -24,9 +24,9 @@ public class PacketEntityStatus implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                entityId = buffer.readInt();
-                status = Status.byId(buffer.readByte());
-                return true;
+        entityId = buffer.readInt();
+        status = Status.byId(buffer.readByte());
+        return true;
     }
 
     @Override

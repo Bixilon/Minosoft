@@ -30,14 +30,14 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_ABILITIES));
-                // only fly matters, everything else ignored
-                byte flags = 0;
-                if (flying) {
-                    flags |= 0b10;
-                }
-                buffer.writeByte(flags);
-                buffer.writeFloat(0.0F);
-                buffer.writeFloat(0.0F);
+        // only fly matters, everything else ignored
+        byte flags = 0;
+        if (flying) {
+            flags |= 0b10;
+        }
+        buffer.writeByte(flags);
+        buffer.writeFloat(0.0F);
+        buffer.writeFloat(0.0F);
         return buffer;
     }
 

@@ -64,22 +64,22 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_UPDATE_STRUCTURE_BLOCK));
-                buffer.writePosition(position);
-                buffer.writeVarInt(action.getId());
-                buffer.writeVarInt(mode.getId());
-                buffer.writeString(name);
-                buffer.writeByte(offsetX);
-                buffer.writeByte(offsetY);
-                buffer.writeByte(offsetZ);
-                buffer.writeByte(sizeX);
-                buffer.writeByte(sizeY);
-                buffer.writeByte(sizeZ);
-                buffer.writeVarInt(mirror.getId());
-                buffer.writeVarInt(rotation.getId());
-                buffer.writeString(metaData);
-                buffer.writeFloat(integrity);
-                buffer.writeVarLong(seed);
-                buffer.writeByte(flags);
+        buffer.writePosition(position);
+        buffer.writeVarInt(action.getId());
+        buffer.writeVarInt(mode.getId());
+        buffer.writeString(name);
+        buffer.writeByte(offsetX);
+        buffer.writeByte(offsetY);
+        buffer.writeByte(offsetZ);
+        buffer.writeByte(sizeX);
+        buffer.writeByte(sizeY);
+        buffer.writeByte(sizeZ);
+        buffer.writeVarInt(mirror.getId());
+        buffer.writeVarInt(rotation.getId());
+        buffer.writeString(metaData);
+        buffer.writeFloat(integrity);
+        buffer.writeVarLong(seed);
+        buffer.writeByte(flags);
         return buffer;
     }
 

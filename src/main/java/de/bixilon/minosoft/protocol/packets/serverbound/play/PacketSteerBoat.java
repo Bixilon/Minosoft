@@ -34,8 +34,8 @@ public class PacketSteerBoat implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_STEER_BOAT));
-                buffer.writeBoolean(leftPaddle);
-                buffer.writeBoolean(rightPaddle);
+        buffer.writeBoolean(leftPaddle);
+        buffer.writeBoolean(rightPaddle);
         return buffer;
     }
 

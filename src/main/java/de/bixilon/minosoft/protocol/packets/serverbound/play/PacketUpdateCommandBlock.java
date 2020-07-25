@@ -41,22 +41,22 @@ public class PacketUpdateCommandBlock implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_UPDATE_COMMAND_BLOCK));
-                buffer.writePosition(position);
-                buffer.writeString(command);
-                buffer.writeVarInt(type.getId());
+        buffer.writePosition(position);
+        buffer.writeString(command);
+        buffer.writeVarInt(type.getId());
 
-                byte flags = 0x00;
-                if (trackOutput) {
-                    flags |= 0x01;
-                }
-                if (isConditional) {
-                    flags |= 0x02;
-                }
-                if (isAutomatic) {
-                    flags |= 0x04;
-                }
+        byte flags = 0x00;
+        if (trackOutput) {
+            flags |= 0x01;
+        }
+        if (isConditional) {
+            flags |= 0x02;
+        }
+        if (isAutomatic) {
+            flags |= 0x04;
+        }
 
-                buffer.writeByte(flags);
+        buffer.writeByte(flags);
         return buffer;
     }
 

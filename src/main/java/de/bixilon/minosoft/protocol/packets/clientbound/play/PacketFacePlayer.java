@@ -28,14 +28,14 @@ public class PacketFacePlayer implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                face = PlayerFaces.byId(buffer.readVarInt());
-                location = buffer.readLocation();
-                if (buffer.readBoolean()) {
-                    // entity present
-                    entityId = buffer.readVarInt();
-                    entityFace = PlayerFaces.byId(buffer.readVarInt());
-                }
-                return true;
+        face = PlayerFaces.byId(buffer.readVarInt());
+        location = buffer.readLocation();
+        if (buffer.readBoolean()) {
+            // entity present
+            entityId = buffer.readVarInt();
+            entityFace = PlayerFaces.byId(buffer.readVarInt());
+        }
+        return true;
     }
 
     @Override

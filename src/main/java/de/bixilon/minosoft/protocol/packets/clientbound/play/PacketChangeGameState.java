@@ -28,9 +28,9 @@ public class PacketChangeGameState implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                reason = Reason.byId(buffer.readByte(), buffer.getVersion());
-                value = buffer.readFloat();
-                return true;
+        reason = Reason.byId(buffer.readByte(), buffer.getVersion());
+        value = buffer.readFloat();
+        return true;
     }
 
     @Override

@@ -23,8 +23,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import java.util.HashMap;
 
 public class FireCharge extends EntityObject implements ObjectInterface {
-    EntityMetaData metaData;
     final int thrower;
+    EntityMetaData metaData;
 
     public FireCharge(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);

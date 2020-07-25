@@ -38,38 +38,38 @@ public class PacketWorldBorder implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                action = WorldBorderAction.byId(buffer.readVarInt());
-                switch (action) {
-                    case SET_SIZE:
-                        radius = buffer.readDouble();
-                        break;
-                    case LERP_SIZE:
-                        oldRadius = buffer.readDouble();
-                        newRadius = buffer.readDouble();
-                        speed = buffer.readVarLong();
-                        break;
-                    case SET_CENTER:
-                        x = buffer.readDouble();
-                        z = buffer.readDouble();
-                        break;
-                    case INITIALIZE:
-                        x = buffer.readDouble();
-                        z = buffer.readDouble();
-                        oldRadius = buffer.readDouble();
-                        newRadius = buffer.readDouble();
-                        speed = buffer.readVarLong();
-                        portalBound = buffer.readVarInt();
-                        warningTime = buffer.readVarInt();
-                        warningBlocks = buffer.readVarInt();
-                        break;
-                    case SET_WARNING_TIME:
-                        warningTime = buffer.readVarInt();
-                        break;
-                    case SET_WARNING_BLOCKS:
-                        warningBlocks = buffer.readVarInt();
-                        break;
-                }
-                return true;
+        action = WorldBorderAction.byId(buffer.readVarInt());
+        switch (action) {
+            case SET_SIZE:
+                radius = buffer.readDouble();
+                break;
+            case LERP_SIZE:
+                oldRadius = buffer.readDouble();
+                newRadius = buffer.readDouble();
+                speed = buffer.readVarLong();
+                break;
+            case SET_CENTER:
+                x = buffer.readDouble();
+                z = buffer.readDouble();
+                break;
+            case INITIALIZE:
+                x = buffer.readDouble();
+                z = buffer.readDouble();
+                oldRadius = buffer.readDouble();
+                newRadius = buffer.readDouble();
+                speed = buffer.readVarLong();
+                portalBound = buffer.readVarInt();
+                warningTime = buffer.readVarInt();
+                warningBlocks = buffer.readVarInt();
+                break;
+            case SET_WARNING_TIME:
+                warningTime = buffer.readVarInt();
+                break;
+            case SET_WARNING_BLOCKS:
+                warningBlocks = buffer.readVarInt();
+                break;
+        }
+        return true;
     }
 
     @Override

@@ -39,11 +39,11 @@ public class PacketVehicleMove implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_VEHICLE_MOVE));
-                buffer.writeDouble(x);
-                buffer.writeDouble(y);
-                buffer.writeDouble(z);
-                buffer.writeFloat(yaw);
-                buffer.writeFloat(pitch);
+        buffer.writeDouble(x);
+        buffer.writeDouble(y);
+        buffer.writeDouble(z);
+        buffer.writeFloat(yaw);
+        buffer.writeFloat(pitch);
         return buffer;
     }
 

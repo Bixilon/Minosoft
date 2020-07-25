@@ -26,10 +26,10 @@ public class PacketConfirmTransactionReceiving implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-                this.windowId = buffer.readByte();
-                this.actionNumber = buffer.readShort();
-                this.accepted = buffer.readBoolean();
-                return true;
+        this.windowId = buffer.readByte();
+        this.actionNumber = buffer.readShort();
+        this.accepted = buffer.readBoolean();
+        return true;
     }
 
     @Override
