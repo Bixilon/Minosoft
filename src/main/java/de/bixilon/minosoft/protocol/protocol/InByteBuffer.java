@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
@@ -26,7 +28,6 @@ import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.Util;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -172,8 +173,8 @@ public class InByteBuffer {
         return readByte() / 32.0D;
     }
 
-    public JSONObject readJSON() {
-        return new JSONObject(readString());
+    public JsonObject readJSON() {
+        return JsonParser.parseString(readString()).getAsJsonObject();
     }
 
     public BlockPosition readPosition() {

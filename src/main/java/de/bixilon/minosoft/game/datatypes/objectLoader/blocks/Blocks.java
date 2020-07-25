@@ -13,13 +13,12 @@ package de.bixilon.minosoft.game.datatypes.objectLoader.blocks;
  */
 
 import com.google.common.collect.HashBiMap;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class Blocks {
     public static Block nullBlock;
@@ -454,36 +453,34 @@ public class Blocks {
         return blockMap.get(version).get(protocolId);
     }
 
-    public static void load(String mod, JSONObject json, ProtocolVersion version) {
+    public static void load(String mod, JsonObject json, ProtocolVersion version) {
         HashBiMap<Integer, Block> versionMapping = HashBiMap.create();
-        for (Iterator<String> identifiers = json.keys(); identifiers.hasNext(); ) {
-            String identifierName = identifiers.next();
-            JSONObject identifierJSON = json.getJSONObject(identifierName);
-            JSONArray statesArray = identifierJSON.getJSONArray("states");
-            for (int i = 0; i < statesArray.length(); i++) {
-                JSONObject statesJSON = statesArray.getJSONObject(i);
+        for (String identifierName : json.keySet()) {
+            JsonObject identifierJSON = json.getAsJsonObject(identifierName);
+            JsonArray statesArray = identifierJSON.getAsJsonArray("states");
+            for (int i = 0; i < statesArray.size(); i++) {
+                JsonObject statesJSON = statesArray.get(i).getAsJsonObject();
                 if (statesJSON.has("properties")) {
                     // properties are optional
-                    JSONObject propertiesJSON = statesJSON.getJSONObject("properties");
+                    JsonObject propertiesJSON = statesJSON.getAsJsonObject("properties");
                     BlockRotation rotation = BlockRotation.NONE;
                     if (propertiesJSON.has("facing")) {
-                        rotation = rotationMapping.get(propertiesJSON.getString("facing"));
+                        rotation = rotationMapping.get(propertiesJSON.get("facing").getAsString());
                         propertiesJSON.remove("facing");
                     } else if (propertiesJSON.has("rotation")) {
-                        rotation = rotationMapping.get(propertiesJSON.getString("rotation"));
+                        rotation = rotationMapping.get(propertiesJSON.get("rotation").getAsString());
                         propertiesJSON.remove("rotation");
                     }
-                    BlockProperties[] properties = new BlockProperties[propertiesJSON.length()];
+                    BlockProperties[] properties = new BlockProperties[propertiesJSON.size()];
                     int ii = 0;
-                    for (Iterator<String> it = propertiesJSON.keys(); it.hasNext(); ) {
-                        String propertyName = it.next();
+                    for (String propertyName : propertiesJSON.keySet()) {
                         if (propertiesMapping.get(propertyName) == null) {
                             throw new RuntimeException(String.format("Unknown block property: %s (identifier=%s)", propertyName, identifierName));
                         }
-                        if (propertiesMapping.get(propertyName).get(propertiesJSON.getString(propertyName)) == null) {
-                            throw new RuntimeException(String.format("Unknown block property: %s -> %s (identifier=%s)", propertyName, propertiesJSON.getString(propertyName), identifierName));
+                        if (propertiesMapping.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()) == null) {
+                            throw new RuntimeException(String.format("Unknown block property: %s -> %s (identifier=%s)", propertyName, propertiesJSON.get(propertyName).getAsString(), identifierName));
                         }
-                        properties[ii] = propertiesMapping.get(propertyName).get(propertiesJSON.getString(propertyName));
+                        properties[ii] = propertiesMapping.get(propertyName).get(propertiesJSON.get(propertyName).getAsString());
                         ii++;
                     }
 
@@ -528,13 +525,13 @@ public class Blocks {
         blockMap.put(version, versionMapping);
     }
 
-    private static int getBlockId(JSONObject json, ProtocolVersion version) {
-        int blockId = json.getInt("id");
+    private static int getBlockId(JsonObject json, ProtocolVersion version) {
+        int blockId = json.get("id").getAsInt();
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
             // old format (with metadata)
             blockId <<= 4;
             if (json.has("meta")) {
-                blockId |= json.getInt("meta");
+                blockId |= json.get("meta").getAsByte();
             }
         }
         return blockId;

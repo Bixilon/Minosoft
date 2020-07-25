@@ -13,33 +13,38 @@
 
 package de.bixilon.minosoft.mojang.api;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.HTTP;
-import org.json.JSONObject;
 
 import java.net.http.HttpResponse;
 
 public class MojangAuthentication {
 
     public static MojangAccount login(String clientToken, String username, String password) {
-        JSONObject payload = new JSONObject();
-        payload.put("agent", new JSONObject().put("name", "Minecraft").put("version", 1));
-        payload.put("username", username);
-        payload.put("password", password);
-        payload.put("clientToken", clientToken);
-        payload.put("requestUser", true);
+        JsonObject agent = new JsonObject();
+        agent.addProperty("name", "Minecraft");
+        agent.addProperty("version", 1);
+
+        JsonObject payload = new JsonObject();
+        payload.add("agent", agent);
+        payload.addProperty("username", username);
+        payload.addProperty("password", password);
+        payload.addProperty("clientToken", clientToken);
+        payload.addProperty("requestUser", true);
 
         HttpResponse<String> response = HTTP.postJson(MojangURLs.LOGIN.getUrl(), payload);
         if (response == null) {
             Log.mojang(String.format("Failed to login with username %s", username));
             return null;
         }
-        JSONObject jsonResponse = new JSONObject(response.body());
+        JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
         if (response.statusCode() != 200) {
-            Log.mojang(String.format("Failed to login with error code %d: %s", response.statusCode(), jsonResponse.getString("errorMessage")));
+            Log.mojang(String.format("Failed to login with error code %d: %s", response.statusCode(), jsonResponse.get("errorMessage").getAsString()));
             return null;
         }
         // now it is okay
@@ -55,10 +60,10 @@ public class MojangAuthentication {
             return;
         }
 
-        JSONObject payload = new JSONObject();
-        payload.put("accessToken", account.getAccessToken());
-        payload.put("selectedProfile", account.getUUID().toString().replace("-", ""));
-        payload.put("serverId", serverId);
+        JsonObject payload = new JsonObject();
+        payload.addProperty("accessToken", account.getAccessToken());
+        payload.addProperty("selectedProfile", account.getUUID().toString().replace("-", ""));
+        payload.addProperty("serverId", serverId);
 
         HttpResponse<String> response = HTTP.postJson(MojangURLs.JOIN.toString(), payload);
 
@@ -67,8 +72,8 @@ public class MojangAuthentication {
             return;
         }
         if (response.statusCode() != 204) {
-            JSONObject jsonResponse = new JSONObject(response.body());
-            Log.mojang(String.format("Failed to join server with error code %d: %s", response.statusCode(), jsonResponse.has("errorMessage") ? jsonResponse.getString("errorMessage") : "null"));
+            JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
+            Log.mojang(String.format("Failed to join server with error code %d: %s", response.statusCode(), jsonResponse.has("errorMessage") ? jsonResponse.get("errorMessage").getAsString() : "null"));
             return;
         }
         // joined
@@ -79,9 +84,9 @@ public class MojangAuthentication {
         if (Config.skipAuthentication) {
             return clientToken;
         }
-        JSONObject payload = new JSONObject();
-        payload.put("accessToken", accessToken);
-        payload.put("clientToken", clientToken);
+        JsonObject payload = new JsonObject();
+        payload.addProperty("accessToken", accessToken);
+        payload.addProperty("clientToken", clientToken);
 
         HttpResponse<String> response;
         try {
@@ -94,13 +99,13 @@ public class MojangAuthentication {
             Log.mojang("Failed to refresh session");
             return null;
         }
-        JSONObject jsonResponse = new JSONObject(response.body());
+        JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
         if (response.statusCode() != 200) {
-            Log.mojang(String.format("Failed to refresh session with error code %d: %s", response.statusCode(), jsonResponse.getString("errorMessage")));
+            Log.mojang(String.format("Failed to refresh session with error code %d: %s", response.statusCode(), jsonResponse.get("errorMessage").getAsString()));
             return null;
         }
         // now it is okay
-        return jsonResponse.getString("accessToken");
+        return jsonResponse.get("accessToken").getAsString();
     }
 
     public static String refresh(String accessToken) {

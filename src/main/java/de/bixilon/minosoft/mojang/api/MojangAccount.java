@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.mojang.api;
 
+import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.util.Util;
-import org.json.JSONObject;
 
 import java.util.UUID;
 
@@ -30,15 +30,15 @@ public class MojangAccount {
 
     final String mojangUserName;
 
-    public MojangAccount(JSONObject json) {
-        this.accessToken = json.getString("accessToken");
-        JSONObject profile = json.getJSONObject("selectedProfile");
-        this.uuid = Util.formatUUID(profile.getString("id"));
-        this.playerName = profile.getString("name");
+    public MojangAccount(JsonObject json) {
+        this.accessToken = json.get("accessToken").getAsString();
+        JsonObject profile = json.get("selectedProfile").getAsJsonObject();
+        this.uuid = Util.formatUUID(profile.get("id").getAsString());
+        this.playerName = profile.get("name").getAsString();
 
-        JSONObject mojang = json.getJSONObject("user");
-        this.userId = mojang.getString("id");
-        this.mojangUserName = mojang.getString("username");
+        JsonObject mojang = json.get("user").getAsJsonObject();
+        this.userId = mojang.get("id").getAsString();
+        this.mojangUserName = mojang.get("username").getAsString();
     }
 
     public MojangAccount(String accessToken, String userId, UUID uuid, String playerName, String mojangUserName) {

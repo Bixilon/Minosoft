@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.game.datatypes.objectLoader.statistics;
 
 import com.google.common.collect.HashBiMap;
+import com.google.gson.JsonObject;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class Statistics {
 
@@ -41,17 +40,16 @@ public class Statistics {
         return statisticsIdentifierMap.get(version).get(identifier);
     }
 
-    public static void load(String mod, JSONObject json, ProtocolVersion version) {
+    public static void load(String mod, JsonObject json, ProtocolVersion version) {
         HashBiMap<Integer, Statistic> versionIdMapping = HashBiMap.create();
         HashBiMap<String, Statistic> versionIdentifierMapping = HashBiMap.create();
-        for (Iterator<String> identifiers = json.keys(); identifiers.hasNext(); ) {
-            String identifierName = identifiers.next();
+        for (String identifierName : json.keySet()) {
             Statistic statistic = new Statistic(mod, identifierName);
             if (statisticList.contains(statistic)) {
                 statistic = statisticList.get(statisticList.indexOf(statistic));
             }
-            if (json.getJSONObject(identifierName).has("id")) {
-                versionIdMapping.put(json.getJSONObject(identifierName).getInt("id"), statistic);
+            if (json.getAsJsonObject(identifierName).has("id")) {
+                versionIdMapping.put(json.getAsJsonObject(identifierName).get("id").getAsInt(), statistic);
             } else {
                 versionIdentifierMapping.put(identifierName, statistic);
             }

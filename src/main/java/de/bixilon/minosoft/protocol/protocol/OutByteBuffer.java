@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
-import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -148,7 +148,7 @@ public class OutByteBuffer {
         return bytes;
     }
 
-    public void writeJSON(JSONObject j) {
+    public void writeJSON(JsonObject j) {
         writeString(j.toString());
     }
 

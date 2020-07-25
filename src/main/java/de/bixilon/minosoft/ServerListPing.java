@@ -13,46 +13,45 @@
 
 package de.bixilon.minosoft;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class ServerListPing {
-    final JSONObject raw;
+    final JsonObject raw;
 
-    public ServerListPing(JSONObject json) {
+    public ServerListPing(JsonObject json) {
         this.raw = json;
     }
 
     public int getProtocolNumber() {
-        return raw.getJSONObject("version").getInt("protocol");
+        return raw.getAsJsonObject("version").get("protocol").getAsInt();
     }
 
     public String getServerBrand() {
-        return raw.getJSONObject("version").getString("name");
+        return raw.getAsJsonObject("version").get("name").getAsString();
     }
 
     public int getPlayerOnline() {
-        return raw.getJSONObject("players").getInt("online");
+        return raw.getAsJsonObject("players").get("online").getAsInt();
     }
 
     public int getMaxPlayers() {
-        return raw.getJSONObject("players").getInt("max");
+        return raw.getAsJsonObject("players").get("max").getAsInt();
     }
 
     public String getBase64EncodedFavicon() {
-        return raw.getString("favicon");
+        return raw.get("favicon").getAsString();
     }
 
     public TextComponent getMotd() {
         try {
-            return new TextComponent(raw.getJSONObject("description"));
-        } catch (JSONException ignored) {
+            return new TextComponent(raw.getAsJsonObject("description"));
+        } catch (JsonParseException ignored) {
         }
-        return new TextComponent(raw.getString("description"));
+        return new TextComponent(raw.get("description").getAsString());
     }
 
-    public JSONObject getRaw() {
+    public JsonObject getRaw() {
         return this.raw;
     }
 }
