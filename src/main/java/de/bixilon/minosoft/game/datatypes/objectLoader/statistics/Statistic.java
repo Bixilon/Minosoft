@@ -36,9 +36,17 @@ public class Statistic {
     }
 
     @Override
+    public int hashCode() {
+        return mod.hashCode() * identifier.hashCode();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) {
             return true;
+        }
+        if (hashCode() != obj.hashCode()) {
+            return false;
         }
         return toString().equals(obj.toString());
     }

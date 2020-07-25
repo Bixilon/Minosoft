@@ -30,7 +30,7 @@ public class TextComponent {
         }
         try {
             this.json = JsonParser.parseString(raw).getAsJsonObject();
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             // not a text component, is a legacy string
             this.json = new JsonObject();
             JsonArray extra = new JsonArray();
