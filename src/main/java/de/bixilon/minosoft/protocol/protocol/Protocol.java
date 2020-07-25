@@ -17,6 +17,7 @@ import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginPluginRequest;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
@@ -34,6 +35,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.LOGIN_LOGIN_SUCCESS, PacketLoginSuccess.class);
         packetClassMapping.put(Packets.Clientbound.LOGIN_DISCONNECT, PacketLoginDisconnect.class);
         packetClassMapping.put(Packets.Clientbound.LOGIN_SET_COMPRESSION, PacketLoginSetCompression.class);
+        packetClassMapping.put(Packets.Clientbound.LOGIN_PLUGIN_REQUEST, PacketLoginPluginRequest.class);
 
         packetClassMapping.put(Packets.Clientbound.PLAY_JOIN_GAME, PacketJoinGame.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_INFO, PacketPlayerInfo.class);
