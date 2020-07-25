@@ -14,7 +14,6 @@
 package de.bixilon.minosoft;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 public class ServerListPing {
     final JsonObject raw;
@@ -46,7 +45,7 @@ public class ServerListPing {
     public TextComponent getMotd() {
         try {
             return new TextComponent(raw.getAsJsonObject("description"));
-        } catch (JsonParseException ignored) {
+        } catch (Exception ignored) {
         }
         return new TextComponent(raw.get("description").getAsString());
     }

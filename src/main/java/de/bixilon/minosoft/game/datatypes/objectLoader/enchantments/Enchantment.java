@@ -36,9 +36,17 @@ public class Enchantment {
     }
 
     @Override
+    public int hashCode() {
+        return mod.hashCode() * identifier.hashCode();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) {
             return true;
+        }
+        if (hashCode() != obj.hashCode()) {
+            return false;
         }
         Enchantment their = (Enchantment) obj;
         return getIdentifier().equals(their.getIdentifier()) && getMod().equals(their.getMod());
