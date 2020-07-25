@@ -91,4 +91,18 @@ public class Block {
         }
         return String.format("%s:%s%s", getMod(), getIdentifier(), out);
     }
+
+    @Override
+    public int hashCode() {
+        return mod.hashCode() * identifier.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        Block their = (Block) obj;
+        return getMod().equals(their.getMod()) && getIdentifier().equals(their.getIdentifier()) && getRotation() == their.getRotation() && Blocks.propertiesEquals(getProperties(), their.getProperties());
+    }
 }

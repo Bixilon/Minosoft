@@ -66,6 +66,7 @@ public class Minosoft {
         long mappingsStart = System.currentTimeMillis();
         loadMappings();
         Log.info(String.format("Mappings loaded in a total of %sms", (System.currentTimeMillis() - mappingsStart)));
+        System.exit(0);
 
         checkClientToken();
 

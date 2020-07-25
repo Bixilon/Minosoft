@@ -125,7 +125,7 @@ public class Blocks {
         propertyHashMap.put("up", BlockProperties.EAST_UP);
         propertyHashMap.put("side", BlockProperties.EAST_SIDE);
         propertyHashMap.put("false", BlockProperties.NOT_EAST);
-        propertyHashMap.put("none", BlockProperties.NONE);
+        propertyHashMap.put("none", BlockProperties.EAST_NONE);
         propertiesMapping.put("east", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
@@ -133,7 +133,7 @@ public class Blocks {
         propertyHashMap.put("up", BlockProperties.WEST_UP);
         propertyHashMap.put("side", BlockProperties.WEST_SIDE);
         propertyHashMap.put("false", BlockProperties.NOT_WEST);
-        propertyHashMap.put("none", BlockProperties.NONE);
+        propertyHashMap.put("none", BlockProperties.WEST_NONE);
         propertiesMapping.put("west", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
@@ -141,7 +141,7 @@ public class Blocks {
         propertyHashMap.put("up", BlockProperties.SOUTH_UP);
         propertyHashMap.put("side", BlockProperties.SOUTH_SIDE);
         propertyHashMap.put("false", BlockProperties.NOT_SOUTH);
-        propertyHashMap.put("none", BlockProperties.NONE);
+        propertyHashMap.put("none", BlockProperties.SOUTH_NONE);
         propertiesMapping.put("south", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
@@ -149,7 +149,7 @@ public class Blocks {
         propertyHashMap.put("up", BlockProperties.NORTH_UP);
         propertyHashMap.put("side", BlockProperties.NORTH_SIDE);
         propertyHashMap.put("false", BlockProperties.NOT_NORTH);
-        propertyHashMap.put("none", BlockProperties.NONE);
+        propertyHashMap.put("none", BlockProperties.NORTH_NONE);
         propertiesMapping.put("north", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
@@ -487,7 +487,10 @@ public class Blocks {
                         ii++;
                     }
 
-                    Block block = getBlock(mod, identifierName, properties, rotation);
+                    Block block = new Block(mod, identifierName, properties, rotation);
+                    if (blockList.contains(block)) {
+                        block = blockList.get(blockList.indexOf(block));
+                    }
 
                     if (block == null) {
                         // does not exist. create
@@ -505,7 +508,10 @@ public class Blocks {
                     versionMapping.put(blockId, block);
                 } else {
                     // no properties, directly add block
-                    Block block = getBlock(mod, identifierName);
+                    Block block = new Block(mod, identifierName);
+                    if (blockList.contains(block)) {
+                        block = blockList.get(blockList.indexOf(block));
+                    }
 
                     if (block == null) {
                         // does not exist. create
@@ -532,24 +538,6 @@ public class Blocks {
             }
         }
         return blockId;
-    }
-
-    public static Block getBlock(String mod, String identifier) {
-        for (Block block : blockList) {
-            if (block.getMod().equals(mod) && block.getIdentifier().equals(identifier)) {
-                return block;
-            }
-        }
-        return null;
-    }
-
-    public static Block getBlock(String mod, String identifier, BlockProperties[] properties, BlockRotation rotation) {
-        for (Block block : blockList) {
-            if (block.getMod().equals(mod) && block.getIdentifier().equals(identifier) && block.getRotation() == rotation && propertiesEquals(block.getProperties(), properties)) {
-                return block;
-            }
-        }
-        return null;
     }
 
     public static boolean propertiesEquals(BlockProperties[] one, BlockProperties[] two) {
