@@ -60,7 +60,12 @@ public class PacketHandler {
             if (version == -1) {
                 connection.setVersion(ProtocolVersion.byId(pkg.getResponse().getProtocolNumber()));
             } else {
-                connection.setVersion(ProtocolVersion.byId(version));
+                ProtocolVersion protocolVersion = ProtocolVersion.byId(version);
+                if (protocolVersion == null) {
+                    Log.fatal(String.format("In the config (debug.version) is a invalid version provided (version=%d). Exiting...", version));
+                    System.exit(1);
+                }
+                connection.setVersion(protocolVersion);
             }
         }
         Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getColoredMessage()));
