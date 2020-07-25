@@ -34,14 +34,14 @@ import de.bixilon.minosoft.util.Util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class Minosoft {
     static Configuration config;
-    static List<MojangAccount> accountList;
+    static ArrayList<MojangAccount> accountList;
 
     public static void main(String[] args) {
         // init log thread

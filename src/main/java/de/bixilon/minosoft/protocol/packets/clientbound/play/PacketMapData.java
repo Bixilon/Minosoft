@@ -22,7 +22,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class PacketMapData implements ClientboundPacket {
     int mapId;
@@ -35,7 +34,7 @@ public class PacketMapData implements ClientboundPacket {
     byte[] colors;
 
     // players
-    List<MapPinSet> pins;
+    ArrayList<MapPinSet> pins;
 
     boolean locked = false;
     //scale
@@ -169,7 +168,7 @@ public class PacketMapData implements ClientboundPacket {
     }
 
 
-    public List<MapPinSet> getPins() {
+    public ArrayList<MapPinSet> getPins() {
         return pins;
     }
 

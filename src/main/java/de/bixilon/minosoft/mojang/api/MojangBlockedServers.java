@@ -25,7 +25,7 @@ import java.util.List;
 public class MojangBlockedServers {
 
 
-    public static List<String> getBlockedServers() {
+    public static ArrayList<String> getBlockedServers() {
         HttpResponse<String> response = HTTP.get(MojangURLs.BLOCKED_SERVERS.getUrl());
         if (response == null) {
             Log.mojang("Failed to fetch blocked servers");

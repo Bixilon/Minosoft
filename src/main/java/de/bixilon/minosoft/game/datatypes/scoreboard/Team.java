@@ -21,7 +21,7 @@ import java.util.List;
 
 public class Team {
     final String name;
-    final List<String> players;
+    final ArrayList<String> players;
     TextComponent displayName;
     TextComponent prefix;
     TextComponent suffix;
@@ -86,7 +86,7 @@ public class Team {
         players.remove(name);
     }
 
-    public List<String> getPlayers() {
+    public ArrayList<String> getPlayers() {
         return players;
     }
 }

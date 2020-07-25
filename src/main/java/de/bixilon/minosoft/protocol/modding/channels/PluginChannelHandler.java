@@ -22,11 +22,10 @@ import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class PluginChannelHandler {
-    final HashMap<String, List<ChannelHandler>> channels = new HashMap<>();
-    final HashMap<String, List<LoginChannelHandler>> loginChannels = new HashMap<>();
+    final HashMap<String, ArrayList<ChannelHandler>> channels = new HashMap<>();
+    final HashMap<String, ArrayList<LoginChannelHandler>> loginChannels = new HashMap<>();
     final ArrayList<String> registeredClientChannels = new ArrayList<>();
     final ArrayList<String> registeredServerChannels = new ArrayList<>();
     final Connection connection;
@@ -38,7 +37,7 @@ public class PluginChannelHandler {
     public void registerClientHandler(String name, ChannelHandler handler) {
         if (channels.get(name) == null) {
             // no channel with that name was registered yet
-            List<ChannelHandler> handlerList = new ArrayList<>();
+            ArrayList<ChannelHandler> handlerList = new ArrayList<>();
             handlerList.add(handler);
             channels.put(name, handlerList);
             return;
@@ -51,7 +50,7 @@ public class PluginChannelHandler {
     public void registerLoginClientHandler(String name, LoginChannelHandler handler) {
         if (loginChannels.get(name) == null) {
             // no channel with that name was registered yet
-            List<LoginChannelHandler> handlerList = new ArrayList<>();
+            ArrayList<LoginChannelHandler> handlerList = new ArrayList<>();
             handlerList.add(handler);
             loginChannels.put(name, handlerList);
             return;

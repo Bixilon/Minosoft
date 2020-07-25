@@ -27,7 +27,6 @@ import de.bixilon.minosoft.util.BitByte;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class PacketAdvancements implements ClientboundPacket {
     boolean reset;
@@ -68,12 +67,12 @@ public class PacketAdvancements implements ClientboundPacket {
                         display = new AdvancementDisplay(title, description, icon, frameType, flags, backgroundTexture, x, y);
                     }
                     int criteriaCount = buffer.readVarInt();
-                    List<String> criteria = new ArrayList<>();
+                    ArrayList<String> criteria = new ArrayList<>();
                     for (int ii = 0; ii < criteriaCount; ii++) {
                         criteria.add(buffer.readString());
                     }
                     int requirementsCount = buffer.readVarInt();
-                    List<String[]> requirements = new ArrayList<>();
+                    ArrayList<String[]> requirements = new ArrayList<>();
                     for (int ii = 0; ii < requirementsCount; ii++) {
                         String[] requirement = new String[buffer.readVarInt()];
                         for (int iii = 0; iii < requirement.length; iii++) {

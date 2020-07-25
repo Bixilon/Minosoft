@@ -19,7 +19,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TextComponent {
     JsonObject json;
@@ -39,7 +38,7 @@ public class TextComponent {
             String[] paragraphSplit = raw.split("§");
 
             StringBuilder message = new StringBuilder();
-            List<ChatAttributes> attributesList = new ArrayList<>();
+            ArrayList<ChatAttributes> attributesList = new ArrayList<>();
             ChatAttributes color = ChatAttributes.WHITE;
             boolean first = true;
             for (String paragraph : paragraphSplit) {
@@ -109,7 +108,7 @@ public class TextComponent {
         this.json = json;
     }
 
-    static JsonObject getExtraByAttributes(String message, ChatAttributes color, List<ChatAttributes> formatting) {
+    static JsonObject getExtraByAttributes(String message, ChatAttributes color, ArrayList<ChatAttributes> formatting) {
         JsonObject ret = new JsonObject();
         ret.addProperty("text", message);
         if (color != null) {

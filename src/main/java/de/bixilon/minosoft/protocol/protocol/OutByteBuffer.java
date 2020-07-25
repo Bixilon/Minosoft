@@ -22,22 +22,21 @@ import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class OutByteBuffer {
-    final List<Byte> bytes = new ArrayList<>();
+    final ArrayList<Byte> bytes = new ArrayList<>();
     final ProtocolVersion version;
 
     public OutByteBuffer(ProtocolVersion version) {
         this.version = version;
     }
 
-    public static void writeByte(byte b, List<Byte> write) {
+    public static void writeByte(byte b, ArrayList<Byte> write) {
         write.add(b);
     }
 
-    public static void writeVarInt(int value, List<Byte> write) {
+    public static void writeVarInt(int value, ArrayList<Byte> write) {
         // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
         do {
             byte temp = (byte) (value & 0b01111111);
@@ -144,7 +143,7 @@ public class OutByteBuffer {
         writeInt((int) (d * 32.0D));
     }
 
-    public List<Byte> getBytes() {
+    public ArrayList<Byte> getBytes() {
         return bytes;
     }
 

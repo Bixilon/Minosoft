@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class OutPacketBuffer extends OutByteBuffer {
     final int command;
@@ -30,8 +29,8 @@ public class OutPacketBuffer extends OutByteBuffer {
 
     @Override
     public byte[] getOutBytes() {
-        List<Byte> before = getBytes();
-        List<Byte> after = new ArrayList<>();
+        ArrayList<Byte> before = getBytes();
+        ArrayList<Byte> after = new ArrayList<>();
         writeVarInt(getCommand(), after); // second: command
         after.addAll(before); // rest ist raw data
 

@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.game.datatypes.player.advancements;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Advancement {
     final String parentName;
     final AdvancementDisplay display;
-    final List<String> criteria;
-    final List<String[]> requirements;
+    final ArrayList<String> criteria;
+    final ArrayList<String[]> requirements;
 
-    public Advancement(String parentName, AdvancementDisplay display, List<String> criteria, List<String[]> requirements) {
+    public Advancement(String parentName, AdvancementDisplay display, ArrayList<String> criteria, ArrayList<String[]> requirements) {
         this.parentName = parentName;
         this.display = display;
         this.criteria = criteria;
@@ -36,11 +36,11 @@ public class Advancement {
         return display;
     }
 
-    public List<String> getCriteria() {
+    public ArrayList<String> getCriteria() {
         return criteria;
     }
 
-    public List<String[]> getRequirements() {
+    public ArrayList<String[]> getRequirements() {
         return requirements;
     }
 }

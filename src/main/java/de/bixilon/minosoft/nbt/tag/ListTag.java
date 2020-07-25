@@ -17,13 +17,12 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ListTag implements NBTTag {
     final TagTypes type;
-    final List<NBTTag> list;
+    final ArrayList<NBTTag> list;
 
-    public ListTag(TagTypes type, List<NBTTag> list) {
+    public ListTag(TagTypes type, ArrayList<NBTTag> list) {
         this.type = type;
         this.list = list;
     }
@@ -84,7 +83,7 @@ public class ListTag implements NBTTag {
         }
     }
 
-    public List<NBTTag> getValue() {
+    public ArrayList<NBTTag> getValue() {
         return list;
     }
 
