@@ -66,7 +66,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_MULTIBLOCK_CHANGE, PacketMultiBlockChange.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_RESPAWN, PacketRespawn.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_OPEN_SIGN_EDITOR, PacketOpenSignEditor.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_OBJECT, PacketSpawnObject.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_ENTITY, PacketSpawnObject.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_EXPERIENCE_ORB, PacketSpawnExperienceOrb.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_WEATHER_ENTITY, PacketSpawnWeatherEntity.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_CHUNK_DATA, PacketChunkData.class);
@@ -170,10 +170,22 @@ public abstract class Protocol implements ProtocolInterface {
     }
 
     protected void registerPacket(Packets.Serverbound packet, int id) {
+        if (serverboundPacketMapping.get(packet.getState()).containsKey(packet)) {
+            throw new IllegalArgumentException(String.format("%s is already registered!", packet));
+        }
+        if (serverboundPacketMapping.get(packet.getState()).containsValue(id)) {
+            throw new IllegalArgumentException(String.format("%x is already registered!", id));
+        }
         serverboundPacketMapping.get(packet.getState()).put(packet, id);
     }
 
     protected void registerPacket(Packets.Clientbound packet, int id) {
+        if (clientboundPacketMapping.get(packet.getState()).containsKey(packet)) {
+            throw new IllegalArgumentException(String.format("%s is already registered!", packet));
+        }
+        if (clientboundPacketMapping.get(packet.getState()).containsValue(id)) {
+            throw new IllegalArgumentException(String.format("%x is already registered!", id));
+        }
         clientboundPacketMapping.get(packet.getState()).put(packet, id);
     }
 

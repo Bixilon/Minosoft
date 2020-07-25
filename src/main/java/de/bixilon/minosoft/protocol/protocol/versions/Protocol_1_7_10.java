@@ -20,8 +20,6 @@ import de.bixilon.minosoft.protocol.protocol.Protocol;
 public class Protocol_1_7_10 extends Protocol {
     // https://wiki.vg/index.php?title=Protocol&oldid=6003
     public Protocol_1_7_10() {
-        super();
-
         // play
         registerPacket(Packets.Serverbound.PLAY_KEEP_ALIVE, 0x00);
         registerPacket(Packets.Serverbound.PLAY_CHAT_MESSAGE, 0x01);
@@ -63,7 +61,7 @@ public class Protocol_1_7_10 extends Protocol {
         registerPacket(Packets.Clientbound.PLAY_ENTITY_ANIMATION, 0x0B);
         registerPacket(Packets.Clientbound.PLAY_SPAWN_PLAYER, 0x0C);
         registerPacket(Packets.Clientbound.PLAY_COLLECT_ITEM, 0x0D);
-        registerPacket(Packets.Clientbound.PLAY_SPAWN_OBJECT, 0x0E);
+        registerPacket(Packets.Clientbound.PLAY_SPAWN_ENTITY, 0x0E);
         registerPacket(Packets.Clientbound.PLAY_SPAWN_MOB, 0x0F);
         registerPacket(Packets.Clientbound.PLAY_SPAWN_PAINTING, 0x10);
         registerPacket(Packets.Clientbound.PLAY_SPAWN_EXPERIENCE_ORB, 0x11);
