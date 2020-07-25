@@ -82,7 +82,7 @@ public class ChunkUtil {
 
                                     // ToDo light, biome
                                     Block block = Blocks.getBlockByLegacy(singeBlockId, singleMeta);
-                                    if (block == Blocks.nullBlock) {
+                                    if (block.equals(Blocks.nullBlock)) {
                                         arrayPos++;
                                         continue;
                                     }
@@ -130,7 +130,7 @@ public class ChunkUtil {
                         for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                             for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
                                 Block block = Blocks.getBlockByLegacy(blockData[arrayPos]);
-                                if (block == Blocks.nullBlock) {
+                                if (block.equals(Blocks.nullBlock)) {
                                     arrayPos++;
                                     continue;
                                 }
@@ -186,7 +186,7 @@ public class ChunkUtil {
                                 blockId &= individualValueMask;
 
                                 Block block = palette.byId(blockId);
-                                if (block == Blocks.nullBlock) {
+                                if (block.equals(Blocks.nullBlock)) {
                                     continue;
                                 }
                                 blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), block);

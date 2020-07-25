@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Mappings;
 import de.bixilon.minosoft.game.datatypes.Player;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.objectLoader.enchantments.Enchantments;
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
@@ -162,6 +163,8 @@ public class Minosoft {
                 }
                 Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", version, (System.currentTimeMillis() - startTime), version.getReleaseName()));
             }
+            // end, we must set the nullBlock
+            Blocks.nullBlock = new Block("minecraft", "air");
         } catch (IOException e) {
             Log.fatal("Error occurred while loading version mapping: " + e.getLocalizedMessage());
             System.exit(1);

@@ -17,15 +17,13 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Enchantments {
 
-    static ArrayList<Enchantment> enchantmentList = new ArrayList<>();
     static HashMap<ProtocolVersion, HashBiMap<Integer, Enchantment>> enchantmentMap = new HashMap<>();
 
-    public static Enchantment getEnchantmentBdyId(int protocolId, ProtocolVersion version) {
+    public static Enchantment getEnchantmentById(int protocolId, ProtocolVersion version) {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
             version = ProtocolVersion.VERSION_1_12_2;
         }
@@ -36,9 +34,6 @@ public class Enchantments {
         HashBiMap<Integer, Enchantment> versionMapping = HashBiMap.create();
         for (String identifierName : json.keySet()) {
             Enchantment enchantment = new Enchantment(mod, identifierName);
-            if (enchantmentList.contains(enchantment)) {
-                enchantment = enchantmentList.get(enchantmentList.indexOf(enchantment));
-            }
             versionMapping.put(json.getAsJsonObject(identifierName).get("id").getAsInt(), enchantment);
         }
         enchantmentMap.put(version, versionMapping);

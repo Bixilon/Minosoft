@@ -17,12 +17,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Blocks {
     public static Block nullBlock;
-    static ArrayList<Block> blockList = new ArrayList<>();
+    static HashSet<Block> blockList = new HashSet<>();
     static HashMap<ProtocolVersion, HashBiMap<Integer, Block>> blockMap = new HashMap<>(); // version -> (protocolId > block)
     static HashMap<String, HashMap<String, BlockProperties>> propertiesMapping = new HashMap<>();
     static HashMap<String, BlockRotation> rotationMapping = new HashMap<>();
@@ -460,6 +460,7 @@ public class Blocks {
             JsonArray statesArray = identifierJSON.getAsJsonArray("states");
             for (int i = 0; i < statesArray.size(); i++) {
                 JsonObject statesJSON = statesArray.get(i).getAsJsonObject();
+                Block block;
                 if (statesJSON.has("properties")) {
                     // properties are optional
                     JsonObject propertiesJSON = statesJSON.getAsJsonObject("properties");
@@ -471,8 +472,7 @@ public class Blocks {
                         rotation = rotationMapping.get(propertiesJSON.get("rotation").getAsString());
                         propertiesJSON.remove("rotation");
                     }
-                    BlockProperties[] properties = new BlockProperties[propertiesJSON.size()];
-                    int ii = 0;
+                    HashSet<BlockProperties> properties = new HashSet<>();
                     for (String propertyName : propertiesJSON.keySet()) {
                         if (propertiesMapping.get(propertyName) == null) {
                             throw new RuntimeException(String.format("Unknown block property: %s (identifier=%s)", propertyName, identifierName));
@@ -480,50 +480,23 @@ public class Blocks {
                         if (propertiesMapping.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()) == null) {
                             throw new RuntimeException(String.format("Unknown block property: %s -> %s (identifier=%s)", propertyName, propertiesJSON.get(propertyName).getAsString(), identifierName));
                         }
-                        properties[ii] = propertiesMapping.get(propertyName).get(propertiesJSON.get(propertyName).getAsString());
-                        ii++;
+                        properties.add(propertiesMapping.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()));
                     }
 
-                    Block block = new Block(mod, identifierName, properties, rotation);
-                    if (blockList.contains(block)) {
-                        block = blockList.get(blockList.indexOf(block));
-                    }
-
-                    if (block == null) {
-                        // does not exist. create
-                        block = new Block(mod, identifierName, properties, rotation);
-                        blockList.add(block);
-                    }
-
-                    // set nullBlock
-                    if (block.getIdentifier().equals("air")) {
-                        nullBlock = block;
-                    }
-
-                    int blockId = getBlockId(statesJSON, version);
-                    checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping, version);
-                    versionMapping.put(blockId, block);
+                    block = new Block(mod, identifierName, properties, rotation);
                 } else {
                     // no properties, directly add block
-                    Block block = new Block(mod, identifierName);
-                    if (blockList.contains(block)) {
-                        block = blockList.get(blockList.indexOf(block));
-                    }
-
-                    if (block == null) {
-                        // does not exist. create
-                        block = new Block(mod, identifierName);
-                        blockList.add(block);
-                    }
-
-                    int blockId = getBlockId(statesJSON, version);
-                    checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping, version);
-                    versionMapping.put(blockId, block);
+                    block = new Block(mod, identifierName);
                 }
+                int blockId = getBlockId(statesJSON, version);
+                checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping, version);
+                versionMapping.put(blockId, block);
+                blockList.add(block);
             }
         }
         blockMap.put(version, versionMapping);
     }
+
 
     private static int getBlockId(JsonObject json, ProtocolVersion version) {
         int blockId = json.get("id").getAsInt();
@@ -535,27 +508,6 @@ public class Blocks {
             }
         }
         return blockId;
-    }
-
-    public static boolean propertiesEquals(BlockProperties[] one, BlockProperties[] two) {
-        if (one.length != two.length) {
-            return false;
-        }
-        for (BlockProperties property : one) {
-            if (!containsElement(two, property)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean containsElement(BlockProperties[] arr, BlockProperties value) {
-        for (BlockProperties property : arr) {
-            if (property == value) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static void checkAndCrashIfBlockIsIn(int blockId, String identifierName, HashBiMap<Integer, Block> versionMapping, ProtocolVersion version) {

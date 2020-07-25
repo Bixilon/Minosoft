@@ -17,12 +17,10 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Statistics {
 
-    static ArrayList<Statistic> statisticList = new ArrayList<>();
     static HashMap<ProtocolVersion, HashBiMap<Integer, Statistic>> statisticsIdMap = new HashMap<>();
     static HashMap<ProtocolVersion, HashBiMap<String, Statistic>> statisticsIdentifierMap = new HashMap<>();
 
@@ -45,9 +43,6 @@ public class Statistics {
         HashBiMap<String, Statistic> versionIdentifierMapping = HashBiMap.create();
         for (String identifierName : json.keySet()) {
             Statistic statistic = new Statistic(mod, identifierName);
-            if (statisticList.contains(statistic)) {
-                statistic = statisticList.get(statisticList.indexOf(statistic));
-            }
             if (json.getAsJsonObject(identifierName).has("id")) {
                 versionIdMapping.put(json.getAsJsonObject(identifierName).get("id").getAsInt(), statistic);
             } else {
