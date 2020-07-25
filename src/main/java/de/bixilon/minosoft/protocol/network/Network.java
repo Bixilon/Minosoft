@@ -194,7 +194,7 @@ public class Network {
                                 e.printStackTrace();
                             }
                         } catch (Exception e) {
-                            Log.protocol("Received broken packet!");
+                            Log.protocol(String.format("An error occurred while parsing an packet: %s", e));
                             e.printStackTrace();
                         }
                     }
