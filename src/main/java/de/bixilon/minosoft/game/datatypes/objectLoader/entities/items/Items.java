@@ -17,12 +17,12 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Items {
 
-    static ArrayList<Item> itemList = new ArrayList<>();
+    static HashSet<Item> itemList = new HashSet<>();
     static HashMap<ProtocolVersion, HashBiMap<Integer, Item>> itemMap = new HashMap<>(); // version -> (protocolId > Item)
 
     public static Item getItemByLegacy(int protocolId, int protocolMetaData) {
@@ -45,12 +45,8 @@ public class Items {
     public static void load(String mod, JsonObject json, ProtocolVersion version) {
         HashBiMap<Integer, Item> versionMapping = HashBiMap.create();
         for (String identifierName : json.keySet()) {
-            Item item = getItem(mod, identifierName);
-            if (item == null) {
-                // does not exist. create
-                item = new Item(mod, identifierName);
-                itemList.add(item);
-            }
+            Item item = new Item(mod, identifierName);
+            itemList.add(item);
             JsonObject identifierJSON = json.getAsJsonObject(identifierName);
             int itemId = identifierJSON.get("id").getAsInt();
             if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
@@ -66,12 +62,7 @@ public class Items {
     }
 
     public static Item getItem(String mod, String identifier) {
-        for (Item item : itemList) {
-            if (item.getMod().equals(mod) && item.getIdentifier().equals(identifier)) {
-                return item;
-            }
-        }
-        return null;
+        return new Item(mod, identifier);
     }
 
     public static int getItemId(Item item, ProtocolVersion version) {

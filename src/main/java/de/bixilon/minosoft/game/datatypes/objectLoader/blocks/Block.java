@@ -13,20 +13,22 @@
 
 package de.bixilon.minosoft.game.datatypes.objectLoader.blocks;
 
+import java.util.HashSet;
+
 public class Block {
     final String mod;
     final String identifier;
     final BlockRotation rotation;
-    final BlockProperties[] properties;
+    final HashSet<BlockProperties> properties;
 
-    public Block(String mod, String identifier, BlockProperties[] properties, BlockRotation rotation) {
+    public Block(String mod, String identifier, HashSet<BlockProperties> properties, BlockRotation rotation) {
         this.mod = mod;
         this.identifier = identifier;
         this.properties = properties;
         this.rotation = rotation;
     }
 
-    public Block(String mod, String identifier, BlockProperties[] properties) {
+    public Block(String mod, String identifier, HashSet<BlockProperties> properties) {
         this.mod = mod;
         this.identifier = identifier;
         this.properties = properties;
@@ -36,14 +38,14 @@ public class Block {
     public Block(String mod, String identifier, BlockRotation rotation) {
         this.mod = mod;
         this.identifier = identifier;
-        this.properties = new BlockProperties[0];
+        this.properties = new HashSet<>();
         this.rotation = rotation;
     }
 
     public Block(String mod, String identifier) {
         this.mod = mod;
         this.identifier = identifier;
-        this.properties = new BlockProperties[0];
+        this.properties = new HashSet<>();
         this.rotation = BlockRotation.NONE;
     }
 
@@ -59,7 +61,7 @@ public class Block {
         return rotation;
     }
 
-    public BlockProperties[] getProperties() {
+    public HashSet<BlockProperties> getProperties() {
         return properties;
     }
 
@@ -71,7 +73,7 @@ public class Block {
             out.append("rotation=");
             out.append(getRotation());
         }
-        if (properties.length > 0) {
+        if (properties.size() > 0) {
             if (out.length() > 0) {
                 out.append(" ,");
             } else {
@@ -94,7 +96,11 @@ public class Block {
 
     @Override
     public int hashCode() {
-        return mod.hashCode() * identifier.hashCode();
+        int ret = mod.hashCode() * identifier.hashCode() * rotation.hashCode();
+        if (properties.size() > 0) {
+            ret *= properties.hashCode();
+        }
+        return ret;
     }
 
     @Override
@@ -102,7 +108,10 @@ public class Block {
         if (super.equals(obj)) {
             return true;
         }
+        if (hashCode() != obj.hashCode()) {
+            return false;
+        }
         Block their = (Block) obj;
-        return getMod().equals(their.getMod()) && getIdentifier().equals(their.getIdentifier()) && getRotation() == their.getRotation() && Blocks.propertiesEquals(getProperties(), their.getProperties());
+        return getIdentifier().equals(their.getIdentifier()) && getRotation() == their.getRotation() && getProperties().equals(their.getProperties()) && getMod().equals(their.getMod());
     }
 }

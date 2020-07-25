@@ -40,6 +40,7 @@ public class Enchantment {
         if (super.equals(obj)) {
             return true;
         }
-        return toString().equals(obj.toString());
+        Enchantment their = (Enchantment) obj;
+        return getIdentifier().equals(their.getIdentifier()) && getMod().equals(their.getMod());
     }
 }

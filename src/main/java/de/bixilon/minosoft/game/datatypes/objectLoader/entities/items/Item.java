@@ -34,4 +34,21 @@ public class Item {
     public String toString() {
         return String.format("%s:%s", getMod(), getIdentifier());
     }
+
+    @Override
+    public int hashCode() {
+        return mod.hashCode() * identifier.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        if (hashCode() != obj.hashCode()) {
+            return false;
+        }
+        Item their = (Item) obj;
+        return getIdentifier().equals(their.getIdentifier()) && getMod().equals(their.getMod());
+    }
 }
