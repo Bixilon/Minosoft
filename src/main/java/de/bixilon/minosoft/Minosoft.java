@@ -63,8 +63,9 @@ public class Minosoft {
         checkAssets();
         Log.info("Assets checking done");
         Log.info("Loading all mappings...");
+        long mappingsStart = System.currentTimeMillis();
         loadMappings();
-        Log.info("Mappings loaded");
+        Log.info(String.format("Mappings loaded in a total of %sms", (System.currentTimeMillis() - mappingsStart)));
 
         checkClientToken();
 
@@ -139,6 +140,7 @@ public class Minosoft {
                     // skip them, use mapping of 1.12
                     continue;
                 }
+                long startTime = System.currentTimeMillis();
                 for (Map.Entry<String, Mappings> mappingSet : mappingsHashMap.entrySet()) {
                     JSONObject data = Util.readJsonFromFile(Config.homeDir + String.format("assets/mapping/%s/%s.json", version.getVersionString(), mappingSet.getKey()));
                     for (Iterator<String> mods = data.keys(); mods.hasNext(); ) {
@@ -158,7 +160,7 @@ public class Minosoft {
                         }
                     }
                 }
-                Log.verbose(String.format("Loaded mappings for version %s (%s)", version, version.getReleaseName()));
+                Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", version, (System.currentTimeMillis() - startTime), version.getReleaseName()));
             }
         } catch (IOException | JSONException e) {
             Log.fatal("Error occurred while loading version mapping: " + e.getLocalizedMessage());
