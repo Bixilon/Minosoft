@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft;
 
+import com.google.gson.JsonObject;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Mappings;
@@ -30,16 +31,17 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.FolderUtil;
 import de.bixilon.minosoft.util.OSUtil;
 import de.bixilon.minosoft.util.Util;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class Minosoft {
     static Configuration config;
-    static List<MojangAccount> accountList;
+    static ArrayList<MojangAccount> accountList;
 
     public static void main(String[] args) {
         // init log thread
@@ -63,8 +65,9 @@ public class Minosoft {
         checkAssets();
         Log.info("Assets checking done");
         Log.info("Loading all mappings...");
+        long mappingsStart = System.currentTimeMillis();
         loadMappings();
-        Log.info("Mappings loaded");
+        Log.info(String.format("Mappings loaded within %sms", (System.currentTimeMillis() - mappingsStart)));
 
         checkClientToken();
 
@@ -139,18 +142,17 @@ public class Minosoft {
                     // skip them, use mapping of 1.12
                     continue;
                 }
+                long startTime = System.currentTimeMillis();
                 for (Map.Entry<String, Mappings> mappingSet : mappingsHashMap.entrySet()) {
-                    JSONObject data = Util.readJsonFromFile(Config.homeDir + String.format("assets/mapping/%s/%s.json", version.getVersionString(), mappingSet.getKey()));
-                    for (Iterator<String> mods = data.keys(); mods.hasNext(); ) {
-                        // key = mod name
-                        String mod = mods.next();
-                        JSONObject modJSON = data.getJSONObject(mod);
+                    JsonObject data = Util.readJsonFromFile(Config.homeDir + String.format("assets/mapping/%s/%s.json", version.getVersionString(), mappingSet.getKey()));
+                    for (String mod : data.keySet()) {
+                        JsonObject modJSON = data.getAsJsonObject(mod);
                         switch (mappingSet.getValue()) {
                             case REGISTRIES:
-                                Items.load(mod, modJSON.getJSONObject("item").getJSONObject("entries"), version);
-                                Entities.load(mod, modJSON.getJSONObject("entity_type").getJSONObject("entries"), version);
-                                Enchantments.load(mod, modJSON.getJSONObject("enchantment").getJSONObject("entries"), version);
-                                Statistics.load(mod, modJSON.getJSONObject("custom_stat").getJSONObject("entries"), version);
+                                Items.load(mod, modJSON.getAsJsonObject("item").getAsJsonObject("entries"), version);
+                                Entities.load(mod, modJSON.getAsJsonObject("entity_type").getAsJsonObject("entries"), version);
+                                Enchantments.load(mod, modJSON.getAsJsonObject("enchantment").getAsJsonObject("entries"), version);
+                                Statistics.load(mod, modJSON.getAsJsonObject("custom_stat").getAsJsonObject("entries"), version);
                                 break;
                             case BLOCKS:
                                 Blocks.load(mod, modJSON, version);
@@ -158,9 +160,9 @@ public class Minosoft {
                         }
                     }
                 }
-                Log.verbose(String.format("Loaded mappings for version %s (%s)", version, version.getReleaseName()));
+                Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", version, (System.currentTimeMillis() - startTime), version.getReleaseName()));
             }
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             Log.fatal("Error occurred while loading version mapping: " + e.getLocalizedMessage());
             System.exit(1);
         }

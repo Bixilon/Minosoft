@@ -14,13 +14,12 @@
 package de.bixilon.minosoft.game.datatypes.objectLoader.entities;
 
 import com.google.common.collect.HashBiMap;
+import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.mob.*;
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.objects.*;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class Entities {
 
@@ -157,11 +156,10 @@ public class Entities {
         return entityClassMap.get(identifier);
     }
 
-    public static void load(String mod, JSONObject json, ProtocolVersion version) {
+    public static void load(String mod, JsonObject json, ProtocolVersion version) {
         HashBiMap<Integer, String> versionMapping = HashBiMap.create();
-        for (Iterator<String> identifiers = json.keys(); identifiers.hasNext(); ) {
-            String identifierName = identifiers.next();
-            versionMapping.put(json.getJSONObject(identifierName).getInt("id"), mod + ":" + identifierName);
+        for (String identifierName : json.keySet()) {
+            versionMapping.put(json.getAsJsonObject(identifierName).get("id").getAsInt(), mod + ":" + identifierName);
         }
         entityMapping.put(version, versionMapping);
     }

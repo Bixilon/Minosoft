@@ -20,7 +20,10 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class Configuration {
     LinkedHashMap<String, Object> config;
@@ -147,8 +150,8 @@ public class Configuration {
         yaml.dump(config, writer);
     }
 
-    public List<MojangAccount> getMojangAccounts() {
-        List<MojangAccount> accounts = new ArrayList<>();
+    public ArrayList<MojangAccount> getMojangAccounts() {
+        ArrayList<MojangAccount> accounts = new ArrayList<>();
         LinkedHashMap<String, Object> objects = (LinkedHashMap<String, Object>) get("account.accounts");
         if (objects == null) {
             return accounts;

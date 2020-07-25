@@ -33,6 +33,7 @@ import de.bixilon.minosoft.nbt.tag.StringTag;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginPluginRequest;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
@@ -618,5 +619,9 @@ public class PacketHandler {
     }
 
     public void handle(PacketAcknowledgePlayerDigging pkg) {
+    }
+
+    public void handle(PacketLoginPluginRequest pkg) {
+        connection.getPluginChannelHandler().handle(pkg.getMessageId(), pkg.getChannel(), pkg.getData());
     }
 }

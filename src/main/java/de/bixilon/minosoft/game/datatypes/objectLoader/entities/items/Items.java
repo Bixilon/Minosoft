@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.game.datatypes.objectLoader.entities.items;
 
 import com.google.common.collect.HashBiMap;
+import com.google.gson.JsonObject;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class Items {
 
@@ -43,23 +42,22 @@ public class Items {
         return itemMap.get(version).get(protocolId);
     }
 
-    public static void load(String mod, JSONObject json, ProtocolVersion version) {
+    public static void load(String mod, JsonObject json, ProtocolVersion version) {
         HashBiMap<Integer, Item> versionMapping = HashBiMap.create();
-        for (Iterator<String> identifiers = json.keys(); identifiers.hasNext(); ) {
-            String identifierName = identifiers.next();
+        for (String identifierName : json.keySet()) {
             Item item = getItem(mod, identifierName);
             if (item == null) {
                 // does not exist. create
                 item = new Item(mod, identifierName);
                 itemList.add(item);
             }
-            JSONObject identifierJSON = json.getJSONObject(identifierName);
-            int itemId = identifierJSON.getInt("id");
+            JsonObject identifierJSON = json.getAsJsonObject(identifierName);
+            int itemId = identifierJSON.get("id").getAsInt();
             if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
                 // old format (with metadata)
                 itemId <<= 4;
                 if (identifierJSON.has("meta")) {
-                    itemId |= identifierJSON.getInt("meta");
+                    itemId |= identifierJSON.get("meta").getAsInt();
                 }
             }
             versionMapping.put(itemId, item);

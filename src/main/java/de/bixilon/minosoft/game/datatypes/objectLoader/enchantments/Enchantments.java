@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.game.datatypes.objectLoader.enchantments;
 
 import com.google.common.collect.HashBiMap;
+import com.google.gson.JsonObject;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class Enchantments {
 
@@ -33,15 +32,14 @@ public class Enchantments {
         return enchantmentMap.get(version).get(protocolId);
     }
 
-    public static void load(String mod, JSONObject json, ProtocolVersion version) {
+    public static void load(String mod, JsonObject json, ProtocolVersion version) {
         HashBiMap<Integer, Enchantment> versionMapping = HashBiMap.create();
-        for (Iterator<String> identifiers = json.keys(); identifiers.hasNext(); ) {
-            String identifierName = identifiers.next();
+        for (String identifierName : json.keySet()) {
             Enchantment enchantment = new Enchantment(mod, identifierName);
             if (enchantmentList.contains(enchantment)) {
                 enchantment = enchantmentList.get(enchantmentList.indexOf(enchantment));
             }
-            versionMapping.put(json.getJSONObject(identifierName).getInt("id"), enchantment);
+            versionMapping.put(json.getAsJsonObject(identifierName).get("id").getAsInt(), enchantment);
         }
         enchantmentMap.put(version, versionMapping);
     }

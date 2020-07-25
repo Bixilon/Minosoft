@@ -13,32 +13,32 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TextComponent {
-    JSONObject json;
+    JsonObject json;
 
     public TextComponent(String raw) {
         if (raw == null) {
-            this.json = new JSONObject();
+            this.json = new JsonObject();
             return;
         }
         try {
-            this.json = new JSONObject(raw);
-        } catch (JSONException e) {
+            this.json = JsonParser.parseString(raw).getAsJsonObject();
+        } catch (IllegalStateException e) {
             // not a text component, is a legacy string
-            this.json = new JSONObject();
-            JSONArray extra = new JSONArray();
+            this.json = new JsonObject();
+            JsonArray extra = new JsonArray();
 
             String[] paragraphSplit = raw.split("§");
 
             StringBuilder message = new StringBuilder();
-            List<ChatAttributes> attributesList = new ArrayList<>();
+            ArrayList<ChatAttributes> attributesList = new ArrayList<>();
             ChatAttributes color = ChatAttributes.WHITE;
             boolean first = true;
             for (String paragraph : paragraphSplit) {
@@ -75,7 +75,7 @@ public class TextComponent {
                                 break;
                             case "r":
                                 //save and clear
-                                extra.put(getExtraByAttributes(message.toString(), color, attributesList));
+                                extra.add(getExtraByAttributes(message.toString(), color, attributesList));
                                 attributesList.clear();
                                 color = ChatAttributes.WHITE;
                                 message = new StringBuilder();
@@ -84,7 +84,7 @@ public class TextComponent {
                     } else {
                         // save current
                         if (!message.toString().isEmpty()) {
-                            extra.put(getExtraByAttributes(message.toString(), color, attributesList));
+                            extra.add(getExtraByAttributes(message.toString(), color, attributesList));
                             message = new StringBuilder();
                         }
                         color = ChatAttributes.byColor(colorCheck);
@@ -98,55 +98,55 @@ public class TextComponent {
                 }
             }
             // save
-            extra.put(getExtraByAttributes(message.toString(), color, attributesList));
+            extra.add(getExtraByAttributes(message.toString(), color, attributesList));
 
-            this.json.put("extra", extra);
+            this.json.add("extra", extra);
         }
     }
 
-    public TextComponent(JSONObject json) {
+    public TextComponent(JsonObject json) {
         this.json = json;
     }
 
-    static JSONObject getExtraByAttributes(String message, ChatAttributes color, List<ChatAttributes> formatting) {
-        JSONObject ret = new JSONObject();
-        ret.put("text", message);
+    static JsonObject getExtraByAttributes(String message, ChatAttributes color, ArrayList<ChatAttributes> formatting) {
+        JsonObject ret = new JsonObject();
+        ret.addProperty("text", message);
         if (color != null) {
-            ret.put("color", color.getName());
+            ret.addProperty("color", color.getName());
         }
         for (ChatAttributes attribute : formatting) {
             if (attribute == ChatAttributes.BOLD && !ret.has("bold")) {
-                ret.put("bold", true);
+                ret.addProperty("bold", true);
             } else if (attribute == ChatAttributes.ITALIC && !ret.has("italic")) {
-                ret.put("italic", true);
+                ret.addProperty("italic", true);
             } else if (attribute == ChatAttributes.UNDERLINED && !ret.has("underlined")) {
-                ret.put("underlined", true);
+                ret.addProperty("underlined", true);
             } else if (attribute == ChatAttributes.STRIKETHROUGH && !ret.has("strikethrough")) {
-                ret.put("strikethrough", true);
+                ret.addProperty("strikethrough", true);
             } else if (attribute == ChatAttributes.OBFUSCATED && !ret.has("obfuscated")) {
-                ret.put("obfuscated", true);
+                ret.addProperty("obfuscated", true);
             }
         }
         return ret;
     }
 
     public String getRawMessage() {
-        if (json.has("text") && json.getString("text").length() != 0) {
-            return json.getString("text");
+        if (json.has("text") && json.get("text").getAsString().length() != 0) {
+            return json.get("text").getAsString();
         }
         StringBuilder buffer = new StringBuilder();
         if (json.has("extra")) {
-            JSONArray arr = json.getJSONArray("extra");
-            for (int i = 0; i < arr.length(); i++) {
-                JSONObject object;
+            JsonArray arr = json.getAsJsonArray("extra");
+            for (int i = 0; i < arr.size(); i++) {
+                JsonObject object;
                 try {
-                    object = arr.getJSONObject(i);
-                } catch (JSONException e) {
+                    object = arr.get(i).getAsJsonObject();
+                } catch (JsonParseException e) {
                     // reset text
-                    buffer.append(arr.getString(i));
+                    buffer.append(arr.get(i).getAsString());
                     continue;
                 }
-                buffer.append(object.getString("text"));
+                buffer.append(object.get("text").getAsString());
             }
             buffer.append(ChatAttributes.RESET);
             return buffer.toString();
@@ -154,46 +154,46 @@ public class TextComponent {
         return "";
     }
 
-    public JSONObject getRaw() {
+    public JsonObject getRaw() {
         return this.json;
     }
 
     public String getColoredMessage() {
-        if (json.has("text") && json.getString("text").length() != 0) {
-            return json.getString("text");
+        if (json.has("text") && json.get("text").getAsString().length() != 0) {
+            return json.get("text").getAsString();
         }
         StringBuilder buffer = new StringBuilder();
         if (json.has("extra")) {
-            JSONArray arr = json.getJSONArray("extra");
-            for (int i = 0; i < arr.length(); i++) {
-                JSONObject object;
+            JsonArray arr = json.getAsJsonArray("extra");
+            for (int i = 0; i < arr.size(); i++) {
+                JsonObject object;
                 try {
-                    object = arr.getJSONObject(i);
-                } catch (JSONException e) {
+                    object = arr.get(i).getAsJsonObject();
+                } catch (JsonParseException e) {
                     // reset text
                     buffer.append(ChatAttributes.RESET);
-                    buffer.append(arr.getString(i));
+                    buffer.append(arr.get(i).getAsString());
                     continue;
                 }
-                if (object.has("bold") && object.getBoolean("bold")) {
+                if (object.has("bold") && object.get("bold").getAsBoolean()) {
                     buffer.append(ChatAttributes.BOLD);
                 }
                 if (object.has("color")) {
-                    buffer.append(ChatAttributes.byName(object.getString("color")));
+                    buffer.append(ChatAttributes.byName(object.get("color").getAsString()));
                 }
-                if (object.has("italic") && object.getBoolean("italic")) {
+                if (object.has("italic") && object.get("italic").getAsBoolean()) {
                     buffer.append(ChatAttributes.ITALIC);
                 }
-                if (object.has("underlined") && object.getBoolean("underlined")) {
+                if (object.has("underlined") && object.get("underlined").getAsBoolean()) {
                     buffer.append(ChatAttributes.UNDERLINED);
                 }
-                if (object.has("strikethrough") && object.getBoolean("strikethrough")) {
+                if (object.has("strikethrough") && object.get("strikethrough").getAsBoolean()) {
                     buffer.append(ChatAttributes.STRIKETHROUGH);
                 }
-                if (object.has("obfuscated") && object.getBoolean("obfuscated")) {
+                if (object.has("obfuscated") && object.get("obfuscated").getAsBoolean()) {
                     buffer.append(ChatAttributes.OBFUSCATED);
                 }
-                buffer.append(object.getString("text"));
+                buffer.append(object.get("text").getAsString());
             }
             buffer.append(ChatAttributes.RESET);
             return buffer.toString();

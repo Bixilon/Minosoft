@@ -13,31 +13,30 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
-import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class OutByteBuffer {
-    final List<Byte> bytes = new ArrayList<>();
+    final ArrayList<Byte> bytes = new ArrayList<>();
     final ProtocolVersion version;
 
     public OutByteBuffer(ProtocolVersion version) {
         this.version = version;
     }
 
-    public static void writeByte(byte b, List<Byte> write) {
+    public static void writeByte(byte b, ArrayList<Byte> write) {
         write.add(b);
     }
 
-    public static void writeVarInt(int value, List<Byte> write) {
+    public static void writeVarInt(int value, ArrayList<Byte> write) {
         // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
         do {
             byte temp = (byte) (value & 0b01111111);
@@ -144,11 +143,11 @@ public class OutByteBuffer {
         writeInt((int) (d * 32.0D));
     }
 
-    public List<Byte> getBytes() {
+    public ArrayList<Byte> getBytes() {
         return bytes;
     }
 
-    public void writeJSON(JSONObject j) {
+    public void writeJSON(JsonObject j) {
         writeString(j.toString());
     }
 

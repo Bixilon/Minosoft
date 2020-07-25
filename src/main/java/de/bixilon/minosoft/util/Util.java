@@ -13,9 +13,10 @@
 
 package de.bixilon.minosoft.util;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import org.json.JSONObject;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -122,7 +123,7 @@ public class Util {
         return stringBuilder.toString();
     }
 
-    public static JSONObject readJsonFromFile(String fileName) throws IOException {
-        return new JSONObject(readFile(fileName));
+    public static JsonObject readJsonFromFile(String fileName) throws IOException {
+        return JsonParser.parseString(readFile(fileName)).getAsJsonObject();
     }
 }

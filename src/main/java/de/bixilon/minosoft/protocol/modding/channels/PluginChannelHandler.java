@@ -15,32 +15,29 @@ package de.bixilon.minosoft.protocol.modding.channels;
 
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginPluginResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPluginMessageSending;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PluginChannelHandler {
-    final Map<String, List<ChannelHandler>> channels;
-    final List<String> registeredClientChannels;
-    final List<String> registeredServerChannels;
+    final HashMap<String, ArrayList<ChannelHandler>> channels = new HashMap<>();
+    final HashMap<String, ArrayList<LoginChannelHandler>> loginChannels = new HashMap<>();
+    final ArrayList<String> registeredClientChannels = new ArrayList<>();
+    final ArrayList<String> registeredServerChannels = new ArrayList<>();
     final Connection connection;
 
     public PluginChannelHandler(Connection connection) {
-        channels = new HashMap<>();
-        registeredClientChannels = new ArrayList<>();
-        registeredServerChannels = new ArrayList<>();
         this.connection = connection;
     }
 
     public void registerClientHandler(String name, ChannelHandler handler) {
         if (channels.get(name) == null) {
             // no channel with that name was registered yet
-            List<ChannelHandler> handlerList = new ArrayList<>();
+            ArrayList<ChannelHandler> handlerList = new ArrayList<>();
             handlerList.add(handler);
             channels.put(name, handlerList);
             return;
@@ -50,12 +47,45 @@ public class PluginChannelHandler {
         channels.get(name).add(handler);
     }
 
+    public void registerLoginClientHandler(String name, LoginChannelHandler handler) {
+        if (loginChannels.get(name) == null) {
+            // no channel with that name was registered yet
+            ArrayList<LoginChannelHandler> handlerList = new ArrayList<>();
+            handlerList.add(handler);
+            loginChannels.put(name, handlerList);
+            return;
+        }
+        // was registered, appending to list
+
+        loginChannels.get(name).add(handler);
+    }
+
     public void unregisterClientHandler(String name, ChannelHandler handler) {
         if (channels.get(name) == null) {
             // not registered
             return;
         }
         channels.get(name).remove(handler);
+    }
+
+    public void unregisterLoginClientHandler(String name, LoginChannelHandler handler) {
+        if (loginChannels.get(name) == null) {
+            // not registered
+            return;
+        }
+        loginChannels.get(name).remove(handler);
+    }
+
+    public void handle(int messageId, String name, byte[] data) {
+        if (loginChannels.get(name) == null) {
+            Log.debug(String.format("Can not handle plugin message in channel \"%s\" (messageLength=%d, messageId=%d)", name, data.length, messageId));
+            connection.sendPacket(new PacketLoginPluginResponse(messageId, false));
+            return;
+        }
+        for (LoginChannelHandler handler : loginChannels.get(name)) {
+            handler.handle(messageId, this, new InByteBuffer(data, connection.getVersion()));
+        }
+
     }
 
     public void handle(String name, byte[] data) {
@@ -95,6 +125,14 @@ public class PluginChannelHandler {
 
     public void sendRawData(String channel, OutByteBuffer buffer) {
         connection.sendPacket(new PacketPluginMessageSending(channel, buffer.getOutBytes()));
+    }
+
+    public void sendRawData(int messageId, byte[] data) {
+        connection.sendPacket(new PacketLoginPluginResponse(messageId, data));
+    }
+
+    public void sendRawData(int messageId, OutByteBuffer buffer) {
+        connection.sendPacket(new PacketLoginPluginResponse(messageId, buffer.getOutBytes()));
     }
 
     public void registerServerChannel(String name) {

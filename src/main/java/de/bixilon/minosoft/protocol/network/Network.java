@@ -33,11 +33,10 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Network {
     final Connection connection;
-    final List<ServerboundPacket> queue;
+    final ArrayList<ServerboundPacket> queue;
     Thread socketThread;
     int compressionThreshold = -1;
     Socket socket;

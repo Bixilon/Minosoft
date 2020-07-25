@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,7 +23,7 @@ import java.net.http.HttpResponse;
 
 public class HTTP {
 
-    public static HttpResponse<String> postJson(String url, JSONObject json) {
+    public static HttpResponse<String> postJson(String url, JsonObject json) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))

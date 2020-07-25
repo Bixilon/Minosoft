@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.mojang.api;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.HTTP;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.net.http.HttpResponse;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class MojangStatus {
     public static HashMap<Services, ServiceStatus> getStatus() {
@@ -37,14 +37,12 @@ public class MojangStatus {
         // now it is hopefully okay
         HashMap<Services, ServiceStatus> ret = new HashMap<>();
         try {
-            JSONArray json = new JSONArray(response.body());
-            for (int i = 0; i < json.length(); i++) {
-                JSONObject innerJson = json.getJSONObject(i);
-                Iterator<String> keys = innerJson.keys();
-                while (keys.hasNext()) {
-                    String key = keys.next();
+            JsonArray json = JsonParser.parseString(response.body()).getAsJsonArray();
+            for (int i = 0; i < json.size(); i++) {
+                JsonObject innerJson = json.get(i).getAsJsonObject();
+                for (String key : innerJson.keySet()) {
                     Services service = Services.byKey(key);
-                    ret.put(service, ServiceStatus.byKey(innerJson.getString(key)));
+                    ret.put(service, ServiceStatus.byKey(innerJson.get(key).getAsString()));
                 }
             }
             if (ret.size() != Services.values().length) {
@@ -53,7 +51,7 @@ public class MojangStatus {
             }
             return ret;
 
-        } catch (NullPointerException | JSONException e) {
+        } catch (NullPointerException | JsonParseException e) {
             e.printStackTrace();
             return getUnknownStatusMap();
         }

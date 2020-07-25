@@ -19,12 +19,11 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.entities.meta.EntityMetaD
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public abstract class Entity implements EntityInterface {
     final int entityId;
     final HashMap<InventorySlots.EntityInventory, Slot> equipment;
-    final List<StatusEffect> effectList;
+    final ArrayList<StatusEffect> effectList;
     Location location;
     Velocity velocity;
     short yaw;
@@ -115,7 +114,7 @@ public abstract class Entity implements EntityInterface {
         return EntityMetaData.class;
     }
 
-    public List<StatusEffect> getEffectList() {
+    public ArrayList<StatusEffect> getEffectList() {
         return effectList;
     }
 

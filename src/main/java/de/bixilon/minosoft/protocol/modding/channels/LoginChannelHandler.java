@@ -11,34 +11,11 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol;
+package de.bixilon.minosoft.protocol.modding.channels;
 
-import java.util.ArrayList;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-public class OutPacketBuffer extends OutByteBuffer {
-    final int command;
+public interface LoginChannelHandler {
 
-    public OutPacketBuffer(ProtocolVersion version, int command) {
-        super(version);
-        this.command = command;
-    }
-
-    public int getCommand() {
-        return command;
-    }
-
-    @Override
-    public byte[] getOutBytes() {
-        ArrayList<Byte> before = getBytes();
-        ArrayList<Byte> after = new ArrayList<>();
-        writeVarInt(getCommand(), after); // second: command
-        after.addAll(before); // rest ist raw data
-
-
-        byte[] ret = new byte[after.size()];
-        for (int i = 0; i < after.size(); i++) {
-            ret[i] = after.get(i);
-        }
-        return ret;
-    }
+    void handle(int messageId, PluginChannelHandler handler, InByteBuffer buffer);
 }

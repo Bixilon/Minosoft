@@ -25,11 +25,10 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class PacketPlayerInfo implements ClientboundPacket {
-    final List<PlayerInfoBulk> infos = new ArrayList<>();
+    final ArrayList<PlayerInfoBulk> infos = new ArrayList<>();
 
 
     @Override
@@ -105,7 +104,7 @@ public class PacketPlayerInfo implements ClientboundPacket {
         h.handle(this);
     }
 
-    public List<PlayerInfoBulk> getInfos() {
+    public ArrayList<PlayerInfoBulk> getInfos() {
         return infos;
     }
 

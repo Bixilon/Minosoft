@@ -244,6 +244,10 @@ public enum BlockProperties {
     SOUTH_SIDE,
     EAST_SIDE,
     WEST_SIDE,
+    NORTH_NONE,
+    SOUTH_NONE,
+    EAST_NONE,
+    WEST_NONE,
 
     LAYERS_1,
     LAYERS_2,
