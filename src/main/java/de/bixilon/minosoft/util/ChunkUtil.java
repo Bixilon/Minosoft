@@ -61,7 +61,7 @@ public class ChunkUtil {
                             for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                                 for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
 
-                                    short singeBlockId = blockTypes[arrayPos];
+                                    short singeBlockId = (short) (blockTypes[arrayPos] & 0xFF);
                                     byte singleMeta;
                                     // get block meta and shift and add (merge) id if needed
                                     if (arrayPos % 2 == 0) {
@@ -72,7 +72,7 @@ public class ChunkUtil {
                                         }
                                     } else {
                                         // low 4 bits
-                                        singleMeta = (byte) (meta[arrayPos / 2] >>> 4);
+                                        singleMeta = (byte) ((meta[arrayPos / 2] >>> 4) & 0xF);
 
                                         if (BitByte.isBitSet(addBitMask, c)) {
                                             singeBlockId = (short) ((singeBlockId << 4) | (addBlockTypes[arrayPos / 2] & 0xF));

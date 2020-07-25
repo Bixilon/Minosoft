@@ -169,7 +169,7 @@ public class TextComponent {
                 JsonObject object;
                 try {
                     object = arr.get(i).getAsJsonObject();
-                } catch (JsonParseException e) {
+                } catch (Exception e) {
                     // reset text
                     buffer.append(ChatAttributes.RESET);
                     buffer.append(arr.get(i).getAsString());
