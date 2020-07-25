@@ -41,9 +41,6 @@ public class PacketUpdateCommandBlock implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_UPDATE_COMMAND_BLOCK));
-        switch (version) {
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
                 buffer.writePosition(position);
                 buffer.writeString(command);
                 buffer.writeVarInt(type.getId());
@@ -59,16 +56,13 @@ public class PacketUpdateCommandBlock implements ServerboundPacket {
                     flags |= 0x04;
                 }
 
-
                 buffer.writeByte(flags);
-                break;
-        }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending update command block packet at %s (command=\"%s\", type=%s, trackOutput=%s, isConditional=%s, isAutomatic=%s)", position.toString(), command, type, trackOutput, isConditional, isAutomatic));
+        Log.protocol(String.format("Sending update command block packet at %s (command=\"%s\", type=%s, trackOutput=%s, isConditional=%s, isAutomatic=%s)", position, command, type, trackOutput, isConditional, isAutomatic));
     }
 
     public enum CommandBlockType {

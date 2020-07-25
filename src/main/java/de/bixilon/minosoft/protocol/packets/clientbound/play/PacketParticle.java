@@ -26,9 +26,9 @@ public class PacketParticle implements ClientboundPacket {
     Particles particle;
     Particle particleDataClass;
     boolean longDistance = false;
-    float x;
-    float y;
-    float z;
+    double x;
+    double y;
+    double z;
     float particleData;
     int count;
     int[] data;
@@ -87,9 +87,23 @@ public class PacketParticle implements ClientboundPacket {
                 count = buffer.readInt();
                 particleDataClass = buffer.readParticleData(particle);
                 return true;
-        }
+            default:
+                particle = Particles.byId(buffer.readInt());
+                longDistance = buffer.readBoolean();
+                x = buffer.readDouble();
+                y = buffer.readDouble();
+                z = buffer.readDouble();
 
-        return false;
+                // offset
+                x += buffer.readFloat() * random.nextGaussian();
+                y += buffer.readFloat() * random.nextGaussian();
+                z += buffer.readFloat() * random.nextGaussian();
+
+                particleData = buffer.readFloat();
+                count = buffer.readInt();
+                particleDataClass = buffer.readParticleData(particle);
+                return true;
+        }
     }
 
     @Override
@@ -106,15 +120,15 @@ public class PacketParticle implements ClientboundPacket {
         return particle;
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
-    public float getZ() {
+    public double getZ() {
         return z;
     }
 

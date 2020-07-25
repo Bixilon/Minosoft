@@ -18,11 +18,12 @@ import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Mappings;
 import de.bixilon.minosoft.game.datatypes.Player;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blockIds.BlockIds;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.objectLoader.enchantments.Enchantments;
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.items.Items;
+import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
 import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.Statistics;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevel;
@@ -154,6 +155,7 @@ public class Minosoft {
                                 Entities.load(mod, modJSON.getAsJsonObject("entity_type").getAsJsonObject("entries"), version);
                                 Enchantments.load(mod, modJSON.getAsJsonObject("enchantment").getAsJsonObject("entries"), version);
                                 Statistics.load(mod, modJSON.getAsJsonObject("custom_stat").getAsJsonObject("entries"), version);
+                                BlockIds.load(mod, modJSON.getAsJsonObject("block").getAsJsonObject("entries"), version);
                                 break;
                             case BLOCKS:
                                 Blocks.load(mod, modJSON, version);

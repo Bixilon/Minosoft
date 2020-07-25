@@ -43,13 +43,7 @@ public class PacketOpenWindow implements ClientboundPacket {
                 }
                 this.entityId = buffer.readInt();
                 return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 this.windowId = buffer.readByte();
                 this.type = InventoryType.byName(buffer.readString());
                 this.title = buffer.readTextComponent();
@@ -59,8 +53,6 @@ public class PacketOpenWindow implements ClientboundPacket {
                 }
                 return true;
         }
-
-        return false;
     }
 
     @Override

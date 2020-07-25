@@ -37,17 +37,12 @@ public class PacketCollectItem implements ClientboundPacket {
                 itemId = buffer.readVarInt();
                 collectorId = buffer.readVarInt();
                 return true;
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 itemId = buffer.readVarInt();
                 collectorId = buffer.readVarInt();
                 count = buffer.readVarInt();
                 return true;
         }
-
-        return false;
     }
 
     @Override

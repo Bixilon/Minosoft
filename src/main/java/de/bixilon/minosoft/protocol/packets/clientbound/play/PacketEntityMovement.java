@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.RelativeLocation;
+import de.bixilon.minosoft.game.datatypes.entities.RelativeLocation;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -37,24 +37,17 @@ public class PacketEntityMovement implements ClientboundPacket {
                 this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
                 this.onGround = buffer.readBoolean();
                 return true;
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 this.entityId = buffer.readVarInt();
                 this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
                 this.onGround = buffer.readBoolean();
                 return true;
         }
-
-        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity %d moved relative %s", entityId, location.toString()));
+        Log.protocol(String.format("Entity %d moved relative %s", entityId, location));
     }
 
     public int getEntityId() {

@@ -104,8 +104,7 @@ public class PacketMapData implements ClientboundPacket {
                 }
                 return true;
             }
-            case VERSION_1_13_2:
-            case VERSION_1_14_4: {
+            default: {
                 mapId = buffer.readVarInt();
                 scale = buffer.readByte();
                 boolean trackPosition = buffer.readBoolean();
@@ -137,8 +136,6 @@ public class PacketMapData implements ClientboundPacket {
                 return true;
             }
         }
-
-        return false;
     }
 
     @Override

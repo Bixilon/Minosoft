@@ -31,12 +31,7 @@ public class PacketNameItem implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_NAME_ITEM));
-        switch (version) {
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
                 buffer.writeString(name);
-                break;
-        }
         return buffer;
     }
 

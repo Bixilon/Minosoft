@@ -35,13 +35,11 @@ public class PacketServerDifficulty implements ClientboundPacket {
             case VERSION_1_13_2:
                 difficulty = Difficulty.byId(buffer.readByte());
                 return true;
-            case VERSION_1_14_4:
+            default:
                 difficulty = Difficulty.byId(buffer.readByte());
                 locked = buffer.readBoolean();
                 return true;
         }
-
-        return false;
     }
 
     @Override

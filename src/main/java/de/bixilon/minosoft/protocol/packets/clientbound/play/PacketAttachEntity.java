@@ -33,19 +33,12 @@ public class PacketAttachEntity implements ClientboundPacket {
                 this.vehicleId = buffer.readInt();
                 this.leash = buffer.readBoolean();
                 return true;
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 this.entityId = buffer.readInt();
                 this.vehicleId = buffer.readInt();
                 this.leash = true;
                 return true;
         }
-
-        return false;
     }
 
     @Override

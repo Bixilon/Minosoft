@@ -13,8 +13,12 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.*;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.Entity;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Objects;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -102,7 +106,7 @@ public class PacketSpawnObject implements ClientboundPacket {
                     e.printStackTrace();
                 }
             }
-            case VERSION_1_14_4: {
+            default: {
                 int entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
                 Class<? extends Entity> type = Entities.byId(buffer.readVarInt(), buffer.getVersion());

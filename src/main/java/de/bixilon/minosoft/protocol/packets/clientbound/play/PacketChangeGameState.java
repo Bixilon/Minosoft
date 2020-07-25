@@ -28,21 +28,9 @@ public class PacketChangeGameState implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
                 reason = Reason.byId(buffer.readByte(), buffer.getVersion());
                 value = buffer.readFloat();
                 return true;
-        }
-
-        return false;
     }
 
     @Override
@@ -78,8 +66,8 @@ public class PacketChangeGameState implements ClientboundPacket {
 
     public enum Reason {
         INVALID_BED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 0)}),
-        END_RAIN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1), new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2)}),
-        START_RAIN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2), new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1)}),
+        END_RAIN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1), new MapSet<>(ProtocolVersion.VERSION_1_14_4, 2), new MapSet<>(ProtocolVersion.VERSION_1_15_2, 1)}),
+        START_RAIN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2), new MapSet<>(ProtocolVersion.VERSION_1_14_4, 1), new MapSet<>(ProtocolVersion.VERSION_1_15_2, 2)}),
         CHANGE_GAMEMODE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 3)}),
         ENTER_CREDITS(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4)}),
         DEMO_MESSAGES(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 5)}),
@@ -87,7 +75,9 @@ public class PacketChangeGameState implements ClientboundPacket {
         FADE_VALUE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 7)}),
         FADE_TIME(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 8)}),
         PLAY_PUFFERFISH_STING_SOUND(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 9)}),
-        PLAY_ELDER_GUARDIAN_MOB_APPEARANCE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 10)});
+        PLAY_ELDER_GUARDIAN_MOB_APPEARANCE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 10)}),
+        ENABLE_RESPAWN_SCREEN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_15_2, 11)}),
+        ;
 
 
         final VersionValueMap<Integer> valueMap;

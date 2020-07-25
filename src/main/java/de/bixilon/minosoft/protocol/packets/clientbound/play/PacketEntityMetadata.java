@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -36,17 +36,9 @@ public class PacketEntityMetadata implements ClientboundPacket {
             case VERSION_1_7_10:
                 entityId = buffer.readInt();
                 break;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 entityId = buffer.readVarInt();
                 break;
-            default:
-                return false;
         }
         sets = buffer.readMetaData();
         return true;

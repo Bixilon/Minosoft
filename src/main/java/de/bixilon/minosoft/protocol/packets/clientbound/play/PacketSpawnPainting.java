@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Paintings;
+import de.bixilon.minosoft.game.datatypes.entities.Paintings;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -54,8 +54,7 @@ public class PacketSpawnPainting implements ClientboundPacket {
                 position = buffer.readPosition();
                 direction = buffer.readByte();
                 return true;
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 entityId = buffer.readVarInt();
                 uuid = buffer.readUUID();
                 painting = Paintings.byId(buffer.readVarInt());
@@ -63,13 +62,11 @@ public class PacketSpawnPainting implements ClientboundPacket {
                 direction = buffer.readByte();
                 return true;
         }
-
-        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Spawning painting at %s (entityId=%d, painting=%s, direction=%d)", position.toString(), entityId, painting, direction));
+        Log.protocol(String.format("Spawning painting at %s (entityId=%d, painting=%s, direction=%d)", position, entityId, painting, direction));
     }
 
     @Override

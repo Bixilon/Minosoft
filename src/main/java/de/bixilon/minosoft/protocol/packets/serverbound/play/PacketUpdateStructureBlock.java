@@ -64,9 +64,6 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_UPDATE_STRUCTURE_BLOCK));
-        switch (version) {
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
                 buffer.writePosition(position);
                 buffer.writeVarInt(action.getId());
                 buffer.writeVarInt(mode.getId());
@@ -83,8 +80,6 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
                 buffer.writeFloat(integrity);
                 buffer.writeVarLong(seed);
                 buffer.writeByte(flags);
-                break;
-        }
         return buffer;
     }
 

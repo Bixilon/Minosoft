@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.entities.Entity;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entity;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Velocity;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -72,10 +73,7 @@ public class PacketSpawnMob implements ClientboundPacket {
                 }
                 return false;
             }
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4: {
+            default: {
                 int entityId = buffer.readVarInt();
                 UUID uuid = buffer.readUUID();
                 Class<? extends Entity> type = Entities.byId(buffer.readVarInt(), buffer.getVersion());
@@ -85,9 +83,13 @@ public class PacketSpawnMob implements ClientboundPacket {
                 int headYaw = buffer.readAngle();
                 Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
 
-                assert type != null;
+
+                HashMap<Integer, EntityMetaData.MetaDataSet> mataData = null;
+                if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+                    mataData = buffer.readMetaData();
+                }
                 try {
-                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, HashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
+                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, HashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, mataData, buffer.getVersion());
                     return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
@@ -95,8 +97,6 @@ public class PacketSpawnMob implements ClientboundPacket {
                 return false;
             }
         }
-
-        return false;
     }
 
     @Override

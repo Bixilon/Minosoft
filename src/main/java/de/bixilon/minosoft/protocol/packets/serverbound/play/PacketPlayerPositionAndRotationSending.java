@@ -62,13 +62,7 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
                 buffer.writeFloat(pitch);
                 buffer.writeBoolean(onGround);
                 break;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 buffer.writeDouble(x);
                 buffer.writeDouble(feetY);
                 buffer.writeDouble(z);

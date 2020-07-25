@@ -49,9 +49,13 @@ public class PacketRespawn implements ClientboundPacket {
                 gameMode = GameMode.byId(buffer.readByte());
                 levelType = LevelType.byType(buffer.readString());
                 return true;
+            default:
+                dimension = Dimension.byId(buffer.readInt());
+                long hashedSeed = buffer.readLong();
+                gameMode = GameMode.byId(buffer.readByte());
+                levelType = LevelType.byType(buffer.readString());
+                return true;
         }
-
-        return false;
     }
 
     @Override

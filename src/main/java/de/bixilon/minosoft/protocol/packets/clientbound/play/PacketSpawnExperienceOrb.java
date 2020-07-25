@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.ExperienceOrb;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.ExperienceOrb;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -35,12 +35,7 @@ public class PacketSpawnExperienceOrb implements ClientboundPacket {
                 orb = new ExperienceOrb(entityId, location, count);
                 return true;
             }
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4: {
+            default: {
                 int entityId = buffer.readVarInt();
                 Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
                 short count = buffer.readShort();
@@ -48,8 +43,6 @@ public class PacketSpawnExperienceOrb implements ClientboundPacket {
                 return true;
             }
         }
-
-        return false;
     }
 
     @Override

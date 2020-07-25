@@ -110,7 +110,7 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
                 buffer.writeFloat(cursorY);
                 buffer.writeFloat(cursorZ);
                 break;
-            case VERSION_1_14_4:
+            default:
                 buffer.writeVarInt(hand.getId());
                 buffer.writePosition(position);
                 buffer.writeVarInt(direction);
@@ -126,6 +126,6 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Send player block placement(position=%s, direction=%d, item=%s, cursor=%s %s %s)", position.toString(), direction, item, cursorX, cursorY, cursorZ));
+        Log.protocol(String.format("Send player block placement(position=%s, direction=%d, item=%s, cursor=%s %s %s)", position, direction, item, cursorX, cursorY, cursorZ));
     }
 }

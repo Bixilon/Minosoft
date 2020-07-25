@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.Trade;
+import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.VillagerData;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -31,8 +31,6 @@ public class PacketTradeList implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_14_4:
                 windowId = buffer.readVarInt();
                 trades = new Trade[buffer.readByte()];
                 for (int i = 0; i < trades.length; i++) {
@@ -56,9 +54,6 @@ public class PacketTradeList implements ClientboundPacket {
                 isRegularVillager = buffer.readBoolean();
                 canRestock = buffer.readBoolean();
                 return true;
-        }
-
-        return false;
     }
 
     @Override

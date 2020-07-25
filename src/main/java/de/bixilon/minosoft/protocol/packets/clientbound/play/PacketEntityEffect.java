@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.StatusEffect;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.StatusEffects;
+import de.bixilon.minosoft.game.datatypes.entities.StatusEffect;
+import de.bixilon.minosoft.game.datatypes.entities.StatusEffects;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -44,11 +44,7 @@ public class PacketEntityEffect implements ClientboundPacket {
                 effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readVarInt());
                 hideParticles = buffer.readBoolean();
                 return true;
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 entityId = buffer.readVarInt();
                 effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readVarInt());
                 byte flags = buffer.readByte();
@@ -61,8 +57,6 @@ public class PacketEntityEffect implements ClientboundPacket {
                 }
                 return true;
         }
-
-        return false;
     }
 
     @Override

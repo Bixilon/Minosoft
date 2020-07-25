@@ -31,16 +31,7 @@ public class PacketUseItem implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_USE_ITEM));
-        switch (version) {
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
                 buffer.writeVarInt(hand.getId());
-                break;
-        }
         return buffer;
     }
 

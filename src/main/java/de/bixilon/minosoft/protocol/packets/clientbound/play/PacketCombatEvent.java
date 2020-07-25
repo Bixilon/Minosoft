@@ -30,29 +30,19 @@ public class PacketCombatEvent implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                action = CombatEvent.byId(buffer.readVarInt());
-                switch (action) {
-                    case END_COMBAT:
-                        duration = buffer.readVarInt();
-                        entityId = buffer.readInt();
-                        break;
-                    case ENTITY_DEAD:
-                        playerId = buffer.readVarInt();
-                        entityId = buffer.readInt();
-                        message = buffer.readTextComponent();
-                        break;
-                }
-                return true;
+        action = CombatEvent.byId(buffer.readVarInt());
+        switch (action) {
+            case END_COMBAT:
+                duration = buffer.readVarInt();
+                entityId = buffer.readInt();
+                break;
+            case ENTITY_DEAD:
+                playerId = buffer.readVarInt();
+                entityId = buffer.readInt();
+                message = buffer.readTextComponent();
+                break;
         }
-        return false;
+        return true;
     }
 
     @Override

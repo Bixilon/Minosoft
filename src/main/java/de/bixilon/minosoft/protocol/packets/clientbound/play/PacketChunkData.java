@@ -68,17 +68,15 @@ public class PacketChunkData implements ClientboundPacket {
                 chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, containsSkyLight);
                 return true;
             }
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4: {
+            default: {
                 this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 boolean groundUpContinuous = buffer.readBoolean();
                 short sectionBitMask = (short) buffer.readVarInt();
                 if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
                     heightMap = buffer.readNBT();
+                }
+                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_15_2.getVersionNumber() && groundUpContinuous) {
+                    int[] biomes = buffer.readInts(1024);
                 }
                 int size = buffer.readVarInt();
                 int lastPos = buffer.getPosition();
@@ -94,13 +92,11 @@ public class PacketChunkData implements ClientboundPacket {
                 return true;
             }
         }
-        
-        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Chunk packet received (chunk: %s)", location.toString()));
+        Log.protocol(String.format("Chunk packet received (chunk: %s)", location));
     }
 
     public ChunkLocation getLocation() {

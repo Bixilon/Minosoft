@@ -41,13 +41,7 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
                 walkingSpeed = buffer.readFloat();
                 return true;
             }
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4: {
+            default: {
                 byte flags = buffer.readByte();
                 godMode = BitByte.isBitSet(flags, 0);
                 flying = BitByte.isBitSet(flags, 1);
@@ -58,8 +52,6 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
                 return true;
             }
         }
-
-        return false;
     }
 
     @Override

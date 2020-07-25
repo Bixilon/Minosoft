@@ -36,43 +36,33 @@ public class PacketBossBar implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                uuid = buffer.readUUID();
-                action = BossBarAction.byId(buffer.readVarInt());
-                switch (action) {
-                    case ADD:
-                        title = buffer.readTextComponent();
-                        health = buffer.readFloat();
-                        color = BossBarColor.byId(buffer.readVarInt());
-                        divisions = BossBarDivisions.byId(buffer.readVarInt());
-                        flags = buffer.readByte();
-                        break;
-                    case REMOVE:
-                        break;
-                    case UPDATE_HEALTH:
-                        health = buffer.readFloat();
-                        break;
-                    case UPDATE_TITLE:
-                        title = buffer.readTextComponent();
-                        break;
-                    case UPDATE_STYLE:
-                        color = BossBarColor.byId(buffer.readVarInt());
-                        divisions = BossBarDivisions.byId(buffer.readVarInt());
-                        break;
-                    case UPDATE_FLAGS:
-                        flags = buffer.readByte();
-                        break;
-                }
-                return true;
+        uuid = buffer.readUUID();
+        action = BossBarAction.byId(buffer.readVarInt());
+        switch (action) {
+            case ADD:
+                title = buffer.readTextComponent();
+                health = buffer.readFloat();
+                color = BossBarColor.byId(buffer.readVarInt());
+                divisions = BossBarDivisions.byId(buffer.readVarInt());
+                flags = buffer.readByte();
+                break;
+            case REMOVE:
+                break;
+            case UPDATE_HEALTH:
+                health = buffer.readFloat();
+                break;
+            case UPDATE_TITLE:
+                title = buffer.readTextComponent();
+                break;
+            case UPDATE_STYLE:
+                color = BossBarColor.byId(buffer.readVarInt());
+                divisions = BossBarDivisions.byId(buffer.readVarInt());
+                break;
+            case UPDATE_FLAGS:
+                flags = buffer.readByte();
+                break;
         }
-
-        return false;
+        return true;
     }
 
     @Override

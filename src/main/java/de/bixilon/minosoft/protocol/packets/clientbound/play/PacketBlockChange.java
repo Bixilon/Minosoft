@@ -33,24 +33,16 @@ public class PacketBlockChange implements ClientboundPacket {
                 position = buffer.readBlockPosition();
                 block = Blocks.getBlockByLegacy(buffer.readVarInt(), buffer.readByte());
                 return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 position = buffer.readPosition();
                 block = Blocks.getBlock(buffer.readVarInt(), buffer.getVersion());
                 return true;
         }
-
-        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Block change received at %s (block=%s)", position.toString(), block));
+        Log.protocol(String.format("Block change received at %s (block=%s)", position, block));
     }
 
     @Override

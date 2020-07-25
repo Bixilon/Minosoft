@@ -15,10 +15,7 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginPluginRequest;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;

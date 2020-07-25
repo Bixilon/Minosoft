@@ -35,14 +35,9 @@ public class PacketUpdateCommandBlockMinecart implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_UPDATE_COMMAND_BLOCK_MINECART));
-        switch (version) {
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
                 buffer.writeVarInt(entityId);
                 buffer.writeString(command);
                 buffer.writeBoolean(trackOutput);
-                break;
-        }
         return buffer;
     }
 

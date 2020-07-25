@@ -15,8 +15,10 @@ package de.bixilon.minosoft.game.datatypes.objectLoader.entities;
 
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.mob.*;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.objects.*;
+import de.bixilon.minosoft.game.datatypes.entities.Entity;
+import de.bixilon.minosoft.game.datatypes.entities.ExperienceOrb;
+import de.bixilon.minosoft.game.datatypes.entities.mob.*;
+import de.bixilon.minosoft.game.datatypes.entities.objects.*;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;

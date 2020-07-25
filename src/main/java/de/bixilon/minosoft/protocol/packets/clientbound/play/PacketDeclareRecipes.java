@@ -30,67 +30,62 @@ public class PacketDeclareRecipes implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                int length = buffer.readVarInt();
-                for (int i = 0; i < length; i++) {
-                    Recipe recipe;
-                    String identifier;
-                    String typeName;
-                    if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-                        typeName = buffer.readString();
-                        identifier = buffer.readString();
-                    } else {
-                        identifier = buffer.readString();
-                        typeName = buffer.readString();
-                    }
-                    RecipeTypes type = RecipeTypes.byName(typeName);
-                    switch (type) {
-                        case SHAPELESS: {
-                            String group = buffer.readString();
-                            Ingredient[] ingredients = buffer.readIngredientArray(buffer.readVarInt());
-                            Slot result = buffer.readSlot();
-                            recipe = new Recipe(type, group, ingredients, result);
-                            break;
-                        }
-                        case SHAPED: {
-                            int width = buffer.readVarInt();
-                            int height = buffer.readVarInt();
-                            String group = buffer.readString();
-                            Ingredient[] ingredients = buffer.readIngredientArray(width * height);
-                            Slot result = buffer.readSlot();
-                            recipe = new Recipe(width, height, type, group, ingredients, result);
-                            break;
-                        }
-                        case SMELTING:
-                        case BLASTING:
-                        case SMOKING:
-                        case CAMPFIRE: {
-                            String group = buffer.readString();
-                            Ingredient ingredient = buffer.readIngredient();
-                            Slot result = buffer.readSlot();
-                            float experience = buffer.readFloat();
-                            int cookingTime = buffer.readVarInt();
-                            recipe = new Recipe(type, group, ingredient, result, experience, cookingTime);
-                            break;
-                        }
-                        case STONE_CUTTING: {
-                            String group = buffer.readString();
-                            Ingredient ingredient = buffer.readIngredient();
-                            Slot result = buffer.readSlot();
-                            recipe = new Recipe(type, group, ingredient, result);
-                            break;
-                        }
-                        default:
-                            recipe = new Recipe(type);
-                            break;
-                    }
-                    recipes.put(identifier, recipe);
+        int length = buffer.readVarInt();
+        for (int i = 0; i < length; i++) {
+            Recipe recipe;
+            String identifier;
+            String typeName;
+            if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+                typeName = buffer.readString();
+                identifier = buffer.readString();
+            } else {
+                identifier = buffer.readString();
+                typeName = buffer.readString();
+            }
+            RecipeTypes type = RecipeTypes.byName(typeName);
+            switch (type) {
+                case SHAPELESS: {
+                    String group = buffer.readString();
+                    Ingredient[] ingredients = buffer.readIngredientArray(buffer.readVarInt());
+                    Slot result = buffer.readSlot();
+                    recipe = new Recipe(type, group, ingredients, result);
+                    break;
                 }
-                return true;
+                case SHAPED: {
+                    int width = buffer.readVarInt();
+                    int height = buffer.readVarInt();
+                    String group = buffer.readString();
+                    Ingredient[] ingredients = buffer.readIngredientArray(width * height);
+                    Slot result = buffer.readSlot();
+                    recipe = new Recipe(width, height, type, group, ingredients, result);
+                    break;
+                }
+                case SMELTING:
+                case BLASTING:
+                case SMOKING:
+                case CAMPFIRE: {
+                    String group = buffer.readString();
+                    Ingredient ingredient = buffer.readIngredient();
+                    Slot result = buffer.readSlot();
+                    float experience = buffer.readFloat();
+                    int cookingTime = buffer.readVarInt();
+                    recipe = new Recipe(type, group, ingredient, result, experience, cookingTime);
+                    break;
+                }
+                case STONE_CUTTING: {
+                    String group = buffer.readString();
+                    Ingredient ingredient = buffer.readIngredient();
+                    Slot result = buffer.readSlot();
+                    recipe = new Recipe(type, group, ingredient, result);
+                    break;
+                }
+                default:
+                    recipe = new Recipe(type);
+                    break;
+            }
+            recipes.put(identifier, recipe);
         }
-        return false;
+        return true;
     }
 
     @Override

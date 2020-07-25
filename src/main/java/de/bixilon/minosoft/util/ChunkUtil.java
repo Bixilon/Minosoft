@@ -143,12 +143,7 @@ public class ChunkUtil {
                 }
                 return new Chunk(nibbleMap);
             }
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4: {
+            default: {
                 // really big thanks to: https://wiki.vg/index.php?title=Chunk_Format&oldid=13712
                 HashMap<Byte, ChunkNibble> nibbleMap = new HashMap<>();
                 for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
@@ -194,7 +189,7 @@ public class ChunkUtil {
                         }
                     }
 
-                    if (buffer.getVersion().getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+                    if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
                         byte[] light = buffer.readBytes(2048);
                         if (containsSkyLight) {
                             byte[] skyLight = buffer.readBytes(2048);
@@ -203,11 +198,12 @@ public class ChunkUtil {
 
                     nibbleMap.put(c, new ChunkNibble(blockMap));
                 }
-                byte[] biomes = buffer.readBytes(256);
+                if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+                    byte[] biomes = buffer.readBytes(256);
+                }
                 return new Chunk(nibbleMap);
             }
         }
-        throw new RuntimeException("Could not parse chunk!");
     }
 
     public static void readSkyLightPacket(InByteBuffer buffer, int skyLightMask, int blockLightMask, int emptyBlockLightMask, int emptySkyLightMask) {

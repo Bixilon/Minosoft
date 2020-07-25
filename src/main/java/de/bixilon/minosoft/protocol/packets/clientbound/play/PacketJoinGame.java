@@ -34,6 +34,7 @@ public class PacketJoinGame implements ClientboundPacket {
     int maxPlayers;
     LevelType levelType;
     boolean reducedDebugScreen;
+    boolean enableRespawnScreen = true;
 
 
     @Override
@@ -91,6 +92,23 @@ public class PacketJoinGame implements ClientboundPacket {
                 levelType = LevelType.byType(buffer.readString());
                 viewDistance = buffer.readVarInt();
                 reducedDebugScreen = buffer.readBoolean();
+                return true;
+            }
+            case VERSION_1_15_2: {
+                this.entityId = buffer.readInt();
+                byte gameModeRaw = buffer.readByte();
+                hardcore = BitByte.isBitSet(gameModeRaw, 3);
+                // remove hardcore bit and get gamemode
+                gameModeRaw &= ~0x8;
+                gameMode = GameMode.byId(gameModeRaw);
+
+                dimension = Dimension.byId(buffer.readInt());
+                long hashedSeed = buffer.readLong();
+                maxPlayers = buffer.readByte();
+                levelType = LevelType.byType(buffer.readString());
+                viewDistance = buffer.readVarInt();
+                reducedDebugScreen = buffer.readBoolean();
+                enableRespawnScreen = buffer.readBoolean();
                 return true;
             }
         }

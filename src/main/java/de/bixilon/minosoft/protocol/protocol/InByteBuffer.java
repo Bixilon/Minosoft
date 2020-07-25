@@ -17,11 +17,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Pose;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Pose;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.items.Items;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Ingredient;
 import de.bixilon.minosoft.game.datatypes.particle.*;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
@@ -284,8 +284,7 @@ public class InByteBuffer {
                 short metaData = readShort();
                 CompoundTag nbt = readNBT(version == ProtocolVersion.VERSION_1_7_10);
                 return new Slot(Items.getItemByLegacy(id, metaData), count, metaData, nbt);
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 if (readBoolean()) {
                     return new Slot(Items.getItem(readVarInt(), version), readByte(), readNBT());
                 }
@@ -376,9 +375,7 @@ public class InByteBuffer {
                 }
                 break;
             }
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4: {
+            default: {
                 byte index = readByte();
                 while (index != (byte) 0xFF) {
                     EntityMetaData.Types type = EntityMetaData.Types.byId(readVarInt(), version);

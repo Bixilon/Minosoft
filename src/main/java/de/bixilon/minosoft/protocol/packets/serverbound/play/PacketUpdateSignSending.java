@@ -47,12 +47,7 @@ public class PacketUpdateSignSending implements ServerboundPacket {
                     buffer.writeTextComponent(lines[i]);
                 }
                 break;
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 buffer.writePosition(position);
                 for (int i = 0; i < 4; i++) {
                     buffer.writeString(lines[i].getRawMessage());
@@ -64,6 +59,6 @@ public class PacketUpdateSignSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending Sign Update: %s", position.toString()));
+        Log.protocol(String.format("Sending Sign Update: %s", position));
     }
 }
