@@ -56,7 +56,7 @@ public class PacketMultiBlockChange implements ClientboundPacket {
                     byte pos = buffer.readByte();
                     byte y = buffer.readByte();
                     int blockId = buffer.readVarInt();
-                    blocks.put(new InChunkLocation(((pos & 0xF0) >>> 4), y, (pos & 0xF)), Blocks.getBlock(blockId, buffer.getVersion()));
+                    blocks.put(new InChunkLocation(((pos & 0xF0 >>> 4) & 0xF), y, (pos & 0xF)), Blocks.getBlock(blockId, buffer.getVersion()));
                 }
                 return true;
             }

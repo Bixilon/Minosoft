@@ -27,6 +27,7 @@ import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardObjective;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardScore;
 import de.bixilon.minosoft.game.datatypes.scoreboard.Team;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.nbt.tag.StringTag;
@@ -293,7 +294,12 @@ public class PacketHandler {
     }
 
     public void handle(PacketMultiBlockChange pkg) {
-        connection.getPlayer().getWorld().getChunk(pkg.getLocation()).setBlocks(pkg.getBlocks());
+        Chunk chunk = connection.getPlayer().getWorld().getChunk(pkg.getLocation());
+        if (chunk == null) {
+            Log.warn(String.format("Server tried to change blocks in unloaded chunks! (location=%s)", pkg.getLocation()));
+            return;
+        }
+        chunk.setBlocks(pkg.getBlocks());
     }
 
     public void handle(PacketRespawn pkg) {

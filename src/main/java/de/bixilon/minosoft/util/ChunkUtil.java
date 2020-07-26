@@ -19,6 +19,7 @@ import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibble;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibbleLocation;
 import de.bixilon.minosoft.game.datatypes.world.palette.Palette;
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
@@ -181,6 +182,16 @@ public class ChunkUtil {
                                 blockId &= individualValueMask;
 
                                 Block block = palette.byId(blockId);
+                                if (block == null) {
+                                    String blockName;
+                                    if (buffer.getVersion().getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+                                        blockName = String.format("%d:%d", blockId >> 4, blockId & 0xF);
+                                    } else {
+                                        blockName = String.valueOf(blockId);
+                                    }
+                                    Log.warn(String.format("Server sent unknown block: %s", blockName));
+                                    continue;
+                                }
                                 if (block.equals(Blocks.nullBlock)) {
                                     continue;
                                 }
