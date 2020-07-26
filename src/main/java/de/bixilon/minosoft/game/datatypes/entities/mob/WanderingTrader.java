@@ -21,12 +21,10 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.WanderingTraderMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class WanderingTrader extends Mob implements MobInterface {
     WanderingTraderMetaData metaData;
 
-    public WanderingTrader(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public WanderingTrader(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new WanderingTraderMetaData(sets, version);
     }

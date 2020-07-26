@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public class PacketEntityMetadata implements ClientboundPacket {
-    HashMap<Integer, EntityMetaData.MetaDataSet> sets;
+    MetaDataHashMap sets;
     int entityId;
     ProtocolVersion version;
 
@@ -58,7 +58,7 @@ public class PacketEntityMetadata implements ClientboundPacket {
         return entityId;
     }
 
-    public HashMap<Integer, EntityMetaData.MetaDataSet> getSets() {
+    public MetaDataHashMap getSets() {
         return sets;
     }
 

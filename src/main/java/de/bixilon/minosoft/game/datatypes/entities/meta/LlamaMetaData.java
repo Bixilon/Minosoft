@@ -15,11 +15,9 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.Color;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class LlamaMetaData extends ChestedHorseMetaData {
 
-    public LlamaMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public LlamaMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 

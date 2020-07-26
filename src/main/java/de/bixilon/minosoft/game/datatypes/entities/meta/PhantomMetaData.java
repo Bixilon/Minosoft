@@ -14,11 +14,9 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class PhantomMetaData extends InsentientMetaData {
 
-    public PhantomMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public PhantomMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 

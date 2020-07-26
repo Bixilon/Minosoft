@@ -13,48 +13,49 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
-
-import java.util.HashMap;
 
 public class InsentientMetaData extends LivingMetaData {
 
-    public InsentientMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public InsentientMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
 
     @Override
     public boolean hasAI() {
-        switch (version) {
-            case VERSION_1_8:
-                return (byte) sets.get(15).getData() == 0x01;
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(10).getData(), 0x01);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x01);
-            case VERSION_1_14_4:
-                return !BitByte.isBitMask((byte) sets.get(13).getData(), 0x01);
-            default:
-                return super.hasAI();
+        final boolean defaultValue = super.hasAI();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getLegacyBoolean(15, defaultValue);
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBitMask(10, 0x01, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBitMask(11, 0x01, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getBitMask(13, 0x01, defaultValue);
+        }
+        return sets.getBitMask(14, 0x01, defaultValue);
     }
 
     public boolean isLeftHanded() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(10).getData(), 0x02);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x02);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(13).getData(), 0x02);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBitMask(10, 0x02, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBitMask(11, 0x02, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getBitMask(13, 0x02, defaultValue);
+        }
+        return sets.getBitMask(14, 0x02, defaultValue);
     }
 }

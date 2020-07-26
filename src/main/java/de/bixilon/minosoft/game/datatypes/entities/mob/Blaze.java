@@ -21,12 +21,10 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.BlazeMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class Blaze extends Mob implements MobInterface {
     BlazeMetaData metaData;
 
-    public Blaze(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public Blaze(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new BlazeMetaData(sets, version);
     }

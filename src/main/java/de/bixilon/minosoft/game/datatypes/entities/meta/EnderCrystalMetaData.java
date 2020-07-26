@@ -15,50 +15,48 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
+import javax.annotation.Nullable;
 
 public class EnderCrystalMetaData extends EntityMetaData {
 
-    public EnderCrystalMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public EnderCrystalMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
     public int getHealth() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (int) sets.get(8).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getInt(8, defaultValue);
         }
-        return 0;
+        return defaultValue;
     }
 
+    @Nullable
     public BlockPosition getBeamTarget() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (BlockPosition) sets.get(5).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (BlockPosition) sets.get(6).getData();
-            case VERSION_1_14_4:
-                return (BlockPosition) sets.get(7).getData();
+        final BlockPosition defaultValue = null;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return null;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getPosition(5, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getPosition(6, defaultValue);
+        }
+        return sets.getPosition(7, defaultValue);
     }
 
     public boolean showBottom() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (boolean) sets.get(6).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (boolean) sets.get(7).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(8).getData();
+        final boolean defaultValue = true;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return true;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBoolean(6, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBoolean(7, defaultValue);
+        }
+        return sets.getBoolean(8, defaultValue);
     }
 }

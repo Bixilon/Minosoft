@@ -14,22 +14,24 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class PufferfishMetaData extends AbstractFishMetaData {
 
-    public PufferfishMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public PufferfishMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
     public PufferStates getPufferState() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return PufferStates.byId((int) sets.get(13).getData());
-            case VERSION_1_14_4:
-                return PufferStates.byId((int) sets.get(15).getData());
+        final int defaultValue = PufferStates.UN_PUFFED.getId();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return PufferStates.byId(defaultValue);
         }
-        return PufferStates.UN_PUFFED;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return PufferStates.byId(sets.getInt(13, defaultValue));
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return PufferStates.byId(sets.getInt(15, defaultValue));
+        }
+        return PufferStates.byId(sets.getInt(16, defaultValue));
     }
 
     public enum PufferStates {

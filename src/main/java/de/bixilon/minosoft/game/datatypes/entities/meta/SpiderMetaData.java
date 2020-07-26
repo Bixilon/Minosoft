@@ -15,11 +15,9 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
-import java.util.HashMap;
-
 public class SpiderMetaData extends LivingMetaData {
 
-    public SpiderMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public SpiderMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 

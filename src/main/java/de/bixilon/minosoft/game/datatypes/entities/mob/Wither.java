@@ -21,12 +21,10 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.WitherMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class Wither extends Mob implements MobInterface {
     WitherMetaData metaData;
 
-    public Wither(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public Wither(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new WitherMetaData(sets, version);
     }

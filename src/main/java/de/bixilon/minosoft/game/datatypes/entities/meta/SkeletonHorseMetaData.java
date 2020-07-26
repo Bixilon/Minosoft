@@ -14,11 +14,9 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class SkeletonHorseMetaData extends AbstractHorseMetaData {
 
-    public SkeletonHorseMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public SkeletonHorseMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 

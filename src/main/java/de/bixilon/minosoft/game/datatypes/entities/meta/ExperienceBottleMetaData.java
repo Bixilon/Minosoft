@@ -16,11 +16,9 @@ import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class ExperienceBottleMetaData extends ItemedThrowableMetaData {
 
-    public ExperienceBottleMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public ExperienceBottleMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 

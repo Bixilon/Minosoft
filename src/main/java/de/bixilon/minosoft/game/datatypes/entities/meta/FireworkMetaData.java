@@ -15,49 +15,45 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
+import javax.annotation.Nullable;
 
 public class FireworkMetaData extends EntityMetaData {
 
-    public FireworkMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public FireworkMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
+    @Nullable
     public Slot getInfo() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (Slot) sets.get(8).getData();
-            case VERSION_1_9_4:
-                return (Slot) sets.get(5).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (Slot) sets.get(6).getData();
-            case VERSION_1_14_4:
-                return (Slot) sets.get(7).getData();
+        final Slot defaultValue = null;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getSlot(8, defaultValue);
         }
-        return null;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getSlot(5, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getSlot(6, defaultValue);
+        }
+        return sets.getSlot(7, defaultValue);
     }
 
     public int getEntityIdOfUser() {
-        switch (version) {
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(7).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(8).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getInt(7, defaultValue);
+        }
+        return sets.getInt(8, defaultValue);
     }
 
     public boolean wasShotFromAngle() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (boolean) sets.get(9).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBoolean(9, defaultValue);
     }
 }

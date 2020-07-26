@@ -14,27 +14,24 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class FishingHookMetaData extends EntityMetaData {
 
-    public FishingHookMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public FishingHookMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
 
     public int getHookedEntityId() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (int) sets.get(5).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(6).getData() - 1;
-            case VERSION_1_14_4:
-                return (int) sets.get(7).getData() - 1;
+        final int defaultValue = -1;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return -1;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getInt(5, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getInt(6, defaultValue) - 1;
+        }
+        return sets.getInt(7, defaultValue) - 1;
     }
 }

@@ -15,41 +15,51 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class DolphinMetaData extends WaterMobMetaData {
 
-    public DolphinMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public DolphinMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
     public BlockPosition getTreasurePosition() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (BlockPosition) sets.get(12).getData();
-            case VERSION_1_14_4:
-                return (BlockPosition) sets.get(14).getData();
+        final BlockPosition defaultValue = new BlockPosition(0, 0, 0);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return new BlockPosition(0, (short) 0, 0);
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getPosition(12, defaultValue);
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getPosition(14, defaultValue);
+        }
+        return sets.getPosition(15, defaultValue);
     }
 
     public boolean canFireTreasure() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (boolean) sets.get(13).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(15).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBoolean(13, defaultValue);
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getBoolean(15, defaultValue);
+        }
+        return sets.getBoolean(16, defaultValue);
     }
 
     public boolean hasFish() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (boolean) sets.get(14).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(16).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBoolean(14, defaultValue);
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getBoolean(16, defaultValue);
+        }
+        return sets.getBoolean(17, defaultValue);
     }
 }

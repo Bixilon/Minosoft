@@ -14,186 +14,193 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.EntityRotation;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
-
-import java.util.HashMap;
 
 public class ArmorStandMetaData extends LivingMetaData {
 
-    public ArmorStandMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public ArmorStandMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
 
     public boolean isSmall() {
-        switch (version) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(10).getData(), 0x01);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x01);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(13).getData(), 0x01);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBitMask(10, 0x01, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBitMask(11, 0x01, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getBitMask(13, 0x01, defaultValue);
+        }
+        return sets.getBitMask(14, 0x01, defaultValue);
     }
 
     public boolean hasGravity() {
         switch (version) {
             case VERSION_1_8:
             case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(10).getData(), 0x02);
+                return sets.getBitMask(10, 0x02, super.hasGravity());
             case VERSION_1_10:
-                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x02);
+                return sets.getBitMask(11, 0x02, super.hasGravity());
             default:
                 return super.hasGravity();
         }
     }
 
     public boolean hasArms() {
-        switch (version) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(10).getData(), 0x04);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x04);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(13).getData(), 0x04);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
-        return true;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBitMask(10, 0x04, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBitMask(11, 0x04, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getBitMask(13, 0x04, defaultValue);
+        }
+        return sets.getBitMask(14, 0x04, defaultValue);
     }
 
     public boolean removeBasePlate() {
-        switch (version) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(10).getData(), 0x08);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x08);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(13).getData(), 0x08);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBitMask(10, 0x08, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBitMask(11, 0x08, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getBitMask(13, 0x08, defaultValue);
+        }
+        return sets.getBitMask(14, 0x08, defaultValue);
     }
 
     public boolean hasMarker() {
-        switch (version) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(10).getData(), 0x10);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x10);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(13).getData(), 0x10);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBitMask(10, 0x10, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBitMask(11, 0x10, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getBitMask(13, 0x10, defaultValue);
+        }
+        return sets.getBitMask(14, 0x10, defaultValue);
     }
 
     public EntityRotation getHeadRotation() {
-        switch (version) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                return (EntityRotation) sets.get(11).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (EntityRotation) sets.get(12).getData();
-            case VERSION_1_14_4:
-                return (EntityRotation) sets.get(14).getData();
+        final EntityRotation defaultValue = new EntityRotation(0, 0, 0);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
-        return new EntityRotation(0, 0, 0);
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getRotation(11, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getRotation(12, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getRotation(14, defaultValue);
+        }
+        return sets.getRotation(15, defaultValue);
     }
 
     public EntityRotation getBodyRotation() {
-        switch (version) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                return (EntityRotation) sets.get(12).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (EntityRotation) sets.get(13).getData();
-            case VERSION_1_14_4:
-                return (EntityRotation) sets.get(15).getData();
+        final EntityRotation defaultValue = new EntityRotation(0, 0, 0);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
-        return new EntityRotation(0, 0, 0);
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getRotation(12, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getRotation(13, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getRotation(15, defaultValue);
+        }
+        return sets.getRotation(16, defaultValue);
     }
 
     public EntityRotation getLeftArmRotation() {
-        switch (version) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                return (EntityRotation) sets.get(13).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (EntityRotation) sets.get(14).getData();
-            case VERSION_1_14_4:
-                return (EntityRotation) sets.get(16).getData();
+        final EntityRotation defaultValue = new EntityRotation(-10, 0, -10);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
-        return new EntityRotation(-10, 0, -10);
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getRotation(13, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getRotation(14, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getRotation(16, defaultValue);
+        }
+        return sets.getRotation(17, defaultValue);
     }
 
     public EntityRotation getRightArmRotation() {
-        switch (version) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                return (EntityRotation) sets.get(14).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (EntityRotation) sets.get(15).getData();
-            case VERSION_1_14_4:
-                return (EntityRotation) sets.get(17).getData();
+        final EntityRotation defaultValue = new EntityRotation(-15, 0, 10);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
-        return new EntityRotation(-15, 0, 10);
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getRotation(14, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getRotation(15, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getRotation(17, defaultValue);
+        }
+        return sets.getRotation(18, defaultValue);
     }
 
     public EntityRotation getLeftLegRotation() {
-        switch (version) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                return (EntityRotation) sets.get(15).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (EntityRotation) sets.get(16).getData();
-            case VERSION_1_14_4:
-                return (EntityRotation) sets.get(18).getData();
+        final EntityRotation defaultValue = new EntityRotation(-1, 0, -1);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
-        return new EntityRotation(-1, 0, -1);
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getRotation(15, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getRotation(16, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getRotation(18, defaultValue);
+        }
+        return sets.getRotation(19, defaultValue);
     }
 
     public EntityRotation getRightLegRotation() {
-        switch (version) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                return (EntityRotation) sets.get(16).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (EntityRotation) sets.get(17).getData();
-            case VERSION_1_14_4:
-                return (EntityRotation) sets.get(19).getData();
+        final EntityRotation defaultValue = new EntityRotation(1, 0, 1);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
-        return new EntityRotation(1, 0, 1);
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getRotation(16, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getRotation(17, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getRotation(19, defaultValue);
+        }
+        return sets.getRotation(20, defaultValue);
     }
 }

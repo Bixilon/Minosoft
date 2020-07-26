@@ -16,24 +16,17 @@ import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class EyeOfEnderMetaData extends EntityMetaData {
 
-    public EyeOfEnderMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public EyeOfEnderMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
     public Slot getItem() {
-        Slot ret = null;
-        switch (version) {
-            case VERSION_1_14_4:
-                ret = (Slot) sets.get(7).getData();
-                break;
+        Slot defaultValue = new Slot(Items.getItem("minecraft", "ender_eye"));
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        if (ret == null) {
-            ret = new Slot(Items.getItem("minecraft", "ender_eye"));
-        }
-        return ret;
+        return sets.getSlot(7, defaultValue);
     }
 }

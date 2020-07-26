@@ -21,12 +21,10 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.ElderGuardianMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class ElderGuardian extends Mob implements MobInterface {
     ElderGuardianMetaData metaData;
 
-    public ElderGuardian(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public ElderGuardian(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new ElderGuardianMetaData(sets, version);
     }

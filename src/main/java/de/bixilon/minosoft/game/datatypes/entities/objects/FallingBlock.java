@@ -23,8 +23,6 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class FallingBlock extends EntityObject implements ObjectInterface {
     final Block block;
     FallingBlockMetaData metaData;
@@ -40,7 +38,7 @@ public class FallingBlock extends EntityObject implements ObjectInterface {
         block = Blocks.getBlockByLegacy(additionalInt & 0xFFF, additionalInt >>> 12);
     }
 
-    public FallingBlock(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public FallingBlock(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new FallingBlockMetaData(sets, version);
         block = Blocks.nullBlock; // ToDo

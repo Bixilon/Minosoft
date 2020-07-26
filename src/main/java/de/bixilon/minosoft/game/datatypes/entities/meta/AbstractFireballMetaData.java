@@ -14,11 +14,9 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class AbstractFireballMetaData extends EntityMetaData {
 
-    public AbstractFireballMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public AbstractFireballMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 }

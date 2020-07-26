@@ -15,96 +15,76 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
-import java.util.HashMap;
+import javax.annotation.Nullable;
 
 public class LivingMetaData extends EntityMetaData {
 
-    public LivingMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public LivingMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
 
     public float getHealth() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                return (float) sets.get(6).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (float) sets.get(7).getData();
-            case VERSION_1_14_4:
-                return (float) sets.get(8).getData();
+        final float defaultValue = 1.0F;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getFloat(6, defaultValue);
         }
-        return 1.0F;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getFloat(7, defaultValue);
+        }
+        return sets.getFloat(8, defaultValue);
     }
 
     public int getPotionEffectColor() {
         // ToDo: color?
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                return (int) sets.get(7).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(8).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(9).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getInt(7, defaultValue);
         }
-        return 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getInt(8, defaultValue);
+        }
+        return sets.getInt(9, defaultValue);
     }
 
 
     public boolean isPotionEffectAmbient() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(8).getData() == 0x01;
-            case VERSION_1_9_4:
-                return (boolean) sets.get(8).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (boolean) sets.get(9).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(10).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getLegacyBoolean(8, defaultValue);
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBoolean(8, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBoolean(9, defaultValue);
+        }
+        return sets.getBoolean(10, defaultValue);
     }
 
     public int getNumberOfArrowsInEntity() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(9).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(9).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(10).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(11).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getByte(9, defaultValue);
         }
-        return 0;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getInt(9, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getInt(10, defaultValue);
+        }
+        return sets.getInt(11, defaultValue);
     }
 
+    @Nullable
     @Override
     public TextComponent getNameTag() {
         switch (version) {
             case VERSION_1_7_10:
-                return new TextComponent((String) sets.get(10).getData());
+                return new TextComponent(sets.getString(10, null));
             case VERSION_1_8:
-                return new TextComponent((String) sets.get(2).getData());
+                return new TextComponent(sets.getString(2, null));
             default:
                 return super.getNameTag();
         }
@@ -114,60 +94,57 @@ public class LivingMetaData extends EntityMetaData {
     public boolean isCustomNameVisible() {
         switch (version) {
             case VERSION_1_7_10:
-                return (byte) sets.get(11).getData() == 0x01;
+                return sets.getLegacyBoolean(11, super.isCustomNameVisible());
             case VERSION_1_8:
-                return (byte) sets.get(3).getData() == 0x01;
+                return sets.getLegacyBoolean(3, super.isCustomNameVisible());
             default:
                 return super.isCustomNameVisible();
         }
     }
 
     public boolean hasAI() {
-        switch (version) {
-            case VERSION_1_8:
-                return (byte) sets.get(15).getData() == 0x01;
+        if (version == ProtocolVersion.VERSION_1_8) {
+            return sets.getLegacyBoolean(15, false);
         }
         return false;
     }
 
     public boolean isHandActive() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(5).getData(), 0x01);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(6).getData(), 0x01);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(7).getData(), 0x01);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBitMask(5, 0x01, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBitMask(6, 0x01, defaultValue);
+        }
+        return sets.getBitMask(7, 0x01, defaultValue);
     }
 
     public Hand getActiveHand() {
-        // ToDo main, offhand
-        switch (version) {
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(5).getData(), 0x02) ? Hand.LEFT : Hand.RIGHT;
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(6).getData(), 0x02) ? Hand.LEFT : Hand.RIGHT;
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(7).getData(), 0x02) ? Hand.LEFT : Hand.RIGHT;
+        final int defaultValue = Hand.LEFT.getId();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return Hand.byId(defaultValue);
         }
-        return Hand.RIGHT;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return Hand.byBoolean(sets.getBitMask(5, 0x02, defaultValue == 0x01));
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return Hand.byBoolean(sets.getBitMask(6, 0x02, defaultValue == 0x01));
+        }
+        return Hand.byBoolean(sets.getBitMask(7, 0x02, defaultValue == 0x01));
     }
 
     public boolean isRiptideSpinAttack() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(6).getData(), 0x04);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(7).getData(), 0x04);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBitMask(6, 0x04, defaultValue);
+        }
+        return sets.getBitMask(7, 0x04, defaultValue);
     }
 }

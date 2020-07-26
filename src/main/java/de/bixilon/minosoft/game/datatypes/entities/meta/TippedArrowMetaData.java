@@ -14,27 +14,26 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class TippedArrowMetaData extends AbstractArrowMetaData {
 
-    public TippedArrowMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public TippedArrowMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
     public int getColor() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (int) sets.get(6).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                return (int) sets.get(7).getData();
-            case VERSION_1_13_2:
-                return (int) sets.get(8).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(10).getData();
+        final int defaultValue = -1;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return -1;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getInt(6, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return sets.getInt(7, defaultValue);
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getInt(8, defaultValue);
+        }
+        return sets.getByte(10, defaultValue);
     }
 }

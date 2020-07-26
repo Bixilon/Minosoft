@@ -14,21 +14,23 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class TropicalFishMetaData extends AbstractFishMetaData {
 
-    public TropicalFishMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public TropicalFishMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
     public int getVariant() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (int) sets.get(13).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(15).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getInt(13, defaultValue);
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getInt(15, defaultValue);
+        }
+        return sets.getInt(16, defaultValue);
     }
 }

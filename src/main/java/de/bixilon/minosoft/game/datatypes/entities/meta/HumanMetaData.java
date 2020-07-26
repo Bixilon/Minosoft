@@ -16,86 +16,94 @@ import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
+import javax.annotation.Nullable;
 
 public class HumanMetaData extends LivingMetaData {
 
-    public HumanMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public HumanMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
 
     public float getAdditionalHearts() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (float) sets.get(17).getData();
-            case VERSION_1_9_4:
-                return (float) sets.get(10).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (float) sets.get(11).getData();
-            case VERSION_1_14_4:
-                return (float) sets.get(13).getData();
+        final float defaultValue = 0.F;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getFloat(17, defaultValue);
         }
-        return 0.0F;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getFloat(10, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getFloat(11, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getFloat(13, defaultValue);
+        }
+        return sets.getFloat(14, defaultValue);
     }
 
     public int getScore() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (int) sets.get(18).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(11).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(12).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(14).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getInt(18, defaultValue);
         }
-        return 0;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getInt(11, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getInt(12, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getInt(14, defaultValue);
+        }
+        return sets.getInt(15, defaultValue);
     }
 
 
     public Hand getMainHand() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return Hand.byId((byte) sets.get(13).getData());
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return Hand.byId((byte) sets.get(14).getData());
-            case VERSION_1_14_4:
-                return Hand.byId((byte) sets.get(16).getData());
+        final int defaultValue = Hand.LEFT.getId();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return Hand.byId(defaultValue);
         }
-        return Hand.RIGHT;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return Hand.byId(sets.getByte(13, defaultValue));
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return Hand.byId(sets.getByte(14, defaultValue));
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return Hand.byId(sets.getByte(16, defaultValue));
+        }
+        return Hand.byId(sets.getByte(17, defaultValue));
     }
 
+    @Nullable
     public CompoundTag getLeftShoulderEntityData() {
-        switch (version) {
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (CompoundTag) sets.get(15).getData();
-            case VERSION_1_14_4:
-                return (CompoundTag) sets.get(17).getData();
+        final CompoundTag defaultValue = null;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return null;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getNBT(15, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getNBT(17, defaultValue);
+        }
+        return sets.getNBT(18, defaultValue);
     }
 
+    @Nullable
     public CompoundTag getRightShoulderEntityData() {
-        switch (version) {
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (CompoundTag) sets.get(16).getData();
-            case VERSION_1_14_4:
-                return (CompoundTag) sets.get(18).getData();
+        final CompoundTag defaultValue = null;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return null;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getNBT(16, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getNBT(18, defaultValue);
+        }
+        return sets.getNBT(19, defaultValue);
     }
 }

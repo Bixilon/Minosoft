@@ -21,8 +21,6 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.FireballMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class Fireball extends EntityObject implements ObjectInterface {
     final int thrower;
     FireballMetaData metaData;
@@ -38,7 +36,7 @@ public class Fireball extends EntityObject implements ObjectInterface {
         this.thrower = additionalInt;
     }
 
-    public Fireball(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public Fireball(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new FireballMetaData(sets, version);
         this.thrower = 0; // ToDo

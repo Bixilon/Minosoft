@@ -15,19 +15,20 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
+import javax.annotation.Nullable;
+
 
 public class ItemedThrowableMetaData extends ThrowableMetaData {
 
-    public ItemedThrowableMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public ItemedThrowableMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
+    @Nullable
     public Slot getItem() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (Slot) sets.get(7).getData();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return null;
         }
-        return null;
+        return sets.getSlot(7, null);
     }
 }

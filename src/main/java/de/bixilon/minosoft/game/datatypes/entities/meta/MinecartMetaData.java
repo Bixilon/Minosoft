@@ -16,11 +16,9 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class MinecartMetaData extends EntityMetaData {
 
-    public MinecartMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public MinecartMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 

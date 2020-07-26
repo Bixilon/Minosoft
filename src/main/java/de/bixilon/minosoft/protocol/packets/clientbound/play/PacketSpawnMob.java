@@ -16,7 +16,6 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
-import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -84,7 +83,7 @@ public class PacketSpawnMob implements ClientboundPacket {
                 Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
 
 
-                HashMap<Integer, EntityMetaData.MetaDataSet> mataData = null;
+                MetaDataHashMap mataData = null;
                 if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
                     mataData = buffer.readMetaData();
                 }

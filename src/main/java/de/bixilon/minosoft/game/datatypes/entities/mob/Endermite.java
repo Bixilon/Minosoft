@@ -21,12 +21,10 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EndermiteMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class Endermite extends Mob implements MobInterface {
     EndermiteMetaData metaData;
 
-    public Endermite(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public Endermite(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new EndermiteMetaData(sets, version);
     }

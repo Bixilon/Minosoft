@@ -21,8 +21,6 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.TippedArrowMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class Arrow extends EntityObject implements ObjectInterface {
     final int shooter;
     TippedArrowMetaData metaData;
@@ -38,7 +36,7 @@ public class Arrow extends EntityObject implements ObjectInterface {
         this.shooter = additionalInt;
     }
 
-    public Arrow(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public Arrow(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new TippedArrowMetaData(sets, version);
         shooter = 0; // ToDo

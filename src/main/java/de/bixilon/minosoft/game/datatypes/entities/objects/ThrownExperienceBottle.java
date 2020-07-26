@@ -21,8 +21,6 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.ExperienceBottleMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class ThrownExperienceBottle extends EntityObject implements ObjectInterface {
     ExperienceBottleMetaData metaData;
 
@@ -35,7 +33,7 @@ public class ThrownExperienceBottle extends EntityObject implements ObjectInterf
         super(entityId, location, yaw, pitch, velocity);
     }
 
-    public ThrownExperienceBottle(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public ThrownExperienceBottle(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new ExperienceBottleMetaData(sets, version); // ToDo
     }

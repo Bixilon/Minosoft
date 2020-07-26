@@ -14,9 +14,9 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class FlyingMetaData extends InsentientMetaData {
+public class SpectralArrowMetaData extends AbstractArrowMetaData {
 
-    public FlyingMetaData(MetaDataHashMap sets, ProtocolVersion version) {
+    public SpectralArrowMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 }

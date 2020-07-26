@@ -15,17 +15,24 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.*;
 import de.bixilon.minosoft.game.datatypes.entities.Pose;
 import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
+import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
+import de.bixilon.minosoft.game.datatypes.particle.Particle;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.UUID;
 
 
 public class EntityMetaData {
 
-    final HashMap<Integer, MetaDataSet> sets;
+    final MetaDataHashMap sets;
     final ProtocolVersion version;
 
     /*
@@ -36,7 +43,7 @@ public class EntityMetaData {
     1.13: https://wiki.vg/index.php?title=Entity_metadata&oldid=14800
     1.14.4: https://wiki.vg/index.php?title=Entity_metadata&oldid=15239
      */
-    public EntityMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public EntityMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         this.sets = sets;
         this.version = version;
     }
@@ -124,73 +131,34 @@ public class EntityMetaData {
         return data;
     }
 
-    public HashMap<Integer, MetaDataSet> getSets() {
+    public MetaDataHashMap getSets() {
         return sets;
     }
 
     public boolean onFire() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(0).getData(), 0x01);
-        }
-        return false;
+        return sets.getBitMask(0, 0x01, false);
     }
 
-    public boolean isSneaking() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(0).getData(), 0x02);
-        }
-        return false;
+    private boolean isSneaking() {
+        return sets.getBitMask(0, 0x02, false);
     }
 
     public boolean isSprinting() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(0).getData(), 0x08);
-        }
-        return false;
+        return sets.getBitMask(0, 0x08, false);
     }
 
     public boolean isEating() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-                return BitByte.isBitMask((byte) sets.get(0).getData(), 0x10);
+        if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+            return false;
         }
-        return false;
+        return sets.getBitMask(0, 0x10, false);
     }
 
-    public boolean isSwimming() {
-        switch (version) {
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(0).getData(), 0x10);
+    private boolean isSwimming() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return false;
         }
-        return false;
+        return sets.getBitMask(0, 0x10, false);
     }
 
     public boolean isDrinking() {
@@ -202,104 +170,61 @@ public class EntityMetaData {
     }
 
     public boolean isInvisible() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                return BitByte.isBitSet((byte) sets.get(0).getData(), 0x20);
-        }
-        return false;
+        return sets.getBitMask(0, 0x20, false);
     }
 
     public boolean isGlowing() {
-        switch (version) {
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                return BitByte.isBitSet((byte) sets.get(0).getData(), 0x40);
-        }
-        return false;
+        return sets.getBitMask(0, 0x40, false);
     }
 
     public boolean isFlyingWithElytra() {
-        switch (version) {
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                return BitByte.isBitSet((byte) sets.get(0).getData(), 0x80);
-        }
-        return false;
+        return sets.getBitMask(0, 0x80, false);
     }
 
+    @Nullable
     public TextComponent getNameTag() {
-        switch (version) {
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                return new TextComponent((String) sets.get(2).getData());
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                return (TextComponent) sets.get(2).getData();
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return null;
         }
-        return null;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return new TextComponent(sets.getString(2, null));
+        }
+        return sets.getTextComponent(2, null);
     }
 
     public boolean isCustomNameVisible() {
-        switch (version) {
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                return (boolean) sets.get(3).getData();
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return false;
         }
-        return false;
+        return sets.getBoolean(3, false);
     }
 
     public boolean isSilent() {
-        switch (version) {
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                return (boolean) sets.get(4).getData();
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return false;
         }
-        return false;
+        return sets.getBoolean(4, false);
+
     }
 
     public boolean hasGravity() {
-        switch (version) {
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                return !(boolean) sets.get(5).getData();
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return true;
         }
-        return true;
+        return !sets.getBoolean(5, false);
     }
 
     public Pose getPose() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (Pose) sets.get(6).getData();
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            if (isSneaking()) {
+                return Pose.SNEAKING;
+            } else if (isSwimming()) {
+                return Pose.SWIMMING;
+            } else {
+                return Pose.STANDING;
+            }
         }
-        return Pose.STANDING;
+        return sets.getPose(6, Pose.STANDING);
     }
 
     public enum Types {
@@ -355,21 +280,93 @@ public class EntityMetaData {
         }
     }
 
-    public static class MetaDataSet {
-        final int index;
-        final Object data;
-
-        public MetaDataSet(int index, Object data) {
-            this.index = index;
-            this.data = data;
+    public static class MetaDataHashMap extends HashMap<Integer, Object> {
+        public Pose getPose(int index, Pose defaultValue) {
+            return (Pose) get(index, defaultValue);
         }
 
-        public Object getData() {
-            return data;
+        public VillagerData getVillagerData(int index, VillagerData defaultValue) {
+            return (VillagerData) get(index, defaultValue);
         }
 
-        public int getIndex() {
-            return index;
+        public Particle getParticle(int index, Particle defaultValue) {
+            return (Particle) get(index, defaultValue);
+        }
+
+        public CompoundTag getNBT(int index, CompoundTag defaultValue) {
+            return (CompoundTag) get(index, defaultValue);
+        }
+
+        public Block getBlock(int index, Block defaultValue) {
+            return (Block) get(index, defaultValue);
+        }
+
+        public UUID getUUID(int index, UUID defaultValue) {
+            return (UUID) get(index, defaultValue);
+        }
+
+        public Direction getDirection(int index, Direction defaultValue) {
+            return (Direction) get(index, defaultValue);
+        }
+
+        public BlockPosition getPosition(int index, BlockPosition defaultValue) {
+            return (BlockPosition) get(index, defaultValue);
+        }
+
+        public EntityRotation getRotation(int index, EntityRotation defaultValue) {
+            return (EntityRotation) get(index, defaultValue);
+        }
+
+        public Vector getVector(int index, Vector defaultValue) {
+            return (Vector) get(index, defaultValue);
+        }
+
+        public boolean getBoolean(int index, boolean defaultValue) {
+            return (boolean) get(index, defaultValue);
+        }
+
+        public boolean getLegacyBoolean(int index, boolean defaultValue) {
+            return (byte) get(index, (defaultValue ? 1 : 0)) == 0x01;
+        }
+
+        public boolean getBitMask(int index, int bitMask, boolean defaultValue) {
+            return BitByte.isBitMask(getByte(index, (defaultValue ? 1 : 0)), bitMask);
+        }
+
+        public Slot getSlot(int index, Slot defaultValue) {
+            return (Slot) get(index, defaultValue);
+        }
+
+        public TextComponent getTextComponent(int index, TextComponent defaultValue) {
+            return (TextComponent) get(index, defaultValue);
+        }
+
+        public String getString(int index, String defaultValue) {
+            return (String) get(index, defaultValue);
+        }
+
+        public float getFloat(int index, float defaultValue) {
+            return (float) get(index, defaultValue);
+        }
+
+        public int getInt(int index, int defaultValue) {
+            return (int) get(index, defaultValue);
+        }
+
+        public short getShort(int index, int defaultValue) {
+            return (short) get(index, defaultValue);
+        }
+
+        public byte getByte(int index, int defaultValue) {
+            return (byte) get(index, defaultValue);
+        }
+
+        public Object get(int index, Object defaultValue) {
+            if (containsKey(index)) {
+                return super.get(index);
+            }
+            return defaultValue;
         }
     }
+
 }

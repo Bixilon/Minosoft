@@ -21,8 +21,6 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.MinecartMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class Minecart extends EntityObject implements ObjectInterface {
     final MinecartType type;
     MinecartMetaData metaData;
@@ -37,7 +35,7 @@ public class Minecart extends EntityObject implements ObjectInterface {
         type = MinecartType.byType(additionalInt);
     }
 
-    public Minecart(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public Minecart(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new MinecartMetaData(sets, version);
         type = MinecartType.EMPTY; // ToDo

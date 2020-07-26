@@ -21,8 +21,6 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.FurnaceMinecartMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class MinecartFurnace extends EntityObject implements ObjectInterface {
     FurnaceMinecartMetaData metaData;
 
@@ -34,7 +32,7 @@ public class MinecartFurnace extends EntityObject implements ObjectInterface {
         super(entityId, location, yaw, pitch, velocity);
     }
 
-    public MinecartFurnace(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public MinecartFurnace(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new FurnaceMinecartMetaData(sets, version);
     }

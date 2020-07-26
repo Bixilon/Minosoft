@@ -16,11 +16,9 @@ import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class SnowballMetaData extends ItemedThrowableMetaData {
 
-    public SnowballMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public SnowballMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 

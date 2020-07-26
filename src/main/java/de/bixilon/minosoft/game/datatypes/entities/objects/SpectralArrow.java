@@ -21,8 +21,6 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.AbstractArrowMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class SpectralArrow extends EntityObject implements ObjectInterface {
     final int shooter;
     AbstractArrowMetaData metaData;
@@ -38,7 +36,7 @@ public class SpectralArrow extends EntityObject implements ObjectInterface {
         this.shooter = additionalInt;
     }
 
-    public SpectralArrow(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public SpectralArrow(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new AbstractArrowMetaData(sets, version);
         this.shooter = 0; // ToDo

@@ -14,21 +14,28 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class TridentMetaData extends AbstractArrowMetaData {
 
-    public TridentMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public TridentMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
     public int getLoyaltyLevel() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (int) sets.get(8).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(10).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getInt(8, defaultValue);
+        }
+        return sets.getByte(10, defaultValue);
+    }
+
+    public boolean hasEnchantmentGlint() {
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+            return defaultValue;
+        }
+        return sets.getBoolean(11, defaultValue);
     }
 }

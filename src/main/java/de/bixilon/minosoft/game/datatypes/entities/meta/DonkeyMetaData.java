@@ -14,11 +14,9 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class DonkeyMetaData extends ChestedHorseMetaData {
 
-    public DonkeyMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public DonkeyMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 

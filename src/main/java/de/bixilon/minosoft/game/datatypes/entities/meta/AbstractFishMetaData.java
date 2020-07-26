@@ -14,21 +14,23 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class AbstractFishMetaData extends WaterMobMetaData {
 
-    public AbstractFishMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public AbstractFishMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
     public boolean fromBucket() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (boolean) sets.get(12).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(14).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBoolean(12, defaultValue);
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getBoolean(14, defaultValue);
+        }
+        return sets.getBoolean(15, defaultValue);
     }
 }

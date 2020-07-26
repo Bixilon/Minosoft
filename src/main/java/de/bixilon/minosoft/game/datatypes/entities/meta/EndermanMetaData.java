@@ -16,11 +16,9 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class EndermanMetaData extends LivingMetaData {
 
-    public EndermanMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public EndermanMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
@@ -60,4 +58,6 @@ public class EndermanMetaData extends LivingMetaData {
         }
         return false;
     }
+
+    CHANGES
 }

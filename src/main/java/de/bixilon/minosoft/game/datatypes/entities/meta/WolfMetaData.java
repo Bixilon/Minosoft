@@ -16,11 +16,9 @@ import de.bixilon.minosoft.game.datatypes.Color;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
-import java.util.HashMap;
-
 public class WolfMetaData extends TameableMetaData {
 
-    public WolfMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public WolfMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
@@ -98,4 +96,7 @@ public class WolfMetaData extends TameableMetaData {
         }
         return Color.RED;
     }
+
+
+    CHNAGES
 }

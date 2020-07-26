@@ -14,11 +14,9 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class PolarBearMetaData extends AgeableMetaData {
 
-    public PolarBearMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public PolarBearMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 

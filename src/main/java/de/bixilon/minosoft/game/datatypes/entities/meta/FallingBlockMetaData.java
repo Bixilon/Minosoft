@@ -15,26 +15,23 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class FallingBlockMetaData extends EntityMetaData {
 
-    public FallingBlockMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public FallingBlockMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
     public BlockPosition getSpawnPosition() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (BlockPosition) sets.get(5).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (BlockPosition) sets.get(6).getData();
-            case VERSION_1_14_4:
-                return (BlockPosition) sets.get(7).getData();
+        BlockPosition defaultValue = new BlockPosition(0, 0, 0);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return new BlockPosition(0, (short) 0, 0);
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getPosition(5, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getPosition(6, defaultValue);
+        }
+        return sets.getPosition(7, defaultValue);
     }
 }

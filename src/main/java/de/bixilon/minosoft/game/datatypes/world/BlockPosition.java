@@ -18,7 +18,7 @@ public class BlockPosition {
     final int y;
     final int z;
 
-    public BlockPosition(int x, short y, int z) {
+    public BlockPosition(int x, int y, int z) {
         // y min -2048, max 2047
         this.x = x;
         this.y = y;

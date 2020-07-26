@@ -15,11 +15,9 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class TurtleMetaData extends AnimalMetaData {
 
-    public TurtleMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public TurtleMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 

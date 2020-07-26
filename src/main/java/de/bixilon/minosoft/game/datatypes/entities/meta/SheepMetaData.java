@@ -16,11 +16,9 @@ import de.bixilon.minosoft.game.datatypes.Color;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
-import java.util.HashMap;
-
 public class SheepMetaData extends AnimalMetaData {
 
-    public SheepMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public SheepMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 

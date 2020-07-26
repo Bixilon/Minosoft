@@ -13,166 +13,103 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
-import java.util.HashMap;
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class AbstractHorseMetaData extends AnimalMetaData {
 
-    public AbstractHorseMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public AbstractHorseMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
 
-    public boolean isTame() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x02);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x02);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x02);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((int) sets.get(15).getData(), 0x02);
+    private boolean isOptionBitMask(int bitMask, boolean defaultValue) {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            bitMask *= 2;
         }
-        return false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getBitMask(16, bitMask, defaultValue);
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBitMask(12, bitMask, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBitMask(13, bitMask, defaultValue);
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getBitMask(15, bitMask, defaultValue);
+        }
+        return sets.getBitMask(16, bitMask, defaultValue);
+    }
+
+    public boolean isTame() {
+        return isOptionBitMask(0x02, false);
     }
 
     public boolean hasSaddle() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x04);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x04);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x04);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((int) sets.get(15).getData(), 0x04);
-        }
-        return false;
+        return isOptionBitMask(0x04, false);
     }
 
     public boolean isBred() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x10);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x10);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x10);
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x08);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((int) sets.get(15).getData(), 0x08);
-        }
-        return false;
+        return isOptionBitMask(0x08, false);
     }
 
     public boolean isEating() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x20);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x20);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x20);
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x10);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((int) sets.get(15).getData(), 0x10);
-        }
-        return false;
+        return isOptionBitMask(0x10, false);
     }
 
     public boolean isRearing() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x40);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x40);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x40);
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x20);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((int) sets.get(15).getData(), 0x20);
-        }
-        return false;
+        return isOptionBitMask(0x20, false);
     }
 
     public boolean isMouthOpen() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x80);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x80);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x80);
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x40);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((int) sets.get(15).getData(), 0x40);
-        }
-        return false;
+        return isOptionBitMask(0x40, false);
     }
 
     public HorseType getType() {
+        final int defaultValue = HorseType.HORSE.getId();
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return HorseType.byId((int) sets.get(19).getData());
+                return HorseType.byId(sets.getInt(19, defaultValue));
             case VERSION_1_9_4:
-                return HorseType.byId((int) sets.get(13).getData());
+                return HorseType.byId(sets.getInt(13, defaultValue));
             case VERSION_1_10:
-                return HorseType.byId((int) sets.get(14).getData());
+                return HorseType.byId(sets.getInt(14, defaultValue));
         }
         return HorseType.HORSE;
     }
 
+    @Nullable
     public String getOwnerName() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return (String) sets.get(21).getData();
+                return sets.getString(21, null);
         }
         return null;
     }
 
+    @Nullable
     public UUID getOwnerUUID() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (UUID) sets.get(15).getData();
-            case VERSION_1_10:
-                return (UUID) sets.get(16).getData();
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (UUID) sets.get(14).getData();
-            case VERSION_1_14_4:
-                return (UUID) sets.get(16).getData();
+        final UUID defaultValue = null;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return null;
         }
-        return null;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getUUID(15, defaultValue);
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return sets.getUUID(16, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getUUID(14, defaultValue);
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getUUID(16, defaultValue);
+        }
+        return sets.getUUID(17, defaultValue);
     }
 
     public enum HorseType {

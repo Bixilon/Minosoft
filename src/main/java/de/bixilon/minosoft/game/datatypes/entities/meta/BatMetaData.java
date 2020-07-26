@@ -13,32 +13,28 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
-
-import java.util.HashMap;
 
 public class BatMetaData extends AmbientMetaData {
 
-    public BatMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public BatMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
 
     public boolean isHanging() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(16).getData() == 0x01;
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x01);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(12).getData(), 0x01);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(14).getData(), 0x01);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getLegacyBoolean(16, defaultValue);
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBitMask(11, 0x01, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBitMask(12, 0x01, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return sets.getBitMask(14, 0x01, defaultValue);
+        }
+        return sets.getBitMask(15, 0x01, defaultValue);
     }
 }

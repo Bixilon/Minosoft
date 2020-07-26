@@ -21,8 +21,6 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EggMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class ThrownEgg extends EntityObject implements ObjectInterface {
     final int thrower;
     EggMetaData metaData;
@@ -38,7 +36,7 @@ public class ThrownEgg extends EntityObject implements ObjectInterface {
         this.thrower = additionalInt;
     }
 
-    public ThrownEgg(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public ThrownEgg(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new EggMetaData(sets, version);
         thrower = 0; // ToDo

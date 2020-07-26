@@ -13,60 +13,58 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
-import java.util.HashMap;
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class AbstractArrowMetaData extends EntityMetaData {
 
-    public AbstractArrowMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public AbstractArrowMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
     public boolean isCritical() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(16).getData() == 0x01;
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(5).getData(), 0x01);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(6).getData(), 0x01);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(7).getData(), 0x01);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getLegacyBoolean(16, defaultValue);
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBitMask(5, 0x01, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBitMask(6, 0x01, defaultValue);
+        }
+        return sets.getBitMask(7, 0x01, defaultValue);
     }
 
     public boolean isNoClip() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(6).getData(), 0x02);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(7).getData(), 0x02);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBitMask(6, 0x02, defaultValue);
+        }
+        return sets.getBitMask(7, 0x02, defaultValue);
     }
 
+    @Nullable
     public UUID getShooterUUID() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (UUID) sets.get(7).getData();
-            case VERSION_1_14_4:
-                return (UUID) sets.get(8).getData();
+        final UUID defaultValue = null;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return null;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getUUID(7, defaultValue);
+        }
+        return sets.getUUID(8, defaultValue);
     }
 
     public byte getPeircingLevel() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (byte) sets.get(9).getData();
+        final byte defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        return sets.getByte(9, defaultValue);
     }
 }

@@ -17,11 +17,9 @@ import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class ShulkerMetaData extends GolemMetaData {
 
-    public ShulkerMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public ShulkerMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 

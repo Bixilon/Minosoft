@@ -34,7 +34,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class InByteBuffer {
@@ -348,8 +347,8 @@ public class InByteBuffer {
         return version;
     }
 
-    public HashMap<Integer, EntityMetaData.MetaDataSet> readMetaData() {
-        HashMap<Integer, EntityMetaData.MetaDataSet> sets = new HashMap<>();
+    public EntityMetaData.MetaDataHashMap readMetaData() {
+        EntityMetaData.MetaDataHashMap sets = new EntityMetaData.MetaDataHashMap();
 
         switch (version) {
             case VERSION_1_7_10:
@@ -359,7 +358,7 @@ public class InByteBuffer {
                 while (item != 0x7F) {
                     byte index = (byte) (item & 0x1F);
                     EntityMetaData.Types type = EntityMetaData.Types.byId((item & 0xFF) >> 5, version);
-                    sets.put((int) index, new EntityMetaData.MetaDataSet(index, EntityMetaData.getData(type, this)));
+                    sets.put((int) index, EntityMetaData.getData(type, this));
                     item = readByte();
                 }
                 break;
@@ -370,7 +369,7 @@ public class InByteBuffer {
                 byte index = readByte();
                 while (index != (byte) 0xFF) {
                     EntityMetaData.Types type = EntityMetaData.Types.byId(readByte(), version);
-                    sets.put((int) index, new EntityMetaData.MetaDataSet(index, EntityMetaData.getData(type, this)));
+                    sets.put((int) index, EntityMetaData.getData(type, this));
                     index = readByte();
                 }
                 break;
@@ -379,7 +378,7 @@ public class InByteBuffer {
                 byte index = readByte();
                 while (index != (byte) 0xFF) {
                     EntityMetaData.Types type = EntityMetaData.Types.byId(readVarInt(), version);
-                    sets.put((int) index, new EntityMetaData.MetaDataSet(index, EntityMetaData.getData(type, this)));
+                    sets.put((int) index, EntityMetaData.getData(type, this));
                     index = readByte();
                 }
                 break;

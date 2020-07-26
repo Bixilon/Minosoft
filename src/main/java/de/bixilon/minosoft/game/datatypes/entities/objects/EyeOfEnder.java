@@ -21,8 +21,6 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EyeOfEnderMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class EyeOfEnder extends EntityObject implements ObjectInterface {
     EyeOfEnderMetaData metaData;
 
@@ -35,7 +33,7 @@ public class EyeOfEnder extends EntityObject implements ObjectInterface {
         super(entityId, location, yaw, pitch, velocity);
     }
 
-    public EyeOfEnder(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public EyeOfEnder(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new EyeOfEnderMetaData(sets, version);
     }

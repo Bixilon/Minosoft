@@ -14,121 +14,105 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class BoatMetaData extends EntityMetaData {
 
-    public BoatMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public BoatMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
     public int getTimeSinceHit() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (int) sets.get(17).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(5).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(6).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(7).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getInt(17, defaultValue);
         }
-        return 0;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getInt(5, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getInt(6, defaultValue);
+        }
+        return sets.getInt(7, defaultValue);
     }
 
     public int getForwardDirection() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (int) sets.get(18).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(6).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(7).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(8).getData();
+        final int defaultValue = 1;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getInt(18, defaultValue);
         }
-        return 1;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getInt(6, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getInt(7, defaultValue);
+        }
+        return sets.getInt(8, defaultValue);
     }
 
     public float getDamageTaken() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (float) sets.get(19).getData();
-            case VERSION_1_9_4:
-                return (float) sets.get(7).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (float) sets.get(8).getData();
-            case VERSION_1_14_4:
-                return (float) sets.get(9).getData();
+        final float defaultValue = 0.0F;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getFloat(19, defaultValue);
         }
-        return 0.0F;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getFloat(7, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getFloat(8, defaultValue);
+        }
+        return sets.getFloat(9, defaultValue);
     }
 
     public BoatMaterial getMaterial() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return BoatMaterial.byId((int) sets.get(8).getData());
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BoatMaterial.byId((int) sets.get(9).getData());
-            case VERSION_1_14_4:
-                return BoatMaterial.byId((int) sets.get(10).getData());
+        final int defaultValue = BoatMaterial.OAK.getId();
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return BoatMaterial.byId(defaultValue);
         }
-        return BoatMaterial.OAK;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return BoatMaterial.byId(sets.getInt(8, defaultValue));
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return BoatMaterial.byId(sets.getInt(9, defaultValue));
+        }
+        return BoatMaterial.byId(sets.getInt(10, defaultValue));
     }
 
     public boolean isRightPaddleTurning() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (boolean) sets.get(9).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                return (boolean) sets.get(10).getData();
-            case VERSION_1_13_2:
-                return (boolean) sets.get(11).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(12).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBoolean(9, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBoolean(10, defaultValue);
+        }
+        return sets.getBoolean(11, defaultValue);
     }
 
     public boolean isLeftPaddleTurning() {
-        switch (version) {
-            case VERSION_1_9_4:
-            case VERSION_1_13_2:
-                return (boolean) sets.get(10).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_14_4:
-                return (boolean) sets.get(11).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBoolean(10, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBoolean(11, defaultValue);
+        }
+        return sets.getBoolean(12, defaultValue);
     }
 
     public int getSplashTimer() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (int) sets.get(12).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(13).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getInt(12, defaultValue);
+        }
+        return sets.getInt(13, defaultValue);
     }
 
     public enum BoatMaterial {

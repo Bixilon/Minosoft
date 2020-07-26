@@ -12,96 +12,96 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
+import de.bixilon.minosoft.game.datatypes.particle.OtherParticles;
+import de.bixilon.minosoft.game.datatypes.particle.Particle;
 import de.bixilon.minosoft.game.datatypes.particle.Particles;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class AreaEffectCloudMetaData extends EntityMetaData {
 
-    public AreaEffectCloudMetaData(HashMap<Integer, MetaDataSet> sets, ProtocolVersion version) {
+    public AreaEffectCloudMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
 
     public float getRadius() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (float) sets.get(5).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (float) sets.get(6).getData();
-            case VERSION_1_14_4:
-                return (float) sets.get(7).getData();
+        final float defaultValue = 0.5F;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0.5F;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getFloat(5, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getFloat(6, defaultValue);
+        }
+        return sets.getFloat(7, defaultValue);
     }
 
     public int getColor() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (int) sets.get(6).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(7).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(8).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getInt(6, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getInt(7, defaultValue);
+        }
+        return sets.getInt(8, defaultValue);
     }
 
     public boolean ignoreRadius() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (boolean) sets.get(7).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (boolean) sets.get(8).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(9).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBoolean(7, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBoolean(8, defaultValue);
+        }
+        return sets.getBoolean(9, defaultValue);
     }
 
-    public Particles getParticle() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return Particles.byId((int) sets.get(8).getData());
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                return Particles.byId((int) sets.get(9).getData());
-            case VERSION_1_13_2:
-                return (Particles) sets.get(9).getData();
-            case VERSION_1_14_4:
-                return (Particles) sets.get(10).getData();
+    public Particle getParticle() {
+        final Particle defaultValue = new OtherParticles(Particles.EFFECT);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return Particles.EFFECT;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return new OtherParticles(Particles.byId(sets.getInt(8, defaultValue.getParticle().getId())));
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return new OtherParticles(Particles.byId(sets.getInt(9, defaultValue.getParticle().getId())));
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getParticle(9, defaultValue);
+        }
+        return sets.getParticle(10, defaultValue);
     }
 
     public int getParticleParameter1() {
-        switch (version) {
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                return (int) sets.get(10).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return sets.getInt(10, defaultValue);
+        }
+        return defaultValue;
     }
 
     public int getParticleParameter2() {
-        switch (version) {
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                return (int) sets.get(11).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return sets.getInt(11, defaultValue);
+        }
+        return defaultValue;
     }
 }

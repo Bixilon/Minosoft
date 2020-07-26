@@ -21,12 +21,10 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.ChickenMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-import java.util.HashMap;
-
 public class Chicken extends Mob implements MobInterface {
     ChickenMetaData metaData;
 
-    public Chicken(int entityId, Location location, short yaw, short pitch, Velocity velocity, HashMap<Integer, EntityMetaData.MetaDataSet> sets, ProtocolVersion version) {
+    public Chicken(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new ChickenMetaData(sets, version);
     }
