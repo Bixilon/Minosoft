@@ -29,13 +29,7 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getFloat(5, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getFloat(6, defaultValue);
-        }
-        return sets.getFloat(7, defaultValue);
+        return sets.getFloat(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public int getColor() {
@@ -43,13 +37,7 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getInt(6, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getInt(7, defaultValue);
-        }
-        return sets.getInt(8, defaultValue);
+        return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
     }
 
     public boolean ignoreRadius() {
@@ -57,13 +45,7 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getBoolean(7, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBoolean(8, defaultValue);
-        }
-        return sets.getBoolean(9, defaultValue);
+        return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
     }
 
     public Particle getParticle() {
@@ -71,16 +53,10 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return new OtherParticles(Particles.byId(sets.getInt(8, defaultValue.getParticle().getId())));
-        }
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            return new OtherParticles(Particles.byId(sets.getInt(9, defaultValue.getParticle().getId())));
+            return new OtherParticles(Particles.byId(sets.getInt(super.getLastDataIndex() + 4, defaultValue.getParticle().getId())));
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getParticle(9, defaultValue);
-        }
-        return sets.getParticle(10, defaultValue);
+        return sets.getParticle(super.getLastDataIndex() + 4, defaultValue);
     }
 
     public int getParticleParameter1() {
@@ -89,7 +65,7 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
             return defaultValue;
         }
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            return sets.getInt(10, defaultValue);
+            return sets.getInt(super.getLastDataIndex() + 5, defaultValue);
         }
         return defaultValue;
     }
@@ -100,8 +76,19 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
             return defaultValue;
         }
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            return sets.getInt(11, defaultValue);
+            return sets.getInt(super.getLastDataIndex() + 6, defaultValue);
         }
         return defaultValue;
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return super.getLastDataIndex() + 6;
+        }
+        return super.getLastDataIndex() + 4;
     }
 }

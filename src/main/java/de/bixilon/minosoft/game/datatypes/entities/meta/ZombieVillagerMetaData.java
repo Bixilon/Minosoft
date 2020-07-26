@@ -22,26 +22,25 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
     }
 
     @Override
-    public VillagerData.VillagerProfessions getProfession() {
-        switch (version) {
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                return VillagerData.VillagerProfessions.byId((int) sets.get(16).getData(), version);
-            case VERSION_1_13_2:
-                return VillagerData.VillagerProfessions.byId((int) sets.get(17).getData(), version);
-            case VERSION_1_14_4:
-                return getVillageData().getProfession();
-            default:
-                return super.getProfession();
+    public boolean isConverting() {
+        final boolean defaultValue = super.isConverting();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+            return defaultValue;
         }
+        return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    @Override
+    public VillagerData.VillagerProfessions getProfession() {
+        final int defaultValue = super.getProfession().getId(version);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return VillagerData.VillagerProfessions.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue), version);
+        }
+        return getVillageData().getProfession();
     }
 
     public VillagerData.VillagerTypes getType() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return getVillageData().getType();
-        }
-        return VillagerData.VillagerTypes.PLAINS;
+        return getVillageData().getType();
     }
 
     public VillagerData.VillagerLevels getLevel() {
@@ -49,26 +48,19 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
     }
 
     public VillagerData getVillageData() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (VillagerData) sets.get(18).getData();
+        final VillagerData defaultValue = new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE);
+        return sets.getVillagerData(super.getLastDataIndex() + 2, defaultValue);
     }
 
 
     @Override
-    public boolean isConverting() {
-        switch (version) {
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                return (boolean) sets.get(15).getData();
-            case VERSION_1_13_2:
-                return (boolean) sets.get(16).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(17).getData();
-            default:
-                return super.isConverting();
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+            return super.getLastDataIndex();
         }
+        return super.getLastDataIndex() + 2;
     }
 }

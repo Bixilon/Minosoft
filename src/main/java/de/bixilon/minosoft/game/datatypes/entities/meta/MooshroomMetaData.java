@@ -21,11 +21,19 @@ public class MooshroomMetaData extends AnimalMetaData {
     }
 
     public MooshroomTypes getType() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return MooshroomTypes.byTypeName((String) sets.get(15).getData());
+        final String defaultValue = MooshroomTypes.RED.getTypeName();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return MooshroomTypes.byTypeName(defaultValue);
         }
-        return MooshroomTypes.RED;
+        return MooshroomTypes.byTypeName(sets.getString(super.getLastDataIndex() + 1, defaultValue));
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        return super.getLastDataIndex() + 1;
     }
 
     public enum MooshroomTypes {

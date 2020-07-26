@@ -22,18 +22,19 @@ public class EnderDragonMetaData extends InsentientMetaData {
 
 
     public DragonPhases getDragonPhase() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return DragonPhases.byId((int) sets.get(11).getData());
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return DragonPhases.byId((int) sets.get(12).getData());
-            case VERSION_1_14_4:
-                return DragonPhases.byId((int) sets.get(14).getData());
+        final int defaultValue = DragonPhases.HOVERING.getId();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return DragonPhases.byId(defaultValue);
         }
-        return DragonPhases.HOVERING;
+        return DragonPhases.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        return super.getLastDataIndex() + 1;
     }
 
     public enum DragonPhases {

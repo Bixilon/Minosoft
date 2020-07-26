@@ -30,16 +30,7 @@ public class HumanMetaData extends LivingMetaData {
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return sets.getFloat(17, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getFloat(10, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getFloat(11, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getFloat(13, defaultValue);
-        }
-        return sets.getFloat(14, defaultValue);
+        return sets.getFloat(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public int getScore() {
@@ -47,16 +38,7 @@ public class HumanMetaData extends LivingMetaData {
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return sets.getInt(18, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getInt(11, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getInt(12, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getInt(14, defaultValue);
-        }
-        return sets.getInt(15, defaultValue);
+        return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
     }
 
 
@@ -65,16 +47,7 @@ public class HumanMetaData extends LivingMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
             return Hand.byId(defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return Hand.byId(sets.getByte(13, defaultValue));
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return Hand.byId(sets.getByte(14, defaultValue));
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return Hand.byId(sets.getByte(16, defaultValue));
-        }
-        return Hand.byId(sets.getByte(17, defaultValue));
+        return Hand.byId(sets.getByte(super.getLastDataIndex() + 4, defaultValue));
     }
 
     @Nullable
@@ -83,13 +56,7 @@ public class HumanMetaData extends LivingMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getNBT(15, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getNBT(17, defaultValue);
-        }
-        return sets.getNBT(18, defaultValue);
+        return sets.getNBT(super.getLastDataIndex() + 5, defaultValue);
     }
 
     @Nullable
@@ -98,12 +65,14 @@ public class HumanMetaData extends LivingMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getNBT(16, defaultValue);
+        return sets.getNBT(super.getLastDataIndex() + 6, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+            return super.getLastDataIndex() + 4;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getNBT(18, defaultValue);
-        }
-        return sets.getNBT(19, defaultValue);
+        return super.getLastDataIndex() + 6;
     }
 }

@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class EnderDragon extends Mob implements MobInterface {
     EnderDragonMetaData metaData;
 
-    public EnderDragon(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
+    public EnderDragon(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new EnderDragonMetaData(sets, version);
     }

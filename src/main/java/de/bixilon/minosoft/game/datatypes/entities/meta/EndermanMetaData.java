@@ -24,40 +24,34 @@ public class EndermanMetaData extends LivingMetaData {
 
 
     public Block getCarriedBlock() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return Blocks.getBlockByLegacy((short) sets.get(16).getData(), (byte) sets.get(17).getData());
-            case VERSION_1_9_4:
-                return (Block) sets.get(11).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (Block) sets.get(12).getData();
-            case VERSION_1_14_4:
-                return (Block) sets.get(14).getData();
+        final Block defaultValue = Blocks.nullBlock;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return Blocks.getBlockByLegacy(sets.getInt(16, 0), sets.getInt(17, 0));
         }
-        return Blocks.nullBlock;
+        return sets.getBlock(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public boolean isScreaming() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(18).getData() == 0x01;
-            case VERSION_1_9_4:
-                return (boolean) sets.get(12).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (boolean) sets.get(13).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(15).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getBoolean(18, defaultValue);
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
     }
 
-    CHANGES
+    public boolean isStarredAt() {
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+            return defaultValue;
+        }
+        return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+            return super.getLastDataIndex() + 2;
+        }
+        return super.getLastDataIndex() + 3;
+    }
 }

@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class ZombieVillager extends Mob implements MobInterface {
     ZombieVillagerMetaData metaData;
 
-    public ZombieVillager(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
+    public ZombieVillager(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new ZombieVillagerMetaData(sets, version);
     }

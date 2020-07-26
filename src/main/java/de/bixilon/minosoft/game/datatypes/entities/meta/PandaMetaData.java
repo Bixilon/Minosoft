@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
 public class PandaMetaData extends AnimalMetaData {
 
@@ -22,61 +21,79 @@ public class PandaMetaData extends AnimalMetaData {
     }
 
     public int getBreedTimer() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (int) sets.get(15).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public int getSneezeTimer() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (int) sets.get(16).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
     }
 
     public int getEatTimer() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (int) sets.get(17).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        return sets.getInt(super.getLastDataIndex() + 3, defaultValue);
     }
 
     public byte getMainGene() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (byte) sets.get(18).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        return sets.getByte(super.getLastDataIndex() + 4, defaultValue);
     }
 
     public byte getHiddenGene() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (byte) sets.get(19).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        return sets.getByte(super.getLastDataIndex() + 5, defaultValue);
     }
 
     public boolean isSneezing() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(20).getData(), 0x02);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBitMask(super.getLastDataIndex() + 6, 0x02, defaultValue);
+    }
+
+    public boolean isRolling() {
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
+        }
+        return sets.getBitMask(super.getLastDataIndex() + 6, 0x04, defaultValue);
+    }
+
+    public boolean isSitting() {
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
+        }
+        return sets.getBitMask(super.getLastDataIndex() + 6, 0x08, defaultValue);
+    }
+
+    public boolean isOnBack() {
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
+        }
+        return sets.getBitMask(super.getLastDataIndex() + 6, 0x10, defaultValue);
     }
 
     @Override
-    public boolean isEating() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(20).getData(), 0x04);
-        }
-        return false;
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 6;
     }
-
-    CHANGES!
 }

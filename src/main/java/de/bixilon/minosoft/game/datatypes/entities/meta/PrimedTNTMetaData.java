@@ -21,17 +21,15 @@ public class PrimedTNTMetaData extends EntityMetaData {
     }
 
     public int getFuseTime() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (int) sets.get(5).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(6).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(7).getData();
+        final int defaultValue = 80;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return 80;
+        return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 1;
     }
 }

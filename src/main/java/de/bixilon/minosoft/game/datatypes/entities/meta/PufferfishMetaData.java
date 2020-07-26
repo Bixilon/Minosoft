@@ -25,13 +25,13 @@ public class PufferfishMetaData extends AbstractFishMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
             return PufferStates.byId(defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return PufferStates.byId(sets.getInt(13, defaultValue));
-        }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return PufferStates.byId(sets.getInt(15, defaultValue));
-        }
-        return PufferStates.byId(sets.getInt(16, defaultValue));
+        return PufferStates.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
+    }
+
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 1;
     }
 
     public enum PufferStates {

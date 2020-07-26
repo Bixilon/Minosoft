@@ -40,9 +40,13 @@ public class EntityMetaData {
     1.8: https://wiki.vg/index.php?title=Entity_metadata&oldid=6611
     1.9.4: https://wiki.vg/index.php?title=Entity_metadata&oldid=7955
     1.10: https://wiki.vg/index.php?title=Entity_metadata&oldid=8241
+    1.11: https://wiki.vg/index.php?title=Entity_metadata&oldid=8413
+    1.12: https://wiki.vg/index.php?title=Entity_metadata&oldid=13919
     1.13: https://wiki.vg/index.php?title=Entity_metadata&oldid=14800
     1.14.4: https://wiki.vg/index.php?title=Entity_metadata&oldid=15239
+    1.15: https://wiki.vg/index.php?title=Entity_metadata&oldid=15885
      */
+
     public EntityMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         this.sets = sets;
         this.version = version;
@@ -148,7 +152,7 @@ public class EntityMetaData {
     }
 
     public boolean isEating() {
-        if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (version.getVersionNumber() > ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
             return false;
         }
         return sets.getBitMask(0, 0x10, false);
@@ -225,6 +229,19 @@ public class EntityMetaData {
             }
         }
         return sets.getPose(6, Pose.STANDING);
+    }
+
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            throw new IllegalArgumentException("EntityMetaData::getLastDataIndex does not work below 1.9!");
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return 4;
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return 5;
+        }
+        return 6;
     }
 
     public enum Types {
@@ -322,11 +339,11 @@ public class EntityMetaData {
         }
 
         public boolean getBoolean(int index, boolean defaultValue) {
+            Object ret = get(index, defaultValue);
+            if (ret instanceof Byte) {
+                return (byte) ret == 0x01;
+            }
             return (boolean) get(index, defaultValue);
-        }
-
-        public boolean getLegacyBoolean(int index, boolean defaultValue) {
-            return (byte) get(index, (defaultValue ? 1 : 0)) == 0x01;
         }
 
         public boolean getBitMask(int index, int bitMask, boolean defaultValue) {

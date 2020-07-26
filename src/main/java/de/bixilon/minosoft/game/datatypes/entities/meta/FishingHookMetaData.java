@@ -27,11 +27,16 @@ public class FishingHookMetaData extends EntityMetaData {
             return defaultValue;
         }
         if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getInt(5, defaultValue);
+            return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getInt(6, defaultValue) - 1;
+        return sets.getInt(super.getLastDataIndex() + 1, defaultValue) - 1;
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return super.getLastDataIndex();
         }
-        return sets.getInt(7, defaultValue) - 1;
+        return super.getLastDataIndex() + 1;
     }
 }

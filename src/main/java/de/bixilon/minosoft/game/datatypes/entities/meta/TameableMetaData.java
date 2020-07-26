@@ -13,8 +13,8 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class TameableMetaData extends AnimalMetaData {
@@ -25,77 +25,50 @@ public class TameableMetaData extends AnimalMetaData {
 
 
     public boolean isSitting() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x01);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x01);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x01);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((int) sets.get(15).getData(), 0x01);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
     }
 
     public boolean isTame() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x04);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x04);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x04);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((int) sets.get(15).getData(), 0x04);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
     }
 
     public boolean isAngry() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x02);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x02);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((int) sets.get(15).getData(), 0x02);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue);
     }
 
+    @Nullable
     public String getOwnerName() {
         switch (version) {
             case VERSION_1_7_10:
             case VERSION_1_8:
-                return (String) sets.get(17).getData();
+                return sets.getString(17, null);
         }
         return null;
     }
 
+    @Nullable
     public UUID getOwnerUUID() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (UUID) sets.get(13).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (UUID) sets.get(14).getData();
-            case VERSION_1_14_4:
-                return (UUID) sets.get(16).getData();
+        final UUID defaultValue = null;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return null;
+        return sets.getUUID(super.getLastDataIndex() + 2, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 4;
     }
 }

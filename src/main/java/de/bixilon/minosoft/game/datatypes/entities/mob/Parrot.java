@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class Parrot extends Mob implements MobInterface {
     ParrotMetaData metaData;
 
-    public Parrot(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
+    public Parrot(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new ParrotMetaData(sets, version);
     }

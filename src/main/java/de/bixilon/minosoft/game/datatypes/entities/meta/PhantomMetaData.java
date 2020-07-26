@@ -21,12 +21,18 @@ public class PhantomMetaData extends InsentientMetaData {
     }
 
     public int getSize() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (int) sets.get(12).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(14).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        return super.getLastDataIndex() + 1;
     }
 }

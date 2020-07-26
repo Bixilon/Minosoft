@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
 public class BlazeMetaData extends MonsterMetaData {
 
@@ -23,21 +22,15 @@ public class BlazeMetaData extends MonsterMetaData {
 
 
     public boolean isOnFire() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(16).getData() == 0x01;
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(16).getData(), 0x01);
-            case VERSION_1_10:
-                return BitByte.isBitMask((byte) sets.get(17).getData(), 0x01);
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(12).getData(), 0x01);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(14).getData(), 0x01);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getBoolean(16, defaultValue);
         }
-        return false;
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 1;
     }
 }

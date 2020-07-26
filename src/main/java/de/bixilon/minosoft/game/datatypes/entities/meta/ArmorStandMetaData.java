@@ -27,28 +27,17 @@ public class ArmorStandMetaData extends LivingMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getBitMask(10, 0x01, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBitMask(11, 0x01, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getBitMask(13, 0x01, defaultValue);
-        }
-        return sets.getBitMask(14, 0x01, defaultValue);
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
     }
 
     public boolean hasGravity() {
         switch (version) {
             case VERSION_1_8:
             case VERSION_1_9_4:
-                return sets.getBitMask(10, 0x02, super.hasGravity());
             case VERSION_1_10:
-                return sets.getBitMask(11, 0x02, super.hasGravity());
-            default:
-                return super.hasGravity();
+                return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, super.hasGravity());
         }
+        return super.hasGravity();
     }
 
     public boolean hasArms() {
@@ -56,16 +45,7 @@ public class ArmorStandMetaData extends LivingMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getBitMask(10, 0x04, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBitMask(11, 0x04, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getBitMask(13, 0x04, defaultValue);
-        }
-        return sets.getBitMask(14, 0x04, defaultValue);
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
     }
 
     public boolean removeBasePlate() {
@@ -73,16 +53,7 @@ public class ArmorStandMetaData extends LivingMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getBitMask(10, 0x08, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBitMask(11, 0x08, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getBitMask(13, 0x08, defaultValue);
-        }
-        return sets.getBitMask(14, 0x08, defaultValue);
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x08, defaultValue);
     }
 
     public boolean hasMarker() {
@@ -90,16 +61,7 @@ public class ArmorStandMetaData extends LivingMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getBitMask(10, 0x10, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBitMask(11, 0x10, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getBitMask(13, 0x10, defaultValue);
-        }
-        return sets.getBitMask(14, 0x10, defaultValue);
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x10, defaultValue);
     }
 
     public EntityRotation getHeadRotation() {
@@ -107,16 +69,7 @@ public class ArmorStandMetaData extends LivingMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getRotation(11, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getRotation(12, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getRotation(14, defaultValue);
-        }
-        return sets.getRotation(15, defaultValue);
+        return sets.getRotation(super.getLastDataIndex() + 2, defaultValue);
     }
 
     public EntityRotation getBodyRotation() {
@@ -124,16 +77,7 @@ public class ArmorStandMetaData extends LivingMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getRotation(12, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getRotation(13, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getRotation(15, defaultValue);
-        }
-        return sets.getRotation(16, defaultValue);
+        return sets.getRotation(super.getLastDataIndex() + 3, defaultValue);
     }
 
     public EntityRotation getLeftArmRotation() {
@@ -141,16 +85,7 @@ public class ArmorStandMetaData extends LivingMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getRotation(13, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getRotation(14, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getRotation(16, defaultValue);
-        }
-        return sets.getRotation(17, defaultValue);
+        return sets.getRotation(super.getLastDataIndex() + 4, defaultValue);
     }
 
     public EntityRotation getRightArmRotation() {
@@ -158,16 +93,7 @@ public class ArmorStandMetaData extends LivingMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getRotation(14, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getRotation(15, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getRotation(17, defaultValue);
-        }
-        return sets.getRotation(18, defaultValue);
+        return sets.getRotation(super.getLastDataIndex() + 5, defaultValue);
     }
 
     public EntityRotation getLeftLegRotation() {
@@ -175,16 +101,7 @@ public class ArmorStandMetaData extends LivingMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getRotation(15, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getRotation(16, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getRotation(18, defaultValue);
-        }
-        return sets.getRotation(19, defaultValue);
+        return sets.getRotation(super.getLastDataIndex() + 6, defaultValue);
     }
 
     public EntityRotation getRightLegRotation() {
@@ -192,15 +109,11 @@ public class ArmorStandMetaData extends LivingMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getRotation(16, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getRotation(17, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getRotation(19, defaultValue);
-        }
-        return sets.getRotation(20, defaultValue);
+        return sets.getRotation(super.getLastDataIndex() + 7, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 7;
     }
 }

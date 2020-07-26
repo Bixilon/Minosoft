@@ -21,10 +21,18 @@ public class AbstractMerchantMetaData extends AgeableMetaData {
     }
 
     public int getShakeTimer() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (int) sets.get(15).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        return super.getLastDataIndex() + 1;
     }
 }

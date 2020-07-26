@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
 public class FoxMetaData extends AnimalMetaData {
 
@@ -22,36 +21,44 @@ public class FoxMetaData extends AnimalMetaData {
     }
 
     public FoxTypes getType() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return FoxTypes.byId((int) sets.get(15).getData());
+        final int defaultValue = FoxTypes.RED.getId();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return FoxTypes.byId(defaultValue);
         }
-        return FoxTypes.RED;
+        return FoxTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
     }
 
     public boolean isSitting() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(16).getData(), 0x01);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBitMask(super.getLastDataIndex() + 2, 0x01, defaultValue);
     }
 
-    @Override
     public boolean isSneaking() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(16).getData(), 0x04);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBitMask(super.getLastDataIndex() + 2, 0x04, defaultValue);
     }
 
     public boolean isSleeping() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(16).getData(), 0x20);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBitMask(super.getLastDataIndex() + 2, 0x20, defaultValue);
+    }
+    // ToDo: 2x UUIDs
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return super.getLastDataIndex() + 2;
+        }
+        return super.getLastDataIndex() + 4;
     }
 
     public enum FoxTypes {

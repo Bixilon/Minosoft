@@ -29,12 +29,11 @@ public class ItemMetaData extends EntityMetaData {
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return sets.getSlot(10, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getSlot(5, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getSlot(6, defaultValue);
-        }
-        return sets.getSlot(7, defaultValue);
+        return sets.getSlot(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 1;
     }
 }

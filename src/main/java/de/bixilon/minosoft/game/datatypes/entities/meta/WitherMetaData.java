@@ -21,74 +21,39 @@ public class WitherMetaData extends MonsterMetaData {
     }
 
     public int getWatchedTarget1() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (int) sets.get(17).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(11).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(12).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(14).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getInt(17, defaultValue);
         }
-        return 0;
+        return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public int getWatchedTarget2() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (int) sets.get(18).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(12).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(13).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(15).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getInt(18, defaultValue);
         }
-        return 0;
+        return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
     }
 
     public int getWatchedTarget3() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (int) sets.get(19).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(13).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(14).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(16).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getInt(19, defaultValue);
         }
-        return 0;
+        return sets.getInt(super.getLastDataIndex() + 3, defaultValue);
     }
 
     public int getInvulnerableTime() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (int) sets.get(20).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(14).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(15).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(17).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getInt(20, defaultValue);
         }
-        return 0;
+        return sets.getInt(super.getLastDataIndex() + 4, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 4;
     }
 }

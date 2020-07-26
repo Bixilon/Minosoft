@@ -15,6 +15,8 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.Color;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
+import javax.annotation.Nullable;
+
 public class LlamaMetaData extends ChestedHorseMetaData {
 
     public LlamaMetaData(MetaDataHashMap sets, ProtocolVersion version) {
@@ -22,39 +24,36 @@ public class LlamaMetaData extends ChestedHorseMetaData {
     }
 
     public int getStrength() {
-        switch (version) {
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(16).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(18).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
     }
 
+    @Nullable
     public Color getCarpetColor() {
-        switch (version) {
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return Color.byId((int) sets.get(17).getData());
-            case VERSION_1_14_4:
-                return Color.byId((int) sets.get(19).getData());
+        final int defaultValue = -1;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+            return Color.byId(defaultValue);
         }
-        return null;
+        return Color.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue));
     }
 
     public LlamaVariants getVariant() {
-        switch (version) {
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return LlamaVariants.byId((int) sets.get(18).getData());
-            case VERSION_1_14_4:
-                return LlamaVariants.byId((int) sets.get(20).getData());
+        final int defaultValue = LlamaVariants.CREAMY.getId();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+            return LlamaVariants.byId(defaultValue);
         }
-        return null;
+        return LlamaVariants.byId(sets.getInt(super.getLastDataIndex() + 3, defaultValue));
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        return super.getLastDataIndex() + 3;
     }
 
     public enum LlamaVariants {

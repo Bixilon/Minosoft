@@ -23,73 +23,67 @@ public class ZombieMetaData extends MonsterMetaData {
 
 
     public boolean isChild() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(12).getData() == 0x01;
-            case VERSION_1_9_4:
-                return (boolean) sets.get(11).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (boolean) sets.get(12).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(14).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getBoolean(12, defaultValue);
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public VillagerData.VillagerProfessions getProfession() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_10:
-                byte set = (byte) sets.get(13).getData();
-                if (version == ProtocolVersion.VERSION_1_10 && set == 6) {
-                    return VillagerData.VillagerProfessions.HUSK;
-                }
-                return VillagerData.VillagerProfessions.byId(set - 1, version);
-            case VERSION_1_9_4:
-                return VillagerData.VillagerProfessions.byId((int) sets.get(12).getData() - 1, version);
+        final int defaultValue = VillagerData.VillagerProfessions.NONE.getId(version) + 1;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return VillagerData.VillagerProfessions.byId(sets.getInt(12, defaultValue) - 1, version);
         }
-        return VillagerData.VillagerProfessions.NONE;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return VillagerData.VillagerProfessions.byId(sets.getInt(13, defaultValue) - 1, version);
+        }
+        return VillagerData.VillagerProfessions.byId(defaultValue, version);
     }
 
     public boolean isConverting() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(14).getData() == 0x01;
-            case VERSION_1_9_4:
-                return (boolean) sets.get(13).getData();
-            case VERSION_1_10:
-                return (boolean) sets.get(14).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getBoolean(14, defaultValue);
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
     }
 
     public boolean areHandsHeldUp() {
+        final boolean defaultValue = false;
         switch (version) {
             case VERSION_1_9_4:
-                return (boolean) sets.get(14).getData();
+                return sets.getBoolean(14, defaultValue);
             case VERSION_1_10:
-                return (boolean) sets.get(15).getData();
+                return sets.getBoolean(15, defaultValue);
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
-                return (boolean) sets.get(16).getData();
+                return sets.getBoolean(16, defaultValue);
         }
-        return false;
+        return defaultValue;
     }
 
     public boolean isBecomingADrowned() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return ((boolean) sets.get(15).getData());
-            case VERSION_1_14_4:
-                return (boolean) sets.get(16).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
+    }
+
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return super.getLastDataIndex() + 3;
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return super.getLastDataIndex() + 4;
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return super.getLastDataIndex() + 3;
+        }
+        return super.getLastDataIndex() + 2;
     }
 }

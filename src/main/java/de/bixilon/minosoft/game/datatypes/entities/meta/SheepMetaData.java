@@ -14,7 +14,6 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.Color;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
 public class SheepMetaData extends AnimalMetaData {
 
@@ -24,38 +23,23 @@ public class SheepMetaData extends AnimalMetaData {
 
 
     public Color getColor() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return Color.byId((byte) sets.get(16).getData() & 0xF);
-            case VERSION_1_9_4:
-                return Color.byId((byte) sets.get(12).getData() & 0xF);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return Color.byId((byte) sets.get(13).getData() & 0xF);
-            case VERSION_1_14_4:
-                return Color.byId((byte) sets.get(15).getData() & 0xF);
+        final int defaultValue = Color.WHITE.getId();
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return Color.byId(sets.getInt(16, defaultValue) & 0xF);
         }
-        return Color.WHITE;
+        return Color.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue) & 0xF);
     }
 
     public boolean isSheared() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((byte) sets.get(16).getData(), 0x10);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(12).getData(), 0x10);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(13).getData(), 0x10);
-            case VERSION_1_14_4:
-                return BitByte.isBitMask((byte) sets.get(15).getData(), 0x10);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getBitMask(16, 0x10, defaultValue);
         }
-        return false;
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x10, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 1;
     }
 }

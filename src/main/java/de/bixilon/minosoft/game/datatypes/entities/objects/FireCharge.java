@@ -35,7 +35,7 @@ public class FireCharge extends EntityObject implements ObjectInterface {
         this.thrower = additionalInt;
     }
 
-    public FireCharge(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
+    public FireCharge(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new EntityMetaData(sets, version);
         this.thrower = 0; // ToDo

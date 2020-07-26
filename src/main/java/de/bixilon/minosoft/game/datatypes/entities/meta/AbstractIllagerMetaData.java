@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
 public class AbstractIllagerMetaData extends RaidParticipantMetaData {
 
@@ -22,11 +21,18 @@ public class AbstractIllagerMetaData extends RaidParticipantMetaData {
     }
 
     public boolean hasTarget() {
-        switch (version) {
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((byte) sets.get(12).getData(), 0x01);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        return super.getLastDataIndex() + 1;
     }
 }

@@ -23,21 +23,28 @@ public class CatMetaData extends AnimalMetaData {
 
 
     public CatTypes getType() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return CatTypes.byId((int) sets.get(17).getData());
+        final int defaultValue = CatTypes.BLACK.getId();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return CatTypes.byId(defaultValue);
         }
-        return CatTypes.BLACK;
+        return CatTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
     }
 
     public Color getCollarColor() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return Color.byId((int) sets.get(20).getData());
+        final int defaultValue = Color.RED.getId();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return Color.byId(defaultValue);
         }
-        return Color.RED;
+        return Color.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue));
     }
 
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        return super.getLastDataIndex() + 1;
+    }
 
     public enum CatTypes {
         TABBY(0),

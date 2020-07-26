@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 public class Evoker extends Mob implements MobInterface {
     EvokerMetaData metaData;
 
-    public Evoker(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
+    public Evoker(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new EvokerMetaData(sets, version);
     }

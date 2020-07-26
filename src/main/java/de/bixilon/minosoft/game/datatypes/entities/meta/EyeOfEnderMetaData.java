@@ -27,6 +27,14 @@ public class EyeOfEnderMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
             return defaultValue;
         }
-        return sets.getSlot(7, defaultValue);
+        return sets.getSlot(super.getLastDataIndex(), defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        return super.getLastDataIndex() + 1;
     }
 }

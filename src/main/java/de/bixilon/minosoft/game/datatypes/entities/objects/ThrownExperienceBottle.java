@@ -33,7 +33,7 @@ public class ThrownExperienceBottle extends EntityObject implements ObjectInterf
         super(entityId, location, yaw, pitch, velocity);
     }
 
-    public ThrownExperienceBottle(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
+    public ThrownExperienceBottle(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new ExperienceBottleMetaData(sets, version); // ToDo
     }

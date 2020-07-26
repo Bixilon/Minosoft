@@ -29,13 +29,7 @@ public class FireworkMetaData extends EntityMetaData {
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return sets.getSlot(8, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getSlot(5, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getSlot(6, defaultValue);
-        }
-        return sets.getSlot(7, defaultValue);
+        return sets.getSlot(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public int getEntityIdOfUser() {
@@ -43,10 +37,7 @@ public class FireworkMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getInt(7, defaultValue);
-        }
-        return sets.getInt(8, defaultValue);
+        return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
     }
 
     public boolean wasShotFromAngle() {
@@ -54,6 +45,17 @@ public class FireworkMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
             return defaultValue;
         }
-        return sets.getBoolean(9, defaultValue);
+        return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+            return super.getLastDataIndex() + 1;
+        }
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return super.getLastDataIndex() + 2;
+        }
+        return super.getLastDataIndex() + 3;
     }
 }

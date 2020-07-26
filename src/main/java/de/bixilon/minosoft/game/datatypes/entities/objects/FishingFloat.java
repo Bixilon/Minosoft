@@ -35,7 +35,7 @@ public class FishingFloat extends EntityObject implements ObjectInterface {
         this.owner = additionalInt;
     }
 
-    public FishingFloat(int entityId, Location location, short yaw, short pitch, Velocity velocity, MetaDataHashMap sets, ProtocolVersion version) {
+    public FishingFloat(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new EntityMetaData(sets, version);
         this.owner = 0; // ToDo

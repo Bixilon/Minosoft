@@ -26,13 +26,7 @@ public class DolphinMetaData extends WaterMobMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getPosition(12, defaultValue);
-        }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getPosition(14, defaultValue);
-        }
-        return sets.getPosition(15, defaultValue);
+        return sets.getPosition(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public boolean canFireTreasure() {
@@ -40,13 +34,7 @@ public class DolphinMetaData extends WaterMobMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBoolean(13, defaultValue);
-        }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getBoolean(15, defaultValue);
-        }
-        return sets.getBoolean(16, defaultValue);
+        return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
     }
 
     public boolean hasFish() {
@@ -54,12 +42,11 @@ public class DolphinMetaData extends WaterMobMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBoolean(14, defaultValue);
-        }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getBoolean(16, defaultValue);
-        }
-        return sets.getBoolean(17, defaultValue);
+        return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 3;
     }
 }

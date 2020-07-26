@@ -21,10 +21,9 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 
 public class PacketEntityMetadata implements ClientboundPacket {
-    MetaDataHashMap sets;
+    EntityMetaData.MetaDataHashMap sets;
     int entityId;
     ProtocolVersion version;
 
@@ -58,13 +57,13 @@ public class PacketEntityMetadata implements ClientboundPacket {
         return entityId;
     }
 
-    public MetaDataHashMap getSets() {
+    public EntityMetaData.MetaDataHashMap getSets() {
         return sets;
     }
 
     public EntityMetaData getEntityData(Class<? extends EntityMetaData> clazz) {
         try {
-            return clazz.getConstructor(HashMap.class, ProtocolVersion.class).newInstance(sets, version);
+            return clazz.getConstructor(EntityMetaData.MetaDataHashMap.class, ProtocolVersion.class).newInstance(sets, version);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }

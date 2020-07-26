@@ -21,14 +21,19 @@ public class ParrotMetaData extends TameableMetaData {
     }
 
     public ParrotVariants getVariant() {
-        switch (version) {
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return ParrotVariants.byId((Integer) sets.get(15).getData());
-            case VERSION_1_14_4:
-                return ParrotVariants.byId((Integer) sets.get(17).getData());
+        final int defaultValue = ParrotVariants.RED_BLUE.getId();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return ParrotVariants.byId(defaultValue);
         }
-        return ParrotVariants.RED_BLUE;
+        return ParrotVariants.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        return super.getLastDataIndex() + 1;
     }
 
 

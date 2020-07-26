@@ -22,29 +22,32 @@ public class OcelotMetaData extends AnimalMetaData {
 
 
     public OcelotTypes getType() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return OcelotTypes.byId((byte) sets.get(18).getData());
-            case VERSION_1_9_4:
-                return OcelotTypes.byId((int) sets.get(14).getData());
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return OcelotTypes.byId((int) sets.get(15).getData());
+        final int defaultValue = OcelotTypes.UNTAMED.getId();
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return OcelotTypes.byId(sets.getInt(18, defaultValue));
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return OcelotTypes.byId(sets.getInt(14, defaultValue));
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return OcelotTypes.byId(sets.getInt(15, defaultValue));
         }
         return OcelotTypes.UNTAMED;
     }
 
     public boolean isTrusting() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (boolean) sets.get(15).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
     }
 
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 1;
+    }
 
     public enum OcelotTypes {
         UNTAMED(0),

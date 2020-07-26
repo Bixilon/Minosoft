@@ -34,6 +34,23 @@ public class VillagerData {
         this.level = level;
     }
 
+    @Override
+    public int hashCode() {
+        return type.hashCode() * profession.hashCode() * level.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        if (hashCode() != obj.hashCode()) {
+            return false;
+        }
+        VillagerData their = (VillagerData) obj;
+        return getType() == their.getType() && getProfession() == their.getProfession() && getLevel() == their.getLevel();
+    }
+
     public VillagerTypes getType() {
         return type;
     }
@@ -58,14 +75,15 @@ public class VillagerData {
         LEATHER_WORKER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 8)}),
         LIBRARIAN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1), new MapSet<>(ProtocolVersion.VERSION_1_14_4, 9)}),
         MASON(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 10)}),
-        NITWIT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 5), new MapSet<>(ProtocolVersion.VERSION_1_14_4, 11)}),
+        NITWIT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 5), new MapSet<>(ProtocolVersion.VERSION_1_11_2, 5), new MapSet<>(ProtocolVersion.VERSION_1_14_4, 11)}),
         SHEPHERD(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 12)}),
         TOOL_SMITH(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 13)}),
         WEAPON_SMITH(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 14)}),
         PRIEST(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2), new MapSet<>(ProtocolVersion.VERSION_1_14_4, -1)}),
         BLACKSMITH(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 3), new MapSet<>(ProtocolVersion.VERSION_1_14_4, -1)}),
 
-        HUSK(new MapSet[]{}); // used earlier (ZombieVillagerMeta)
+        HUSK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 5), new MapSet<>(ProtocolVersion.VERSION_1_11_2, -100)}),
+        ZOMBIE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, -1), new MapSet<>(ProtocolVersion.VERSION_1_11_2, -100)}); // used earlier (ZombieVillagerMeta)
 
         final VersionValueMap<Integer> valueMap;
 

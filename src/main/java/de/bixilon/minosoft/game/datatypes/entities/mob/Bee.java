@@ -17,16 +17,16 @@ import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
+import de.bixilon.minosoft.game.datatypes.entities.meta.BeeMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.MooshroomMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class Mooshroom extends Mob implements MobInterface {
-    MooshroomMetaData metaData;
+public class Bee extends Mob implements MobInterface {
+    BeeMetaData metaData;
 
-    public Mooshroom(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public Bee(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new MooshroomMetaData(sets, version);
+        this.metaData = new BeeMetaData(sets, version);
     }
 
     @Override
@@ -36,23 +36,23 @@ public class Mooshroom extends Mob implements MobInterface {
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (MooshroomMetaData) metaData;
+        this.metaData = (BeeMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
         if (metaData.isAdult()) {
-            return 0.9F;
+            return 0.7F;
         }
-        return 0.45F;
+        return 0.35F;
     }
 
     @Override
     public float getHeight() {
         if (metaData.isAdult()) {
-            return 1.4F;
+            return 0.6F;
         }
-        return 0.7F;
+        return 0.3F;
     }
 
     @Override
@@ -62,6 +62,6 @@ public class Mooshroom extends Mob implements MobInterface {
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return MooshroomMetaData.class;
+        return BeeMetaData.class;
     }
 }

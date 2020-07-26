@@ -23,20 +23,17 @@ public class VillagerMetaData extends AbstractMerchantMetaData {
 
 
     public VillagerData.VillagerProfessions getProfession() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return VillagerData.VillagerProfessions.byId((int) sets.get(16).getData(), version);
-            case VERSION_1_9_4:
-                return VillagerData.VillagerProfessions.byId((int) sets.get(12).getData(), version);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return VillagerData.VillagerProfessions.byId((int) sets.get(13).getData(), version);
-            default:
-                return getVillageData().getProfession();
+        final int defaultValue = VillagerData.VillagerProfessions.FARMER.getId(version);
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return VillagerData.VillagerProfessions.byId(sets.getInt(16, defaultValue), version);
         }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return VillagerData.VillagerProfessions.byId(sets.getInt(12, defaultValue), version);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return VillagerData.VillagerProfessions.byId(sets.getInt(13, defaultValue), version);
+        }
+        return getVillageData().getProfession();
     }
 
     public VillagerData.VillagerTypes getType() {
@@ -48,10 +45,15 @@ public class VillagerMetaData extends AbstractMerchantMetaData {
     }
 
     public VillagerData getVillageData() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (VillagerData) sets.get(13).getData();
+        final VillagerData defaultValue = new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE);
+        return sets.getVillagerData(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 1;
     }
 }

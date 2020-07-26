@@ -23,39 +23,16 @@ public class InsentientMetaData extends LivingMetaData {
 
     @Override
     public boolean hasAI() {
-        final boolean defaultValue = super.hasAI();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
-            return defaultValue;
-        }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_8.getVersionNumber()) {
-            return sets.getLegacyBoolean(15, defaultValue);
-        }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getBitMask(10, 0x01, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBitMask(11, 0x01, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getBitMask(13, 0x01, defaultValue);
-        }
-        return sets.getBitMask(14, 0x01, defaultValue);
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, super.hasAI());
     }
 
     public boolean isLeftHanded() {
-        final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return defaultValue;
-        }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getBitMask(10, 0x02, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBitMask(11, 0x02, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getBitMask(13, 0x02, defaultValue);
-        }
-        return sets.getBitMask(14, 0x02, defaultValue);
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, false);
     }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 1;
+    }
+
 }

@@ -25,15 +25,14 @@ public class TippedArrowMetaData extends AbstractArrowMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getInt(6, defaultValue);
+        return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return super.getLastDataIndex();
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            return sets.getInt(7, defaultValue);
-        }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getInt(8, defaultValue);
-        }
-        return sets.getByte(10, defaultValue);
+        return super.getLastDataIndex() + 1;
     }
 }

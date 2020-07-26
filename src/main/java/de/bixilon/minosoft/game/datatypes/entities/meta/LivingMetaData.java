@@ -25,90 +25,6 @@ public class LivingMetaData extends EntityMetaData {
     }
 
 
-    public float getHealth() {
-        final float defaultValue = 1.0F;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getFloat(6, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getFloat(7, defaultValue);
-        }
-        return sets.getFloat(8, defaultValue);
-    }
-
-    public int getPotionEffectColor() {
-        // ToDo: color?
-        final int defaultValue = 0;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getInt(7, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getInt(8, defaultValue);
-        }
-        return sets.getInt(9, defaultValue);
-    }
-
-
-    public boolean isPotionEffectAmbient() {
-        final boolean defaultValue = false;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
-            return sets.getLegacyBoolean(8, defaultValue);
-        }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getBoolean(8, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBoolean(9, defaultValue);
-        }
-        return sets.getBoolean(10, defaultValue);
-    }
-
-    public int getNumberOfArrowsInEntity() {
-        final int defaultValue = 0;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
-            return sets.getByte(9, defaultValue);
-        }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getInt(9, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getInt(10, defaultValue);
-        }
-        return sets.getInt(11, defaultValue);
-    }
-
-    @Nullable
-    @Override
-    public TextComponent getNameTag() {
-        switch (version) {
-            case VERSION_1_7_10:
-                return new TextComponent(sets.getString(10, null));
-            case VERSION_1_8:
-                return new TextComponent(sets.getString(2, null));
-            default:
-                return super.getNameTag();
-        }
-    }
-
-    @Override
-    public boolean isCustomNameVisible() {
-        switch (version) {
-            case VERSION_1_7_10:
-                return sets.getLegacyBoolean(11, super.isCustomNameVisible());
-            case VERSION_1_8:
-                return sets.getLegacyBoolean(3, super.isCustomNameVisible());
-            default:
-                return super.isCustomNameVisible();
-        }
-    }
-
-    public boolean hasAI() {
-        if (version == ProtocolVersion.VERSION_1_8) {
-            return sets.getLegacyBoolean(15, false);
-        }
-        return false;
-    }
-
     public boolean isHandActive() {
         final boolean defaultValue = false;
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
@@ -142,9 +58,73 @@ public class LivingMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBitMask(6, 0x04, defaultValue);
-        }
-        return sets.getBitMask(7, 0x04, defaultValue);
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
     }
+
+
+    public float getHealth() {
+        final float defaultValue = 1.0F;
+        return sets.getFloat(super.getLastDataIndex() + 2, defaultValue);
+    }
+
+    public int getPotionEffectColor() {
+        // ToDo: color?
+        final int defaultValue = 0;
+        return sets.getInt(super.getLastDataIndex() + 3, defaultValue);
+    }
+
+
+    public boolean isPotionEffectAmbient() {
+        final boolean defaultValue = false;
+        return sets.getBoolean(super.getLastDataIndex() + 4, defaultValue);
+    }
+
+    public int getNumberOfArrowsInEntity() {
+        final int defaultValue = 0;
+        return sets.getInt(super.getLastDataIndex() + 5, defaultValue);
+    }
+
+    @Nullable
+    @Override
+    public TextComponent getNameTag() {
+        switch (version) {
+            case VERSION_1_7_10:
+                return new TextComponent(sets.getString(10, null));
+            case VERSION_1_8:
+                return new TextComponent(sets.getString(2, null));
+            default:
+                return super.getNameTag();
+        }
+    }
+
+    @Override
+    public boolean isCustomNameVisible() {
+        switch (version) {
+            case VERSION_1_7_10:
+                return sets.getBoolean(11, super.isCustomNameVisible());
+            case VERSION_1_8:
+                return sets.getBoolean(3, super.isCustomNameVisible());
+            default:
+                return super.isCustomNameVisible();
+        }
+    }
+
+    public boolean hasAI() {
+        if (version == ProtocolVersion.VERSION_1_8) {
+            return sets.getBoolean(15, false);
+        }
+        return false;
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return super.getLastDataIndex() + 5;
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return super.getLastDataIndex() + 6;
+        }
+        return super.getLastDataIndex() + 7; // 5 + absorption hearts + unknown
+    }
+
 }

@@ -21,29 +21,36 @@ public class SkeletonMetaData extends MonsterMetaData {
     }
 
     public SkeletonTypes getSkeletonType() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return SkeletonTypes.byId((byte) sets.get(13).getData());
-            case VERSION_1_9_4:
-                return SkeletonTypes.byId((int) sets.get(11).getData());
-            case VERSION_1_10:
-                return SkeletonTypes.byId((int) sets.get(12).getData());
+        final int defaultValue = SkeletonTypes.NORMAL.getId();
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return SkeletonTypes.byId(sets.getInt(13, defaultValue));
         }
-        return SkeletonTypes.NORMAL;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return SkeletonTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
+        }
+        return SkeletonTypes.byId(defaultValue);
     }
 
     public boolean isSwingingArms() {
-        switch (version) {
-            case VERSION_1_9_4:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (boolean) sets.get(12).getData();
-            case VERSION_1_10:
-                return (boolean) sets.get(13).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
+        }
+        return defaultValue;
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber() || version.getVersionNumber() == ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return super.getLastDataIndex() + 2;
+        }
+        return super.getLastDataIndex() + 1;
     }
 
     public enum SkeletonTypes {

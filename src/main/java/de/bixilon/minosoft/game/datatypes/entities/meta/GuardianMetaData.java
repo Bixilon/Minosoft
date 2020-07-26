@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
 public class GuardianMetaData extends MonsterMetaData {
 
@@ -22,49 +21,47 @@ public class GuardianMetaData extends MonsterMetaData {
     }
 
     public boolean isElderly() {
-        switch (version) {
-            case VERSION_1_8:
-                return BitByte.isBitMask((byte) sets.get(16).getData(), 0x02);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((byte) sets.get(11).getData(), 0x04);
-            case VERSION_1_10:
-                return BitByte.isBitMask((byte) sets.get(12).getData(), 0x04);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getBitMask(16, 0x04, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
+        }
+        return defaultValue;
     }
 
     public boolean isRetractingSpikes() {
-        switch (version) {
-            case VERSION_1_8:
-                return BitByte.isBitSet((byte) sets.get(16).getData(), 0x04);
-            case VERSION_1_9_4:
-                return BitByte.isBitSet((byte) sets.get(11).getData(), 0x02);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitSet((byte) sets.get(12).getData(), 0x02);
-            case VERSION_1_14_4:
-                return (boolean) sets.get(14).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getBitMask(16, 0x02, defaultValue);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue);
+        }
+        return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
     }
 
 
     public int getTargetEntityId() {
-        switch (version) {
-            case VERSION_1_8:
-                return (int) sets.get(17).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(12).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(13).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(15).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getInt(17, defaultValue);
+        }
+        return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 2;
     }
 }

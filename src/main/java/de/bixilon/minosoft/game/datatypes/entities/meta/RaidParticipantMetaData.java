@@ -21,10 +21,18 @@ public class RaidParticipantMetaData extends MonsterMetaData {
     }
 
     public boolean isCelebrating() {
-        switch (version) {
-            case VERSION_1_14_4:
-                return (boolean) sets.get(14).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        return super.getLastDataIndex() + 1;
     }
 }

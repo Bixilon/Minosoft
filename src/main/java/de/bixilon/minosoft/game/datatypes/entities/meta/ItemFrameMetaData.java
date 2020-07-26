@@ -32,13 +32,7 @@ public class ItemFrameMetaData extends HangingMetaData {
         if (version.getVersionNumber() == ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return sets.getSlot(8, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getSlot(5, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getSlot(6, defaultValue);
-        }
-        return sets.getSlot(7, defaultValue);
+        return sets.getSlot(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public int getRotation() {
@@ -49,12 +43,11 @@ public class ItemFrameMetaData extends HangingMetaData {
         if (version.getVersionNumber() == ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return sets.getByte(9, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getByte(6, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getInt(7, defaultValue);
-        }
-        return sets.getInt(8, defaultValue);
+        return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 2;
     }
 }

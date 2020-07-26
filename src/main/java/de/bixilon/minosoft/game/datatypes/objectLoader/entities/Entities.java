@@ -130,6 +130,7 @@ public class Entities {
         registerEntityClass("minecraft:wandering_trader", WanderingTrader.class);
         registerEntityClass("minecraft:pillager", Pillager.class);
         registerEntityClass("minecraft:ravager", Ravager.class);
+        registerEntityClass("minecraft:bee", Bee.class);
 
         // not a thing anymore
         registerEntityClass("minecraft:falling_dragon_Egg", FallingDragonEgg.class);

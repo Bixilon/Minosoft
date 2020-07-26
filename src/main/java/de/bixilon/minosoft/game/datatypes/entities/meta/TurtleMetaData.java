@@ -23,62 +23,58 @@ public class TurtleMetaData extends AnimalMetaData {
 
 
     public BlockPosition getHomePosition() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (BlockPosition) sets.get(13).getData();
-            case VERSION_1_14_4:
-                return (BlockPosition) sets.get(15).getData();
+        final BlockPosition defaultValue = new BlockPosition(0, 0, 0);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return new BlockPosition(0, (short) 0, 0);
+        return sets.getPosition(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public boolean hasEgg() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (boolean) sets.get(14).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(16).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
     }
 
     public boolean isLayingEgg() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (boolean) sets.get(15).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(17).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
     }
 
     public BlockPosition getTravelPosition() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (BlockPosition) sets.get(16).getData();
-            case VERSION_1_14_4:
-                return (BlockPosition) sets.get(18).getData();
+        final BlockPosition defaultValue = new BlockPosition(0, 0, 0);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return new BlockPosition(0, (short) 0, 0);
+        return sets.getPosition(super.getLastDataIndex() + 4, defaultValue);
     }
 
     public boolean isGoingHome() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (boolean) sets.get(17).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(19).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 5, defaultValue);
     }
 
     public boolean isTraveling() {
-        switch (version) {
-            case VERSION_1_13_2:
-                return (boolean) sets.get(18).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(20).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 6, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        return super.getLastDataIndex() + 6;
     }
 }

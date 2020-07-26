@@ -14,34 +14,51 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PigMetaData extends AnimalMetaData {
+public class BeeMetaData extends AnimalMetaData {
 
-    public PigMetaData(MetaDataHashMap sets, ProtocolVersion version) {
+    public BeeMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
-
-    public boolean hasSaddle() {
+    public boolean isAngry() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
-            return sets.getBoolean(16, defaultValue);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue);
     }
 
-    public int getTotalBoostTime() {
+    public boolean hasStung() {
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+            return defaultValue;
+        }
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
+    }
+
+    public boolean hasNectar() {
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+            return defaultValue;
+        }
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x08, defaultValue);
+    }
+
+    public int getAngerInTicks() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
     }
 
+
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
-            return super.getLastDataIndex() + 1;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+            return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 2;
     }
+
 }

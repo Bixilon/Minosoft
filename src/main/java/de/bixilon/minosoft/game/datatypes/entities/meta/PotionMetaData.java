@@ -25,12 +25,14 @@ public class PotionMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
             return null;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getSlot(5, null);
+        return sets.getSlot(super.getLastDataIndex(), null);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return super.getLastDataIndex();
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getSlot(6, null);
-        }
-        return sets.getSlot(7, null);
+        return super.getLastDataIndex() + 1;
     }
 }

@@ -21,79 +21,58 @@ public class HorseMetaData extends AbstractHorseMetaData {
     }
 
     public HorseColor getColor() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return HorseColor.byId((int) sets.get(20).getData() & 0xFF);
-            case VERSION_1_9_4:
-                return HorseColor.byId((int) sets.get(14).getData() & 0xFF);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return HorseColor.byId((int) sets.get(15).getData() & 0xFF);
+        final int defaultValue = HorseColor.WHITE.getId();
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return HorseColor.byId(sets.getInt(20, defaultValue) & 0xFF);
         }
-        return HorseColor.WHITE;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return HorseColor.byId(sets.getInt(14, defaultValue) & 0xFF);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return HorseColor.byId(sets.getInt(15, defaultValue) & 0xFF);
+        }
+        return HorseColor.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue) & 0xFF);
     }
 
     public HorseDots getDots() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return HorseDots.byId((int) sets.get(20).getData() & 0xFF00);
-            case VERSION_1_9_4:
-                return HorseDots.byId((int) sets.get(14).getData() & 0xFF00);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return HorseDots.byId((int) sets.get(15).getData() & 0xFF00);
+        final int defaultValue = HorseDots.NONE.getId() << 8;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return HorseDots.byId(sets.getInt(20, defaultValue) >> 8);
         }
-        return HorseDots.NONE;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return HorseDots.byId(sets.getInt(14, defaultValue) >> 8);
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return HorseDots.byId(sets.getInt(15, defaultValue) >> 8);
+        }
+        return HorseDots.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue) >> 8);
     }
+
 
     public HorseArmor getArmor() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return HorseArmor.byId((int) sets.get(21).getData());
-            case VERSION_1_9_4:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return HorseArmor.byId((int) sets.get(16).getData());
-            case VERSION_1_10:
-                return HorseArmor.byId((int) sets.get(17).getData());
+        final int defaultValue = HorseArmor.NO_ARMOR.getId();
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return HorseArmor.byId(sets.getInt(21, defaultValue));
         }
-        return HorseArmor.NO_ARMOR;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return HorseArmor.byId(sets.getInt(17, defaultValue));
+        }
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return HorseArmor.byId(sets.getInt(16, defaultValue));
+        }
+        return HorseArmor.byId(defaultValue);
     }
 
-    public enum HorseType {
-        HORSE(0),
-        DONKEY(1),
-        MULE(2),
-        ZOMBIE(3),
-        SKELETON(4);
-
-        final int id;
-
-        HorseType(int id) {
-            this.id = id;
-        }
-
-        public static HorseType byId(int id) {
-            for (HorseType h : values()) {
-                if (h.getId() == id) {
-                    return h;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
-        }
+    @Override
+    public HorseType getType() {
+        return HorseType.HORSE;
     }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 2;
+    }
+
 
     public enum HorseArmor {
         NO_ARMOR(0),

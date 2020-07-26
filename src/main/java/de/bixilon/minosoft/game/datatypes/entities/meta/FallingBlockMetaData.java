@@ -26,12 +26,14 @@ public class FallingBlockMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getPosition(5, defaultValue);
+        return sets.getPosition(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return super.getLastDataIndex();
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getPosition(6, defaultValue);
-        }
-        return sets.getPosition(7, defaultValue);
+        return super.getLastDataIndex() + 1;
     }
 }

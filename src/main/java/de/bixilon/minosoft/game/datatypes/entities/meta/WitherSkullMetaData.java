@@ -26,12 +26,14 @@ public class WitherSkullMetaData extends AbstractFireballMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getBoolean(5, defaultValue);
+        return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return super.getLastDataIndex();
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBoolean(6, defaultValue);
-        }
-        return sets.getBoolean(7, defaultValue);
+        return super.getLastDataIndex() + 1;
     }
 }

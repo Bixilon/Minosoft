@@ -25,10 +25,7 @@ public class TridentMetaData extends AbstractArrowMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getInt(8, defaultValue);
-        }
-        return sets.getByte(10, defaultValue);
+        return sets.getByte(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public boolean hasEnchantmentGlint() {
@@ -36,6 +33,17 @@ public class TridentMetaData extends AbstractArrowMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
             return defaultValue;
         }
-        return sets.getBoolean(11, defaultValue);
+        return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+            return super.getLastDataIndex() + 1;
+        }
+        return super.getLastDataIndex() + 2;
     }
 }

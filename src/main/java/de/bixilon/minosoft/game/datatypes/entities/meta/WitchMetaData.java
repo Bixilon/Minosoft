@@ -21,27 +21,23 @@ public class WitchMetaData extends RaidParticipantMetaData {
     }
 
     public boolean isAggressive() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(21).getData() == 0x01;
-            case VERSION_1_9_4:
-                return (boolean) sets.get(11).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-                return (boolean) sets.get(12).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getBoolean(21, defaultValue);
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public boolean isDrinkingPotion() {
-        switch (version) {
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (boolean) sets.get(12).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(15).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            return defaultValue;
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 1;
     }
 }

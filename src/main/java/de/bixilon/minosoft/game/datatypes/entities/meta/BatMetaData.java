@@ -24,17 +24,13 @@ public class BatMetaData extends AmbientMetaData {
     public boolean isHanging() {
         final boolean defaultValue = false;
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
-            return sets.getLegacyBoolean(16, defaultValue);
+            return sets.getBoolean(16, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getBitMask(11, 0x01, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBitMask(12, 0x01, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getBitMask(14, 0x01, defaultValue);
-        }
-        return sets.getBitMask(15, 0x01, defaultValue);
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 1;
     }
 }

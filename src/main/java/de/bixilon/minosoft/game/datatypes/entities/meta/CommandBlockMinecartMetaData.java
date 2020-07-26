@@ -15,39 +15,34 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
+import javax.annotation.Nullable;
+
 public class CommandBlockMinecartMetaData extends EntityMetaData {
 
     public CommandBlockMinecartMetaData(MetaDataHashMap sets, ProtocolVersion version) {
         super(sets, version);
     }
 
+    @Nullable
     public String getCommand() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (String) sets.get(11).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (String) sets.get(12).getData();
-            case VERSION_1_14_4:
-                return (String) sets.get(13).getData();
+        final String defaultValue = null;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return "";
+        return sets.getString(super.getLastDataIndex() + 1, defaultValue);
     }
 
+    @Nullable
     public TextComponent getLastOutput() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (TextComponent) sets.get(12).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (TextComponent) sets.get(13).getData();
-            case VERSION_1_14_4:
-                return (TextComponent) sets.get(14).getData();
+        final TextComponent defaultValue = null;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return null;
+        return sets.getTextComponent(super.getLastDataIndex() + 2, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 2;
     }
 }

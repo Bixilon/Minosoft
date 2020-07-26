@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-import de.bixilon.minosoft.util.BitByte;
 
 public class ChestedHorseMetaData extends AbstractHorseMetaData {
 
@@ -22,21 +21,25 @@ public class ChestedHorseMetaData extends AbstractHorseMetaData {
     }
 
     public boolean hasChest() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return BitByte.isBitMask((int) sets.get(16).getData(), 0x08);
-            case VERSION_1_9_4:
-                return BitByte.isBitMask((int) sets.get(12).getData(), 0x08);
-            case VERSION_1_10:
-                return BitByte.isBitMask((int) sets.get(13).getData(), 0x08);
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return BitByte.isBitMask((int) sets.get(15).getData(), 0x08);
-            case VERSION_1_14_4:
-                return (boolean) sets.get(17).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getBitMask(16, 0x08, defaultValue);
         }
-        return false;
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return sets.getBitMask(12, 0x08, defaultValue);
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return sets.getBitMask(13, 0x08, defaultValue);
+        }
+        return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
     }
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+            return super.getLastDataIndex();
+        }
+        return super.getLastDataIndex() + 1;
+    }
+
 }

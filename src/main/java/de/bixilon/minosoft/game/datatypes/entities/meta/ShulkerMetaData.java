@@ -17,6 +17,8 @@ import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
+import javax.annotation.Nullable;
+
 public class ShulkerMetaData extends GolemMetaData {
 
     public ShulkerMetaData(MetaDataHashMap sets, ProtocolVersion version) {
@@ -24,59 +26,40 @@ public class ShulkerMetaData extends GolemMetaData {
     }
 
     public Direction getDirection() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (Direction) sets.get(11).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (Direction) sets.get(12).getData();
-            case VERSION_1_14_4:
-                return (Direction) sets.get(14).getData();
+        final Direction defaultValue = Direction.DOWN;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return Direction.DOWN;
+        return sets.getDirection(super.getLastDataIndex(), defaultValue);
     }
 
+    @Nullable
     public BlockPosition getAttachmentPosition() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (BlockPosition) sets.get(12).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (BlockPosition) sets.get(13).getData();
-            case VERSION_1_14_4:
-                return (BlockPosition) sets.get(15).getData();
+        final BlockPosition defaultValue = null;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return null;
+        return sets.getPosition(super.getLastDataIndex(), defaultValue);
     }
 
     public byte getShieldHeight() {
-        switch (version) {
-            case VERSION_1_9_4:
-                return (byte) sets.get(13).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (byte) sets.get(14).getData();
-            case VERSION_1_14_4:
-                return (byte) sets.get(16).getData();
+        final byte defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return defaultValue;
         }
-        return 0;
+        return sets.getByte(super.getLastDataIndex(), defaultValue);
     }
 
     public Color getColor() {
-        switch (version) {
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return Color.byId((byte) sets.get(15).getData());
-            case VERSION_1_14_4:
-                return Color.byId((byte) sets.get(17).getData());
+        final int defaultValue = Color.PURPLE.getId();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+            return Color.byId(defaultValue);
         }
-        return Color.PURPLE;
+        return Color.byId(sets.getByte(super.getLastDataIndex(), defaultValue));
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 4;
     }
 }

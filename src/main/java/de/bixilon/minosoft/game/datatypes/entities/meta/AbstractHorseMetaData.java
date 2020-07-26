@@ -31,16 +31,7 @@ public class AbstractHorseMetaData extends AnimalMetaData {
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
             return sets.getBitMask(16, bitMask, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getBitMask(12, bitMask, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBitMask(13, bitMask, defaultValue);
-        }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getBitMask(15, bitMask, defaultValue);
-        }
-        return sets.getBitMask(16, bitMask, defaultValue);
+        return sets.getBitMask(super.getLastDataIndex() + 1, bitMask, defaultValue);
     }
 
     public boolean isTame() {
@@ -103,13 +94,13 @@ public class AbstractHorseMetaData extends AnimalMetaData {
         if (version.getVersionNumber() == ProtocolVersion.VERSION_1_10.getVersionNumber()) {
             return sets.getUUID(16, defaultValue);
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getUUID(14, defaultValue);
-        }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getUUID(16, defaultValue);
-        }
-        return sets.getUUID(17, defaultValue);
+        return sets.getUUID(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 2;
     }
 
     public enum HorseType {

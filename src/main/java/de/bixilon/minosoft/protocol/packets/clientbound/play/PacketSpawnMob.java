@@ -16,6 +16,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -24,7 +25,6 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class PacketSpawnMob implements ClientboundPacket {
@@ -45,7 +45,7 @@ public class PacketSpawnMob implements ClientboundPacket {
 
                 assert type != null;
                 try {
-                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, HashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
+                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, EntityMetaData.MetaDataHashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
                     return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
@@ -65,7 +65,7 @@ public class PacketSpawnMob implements ClientboundPacket {
 
                 assert type != null;
                 try {
-                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, HashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
+                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, EntityMetaData.MetaDataHashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
                     return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();
@@ -83,12 +83,12 @@ public class PacketSpawnMob implements ClientboundPacket {
                 Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
 
 
-                MetaDataHashMap mataData = null;
+                EntityMetaData.MetaDataHashMap mataData = null;
                 if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
                     mataData = buffer.readMetaData();
                 }
                 try {
-                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, HashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, mataData, buffer.getVersion());
+                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, EntityMetaData.MetaDataHashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, mataData, buffer.getVersion());
                     return true;
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
                     e.printStackTrace();

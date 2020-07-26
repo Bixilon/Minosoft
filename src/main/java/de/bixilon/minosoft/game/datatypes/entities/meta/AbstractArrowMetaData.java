@@ -26,15 +26,9 @@ public class AbstractArrowMetaData extends EntityMetaData {
     public boolean isCritical() {
         final boolean defaultValue = false;
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
-            return sets.getLegacyBoolean(16, defaultValue);
+            return sets.getBoolean(16, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getBitMask(5, 0x01, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBitMask(6, 0x01, defaultValue);
-        }
-        return sets.getBitMask(7, 0x01, defaultValue);
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
     }
 
     public boolean isNoClip() {
@@ -42,10 +36,7 @@ public class AbstractArrowMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBitMask(6, 0x02, defaultValue);
-        }
-        return sets.getBitMask(7, 0x02, defaultValue);
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue);
     }
 
     @Nullable
@@ -54,10 +45,7 @@ public class AbstractArrowMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getUUID(7, defaultValue);
-        }
-        return sets.getUUID(8, defaultValue);
+        return sets.getUUID(super.getLastDataIndex() + 2, defaultValue);
     }
 
     public byte getPeircingLevel() {
@@ -65,6 +53,18 @@ public class AbstractArrowMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
             return defaultValue;
         }
-        return sets.getByte(9, defaultValue);
+        return sets.getByte(super.getLastDataIndex() + 3, defaultValue);
+    }
+
+
+    @Override
+    protected int getLastDataIndex() {
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return super.getLastDataIndex() + 1;
+        }
+        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+            return super.getLastDataIndex() + 2;
+        }
+        return super.getLastDataIndex() + 3;
     }
 }

@@ -20,15 +20,44 @@ public class SpellcasterMetaData extends LivingMetaData {
         super(sets, version);
     }
 
-    public byte getSpell() {
-        switch (version) {
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (byte) sets.get(13).getData();
-            case VERSION_1_14_4:
-                return (byte) sets.get(15).getData();
+    public SpellTypes getSpell() {
+        final int defaultValue = SpellTypes.NONE.getId();
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+            return SpellTypes.byId(defaultValue);
         }
-        return 0;
+        return SpellTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 1;
+    }
+
+    public enum SpellTypes {
+        NONE(0),
+        SUMMON_VEX(1),
+        ATTACK(2),
+        WOLOLO(3),
+        DISAPPEAR(3),
+        BLINDNESS(3);
+
+        final int id;
+
+        SpellTypes(int id) {
+            this.id = id;
+        }
+
+        public static SpellTypes byId(int id) {
+            for (SpellTypes type : values()) {
+                if (type.getId() == id) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        public int getId() {
+            return id;
+        }
     }
 }

@@ -21,20 +21,15 @@ public class SlimeMetaData extends InsentientMetaData {
     }
 
     public int getSize() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (byte) sets.get(16).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(11).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(12).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(14).getData();
+        final int defaultValue = 1;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getByte(16, defaultValue);
         }
-        return 0;
+        return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 1;
     }
 }

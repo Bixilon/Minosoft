@@ -29,6 +29,15 @@ public class ItemedThrowableMetaData extends ThrowableMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
             return null;
         }
-        return sets.getSlot(7, null);
+        return sets.getSlot(super.getLastDataIndex() + 1, null);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        switch (version) {
+            case VERSION_1_15_2:
+                return super.getLastDataIndex() + 1;
+        }
+        return super.getLastDataIndex();
     }
 }

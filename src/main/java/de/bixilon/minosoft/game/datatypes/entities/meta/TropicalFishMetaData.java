@@ -25,12 +25,12 @@ public class TropicalFishMetaData extends AbstractFishMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getInt(13, defaultValue);
-        }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return sets.getInt(15, defaultValue);
-        }
-        return sets.getInt(16, defaultValue);
+        return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
     }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 3;
+    }
+
 }

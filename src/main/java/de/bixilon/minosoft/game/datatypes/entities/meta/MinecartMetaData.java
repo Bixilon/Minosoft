@@ -23,108 +23,55 @@ public class MinecartMetaData extends EntityMetaData {
     }
 
     public int getShakingPower() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (int) sets.get(17).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(5).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(6).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(7).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getInt(17, defaultValue);
         }
-        return 0;
+        return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public int getShakingDirection() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (int) sets.get(18).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(6).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(7).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(8).getData();
+        final int defaultValue = 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getInt(18, defaultValue);
         }
-        return 1;
+        return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
     }
 
     public float getMultiplier() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return (float) sets.get(19).getData();
-            case VERSION_1_9_4:
-                return (float) sets.get(7).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (float) sets.get(8).getData();
-            case VERSION_1_14_4:
-                return (float) sets.get(9).getData();
+        final float defaultValue = 0.0F;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getFloat(19, defaultValue);
         }
-        return 0;
+        return sets.getFloat(super.getLastDataIndex() + 3, defaultValue);
     }
 
     public Block getBlock() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return Blocks.getBlockByLegacy((int) sets.get(20).getData());
-            case VERSION_1_9_4:
-                return Blocks.getBlockByLegacy((int) sets.get(8).getData());
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return Blocks.getBlock((int) sets.get(9).getData(), version);
-            case VERSION_1_14_4:
-                return Blocks.getBlock((int) sets.get(10).getData(), version);
+        final int defaultValue = 0;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return Blocks.getBlockByLegacy(sets.getInt(20, defaultValue));
         }
-        return Blocks.nullBlock;
+        return Blocks.getBlock(sets.getInt(super.getLastDataIndex() + 4, defaultValue), version);
     }
 
     public int getBlockYPosition() {
-        switch (version) {
-            case VERSION_1_8:
-                return (int) sets.get(21).getData();
-            case VERSION_1_9_4:
-                return (int) sets.get(9).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (int) sets.get(10).getData();
-            case VERSION_1_14_4:
-                return (int) sets.get(10).getData();
+        final int defaultValue = 6; //ToDo
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getInt(21, defaultValue);
         }
-        return 6;
+        return sets.getInt(super.getLastDataIndex() + 5, defaultValue);
     }
 
     public boolean isShowingBlock() {
-        switch (version) {
-            case VERSION_1_8:
-                return (byte) sets.get(22).getData() == 0x01;
-            case VERSION_1_9_4:
-                return (boolean) sets.get(10).getData();
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return (boolean) sets.get(11).getData();
-            case VERSION_1_14_4:
-                return (boolean) sets.get(12).getData();
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getBoolean(22, defaultValue);
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 6, defaultValue);
+    }
+
+    @Override
+    protected int getLastDataIndex() {
+        return super.getLastDataIndex() + 6;
     }
 }
