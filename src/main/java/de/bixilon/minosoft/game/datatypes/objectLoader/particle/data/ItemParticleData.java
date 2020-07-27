@@ -11,20 +11,25 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.particle;
+package de.bixilon.minosoft.game.datatypes.objectLoader.particle.data;
 
-public class BlockParticle implements Particle {
-    final int blockState;
+import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
 
-    public BlockParticle(int blockState) {
-        this.blockState = blockState;
+public class ItemParticleData extends ParticleData {
+    final Slot slot;
+
+    public ItemParticleData(Slot slot, Particle type) {
+        super(type);
+        this.slot = slot;
     }
 
-    public Particles getParticle() {
-        return Particles.BLOCK;
+    public Slot getSlot() {
+        return slot;
     }
 
-    public int getBlockState() {
-        return this.blockState;
+    @Override
+    public String toString() {
+        return slot.toString();
     }
 }

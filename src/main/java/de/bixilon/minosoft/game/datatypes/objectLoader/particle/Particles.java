@@ -11,7 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.objectLoader.motives;
+package de.bixilon.minosoft.game.datatypes.objectLoader.particle;
 
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonObject;
@@ -20,34 +20,29 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class Motives {
+public class Particles {
 
+    static HashSet<Particle> particleList = new HashSet<>();
+    static HashBiMap<String, Particle> particleIdentifierMap = HashBiMap.create();
+    static HashMap<ProtocolVersion, HashBiMap<Integer, Particle>> particleMap = new HashMap<>();
 
-    static HashSet<Motive> motiveList = new HashSet<>();
-    static HashBiMap<String, Motive> motiveIdentifierMap = HashBiMap.create();
-    static HashMap<ProtocolVersion, HashBiMap<Integer, Motive>> motiveMap = new HashMap<>();
-
-    public static Motive byId(int id, ProtocolVersion version) {
-        return motiveMap.get(version).get(id);
+    public static Particle byIdentifier(String name) {
+        return particleIdentifierMap.get(name);
     }
 
-    // <= 1.12.2
-    public static Motive byIdentifier(String name) {
-        return motiveIdentifierMap.get(name);
+    public static Particle byId(int id, ProtocolVersion version) {
+        return particleMap.get(version).get(id);
     }
 
     public static void load(String mod, JsonObject json, ProtocolVersion version) {
-        HashBiMap<Integer, Motive> versionMapping = HashBiMap.create();
+        HashBiMap<Integer, Particle> versionMapping = HashBiMap.create();
         for (String identifierName : json.keySet()) {
-            Motive motive = new Motive(mod, identifierName);
-            motiveList.add(motive);
+            Particle particle = new Particle(mod, identifierName);
+            particleList.add(particle);
             JsonObject identifierJSON = json.getAsJsonObject(identifierName);
-            if (json.getAsJsonObject(identifierName).has("id")) {
-                versionMapping.put(json.getAsJsonObject(identifierName).get("id").getAsInt(), motive);
-            }
-            motiveIdentifierMap.put(mod + ":" + identifierName, motive);
+            versionMapping.put(json.getAsJsonObject(identifierName).get("id").getAsInt(), particle);
+            particleIdentifierMap.put(mod + ":" + identifierName, particle);
         }
-        motiveMap.put(version, versionMapping);
+        particleMap.put(version, versionMapping);
     }
-
 }

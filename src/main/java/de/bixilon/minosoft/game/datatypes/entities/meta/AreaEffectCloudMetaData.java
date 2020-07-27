@@ -12,9 +12,8 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.particle.OtherParticles;
-import de.bixilon.minosoft.game.datatypes.particle.Particle;
-import de.bixilon.minosoft.game.datatypes.particle.Particles;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particles;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class AreaEffectCloudMetaData extends EntityMetaData {
@@ -48,13 +47,13 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
     }
 
-    public Particle getParticle() {
-        final Particle defaultValue = new OtherParticles(Particles.EFFECT);
+    public ParticleData getParticle() {
+        final ParticleData defaultValue = new ParticleData(Particles.byIdentifier("minecraft:effect"));
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
             return defaultValue;
         }
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            return new OtherParticles(Particles.byId(sets.getInt(super.getLastDataIndex() + 4, defaultValue.getParticle().getId())));
+            return new ParticleData(Particles.byId(sets.getInt(super.getLastDataIndex() + 4, 0), version));
         }
         return sets.getParticle(super.getLastDataIndex() + 4, defaultValue);
     }

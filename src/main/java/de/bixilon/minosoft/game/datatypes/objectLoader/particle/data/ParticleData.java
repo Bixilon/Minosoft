@@ -11,20 +11,23 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.particle;
+package de.bixilon.minosoft.game.datatypes.objectLoader.particle.data;
 
-public class FallingDustParticle implements Particle {
-    final int blockState;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
 
-    public FallingDustParticle(int blockState) {
-        this.blockState = blockState;
+public class ParticleData {
+    final Particle type;
+
+    public ParticleData(Particle type) {
+        this.type = type;
     }
 
-    public Particles getParticle() {
-        return Particles.FALLING_DUST;
+    public Particle getType() {
+        return type;
     }
 
-    public int getBlockState() {
-        return this.blockState;
+    @Override
+    public String toString() {
+        return "";
     }
 }

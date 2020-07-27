@@ -21,16 +21,18 @@ import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Pose;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particles;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.*;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Ingredient;
-import de.bixilon.minosoft.game.datatypes.particle.*;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.Util;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -220,28 +222,38 @@ public class InByteBuffer {
         return Pose.byId(readVarInt());
     }
 
-    public Particle readParticle() {
-        Particles type = Particles.byId(readVarInt());
+    public ParticleData readParticle() {
+        Particle type = Particles.byId(readVarInt(), version);
         return readParticleData(type);
     }
 
-    public Particle readParticleData(Particles type) {
-        try {
-            if (type.getClazz() == OtherParticles.class) {
-                return type.getClazz().getConstructor(Particles.class).newInstance(type);
-            } else if (type.getClazz() == BlockParticle.class) {
-                return type.getClazz().getConstructor(int.class).newInstance(readVarInt());
-            } else if (type.getClazz() == DustParticle.class) {
-                return type.getClazz().getConstructor(float.class, float.class, float.class, float.class).newInstance(readFloat(), readFloat(), readFloat(), readFloat());
-            } else if (type.getClazz() == FallingDustParticle.class) {
-                return type.getClazz().getConstructor(int.class).newInstance(readVarInt());
-            } else if (type.getClazz() == ItemParticle.class) {
-                return type.getClazz().getConstructor(Slot.class).newInstance(readSlot());
+    public ParticleData readParticleData(Particle type) {
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            // old particle format
+            switch (type.getIdentifier()) {
+                case "iconcrack":
+                    return new ItemParticleData(new Slot(Items.getItemByLegacy(readVarInt(), readVarInt())), type);
+                case "blockcrack":
+                case "blockdust":
+                    return new BlockParticleData(Blocks.getBlockByLegacy(readVarInt() << 4), type);
+                case "falling_dust":
+                    return new FallingDustParticleData(Blocks.getBlockByLegacy(readVarInt() << 4), type);
+                default:
+                    return new ParticleData(type);
             }
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
         }
-        return null;
+        switch (type.getIdentifier()) {
+            case "block":
+                return new BlockParticleData(Blocks.getBlock(readVarInt(), version), type);
+            case "dust":
+                return new DustParticleData(readFloat(), readFloat(), readFloat(), readFloat(), type);
+            case "falling_dust":
+                return new FallingDustParticleData(Blocks.getBlock(readVarInt(), version), type);
+            case "item":
+                return new ItemParticleData(readSlot(), type);
+            default:
+                return new ParticleData(type);
+        }
     }
 
     public CompoundTag readNBT(boolean compressed) {

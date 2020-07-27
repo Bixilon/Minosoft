@@ -23,6 +23,7 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.enchantments.Enchantments
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
 import de.bixilon.minosoft.game.datatypes.objectLoader.motives.Motives;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particles;
 import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.Statistics;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
@@ -56,6 +57,7 @@ public class ObjectLoader {
                                 Statistics.load(mod, modJSON.getAsJsonObject("custom_stat").getAsJsonObject("entries"), version);
                                 BlockIds.load(mod, modJSON.getAsJsonObject("block").getAsJsonObject("entries"), version);
                                 Motives.load(mod, modJSON.getAsJsonObject("motive").getAsJsonObject("entries"), version);
+                                Particles.load(mod, modJSON.getAsJsonObject("particle_type").getAsJsonObject("entries"), version);
                                 break;
                             case BLOCKS:
                                 Blocks.load(mod, modJSON, version);

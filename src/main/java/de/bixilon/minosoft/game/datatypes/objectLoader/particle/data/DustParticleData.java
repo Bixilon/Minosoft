@@ -11,23 +11,23 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.particle;
+package de.bixilon.minosoft.game.datatypes.objectLoader.particle.data;
 
-public class DustParticle implements Particle {
+
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
+
+public class DustParticleData extends ParticleData {
     final float red;
     final float green;
     final float blue;
     final float scale;
 
-    public DustParticle(float red, float green, float blue, float scale) {
+    public DustParticleData(float red, float green, float blue, float scale, Particle type) {
+        super(type);
         this.red = red;
         this.green = green;
         this.blue = blue;
         this.scale = scale;
-    }
-
-    public Particles getParticle() {
-        return Particles.DUST;
     }
 
     public float getRed() {
@@ -44,5 +44,10 @@ public class DustParticle implements Particle {
 
     public float getScale() {
         return scale;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("{red=%s, green=%s, blue=%s, scale=%s)", red, green, blue, scale);
     }
 }

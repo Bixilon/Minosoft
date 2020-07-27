@@ -18,7 +18,7 @@ import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
-import de.bixilon.minosoft.game.datatypes.particle.Particle;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -306,8 +306,8 @@ public class EntityMetaData {
             return (VillagerData) get(index, defaultValue);
         }
 
-        public Particle getParticle(int index, Particle defaultValue) {
-            return (Particle) get(index, defaultValue);
+        public ParticleData getParticle(int index, ParticleData defaultValue) {
+            return (ParticleData) get(index, defaultValue);
         }
 
         public CompoundTag getNBT(int index, CompoundTag defaultValue) {
