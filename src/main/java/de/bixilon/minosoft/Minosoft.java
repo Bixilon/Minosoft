@@ -13,32 +13,20 @@
 
 package de.bixilon.minosoft;
 
-import com.google.gson.JsonObject;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
-import de.bixilon.minosoft.game.datatypes.Mappings;
 import de.bixilon.minosoft.game.datatypes.Player;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blockIds.BlockIds;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
-import de.bixilon.minosoft.game.datatypes.objectLoader.enchantments.Enchantments;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
-import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
-import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.Statistics;
+import de.bixilon.minosoft.game.datatypes.objectLoader.ObjectLoader;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevel;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.FolderUtil;
 import de.bixilon.minosoft.util.OSUtil;
-import de.bixilon.minosoft.util.Util;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class Minosoft {
@@ -68,7 +56,7 @@ public class Minosoft {
         Log.info("Assets checking done");
         Log.info("Loading all mappings...");
         long mappingsStart = System.currentTimeMillis();
-        loadMappings();
+        ObjectLoader.loadMappings();
         Log.info(String.format("Mappings loaded within %sms", (System.currentTimeMillis() - mappingsStart)));
 
         checkClientToken();
@@ -134,44 +122,6 @@ public class Minosoft {
         }
     }
 
-    private static void loadMappings() {
-        HashMap<String, Mappings> mappingsHashMap = new HashMap<>();
-        mappingsHashMap.put("registries", Mappings.REGISTRIES);
-        mappingsHashMap.put("blocks", Mappings.BLOCKS);
-        try {
-            for (ProtocolVersion version : ProtocolVersion.versionMappingArray) {
-                if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-                    // skip them, use mapping of 1.12
-                    continue;
-                }
-                long startTime = System.currentTimeMillis();
-                for (Map.Entry<String, Mappings> mappingSet : mappingsHashMap.entrySet()) {
-                    JsonObject data = Util.readJsonFromFile(Config.homeDir + String.format("assets/mapping/%s/%s.json", version.getVersionString(), mappingSet.getKey()));
-                    for (String mod : data.keySet()) {
-                        JsonObject modJSON = data.getAsJsonObject(mod);
-                        switch (mappingSet.getValue()) {
-                            case REGISTRIES:
-                                Items.load(mod, modJSON.getAsJsonObject("item").getAsJsonObject("entries"), version);
-                                Entities.load(mod, modJSON.getAsJsonObject("entity_type").getAsJsonObject("entries"), version);
-                                Enchantments.load(mod, modJSON.getAsJsonObject("enchantment").getAsJsonObject("entries"), version);
-                                Statistics.load(mod, modJSON.getAsJsonObject("custom_stat").getAsJsonObject("entries"), version);
-                                BlockIds.load(mod, modJSON.getAsJsonObject("block").getAsJsonObject("entries"), version);
-                                break;
-                            case BLOCKS:
-                                Blocks.load(mod, modJSON, version);
-                                break;
-                        }
-                    }
-                }
-                Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", version, (System.currentTimeMillis() - startTime), version.getReleaseName()));
-            }
-            // end, we must set the nullBlock
-            Blocks.nullBlock = new Block("minecraft", "air");
-        } catch (IOException e) {
-            Log.fatal("Error occurred while loading version mapping: " + e.getLocalizedMessage());
-            System.exit(1);
-        }
-    }
 
     private static void checkAssets() {
         try {

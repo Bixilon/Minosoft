@@ -454,7 +454,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketSpawnPainting pkg) {
-        connection.getPlayer().getWorld().addEntity(new Painting(pkg.getEntityId(), pkg.getPosition(), pkg.getDirection(), pkg.getPainting()));
+        connection.getPlayer().getWorld().addEntity(new Painting(pkg.getEntityId(), pkg.getPosition(), pkg.getDirection(), pkg.getMotive()));
     }
 
     public void handle(PacketParticle pkg) {

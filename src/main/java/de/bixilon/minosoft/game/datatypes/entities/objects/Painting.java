@@ -13,15 +13,19 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
-import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.objectLoader.motives.Motive;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class Painting extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
     int direction;
-    Paintings painting;
+    Motive motive;
 
     public Painting(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
@@ -37,10 +41,10 @@ public class Painting extends EntityObject implements ObjectInterface {
         this.metaData = new EntityMetaData(sets, version);
     }
 
-    public Painting(int entityId, BlockPosition position, int direction, Paintings painting) {
+    public Painting(int entityId, BlockPosition position, int direction, Motive motive) {
         super(entityId, new Location(position.getX(), position.getY(), position.getZ()), (short) 0, (short) 0, null);
         this.direction = direction;
-        this.painting = painting;
+        this.motive = motive;
     }
 
     @Override
@@ -65,8 +69,8 @@ public class Painting extends EntityObject implements ObjectInterface {
         return 1.0F;
     }
 
-    public Paintings getPainting() {
-        return painting;
+    public Motive getMotive() {
+        return motive;
     }
 
     public int getDirection() {
