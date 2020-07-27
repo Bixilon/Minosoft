@@ -16,6 +16,7 @@ package de.bixilon.minosoft.game.datatypes.entities;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffect;
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
 
 import java.util.ArrayList;
@@ -125,7 +126,7 @@ public abstract class Entity implements EntityInterface {
         effectList.add(effect);
     }
 
-    public void removeEffect(StatusEffects effect) {
+    public void removeEffect(MobEffect effect) {
         effectList.removeIf(listEffect -> listEffect.getEffect() == effect);
     }
 

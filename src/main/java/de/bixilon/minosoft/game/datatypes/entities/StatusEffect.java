@@ -13,18 +13,20 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
+import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffect;
+
 public class StatusEffect {
-    final StatusEffects effect;
-    final byte amplifier;
+    final MobEffect effect;
+    final int amplifier;
     final int duration;
 
-    public StatusEffect(StatusEffects effect, byte amplifier, int duration) {
+    public StatusEffect(MobEffect effect, int amplifier, int duration) {
         this.effect = effect;
         this.amplifier = amplifier;
         this.duration = duration;
     }
 
-    public byte getAmplifier() {
+    public int getAmplifier() {
         return amplifier;
     }
 
@@ -32,7 +34,7 @@ public class StatusEffect {
         return duration;
     }
 
-    public StatusEffects getEffect() {
+    public MobEffect getEffect() {
         return effect;
     }
 

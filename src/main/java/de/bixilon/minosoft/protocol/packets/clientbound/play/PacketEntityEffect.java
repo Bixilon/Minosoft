@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.entities.StatusEffect;
-import de.bixilon.minosoft.game.datatypes.entities.StatusEffects;
+import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffects;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -35,18 +35,18 @@ public class PacketEntityEffect implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 entityId = buffer.readInt();
-                effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readShort());
+                effect = new StatusEffect(MobEffects.byId(buffer.readByte(), buffer.getVersion()), buffer.readByte() + 1, buffer.readShort());
                 hideParticles = false;
                 return true;
             case VERSION_1_8:
             case VERSION_1_9_4:
                 entityId = buffer.readVarInt();
-                effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readVarInt());
+                effect = new StatusEffect(MobEffects.byId(buffer.readByte(), buffer.getVersion()), buffer.readByte() + 1, buffer.readVarInt());
                 hideParticles = buffer.readBoolean();
                 return true;
             default:
                 entityId = buffer.readVarInt();
-                effect = new StatusEffect(StatusEffects.byId(buffer.readByte()), buffer.readByte(), buffer.readVarInt());
+                effect = new StatusEffect(MobEffects.byId(buffer.readByte(), buffer.getVersion()), buffer.readByte() + 1, buffer.readVarInt());
                 byte flags = buffer.readByte();
                 isAmbient = BitByte.isBitMask(flags, 0x01);
                 hideParticles = !BitByte.isBitMask(flags, 0x02);

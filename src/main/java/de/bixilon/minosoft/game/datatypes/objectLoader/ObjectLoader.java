@@ -19,6 +19,7 @@ import de.bixilon.minosoft.game.datatypes.Mappings;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blockIds.BlockIds;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
+import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffects;
 import de.bixilon.minosoft.game.datatypes.objectLoader.enchantments.Enchantments;
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
@@ -58,6 +59,7 @@ public class ObjectLoader {
                                 BlockIds.load(mod, modJSON.getAsJsonObject("block").getAsJsonObject("entries"), version);
                                 Motives.load(mod, modJSON.getAsJsonObject("motive").getAsJsonObject("entries"), version);
                                 Particles.load(mod, modJSON.getAsJsonObject("particle_type").getAsJsonObject("entries"), version);
+                                MobEffects.load(mod, modJSON.getAsJsonObject("mob_effect").getAsJsonObject("entries"), version);
                                 break;
                             case BLOCKS:
                                 Blocks.load(mod, modJSON, version);

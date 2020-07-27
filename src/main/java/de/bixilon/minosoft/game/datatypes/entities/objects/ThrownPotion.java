@@ -13,30 +13,34 @@
 
 package de.bixilon.minosoft.game.datatypes.entities.objects;
 
-import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.PotionMetaData;
+import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffect;
+import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffects;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class ThrownPotion extends EntityObject implements ObjectInterface {
     PotionMetaData metaData;
-    StatusEffects potion; // ToDo
+    MobEffect potion;
 
     public ThrownPotion(int entityId, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
-        this.potion = StatusEffects.byId(additionalInt);
+        this.potion = MobEffects.byId(additionalInt, ProtocolVersion.VERSION_1_12_2);
     }
 
     public ThrownPotion(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
-        this.potion = StatusEffects.byId(additionalInt);
+        this.potion = MobEffects.byId(additionalInt, ProtocolVersion.VERSION_1_12_2);
     }
 
     public ThrownPotion(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new PotionMetaData(sets, version);
-        this.potion = StatusEffects.byId(0); // ToDo
     }
 
     @Override
