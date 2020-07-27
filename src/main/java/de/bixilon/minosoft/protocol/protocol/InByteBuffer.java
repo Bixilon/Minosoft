@@ -25,7 +25,10 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particles;
-import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.*;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.BlockParticleData;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.DustParticleData;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ItemParticleData;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Ingredient;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
@@ -235,20 +238,18 @@ public class InByteBuffer {
                     return new ItemParticleData(new Slot(Items.getItemByLegacy(readVarInt(), readVarInt())), type);
                 case "blockcrack":
                 case "blockdust":
-                    return new BlockParticleData(Blocks.getBlockByLegacy(readVarInt() << 4), type);
                 case "falling_dust":
-                    return new FallingDustParticleData(Blocks.getBlockByLegacy(readVarInt() << 4), type);
+                    return new BlockParticleData(Blocks.getBlockByLegacy(readVarInt() << 4), type);
                 default:
                     return new ParticleData(type);
             }
         }
         switch (type.getIdentifier()) {
             case "block":
+            case "falling_dust":
                 return new BlockParticleData(Blocks.getBlock(readVarInt(), version), type);
             case "dust":
                 return new DustParticleData(readFloat(), readFloat(), readFloat(), readFloat(), type);
-            case "falling_dust":
-                return new FallingDustParticleData(Blocks.getBlock(readVarInt(), version), type);
             case "item":
                 return new ItemParticleData(readSlot(), type);
             default:

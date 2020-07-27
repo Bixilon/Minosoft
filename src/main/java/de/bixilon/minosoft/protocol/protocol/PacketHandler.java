@@ -632,4 +632,7 @@ public class PacketHandler {
     public void handle(PacketLoginPluginRequest pkg) {
         connection.getPluginChannelHandler().handle(pkg.getMessageId(), pkg.getChannel(), pkg.getData());
     }
+
+    public void handle(PacketEntitySoundEffect pkg) {
+    }
 }

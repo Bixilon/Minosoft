@@ -58,7 +58,7 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Play named sound effect %s with volume=%s and pitch=%s at %s", sound, volume, pitch, location));
+        Log.protocol(String.format("Play sound effect (sound=%s, category=%s, volume=%s, pitch=%s, location=%s)", sound, category, volume, pitch, location));
     }
 
     @Override
@@ -69,7 +69,6 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
     public Location getLocation() {
         return location;
     }
-
     /**
      * @return Pitch in Percent
      */
@@ -83,5 +82,9 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
 
     public float getVolume() {
         return volume;
+    }
+
+    public SoundCategories getCategory() {
+        return category;
     }
 }

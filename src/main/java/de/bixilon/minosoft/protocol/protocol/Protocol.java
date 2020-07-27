@@ -123,6 +123,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_TRADE_LIST, PacketTradeList.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_OPEN_BOOK, PacketOpenBook.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ACKNOWLEDGE_PLAYER_DIGGING, PacketAcknowledgePlayerDigging.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_SOUND_EFFECT, PacketEntitySoundEffect.class);
     }
 
     protected final HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;

@@ -25,7 +25,7 @@ public class PacketSoundEffect implements ClientboundPacket {
     static final float pitchCalc = 100.0F / 63.0F;
     Location location;
     SoundCategories category;
-    int sound;
+    int soundId;
     float volume;
     float pitch;
 
@@ -33,14 +33,14 @@ public class PacketSoundEffect implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_9_4:
-                sound = buffer.readVarInt();
+                soundId = buffer.readVarInt();
                 category = SoundCategories.byId(buffer.readVarInt());
                 location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
                 volume = buffer.readFloat();
                 pitch = (buffer.readByte() * pitchCalc) / 100F;
                 return true;
             default:
-                sound = buffer.readVarInt();
+                soundId = buffer.readVarInt();
                 category = SoundCategories.byId(buffer.readVarInt());
                 location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
                 volume = buffer.readFloat();
@@ -51,7 +51,7 @@ public class PacketSoundEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Play sound effect %d with volume=%s and pitch=%s at %s", sound, volume, pitch, location));
+        Log.protocol(String.format("Play sound effect (soundId=%d, category=%s, volume=%s, pitch=%s, location=%s)", soundId, category, volume, pitch, location));
     }
 
     @Override
@@ -70,8 +70,8 @@ public class PacketSoundEffect implements ClientboundPacket {
         return pitch;
     }
 
-    public int getSound() {
-        return sound;
+    public int getSoundId() {
+        return soundId;
     }
 
     public float getVolume() {
