@@ -29,10 +29,6 @@ public enum LogLevel {
         this.id = id;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public static LogLevel byId(int id) {
         for (LogLevel g : values()) {
             if (g.getId() == id) {
@@ -49,5 +45,9 @@ public enum LogLevel {
             }
         }
         return null;
+    }
+
+    public int getId() {
+        return id;
     }
 }

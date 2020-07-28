@@ -35,32 +35,21 @@ public class PacketTitle implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                action = TitleAction.byId(buffer.readVarInt(), buffer.getVersion());
-                switch (action) {
-                    case SET_TITLE:
-                        text = buffer.readTextComponent();
-                        break;
-                    case SET_SUBTITLE:
-                        subText = buffer.readTextComponent();
-                        break;
-                    case SET_TIMES_AND_DISPLAY:
-                        fadeInTime = buffer.readInt();
-                        stayTime = buffer.readInt();
-                        fadeOutTime = buffer.readInt();
-                        break;
-                }
-                return true;
+        action = TitleAction.byId(buffer.readVarInt(), buffer.getVersion());
+        switch (action) {
+            case SET_TITLE:
+                text = buffer.readTextComponent();
+                break;
+            case SET_SUBTITLE:
+                subText = buffer.readTextComponent();
+                break;
+            case SET_TIMES_AND_DISPLAY:
+                fadeInTime = buffer.readInt();
+                stayTime = buffer.readInt();
+                fadeOutTime = buffer.readInt();
+                break;
         }
-
-        return false;
+        return true;
     }
 
     @Override

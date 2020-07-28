@@ -26,24 +26,12 @@ public class PacketWindowItems implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                windowId = buffer.readByte();
-                data = new Slot[buffer.readShort()];
-                for (int i = 0; i < data.length; i++) {
-                    data[i] = buffer.readSlot();
-                }
-                return true;
+        windowId = buffer.readByte();
+        data = new Slot[buffer.readShort()];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = buffer.readSlot();
         }
-
-        return false;
+        return true;
     }
 
     @Override

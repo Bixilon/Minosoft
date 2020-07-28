@@ -15,10 +15,10 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.game.datatypes.GameMode;
+import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.mob.OtherPlayer;
+import de.bixilon.minosoft.game.datatypes.entities.objects.Painting;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.meta.HumanMetaData;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.mob.OtherPlayer;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.objects.Painting;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
 import de.bixilon.minosoft.game.datatypes.player.PingBars;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfo;
@@ -27,14 +27,12 @@ import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardObjective;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardScore;
 import de.bixilon.minosoft.game.datatypes.scoreboard.Team;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.nbt.tag.StringTag;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginPluginRequest;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
@@ -63,7 +61,12 @@ public class PacketHandler {
             if (version == -1) {
                 connection.setVersion(ProtocolVersion.byId(pkg.getResponse().getProtocolNumber()));
             } else {
-                connection.setVersion(ProtocolVersion.byId(version));
+                ProtocolVersion protocolVersion = ProtocolVersion.byId(version);
+                if (protocolVersion == null) {
+                    Log.fatal(String.format("In the config (debug.version) is a invalid version provided (version=%d). Exiting...", version));
+                    System.exit(1);
+                }
+                connection.setVersion(protocolVersion);
             }
         }
         Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getColoredMessage()));
@@ -291,7 +294,12 @@ public class PacketHandler {
     }
 
     public void handle(PacketMultiBlockChange pkg) {
-        connection.getPlayer().getWorld().getChunk(pkg.getLocation()).setBlocks(pkg.getBlocks());
+        Chunk chunk = connection.getPlayer().getWorld().getChunk(pkg.getLocation());
+        if (chunk == null) {
+            Log.warn(String.format("Server tried to change blocks in unloaded chunks! (location=%s)", pkg.getLocation()));
+            return;
+        }
+        chunk.setBlocks(pkg.getBlocks());
     }
 
     public void handle(PacketRespawn pkg) {
@@ -446,7 +454,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketSpawnPainting pkg) {
-        connection.getPlayer().getWorld().addEntity(new Painting(pkg.getEntityId(), pkg.getPosition(), pkg.getDirection(), pkg.getPainting()));
+        connection.getPlayer().getWorld().addEntity(new Painting(pkg.getEntityId(), pkg.getPosition(), pkg.getDirection(), pkg.getMotive()));
     }
 
     public void handle(PacketParticle pkg) {
@@ -623,5 +631,8 @@ public class PacketHandler {
 
     public void handle(PacketLoginPluginRequest pkg) {
         connection.getPluginChannelHandler().handle(pkg.getMessageId(), pkg.getChannel(), pkg.getData());
+    }
+
+    public void handle(PacketEntitySoundEffect pkg) {
     }
 }

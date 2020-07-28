@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -37,12 +37,7 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
                 location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
                 return true;
             }
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4: {
+            default: {
                 entityId = buffer.readVarInt();
                 // only thunderbolts
                 byte type = buffer.readByte();
@@ -53,13 +48,11 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
                 return true;
             }
         }
-
-        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Thunderbolt spawned at %s (entityId=%d)", location.toString(), entityId));
+        Log.protocol(String.format("Thunderbolt spawned at %s (entityId=%d)", location, entityId));
     }
 
     @Override

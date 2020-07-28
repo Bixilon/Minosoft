@@ -49,26 +49,18 @@ public class PacketMultiBlockChange implements ClientboundPacket {
                 }
                 return true;
             }
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4: {
+            default: {
                 location = new ChunkLocation(buffer.readInt(), buffer.readInt());
                 int count = buffer.readVarInt();
                 for (int i = 0; i < count; i++) {
                     byte pos = buffer.readByte();
                     byte y = buffer.readByte();
                     int blockId = buffer.readVarInt();
-                    blocks.put(new InChunkLocation(((pos & 0xF0) >>> 4), y, (pos & 0xF)), Blocks.getBlock(blockId, buffer.getVersion()));
+                    blocks.put(new InChunkLocation(((pos & 0xF0 >>> 4) & 0xF), y, (pos & 0xF)), Blocks.getBlock(blockId, buffer.getVersion()));
                 }
                 return true;
             }
         }
-
-        return false;
     }
 
     @Override

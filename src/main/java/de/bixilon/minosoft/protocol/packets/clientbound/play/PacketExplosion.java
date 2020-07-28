@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -29,40 +29,28 @@ public class PacketExplosion implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                location = new Location(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-                radius = buffer.readFloat();
-                if (radius > 100.0F) {
-                    // maybe somebody tries to crash me?
-                    // Sorry, Maximilian Rosenmüller
-                    throw new IllegalArgumentException(String.format("Explosion to big %s > 100.0F", radius));
-                }
-                int recordCount = buffer.readInt();
-                records = new byte[recordCount][3];
-                for (int i = 0; i < recordCount; i++) {
-                    records[i] = buffer.readBytes(3);
-                }
-
-                motionX = buffer.readFloat();
-                motionY = buffer.readFloat();
-                motionZ = buffer.readFloat();
-                return true;
+        location = new Location(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        radius = buffer.readFloat();
+        if (radius > 100.0F) {
+            // maybe somebody tries to crash me?
+            // Sorry, Maximilian Rosenmüller
+            throw new IllegalArgumentException(String.format("Explosion to big %s > 100.0F", radius));
+        }
+        int recordCount = buffer.readInt();
+        records = new byte[recordCount][3];
+        for (int i = 0; i < recordCount; i++) {
+            records[i] = buffer.readBytes(3);
         }
 
-        return false;
+        motionX = buffer.readFloat();
+        motionY = buffer.readFloat();
+        motionZ = buffer.readFloat();
+        return true;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Explosion packet received at %s (recordCount=%d, radius=%s)", location.toString(), records.length, radius));
+        Log.protocol(String.format("Explosion packet received at %s (recordCount=%d, radius=%s)", location, records.length, radius));
     }
 
     @Override

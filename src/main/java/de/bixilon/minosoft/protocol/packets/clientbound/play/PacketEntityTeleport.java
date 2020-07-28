@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -43,12 +43,7 @@ public class PacketEntityTeleport implements ClientboundPacket {
                 this.pitch = buffer.readAngle();
                 this.onGround = buffer.readBoolean();
                 return true;
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 this.entityId = buffer.readVarInt();
                 this.location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
                 this.yaw = buffer.readAngle();
@@ -56,13 +51,11 @@ public class PacketEntityTeleport implements ClientboundPacket {
                 this.onGround = buffer.readBoolean();
                 return true;
         }
-
-        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity %d moved to %s (yaw=%s, pitch=%s)", entityId, location.toString(), yaw, pitch));
+        Log.protocol(String.format("Entity %d moved to %s (yaw=%s, pitch=%s)", entityId, location, yaw, pitch));
     }
 
     public int getEntityId() {

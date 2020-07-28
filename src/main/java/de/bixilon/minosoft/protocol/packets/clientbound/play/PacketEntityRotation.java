@@ -33,21 +33,13 @@ public class PacketEntityRotation implements ClientboundPacket {
                 this.yaw = buffer.readAngle();
                 this.pitch = buffer.readAngle();
                 return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 this.entityId = buffer.readVarInt();
                 this.yaw = buffer.readAngle();
                 this.pitch = buffer.readAngle();
                 onGround = buffer.readBoolean();
                 return true;
         }
-
-        return false;
     }
 
     @Override

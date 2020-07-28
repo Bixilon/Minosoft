@@ -45,9 +45,8 @@ public class Statistics {
             Statistic statistic = new Statistic(mod, identifierName);
             if (json.getAsJsonObject(identifierName).has("id")) {
                 versionIdMapping.put(json.getAsJsonObject(identifierName).get("id").getAsInt(), statistic);
-            } else {
-                versionIdentifierMapping.put(identifierName, statistic);
             }
+            versionIdentifierMapping.put(identifierName, statistic);
         }
         statisticsIdMap.put(version, versionIdMapping);
         statisticsIdentifierMap.put(version, versionIdentifierMapping);

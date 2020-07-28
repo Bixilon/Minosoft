@@ -16,9 +16,9 @@ package de.bixilon.minosoft.protocol.network;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSetCompression;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChunkData;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketLoginSetCompression;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.Util;
@@ -194,7 +194,7 @@ public class Network {
                                 e.printStackTrace();
                             }
                         } catch (Exception e) {
-                            Log.protocol("Received broken packet!");
+                            Log.protocol(String.format("An error occurred while parsing an packet: %s", e));
                             e.printStackTrace();
                         }
                     }

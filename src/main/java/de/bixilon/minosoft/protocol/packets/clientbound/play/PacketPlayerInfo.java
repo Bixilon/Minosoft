@@ -37,13 +37,7 @@ public class PacketPlayerInfo implements ClientboundPacket {
             case VERSION_1_7_10:
                 infos.add(new PlayerInfoBulk(buffer.readString(), buffer.readShort(), (buffer.readBoolean() ? PlayerInfoAction.UPDATE_LATENCY : PlayerInfoAction.REMOVE_PLAYER)));
                 return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 PlayerInfoAction action = PlayerInfoAction.byId(buffer.readVarInt());
                 int count = buffer.readVarInt();
                 for (int i = 0; i < count; i++) {
@@ -84,8 +78,6 @@ public class PacketPlayerInfo implements ClientboundPacket {
                 }
                 return true;
         }
-
-        return false;
     }
 
     @Override

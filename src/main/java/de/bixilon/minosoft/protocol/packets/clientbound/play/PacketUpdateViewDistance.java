@@ -23,13 +23,8 @@ public class PacketUpdateViewDistance implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_14_4:
-                viewDistance = buffer.readVarInt();
-                return true;
-        }
-
-        return false;
+        viewDistance = buffer.readVarInt();
+        return true;
     }
 
     @Override

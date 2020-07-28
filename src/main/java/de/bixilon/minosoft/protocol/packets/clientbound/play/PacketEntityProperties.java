@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.EntityProperty;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.EntityPropertyKeys;
+import de.bixilon.minosoft.game.datatypes.entities.EntityProperty;
+import de.bixilon.minosoft.game.datatypes.entities.EntityPropertyKeys;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -47,13 +47,7 @@ public class PacketEntityProperties implements ClientboundPacket {
                 }
                 return true;
             }
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4: {
+            default: {
                 entityId = buffer.readVarInt();
                 int count = buffer.readInt();
                 for (int i = 0; i < count; i++) {
@@ -71,8 +65,6 @@ public class PacketEntityProperties implements ClientboundPacket {
                 return true;
             }
         }
-
-        return false;
     }
 
     @Override

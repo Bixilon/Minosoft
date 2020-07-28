@@ -21,10 +21,9 @@ public class Protocol_1_12_2 extends Protocol {
 
     public Protocol_1_12_2() {
         // https://wiki.vg/index.php?title=Protocol&oldid=14204
-        super();
         registerPacket(Packets.Clientbound.LOGIN_SET_COMPRESSION, 0x03);
 
-        registerPacket(Packets.Clientbound.PLAY_SPAWN_OBJECT, 0x00);
+        registerPacket(Packets.Clientbound.PLAY_SPAWN_ENTITY, 0x00);
         registerPacket(Packets.Clientbound.PLAY_SPAWN_EXPERIENCE_ORB, 0x01);
         registerPacket(Packets.Clientbound.PLAY_SPAWN_WEATHER_ENTITY, 0x02);
         registerPacket(Packets.Clientbound.PLAY_SPAWN_MOB, 0x03);
@@ -50,7 +49,7 @@ public class Protocol_1_12_2 extends Protocol {
         registerPacket(Packets.Clientbound.PLAY_SET_COOLDOWN, 0x17);
         registerPacket(Packets.Clientbound.PLAY_PLUGIN_MESSAGE, 0x18);
         registerPacket(Packets.Clientbound.PLAY_NAMED_SOUND_EFFECT, 0x19);
-        registerPacket(Packets.Clientbound.LOGIN_DISCONNECT, 0x1A);
+        registerPacket(Packets.Clientbound.PLAY_DISCONNECT, 0x1A);
         registerPacket(Packets.Clientbound.PLAY_ENTITY_STATUS, 0x1B);
         registerPacket(Packets.Clientbound.PLAY_EXPLOSION, 0x1C);
         registerPacket(Packets.Clientbound.PLAY_UNLOAD_CHUNK, 0x1D);

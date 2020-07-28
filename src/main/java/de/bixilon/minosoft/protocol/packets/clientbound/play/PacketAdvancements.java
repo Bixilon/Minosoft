@@ -38,76 +38,69 @@ public class PacketAdvancements implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                reset = buffer.readBoolean();
-                int length = buffer.readVarInt();
-                for (int i = 0; i < length; i++) {
-                    String advancementKey = buffer.readString();
+        reset = buffer.readBoolean();
+        int length = buffer.readVarInt();
+        for (int i = 0; i < length; i++) {
+            String advancementKey = buffer.readString();
 
-                    String parentName = null;
-                    if (buffer.readBoolean()) {
-                        parentName = buffer.readString();
-                    }
-                    AdvancementDisplay display = null;
-                    if (buffer.readBoolean()) {
-                        TextComponent title = buffer.readTextComponent();
-                        TextComponent description = buffer.readTextComponent();
-                        Slot icon = buffer.readSlot();
-                        AdvancementDisplay.AdvancementFrameTypes frameType = AdvancementDisplay.AdvancementFrameTypes.byId(buffer.readVarInt());
-                        int flags = buffer.readInt();
-                        String backgroundTexture = null;
-                        if (BitByte.isBitMask(flags, 0x01)) {
-                            backgroundTexture = buffer.readString();
-                        }
-                        float x = buffer.readFloat();
-                        float y = buffer.readFloat();
-                        display = new AdvancementDisplay(title, description, icon, frameType, flags, backgroundTexture, x, y);
-                    }
-                    int criteriaCount = buffer.readVarInt();
-                    ArrayList<String> criteria = new ArrayList<>();
-                    for (int ii = 0; ii < criteriaCount; ii++) {
-                        criteria.add(buffer.readString());
-                    }
-                    int requirementsCount = buffer.readVarInt();
-                    ArrayList<String[]> requirements = new ArrayList<>();
-                    for (int ii = 0; ii < requirementsCount; ii++) {
-                        String[] requirement = new String[buffer.readVarInt()];
-                        for (int iii = 0; iii < requirement.length; iii++) {
-                            requirement[iii] = buffer.readString();
-                        }
-                        requirements.add(requirement);
-                    }
-                    advancements.put(advancementKey, new Advancement(parentName, display, criteria, requirements));
+            String parentName = null;
+            if (buffer.readBoolean()) {
+                parentName = buffer.readString();
+            }
+            AdvancementDisplay display = null;
+            if (buffer.readBoolean()) {
+                TextComponent title = buffer.readTextComponent();
+                TextComponent description = buffer.readTextComponent();
+                Slot icon = buffer.readSlot();
+                AdvancementDisplay.AdvancementFrameTypes frameType = AdvancementDisplay.AdvancementFrameTypes.byId(buffer.readVarInt());
+                int flags = buffer.readInt();
+                String backgroundTexture = null;
+                if (BitByte.isBitMask(flags, 0x01)) {
+                    backgroundTexture = buffer.readString();
                 }
-                toRemove = new String[buffer.readVarInt()];
-                for (int i = 0; i < toRemove.length; i++) {
-                    toRemove[i] = buffer.readString();
+                float x = buffer.readFloat();
+                float y = buffer.readFloat();
+                display = new AdvancementDisplay(title, description, icon, frameType, flags, backgroundTexture, x, y);
+            }
+            int criteriaCount = buffer.readVarInt();
+            ArrayList<String> criteria = new ArrayList<>();
+            for (int ii = 0; ii < criteriaCount; ii++) {
+                criteria.add(buffer.readString());
+            }
+            int requirementsCount = buffer.readVarInt();
+            ArrayList<String[]> requirements = new ArrayList<>();
+            for (int ii = 0; ii < requirementsCount; ii++) {
+                String[] requirement = new String[buffer.readVarInt()];
+                for (int iii = 0; iii < requirement.length; iii++) {
+                    requirement[iii] = buffer.readString();
                 }
-                int progressesLength = buffer.readVarInt();
-                for (int i = 0; i < progressesLength; i++) {
-                    HashMap<String, CriterionProgress> progress = new HashMap<>();
-                    String progressName = buffer.readString();
-                    int criterionLength = buffer.readVarInt();
-                    for (int ii = 0; ii < criterionLength; ii++) {
-                        String criterionName = buffer.readString();
-                        boolean archived = buffer.readBoolean();
-                        Long archiveTime = null;
-                        if (archived) {
-                            archiveTime = buffer.readLong();
-                        }
-                        CriterionProgress criterionProgress = new CriterionProgress(archived, archiveTime);
-                        progress.put(criterionName, criterionProgress);
-                    }
-                    progresses.put(progressName, new AdvancementProgress(progress));
+                requirements.add(requirement);
+            }
+            advancements.put(advancementKey, new Advancement(parentName, display, criteria, requirements));
+        }
+        toRemove = new String[buffer.readVarInt()];
+        for (int i = 0; i < toRemove.length; i++) {
+            toRemove[i] = buffer.readString();
+        }
+        int progressesLength = buffer.readVarInt();
+        for (int i = 0; i < progressesLength; i++) {
+            HashMap<String, CriterionProgress> progress = new HashMap<>();
+            String progressName = buffer.readString();
+            int criterionLength = buffer.readVarInt();
+            for (int ii = 0; ii < criterionLength; ii++) {
+                String criterionName = buffer.readString();
+                boolean archived = buffer.readBoolean();
+                Long archiveTime = null;
+                if (archived) {
+                    archiveTime = buffer.readLong();
                 }
-
-                return true;
+                CriterionProgress criterionProgress = new CriterionProgress(archived, archiveTime);
+                progress.put(criterionName, criterionProgress);
+            }
+            progresses.put(progressName, new AdvancementProgress(progress));
         }
 
-        return false;
+        return true;
     }
 
     @Override

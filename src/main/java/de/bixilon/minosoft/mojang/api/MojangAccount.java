@@ -22,13 +22,11 @@ import java.util.UUID;
 
 public class MojangAccount {
 
-    String accessToken;
     final String userId;
-
     final UUID uuid;
     final String playerName;
-
     final String mojangUserName;
+    String accessToken;
 
     public MojangAccount(JsonObject json) {
         this.accessToken = json.get("accessToken").getAsString();

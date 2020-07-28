@@ -33,6 +33,10 @@ public enum Hand {
         return null;
     }
 
+    public static Hand byBoolean(boolean id) {
+        return id ? LEFT : RIGHT;
+    }
+
     public int getId() {
         return id;
     }

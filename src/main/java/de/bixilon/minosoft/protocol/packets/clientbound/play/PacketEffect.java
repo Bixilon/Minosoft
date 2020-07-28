@@ -38,26 +38,18 @@ public class PacketEffect implements ClientboundPacket {
                 data = buffer.readInt();
                 disableRelativeVolume = buffer.readBoolean();
                 return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 this.effect = EffectEffects.byId(buffer.readInt(), buffer.getVersion());
                 position = buffer.readPosition();
                 data = buffer.readInt();
                 disableRelativeVolume = buffer.readBoolean();
                 return true;
         }
-
-        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received effect packet at %s (effect=%s, data=%d, disableRelativeVolume=%s)", position.toString(), effect, data, disableRelativeVolume));
+        Log.protocol(String.format("Received effect packet at %s (effect=%s, data=%d, disableRelativeVolume=%s)", position, effect, data, disableRelativeVolume));
     }
 
     @Override
@@ -139,6 +131,12 @@ public class PacketEffect implements ClientboundPacket {
         BREWING_STAND_BREWED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1035)}),
         IRON_TRAP_DOOR_OPENED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1036)}),
         IRON_TRAP_DOOR_CLOSED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1037)}),
+        END_PORTAL_CREATED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_15_2, 1038)}),
+        PHANTOM_BITES(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_15_2, 1039)}),
+        ZOMBIE_CONVERTS_TO_DROWNED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_15_2, 1040)}),
+        HUSK_CONVERT_TO_ZOMBIE_DROWNING(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_15_2, 1041)}),
+        GRINDSTONE_USED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_15_2, 1042)}),
+        BOOK_PAGE_TURNED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_15_2, 1043)}),
 
         PARTICLE_10_SMOKE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2000)}), // data: smoke direction
         BLOCK_BREAK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2001)}), // data: blockId
@@ -150,6 +148,8 @@ public class PacketEffect implements ClientboundPacket {
         SPAWN_FALL_PARTICLES(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2006), new MapSet<>(ProtocolVersion.VERSION_1_9_4, -1)}), // data: fall damage (particle speed)
         DRAGON_BREATH(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 2006)}),
         INSTANT_SPLASH_POTION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_12_2, 2007)}),
+        ENDER_DRAGON_BLOCK_DESTROY(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_12_2, 2008)}),
+        WET_SPONGE_VAPORIZES_NETHER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_12_2, 2009)}),
 
         END_GATEWAY_SPAWN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 3000)}),
         MOB_ENDER_DRAGON_GROWL(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 3001)});

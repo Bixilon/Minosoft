@@ -61,12 +61,7 @@ public class PacketClientSettings implements ServerboundPacket {
                 buffer.writeBoolean(true); // chat colors
                 buffer.writeByte((byte) 0b01111111); // skin parts
                 break;
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 buffer.writeString(locale.getName()); // locale
                 buffer.writeByte(renderDistance); // render Distance
                 buffer.writeVarInt(0x00); // chat settings (nobody uses them)

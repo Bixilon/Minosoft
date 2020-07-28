@@ -17,24 +17,28 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Pose;
+import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Pose;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.items.Items;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
+import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particles;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.BlockParticleData;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.DustParticleData;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ItemParticleData;
+import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Ingredient;
-import de.bixilon.minosoft.game.datatypes.particle.*;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.Util;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class InByteBuffer {
@@ -221,28 +225,36 @@ public class InByteBuffer {
         return Pose.byId(readVarInt());
     }
 
-    public Particle readParticle() {
-        Particles type = Particles.byId(readVarInt());
+    public ParticleData readParticle() {
+        Particle type = Particles.byId(readVarInt(), version);
         return readParticleData(type);
     }
 
-    public Particle readParticleData(Particles type) {
-        try {
-            if (type.getClazz() == OtherParticles.class) {
-                return type.getClazz().getConstructor(Particles.class).newInstance(type);
-            } else if (type.getClazz() == BlockParticle.class) {
-                return type.getClazz().getConstructor(int.class).newInstance(readVarInt());
-            } else if (type.getClazz() == DustParticle.class) {
-                return type.getClazz().getConstructor(float.class, float.class, float.class, float.class).newInstance(readFloat(), readFloat(), readFloat(), readFloat());
-            } else if (type.getClazz() == FallingDustParticle.class) {
-                return type.getClazz().getConstructor(int.class).newInstance(readVarInt());
-            } else if (type.getClazz() == ItemParticle.class) {
-                return type.getClazz().getConstructor(Slot.class).newInstance(readSlot());
+    public ParticleData readParticleData(Particle type) {
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+            // old particle format
+            switch (type.getIdentifier()) {
+                case "iconcrack":
+                    return new ItemParticleData(new Slot(Items.getItemByLegacy(readVarInt(), readVarInt())), type);
+                case "blockcrack":
+                case "blockdust":
+                case "falling_dust":
+                    return new BlockParticleData(Blocks.getBlockByLegacy(readVarInt() << 4), type);
+                default:
+                    return new ParticleData(type);
             }
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
         }
-        return null;
+        switch (type.getIdentifier()) {
+            case "block":
+            case "falling_dust":
+                return new BlockParticleData(Blocks.getBlock(readVarInt(), version), type);
+            case "dust":
+                return new DustParticleData(readFloat(), readFloat(), readFloat(), readFloat(), type);
+            case "item":
+                return new ItemParticleData(readSlot(), type);
+            default:
+                return new ParticleData(type);
+        }
     }
 
     public CompoundTag readNBT(boolean compressed) {
@@ -284,8 +296,7 @@ public class InByteBuffer {
                 short metaData = readShort();
                 CompoundTag nbt = readNBT(version == ProtocolVersion.VERSION_1_7_10);
                 return new Slot(Items.getItemByLegacy(id, metaData), count, metaData, nbt);
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 if (readBoolean()) {
                     return new Slot(Items.getItem(readVarInt(), version), readByte(), readNBT());
                 }
@@ -349,8 +360,8 @@ public class InByteBuffer {
         return version;
     }
 
-    public HashMap<Integer, EntityMetaData.MetaDataSet> readMetaData() {
-        HashMap<Integer, EntityMetaData.MetaDataSet> sets = new HashMap<>();
+    public EntityMetaData.MetaDataHashMap readMetaData() {
+        EntityMetaData.MetaDataHashMap sets = new EntityMetaData.MetaDataHashMap();
 
         switch (version) {
             case VERSION_1_7_10:
@@ -360,7 +371,7 @@ public class InByteBuffer {
                 while (item != 0x7F) {
                     byte index = (byte) (item & 0x1F);
                     EntityMetaData.Types type = EntityMetaData.Types.byId((item & 0xFF) >> 5, version);
-                    sets.put((int) index, new EntityMetaData.MetaDataSet(index, EntityMetaData.getData(type, this)));
+                    sets.put((int) index, EntityMetaData.getData(type, this));
                     item = readByte();
                 }
                 break;
@@ -371,18 +382,16 @@ public class InByteBuffer {
                 byte index = readByte();
                 while (index != (byte) 0xFF) {
                     EntityMetaData.Types type = EntityMetaData.Types.byId(readByte(), version);
-                    sets.put((int) index, new EntityMetaData.MetaDataSet(index, EntityMetaData.getData(type, this)));
+                    sets.put((int) index, EntityMetaData.getData(type, this));
                     index = readByte();
                 }
                 break;
             }
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4: {
+            default: {
                 byte index = readByte();
                 while (index != (byte) 0xFF) {
                     EntityMetaData.Types type = EntityMetaData.Types.byId(readVarInt(), version);
-                    sets.put((int) index, new EntityMetaData.MetaDataSet(index, EntityMetaData.getData(type, this)));
+                    sets.put((int) index, EntityMetaData.getData(type, this));
                     index = readByte();
                 }
                 break;

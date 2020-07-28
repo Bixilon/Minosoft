@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.StatusEffects;
+import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffect;
+import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffects;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -21,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketRemoveEntityEffect implements ClientboundPacket {
     int entityId;
-    StatusEffects effect;
+    MobEffect effect;
 
 
     @Override
@@ -29,21 +30,13 @@ public class PacketRemoveEntityEffect implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 entityId = buffer.readInt();
-                effect = StatusEffects.byId(buffer.readByte());
+                effect = MobEffects.byId(buffer.readByte(), buffer.getVersion());
                 return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 entityId = buffer.readVarInt();
-                effect = StatusEffects.byId(buffer.readByte());
+                effect = MobEffects.byId(buffer.readByte(), buffer.getVersion());
                 return true;
         }
-
-        return false;
     }
 
     @Override
@@ -60,7 +53,7 @@ public class PacketRemoveEntityEffect implements ClientboundPacket {
         return entityId;
     }
 
-    public StatusEffects getEffect() {
+    public MobEffect getEffect() {
         return effect;
     }
 }

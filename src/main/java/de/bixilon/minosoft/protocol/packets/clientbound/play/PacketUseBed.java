@@ -31,24 +31,16 @@ public class PacketUseBed implements ClientboundPacket {
                 entityId = buffer.readInt();
                 position = buffer.readBlockPosition();
                 return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 entityId = buffer.readVarInt();
                 position = buffer.readPosition();
                 return true;
         }
-
-        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity used bed at %s (entityId=%d)", position.toString(), entityId));
+        Log.protocol(String.format("Entity used bed at %s (entityId=%d)", position, entityId));
     }
 
     @Override

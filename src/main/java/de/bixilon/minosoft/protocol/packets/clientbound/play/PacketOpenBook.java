@@ -25,13 +25,8 @@ public class PacketOpenBook implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_14_4:
-                hand = Hand.byId(buffer.readVarInt());
-                return true;
-        }
-
-        return false;
+        hand = Hand.byId(buffer.readVarInt());
+        return true;
     }
 
     @Override

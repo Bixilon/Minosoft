@@ -45,9 +45,7 @@ public class PacketKeepAliveResponse implements ServerboundPacket {
             case VERSION_1_11_2:
                 buffer.writeVarInt((int) id);
                 break;
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 buffer.writeLong(id);
                 break;
         }

@@ -33,25 +33,17 @@ public class PacketBlockBreakAnimation implements ClientboundPacket {
                 position = buffer.readBlockPositionInteger();
                 stage = buffer.readByte();
                 return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 entityId = buffer.readVarInt();
                 position = buffer.readPosition();
                 stage = buffer.readByte();
                 return true;
         }
-
-        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving block break packet (entityId=%d, stage=%d) at %s", entityId, stage, position.toString()));
+        Log.protocol(String.format("Receiving block break packet (entityId=%d, stage=%d) at %s", entityId, stage, position));
     }
 
     @Override

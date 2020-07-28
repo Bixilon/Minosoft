@@ -19,6 +19,7 @@ import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibble;
 import de.bixilon.minosoft.game.datatypes.world.ChunkNibbleLocation;
 import de.bixilon.minosoft.game.datatypes.world.palette.Palette;
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
@@ -61,7 +62,7 @@ public class ChunkUtil {
                             for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                                 for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
 
-                                    short singeBlockId = blockTypes[arrayPos];
+                                    short singeBlockId = (short) (blockTypes[arrayPos] & 0xFF);
                                     byte singleMeta;
                                     // get block meta and shift and add (merge) id if needed
                                     if (arrayPos % 2 == 0) {
@@ -72,7 +73,7 @@ public class ChunkUtil {
                                         }
                                     } else {
                                         // low 4 bits
-                                        singleMeta = (byte) (meta[arrayPos / 2] >>> 4);
+                                        singleMeta = (byte) ((meta[arrayPos / 2] >>> 4) & 0xF);
 
                                         if (BitByte.isBitSet(addBitMask, c)) {
                                             singeBlockId = (short) ((singeBlockId << 4) | (addBlockTypes[arrayPos / 2] & 0xF));
@@ -143,12 +144,7 @@ public class ChunkUtil {
                 }
                 return new Chunk(nibbleMap);
             }
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4: {
+            default: {
                 // really big thanks to: https://wiki.vg/index.php?title=Chunk_Format&oldid=13712
                 HashMap<Byte, ChunkNibble> nibbleMap = new HashMap<>();
                 for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
@@ -186,6 +182,16 @@ public class ChunkUtil {
                                 blockId &= individualValueMask;
 
                                 Block block = palette.byId(blockId);
+                                if (block == null) {
+                                    String blockName;
+                                    if (buffer.getVersion().getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+                                        blockName = String.format("%d:%d", blockId >> 4, blockId & 0xF);
+                                    } else {
+                                        blockName = String.valueOf(blockId);
+                                    }
+                                    Log.warn(String.format("Server sent unknown block: %s", blockName));
+                                    continue;
+                                }
                                 if (block.equals(Blocks.nullBlock)) {
                                     continue;
                                 }
@@ -194,7 +200,7 @@ public class ChunkUtil {
                         }
                     }
 
-                    if (buffer.getVersion().getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+                    if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
                         byte[] light = buffer.readBytes(2048);
                         if (containsSkyLight) {
                             byte[] skyLight = buffer.readBytes(2048);
@@ -203,11 +209,12 @@ public class ChunkUtil {
 
                     nibbleMap.put(c, new ChunkNibble(blockMap));
                 }
-                byte[] biomes = buffer.readBytes(256);
+                if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+                    byte[] biomes = buffer.readBytes(256);
+                }
                 return new Chunk(nibbleMap);
             }
         }
-        throw new RuntimeException("Could not parse chunk!");
     }
 
     public static void readSkyLightPacket(InByteBuffer buffer, int skyLightMask, int blockLightMask, int emptyBlockLightMask, int emptySkyLightMask) {

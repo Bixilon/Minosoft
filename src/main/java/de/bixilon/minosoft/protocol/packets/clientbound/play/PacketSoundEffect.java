@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.SoundCategories;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -25,7 +25,7 @@ public class PacketSoundEffect implements ClientboundPacket {
     static final float pitchCalc = 100.0F / 63.0F;
     Location location;
     SoundCategories category;
-    int sound;
+    int soundId;
     float volume;
     float pitch;
 
@@ -33,31 +33,25 @@ public class PacketSoundEffect implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         switch (buffer.getVersion()) {
             case VERSION_1_9_4:
-                sound = buffer.readVarInt();
+                soundId = buffer.readVarInt();
                 category = SoundCategories.byId(buffer.readVarInt());
                 location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
                 volume = buffer.readFloat();
                 pitch = (buffer.readByte() * pitchCalc) / 100F;
                 return true;
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                sound = buffer.readVarInt();
+            default:
+                soundId = buffer.readVarInt();
                 category = SoundCategories.byId(buffer.readVarInt());
                 location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
                 volume = buffer.readFloat();
                 pitch = buffer.readFloat();
                 return true;
         }
-
-        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Play sound effect %d with volume=%s and pitch=%s at %s", sound, volume, pitch, location.toString()));
+        Log.protocol(String.format("Play sound effect (soundId=%d, category=%s, volume=%s, pitch=%s, location=%s)", soundId, category, volume, pitch, location));
     }
 
     @Override
@@ -76,8 +70,8 @@ public class PacketSoundEffect implements ClientboundPacket {
         return pitch;
     }
 
-    public int getSound() {
-        return sound;
+    public int getSoundId() {
+        return soundId;
     }
 
     public float getVolume() {

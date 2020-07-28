@@ -25,22 +25,12 @@ public class PacketSetPassenger implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                this.vehicleId = buffer.readVarInt();
-                entityIds = new int[buffer.readVarInt()];
-                for (int i = 0; i < entityIds.length; i++) {
-                    entityIds[i] = buffer.readVarInt();
-                }
-                return true;
+        this.vehicleId = buffer.readVarInt();
+        entityIds = new int[buffer.readVarInt()];
+        for (int i = 0; i < entityIds.length; i++) {
+            entityIds[i] = buffer.readVarInt();
         }
-
-        return false;
+        return true;
     }
 
     @Override

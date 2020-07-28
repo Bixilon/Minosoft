@@ -25,20 +25,8 @@ public class PacketDisconnect implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                reason = buffer.readTextComponent();
-                return true;
-        }
-
-        return false;
+        reason = buffer.readTextComponent();
+        return true;
     }
 
     @Override

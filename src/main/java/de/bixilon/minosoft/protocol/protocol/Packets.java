@@ -90,7 +90,6 @@ public class Packets {
         PLAY_SPAWN_MOB,
         PLAY_SPAWN_EXPERIENCE_ORB,
         PLAY_SPAWN_WEATHER_ENTITY,
-        PLAY_SPAWN_LIVING_ENTITY,
         PLAY_SPAWN_PAINTING,
         PLAY_SPAWN_PLAYER,
         PLAY_ENTITY_ANIMATION,
@@ -182,7 +181,7 @@ public class Packets {
         PLAY_CHUNK_BULK,
         PLAY_UPDATE_SIGN,
         PLAY_STATISTICS,
-        PLAY_SPAWN_OBJECT,
+        PLAY_SPAWN_ENTITY,
         PLAY_TITLE;
 
         final ConnectionState state;

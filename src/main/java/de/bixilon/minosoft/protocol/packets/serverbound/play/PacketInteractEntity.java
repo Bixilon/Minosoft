@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entity;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Entity;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -76,12 +76,7 @@ public class PacketInteractEntity implements ServerboundPacket {
                     buffer.writeFloat((float) location.getZ());
                 }
                 break;
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 buffer.writeInt(entityId);
                 buffer.writeByte((byte) click.getId());
                 if (click == Click.INTERACT_AT) {

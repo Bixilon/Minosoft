@@ -46,8 +46,7 @@ public class PacketScoreboardObjective implements ClientboundPacket {
                     type = ScoreboardObjectiveTypes.byName(buffer.readString());
                 }
                 return true;
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 name = buffer.readString();
                 action = ScoreboardObjectiveAction.byId(buffer.readByte());
                 if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
@@ -56,14 +55,12 @@ public class PacketScoreboardObjective implements ClientboundPacket {
                 }
                 return true;
         }
-
-        return false;
     }
 
     @Override
     public void log() {
         if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
-            Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\", type=%s", action, name, value.getColoredMessage(), type.name));
+            Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\", type=%s", action, name, value.getColoredMessage(), type));
         } else {
             Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\")", action, name));
         }

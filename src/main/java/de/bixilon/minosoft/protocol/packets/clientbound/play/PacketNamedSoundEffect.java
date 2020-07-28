@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.SoundCategories;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -46,11 +46,7 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
                 volume = buffer.readFloat();
                 pitch = (buffer.readByte() * pitchCalc) / 100F;
                 return true;
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 sound = buffer.readString();
                 category = SoundCategories.byId(buffer.readVarInt());
                 location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
@@ -58,13 +54,11 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
                 pitch = buffer.readFloat();
                 return true;
         }
-
-        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Play named sound effect %s with volume=%s and pitch=%s at %s", sound, volume, pitch, location.toString()));
+        Log.protocol(String.format("Play sound effect (sound=%s, category=%s, volume=%s, pitch=%s, location=%s)", sound, category, volume, pitch, location));
     }
 
     @Override
@@ -75,7 +69,6 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
     public Location getLocation() {
         return location;
     }
-
     /**
      * @return Pitch in Percent
      */
@@ -89,5 +82,9 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
 
     public float getVolume() {
         return volume;
+    }
+
+    public SoundCategories getCategory() {
+        return category;
     }
 }

@@ -41,6 +41,7 @@ public class PacketLoginPluginResponse implements ServerboundPacket {
         switch (version) {
             case VERSION_1_13_2:
             case VERSION_1_14_4:
+            case VERSION_1_15_2:
                 buffer.writeVarInt(messageId);
                 buffer.writeBoolean(successful);
                 if (successful) {

@@ -37,11 +37,7 @@ public class PacketUpdateJigsawBlock implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_UPDATE_JIGSAW_BLOCK));
-        switch (version) {
-            case VERSION_1_14_4:
-                buffer.writePosition(position);
-                break;
-        }
+        buffer.writePosition(position);
         return buffer;
     }
 

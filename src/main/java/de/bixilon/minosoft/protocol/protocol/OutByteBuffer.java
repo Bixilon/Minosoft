@@ -180,7 +180,7 @@ public class OutByteBuffer {
                 writeShort(slot.getItemMetadata());
                 writeNBT(slot.getNbt());
                 break;
-            case VERSION_1_13_2:
+            default:
                 if (slot == null) {
                     writeBoolean(false);
                     return;

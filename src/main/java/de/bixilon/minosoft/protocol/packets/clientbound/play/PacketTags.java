@@ -34,25 +34,19 @@ public class PacketTags implements ClientboundPacket {
                 itemTags = readTags(buffer);
                 fluidTags = readTags(buffer);
                 return true;
-            case VERSION_1_14_4:
+            default:
                 blockTags = readTags(buffer);
                 itemTags = readTags(buffer);
                 fluidTags = readTags(buffer);
                 entityTags = readTags(buffer);
                 return true;
         }
-        return false;
     }
 
     private Tag[] readTags(InByteBuffer buffer) {
         Tag[] ret = new Tag[buffer.readVarInt()];
-        switch (buffer.getVersion()) {
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                for (int i = 0; i < ret.length; i++) {
-                    ret[i] = new Tag(buffer.readString(), buffer.readVarIntArray(buffer.readVarInt()));
-                }
-                break;
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = new Tag(buffer.readString(), buffer.readVarIntArray(buffer.readVarInt()));
         }
         return ret;
     }

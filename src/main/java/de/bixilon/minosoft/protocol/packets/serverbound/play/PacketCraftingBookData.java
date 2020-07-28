@@ -72,7 +72,7 @@ public class PacketCraftingBookData implements ServerboundPacket {
                         break;
                 }
                 break;
-            case VERSION_1_14_4:
+            default:
                 buffer.writeVarInt(action.getId());
                 switch (action) {
                     case DISPLAY_RECIPE:

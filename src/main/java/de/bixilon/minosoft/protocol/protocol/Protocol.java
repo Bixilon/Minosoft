@@ -15,10 +15,7 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginPluginRequest;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
@@ -66,7 +63,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_MULTIBLOCK_CHANGE, PacketMultiBlockChange.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_RESPAWN, PacketRespawn.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_OPEN_SIGN_EDITOR, PacketOpenSignEditor.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_OBJECT, PacketSpawnObject.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_ENTITY, PacketSpawnObject.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_EXPERIENCE_ORB, PacketSpawnExperienceOrb.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SPAWN_WEATHER_ENTITY, PacketSpawnWeatherEntity.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_CHUNK_DATA, PacketChunkData.class);
@@ -126,6 +123,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_TRADE_LIST, PacketTradeList.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_OPEN_BOOK, PacketOpenBook.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ACKNOWLEDGE_PLAYER_DIGGING, PacketAcknowledgePlayerDigging.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_SOUND_EFFECT, PacketEntitySoundEffect.class);
     }
 
     protected final HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
@@ -170,10 +168,22 @@ public abstract class Protocol implements ProtocolInterface {
     }
 
     protected void registerPacket(Packets.Serverbound packet, int id) {
+        if (serverboundPacketMapping.get(packet.getState()).containsKey(packet)) {
+            throw new IllegalArgumentException(String.format("%s is already registered!", packet));
+        }
+        if (serverboundPacketMapping.get(packet.getState()).containsValue(id)) {
+            throw new IllegalArgumentException(String.format("%x is already registered!", id));
+        }
         serverboundPacketMapping.get(packet.getState()).put(packet, id);
     }
 
     protected void registerPacket(Packets.Clientbound packet, int id) {
+        if (clientboundPacketMapping.get(packet.getState()).containsKey(packet)) {
+            throw new IllegalArgumentException(String.format("%s is already registered!", packet));
+        }
+        if (clientboundPacketMapping.get(packet.getState()).containsValue(id)) {
+            throw new IllegalArgumentException(String.format("%x is already registered!", id));
+        }
         clientboundPacketMapping.get(packet.getState()).put(packet, id);
     }
 

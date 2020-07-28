@@ -15,8 +15,9 @@ package de.bixilon.minosoft.game.datatypes.objectLoader.entities;
 
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.mob.*;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.objects.*;
+import de.bixilon.minosoft.game.datatypes.entities.Entity;
+import de.bixilon.minosoft.game.datatypes.entities.mob.*;
+import de.bixilon.minosoft.game.datatypes.entities.objects.*;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
@@ -128,6 +129,7 @@ public class Entities {
         registerEntityClass("minecraft:wandering_trader", WanderingTrader.class);
         registerEntityClass("minecraft:pillager", Pillager.class);
         registerEntityClass("minecraft:ravager", Ravager.class);
+        registerEntityClass("minecraft:bee", Bee.class);
 
         // not a thing anymore
         registerEntityClass("minecraft:falling_dragon_Egg", FallingDragonEgg.class);

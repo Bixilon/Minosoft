@@ -21,12 +21,9 @@ public class Protocol_1_10 extends Protocol {
 
     public Protocol_1_10() {
         // https://wiki.vg/index.php?title=Protocol&oldid=8235
-        super();
-
-
         registerPacket(Packets.Clientbound.LOGIN_SET_COMPRESSION, 0x03);
 
-        registerPacket(Packets.Clientbound.PLAY_SPAWN_OBJECT, 0x00);
+        registerPacket(Packets.Clientbound.PLAY_SPAWN_ENTITY, 0x00);
         registerPacket(Packets.Clientbound.PLAY_SPAWN_EXPERIENCE_ORB, 0x01);
         registerPacket(Packets.Clientbound.PLAY_SPAWN_WEATHER_ENTITY, 0x02);
         registerPacket(Packets.Clientbound.PLAY_SPAWN_MOB, 0x03);

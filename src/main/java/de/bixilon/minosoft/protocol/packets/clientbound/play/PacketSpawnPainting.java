@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Paintings;
+import de.bixilon.minosoft.game.datatypes.objectLoader.motives.Motive;
+import de.bixilon.minosoft.game.datatypes.objectLoader.motives.Motives;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -25,7 +26,7 @@ import java.util.UUID;
 public class PacketSpawnPainting implements ClientboundPacket {
     int entityId;
     UUID uuid;
-    Paintings painting;
+    Motive motive;
     BlockPosition position;
     int direction;
 
@@ -34,13 +35,13 @@ public class PacketSpawnPainting implements ClientboundPacket {
         switch (buffer.getVersion()) {
             case VERSION_1_7_10:
                 entityId = buffer.readVarInt();
-                painting = Paintings.byName(buffer.readString(), buffer.getVersion());
+                motive = Motives.byIdentifier(buffer.readString());
                 position = buffer.readBlockPositionInteger();
                 direction = buffer.readInt();
                 return true;
             case VERSION_1_8:
                 entityId = buffer.readVarInt();
-                painting = Paintings.byName(buffer.readString(), buffer.getVersion());
+                motive = Motives.byIdentifier(buffer.readString());
                 position = buffer.readPosition();
                 direction = buffer.readByte();
                 return true;
@@ -50,26 +51,23 @@ public class PacketSpawnPainting implements ClientboundPacket {
             case VERSION_1_12_2:
                 entityId = buffer.readVarInt();
                 uuid = buffer.readUUID();
-                painting = Paintings.byName(buffer.readString(), buffer.getVersion());
+                motive = Motives.byIdentifier(buffer.readString());
                 position = buffer.readPosition();
                 direction = buffer.readByte();
                 return true;
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
+            default:
                 entityId = buffer.readVarInt();
                 uuid = buffer.readUUID();
-                painting = Paintings.byId(buffer.readVarInt());
+                motive = Motives.byId(buffer.readVarInt(), buffer.getVersion());
                 position = buffer.readPosition();
                 direction = buffer.readByte();
                 return true;
         }
-
-        return false;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Spawning painting at %s (entityId=%d, painting=%s, direction=%d)", position.toString(), entityId, painting, direction));
+        Log.protocol(String.format("Spawning painting at %s (entityId=%d, motive=%s, direction=%d)", position, entityId, motive, direction));
     }
 
     @Override
@@ -81,8 +79,8 @@ public class PacketSpawnPainting implements ClientboundPacket {
         return entityId;
     }
 
-    public Paintings getPainting() {
-        return painting;
+    public Motive getMotive() {
+        return motive;
     }
 
     public BlockPosition getPosition() {
