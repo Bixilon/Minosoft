@@ -26,7 +26,8 @@ public enum ProtocolVersion {
     VERSION_1_12_2(new Protocol_1_12_2()),
     VERSION_1_13_2(new Protocol_1_13_2()),
     VERSION_1_14_4(new Protocol_1_14_4()),
-    VERSION_1_15_2(new Protocol_1_15_2());
+    VERSION_1_15_2(new Protocol_1_15_2()),
+    VERSION_1_16_1(new Protocol_1_16_1());
 
     public static final TreeMap<Integer, ProtocolVersion> versionMapping = new TreeMap<>();
 

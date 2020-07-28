@@ -11,49 +11,27 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.objectLoader.blocks;
+package de.bixilon.minosoft.protocol.protocol.versions;
 
-public enum BlockRotation {
-    NONE,
-    SOUTH,
-    SOUTH_SOUTH_WEST,
-    SOUTH_WEST,
-    WEST_SOUTH_WEST,
-    WEST,
-    WEST_NORTH_WEST,
-    NORTH_WEST,
-    NORTH_NORTH_WEST,
-    NORTH,
-    NORTH_NORTH_EAST,
-    NORTH_EAST,
-    EAST_NORTH_EAST,
-    EAST,
-    EAST_SOUTH_EAST,
-    SOUTH_EAST,
-    SOUTH_SOUTH_EAST,
 
-    NORTH_SOUTH,
-    EAST_WEST,
-    ASCENDING_EAST,
-    ASCENDING_WEST,
-    ASCENDING_NORTH,
-    ASCENDING_SOUTH,
+import de.bixilon.minosoft.protocol.protocol.Protocol;
 
-    UP,
-    DOWN,
+public class Protocol_1_16_1 extends Protocol {
 
-    // 1.16+
+    public Protocol_1_16_1() {
+    }
 
-    DOWN_EAST,
-    DOWN_WEST,
-    DOWN_NORTH,
-    DOWN_SOUTH,
-    UP_EAST,
-    EAST_UP,
-    UP_WEST,
-    WEST_UP,
-    UP_NORTH,
-    NORTH_UP,
-    UP_SOUTH,
-    SOUTH_UP,
+    public int getProtocolVersionNumber() {
+        return 736;
+    }
+
+    @Override
+    public String getVersionString() {
+        return "1.16.1";
+    }
+
+    @Override
+    public String getReleaseName() {
+        return "Nether";
+    }
 }

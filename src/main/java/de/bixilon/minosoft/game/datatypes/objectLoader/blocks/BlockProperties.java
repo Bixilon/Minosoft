@@ -240,6 +240,10 @@ public enum BlockProperties {
     SOUTH_UP,
     EAST_UP,
     WEST_UP,
+    NORTH_LOW,
+    SOUTH_LOW,
+    EAST_LOW,
+    WEST_LOW,
     NORTH_SIDE,
     SOUTH_SIDE,
     EAST_SIDE,
@@ -248,6 +252,10 @@ public enum BlockProperties {
     SOUTH_NONE,
     EAST_NONE,
     WEST_NONE,
+    NORTH_TALL,
+    SOUTH_TALL,
+    EAST_TALL,
+    WEST_TALL,
 
     LAYERS_1,
     LAYERS_2,
@@ -379,5 +387,12 @@ public enum BlockProperties {
     HATCH_2,
 
     ENABLED,
-    DISABLED
+    DISABLED,
+
+    // respawn anchor
+    CHARGES_0,
+    CHARGES_1,
+    CHARGES_2,
+    CHARGES_3,
+    CHARGES_4
 }

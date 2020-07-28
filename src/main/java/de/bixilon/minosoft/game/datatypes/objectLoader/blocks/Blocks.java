@@ -115,6 +115,12 @@ public class Blocks {
         propertiesMapping.put("note", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
+        for (int i = 0; i <= 4; i++) {
+            propertyHashMap.put(String.valueOf(i), BlockProperties.valueOf(String.format("CHARGES_%d", i)));
+        }
+        propertiesMapping.put("charges", propertyHashMap);
+
+        propertyHashMap = new HashMap<>();
         propertyHashMap.put("0", BlockProperties.STAGE_0);
         propertyHashMap.put("1", BlockProperties.STAGE_1);
         propertiesMapping.put("stage", propertyHashMap);
@@ -122,6 +128,8 @@ public class Blocks {
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperties.EAST);
         propertyHashMap.put("up", BlockProperties.EAST_UP);
+        propertyHashMap.put("low", BlockProperties.EAST_LOW);
+        propertyHashMap.put("tall", BlockProperties.EAST_TALL);
         propertyHashMap.put("side", BlockProperties.EAST_SIDE);
         propertyHashMap.put("false", BlockProperties.NOT_EAST);
         propertyHashMap.put("none", BlockProperties.EAST_NONE);
@@ -130,6 +138,8 @@ public class Blocks {
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperties.WEST);
         propertyHashMap.put("up", BlockProperties.WEST_UP);
+        propertyHashMap.put("low", BlockProperties.WEST_LOW);
+        propertyHashMap.put("tall", BlockProperties.WEST_TALL);
         propertyHashMap.put("side", BlockProperties.WEST_SIDE);
         propertyHashMap.put("false", BlockProperties.NOT_WEST);
         propertyHashMap.put("none", BlockProperties.WEST_NONE);
@@ -138,6 +148,8 @@ public class Blocks {
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperties.SOUTH);
         propertyHashMap.put("up", BlockProperties.SOUTH_UP);
+        propertyHashMap.put("low", BlockProperties.SOUTH_LOW);
+        propertyHashMap.put("tall", BlockProperties.SOUTH_TALL);
         propertyHashMap.put("side", BlockProperties.SOUTH_SIDE);
         propertyHashMap.put("false", BlockProperties.NOT_SOUTH);
         propertyHashMap.put("none", BlockProperties.SOUTH_NONE);
@@ -146,6 +158,8 @@ public class Blocks {
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperties.NORTH);
         propertyHashMap.put("up", BlockProperties.NORTH_UP);
+        propertyHashMap.put("low", BlockProperties.NORTH_LOW);
+        propertyHashMap.put("tall", BlockProperties.NORTH_TALL);
         propertyHashMap.put("side", BlockProperties.NORTH_SIDE);
         propertyHashMap.put("false", BlockProperties.NOT_NORTH);
         propertyHashMap.put("none", BlockProperties.NORTH_NONE);
@@ -432,6 +446,18 @@ public class Blocks {
         rotationMapping.put("ascending_west", BlockRotation.ASCENDING_WEST);
         rotationMapping.put("ascending_north", BlockRotation.ASCENDING_NORTH);
         rotationMapping.put("ascending_south", BlockRotation.ASCENDING_SOUTH);
+        rotationMapping.put("down_east", BlockRotation.DOWN_EAST);
+        rotationMapping.put("down_west", BlockRotation.DOWN_WEST);
+        rotationMapping.put("down_north", BlockRotation.DOWN_NORTH);
+        rotationMapping.put("down_south", BlockRotation.DOWN_SOUTH);
+        rotationMapping.put("up_east", BlockRotation.UP_EAST);
+        rotationMapping.put("east_up", BlockRotation.EAST_UP);
+        rotationMapping.put("up_west", BlockRotation.UP_WEST);
+        rotationMapping.put("west_up", BlockRotation.WEST_UP);
+        rotationMapping.put("up_north", BlockRotation.UP_NORTH);
+        rotationMapping.put("north_up", BlockRotation.NORTH_UP);
+        rotationMapping.put("up_south", BlockRotation.UP_SOUTH);
+        rotationMapping.put("south_up", BlockRotation.SOUTH_UP);
         rotationMapping.put("north_south", BlockRotation.NORTH_SOUTH);
         rotationMapping.put("east_west", BlockRotation.EAST_WEST);
     }
@@ -471,6 +497,9 @@ public class Blocks {
                     } else if (propertiesJSON.has("rotation")) {
                         rotation = rotationMapping.get(propertiesJSON.get("rotation").getAsString());
                         propertiesJSON.remove("rotation");
+                    } else if (propertiesJSON.has("orientation")) {
+                        rotation = rotationMapping.get(propertiesJSON.get("orientation").getAsString());
+                        propertiesJSON.remove("orientation");
                     }
                     HashSet<BlockProperties> properties = new HashSet<>();
                     for (String propertyName : propertiesJSON.keySet()) {
