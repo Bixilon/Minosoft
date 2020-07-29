@@ -18,6 +18,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.ChunkUtil;
 
 public class PacketUpdateLight implements ClientboundPacket {
@@ -26,6 +27,9 @@ public class PacketUpdateLight implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
+        if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+            boolean trustEdges = buffer.readBoolean();
+        }
         int skyLightMask = buffer.readVarInt();
         int blockLightMask = buffer.readVarInt();
         int emptyBlockLightMask = buffer.readVarInt();

@@ -24,7 +24,7 @@ public class LongArrayTag implements NBTTag {
     }
 
     public LongArrayTag(InByteBuffer buffer) {
-        this.value = buffer.readLongs(new IntTag(buffer).getValue());
+        this.value = buffer.readLongArray(new IntTag(buffer).getValue());
     }
 
     @Override

@@ -66,7 +66,10 @@ public class Packets {
         PLAY_SPECTATE,
         PLAY_PLAYER_BLOCK_PLACEMENT,
         PLAY_USE_ITEM,
-        PLAY_UPDATE_COMMAND_BLOCK_MINECART;
+        PLAY_UPDATE_COMMAND_BLOCK_MINECART,
+        PLAY_GENERATE_STRUCTURE,
+        PLAY_SET_DISPLAYED_RECIPE,
+        PLAY_SET_RECIPE_BOOK_STATE;
 
         final ConnectionState state;
 

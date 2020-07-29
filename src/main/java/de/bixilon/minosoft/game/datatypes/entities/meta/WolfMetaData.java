@@ -60,21 +60,11 @@ public class WolfMetaData extends TameableMetaData {
 
 
     public boolean isBegging() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return sets.getBoolean(19, false);
-            case VERSION_1_9_4:
-                return sets.getBoolean(15, false);
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                return sets.getBoolean(16, false);
-            case VERSION_1_14_4:
-                return sets.getBoolean(18, false);
+        final boolean defaultValue = false;
+        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            return sets.getBoolean(19, defaultValue);
         }
-        return false;
+        return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public Color getColor() {
@@ -85,7 +75,15 @@ public class WolfMetaData extends TameableMetaData {
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
             return Color.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue));
         }
-        return Color.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
+        return Color.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue));
+    }
+
+    public int getAngerTime() {
+        final int defaultValue = 0;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+            return defaultValue;
+        }
+        return sets.getInt(super.getLastDataIndex() + 3, defaultValue);
     }
 
     @Override

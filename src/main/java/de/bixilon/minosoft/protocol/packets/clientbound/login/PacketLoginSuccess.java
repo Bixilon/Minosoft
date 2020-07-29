@@ -17,6 +17,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.UUID;
 
@@ -26,7 +27,12 @@ public class PacketLoginSuccess implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        uuid = UUID.fromString(buffer.readString());
+        if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+            uuid = UUID.fromString(buffer.readString());
+            username = buffer.readString();
+            return true;
+        }
+        uuid = buffer.readUUID();
         username = buffer.readString();
         return true;
     }

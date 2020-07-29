@@ -24,7 +24,7 @@ public class IntArrayTag implements NBTTag {
     }
 
     public IntArrayTag(InByteBuffer buffer) {
-        this.value = buffer.readInts(new IntTag(buffer).getValue());
+        this.value = buffer.readIntArray(new IntTag(buffer).getValue());
     }
 
     @Override

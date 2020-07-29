@@ -45,6 +45,9 @@ public class AbstractArrowMetaData extends EntityMetaData {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
             return defaultValue;
         }
+        if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+            return defaultValue;
+        }
         return sets.getUUID(super.getLastDataIndex() + 2, defaultValue);
     }
 
@@ -65,6 +68,9 @@ public class AbstractArrowMetaData extends EntityMetaData {
         if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
             return super.getLastDataIndex() + 2;
         }
-        return super.getLastDataIndex() + 3;
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+            return super.getLastDataIndex() + 3;
+        }
+        return super.getLastDataIndex() + 2;
     }
 }

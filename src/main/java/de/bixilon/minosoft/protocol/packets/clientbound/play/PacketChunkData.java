@@ -33,7 +33,8 @@ public class PacketChunkData implements ClientboundPacket {
     ChunkLocation location;
     Chunk chunk;
     CompoundTag heightMap;
-
+    int[] biomes;
+    boolean ignoreOldData;
     HashMap<BlockPosition, CompoundTag> blockEntities = new HashMap<>();
 
     @Override
@@ -43,55 +44,59 @@ public class PacketChunkData implements ClientboundPacket {
 
     public boolean read(InPacketBuffer buffer, Dimension dimension) {
         boolean containsSkyLight = dimension == Dimension.OVERWORLD;
+        if (buffer.getVersion().getVersionNumber() <= ProtocolVersion.VERSION_1_7_10.getVersionNumber()) {
+            this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+            boolean groundUpContinuous = buffer.readBoolean();
+            short sectionBitMask = buffer.readShort();
+            short addBitMask = buffer.readShort();
 
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10: {
-                this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
-                boolean groundUpContinuous = buffer.readBoolean();
-                short sectionBitMask = buffer.readShort();
-                short addBitMask = buffer.readShort();
+            // decompress chunk data
+            InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInt()), buffer.getVersion());
 
-                // decompress chunk data
-                InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInt()), buffer.getVersion());
+            chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, containsSkyLight);
+            return true;
+        }
+        if (buffer.getVersion().getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+            this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+            boolean groundUpContinuous = buffer.readBoolean();
+            short sectionBitMask = buffer.readShort();
+            int size = buffer.readVarInt();
+            int lastPos = buffer.getPosition();
+            buffer.setPosition(size + lastPos);
 
-                chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, containsSkyLight);
-                return true;
-            }
-            case VERSION_1_8: {
-                this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
-                boolean groundUpContinuous = buffer.readBoolean();
-                short sectionBitMask = buffer.readShort();
-                int size = buffer.readVarInt();
-                int lastPos = buffer.getPosition();
-                buffer.setPosition(size + lastPos);
-
-                chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, containsSkyLight);
-                return true;
-            }
-            default: {
-                this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
-                boolean groundUpContinuous = buffer.readBoolean();
-                short sectionBitMask = (short) buffer.readVarInt();
-                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-                    heightMap = buffer.readNBT();
-                }
-                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_15_2.getVersionNumber() && groundUpContinuous) {
-                    int[] biomes = buffer.readInts(1024);
-                }
-                int size = buffer.readVarInt();
-                int lastPos = buffer.getPosition();
-
-                chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, containsSkyLight);
-                // set position of the byte buffer, because of some reasons HyPixel makes some weired stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
-                buffer.setPosition(size + lastPos);
-                int blockEntitiesCount = buffer.readVarInt();
-                for (int i = 0; i < blockEntitiesCount; i++) {
-                    CompoundTag tag = buffer.readNBT();
-                    blockEntities.put(new BlockPosition(tag.getIntTag("x").getValue(), (short) tag.getIntTag("y").getValue(), tag.getIntTag("z").getValue()), tag);
-                }
-                return true;
+            chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, containsSkyLight);
+            return true;
+        }
+        this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+        boolean groundUpContinuous = buffer.readBoolean();
+        if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+            this.ignoreOldData = buffer.readBoolean();
+        }
+        short sectionBitMask = (short) buffer.readVarInt();
+        if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            heightMap = buffer.readNBT();
+        }
+        if (groundUpContinuous) {
+            if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+                biomes = buffer.readVarIntArray(buffer.readVarInt());
+            } else if (buffer.getVersion().getVersionNumber() == ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+                biomes = buffer.readIntArray(1024);
             }
         }
+        int size = buffer.readVarInt();
+        int lastPos = buffer.getPosition();
+
+        if (size > 0) {
+            chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, containsSkyLight);
+            // set position of the byte buffer, because of some reasons HyPixel makes some weired stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
+            buffer.setPosition(size + lastPos);
+        }
+        int blockEntitiesCount = buffer.readVarInt();
+        for (int i = 0; i < blockEntitiesCount; i++) {
+            CompoundTag tag = buffer.readNBT();
+            blockEntities.put(new BlockPosition(tag.getIntTag("x").getValue(), (short) tag.getIntTag("y").getValue(), tag.getIntTag("z").getValue()), tag);
+        }
+        return true;
     }
 
     @Override

@@ -158,7 +158,7 @@ public class ChunkUtil {
                     palette.read(buffer);
                     int individualValueMask = ((1 << palette.getBitsPerBlock()) - 1);
 
-                    long[] data = buffer.readLongs(buffer.readVarInt());
+                    long[] data = buffer.readLongArray(buffer.readVarInt());
 
                     HashMap<ChunkNibbleLocation, Block> blockMap = new HashMap<>();
                     for (int nibbleY = 0; nibbleY < 16; nibbleY++) {

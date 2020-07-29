@@ -340,7 +340,7 @@ public class InByteBuffer {
         return readBytes(getBytesLeft());
     }
 
-    public int[] readInts(int length) {
+    public int[] readIntArray(int length) {
         int[] ret = new int[length];
         for (int i = 0; i < length; i++) {
             ret[i] = readInt();
@@ -348,7 +348,7 @@ public class InByteBuffer {
         return ret;
     }
 
-    public long[] readLongs(int length) {
+    public long[] readLongArray(int length) {
         long[] ret = new long[length];
         for (int i = 0; i < length; i++) {
             ret[i] = readLong();

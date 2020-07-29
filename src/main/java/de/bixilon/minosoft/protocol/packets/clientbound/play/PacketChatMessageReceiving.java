@@ -19,24 +19,33 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.UUID;
 
 public class PacketChatMessageReceiving implements ClientboundPacket {
     TextComponent c;
     TextPosition position;
+    UUID sender;
 
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                c = buffer.readTextComponent();
-                position = TextPosition.CHAT_BOX;
-                return true;
-            default:
-                c = buffer.readTextComponent();
-                position = TextPosition.byId(buffer.readByte());
-                return true;
+        if (buffer.getVersion() == ProtocolVersion.VERSION_1_7_10) {
+            c = buffer.readTextComponent();
+            position = TextPosition.CHAT_BOX;
+            return true;
         }
+        if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+            c = buffer.readTextComponent();
+            position = TextPosition.byId(buffer.readByte());
+            return true;
+        }
+
+        c = buffer.readTextComponent();
+        position = TextPosition.byId(buffer.readByte());
+        sender = buffer.readUUID();
+        return true;
     }
 
     @Override
