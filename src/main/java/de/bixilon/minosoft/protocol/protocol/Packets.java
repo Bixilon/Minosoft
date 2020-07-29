@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.protocol;
 
 public class Packets {
 
-    public enum Serverbound {
+    public enum Serverbound implements PacketBoundary {
         HANDSHAKING_HANDSHAKE,
         STATUS_PING,
         STATUS_REQUEST,
@@ -79,7 +79,7 @@ public class Packets {
         }
     }
 
-    public enum Clientbound {
+    public enum Clientbound implements PacketBoundary {
         STATUS_RESPONSE,
         STATUS_PONG,
         LOGIN_DISCONNECT,
@@ -193,5 +193,8 @@ public class Packets {
         public ConnectionState getState() {
             return state;
         }
+    }
+
+    public interface PacketBoundary {
     }
 }

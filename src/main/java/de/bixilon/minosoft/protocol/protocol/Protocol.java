@@ -128,6 +128,10 @@ public abstract class Protocol implements ProtocolInterface {
 
     protected final HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
     protected final HashMap<ConnectionState, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
+    int lastPacketIdClientbound;
+    ConnectionState lastConnectionStateClientbound;
+    int lastPacketIdServerbound;
+    ConnectionState lastConnectionStateServerbound;
 
     public Protocol() {
         serverboundPacketMapping = new HashMap<>();
@@ -136,13 +140,14 @@ public abstract class Protocol implements ProtocolInterface {
         serverboundPacketMapping.put(ConnectionState.LOGIN, HashBiMap.create());
         serverboundPacketMapping.put(ConnectionState.PLAY, HashBiMap.create());
 
-        registerPacket(Packets.Serverbound.HANDSHAKING_HANDSHAKE, 0x00);
+        registerPacket(Packets.Serverbound.HANDSHAKING_HANDSHAKE);
         // status
-        registerPacket(Packets.Serverbound.STATUS_REQUEST, 0x00);
-        registerPacket(Packets.Serverbound.STATUS_PING, 0x01);
+        registerPacket(Packets.Serverbound.STATUS_REQUEST);
+        registerPacket(Packets.Serverbound.STATUS_PING);
         // login
-        registerPacket(Packets.Serverbound.LOGIN_LOGIN_START, 0x00);
-        registerPacket(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE, 0x01);
+        registerPacket(Packets.Serverbound.LOGIN_LOGIN_START);
+        registerPacket(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE);
+        registerPacket(Packets.Serverbound.LOGIN_PLUGIN_RESPONSE);
 
 
         clientboundPacketMapping = new HashMap<>();
@@ -151,12 +156,14 @@ public abstract class Protocol implements ProtocolInterface {
         clientboundPacketMapping.put(ConnectionState.LOGIN, HashBiMap.create());
         clientboundPacketMapping.put(ConnectionState.PLAY, HashBiMap.create());
 
-        registerPacket(Packets.Clientbound.STATUS_RESPONSE, 0x00);
-        registerPacket(Packets.Clientbound.STATUS_PONG, 0x01);
+        registerPacket(Packets.Clientbound.STATUS_RESPONSE);
+        registerPacket(Packets.Clientbound.STATUS_PONG);
         // login
-        registerPacket(Packets.Clientbound.LOGIN_DISCONNECT, 0x00);
-        registerPacket(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST, 0x01);
-        registerPacket(Packets.Clientbound.LOGIN_LOGIN_SUCCESS, 0x02);
+        registerPacket(Packets.Clientbound.LOGIN_DISCONNECT);
+        registerPacket(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST);
+        registerPacket(Packets.Clientbound.LOGIN_LOGIN_SUCCESS);
+        registerPacket(Packets.Clientbound.LOGIN_SET_COMPRESSION);
+        registerPacket(Packets.Clientbound.LOGIN_PLUGIN_REQUEST);
     }
 
     public static Class<? extends ClientboundPacket> getPacketByPacket(Packets.Clientbound p) {
@@ -167,24 +174,39 @@ public abstract class Protocol implements ProtocolInterface {
         return ProtocolVersion.VERSION_1_7_10;
     }
 
-    protected void registerPacket(Packets.Serverbound packet, int id) {
+    protected void registerPacket(Packets.Serverbound packet) {
         if (serverboundPacketMapping.get(packet.getState()).containsKey(packet)) {
             throw new IllegalArgumentException(String.format("%s is already registered!", packet));
         }
-        if (serverboundPacketMapping.get(packet.getState()).containsValue(id)) {
-            throw new IllegalArgumentException(String.format("%x is already registered!", id));
+        if (lastConnectionStateServerbound != packet.getState()) {
+            // reset counter
+            lastPacketIdServerbound = 0;
+            lastConnectionStateServerbound = packet.getState();
         }
-        serverboundPacketMapping.get(packet.getState()).put(packet, id);
+
+        serverboundPacketMapping.get(packet.getState()).put(packet, lastPacketIdServerbound);
+        lastPacketIdServerbound++;
     }
 
-    protected void registerPacket(Packets.Clientbound packet, int id) {
+    protected void registerPacket(Packets.Clientbound packet) {
         if (clientboundPacketMapping.get(packet.getState()).containsKey(packet)) {
             throw new IllegalArgumentException(String.format("%s is already registered!", packet));
         }
-        if (clientboundPacketMapping.get(packet.getState()).containsValue(id)) {
-            throw new IllegalArgumentException(String.format("%x is already registered!", id));
+        if (lastConnectionStateClientbound != packet.getState()) {
+            // reset counter
+            lastPacketIdClientbound = 0;
+            lastConnectionStateClientbound = packet.getState();
         }
-        clientboundPacketMapping.get(packet.getState()).put(packet, id);
+        clientboundPacketMapping.get(packet.getState()).put(packet, lastPacketIdClientbound);
+        lastPacketIdClientbound++;
+    }
+
+    protected void increasePacketCounter(Class<? extends Packets.PacketBoundary> type) {
+        if (type == Packets.Serverbound.class) {
+            lastPacketIdServerbound++;
+        } else {
+            lastPacketIdClientbound++;
+        }
     }
 
     public int getPacketCommand(Packets.Serverbound p) {
