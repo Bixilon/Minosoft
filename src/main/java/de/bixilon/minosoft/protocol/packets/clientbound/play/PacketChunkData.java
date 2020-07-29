@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Dimension;
+import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimension;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
@@ -43,7 +43,7 @@ public class PacketChunkData implements ClientboundPacket {
     }
 
     public boolean read(InPacketBuffer buffer, Dimension dimension) {
-        boolean containsSkyLight = dimension == Dimension.OVERWORLD;
+        boolean containsSkyLight = dimension.hasSkyLight();
         if (buffer.getVersion().getVersionNumber() <= ProtocolVersion.VERSION_1_7_10.getVersionNumber()) {
             this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             boolean groundUpContinuous = buffer.readBoolean();
@@ -74,7 +74,7 @@ public class PacketChunkData implements ClientboundPacket {
         }
         short sectionBitMask = (short) buffer.readVarInt();
         if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            heightMap = buffer.readNBT();
+            heightMap = (CompoundTag) buffer.readNBT();
         }
         if (groundUpContinuous) {
             if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
@@ -93,7 +93,7 @@ public class PacketChunkData implements ClientboundPacket {
         }
         int blockEntitiesCount = buffer.readVarInt();
         for (int i = 0; i < blockEntitiesCount; i++) {
-            CompoundTag tag = buffer.readNBT();
+            CompoundTag tag = (CompoundTag) buffer.readNBT();
             blockEntities.put(new BlockPosition(tag.getIntTag("x").getValue(), (short) tag.getIntTag("y").getValue(), tag.getIntTag("z").getValue()), tag);
         }
         return true;

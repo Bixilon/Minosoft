@@ -34,7 +34,8 @@ public enum RecipeTypes {
     BLASTING("blasting"),
     SMOKING("smoking"),
     CAMPFIRE("campfire_cooking"),
-    STONE_CUTTING("stonecutting");
+    STONE_CUTTING("stonecutting"),
+    SMITHING("smithing");
 
     final String name;
 

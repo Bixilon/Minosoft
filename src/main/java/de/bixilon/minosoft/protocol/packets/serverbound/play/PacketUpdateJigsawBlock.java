@@ -22,9 +22,12 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketUpdateJigsawBlock implements ServerboundPacket {
     final BlockPosition position;
-    final String attachmentType;
+    String attachmentType;
     final String targetPool;
     final String finalState;
+    String name;
+    String target;
+    String jointType;
 
     public PacketUpdateJigsawBlock(BlockPosition position, String attachmentType, String targetPool, String finalState) {
         this.position = position;
@@ -34,10 +37,31 @@ public class PacketUpdateJigsawBlock implements ServerboundPacket {
     }
 
 
+    public PacketUpdateJigsawBlock(BlockPosition position, String name, String target, String targetPool, String finalState, String jointType) {
+        this.position = position;
+        this.name = name;
+        this.target = target;
+        this.targetPool = targetPool;
+        this.finalState = finalState;
+        this.jointType = jointType;
+    }
+
+
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
         OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_UPDATE_JIGSAW_BLOCK));
         buffer.writePosition(position);
+        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+            buffer.writeString(attachmentType);
+            buffer.writeString(targetPool);
+            buffer.writeString(finalState);
+            return buffer;
+        }
+        buffer.writeString(name);
+        buffer.writeString(target);
+        buffer.writeString(targetPool);
+        buffer.writeString(finalState);
+        buffer.writeString(jointType);
         return buffer;
     }
 

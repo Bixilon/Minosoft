@@ -166,15 +166,13 @@ public class TextComponent {
         if (json.has("extra")) {
             JsonArray arr = json.getAsJsonArray("extra");
             for (int i = 0; i < arr.size(); i++) {
-                JsonObject object;
-                try {
-                    object = arr.get(i).getAsJsonObject();
-                } catch (Exception e) {
-                    // reset text
+                if (arr.get(i).isJsonPrimitive()) {
                     buffer.append(ChatAttributes.RESET);
+                    buffer.append(" ");
                     buffer.append(arr.get(i).getAsString());
                     continue;
                 }
+                JsonObject object = arr.get(i).getAsJsonObject();
                 if (object.has("bold") && object.get("bold").getAsBoolean()) {
                     buffer.append(ChatAttributes.BOLD);
                 }
@@ -196,9 +194,22 @@ public class TextComponent {
                 buffer.append(object.get("text").getAsString());
             }
             buffer.append(ChatAttributes.RESET);
-            return buffer.toString();
         }
-        return "";
+        if (json.has("with")) {
+            JsonArray arr = json.getAsJsonArray("with");
+            for (int i = 0; i < arr.size(); i++) {
+                if (arr.get(i).isJsonPrimitive()) {
+                    buffer.append(ChatAttributes.RESET);
+                    buffer.append(" ");
+                    buffer.append(arr.get(i).getAsString());
+                    continue;
+                }
+                JsonObject object = arr.get(i).getAsJsonObject();
+                buffer.append(object.get("text").getAsString());
+            }
+            buffer.append(ChatAttributes.RESET);
+        }
+        return buffer.toString();
     }
 
     @Override

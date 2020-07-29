@@ -157,8 +157,9 @@ public class Network {
                         }
 
                         InPacketBuffer inPacketBuffer = new InPacketBuffer(data, connection.getVersion());
+                        Packets.Clientbound p = null;
                         try {
-                            Packets.Clientbound p = connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
+                            p = connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
                             Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(p);
 
                             if (clazz == null) {
@@ -195,7 +196,7 @@ public class Network {
                                 e.printStackTrace();
                             }
                         } catch (Exception e) {
-                            Log.protocol(String.format("An error occurred while parsing an packet: %s", e));
+                            Log.protocol(String.format("An error occurred while parsing an packet (%s): %s", p, e));
                             e.printStackTrace();
                         }
                     }

@@ -13,38 +13,29 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
+import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipe;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketPlayerAbilitiesSending implements ServerboundPacket {
-    final boolean flying;
+public class PacketSetDisplayedRecipe implements ServerboundPacket {
+    final Recipe recipe;
 
-
-    public PacketPlayerAbilitiesSending(boolean flying) {
-        this.flying = flying;
+    public PacketSetDisplayedRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_ABILITIES));
-        byte flags = 0;
-        if (flying) {
-            flags |= 0b10;
-        }
-        buffer.writeByte(flags);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
-            // only fly matters, everything else ignored
-            buffer.writeFloat(0.0F);
-            buffer.writeFloat(0.0F);
-        }
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_SET_DISPLAYED_RECIPE));
+        buffer.writeString(recipe.getResult().getItem().getMod() + ":" + recipe.getResult().getItem().getIdentifier());
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending player abilities packet: (flying=%s)", flying));
+        Log.protocol(String.format("Sending set displayed recipe packet (identifier=%s:%s)", recipe.getResult().getItem().getMod(), recipe.getResult().getItem().getIdentifier()));
     }
 }

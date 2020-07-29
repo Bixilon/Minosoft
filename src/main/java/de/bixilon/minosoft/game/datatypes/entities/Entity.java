@@ -95,8 +95,8 @@ public abstract class Entity implements EntityInterface {
         this.pitch = pitch;
     }
 
-    public void setEquipment(InventorySlots.EntityInventory slot, Slot data) {
-        equipment.put(slot, data);
+    public void setEquipment(HashMap<InventorySlots.EntityInventory, Slot> slots) {
+        equipment.putAll(slots);
     }
 
     public Slot getEquipment(InventorySlots.EntityInventory slot) {

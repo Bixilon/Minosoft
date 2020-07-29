@@ -79,6 +79,13 @@ public class PacketDeclareRecipes implements ClientboundPacket {
                     recipe = new Recipe(type, group, ingredient, result);
                     break;
                 }
+                case SMITHING: {
+                    Ingredient base = buffer.readIngredient();
+                    Ingredient addition = buffer.readIngredient();
+                    Slot result = buffer.readSlot();
+                    recipe = new Recipe(type, base, addition, result);
+                    break;
+                }
                 default:
                     recipe = new Recipe(type);
                     break;

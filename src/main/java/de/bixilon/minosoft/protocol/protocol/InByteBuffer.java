@@ -286,7 +286,7 @@ public class InByteBuffer {
             // shouldn't be a subtag
             return new CompoundTag(false, this);
         }
-        return readNBT();
+        return readNBT(type);
     }
 
     public NBTTag readNBT(TagTypes tagType) {

@@ -20,7 +20,8 @@ public enum LevelType {
     AMPLIFIED("amplified"),
     DEFAULT_1_1("default_1_1"),
     CUSTOMIZED("customized"),
-    BUFFET("buffet");
+    BUFFET("buffet"),
+    UNKNOWN("unknown");
 
     final String type;
 

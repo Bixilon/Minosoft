@@ -28,6 +28,7 @@ public class PacketInteractEntity implements ServerboundPacket {
     final Location location;
 
     final Hand hand;
+    boolean sneaking;
 
     public PacketInteractEntity(Entity entity, Click click) {
         this.entityId = entity.getEntityId();
@@ -55,6 +56,14 @@ public class PacketInteractEntity implements ServerboundPacket {
         this.click = click;
         this.location = location;
         this.hand = hand;
+    }
+
+    public PacketInteractEntity(int entityId, Click click, Location location, Hand hand, boolean sneaking) {
+        this.entityId = entityId;
+        this.click = click;
+        this.location = location;
+        this.hand = hand;
+        this.sneaking = sneaking;
     }
 
 
@@ -85,6 +94,9 @@ public class PacketInteractEntity implements ServerboundPacket {
                     buffer.writeFloat((float) location.getY());
                     buffer.writeFloat((float) location.getZ());
                     buffer.writeVarInt(hand.getId());
+                }
+                if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+                    buffer.writeBoolean(sneaking);
                 }
                 break;
         }

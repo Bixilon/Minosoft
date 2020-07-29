@@ -14,9 +14,10 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.Difficulty;
-import de.bixilon.minosoft.game.datatypes.Dimension;
 import de.bixilon.minosoft.game.datatypes.GameMode;
 import de.bixilon.minosoft.game.datatypes.LevelType;
+import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimension;
+import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimensions;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -27,7 +28,10 @@ public class PacketRespawn implements ClientboundPacket {
     Difficulty difficulty;
     GameMode gameMode;
     LevelType levelType;
-
+    long hashedSeed;
+    boolean isDebug = false;
+    boolean isFlat = false;
+    boolean copyMetaData = false;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -39,21 +43,31 @@ public class PacketRespawn implements ClientboundPacket {
             case VERSION_1_11_2:
             case VERSION_1_12_2:
             case VERSION_1_13_2:
-                dimension = Dimension.byId(buffer.readInt());
+                dimension = Dimensions.byId(buffer.readInt(), buffer.getVersion());
                 difficulty = Difficulty.byId(buffer.readByte());
                 gameMode = GameMode.byId(buffer.readByte());
                 levelType = LevelType.byType(buffer.readString());
                 return true;
             case VERSION_1_14_4:
-                dimension = Dimension.byId(buffer.readInt());
+                dimension = Dimensions.byId(buffer.readInt(), buffer.getVersion());
+                gameMode = GameMode.byId(buffer.readByte());
+                levelType = LevelType.byType(buffer.readString());
+                return true;
+            case VERSION_1_15_2:
+                dimension = Dimensions.byId(buffer.readInt(), buffer.getVersion());
+                hashedSeed = buffer.readLong();
                 gameMode = GameMode.byId(buffer.readByte());
                 levelType = LevelType.byType(buffer.readString());
                 return true;
             default:
-                dimension = Dimension.byId(buffer.readInt());
-                long hashedSeed = buffer.readLong();
+                dimension = Dimensions.byIdentifier(buffer.readString());
+                buffer.readString(); // world
+                hashedSeed = buffer.readLong();
                 gameMode = GameMode.byId(buffer.readByte());
-                levelType = LevelType.byType(buffer.readString());
+                buffer.readByte(); // previous game mode
+                isDebug = buffer.readBoolean();
+                isFlat = buffer.readBoolean();
+                copyMetaData = buffer.readBoolean();
                 return true;
         }
     }

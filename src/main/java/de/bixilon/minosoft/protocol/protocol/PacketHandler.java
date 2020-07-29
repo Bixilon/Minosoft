@@ -182,6 +182,10 @@ public class PacketHandler {
         connection.getPlayer().setFood(pkg.getFood());
         connection.getPlayer().setHealth(pkg.getHealth());
         connection.getPlayer().setSaturation(pkg.getSaturation());
+        if (pkg.getHealth() <= 0.0F) {
+            // do respawn
+            connection.getSender().respawn();
+        }
     }
 
     public void handle(PacketPluginMessageReceiving pkg) {
@@ -286,7 +290,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityEquipment pkg) {
-        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setEquipment(pkg.getSlot(), pkg.getData());
+        connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setEquipment(pkg.getSlots());
     }
 
     public void handle(PacketBlockChange pkg) {
@@ -303,6 +307,8 @@ public class PacketHandler {
     }
 
     public void handle(PacketRespawn pkg) {
+        // clear all chunks
+        connection.getPlayer().getWorld().getAllChunks().clear();
         connection.getPlayer().getWorld().setDimension(pkg.getDimension());
         connection.getPlayer().setSpawnConfirmed(false);
         connection.getPlayer().setGameMode(pkg.getGameMode());

@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.game.datatypes.world;
 
-import de.bixilon.minosoft.game.datatypes.Dimension;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
+import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimension;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 
 import java.util.HashMap;

@@ -13,38 +13,36 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class PacketPlayerAbilitiesSending implements ServerboundPacket {
-    final boolean flying;
+public class PacketGenerateStructure implements ServerboundPacket {
+    final BlockPosition position;
+    final int levels;
+    final boolean keepJigsaw;
 
-
-    public PacketPlayerAbilitiesSending(boolean flying) {
-        this.flying = flying;
+    public PacketGenerateStructure(BlockPosition position, int levels, boolean keepJigsaw) {
+        this.position = position;
+        this.levels = levels;
+        this.keepJigsaw = keepJigsaw;
     }
+
 
     @Override
     public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_ABILITIES));
-        byte flags = 0;
-        if (flying) {
-            flags |= 0b10;
-        }
-        buffer.writeByte(flags);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
-            // only fly matters, everything else ignored
-            buffer.writeFloat(0.0F);
-            buffer.writeFloat(0.0F);
-        }
+        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_GENERATE_STRUCTURE));
+        buffer.writePosition(position);
+        buffer.writeVarInt(levels);
+        buffer.writeBoolean(keepJigsaw);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending player abilities packet: (flying=%s)", flying));
+        Log.protocol(String.format("Sending generate structure packet (position=%s, levels=%d, keepJigsaw=%s)", position, levels, keepJigsaw));
     }
 }
