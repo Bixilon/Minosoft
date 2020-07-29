@@ -30,23 +30,11 @@ public class CompoundTag implements NBTTag {
     }
 
     public CompoundTag(boolean subTag, InByteBuffer buffer) {
-        if (buffer.readByte() == 0) {
-            // no nbt
-            name = null;
-            data = new HashMap<>();
-            return;
+        if (subTag) {
+            this.name = null;
         } else {
-            buffer.setPosition(buffer.getPosition() - 1);
-        }
-        if (!subTag) {
-            if (buffer.readByte() != TagTypes.COMPOUND.getId()) { // will be a Compound Tag
-                // decompressed but still bad.... :(
-                throw new IllegalArgumentException("Bad nbt");
-            }
             // if in an array, there is no name
             this.name = buffer.readString(buffer.readShort()); // length
-        } else {
-            this.name = null;
         }
         this.data = new HashMap<>();
         while (true) {
@@ -57,44 +45,7 @@ public class CompoundTag implements NBTTag {
                 break;
             }
             String tagName = buffer.readString(buffer.readShort()); // length
-            switch (tagType) {
-                case BYTE:
-                    data.put(tagName, new ByteTag(buffer));
-                    break;
-                case SHORT:
-                    data.put(tagName, new ShortTag(buffer));
-                    break;
-                case INT:
-                    data.put(tagName, new IntTag(buffer));
-                    break;
-                case LONG:
-                    data.put(tagName, new LongTag(buffer));
-                    break;
-                case FLOAT:
-                    data.put(tagName, new FloatTag(buffer));
-                    break;
-                case DOUBLE:
-                    data.put(tagName, new DoubleTag(buffer));
-                    break;
-                case BYTE_ARRAY:
-                    data.put(tagName, new ByteArrayTag(buffer));
-                    break;
-                case STRING:
-                    data.put(tagName, new StringTag(buffer));
-                    break;
-                case LIST:
-                    data.put(tagName, new ListTag(buffer));
-                    break;
-                case COMPOUND:
-                    data.put(tagName, new CompoundTag(true, buffer));
-                    break;
-                case INT_ARRAY:
-                    data.put(tagName, new IntArrayTag(buffer));
-                    break;
-                case LONG_ARRAY:
-                    data.put(tagName, new LongArrayTag(buffer));
-                    break;
-            }
+            data.put(tagName, buffer.readNBT(tagType));
         }
     }
 

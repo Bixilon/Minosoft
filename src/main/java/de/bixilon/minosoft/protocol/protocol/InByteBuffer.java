@@ -31,7 +31,7 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ItemParticl
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Ingredient;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.nbt.tag.*;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.Util;
 
@@ -121,6 +121,15 @@ public class InByteBuffer {
     public String readString() {
         int length = readVarInt();
         return new String(readBytes(length), StandardCharsets.UTF_8);
+    }
+
+
+    public String[] readStringArray(int length) {
+        String[] ret = new String[length];
+        for (int i = 0; i < length; i++) {
+            ret[i] = new String(readBytes(readVarInt()), StandardCharsets.UTF_8);
+        }
+        return ret;
     }
 
     public String readString(int length) {
@@ -257,7 +266,7 @@ public class InByteBuffer {
         }
     }
 
-    public CompoundTag readNBT(boolean compressed) {
+    public NBTTag readNBT(boolean compressed) {
         if (compressed) {
             short length = readShort();
             if (length == -1) {
@@ -265,18 +274,54 @@ public class InByteBuffer {
                 return new CompoundTag();
             }
             try {
-                return new CompoundTag(new InByteBuffer(Util.decompressGzip(readBytes(length)), version));
+                return new InByteBuffer(Util.decompressGzip(readBytes(length)), version).readNBT();
             } catch (IOException e) {
                 // oh no
                 e.printStackTrace();
                 throw new IllegalArgumentException("Bad nbt");
             }
-            // try again
         }
-        return new CompoundTag(this);
+        TagTypes type = TagTypes.getById(readByte());
+        if (type == TagTypes.COMPOUND) {
+            // shouldn't be a subtag
+            return new CompoundTag(false, this);
+        }
+        return readNBT();
     }
 
-    public CompoundTag readNBT() {
+    public NBTTag readNBT(TagTypes tagType) {
+        switch (tagType) {
+            case END:
+                return null;
+            case BYTE:
+                return new ByteTag(this);
+            case SHORT:
+                return new ShortTag(this);
+            case INT:
+                return new IntTag(this);
+            case LONG:
+                return new LongTag(this);
+            case FLOAT:
+                return new FloatTag(this);
+            case DOUBLE:
+                return new DoubleTag(this);
+            case BYTE_ARRAY:
+                return new ByteArrayTag(this);
+            case STRING:
+                return new StringTag(this);
+            case LIST:
+                return new ListTag(this);
+            case COMPOUND:
+                return new CompoundTag(true, this);
+            case INT_ARRAY:
+                return new IntArrayTag(this);
+            case LONG_ARRAY:
+                return new LongArrayTag(this);
+        }
+        return null;
+    }
+
+    public NBTTag readNBT() {
         return readNBT(false);
     }
 
@@ -294,11 +339,11 @@ public class InByteBuffer {
                 }
                 byte count = readByte();
                 short metaData = readShort();
-                CompoundTag nbt = readNBT(version == ProtocolVersion.VERSION_1_7_10);
+                CompoundTag nbt = (CompoundTag) readNBT(version == ProtocolVersion.VERSION_1_7_10);
                 return new Slot(Items.getItemByLegacy(id, metaData), count, metaData, nbt);
             default:
                 if (readBoolean()) {
-                    return new Slot(Items.getItem(readVarInt(), version), readByte(), readNBT());
+                    return new Slot(Items.getItem(readVarInt(), version), readByte(), (CompoundTag) readNBT());
                 }
         }
         return null;
