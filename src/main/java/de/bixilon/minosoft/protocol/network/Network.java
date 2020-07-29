@@ -186,7 +186,8 @@ public class Network {
                                     connection.setConnectionState(ConnectionState.PLAY);
                                 } else if (packet instanceof PacketLoginSetCompression) {
                                     // instantly set compression. because handling is to slow...
-                                    compressionThreshold = ((PacketLoginSetCompression) packet).getThreshold();
+                                    // compressionThreshold = ((PacketLoginSetCompression) packet).getThreshold();
+                                    compressionThreshold = Integer.MAX_VALUE; // FIXME: 29.07.20  see #2
                                 }
                                 connection.handle(packet);
                             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
