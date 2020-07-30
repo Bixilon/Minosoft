@@ -76,7 +76,7 @@ public class Entities {
         registerEntityClass("minecraft:zombie", Zombie.class);
         registerEntityClass("minecraft:slime", Slime.class);
         registerEntityClass("minecraft:ghast", Ghast.class);
-        registerEntityClass("minecraft:zombified_piglin", ZombiePigman.class);
+        registerEntityClass("minecraft:zombified_piglin", ZombifiedPiglin.class);
         registerEntityClass("minecraft:enderman", Enderman.class);
         registerEntityClass("minecraft:cave_spider", CaveSpider.class);
         registerEntityClass("minecraft:silverfish", Silverfish.class);
@@ -130,6 +130,11 @@ public class Entities {
         registerEntityClass("minecraft:pillager", Pillager.class);
         registerEntityClass("minecraft:ravager", Ravager.class);
         registerEntityClass("minecraft:bee", Bee.class);
+        registerEntityClass("minecraft:strider", Strider.class);
+        registerEntityClass("minecraft:hoglin", Hoglin.class);
+        registerEntityClass("minecraft:zoglin", Zoglin.class);
+        registerEntityClass("minecraft:piglin", Piglin.class);
+        registerEntityClass("minecraft:piglin_brute", PiglinBrute.class);
 
         // not a thing anymore
         registerEntityClass("minecraft:falling_dragon_Egg", FallingDragonEgg.class);

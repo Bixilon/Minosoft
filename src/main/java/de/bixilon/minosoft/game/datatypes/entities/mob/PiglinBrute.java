@@ -14,29 +14,48 @@
 package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Mob;
+import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.PiglinBruteMetaData;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class ZombiePigman extends Zombie {
+public class PiglinBrute extends Mob implements MobInterface {
+    PiglinBruteMetaData metaData;
 
-    public ZombiePigman(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
-        super(entityId, location, yaw, pitch, velocity, sets, version);
+    public PiglinBrute(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+        super(entityId, location, yaw, pitch, velocity);
+        this.metaData = new PiglinBruteMetaData(sets, version);
+    }
+
+    @Override
+    public EntityMetaData getMetaData() {
+        return metaData;
+    }
+
+    @Override
+    public void setMetaData(EntityMetaData metaData) {
+        this.metaData = (PiglinBruteMetaData) metaData;
     }
 
     @Override
     public float getWidth() {
-        if (metaData.isChild()) {
-            return 0.3F;
-        }
-        return 0.6F;
+        return 0.6F; // ToDo
     }
 
     @Override
     public float getHeight() {
-        if (metaData.isChild()) {
-            return 0.975F;
-        }
-        return 1.95F;
+        return 1.95F; // ToDo
+    }
+
+    @Override
+    public int getMaxHealth() {
+        return 50;
+    }
+
+    @Override
+    public Class<? extends EntityMetaData> getMetaDataClass() {
+        return PiglinBruteMetaData.class;
     }
 }
