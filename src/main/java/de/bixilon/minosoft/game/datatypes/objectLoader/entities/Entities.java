@@ -76,7 +76,7 @@ public class Entities {
         registerEntityClass("minecraft:zombie", Zombie.class);
         registerEntityClass("minecraft:slime", Slime.class);
         registerEntityClass("minecraft:ghast", Ghast.class);
-        registerEntityClass("minecraft:zombie_pigman", ZombiePigman.class);
+        registerEntityClass("minecraft:zombified_piglin", ZombiePigman.class);
         registerEntityClass("minecraft:enderman", Enderman.class);
         registerEntityClass("minecraft:cave_spider", CaveSpider.class);
         registerEntityClass("minecraft:silverfish", Silverfish.class);
