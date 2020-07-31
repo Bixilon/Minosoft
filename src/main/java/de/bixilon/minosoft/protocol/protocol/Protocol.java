@@ -35,7 +35,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.LOGIN_PLUGIN_REQUEST, PacketLoginPluginRequest.class);
 
         packetClassMapping.put(Packets.Clientbound.PLAY_JOIN_GAME, PacketJoinGame.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_INFO, PacketPlayerInfo.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_LIST_ITEM, PacketPlayerInfo.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_TIME_UPDATE, PacketTimeUpdate.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_KEEP_ALIVE, PacketKeepAlive.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_CHUNK_BULK, PacketChunkBulk.class);
@@ -96,7 +96,7 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_DISPLAY_SCOREBOARD, PacketScoreboardDisplayScoreboard.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_MAP_DATA, PacketMapData.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_SERVER_DIFFICULTY, PacketServerDifficulty.class);
-        packetClassMapping.put(Packets.Clientbound.PLAY_LIST_HEADER_AND_FOOTER, PacketTabHeaderAndFooter.class);
+        packetClassMapping.put(Packets.Clientbound.PLAY_PLAYER_LIST_HEADER_AND_FOOTER, PacketTabHeaderAndFooter.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_RESOURCE_PACK_SEND, PackerResourcePackSend.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_PROPERTIES, PacketEntityProperties.class);
         packetClassMapping.put(Packets.Clientbound.PLAY_WORLD_BORDER, PacketWorldBorder.class);

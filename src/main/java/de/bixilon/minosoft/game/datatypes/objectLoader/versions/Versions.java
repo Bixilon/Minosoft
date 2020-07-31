@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.objectLoader.versions;
 
 import com.google.common.collect.HashBiMap;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.Mappings;
 import de.bixilon.minosoft.protocol.protocol.Packets;
@@ -60,12 +61,15 @@ public class Versions {
         } else {
             JsonObject mappingJson = versionJson.getAsJsonObject("mapping");
             serverboundPacketMapping = HashBiMap.create();
-            for (String packetName : mappingJson.getAsJsonObject("serverbound").keySet()) {
-                serverboundPacketMapping.put(Packets.Serverbound.valueOf(packetName), mappingJson.getAsJsonObject("serverbound").get(packetName).getAsInt());
+
+            for (JsonElement packetElement : mappingJson.getAsJsonArray("serverbound")) {
+                String packetName = packetElement.getAsString();
+                serverboundPacketMapping.put(Packets.Serverbound.valueOf(packetName), serverboundPacketMapping.size());
             }
             clientboundPacketMapping = HashBiMap.create();
-            for (String packetName : mappingJson.getAsJsonObject("clientbound").keySet()) {
-                clientboundPacketMapping.put(Packets.Clientbound.valueOf(packetName), mappingJson.getAsJsonObject("clientbound").get(packetName).getAsInt());
+            for (JsonElement packetElement : mappingJson.getAsJsonArray("clientbound")) {
+                String packetName = packetElement.getAsString();
+                clientboundPacketMapping.put(Packets.Clientbound.valueOf(packetName), clientboundPacketMapping.size());
             }
         }
         Version version = new Version(versionName, protocolId, serverboundPacketMapping, clientboundPacketMapping);
@@ -89,4 +93,5 @@ public class Versions {
             version.unload();
         }
     }
+
 }

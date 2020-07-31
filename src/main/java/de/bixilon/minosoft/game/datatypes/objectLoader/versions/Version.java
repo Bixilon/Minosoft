@@ -75,6 +75,7 @@ public class Version {
         return clientboundPacketMapping.get(packet);
     }
 
+
     public HashBiMap<Packets.Clientbound, Integer> getClientboundPacketMapping() {
         return clientboundPacketMapping;
     }

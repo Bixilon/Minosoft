@@ -69,7 +69,8 @@ public class Packets {
         PLAY_UPDATE_COMMAND_BLOCK_MINECART,
         PLAY_GENERATE_STRUCTURE,
         PLAY_SET_DISPLAYED_RECIPE,
-        PLAY_SET_RECIPE_BOOK_STATE;
+        PLAY_SET_RECIPE_BOOK_STATE,
+        PLAY_PLAYER_GROUND_CHANGE;
 
         final ConnectionState state;
 
@@ -140,7 +141,7 @@ public class Packets {
         PLAY_CRAFT_RECIPE_RESPONSE,
         PLAY_PLAYER_ABILITIES,
         PLAY_COMBAT_EVENT,
-        PLAY_PLAYER_INFO,
+        PLAY_PLAYER_LIST_ITEM,
         PLAY_FACE_PLAYER,
         PLAY_PLAYER_POSITION_AND_ROTATION,
         PLAY_UNLOCK_RECIPES,
@@ -170,7 +171,7 @@ public class Packets {
         PLAY_ENTITY_SOUND_EFFECT,
         PLAY_SOUND_EFFECT,
         PLAY_STOP_SOUND,
-        PLAY_LIST_HEADER_AND_FOOTER,
+        PLAY_PLAYER_LIST_HEADER_AND_FOOTER,
         PLAY_NBT_QUERY_RESPONSE,
         PLAY_COLLECT_ITEM,
         PLAY_ENTITY_TELEPORT,
@@ -185,7 +186,9 @@ public class Packets {
         PLAY_UPDATE_SIGN,
         PLAY_STATISTICS,
         PLAY_SPAWN_ENTITY,
-        PLAY_TITLE;
+        PLAY_TITLE,
+        PLAY_ENTITY_INITIALISATION,
+        PLAY_SET_COMPRESSION;
 
         final ConnectionState state;
 

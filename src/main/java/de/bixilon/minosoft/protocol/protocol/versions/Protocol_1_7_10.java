@@ -76,7 +76,7 @@ public class Protocol_1_7_10 extends Protocol {
         registerPacket(Packets.Clientbound.PLAY_BLOCK_ENTITY_DATA);
         registerPacket(Packets.Clientbound.PLAY_OPEN_SIGN_EDITOR);
         registerPacket(Packets.Clientbound.PLAY_STATISTICS);
-        registerPacket(Packets.Clientbound.PLAY_PLAYER_INFO);
+        registerPacket(Packets.Clientbound.PLAY_PLAYER_LIST_ITEM);
         registerPacket(Packets.Clientbound.PLAY_PLAYER_ABILITIES);
         registerPacket(Packets.Clientbound.PLAY_TAB_COMPLETE);
         registerPacket(Packets.Clientbound.PLAY_SCOREBOARD_OBJECTIVE);

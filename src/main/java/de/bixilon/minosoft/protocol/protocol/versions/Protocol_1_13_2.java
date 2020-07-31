@@ -69,7 +69,7 @@ public class Protocol_1_13_2 extends Protocol {
         registerPacket(Packets.Clientbound.PLAY_CRAFT_RECIPE_RESPONSE);
         registerPacket(Packets.Clientbound.PLAY_PLAYER_ABILITIES);
         registerPacket(Packets.Clientbound.PLAY_COMBAT_EVENT);
-        registerPacket(Packets.Clientbound.PLAY_PLAYER_INFO);
+        registerPacket(Packets.Clientbound.PLAY_PLAYER_LIST_ITEM);
         registerPacket(Packets.Clientbound.PLAY_FACE_PLAYER);
         registerPacket(Packets.Clientbound.PLAY_PLAYER_POSITION_AND_ROTATION);
         registerPacket(Packets.Clientbound.PLAY_USE_BED);
@@ -99,7 +99,7 @@ public class Protocol_1_13_2 extends Protocol {
         registerPacket(Packets.Clientbound.PLAY_TITLE);
         registerPacket(Packets.Clientbound.PLAY_STOP_SOUND);
         registerPacket(Packets.Clientbound.PLAY_SOUND_EFFECT);
-        registerPacket(Packets.Clientbound.PLAY_LIST_HEADER_AND_FOOTER);
+        registerPacket(Packets.Clientbound.PLAY_PLAYER_LIST_HEADER_AND_FOOTER);
         registerPacket(Packets.Clientbound.PLAY_COLLECT_ITEM);
         registerPacket(Packets.Clientbound.PLAY_ENTITY_TELEPORT);
         registerPacket(Packets.Clientbound.PLAY_ADVANCEMENTS);

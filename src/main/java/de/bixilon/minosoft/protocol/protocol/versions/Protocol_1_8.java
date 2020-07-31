@@ -77,7 +77,7 @@ public class Protocol_1_8 extends Protocol {
         registerPacket(Packets.Clientbound.PLAY_BLOCK_ENTITY_DATA);
         registerPacket(Packets.Clientbound.PLAY_OPEN_SIGN_EDITOR);
         registerPacket(Packets.Clientbound.PLAY_STATISTICS);
-        registerPacket(Packets.Clientbound.PLAY_PLAYER_INFO);
+        registerPacket(Packets.Clientbound.PLAY_PLAYER_LIST_ITEM);
         registerPacket(Packets.Clientbound.PLAY_PLAYER_ABILITIES);
         registerPacket(Packets.Clientbound.PLAY_TAB_COMPLETE);
         registerPacket(Packets.Clientbound.PLAY_SCOREBOARD_OBJECTIVE);
@@ -92,7 +92,7 @@ public class Protocol_1_8 extends Protocol {
         registerPacket(Packets.Clientbound.PLAY_WORLD_BORDER);
         registerPacket(Packets.Clientbound.PLAY_TITLE);
         increasePacketCounter(Packets.Clientbound.class);
-        registerPacket(Packets.Clientbound.PLAY_LIST_HEADER_AND_FOOTER);
+        registerPacket(Packets.Clientbound.PLAY_PLAYER_LIST_HEADER_AND_FOOTER);
         registerPacket(Packets.Clientbound.PLAY_RESOURCE_PACK_SEND);
         registerPacket(Packets.Clientbound.PLAY_NBT_QUERY_RESPONSE);
 
