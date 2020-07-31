@@ -16,13 +16,14 @@ package de.bixilon.minosoft;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
-import de.bixilon.minosoft.game.datatypes.objectLoader.ObjectLoader;
+import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevel;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.FolderUtil;
 import de.bixilon.minosoft.util.OSUtil;
+import de.bixilon.minosoft.util.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,10 +55,13 @@ public class Minosoft {
         Log.info("Checking assets...");
         checkAssets();
         Log.info("Assets checking done");
-        Log.info("Loading all mappings...");
-        long mappingsStart = System.currentTimeMillis();
-        ObjectLoader.loadMappings();
-        Log.info(String.format("Mappings loaded within %sms", (System.currentTimeMillis() - mappingsStart)));
+        Log.info("Loading versions.json...");
+        try {
+            Versions.load(Util.readJsonFromFile(Config.homeDir + "assets/mapping/versions.json"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
 
         checkClientToken();
 

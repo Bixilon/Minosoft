@@ -61,10 +61,6 @@ public class Items {
         itemMap.put(version, versionMapping);
     }
 
-    public static Item getItem(String mod, String identifier) {
-        return new Item(mod, identifier);
-    }
-
     public static int getItemId(Item item, ProtocolVersion version) {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
             version = ProtocolVersion.VERSION_1_12_2;

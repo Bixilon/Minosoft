@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
+import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class ItemedFireballMetaData extends AbstractFireballMetaData {
@@ -23,7 +23,7 @@ public class ItemedFireballMetaData extends AbstractFireballMetaData {
     }
 
     public Slot getItem() {
-        final Slot defaultValue = new Slot(Items.getItem("minecraft", "fire_charge"));
+        final Slot defaultValue = new Slot(new Item("minecraft", "fire_charge"));
         if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
             return defaultValue;
         }

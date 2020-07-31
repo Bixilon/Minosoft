@@ -17,7 +17,6 @@ import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.game.datatypes.Mappings;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blockIds.BlockIds;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimensions;
 import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffects;
@@ -66,15 +65,13 @@ public class ObjectLoader {
                                 }
                                 break;
                             case BLOCKS:
-                                Blocks.load(mod, modJSON, version);
+                                Blocks.load(mod, modJSON, false);
                                 break;
                         }
                     }
                 }
                 Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", version, (System.currentTimeMillis() - startTime), version.getReleaseName()));
             }
-            // end, we must set the nullBlock
-            Blocks.nullBlock = new Block("minecraft", "air");
         } catch (IOException e) {
             Log.fatal("Error occurred while loading version mapping: " + e.getLocalizedMessage());
             System.exit(1);

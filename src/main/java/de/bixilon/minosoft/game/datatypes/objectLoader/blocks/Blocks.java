@@ -21,9 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class Blocks {
-    public static Block nullBlock;
-    static HashSet<Block> blockList = new HashSet<>();
-    static HashMap<ProtocolVersion, HashBiMap<Integer, Block>> blockMap = new HashMap<>(); // version -> (protocolId > block)
+    public static final Block nullBlock = new Block("minecraft", "air");
     static HashMap<String, HashMap<String, BlockProperties>> propertiesMapping = new HashMap<>();
     static HashMap<String, BlockRotation> rotationMapping = new HashMap<>();
 
@@ -462,24 +460,7 @@ public class Blocks {
         rotationMapping.put("east_west", BlockRotation.EAST_WEST);
     }
 
-    public static Block getBlockByLegacy(int protocolId, int protocolMetaData) {
-        int blockId = protocolId << 4 | protocolMetaData;
-        return getBlock(blockId, ProtocolVersion.VERSION_1_12_2);
-    }
-
-
-    public static Block getBlockByLegacy(int blockIdAndMetaData) {
-        return getBlock(blockIdAndMetaData, ProtocolVersion.VERSION_1_12_2);
-    }
-
-    public static Block getBlock(int protocolId, ProtocolVersion version) {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            version = ProtocolVersion.VERSION_1_12_2;
-        }
-        return blockMap.get(version).get(protocolId);
-    }
-
-    public static void load(String mod, JsonObject json, ProtocolVersion version) {
+    public static HashBiMap<Integer, Block> load(String mod, JsonObject json, boolean meta) {
         HashBiMap<Integer, Block> versionMapping = HashBiMap.create();
         for (String identifierName : json.keySet()) {
             JsonObject identifierJSON = json.getAsJsonObject(identifierName);
@@ -517,19 +498,18 @@ public class Blocks {
                     // no properties, directly add block
                     block = new Block(mod, identifierName);
                 }
-                int blockId = getBlockId(statesJSON, version);
-                checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping, version);
+                int blockId = getBlockId(statesJSON, meta);
+                checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping);
                 versionMapping.put(blockId, block);
-                blockList.add(block);
             }
         }
-        blockMap.put(version, versionMapping);
+        return versionMapping;
     }
 
 
-    private static int getBlockId(JsonObject json, ProtocolVersion version) {
+    private static int getBlockId(JsonObject json, boolean meta) {
         int blockId = json.get("id").getAsInt();
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (meta) {
             // old format (with metadata)
             blockId <<= 4;
             if (json.has("meta")) {
@@ -539,24 +519,21 @@ public class Blocks {
         return blockId;
     }
 
-    public static void checkAndCrashIfBlockIsIn(int blockId, String identifierName, HashBiMap<Integer, Block> versionMapping, ProtocolVersion version) {
+    public static void checkAndCrashIfBlockIsIn(int blockId, String identifierName, HashBiMap<Integer, Block> versionMapping) {
         if (versionMapping.containsKey(blockId)) {
-            String blockIdString;
-            if (version == ProtocolVersion.VERSION_1_12_2) {
-                blockIdString = String.format("%d:%d", blockId >> 4, blockId & 0xF);
-            } else {
-                blockIdString = String.valueOf(blockId);
-            }
-            throw new RuntimeException(String.format("Block Id %s is already present for %s! (identifier=%s, version=%s)", blockIdString, versionMapping.get(blockId), identifierName, version));
+            throw new RuntimeException(String.format("Block Id %s is already present for %d! (identifier=%s)", blockId, versionMapping.get(blockId), identifierName));
         }
     }
 
+    public static Block getBlock(int v, ProtocolVersion a) {
+        return null;
+    }
 
-    public static int getBlockId(Block block, ProtocolVersion version) {
-        int blockId = blockMap.get(version).inverse().get(block);
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            return blockId >> 4;
-        }
-        return blockId;
+    public static Block getBlockByLegacy(int v, int w) {
+        return null;
+    }
+
+    public static Block getBlockByLegacy(int i) {
+        return null;
     }
 }

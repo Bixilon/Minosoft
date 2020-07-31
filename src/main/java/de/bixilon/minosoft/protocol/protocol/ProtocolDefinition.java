@@ -20,4 +20,6 @@ public final class ProtocolDefinition {
     public static final float ANGLE_CALCULATION_CONSTANT = 360.0F / 256.0F;
 
     public static final int PLAYER_INVENTORY_ID = 0;
+
+    public static final int FLATTING_VERSION_ID = 346;
 }

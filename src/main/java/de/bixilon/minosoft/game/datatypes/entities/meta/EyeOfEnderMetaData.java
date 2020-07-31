@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
+import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class EyeOfEnderMetaData extends EntityMetaData {
@@ -23,7 +23,7 @@ public class EyeOfEnderMetaData extends EntityMetaData {
     }
 
     public Slot getItem() {
-        Slot defaultValue = new Slot(Items.getItem("minecraft", "ender_eye"));
+        Slot defaultValue = new Slot(new Item("minecraft", "ender_eye"));
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
             return defaultValue;
         }

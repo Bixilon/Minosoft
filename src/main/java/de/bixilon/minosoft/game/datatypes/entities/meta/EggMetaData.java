@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
+import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class EggMetaData extends ItemedThrowableMetaData {
@@ -26,7 +26,7 @@ public class EggMetaData extends ItemedThrowableMetaData {
     public Slot getItem() {
         Slot superSlot = super.getItem();
         if (superSlot == null) {
-            return new Slot(Items.getItem("minecraft", "egg"));
+            return new Slot(new Item("minecraft", "egg"));
         }
         return superSlot;
     }

@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
+import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class EnderPearlMetaData extends ItemedThrowableMetaData {
@@ -26,7 +26,7 @@ public class EnderPearlMetaData extends ItemedThrowableMetaData {
     public Slot getItem() {
         Slot superSlot = super.getItem();
         if (superSlot == null) {
-            return new Slot(Items.getItem("minecraft", "ender_pearl"));
+            return new Slot(new Item("minecraft", "ender_pearl"));
         }
         return superSlot;
     }
