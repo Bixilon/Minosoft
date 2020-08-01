@@ -13,12 +13,12 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class FallingBlockMetaData extends EntityMetaData {
 
-    public FallingBlockMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public FallingBlockMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public BlockPosition getSpawnPosition() {

@@ -18,14 +18,14 @@ import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class LightningBolt extends Mob implements MobInterface {
     EntityMetaData metaData;
 
-    public LightningBolt(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public LightningBolt(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new EntityMetaData(sets, version);
+        this.metaData = new EntityMetaData(sets, protocolId);
     }
 
     @Override

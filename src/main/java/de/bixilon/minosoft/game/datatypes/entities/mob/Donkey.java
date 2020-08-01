@@ -19,14 +19,14 @@ import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.DonkeyMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class Donkey extends Mob implements MobInterface {
     DonkeyMetaData metaData;
 
-    public Donkey(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public Donkey(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new DonkeyMetaData(sets, version);
+        this.metaData = new DonkeyMetaData(sets, protocolId);
     }
 
     @Override

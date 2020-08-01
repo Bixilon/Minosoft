@@ -13,12 +13,12 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.Color;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class WolfMetaData extends TameableMetaData {
 
-    public WolfMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public WolfMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

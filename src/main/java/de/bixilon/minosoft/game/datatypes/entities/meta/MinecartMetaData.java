@@ -14,12 +14,12 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class MinecartMetaData extends EntityMetaData {
 
-    public MinecartMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public MinecartMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public int getShakingPower() {

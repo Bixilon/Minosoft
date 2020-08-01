@@ -27,7 +27,7 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         // not used anymore ( >= 1.9)
-        switch (buffer.getVersion()) {
+        switch (buffer.getProtocolId()) {
             case VERSION_1_7_10:
                 position = buffer.readBlockPositionShort();
                 for (byte i = 0; i < 4; i++) {

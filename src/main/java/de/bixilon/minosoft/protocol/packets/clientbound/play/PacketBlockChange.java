@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -28,16 +27,15 @@ public class PacketBlockChange implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                position = buffer.readBlockPosition();
-                block = Blocks.getBlockByLegacy(buffer.readVarInt(), buffer.readByte());
-                return true;
-            default:
-                position = buffer.readPosition();
-                block = Blocks.getBlock(buffer.readVarInt(), buffer.getVersion());
-                return true;
+        if (buffer.getProtocolId() < 6) {
+            position = buffer.readBlockPosition();
+            block = buffer.getConnection().getMapping().getBlockByIdAndMetaData(buffer.readVarInt(), buffer.readByte()); // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
+            return true;
         }
+        position = buffer.readPosition();
+        block = buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
+        return true;
+
     }
 
     @Override

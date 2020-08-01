@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class MooshroomMetaData extends AnimalMetaData {
 
-    public MooshroomMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public MooshroomMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public MooshroomTypes getType() {

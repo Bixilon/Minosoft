@@ -19,14 +19,14 @@ import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.PigMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class Pig extends Mob implements MobInterface {
     PigMetaData metaData;
 
-    public Pig(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public Pig(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new PigMetaData(sets, version);
+        this.metaData = new PigMetaData(sets, protocolId);
     }
 
     @Override

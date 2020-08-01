@@ -19,14 +19,14 @@ import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.LlamaMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class Llama extends Mob implements MobInterface {
     LlamaMetaData metaData;
 
-    public Llama(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public Llama(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new LlamaMetaData(sets, version);
+        this.metaData = new LlamaMetaData(sets, protocolId);
     }
 
     @Override

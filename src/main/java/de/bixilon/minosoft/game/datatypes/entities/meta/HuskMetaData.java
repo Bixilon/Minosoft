@@ -13,12 +13,12 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class HuskMetaData extends ZombieMetaData {
 
-    public HuskMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public HuskMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

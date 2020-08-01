@@ -14,11 +14,9 @@
 package de.bixilon.minosoft.game.datatypes.objectLoader.entities;
 
 import com.google.common.collect.HashBiMap;
-import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.entities.mob.*;
 import de.bixilon.minosoft.game.datatypes.entities.objects.*;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
@@ -146,28 +144,11 @@ public class Entities {
         entityClassMap.put(identifier, clazz);
     }
 
-
-    public static Class<? extends Entity> byId(int id, ProtocolVersion version) {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            version = ProtocolVersion.VERSION_1_12_2;
-        }
-        return getClassByIdentifier(entityMapping.get(version).get(id));
-    }
-
     public static String getIdentifierByClass(Class<? extends Entity> clazz) {
         return entityClassMap.inverse().get(clazz);
     }
 
-
     public static Class<? extends Entity> getClassByIdentifier(String identifier) {
         return entityClassMap.get(identifier);
-    }
-
-    public static void load(String mod, JsonObject json, ProtocolVersion version) {
-        HashBiMap<Integer, String> versionMapping = HashBiMap.create();
-        for (String identifierName : json.keySet()) {
-            versionMapping.put(json.getAsJsonObject(identifierName).get("id").getAsInt(), mod + ":" + identifierName);
-        }
-        entityMapping.put(version, versionMapping);
     }
 }

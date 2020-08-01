@@ -12,15 +12,15 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class AbstractHorseMetaData extends AnimalMetaData {
 
-    public AbstractHorseMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public AbstractHorseMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

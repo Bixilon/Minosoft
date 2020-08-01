@@ -19,14 +19,14 @@ import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.WanderingTraderMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class WanderingTrader extends Mob implements MobInterface {
     WanderingTraderMetaData metaData;
 
-    public WanderingTrader(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public WanderingTrader(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new WanderingTraderMetaData(sets, version);
+        this.metaData = new WanderingTraderMetaData(sets, protocolId);
     }
 
     @Override

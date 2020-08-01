@@ -33,51 +33,49 @@ public class PacketPlayerInfo implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                infos.add(new PlayerInfoBulk(buffer.readString(), buffer.readShort(), (buffer.readBoolean() ? PlayerInfoAction.UPDATE_LATENCY : PlayerInfoAction.REMOVE_PLAYER)));
-                return true;
-            default:
-                PlayerInfoAction action = PlayerInfoAction.byId(buffer.readVarInt());
-                int count = buffer.readVarInt();
-                for (int i = 0; i < count; i++) {
-                    UUID uuid = buffer.readUUID();
-                    PlayerInfoBulk infoBulk;
-                    //UUID uuid, String name, int ping, GameMode gameMode, TextComponent displayName, HashMap< PlayerProperties, PlayerProperty > properties, PacketPlayerInfo.PlayerInfoAction action) {
-                    switch (action) {
-                        case ADD:
-                            String name = buffer.readString();
-                            int propertiesCount = buffer.readVarInt();
-                            HashMap<PlayerProperties, PlayerProperty> playerProperties = new HashMap<>();
-                            for (int p = 0; p < propertiesCount; p++) {
-                                PlayerProperty property = new PlayerProperty(PlayerProperties.byName(buffer.readString()), buffer.readString(), (buffer.readBoolean() ? buffer.readString() : null));
-                                playerProperties.put(property.getProperty(), property);
-                            }
-                            GameMode gameMode = GameMode.byId(buffer.readVarInt());
-                            int ping = buffer.readVarInt();
-                            TextComponent displayName = (buffer.readBoolean() ? buffer.readTextComponent() : null);
-                            infoBulk = new PlayerInfoBulk(uuid, name, ping, gameMode, displayName, playerProperties, action);
-                            break;
-                        case UPDATE_GAMEMODE:
-                            infoBulk = new PlayerInfoBulk(uuid, null, 0, GameMode.byId(buffer.readVarInt()), null, null, action);
-                            break;
-                        case UPDATE_LATENCY:
-                            infoBulk = new PlayerInfoBulk(uuid, null, buffer.readVarInt(), null, null, null, action);
-                            break;
-                        case UPDATE_DISPLAY_NAME:
-                            infoBulk = new PlayerInfoBulk(uuid, null, 0, null, (buffer.readBoolean() ? buffer.readTextComponent() : null), null, action);
-                            break;
-                        case REMOVE_PLAYER:
-                            infoBulk = new PlayerInfoBulk(uuid, null, 0, null, null, null, action);
-                            break;
-                        default:
-                            infoBulk = null;
-                            break;
-                    }
-                    infos.add(infoBulk);
-                }
-                return true;
+        if (buffer.getProtocolId() < 19) {
+            infos.add(new PlayerInfoBulk(buffer.readString(), buffer.readShort(), (buffer.readBoolean() ? PlayerInfoAction.UPDATE_LATENCY : PlayerInfoAction.REMOVE_PLAYER)));
+            return true;
         }
+        PlayerInfoAction action = PlayerInfoAction.byId(buffer.readVarInt());
+        int count = buffer.readVarInt();
+        for (int i = 0; i < count; i++) {
+            UUID uuid = buffer.readUUID();
+            PlayerInfoBulk infoBulk;
+            //UUID uuid, String name, int ping, GameMode gameMode, TextComponent displayName, HashMap< PlayerProperties, PlayerProperty > properties, PacketPlayerInfo.PlayerInfoAction action) {
+            switch (action) {
+                case ADD:
+                    String name = buffer.readString();
+                    int propertiesCount = buffer.readVarInt();
+                    HashMap<PlayerProperties, PlayerProperty> playerProperties = new HashMap<>();
+                    for (int p = 0; p < propertiesCount; p++) {
+                        PlayerProperty property = new PlayerProperty(PlayerProperties.byName(buffer.readString()), buffer.readString(), (buffer.readBoolean() ? buffer.readString() : null));
+                        playerProperties.put(property.getProperty(), property);
+                    }
+                    GameMode gameMode = GameMode.byId(buffer.readVarInt());
+                    int ping = buffer.readVarInt();
+                    TextComponent displayName = (buffer.readBoolean() ? buffer.readTextComponent() : null);
+                    infoBulk = new PlayerInfoBulk(uuid, name, ping, gameMode, displayName, playerProperties, action);
+                    break;
+                case UPDATE_GAMEMODE:
+                    infoBulk = new PlayerInfoBulk(uuid, null, 0, GameMode.byId(buffer.readVarInt()), null, null, action);
+                    break;
+                case UPDATE_LATENCY:
+                    infoBulk = new PlayerInfoBulk(uuid, null, buffer.readVarInt(), null, null, null, action);
+                    break;
+                case UPDATE_DISPLAY_NAME:
+                    infoBulk = new PlayerInfoBulk(uuid, null, 0, null, (buffer.readBoolean() ? buffer.readTextComponent() : null), null, action);
+                    break;
+                case REMOVE_PLAYER:
+                    infoBulk = new PlayerInfoBulk(uuid, null, 0, null, null, null, action);
+                    break;
+                default:
+                    infoBulk = null;
+                    break;
+            }
+            infos.add(infoBulk);
+        }
+        return true;
     }
 
     @Override

@@ -26,19 +26,15 @@ public class PacketSetExperience implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                bar = buffer.readFloat();
-                // maybe that should be an unsigned short, negative experience makes no sense. If you have negative exp the notchian client make strange things...
-                level = buffer.readShort();
-                total = buffer.readShort();
-                return true;
-            default:
-                bar = buffer.readFloat();
-                level = buffer.readVarInt();
-                total = buffer.readVarInt();
-                return true;
+        bar = buffer.readFloat();
+        if (buffer.getProtocolId() < 7) {
+            level = buffer.readShort();
+            total = buffer.readShort();
+            return true;
         }
+        level = buffer.readVarInt();
+        total = buffer.readVarInt();
+        return true;
     }
 
     @Override

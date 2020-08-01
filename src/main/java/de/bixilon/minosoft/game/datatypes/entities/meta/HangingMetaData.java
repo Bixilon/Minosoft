@@ -12,11 +12,10 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class HangingMetaData extends EntityMetaData {
 
-    public HangingMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public HangingMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 }

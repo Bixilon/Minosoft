@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class SkeletonMetaData extends MonsterMetaData {
 
-    public SkeletonMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public SkeletonMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public SkeletonTypes getSkeletonType() {

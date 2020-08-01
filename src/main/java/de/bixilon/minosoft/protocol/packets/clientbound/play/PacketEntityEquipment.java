@@ -19,7 +19,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,19 +30,19 @@ public class PacketEntityEquipment implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersion() == ProtocolVersion.VERSION_1_7_10) {
+        if (buffer.getProtocolId() < 7) {
             entityId = buffer.readInt();
-            slots.put(InventorySlots.EntityInventory.byId(buffer.readShort(), buffer.getVersion()), buffer.readSlot());
+            slots.put(InventorySlots.EntityInventory.byId(buffer.readShort(), buffer.getProtocolId()), buffer.readSlot());
             return true;
         }
-        if (buffer.getVersion() == ProtocolVersion.VERSION_1_8) {
+        if (buffer.getProtocolId() < 49) {
             entityId = buffer.readVarInt();
-            slots.put(InventorySlots.EntityInventory.byId(buffer.readShort(), buffer.getVersion()), buffer.readSlot());
+            slots.put(InventorySlots.EntityInventory.byId(buffer.readShort(), buffer.getProtocolId()), buffer.readSlot());
             return true;
         }
-        if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+        if (buffer.getProtocolId() < 743) { //ToDo: find out version
             entityId = buffer.readVarInt();
-            slots.put(InventorySlots.EntityInventory.byId(buffer.readVarInt(), buffer.getVersion()), buffer.readSlot());
+            slots.put(InventorySlots.EntityInventory.byId(buffer.readVarInt(), buffer.getProtocolId()), buffer.readSlot());
             return true;
         }
         entityId = buffer.readVarInt();
@@ -54,7 +53,7 @@ public class PacketEntityEquipment implements ClientboundPacket {
                 slotAvailable = false;
             }
             slotId &= 0x7F;
-            slots.put(InventorySlots.EntityInventory.byId(slotId, buffer.getVersion()), buffer.readSlot());
+            slots.put(InventorySlots.EntityInventory.byId(slotId, buffer.getProtocolId()), buffer.readSlot());
         }
         return true;
     }

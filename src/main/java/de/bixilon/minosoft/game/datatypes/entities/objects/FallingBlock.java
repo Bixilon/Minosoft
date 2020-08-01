@@ -21,26 +21,26 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.FallingBlockMetaData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class FallingBlock extends EntityObject implements ObjectInterface {
     final Block block;
     FallingBlockMetaData metaData;
 
-    public FallingBlock(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+    public FallingBlock(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
         block = Blocks.getBlockByLegacy(additionalInt & 0xFFF, additionalInt >>> 12);
     }
 
-    public FallingBlock(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public FallingBlock(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
         block = Blocks.getBlockByLegacy(additionalInt & 0xFFF, additionalInt >>> 12);
     }
 
-    public FallingBlock(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public FallingBlock(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new FallingBlockMetaData(sets, version);
+        this.metaData = new FallingBlockMetaData(sets, protocolId);
         block = Blocks.nullBlock; // ToDo
     }
 

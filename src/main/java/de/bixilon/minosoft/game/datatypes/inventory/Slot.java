@@ -15,9 +15,8 @@ package de.bixilon.minosoft.game.datatypes.inventory;
 
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
-import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class Slot {
     Item item;
@@ -49,10 +48,6 @@ public class Slot {
 
     public Item getItem() {
         return item;
-    }
-
-    public int getItemId(ProtocolVersion version) {
-        return Items.getItemId(item, version);
     }
 
     public int getItemCount() {

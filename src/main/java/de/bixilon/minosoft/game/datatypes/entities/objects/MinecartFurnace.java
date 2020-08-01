@@ -19,22 +19,22 @@ import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.FurnaceMinecartMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class MinecartFurnace extends EntityObject implements ObjectInterface {
     FurnaceMinecartMetaData metaData;
 
-    public MinecartFurnace(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+    public MinecartFurnace(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
     }
 
-    public MinecartFurnace(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public MinecartFurnace(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
     }
 
-    public MinecartFurnace(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public MinecartFurnace(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new FurnaceMinecartMetaData(sets, version);
+        this.metaData = new FurnaceMinecartMetaData(sets, protocolId);
     }
 
     @Override

@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class BasePiglinMetaData extends MonsterMetaData {
 
-    public BasePiglinMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public BasePiglinMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

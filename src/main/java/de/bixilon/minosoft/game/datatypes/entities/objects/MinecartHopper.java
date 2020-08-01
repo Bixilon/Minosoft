@@ -17,19 +17,19 @@ import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class MinecartHopper extends Minecart implements ObjectInterface {
 
-    public MinecartHopper(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+    public MinecartHopper(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, additionalInt, null);
     }
 
-    public MinecartHopper(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public MinecartHopper(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, additionalInt, velocity);
     }
 
-    public MinecartHopper(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public MinecartHopper(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, 0, velocity);
     }
 

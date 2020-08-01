@@ -29,28 +29,27 @@ public class PacketEntityMovementAndRotation implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                this.entityId = buffer.readInt();
-                this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                this.yaw = buffer.readAngle();
-                this.pitch = buffer.readAngle();
-                return true;
-            case VERSION_1_8:
-                this.entityId = buffer.readVarInt();
-                this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                this.yaw = buffer.readAngle();
-                this.pitch = buffer.readAngle();
-                onGround = buffer.readBoolean();
-                return true;
-            default:
-                this.entityId = buffer.readVarInt();
-                this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
-                this.yaw = buffer.readAngle();
-                this.pitch = buffer.readAngle();
-                this.onGround = buffer.readBoolean();
-                return true;
+        if (buffer.getProtocolId() < 22) {
+            this.entityId = buffer.readInt();
+            this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
+            this.yaw = buffer.readAngle();
+            this.pitch = buffer.readAngle();
+            return true;
         }
+        if (buffer.getProtocolId() < 100) {
+            this.entityId = buffer.readVarInt();
+            this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
+            this.yaw = buffer.readAngle();
+            this.pitch = buffer.readAngle();
+            onGround = buffer.readBoolean();
+            return true;
+        }
+        this.entityId = buffer.readVarInt();
+        this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
+        this.yaw = buffer.readAngle();
+        this.pitch = buffer.readAngle();
+        this.onGround = buffer.readBoolean();
+        return true;
     }
 
     @Override

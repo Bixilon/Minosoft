@@ -19,26 +19,26 @@ import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.AbstractArrowMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class SpectralArrow extends EntityObject implements ObjectInterface {
     final int shooter;
     AbstractArrowMetaData metaData;
 
-    public SpectralArrow(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+    public SpectralArrow(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
         this.shooter = additionalInt;
     }
 
-    public SpectralArrow(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public SpectralArrow(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
         this.shooter = additionalInt;
     }
 
-    public SpectralArrow(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public SpectralArrow(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new AbstractArrowMetaData(sets, version);
+        this.metaData = new AbstractArrowMetaData(sets, protocolId);
         this.shooter = 0; // ToDo
     }
 

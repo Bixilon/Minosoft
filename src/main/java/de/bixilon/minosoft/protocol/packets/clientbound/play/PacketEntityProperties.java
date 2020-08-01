@@ -29,42 +29,38 @@ public class PacketEntityProperties implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10: {
-                entityId = buffer.readInt();
-                int count = buffer.readInt();
-                for (int i = 0; i < count; i++) {
-                    EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString(), buffer.getVersion());
-                    double value = buffer.readDouble();
-                    short listLength = buffer.readShort();
-                    for (int ii = 0; ii < listLength; ii++) {
-                        UUID uuid = buffer.readUUID();
-                        double amount = buffer.readDouble();
-                        ModifierAction operation = ModifierAction.byId(buffer.readByte());
-                        // ToDo: modifiers
-                    }
-                    properties.put(key, new EntityProperty(value));
+        if (buffer.getProtocolId() < 7) {
+            entityId = buffer.readInt();
+            int count = buffer.readInt();
+            for (int i = 0; i < count; i++) {
+                EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString(), buffer.getProtocolId());
+                double value = buffer.readDouble();
+                short listLength = buffer.readShort();
+                for (int ii = 0; ii < listLength; ii++) {
+                    UUID uuid = buffer.readUUID();
+                    double amount = buffer.readDouble();
+                    ModifierAction operation = ModifierAction.byId(buffer.readByte());
+                    // ToDo: modifiers
                 }
-                return true;
+                properties.put(key, new EntityProperty(value));
             }
-            default: {
-                entityId = buffer.readVarInt();
-                int count = buffer.readInt();
-                for (int i = 0; i < count; i++) {
-                    EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString(), buffer.getVersion());
-                    double value = buffer.readDouble();
-                    int listLength = buffer.readVarInt();
-                    for (int ii = 0; ii < listLength; ii++) {
-                        UUID uuid = buffer.readUUID();
-                        double amount = buffer.readDouble();
-                        ModifierAction operation = ModifierAction.byId(buffer.readByte());
-                        // ToDo: modifiers
-                    }
-                    properties.put(key, new EntityProperty(value));
-                }
-                return true;
-            }
+            return true;
         }
+        entityId = buffer.readVarInt();
+        int count = buffer.readInt();
+        for (int i = 0; i < count; i++) {
+            EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString(), buffer.getProtocolId());
+            double value = buffer.readDouble();
+            int listLength = buffer.readVarInt();
+            for (int ii = 0; ii < listLength; ii++) {
+                UUID uuid = buffer.readUUID();
+                double amount = buffer.readDouble();
+                ModifierAction operation = ModifierAction.byId(buffer.readByte());
+                // ToDo: modifiers
+            }
+            properties.put(key, new EntityProperty(value));
+        }
+        return true;
     }
 
     @Override

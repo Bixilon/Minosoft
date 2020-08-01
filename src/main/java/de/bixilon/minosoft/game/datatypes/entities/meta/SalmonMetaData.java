@@ -12,11 +12,10 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class SalmonMetaData extends AbstractFishMetaData {
 
-    public SalmonMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public SalmonMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 }

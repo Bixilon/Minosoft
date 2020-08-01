@@ -15,14 +15,13 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.Color;
 import de.bixilon.minosoft.game.datatypes.Direction;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import javax.annotation.Nullable;
 
 public class ShulkerMetaData extends GolemMetaData {
 
-    public ShulkerMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public ShulkerMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public Direction getDirection() {

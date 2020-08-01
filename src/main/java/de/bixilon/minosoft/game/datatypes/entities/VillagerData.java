@@ -15,16 +15,16 @@ package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.game.datatypes.MapSet;
 import de.bixilon.minosoft.game.datatypes.VersionValueMap;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class VillagerData {
     final VillagerTypes type;
     final VillagerProfessions profession;
     final VillagerLevels level;
 
-    public VillagerData(int type, int profession, int level, ProtocolVersion version) {
+    public VillagerData(int type, int profession, int level, int protocolId) {
         this.type = VillagerTypes.byId(type);
-        this.profession = VillagerProfessions.byId(profession, version);
+        this.profession = VillagerProfessions.byId(profession, protocolId);
         this.level = VillagerLevels.byId(level);
     }
 
@@ -87,21 +87,21 @@ public class VillagerData {
 
         final VersionValueMap<Integer> valueMap;
 
-        VillagerProfessions(MapSet<ProtocolVersion, Integer>[] values) {
+        VillagerProfessions(MapSet<Integer, Integer>[] values) {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static VillagerProfessions byId(int id, ProtocolVersion version) {
+        public static VillagerProfessions byId(int id, int protocolId) {
             for (VillagerProfessions profession : values()) {
-                if (profession.getId(version) == id) {
+                if (profession.getId(protocolId) == id) {
                     return profession;
                 }
             }
             return null;
         }
 
-        public int getId(ProtocolVersion version) {
-            return valueMap.get(version);
+        public int getId(int protocolId) {
+            return valueMap.get(protocolId);
         }
     }
 

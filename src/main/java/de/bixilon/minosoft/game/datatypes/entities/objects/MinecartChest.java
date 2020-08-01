@@ -16,19 +16,19 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class MinecartChest extends Minecart {
 
-    public MinecartChest(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+    public MinecartChest(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, additionalInt);
     }
 
-    public MinecartChest(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public MinecartChest(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, additionalInt, velocity);
     }
 
-    public MinecartChest(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public MinecartChest(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity, sets, version);
     }
 

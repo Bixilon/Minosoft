@@ -31,28 +31,26 @@ public class PacketOpenWindow implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                this.windowId = buffer.readByte();
-                this.type = InventoryType.byId(buffer.readByte());
-                this.title = buffer.readTextComponent();
-                slotCount = buffer.readByte();
-                if (!buffer.readBoolean()) {
-                    // no custom name
-                    title = null;
-                }
-                this.entityId = buffer.readInt();
-                return true;
-            default:
-                this.windowId = buffer.readByte();
-                this.type = InventoryType.byName(buffer.readString());
-                this.title = buffer.readTextComponent();
-                slotCount = buffer.readByte();
-                if (type == InventoryType.HORSE) {
-                    this.entityId = buffer.readInt();
-                }
-                return true;
+        if (buffer.getProtocolId() < 6) {
+            this.windowId = buffer.readByte();
+            this.type = InventoryType.byId(buffer.readByte());
+            this.title = buffer.readTextComponent();
+            slotCount = buffer.readByte();
+            if (!buffer.readBoolean()) {
+                // no custom name
+                title = null;
+            }
+            this.entityId = buffer.readInt();
+            return true;
         }
+        this.windowId = buffer.readByte();
+        this.type = InventoryType.byName(buffer.readString());
+        this.title = buffer.readTextComponent();
+        slotCount = buffer.readByte();
+        if (type == InventoryType.HORSE) {
+            this.entityId = buffer.readInt();
+        }
+        return true;
     }
 
     @Override

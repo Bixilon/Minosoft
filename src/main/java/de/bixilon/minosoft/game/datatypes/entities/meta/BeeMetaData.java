@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class BeeMetaData extends AnimalMetaData {
 
-    public BeeMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public BeeMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public boolean isAngry() {

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class PacketUnlockRecipes implements ClientboundPacket {
     UnlockRecipeActions action;
@@ -37,7 +37,7 @@ public class PacketUnlockRecipes implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
+        switch (buffer.getProtocolId()) {
             case VERSION_1_12_2:
                 action = UnlockRecipeActions.byId(buffer.readVarInt());
                 isCraftingBookOpen = buffer.readBoolean();
@@ -59,7 +59,7 @@ public class PacketUnlockRecipes implements ClientboundPacket {
                 isCraftingFilteringActive = buffer.readBoolean();
                 isSmeltingBookOpen = buffer.readBoolean();
                 isSmeltingFilteringActive = buffer.readBoolean();
-                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+                if (buffer.getProtocolId() >= ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
                     isBlastFurnaceBookOpen = buffer.readBoolean();
                     isBlastFurnaceFilteringActive = buffer.readBoolean();
                     isSmokerBookOpen = buffer.readBoolean();

@@ -27,7 +27,7 @@ public class PacketStopSound implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
+        switch (buffer.getProtocolId()) {
             case VERSION_1_9_4:
             case VERSION_1_10:
             case VERSION_1_11_2:

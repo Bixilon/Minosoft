@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class EnderDragonMetaData extends InsentientMetaData {
 
-    public EnderDragonMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public EnderDragonMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

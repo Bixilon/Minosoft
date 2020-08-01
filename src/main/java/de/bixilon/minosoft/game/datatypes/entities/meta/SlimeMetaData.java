@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class SlimeMetaData extends InsentientMetaData {
 
-    public SlimeMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public SlimeMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public int getSize() {

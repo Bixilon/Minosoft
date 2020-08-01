@@ -22,7 +22,6 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleDat
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 import javax.annotation.Nullable;
@@ -33,7 +32,7 @@ import java.util.UUID;
 public class EntityMetaData {
 
     final MetaDataHashMap sets;
-    final ProtocolVersion version;
+    final int protocolId;
 
     /*
     1.7.10: https://wiki.vg/index.php?title=Entity_metadata&oldid=5991
@@ -47,9 +46,9 @@ public class EntityMetaData {
     1.15: https://wiki.vg/index.php?title=Entity_metadata&oldid=15885
      */
 
-    public EntityMetaData(MetaDataHashMap sets, ProtocolVersion version) {
+    public EntityMetaData(MetaDataHashMap sets, int protocolId) {
         this.sets = sets;
-        this.version = version;
+        this.protocolId = protocolId;
     }
 
     public static Object getData(EntityMetaData.Types type, InByteBuffer buffer) {
@@ -121,13 +120,13 @@ public class EntityMetaData {
                 break;
             case BLOCK_ID:
                 int blockId = buffer.readVarInt();
-                data = Blocks.getBlock(blockId, buffer.getVersion());
+                data = Blocks.getBlock(blockId, buffer.getProtocolId());
                 break;
             case OPT_VAR_INT:
                 data = buffer.readVarInt() - 1;
                 break;
             case VILLAGER_DATA:
-                data = new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getVersion()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
+                data = new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getProtocolId()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
@@ -246,32 +245,32 @@ public class EntityMetaData {
 
     public enum Types {
         BYTE(0),
-        SHORT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1000)}), // got removed in 1.9
-        INT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1001)}),
-        VAR_INT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1)}),
-        FLOAT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 3), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 2)}),
-        STRING(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 3)}),
-        CHAT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 4)}),
-        OPT_CHAT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 5)}),
-        SLOT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 5), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 6)}),
-        BOOLEAN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 6), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 7)}),
-        VECTOR(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 6), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1002)}),
-        ROTATION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 7), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 8)}),
-        POSITION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 8), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 9)}),
-        OPT_POSITION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 9), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 10)}),
-        DIRECTION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 10), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 11)}),
-        OPT_UUID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 11), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 12)}),
-        BLOCK_ID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 12), new MapSet<>(ProtocolVersion.VERSION_1_10, 1003)}),
-        OPT_BLOCK_ID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 12), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 13)}),
-        NBT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_12_2, 13), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 14)}),
-        PARTICLE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 15)}),
-        VILLAGER_DATA(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 16)}),
-        OPT_VAR_INT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 17)}),
-        POSE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 18)});
+        SHORT(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(57, 1000)}), // got removed in 1.9
+        INT(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(57, 1001)}),
+        VAR_INT(new MapSet[]{new MapSet<>(57, 1)}),
+        FLOAT(new MapSet[]{new MapSet<>(0, 3), new MapSet<>(57, 2)}),
+        STRING(new MapSet[]{new MapSet<>(0, 4), new MapSet<>(57, 3)}),
+        CHAT(new MapSet[]{new MapSet<>(57, 4)}),
+        OPT_CHAT(new MapSet[]{new MapSet<>(346, 5)}), // ToDo: when where the 1.13 changes? in 346?
+        SLOT(new MapSet[]{new MapSet<>(0, 5), new MapSet<>(346, 6)}),
+        BOOLEAN(new MapSet[]{new MapSet<>(57, 6), new MapSet<>(346, 7)}),
+        VECTOR(new MapSet[]{new MapSet<>(0, 6), new MapSet<>(57, 1002)}),
+        ROTATION(new MapSet[]{new MapSet<>(44, 7), new MapSet<>(346, 8)}),
+        POSITION(new MapSet[]{new MapSet<>(57, 8), new MapSet<>(346, 9)}),
+        OPT_POSITION(new MapSet[]{new MapSet<>(57, 9), new MapSet<>(346, 10)}),
+        DIRECTION(new MapSet[]{new MapSet<>(57, 10), new MapSet<>(346, 11)}),
+        OPT_UUID(new MapSet[]{new MapSet<>(57, 11), new MapSet<>(346, 12)}),
+        BLOCK_ID(new MapSet[]{new MapSet<>(67, 12), new MapSet<>(210, -1)}), // ToDo: test: 1.10 blockId replacement
+        OPT_BLOCK_ID(new MapSet[]{new MapSet<>(210, 12), new MapSet<>(346, 13)}),
+        NBT(new MapSet[]{new MapSet<>(318, 13), new MapSet<>(346, 14)}),
+        PARTICLE(new MapSet[]{new MapSet<>(346, 15)}),
+        VILLAGER_DATA(new MapSet[]{new MapSet<>(451, 16)}),
+        OPT_VAR_INT(new MapSet[]{new MapSet<>(459, 17)}),
+        POSE(new MapSet[]{new MapSet<>(461, 18)});
 
         final VersionValueMap<Integer> valueMap;
 
-        Types(MapSet<ProtocolVersion, Integer>[] values) {
+        Types(MapSet<Integer, Integer>[] values) {
             valueMap = new VersionValueMap<>(values, true);
         }
 
@@ -279,17 +278,17 @@ public class EntityMetaData {
             valueMap = new VersionValueMap<>(id);
         }
 
-        public static Types byId(int id, ProtocolVersion version) {
+        public static Types byId(int id, int protocolId) {
             for (Types types : values()) {
-                if (types.getId(version) == id) {
+                if (types.getId(protocolId) == id) {
                     return types;
                 }
             }
             return null;
         }
 
-        public int getId(ProtocolVersion version) {
-            Integer ret = valueMap.get(version);
+        public int getId(Integer protocolId) {
+            Integer ret = valueMap.get(protocolId);
             if (ret == null) {
                 return -2;
             }

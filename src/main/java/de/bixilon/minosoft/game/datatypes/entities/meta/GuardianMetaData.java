@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class GuardianMetaData extends MonsterMetaData {
 
-    public GuardianMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public GuardianMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public boolean isElderly() {

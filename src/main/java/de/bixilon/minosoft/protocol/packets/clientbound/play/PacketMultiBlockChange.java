@@ -14,14 +14,12 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
 import de.bixilon.minosoft.game.datatypes.world.InChunkLocation;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
@@ -31,13 +29,10 @@ public class PacketMultiBlockChange implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersion() == ProtocolVersion.VERSION_1_7_10) {
+        if (buffer.getProtocolId() < 25) {
             location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             short count = buffer.readShort();
             int dataSize = buffer.readInt(); // should be count * 4
-            if (dataSize != count * 4) {
-                throw new IllegalArgumentException(String.format("Not enough data (%d) for %d blocks", dataSize, count));
-            }
             for (int i = 0; i < count; i++) {
                 int raw = buffer.readInt();
                 byte meta = (byte) (raw & 0xF);
@@ -45,18 +40,18 @@ public class PacketMultiBlockChange implements ClientboundPacket {
                 byte y = (byte) ((raw & 0xFF_00_00) >>> 16);
                 byte z = (byte) ((raw & 0x0F_00_00_00) >>> 24);
                 byte x = (byte) ((raw & 0xF0_00_00_00) >>> 28);
-                blocks.put(new InChunkLocation(x, y, z), Blocks.getBlockByLegacy(blockId, meta));
+                blocks.put(new InChunkLocation(x, y, z), buffer.getConnection().getMapping().getBlockByIdAndMetaData(blockId, meta));
             }
             return true;
         }
-        if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+        if (buffer.getProtocolId() < 743) { //ToDo
             location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             int count = buffer.readVarInt();
             for (int i = 0; i < count; i++) {
                 byte pos = buffer.readByte();
                 byte y = buffer.readByte();
                 int blockId = buffer.readVarInt();
-                blocks.put(new InChunkLocation((pos & 0xF0 >>> 4) & 0xF, y, pos & 0xF), Blocks.getBlock(blockId, buffer.getVersion()));
+                blocks.put(new InChunkLocation((pos & 0xF0 >>> 4) & 0xF, y, pos & 0xF), buffer.getConnection().getMapping().getBlockById(blockId));
             }
             return true;
         }
@@ -66,7 +61,7 @@ public class PacketMultiBlockChange implements ClientboundPacket {
         int count = buffer.readVarInt();
         for (int i = 0; i < count; i++) {
             long data = buffer.readVarLong();
-            blocks.put(new InChunkLocation((int) ((data >> 8) & 0xF), yOffset + (int) ((data >> 4) & 0xF), (int) (data & 0xF)), Blocks.getBlock((int) (data >>> 12), buffer.getVersion()));
+            blocks.put(new InChunkLocation((int) ((data >> 8) & 0xF), yOffset + (int) ((data >> 4) & 0xF), (int) (data & 0xF)), buffer.getConnection().getMapping().getBlockById(((int) (data >>> 12))));
         }
         return true;
     }

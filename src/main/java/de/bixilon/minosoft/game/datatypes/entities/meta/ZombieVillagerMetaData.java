@@ -13,12 +13,12 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class ZombieVillagerMetaData extends ZombieMetaData {
 
-    public ZombieVillagerMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public ZombieVillagerMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     @Override

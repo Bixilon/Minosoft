@@ -12,15 +12,15 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class TameableMetaData extends AnimalMetaData {
 
-    public TameableMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public TameableMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

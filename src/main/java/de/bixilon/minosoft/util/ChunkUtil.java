@@ -21,13 +21,12 @@ import de.bixilon.minosoft.game.datatypes.world.ChunkNibbleLocation;
 import de.bixilon.minosoft.game.datatypes.world.palette.Palette;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
 public class ChunkUtil {
     public static Chunk readChunkPacket(InByteBuffer buffer, short sectionBitMask, short addBitMask, boolean groundUpContinuous, boolean containsSkyLight) {
-        switch (buffer.getVersion()) {
+        switch (buffer.getProtocolId()) {
             case VERSION_1_7_10: {
                 if (sectionBitMask == 0x00 && groundUpContinuous) {
                     // unload chunk
@@ -151,7 +150,7 @@ public class ChunkUtil {
                     if (!BitByte.isBitSet(sectionBitMask, c)) {
                         continue;
                     }
-                    if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+                    if (buffer.getProtocolId() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
                         buffer.readShort(); // block count
                     }
                     Palette palette = Palette.choosePalette(buffer.readByte());
@@ -184,7 +183,7 @@ public class ChunkUtil {
                                 Block block = palette.byId(blockId);
                                 if (block == null) {
                                     String blockName;
-                                    if (buffer.getVersion().getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+                                    if (buffer.getProtocolId() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
                                         blockName = String.format("%d:%d", blockId >> 4, blockId & 0xF);
                                     } else {
                                         blockName = String.valueOf(blockId);
@@ -200,7 +199,7 @@ public class ChunkUtil {
                         }
                     }
 
-                    if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+                    if (buffer.getProtocolId() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
                         byte[] light = buffer.readBytes(2048);
                         if (containsSkyLight) {
                             byte[] skyLight = buffer.readBytes(2048);
@@ -209,7 +208,7 @@ public class ChunkUtil {
 
                     nibbleMap.put(c, new ChunkNibble(blockMap));
                 }
-                if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+                if (buffer.getProtocolId() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
                     byte[] biomes = buffer.readBytes(256);
                 }
                 return new Chunk(nibbleMap);

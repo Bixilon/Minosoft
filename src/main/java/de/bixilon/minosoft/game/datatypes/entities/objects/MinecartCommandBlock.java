@@ -19,22 +19,22 @@ import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.CommandBlockMinecartMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class MinecartCommandBlock extends EntityObject implements ObjectInterface {
     CommandBlockMinecartMetaData metaData;
 
-    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+    public MinecartCommandBlock(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
     }
 
-    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public MinecartCommandBlock(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
     }
 
-    public MinecartCommandBlock(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public MinecartCommandBlock(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new CommandBlockMinecartMetaData(sets, version);
+        this.metaData = new CommandBlockMinecartMetaData(sets, protocolId);
     }
 
     @Override

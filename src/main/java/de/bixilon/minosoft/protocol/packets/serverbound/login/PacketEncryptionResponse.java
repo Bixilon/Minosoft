@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.login;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import javax.crypto.SecretKey;
 import java.security.PublicKey;
@@ -42,8 +42,8 @@ public class PacketEncryptionResponse implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE));
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE);
         switch (version) {
             case VERSION_1_7_10:
                 buffer.writeShort((short) secret.length);

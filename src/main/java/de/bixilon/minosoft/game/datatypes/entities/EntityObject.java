@@ -13,9 +13,15 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
+import java.util.UUID;
+
 public abstract class EntityObject extends Entity implements ObjectInterface {
 
-    public EntityObject(int entityId, Location location, short yaw, short pitch, Velocity velocity) {
-        super(entityId, location, yaw, pitch, velocity);
+    public EntityObject(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity) {
+        super(entityId, uuid, location, yaw, pitch, 0, velocity);
+    }
+
+    public EntityObject(int entityId, UUID uuid, Location location, int yaw, int pitch, Velocity velocity) {
+        super(entityId, uuid, location, yaw, pitch, 0, velocity);
     }
 }

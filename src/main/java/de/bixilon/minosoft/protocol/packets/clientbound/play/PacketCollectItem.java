@@ -26,23 +26,20 @@ public class PacketCollectItem implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                itemId = buffer.readInt();
-                collectorId = buffer.readInt();
-                return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-                itemId = buffer.readVarInt();
-                collectorId = buffer.readVarInt();
-                return true;
-            default:
-                itemId = buffer.readVarInt();
-                collectorId = buffer.readVarInt();
-                count = buffer.readVarInt();
-                return true;
+        if (buffer.getProtocolId() < 7) {
+            itemId = buffer.readInt();
+            collectorId = buffer.readInt();
+            return true;
         }
+        if (buffer.getProtocolId() < 301) {
+            itemId = buffer.readVarInt();
+            collectorId = buffer.readVarInt();
+            return true;
+        }
+        itemId = buffer.readVarInt();
+        collectorId = buffer.readVarInt();
+        count = buffer.readVarInt();
+        return true;
     }
 
     @Override

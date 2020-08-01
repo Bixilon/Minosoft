@@ -13,14 +13,13 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import javax.annotation.Nullable;
 
 public class CommandBlockMinecartMetaData extends EntityMetaData {
 
-    public CommandBlockMinecartMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public CommandBlockMinecartMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     @Nullable

@@ -15,10 +15,11 @@ package de.bixilon.minosoft.protocol.packets.serverbound.login;
 
 import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class PacketLoginStart implements ServerboundPacket {
 
@@ -33,9 +34,9 @@ public class PacketLoginStart implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
+    public OutPacketBuffer write(Connection connection) {
         // no version checking, is the same in all versions (1.7.x - 1.15.2)
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.LOGIN_LOGIN_START));
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.LOGIN_LOGIN_START))
         buffer.writeString(username);
         return buffer;
     }

@@ -15,8 +15,8 @@ package de.bixilon.minosoft.util;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -44,8 +44,8 @@ public class Util {
         return UUID.fromString(UUID_FIX.matcher(uuid.replace("-", "")).replaceAll("$1-$2-$3-$4-$5"));
     }
 
-    public static InByteBuffer decompress(byte[] bytes, ProtocolVersion version) {
-        return new InByteBuffer(decompress(bytes), version);
+    public static InByteBuffer decompress(byte[] bytes, Connection connection) {
+        return new InByteBuffer(decompress(bytes), connection);
     }
 
     public static byte[] decompress(byte[] bytes) {

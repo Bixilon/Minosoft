@@ -13,14 +13,13 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import javax.annotation.Nullable;
 
 public class ItemFrameMetaData extends HangingMetaData {
 
-    public ItemFrameMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public ItemFrameMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     @Nullable

@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class BoatMetaData extends EntityMetaData {
 
-    public BoatMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public BoatMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public int getTimeSinceHit() {

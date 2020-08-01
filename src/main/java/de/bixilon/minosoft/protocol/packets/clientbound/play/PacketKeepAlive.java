@@ -24,20 +24,16 @@ public class PacketKeepAlive implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                id = buffer.readInt();
-                return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-                id = buffer.readVarInt();
-                return true;
-            default:
-                id = buffer.readLong();
-                return true;
+        if (buffer.getProtocolId() < 32) {
+            id = buffer.readInt();
+            return true;
         }
+        if (buffer.getProtocolId() < 339) {
+            id = buffer.readVarInt();
+            return true;
+        }
+        id = buffer.readLong();
+        return true;
     }
 
     @Override

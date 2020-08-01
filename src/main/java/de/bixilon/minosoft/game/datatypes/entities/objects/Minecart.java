@@ -19,25 +19,25 @@ import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.MinecartMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class Minecart extends EntityObject implements ObjectInterface {
     final MinecartType type;
     MinecartMetaData metaData;
 
-    public Minecart(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+    public Minecart(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
         type = MinecartType.byType(additionalInt);
     }
 
-    public Minecart(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public Minecart(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
         type = MinecartType.byType(additionalInt);
     }
 
-    public Minecart(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public Minecart(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new MinecartMetaData(sets, version);
+        this.metaData = new MinecartMetaData(sets, protocolId);
         type = MinecartType.EMPTY; // ToDo
     }
 

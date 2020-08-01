@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class SnowGolemMetaData extends GolemMetaData {
 
-    public SnowGolemMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public SnowGolemMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public boolean hasNoPumpkinHead() {

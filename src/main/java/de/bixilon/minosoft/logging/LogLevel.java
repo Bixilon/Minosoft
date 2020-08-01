@@ -14,40 +14,12 @@
 package de.bixilon.minosoft.logging;
 
 public enum LogLevel {
-    FATAL(0),
-    INFO(1),
-    MOJANG(2),
-    WARNING(3),
-    GAME(4),
-    DEBUG(5),
-    VERBOSE(6),
-    PROTOCOL(7);
-
-    final int id;
-
-    LogLevel(int id) {
-        this.id = id;
-    }
-
-    public static LogLevel byId(int id) {
-        for (LogLevel g : values()) {
-            if (g.getId() == id) {
-                return g;
-            }
-        }
-        return null;
-    }
-
-    public static LogLevel byName(String name) {
-        for (LogLevel g : values()) {
-            if (g.name().equals(name)) {
-                return g;
-            }
-        }
-        return null;
-    }
-
-    public int getId() {
-        return id;
-    }
+    FATAL,
+    INFO,
+    MOJANG,
+    WARNING,
+    GAME,
+    DEBUG,
+    VERBOSE,
+    PROTOCOL
 }

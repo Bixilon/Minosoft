@@ -21,9 +21,11 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public abstract class Entity implements EntityInterface {
     final int entityId;
+    final UUID uuid;
     final HashMap<InventorySlots.EntityInventory, Slot> equipment;
     final ArrayList<StatusEffect> effectList;
     Location location;
@@ -33,21 +35,25 @@ public abstract class Entity implements EntityInterface {
     short headYaw;
     int attachedTo = -1;
 
-    public Entity(int entityId, Location location, short yaw, short pitch, Velocity velocity) {
+    public Entity(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, Velocity velocity) {
         this.entityId = entityId;
+        this.uuid = uuid;
         this.location = location;
         this.yaw = yaw;
         this.pitch = pitch;
+        this.headYaw = headYaw;
         this.velocity = velocity;
         this.equipment = new HashMap<>();
         this.effectList = new ArrayList<>();
     }
 
-    public Entity(int entityId, Location location, int yaw, int pitch, Velocity velocity) {
+    public Entity(int entityId, UUID uuid, Location location, int yaw, int pitch, int headYaw, Velocity velocity) {
         this.entityId = entityId;
+        this.uuid = uuid;
         this.location = location;
         this.yaw = (short) yaw;
         this.pitch = (short) pitch;
+        this.headYaw = (short) headYaw;
         this.velocity = velocity;
         this.equipment = new HashMap<>();
         this.effectList = new ArrayList<>();

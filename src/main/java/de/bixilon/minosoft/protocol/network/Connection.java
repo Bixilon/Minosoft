@@ -16,7 +16,10 @@ package de.bixilon.minosoft.protocol.network;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
+import de.bixilon.minosoft.game.datatypes.objectLoader.CustomMapping;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
+import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
+import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
@@ -40,7 +43,8 @@ public class Connection {
     final ArrayList<ClientboundPacket> handlingQueue;
     PluginChannelHandler pluginChannelHandler;
     Thread handleThread;
-    ProtocolVersion version = Protocol.getLowestVersionSupported(); // default
+    Version version = Versions.getLowestVersionSupported(); // default
+    CustomMapping customMapping = new CustomMapping(version);
     Player player;
     ConnectionState state = ConnectionState.DISCONNECTED;
     ConnectionReason reason;
@@ -99,7 +103,7 @@ public class Connection {
                 // connection established, starting threads and logging in
                 startHandlingThread();
                 ConnectionState next = ((reason == ConnectionReason.CONNECT) ? ConnectionState.LOGIN : ConnectionState.STATUS);
-                network.sendPacket(new PacketHandshake(getHost(), getPort(), next, (next == ConnectionState.STATUS) ? -1 : getVersion().getVersionNumber()));
+                network.sendPacket(new PacketHandshake(getHost(), getPort(), next, (next == ConnectionState.STATUS) ? -1 : getVersion().getProtocolVersion()));
                 // after sending it, switch to next state
                 setConnectionState(next);
                 break;
@@ -125,12 +129,13 @@ public class Connection {
         }
     }
 
-    public ProtocolVersion getVersion() {
+    public Version getVersion() {
         return version;
     }
 
-    public void setVersion(ProtocolVersion version) {
+    public void setVersion(Version version) {
         this.version = version;
+        customMapping.setVersion(version);
     }
 
     public PacketHandler getHandler() {
@@ -203,8 +208,8 @@ public class Connection {
         getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version), (handler, buffer) -> {
             String serverVersion;
             String clientVersion = (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
-            OutByteBuffer toSend = new OutByteBuffer(getVersion());
-            if (getVersion() == ProtocolVersion.VERSION_1_7_10) {
+            OutByteBuffer toSend = new OutByteBuffer(this);
+            if (getVersion().getProtocolVersion() < 29) {
                 // no length prefix
                 serverVersion = new String(buffer.readBytes(buffer.getBytesLeft()));
                 toSend.writeBytes(clientVersion.getBytes());
@@ -213,7 +218,7 @@ public class Connection {
                 serverVersion = buffer.readString();
                 toSend.writeString(clientVersion);
             }
-            Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getVersionString()));
+            Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getVersionName()));
 
             getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version), toSend);
         });
@@ -237,5 +242,24 @@ public class Connection {
 
     public ConnectionPing getConnectionStatusPing() {
         return connectionStatusPing;
+    }
+
+    public CustomMapping getMapping() {
+        return customMapping;
+    }
+
+
+    public int getPacketCommand(Packets.Serverbound packet) {
+        if (packet.getState() == ConnectionState.PLAY) {
+            return version.getCommandByPacket(packet);
+        }
+        return Protocol.getPacketCommand(packet);
+    }
+
+    public Packets.Clientbound getPacketByCommand(ConnectionState state, int command) {
+        if (state == ConnectionState.PLAY) {
+            return version.getPacketByCommand(command);
+        }
+        return Protocol.getPacketByCommand(state, command);
     }
 }

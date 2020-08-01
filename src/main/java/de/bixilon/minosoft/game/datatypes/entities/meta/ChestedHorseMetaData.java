@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class ChestedHorseMetaData extends AbstractHorseMetaData {
 
-    public ChestedHorseMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public ChestedHorseMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public boolean hasChest() {

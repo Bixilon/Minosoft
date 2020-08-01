@@ -19,26 +19,26 @@ import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.FireballMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class Fireball extends EntityObject implements ObjectInterface {
     final int thrower;
     FireballMetaData metaData;
 
-    public Fireball(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+    public Fireball(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
         this.thrower = additionalInt;
     }
 
-    public Fireball(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public Fireball(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
         this.thrower = additionalInt;
     }
 
-    public Fireball(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public Fireball(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new FireballMetaData(sets, version);
+        this.metaData = new FireballMetaData(sets, protocolId);
         this.thrower = 0; // ToDo
     }
 

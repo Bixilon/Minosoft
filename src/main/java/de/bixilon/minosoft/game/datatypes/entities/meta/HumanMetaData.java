@@ -14,14 +14,13 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import javax.annotation.Nullable;
 
 public class HumanMetaData extends LivingMetaData {
 
-    public HumanMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public HumanMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

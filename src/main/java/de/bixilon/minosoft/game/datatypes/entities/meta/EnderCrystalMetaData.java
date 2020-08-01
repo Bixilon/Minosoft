@@ -13,14 +13,13 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import javax.annotation.Nullable;
 
 public class EnderCrystalMetaData extends EntityMetaData {
 
-    public EnderCrystalMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public EnderCrystalMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public int getHealth() {

@@ -27,19 +27,17 @@ public class PacketEntityRotation implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                this.entityId = buffer.readInt();
-                this.yaw = buffer.readAngle();
-                this.pitch = buffer.readAngle();
-                return true;
-            default:
-                this.entityId = buffer.readVarInt();
-                this.yaw = buffer.readAngle();
-                this.pitch = buffer.readAngle();
-                onGround = buffer.readBoolean();
-                return true;
+        if (buffer.getProtocolId() < 7) {
+            this.entityId = buffer.readInt();
+            this.yaw = buffer.readAngle();
+            this.pitch = buffer.readAngle();
+            return true;
         }
+        this.entityId = buffer.readVarInt();
+        this.yaw = buffer.readAngle();
+        this.pitch = buffer.readAngle();
+        onGround = buffer.readBoolean();
+        return true;
     }
 
     @Override
@@ -50,7 +48,6 @@ public class PacketEntityRotation implements ClientboundPacket {
     public int getEntityId() {
         return entityId;
     }
-
 
     public short getYaw() {
         return yaw;

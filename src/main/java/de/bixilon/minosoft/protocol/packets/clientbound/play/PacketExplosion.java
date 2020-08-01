@@ -32,7 +32,7 @@ public class PacketExplosion implements ClientboundPacket {
         location = new Location(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         radius = buffer.readFloat();
         if (radius > 100.0F) {
-            // maybe somebody tries to crash me?
+            // maybe somebody tries to make bullshit?
             // Sorry, Maximilian Rosenmüller
             throw new IllegalArgumentException(String.format("Explosion to big %s > 100.0F", radius));
         }

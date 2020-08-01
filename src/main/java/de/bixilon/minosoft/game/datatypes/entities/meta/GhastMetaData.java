@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class GhastMetaData extends FlyingMetaData {
 
-    public GhastMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public GhastMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public boolean isAttacking() {

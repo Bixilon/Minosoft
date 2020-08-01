@@ -12,11 +12,10 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class SquidMetaData extends WaterMobMetaData {
 
-    public SquidMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public SquidMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 }

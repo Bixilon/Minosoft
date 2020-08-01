@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class BatMetaData extends AmbientMetaData {
 
-    public BatMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public BatMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

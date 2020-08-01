@@ -19,23 +19,23 @@ import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.FishingHookMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class LeashKnot extends EntityObject implements ObjectInterface {
     FishingHookMetaData metaData;
 
-    public LeashKnot(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+    public LeashKnot(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
     }
 
-    public LeashKnot(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public LeashKnot(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
     }
 
-    public LeashKnot(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public LeashKnot(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new FishingHookMetaData(sets, version);
+        this.metaData = new FishingHookMetaData(sets, protocolId);
     }
 
     @Override

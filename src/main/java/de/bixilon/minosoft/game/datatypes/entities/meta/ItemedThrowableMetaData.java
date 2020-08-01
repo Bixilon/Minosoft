@@ -13,15 +13,14 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import javax.annotation.Nullable;
 
 
 public class ItemedThrowableMetaData extends ThrowableMetaData {
 
-    public ItemedThrowableMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public ItemedThrowableMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     @Nullable

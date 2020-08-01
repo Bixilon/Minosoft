@@ -14,49 +14,44 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.entities.StatusEffect;
-import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffects;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 public class PacketEntityEffect implements ClientboundPacket {
     int entityId;
     StatusEffect effect;
     boolean isAmbient;
-    boolean hideParticles;
-    boolean showIcon;
+    boolean hideParticles = false;
+    boolean showIcon = true;
 
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                entityId = buffer.readInt();
-                effect = new StatusEffect(MobEffects.byId(buffer.readByte(), buffer.getVersion()), buffer.readByte() + 1, buffer.readShort());
-                hideParticles = false;
-                return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                entityId = buffer.readVarInt();
-                effect = new StatusEffect(MobEffects.byId(buffer.readByte(), buffer.getVersion()), buffer.readByte() + 1, buffer.readVarInt());
-                hideParticles = buffer.readBoolean();
-                return true;
-            default:
-                entityId = buffer.readVarInt();
-                effect = new StatusEffect(MobEffects.byId(buffer.readByte(), buffer.getVersion()), buffer.readByte() + 1, buffer.readVarInt());
-                byte flags = buffer.readByte();
-                isAmbient = BitByte.isBitMask(flags, 0x01);
-                hideParticles = !BitByte.isBitMask(flags, 0x02);
-                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-                    showIcon = BitByte.isBitMask(flags, 0x04);
-                } else {
-                    showIcon = true;
-                }
-                return true;
+        if (buffer.getProtocolId() < 7) {
+            entityId = buffer.readInt();
+            effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readShort());
+            return true;
         }
+        if (buffer.getProtocolId() < 110) { //ToDo
+            entityId = buffer.readVarInt();
+            effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readVarInt());
+            if (buffer.getProtocolId() >= 10) {
+                hideParticles = buffer.readBoolean();
+            }
+            return true;
+        }
+        entityId = buffer.readVarInt();
+        effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readVarInt());
+        byte flags = buffer.readByte();
+        isAmbient = BitByte.isBitMask(flags, 0x01);
+        hideParticles = !BitByte.isBitMask(flags, 0x02);
+        if (buffer.getProtocolId() >= 498) { //ToDo
+            showIcon = BitByte.isBitMask(flags, 0x04);
+        }
+        return true;
     }
 
     @Override

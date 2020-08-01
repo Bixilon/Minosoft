@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -32,7 +31,7 @@ public class PacketAcknowledgePlayerDigging implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         position = buffer.readPosition();
-        block = Blocks.getBlock(buffer.readVarInt(), buffer.getVersion());
+        block = buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
         status = PacketPlayerDigging.DiggingStatus.byId(buffer.readVarInt());
         successful = buffer.readBoolean();
         return true;

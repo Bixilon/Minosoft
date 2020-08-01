@@ -21,26 +21,26 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.PotionMetaData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffect;
 import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffects;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class ThrownPotion extends EntityObject implements ObjectInterface {
     PotionMetaData metaData;
     MobEffect potion;
 
-    public ThrownPotion(int entityId, Location location, short yaw, short pitch, int additionalInt) {
+    public ThrownPotion(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, location, yaw, pitch, null);
         // objects do not spawn with metadata... reading additional info from the following int
         this.potion = MobEffects.byId(additionalInt, ProtocolVersion.VERSION_1_12_2);
     }
 
-    public ThrownPotion(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
+    public ThrownPotion(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
         super(entityId, location, yaw, pitch, velocity);
         this.potion = MobEffects.byId(additionalInt, ProtocolVersion.VERSION_1_12_2);
     }
 
-    public ThrownPotion(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
+    public ThrownPotion(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new PotionMetaData(sets, version);
+        this.metaData = new PotionMetaData(sets, protocolId);
     }
 
     @Override

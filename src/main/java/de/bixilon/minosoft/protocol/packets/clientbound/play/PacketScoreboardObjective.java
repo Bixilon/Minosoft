@@ -28,33 +28,23 @@ public class PacketScoreboardObjective implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                name = buffer.readString();
-                value = buffer.readTextComponent();
-                action = ScoreboardObjectiveAction.byId(buffer.readByte());
-                return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                name = buffer.readString();
-                action = ScoreboardObjectiveAction.byId(buffer.readByte());
-                if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
-                    value = buffer.readTextComponent();
-                    type = ScoreboardObjectiveTypes.byName(buffer.readString());
-                }
-                return true;
-            default:
-                name = buffer.readString();
-                action = ScoreboardObjectiveAction.byId(buffer.readByte());
-                if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
-                    value = buffer.readTextComponent();
-                    type = ScoreboardObjectiveTypes.byId(buffer.readVarInt());
-                }
-                return true;
+        if (buffer.getProtocolId() < 7) { // ToDo
+            name = buffer.readString();
+            value = buffer.readTextComponent();
+            action = ScoreboardObjectiveAction.byId(buffer.readByte());
+            return true;
         }
+        name = buffer.readString();
+        action = ScoreboardObjectiveAction.byId(buffer.readByte());
+        if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
+            value = buffer.readTextComponent();
+            if (buffer.getProtocolId() < 349) {
+                type = ScoreboardObjectiveTypes.byName(buffer.readString());
+            } else {
+                type = ScoreboardObjectiveTypes.byId(buffer.readVarInt());
+            }
+        }
+        return true;
     }
 
     @Override

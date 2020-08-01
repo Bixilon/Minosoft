@@ -14,14 +14,13 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.player.Hand;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import javax.annotation.Nullable;
 
 public class LivingMetaData extends EntityMetaData {
 
-    public LivingMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public LivingMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

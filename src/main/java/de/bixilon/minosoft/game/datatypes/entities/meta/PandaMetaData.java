@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PandaMetaData extends AnimalMetaData {
 
-    public PandaMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public PandaMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public int getBreedTimer() {

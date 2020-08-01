@@ -23,11 +23,13 @@ import java.util.HashSet;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.FLATTING_VERSION_ID;
 
+
 public class Versions {
 
-    final static Version legacyVersion = new LegacyVersion(); // used for 1.7.x - 1.12.2 mapping
+    static VersionMapping legacyMapping;
     static HashBiMap<Integer, Version> versionMap = HashBiMap.create();
     static HashSet<Version> loadedVersion = new HashSet<>();
+
 
     public static Version getVersionById(int protocolId) {
         return versionMap.get(protocolId);
@@ -78,20 +80,35 @@ public class Versions {
 
     public static void loadVersionMappings(Mappings type, JsonObject data, int protocolId) {
         Version version = versionMap.get(protocolId);
-        version.load(type, data);
+        VersionMapping mapping;
+        if (protocolId < FLATTING_VERSION_ID) {
+            if (legacyMapping == null) {
+                legacyMapping = new VersionMapping();
+                legacyMapping.load(type, data);
+            }
+            mapping = legacyMapping;
+        } else {
+            mapping = new VersionMapping();
+            mapping.load(type, data);
+        }
+        version.setMapping(mapping);
         loadedVersion.add(version);
     }
 
     public static void unloadUnnecessaryVersions(int necessary) {
         if (necessary >= FLATTING_VERSION_ID) {
-            legacyVersion.unload();
+            legacyMapping.unload();
+            legacyMapping = null;
         }
         for (Version version : loadedVersion) {
             if (version.getProtocolVersion() == necessary) {
                 continue;
             }
-            version.unload();
+            version.getMapping().unload();
         }
     }
 
+    public static Version getLowestVersionSupported() {
+        return new Version("13w41b", 0, null, null);
+    }
 }

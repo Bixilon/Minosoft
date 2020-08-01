@@ -17,28 +17,17 @@ import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Objects;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
-import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public class PacketSpawnObject implements ClientboundPacket {
     Entity object;
-
-    public static EntityMetaData getEntityData(Class<? extends EntityMetaData> clazz, InByteBuffer buffer, ProtocolVersion v) {
-        try {
-            return clazz.getConstructor(InByteBuffer.class, ProtocolVersion.class).newInstance(buffer, v);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     @Override
     public void log() {
@@ -56,74 +45,50 @@ public class PacketSpawnObject implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-            case VERSION_1_8: {
-                int entityId = buffer.readVarInt();
-                Objects type = Objects.byType(buffer.readByte());
-                Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-                short pitch = buffer.readAngle();
-                short yaw = buffer.readAngle();
-                int data = buffer.readInt();
 
-                try {
-                    if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
-                        // velocity present AND metadata
+        int entityId = buffer.readVarInt();
+        UUID uuid = null;
+        if (buffer.getProtocolId() >= 49) {
+            uuid = buffer.readUUID();
+        }
 
-                        Velocity velocity = null;
-                        if (data != 0) {
-                            velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-                        }
-                        object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, location, yaw, pitch, data, velocity);
-                        return true;
-                    } else {
-                        object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class).newInstance(entityId, location, yaw, pitch, data);
-                        return true;
-                    }
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
+        int type;
+        if (buffer.getProtocolId() < 301) {
+            type = buffer.readByte();
+        } else {
+            type = buffer.readVarInt();
+        }
+        Class<? extends Entity> typeClass;
+        if (buffer.getProtocolId() < 458) {
+            typeClass = Objects.byType(type).getClazz();
+        } else {
+            typeClass = Entities.getClassByIdentifier(buffer.getConnection().getMapping().getEntityIdentifierById(type));
+        }
+
+        Location location;
+        if (buffer.getProtocolId() < 100) {
+            location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
+        } else {
+            location = buffer.readLocation();
+        }
+        short yaw = buffer.readAngle();
+        short pitch = buffer.readAngle();
+        int data = buffer.readInt();
+        Velocity velocity = null;
+
+        if (buffer.getProtocolId() < 49) {
+            if (data != 0) {
+                velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
             }
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2: {
-                int entityId = buffer.readVarInt();
-                UUID uuid = buffer.readUUID();
-                Objects type = Objects.byType(buffer.readByte());
-                Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
-                short pitch = buffer.readAngle();
-                short yaw = buffer.readAngle();
-                int data = buffer.readInt();
+        } else {
+            velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+        }
 
-                try {
-                    // velocity present AND metadata
-                    Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-                    object = type.getClazz().getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, location, yaw, pitch, data, velocity);
-                    return true;
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
-            }
-            default: {
-                int entityId = buffer.readVarInt();
-                UUID uuid = buffer.readUUID();
-                Class<? extends Entity> type = Entities.byId(buffer.readVarInt(), buffer.getVersion());
-                Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
-                short pitch = buffer.readAngle();
-                short yaw = buffer.readAngle();
-                int data = buffer.readInt();
-
-                try {
-                    // velocity present AND metadata
-                    Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-                    object = type.getConstructor(int.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, location, yaw, pitch, data, velocity);
-                    return true;
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
-            }
+        try {
+            object = typeClass.getConstructor(int.class, UUID.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, uuid, location, yaw, pitch, data, velocity);
+            return true;
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
         }
         return false;
     }

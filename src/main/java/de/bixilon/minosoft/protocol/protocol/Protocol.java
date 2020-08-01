@@ -22,8 +22,10 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusRespo
 
 import java.util.HashMap;
 
-public abstract class Protocol implements ProtocolInterface {
+public abstract class Protocol {
     static final HashBiMap<Packets.Clientbound, Class<? extends ClientboundPacket>> packetClassMapping = HashBiMap.create();
+    static final HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping = new HashMap<>();
+    static final HashMap<ConnectionState, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping = new HashMap<>();
 
     static {
         packetClassMapping.put(Packets.Clientbound.STATUS_RESPONSE, PacketStatusResponse.class);
@@ -126,99 +128,44 @@ public abstract class Protocol implements ProtocolInterface {
         packetClassMapping.put(Packets.Clientbound.PLAY_ENTITY_SOUND_EFFECT, PacketEntitySoundEffect.class);
     }
 
-    protected final HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
-    protected final HashMap<ConnectionState, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
-    int lastPacketIdClientbound;
-    ConnectionState lastConnectionStateClientbound;
-    int lastPacketIdServerbound;
-    ConnectionState lastConnectionStateServerbound;
-
-    public Protocol() {
-        serverboundPacketMapping = new HashMap<>();
+    static {
         serverboundPacketMapping.put(ConnectionState.HANDSHAKING, HashBiMap.create());
         serverboundPacketMapping.put(ConnectionState.STATUS, HashBiMap.create());
         serverboundPacketMapping.put(ConnectionState.LOGIN, HashBiMap.create());
-        serverboundPacketMapping.put(ConnectionState.PLAY, HashBiMap.create());
 
-        registerPacket(Packets.Serverbound.HANDSHAKING_HANDSHAKE);
+        // handshake
+        serverboundPacketMapping.get(ConnectionState.HANDSHAKING).put(Packets.Serverbound.HANDSHAKING_HANDSHAKE, 0x00);
         // status
-        registerPacket(Packets.Serverbound.STATUS_REQUEST);
-        registerPacket(Packets.Serverbound.STATUS_PING);
+        serverboundPacketMapping.get(ConnectionState.STATUS).put(Packets.Serverbound.STATUS_REQUEST, 0x00);
+        serverboundPacketMapping.get(ConnectionState.STATUS).put(Packets.Serverbound.STATUS_PING, 0x01);
         // login
-        registerPacket(Packets.Serverbound.LOGIN_LOGIN_START);
-        registerPacket(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE);
-        registerPacket(Packets.Serverbound.LOGIN_PLUGIN_RESPONSE);
+        serverboundPacketMapping.get(ConnectionState.LOGIN).put(Packets.Serverbound.LOGIN_LOGIN_START, 0x00);
+        serverboundPacketMapping.get(ConnectionState.LOGIN).put(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE, 0x01);
+        serverboundPacketMapping.get(ConnectionState.LOGIN).put(Packets.Serverbound.LOGIN_PLUGIN_RESPONSE, 0x02);
 
 
-        clientboundPacketMapping = new HashMap<>();
-        clientboundPacketMapping.put(ConnectionState.HANDSHAKING, HashBiMap.create());
         clientboundPacketMapping.put(ConnectionState.STATUS, HashBiMap.create());
         clientboundPacketMapping.put(ConnectionState.LOGIN, HashBiMap.create());
-        clientboundPacketMapping.put(ConnectionState.PLAY, HashBiMap.create());
 
-        registerPacket(Packets.Clientbound.STATUS_RESPONSE);
-        registerPacket(Packets.Clientbound.STATUS_PONG);
+        clientboundPacketMapping.get(ConnectionState.STATUS).put(Packets.Clientbound.STATUS_RESPONSE, 0x00);
+        clientboundPacketMapping.get(ConnectionState.STATUS).put(Packets.Clientbound.STATUS_PONG, 0x01);
         // login
-        registerPacket(Packets.Clientbound.LOGIN_DISCONNECT);
-        registerPacket(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST);
-        registerPacket(Packets.Clientbound.LOGIN_LOGIN_SUCCESS);
-        registerPacket(Packets.Clientbound.LOGIN_SET_COMPRESSION);
-        registerPacket(Packets.Clientbound.LOGIN_PLUGIN_REQUEST);
+        clientboundPacketMapping.get(ConnectionState.LOGIN).put(Packets.Clientbound.LOGIN_DISCONNECT, 0x00);
+        clientboundPacketMapping.get(ConnectionState.LOGIN).put(Packets.Clientbound.LOGIN_ENCRYPTION_REQUEST, 0x01);
+        clientboundPacketMapping.get(ConnectionState.LOGIN).put(Packets.Clientbound.LOGIN_LOGIN_SUCCESS, 0x02);
+        clientboundPacketMapping.get(ConnectionState.LOGIN).put(Packets.Clientbound.LOGIN_SET_COMPRESSION, 0x03);
+        clientboundPacketMapping.get(ConnectionState.LOGIN).put(Packets.Clientbound.LOGIN_PLUGIN_REQUEST, 0x04);
     }
 
-    public static Class<? extends ClientboundPacket> getPacketByPacket(Packets.Clientbound p) {
-        return packetClassMapping.get(p);
+    public static Class<? extends ClientboundPacket> getPacketByPacket(Packets.Clientbound packet) {
+        return packetClassMapping.get(packet);
     }
 
-    public static ProtocolVersion getLowestVersionSupported() {
-        return ProtocolVersion.VERSION_1_7_10;
+    public static int getPacketCommand(Packets.Serverbound packet) {
+        return serverboundPacketMapping.get(packet.getState()).get(packet);
     }
 
-    protected void registerPacket(Packets.Serverbound packet) {
-        if (serverboundPacketMapping.get(packet.getState()).containsKey(packet)) {
-            throw new IllegalArgumentException(String.format("%s is already registered!", packet));
-        }
-        if (lastConnectionStateServerbound != packet.getState()) {
-            // reset counter
-            lastPacketIdServerbound = 0;
-            lastConnectionStateServerbound = packet.getState();
-        }
-
-        serverboundPacketMapping.get(packet.getState()).put(packet, lastPacketIdServerbound);
-        lastPacketIdServerbound++;
-    }
-
-    protected void registerPacket(Packets.Clientbound packet) {
-        if (clientboundPacketMapping.get(packet.getState()).containsKey(packet)) {
-            throw new IllegalArgumentException(String.format("%s is already registered!", packet));
-        }
-        if (lastConnectionStateClientbound != packet.getState()) {
-            // reset counter
-            lastPacketIdClientbound = 0;
-            lastConnectionStateClientbound = packet.getState();
-        }
-        clientboundPacketMapping.get(packet.getState()).put(packet, lastPacketIdClientbound);
-        lastPacketIdClientbound++;
-    }
-
-    protected void increasePacketCounter(Class<? extends Packets.PacketBoundary> type) {
-        if (type == Packets.Serverbound.class) {
-            lastPacketIdServerbound++;
-        } else {
-            lastPacketIdClientbound++;
-        }
-    }
-
-    public int getPacketCommand(Packets.Serverbound p) {
-        return serverboundPacketMapping.get(p.getState()).get(p);
-    }
-
-    public Packets.Clientbound getPacketByCommand(ConnectionState state, int command) {
+    public static Packets.Clientbound getPacketByCommand(ConnectionState state, int command) {
         return clientboundPacketMapping.get(state).inverse().get(command);
-    }
-
-    @Override
-    public int hashCode() {
-        return getProtocolVersionNumber();
     }
 }

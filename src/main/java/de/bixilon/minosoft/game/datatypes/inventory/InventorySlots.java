@@ -15,7 +15,7 @@ package de.bixilon.minosoft.game.datatypes.inventory;
 
 import de.bixilon.minosoft.game.datatypes.MapSet;
 import de.bixilon.minosoft.game.datatypes.VersionValueMap;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class InventorySlots {
     public enum PlayerInventory implements InventoryInterface {
@@ -76,7 +76,7 @@ public class InventorySlots {
             this.id = id;
         }
 
-        public static PlayerInventory byId(int id, ProtocolVersion version) {
+        public static PlayerInventory byId(int id, int protocolId) {
             for (PlayerInventory i : values()) {
                 if (i.getId(version) == id) {
                     return i;
@@ -109,7 +109,7 @@ public class InventorySlots {
             valueMap = new VersionValueMap<>(id);
         }
 
-        public static EntityInventory byId(int id, ProtocolVersion version) {
+        public static EntityInventory byId(int id, int protocolId) {
             for (EntityInventory e : values()) {
                 if (e.getId(version) == id) {
                     return e;

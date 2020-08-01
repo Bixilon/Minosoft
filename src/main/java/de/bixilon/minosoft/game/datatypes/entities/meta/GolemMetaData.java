@@ -12,11 +12,10 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class GolemMetaData extends CreatureMetaData {
 
-    public GolemMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public GolemMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 }

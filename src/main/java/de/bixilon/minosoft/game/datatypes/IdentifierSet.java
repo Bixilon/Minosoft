@@ -13,10 +13,9 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
-public class IdentifierSet extends MapSet<ProtocolVersion, String> {
-    public IdentifierSet(ProtocolVersion key, String value) {
+public class IdentifierSet extends MapSet<Integer, String> {
+    public IdentifierSet(Integer key, String value) {
         super(key, value);
     }
 }

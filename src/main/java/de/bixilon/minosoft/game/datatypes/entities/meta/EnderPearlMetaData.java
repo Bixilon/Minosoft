@@ -14,12 +14,12 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class EnderPearlMetaData extends ItemedThrowableMetaData {
 
-    public EnderPearlMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public EnderPearlMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     @Override

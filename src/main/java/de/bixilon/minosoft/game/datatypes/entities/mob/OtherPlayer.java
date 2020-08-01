@@ -22,16 +22,14 @@ import java.util.UUID;
 
 public class OtherPlayer extends Mob implements MobInterface {
     final String name;
-    final UUID uuid;
     PlayerPropertyData[] properties;
     short currentItem;
     HumanMetaData metaData;
     Pose status = Pose.STANDING;
 
-    public OtherPlayer(int entityId, String name, UUID uuid, PlayerPropertyData[] properties, Location location, Velocity velocity, short yaw, short pitch, short currentItem, HumanMetaData metaData) {
-        super(entityId, location, yaw, pitch, velocity);
+    public OtherPlayer(int entityId, String name, UUID uuid, PlayerPropertyData[] properties, Location location, Velocity velocity, short yaw, short pitch, short headYaw, short currentItem, HumanMetaData metaData) {
+        super(entityId, uuid, location, yaw, pitch, headYaw, velocity);
         this.name = name;
-        this.uuid = uuid;
         this.properties = properties;
         this.currentItem = currentItem;
         this.metaData = metaData;
@@ -86,9 +84,6 @@ public class OtherPlayer extends Mob implements MobInterface {
         return properties;
     }
 
-    public UUID getUUID() {
-        return uuid;
-    }
 
     public short getCurrentItem() {
         return currentItem;

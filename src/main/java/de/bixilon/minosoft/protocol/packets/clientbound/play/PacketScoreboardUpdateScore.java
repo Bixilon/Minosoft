@@ -27,29 +27,27 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                itemName = buffer.readString();
-                action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
-                if (action == ScoreboardUpdateScoreAction.REMOVE) {
-                    return true;
-                }
-                // not present id action == REMOVE
-                scoreName = buffer.readString();
-                scoreValue = buffer.readInt();
+        if (buffer.getProtocolId() < 7) { // ToDo
+            itemName = buffer.readString();
+            action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
+            if (action == ScoreboardUpdateScoreAction.REMOVE) {
                 return true;
-            default:
-                itemName = buffer.readString();
-                action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
-                scoreName = buffer.readString();
-
-                if (action == ScoreboardUpdateScoreAction.REMOVE) {
-                    return true;
-                }
-                // not present id action == REMOVE
-                scoreValue = buffer.readVarInt();
-                return true;
+            }
+            // not present id action == REMOVE
+            scoreName = buffer.readString();
+            scoreValue = buffer.readInt();
+            return true;
         }
+        itemName = buffer.readString();
+        action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
+        scoreName = buffer.readString();
+
+        if (action == ScoreboardUpdateScoreAction.REMOVE) {
+            return true;
+        }
+        // not present id action == REMOVE
+        scoreValue = buffer.readVarInt();
+        return true;
     }
 
     @Override

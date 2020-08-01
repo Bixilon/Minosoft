@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class WitchMetaData extends RaidParticipantMetaData {
 
-    public WitchMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public WitchMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public boolean isAggressive() {

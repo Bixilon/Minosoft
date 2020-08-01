@@ -15,10 +15,11 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipe;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class PacketSetDisplayedRecipe implements ServerboundPacket {
     final Recipe recipe;
@@ -28,8 +29,8 @@ public class PacketSetDisplayedRecipe implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_SET_DISPLAYED_RECIPE));
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_SET_DISPLAYED_RECIPE))
         buffer.writeString(recipe.getResult().getItem().getMod() + ":" + recipe.getResult().getItem().getIdentifier());
         return buffer;
     }

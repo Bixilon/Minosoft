@@ -12,11 +12,10 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PillagerMetaData extends AbstractIllagerMetaData {
 
-    public PillagerMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public PillagerMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 }

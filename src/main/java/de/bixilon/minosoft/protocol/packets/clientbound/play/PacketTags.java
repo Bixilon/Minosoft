@@ -28,7 +28,7 @@ public class PacketTags implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
+        switch (buffer.getProtocolId()) {
             case VERSION_1_13_2:
                 blockTags = readTags(buffer);
                 itemTags = readTags(buffer);

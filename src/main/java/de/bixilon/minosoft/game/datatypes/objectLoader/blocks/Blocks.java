@@ -15,7 +15,6 @@ package de.bixilon.minosoft.game.datatypes.objectLoader.blocks;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -460,7 +459,7 @@ public class Blocks {
         rotationMapping.put("east_west", BlockRotation.EAST_WEST);
     }
 
-    public static HashBiMap<Integer, Block> load(String mod, JsonObject json, boolean meta) {
+    public static HashBiMap<Integer, Block> load(String mod, JsonObject json) {
         HashBiMap<Integer, Block> versionMapping = HashBiMap.create();
         for (String identifierName : json.keySet()) {
             JsonObject identifierJSON = json.getAsJsonObject(identifierName);
@@ -498,7 +497,7 @@ public class Blocks {
                     // no properties, directly add block
                     block = new Block(mod, identifierName);
                 }
-                int blockId = getBlockId(statesJSON, meta);
+                int blockId = getBlockId(statesJSON);
                 checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping);
                 versionMapping.put(blockId, block);
             }
@@ -507,33 +506,19 @@ public class Blocks {
     }
 
 
-    private static int getBlockId(JsonObject json, boolean meta) {
+    private static int getBlockId(JsonObject json) {
         int blockId = json.get("id").getAsInt();
-        if (meta) {
+        if (json.has("meta")) {
             // old format (with metadata)
             blockId <<= 4;
-            if (json.has("meta")) {
-                blockId |= json.get("meta").getAsByte();
-            }
+            blockId |= json.get("meta").getAsByte();
         }
         return blockId;
     }
 
-    public static void checkAndCrashIfBlockIsIn(int blockId, String identifierName, HashBiMap<Integer, Block> versionMapping) {
+    private static void checkAndCrashIfBlockIsIn(int blockId, String identifierName, HashBiMap<Integer, Block> versionMapping) {
         if (versionMapping.containsKey(blockId)) {
             throw new RuntimeException(String.format("Block Id %s is already present for %d! (identifier=%s)", blockId, versionMapping.get(blockId), identifierName));
         }
-    }
-
-    public static Block getBlock(int v, ProtocolVersion a) {
-        return null;
-    }
-
-    public static Block getBlockByLegacy(int v, int w) {
-        return null;
-    }
-
-    public static Block getBlockByLegacy(int i) {
-        return null;
     }
 }

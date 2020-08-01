@@ -26,17 +26,10 @@ public class PacketLoginPluginRequest implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-            case VERSION_1_15_2:
-                messageId = buffer.readVarInt();
-                channel = buffer.readString();
-                data = buffer.readBytesLeft();
-                return true;
-        }
-
-        return false;
+        messageId = buffer.readVarInt();
+        channel = buffer.readString();
+        data = buffer.readBytesLeft();
+        return true;
     }
 
     @Override

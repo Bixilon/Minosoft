@@ -14,39 +14,16 @@
 package de.bixilon.minosoft.game.datatypes.objectLoader.versions;
 
 import com.google.common.collect.HashBiMap;
-import com.google.gson.JsonObject;
-import de.bixilon.minosoft.game.datatypes.Mappings;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blockIds.BlockId;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
-import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimension;
-import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffect;
-import de.bixilon.minosoft.game.datatypes.objectLoader.enchantments.Enchantment;
-import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
-import de.bixilon.minosoft.game.datatypes.objectLoader.motives.Motive;
-import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
-import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.Statistic;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-
-import static de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.FLATTING_VERSION_ID;
 
 public class Version {
     final String versionName;
     final int protocolVersion;
+    VersionMapping mapping;
 
     final HashBiMap<Packets.Serverbound, Integer> serverboundPacketMapping;
     final HashBiMap<Packets.Clientbound, Integer> clientboundPacketMapping;
 
-    HashBiMap<Integer, Item> itemMap;
-    HashBiMap<Integer, String> entityMap;
-    HashBiMap<Integer, Motive> motiveIdMap;
-    HashBiMap<Integer, MobEffect> mobEffectMap;
-    HashBiMap<Integer, Dimension> dimensionMap;
-    HashBiMap<Integer, Block> blockMap;
-    HashBiMap<Integer, BlockId> blockIdMap;
-    HashBiMap<Integer, Enchantment> enchantmentMap;
-    HashBiMap<Integer, Particle> particleIdMap;
-    HashBiMap<Integer, Statistic> statisticIdMap;
 
     public Version(String versionName, int protocolVersion, HashBiMap<Packets.Serverbound, Integer> serverboundPacketMapping, HashBiMap<Packets.Clientbound, Integer> clientboundPacketMapping) {
         this.versionName = versionName;
@@ -89,219 +66,11 @@ public class Version {
         return getProtocolVersion();
     }
 
-    public Item getItemById(int protocolId) {
-        if (getProtocolVersion() < FLATTING_VERSION_ID) {
-            // old format
-            return Versions.legacyVersion.getItemById(protocolId);
-        }
-        return itemMap.get(protocolId);
+    public VersionMapping getMapping() {
+        return mapping;
     }
 
-    public int getItemId(Item item) {
-        if (getProtocolVersion() < FLATTING_VERSION_ID) {
-            // old format
-            return Versions.legacyVersion.getItemId(item);
-        }
-        return itemMap.inverse().get(item);
+    public void setMapping(VersionMapping mapping) {
+        this.mapping = mapping;
     }
-
-    public String getEntityIdentifierById(int protocolId) {
-        if (getProtocolVersion() < FLATTING_VERSION_ID) {
-            // old format
-            return Versions.legacyVersion.getEntityIdentifierById(protocolId);
-        }
-        return entityMap.get(protocolId);
-    }
-
-    public Motive getMotiveById(int protocolId) {
-        if (getProtocolVersion() < FLATTING_VERSION_ID) {
-            // old format
-            return Versions.legacyVersion.getMotiveById(protocolId);
-        }
-        return motiveIdMap.get(protocolId);
-    }
-
-    public Motive getMotiveByIdentifier(String identifier) {
-        if (identifier.contains(":")) {
-            String[] splitted = identifier.split(":", 2);
-            if (!splitted[0].equals("minecraft")) {
-                return null;
-            }
-            identifier = splitted[1];
-        }
-        // 1.7.x
-        return Versions.legacyVersion.getMotiveByIdentifier(identifier);
-    }
-
-    public MobEffect getMobEffectById(int protocolId) {
-        if (getProtocolVersion() < FLATTING_VERSION_ID) {
-            // old format
-            return Versions.legacyVersion.getMobEffectById(protocolId);
-        }
-        return mobEffectMap.get(protocolId);
-    }
-
-    public Dimension getDimensionById(int protocolId) {
-        if (getProtocolVersion() < FLATTING_VERSION_ID) {
-            // old format
-            return Versions.legacyVersion.getDimensionById(protocolId);
-        }
-        return dimensionMap.get(protocolId);
-    }
-
-    public Block getBlockById(int protocolId) {
-        if (getProtocolVersion() < FLATTING_VERSION_ID) {
-            // old format
-            return Versions.legacyVersion.getBlockById(protocolId);
-        }
-        return blockMap.get(protocolId);
-    }
-
-    public Block getBlockByIdAndMetaData(int protocolId, int metaData) {
-        return getBlockById((protocolId << 4) | metaData);
-    }
-
-    public BlockId getBlockIdById(int protocolId) {
-        if (getProtocolVersion() < FLATTING_VERSION_ID) {
-            // old format
-            return Versions.legacyVersion.getBlockIdById(protocolId);
-        }
-        return blockIdMap.get(protocolId);
-    }
-
-    public Enchantment getEnchantmentById(int protocolId) {
-        if (getProtocolVersion() < FLATTING_VERSION_ID) {
-            // old format
-            return Versions.legacyVersion.getEnchantmentById(protocolId);
-        }
-        return enchantmentMap.get(protocolId);
-    }
-
-    public Particle getParticleById(int protocolId) {
-        if (getProtocolVersion() < FLATTING_VERSION_ID) {
-            // old format
-            return Versions.legacyVersion.getParticleById(protocolId);
-        }
-        return particleIdMap.get(protocolId);
-    }
-
-    public Particle getParticleByIdentifier(String identifier) {
-        if (identifier.contains(":")) {
-            String[] splitted = identifier.split(":", 2);
-            if (!splitted[0].equals("minecraft")) {
-                return null;
-            }
-            identifier = splitted[1];
-        }
-        return Versions.legacyVersion.getParticleByIdentifier(identifier);
-    }
-
-    public Statistic getStatisticById(int protocolId) {
-        if (getProtocolVersion() < FLATTING_VERSION_ID) {
-            // old format
-            return Versions.legacyVersion.getStatisticById(protocolId);
-        }
-        return statisticIdMap.get(protocolId);
-    }
-
-    public Statistic getStatisticByIdentifier(String identifier) {
-        if (identifier.contains(":")) {
-            String[] splitted = identifier.split(":", 2);
-            if (!splitted[0].equals("minecraft")) {
-                return null;
-            }
-            identifier = splitted[1];
-        }
-        return Versions.legacyVersion.getStatisticByIdentifier(identifier);
-    }
-
-    public void load(Mappings type, JsonObject data) {
-        switch (type) {
-            case REGISTRIES:
-                JsonObject itemJson = data.getAsJsonObject("item").getAsJsonObject("entries");
-                for (String identifier : itemJson.keySet()) {
-                    Item item = new Item("minecraft", identifier);
-                    JsonObject identifierJSON = itemJson.getAsJsonObject(identifier);
-                    int itemId = identifierJSON.get("id").getAsInt();
-                    if (getProtocolVersion() < FLATTING_VERSION_ID) {
-                        // old format (with metadata)
-                        itemId <<= 4;
-                        if (identifierJSON.has("meta")) {
-                            itemId |= identifierJSON.get("meta").getAsInt();
-                        }
-                    }
-                    itemMap.put(itemId, item);
-                }
-
-                JsonObject entityJson = data.getAsJsonObject("entity_type").getAsJsonObject("entries");
-                for (String identifier : entityJson.keySet()) {
-                    entityMap.put(entityJson.getAsJsonObject(identifier).get("id").getAsInt(), identifier);
-                }
-
-
-                JsonObject enchantmentJson = data.getAsJsonObject("enchantment").getAsJsonObject("entries");
-                for (String identifier : enchantmentJson.keySet()) {
-                    Enchantment enchantment = new Enchantment("minecraft", identifier);
-                    enchantmentMap.put(enchantmentJson.getAsJsonObject(identifier).get("id").getAsInt(), enchantment);
-                }
-
-                JsonObject statisticJson = data.getAsJsonObject("custom_stat").getAsJsonObject("entries");
-                for (String identifier : statisticJson.keySet()) {
-                    Statistic statistic = new Statistic("minecraft", identifier);
-                    statisticIdMap.put(statisticJson.getAsJsonObject(identifier).get("id").getAsInt(), statistic);
-                }
-
-                JsonObject blockIdJson = data.getAsJsonObject("block").getAsJsonObject("entries");
-                for (String identifier : blockIdJson.keySet()) {
-                    BlockId blockId = new BlockId("minecraft", identifier);
-                    blockIdMap.put(blockIdJson.getAsJsonObject(identifier).get("id").getAsInt(), blockId);
-                }
-
-                JsonObject motiveJson = data.getAsJsonObject("motive").getAsJsonObject("entries");
-                for (String identifier : motiveJson.keySet()) {
-                    Motive motive = new Motive("minecraft", identifier);
-                    motiveIdMap.put(motiveJson.getAsJsonObject(identifier).get("id").getAsInt(), motive);
-                }
-
-                JsonObject particleJson = data.getAsJsonObject("particle_type").getAsJsonObject("entries");
-                for (String identifier : particleJson.keySet()) {
-                    Particle particle = new Particle("minecraft", identifier);
-                    particleIdMap.put(particleJson.getAsJsonObject(identifier).get("id").getAsInt(), particle);
-                }
-
-                JsonObject mobEffectJson = data.getAsJsonObject("mob_effect").getAsJsonObject("entries");
-                for (String identifier : mobEffectJson.keySet()) {
-                    MobEffect mobEffect = new MobEffect("minecraft", identifier);
-                    mobEffectMap.put(mobEffectJson.getAsJsonObject(identifier).get("id").getAsInt(), mobEffect);
-                }
-                if (data.has("dimension_type")) {
-                    JsonObject dimensionJson = data.getAsJsonObject("dimension_type").getAsJsonObject("entries");
-                    for (String identifier : dimensionJson.keySet()) {
-                        Dimension dimension = new Dimension("minecraft", identifier, dimensionJson.getAsJsonObject(identifier).get("has_skylight").getAsBoolean());
-                        dimensionMap.put(dimensionJson.getAsJsonObject(identifier).get("id").getAsInt(), dimension);
-                    }
-                }
-                break;
-            case BLOCKS:
-                blockMap = Blocks.load("minecraft", data, getProtocolVersion() < FLATTING_VERSION_ID);
-                break;
-        }
-    }
-
-    public void unload() {
-        serverboundPacketMapping.clear();
-        clientboundPacketMapping.clear();
-
-        itemMap.clear();
-        entityMap.clear();
-        motiveIdMap.clear();
-        mobEffectMap.clear();
-        dimensionMap.clear();
-        blockMap.clear();
-        blockIdMap.clear();
-        enchantmentMap.clear();
-        particleIdMap.clear();
-        statisticIdMap.clear();
-    }
-
 }

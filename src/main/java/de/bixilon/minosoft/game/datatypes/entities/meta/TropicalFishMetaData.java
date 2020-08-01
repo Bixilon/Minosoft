@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class TropicalFishMetaData extends AbstractFishMetaData {
 
-    public TropicalFishMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public TropicalFishMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public int getVariant() {

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class PacketEntityAnimation implements ClientboundPacket {
     int entityId;
@@ -28,7 +28,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         entityId = buffer.readVarInt();
-        animation = EntityAnimations.byId(buffer.readByte(), buffer.getVersion());
+        animation = EntityAnimations.byId(buffer.readByte(), buffer.getProtocolId());
         return true;
     }
 
@@ -43,34 +43,35 @@ public class PacketEntityAnimation implements ClientboundPacket {
     }
 
     public enum EntityAnimations {
-        SWING_RIGHT_ARM(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 0)}),
-        TAKE_DAMAGE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1)}),
-        LEAVE_BED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2)}),
-        EAT_FOOD(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 3), new MapSet<>(ProtocolVersion.VERSION_1_9_4, -1)}),
-        SWING_LEFT_ARM(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 3)}),
-        CRITICAL_EFFECT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4)}),
-        MAGIC_CRITICAL_EFFECT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 5)}),
-        UNKNOWN_1(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 102), new MapSet<>(ProtocolVersion.VERSION_1_8, -1)}), // name currently unknown // ToDo
-        SNEAK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 104), new MapSet<>(ProtocolVersion.VERSION_1_8, -1)}),
-        UN_SNEAK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 105), new MapSet<>(ProtocolVersion.VERSION_1_8, -1)});
+        //ToDo
+        SWING_RIGHT_ARM(new MapSet[]{new MapSet<>(0, 0)}),
+        TAKE_DAMAGE(new MapSet[]{new MapSet<>(0, 1)}),
+        LEAVE_BED(new MapSet[]{new MapSet<>(0, 2)}),
+        EAT_FOOD(new MapSet[]{new MapSet<>(0, 3), new MapSet<>(110, -1)}),
+        SWING_LEFT_ARM(new MapSet[]{new MapSet<>(110, 3)}),
+        CRITICAL_EFFECT(new MapSet[]{new MapSet<>(0, 4)}),
+        MAGIC_CRITICAL_EFFECT(new MapSet[]{new MapSet<>(0, 5)}),
+        UNKNOWN_1(new MapSet[]{new MapSet<>(0, 102), new MapSet<>(47, -1)}), // name currently unknown // ToDo
+        SNEAK(new MapSet[]{new MapSet<>(0, 104), new MapSet<>(47, -1)}),
+        UN_SNEAK(new MapSet[]{new MapSet<>(0, 105), new MapSet<>(47, -1)});
 
         final VersionValueMap<Integer> valueMap;
 
-        EntityAnimations(MapSet<ProtocolVersion, Integer>[] values) {
+        EntityAnimations(MapSet<Integer, Integer>[] values) {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static EntityAnimations byId(int id, ProtocolVersion version) {
+        public static EntityAnimations byId(int id, int protocolId) {
             for (EntityAnimations animation : values()) {
-                if (animation.getId(version) == id) {
+                if (animation.getId(protocolId) == id) {
                     return animation;
                 }
             }
             return null;
         }
 
-        public int getId(ProtocolVersion version) {
-            Integer ret = valueMap.get(version);
+        public int getId(Integer protocolId) {
+            Integer ret = valueMap.get(protocolId);
             if (ret == null) {
                 return -2;
             }

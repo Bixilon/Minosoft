@@ -16,10 +16,11 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 import de.bixilon.minosoft.game.datatypes.MapSet;
 import de.bixilon.minosoft.game.datatypes.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class PacketEntityAction implements ServerboundPacket {
     final int entityId;
@@ -41,8 +42,8 @@ public class PacketEntityAction implements ServerboundPacket {
 
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_ENTITY_ACTION));
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ENTITY_ACTION);
         switch (version) {
             case VERSION_1_7_10:
                 buffer.writeInt(entityId);
@@ -80,7 +81,7 @@ public class PacketEntityAction implements ServerboundPacket {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static EntityActions byId(int id, ProtocolVersion version) {
+        public static EntityActions byId(int id, int protocolId) {
             for (EntityActions action : values()) {
                 if (action.getId(version) == id) {
                     return action;

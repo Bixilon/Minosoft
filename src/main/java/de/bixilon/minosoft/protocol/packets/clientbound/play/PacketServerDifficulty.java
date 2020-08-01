@@ -26,20 +26,11 @@ public class PacketServerDifficulty implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                difficulty = Difficulty.byId(buffer.readByte());
-                return true;
-            default:
-                difficulty = Difficulty.byId(buffer.readByte());
-                locked = buffer.readBoolean();
-                return true;
+        difficulty = Difficulty.byId(buffer.readByte());
+        if (buffer.getProtocolId() > 464) {
+            locked = buffer.readBoolean();
         }
+        return true;
     }
 
     @Override

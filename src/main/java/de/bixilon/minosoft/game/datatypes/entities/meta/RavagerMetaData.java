@@ -12,11 +12,10 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class RavagerMetaData extends RaidParticipantMetaData {
 
-    public RavagerMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public RavagerMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 }

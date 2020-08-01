@@ -16,7 +16,7 @@ package de.bixilon.minosoft.game.datatypes.world.palette;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class DirectPalette implements Palette {
     ProtocolVersion version;
@@ -36,7 +36,7 @@ public class DirectPalette implements Palette {
 
     @Override
     public void read(InByteBuffer buffer) {
-        this.version = buffer.getVersion();
+        this.version = buffer.getProtocolId();
         buffer.readVarInt();
     }
 }

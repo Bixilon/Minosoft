@@ -18,7 +18,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSetCompression;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChunkData;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.Util;
@@ -85,15 +84,15 @@ public class Network {
                         ServerboundPacket packet = queue.get(0);
                         packet.log();
                         queue.remove(packet);
-                        byte[] data = packet.write(connection.getVersion()).getOutBytes();
+                        byte[] data = packet.write(connection).getOutBytes();
                         if (compressionThreshold != -1) {
                             // compression is enabled
                             // check if there is a need to compress it and if so, do it!
-                            OutByteBuffer outRawBuffer = new OutByteBuffer(connection.getVersion());
+                            OutByteBuffer outRawBuffer = new OutByteBuffer(connection);
                             if (data.length >= compressionThreshold) {
                                 // compress it
                                 byte[] compressed = Util.compress(data);
-                                OutByteBuffer buffer = new OutByteBuffer(connection.getVersion());
+                                OutByteBuffer buffer = new OutByteBuffer(connection);
                                 buffer.writeVarInt(compressed.length);
                                 buffer.writeBytes(compressed);
                                 outRawBuffer.writeVarInt(buffer.getBytes().size());
@@ -106,7 +105,7 @@ public class Network {
                             data = outRawBuffer.getOutBytes();
                         } else {
                             // append packet length
-                            OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer(connection.getVersion());
+                            OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer(connection);
                             bufferWithLengthPrefix.writeVarInt(data.length);
                             bufferWithLengthPrefix.writeBytes(data);
                             data = bufferWithLengthPrefix.getOutBytes();
@@ -144,7 +143,7 @@ public class Network {
                         if (compressionThreshold != -1) {
                             // compression is enabled
                             // check if there is a need to decompress it and if so, do it!
-                            InByteBuffer rawBuffer = new InByteBuffer(data, connection.getVersion());
+                            InByteBuffer rawBuffer = new InByteBuffer(data, connection);
                             int packetSize = rawBuffer.readVarInt();
                             byte[] left = rawBuffer.readBytesLeft();
                             if (packetSize == 0) {
@@ -152,14 +151,14 @@ public class Network {
                                 data = left;
                             } else {
                                 // need to decompress data
-                                data = Util.decompress(left, connection.getVersion()).readBytesLeft();
+                                data = Util.decompress(left, connection).readBytesLeft();
                             }
                         }
 
-                        InPacketBuffer inPacketBuffer = new InPacketBuffer(data, connection.getVersion());
+                        InPacketBuffer inPacketBuffer = new InPacketBuffer(data, connection);
                         Packets.Clientbound p = null;
                         try {
-                            p = connection.getVersion().getProtocol().getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
+                            p = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
                             Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(p);
 
                             if (clazz == null) {
@@ -168,13 +167,7 @@ public class Network {
                             }
                             try {
                                 ClientboundPacket packet = clazz.getConstructor().newInstance();
-                                boolean success;
-                                if (packet instanceof PacketChunkData) {
-                                    // this packets need to know if we are in an dimension with skylight...
-                                    success = ((PacketChunkData) (packet)).read(inPacketBuffer, connection.getPlayer().getWorld().getDimension());
-                                } else {
-                                    success = packet.read(inPacketBuffer);
-                                }
+                                boolean success = packet.read(inPacketBuffer);
                                 if (inPacketBuffer.getBytesLeft() > 0 || !success) {
                                     // warn not all data used
                                     Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", p, inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));

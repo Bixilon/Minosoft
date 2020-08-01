@@ -20,6 +20,8 @@ import de.bixilon.minosoft.game.datatypes.entities.mob.OtherPlayer;
 import de.bixilon.minosoft.game.datatypes.entities.objects.Painting;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
+import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
+import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.game.datatypes.player.PingBars;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfo;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfoBulk;
@@ -59,9 +61,9 @@ public class PacketHandler {
             // now we know the version, set it, if the config allows it
             int version = Minosoft.getConfig().getInteger("debug.version");
             if (version == -1) {
-                connection.setVersion(ProtocolVersion.byId(pkg.getResponse().getProtocolNumber()));
+                connection.setVersion(Versions.getVersionById(pkg.getResponse().getProtocolNumber()));
             } else {
-                ProtocolVersion protocolVersion = ProtocolVersion.byId(version);
+                Version protocolVersion = Versions.getVersionById(version);
                 if (protocolVersion == null) {
                     Log.fatal(String.format("In the config (debug.version) is a invalid version provided (version=%d). Exiting...", version));
                     System.exit(1);
@@ -88,7 +90,7 @@ public class PacketHandler {
             case GET_VERSION:
                 // reconnect...
                 connection.disconnect();
-                Log.info(String.format("Server is running on version %s, reconnecting...", connection.getVersion().getVersionString()));
+                Log.info(String.format("Server is running on version %s (%d), reconnecting...", connection.getVersion().getVersionName(), connection.getVersion().getProtocolVersion()));
                 break;
             case CONNECT:
                 // do nothing
@@ -114,6 +116,7 @@ public class PacketHandler {
         connection.getPlayer().setGameMode(pkg.getGameMode());
         connection.getPlayer().setPlayer(new OtherPlayer(pkg.getEntityId(), connection.getPlayer().getPlayerName(), connection.getPlayer().getPlayerUUID(), null, null, null, (short) 0, (short) 0, (short) 0, null));
         connection.getPlayer().getWorld().setHardcore(pkg.isHardcore());
+        connection.getMapping().setDimensions(pkg.getDimensions());
         connection.getPlayer().getWorld().setDimension(pkg.getDimension());
         connection.getSender().sendChatMessage("I am alive! ~ Minosoft");
     }

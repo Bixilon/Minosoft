@@ -13,14 +13,13 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.Color;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import javax.annotation.Nullable;
 
 public class LlamaMetaData extends ChestedHorseMetaData {
 
-    public LlamaMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public LlamaMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public int getStrength() {

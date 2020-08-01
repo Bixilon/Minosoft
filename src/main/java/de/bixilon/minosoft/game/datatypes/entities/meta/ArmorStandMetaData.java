@@ -13,12 +13,12 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.EntityRotation;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class ArmorStandMetaData extends LivingMetaData {
 
-    public ArmorStandMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public ArmorStandMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

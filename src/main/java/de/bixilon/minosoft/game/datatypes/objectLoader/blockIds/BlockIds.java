@@ -15,7 +15,6 @@ package de.bixilon.minosoft.game.datatypes.objectLoader.blockIds;
 
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 
@@ -23,14 +22,14 @@ public class BlockIds {
 
     static HashMap<ProtocolVersion, HashBiMap<Integer, BlockId>> blockIdMap = new HashMap<>(); // version -> (protocolId > Item)
 
-    public static BlockId getBlockId(int protocolId, ProtocolVersion version) {
+    public static BlockId getBlockId(int protocolId, int protocolId) {
         if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
             version = ProtocolVersion.VERSION_1_12_2;
         }
         return blockIdMap.get(version).get(protocolId);
     }
 
-    public static void load(String mod, JsonObject json, ProtocolVersion version) {
+    public static void load(String mod, JsonObject json, int protocolId) {
         HashBiMap<Integer, BlockId> versionMapping = HashBiMap.create();
         for (String identifierName : json.keySet()) {
             BlockId blockId = new BlockId(mod, identifierName);

@@ -13,17 +13,16 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import de.bixilon.minosoft.protocol.network.Connection;
+
 public class InPacketBuffer extends InByteBuffer {
     final int command;
 
-    public InPacketBuffer(byte[] bytes, ProtocolVersion version) {
-        super(bytes, version);
+    public InPacketBuffer(byte[] bytes, Connection connection) {
+        super(bytes, connection);
         command = readVarInt();
     }
 
-    public InPacketBuffer(InByteBuffer buffer, ProtocolVersion version) {
-        this(buffer.readBytesLeft(), version);
-    }
 
     public int getCommand() {
         return command;

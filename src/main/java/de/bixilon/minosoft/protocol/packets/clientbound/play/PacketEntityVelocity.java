@@ -26,16 +26,14 @@ public class PacketEntityVelocity implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                this.entityId = buffer.readInt();
-                this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-                return true;
-            default:
-                this.entityId = buffer.readVarInt();
-                this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-                return true;
+        if (buffer.getProtocolId() < 7) {
+            this.entityId = buffer.readInt();
+            this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+            return true;
         }
+        this.entityId = buffer.readVarInt();
+        this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+        return true;
     }
 
     @Override

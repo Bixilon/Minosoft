@@ -20,7 +20,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class PacketTitle implements ClientboundPacket {
     TitleAction action;
@@ -35,7 +35,7 @@ public class PacketTitle implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        action = TitleAction.byId(buffer.readVarInt(), buffer.getVersion());
+        action = TitleAction.byId(buffer.readVarInt(), buffer.getProtocolId());
         switch (action) {
             case SET_TITLE:
                 text = buffer.readTextComponent();
@@ -119,7 +119,7 @@ public class PacketTitle implements ClientboundPacket {
             valueMap = new VersionValueMap<>(id);
         }
 
-        public static TitleAction byId(int id, ProtocolVersion version) {
+        public static TitleAction byId(int id, int protocolId) {
             for (TitleAction action : values()) {
                 if (action.getId(version) == id) {
                     return action;

@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.status;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionPing;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class PacketStatusPing implements ServerboundPacket {
     final Long id;
@@ -36,9 +37,9 @@ public class PacketStatusPing implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
+    public OutPacketBuffer write(Connection connection) {
         // no version checking, is the same in all versions (1.7.x - 1.15.2)
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.STATUS_PING));
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.STATUS_PING);
         buffer.writeLong(id);
         return buffer;
     }

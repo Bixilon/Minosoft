@@ -21,7 +21,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.UUID;
 
@@ -32,7 +31,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
+        switch (buffer.getProtocolId()) {
             case VERSION_1_7_10: {
                 this.entityId = buffer.readVarInt();
                 UUID uuid = UUID.fromString(buffer.readString());
@@ -46,7 +45,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
                 short pitch = buffer.readAngle();
 
                 short currentItem = buffer.readShort();
-                HumanMetaData metaData = new HumanMetaData(buffer.readMetaData(), buffer.getVersion());
+                HumanMetaData metaData = new HumanMetaData(buffer.readMetaData(), buffer.getProtocolId());
 
                 this.player = new OtherPlayer(entityId, name, uuid, properties, location, null, yaw, pitch, currentItem, metaData);
                 return true;
@@ -59,7 +58,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
                 short pitch = buffer.readAngle();
 
                 short currentItem = buffer.readShort();
-                HumanMetaData metaData = new HumanMetaData(buffer.readMetaData(), buffer.getVersion());
+                HumanMetaData metaData = new HumanMetaData(buffer.readMetaData(), buffer.getProtocolId());
 
                 this.player = new OtherPlayer(entityId, null, uuid, null, location, null, yaw, pitch, currentItem, metaData);
                 return true;
@@ -73,8 +72,8 @@ public class PacketSpawnPlayer implements ClientboundPacket {
 
                 HumanMetaData metaData = null;
 
-                if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
-                    metaData = new HumanMetaData(buffer.readMetaData(), buffer.getVersion());
+                if (buffer.getProtocolId() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+                    metaData = new HumanMetaData(buffer.readMetaData(), buffer.getProtocolId());
                 }
                 this.player = new OtherPlayer(entityId, null, uuid, null, location, null, yaw, pitch, (short) 0, metaData);
                 return true;

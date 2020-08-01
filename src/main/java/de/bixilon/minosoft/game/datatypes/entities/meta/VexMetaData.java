@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class VexMetaData extends MonsterMetaData {
 
-    public VexMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public VexMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public boolean isInAttackMode() {

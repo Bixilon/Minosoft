@@ -21,7 +21,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -33,15 +32,15 @@ public class PacketBlockAction implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         // that's the only difference here
-        if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
-            position = buffer.readPosition();
-        } else {
+        if (buffer.getProtocolId() < 6) {
             position = buffer.readBlockPositionShort();
+        } else {
+            position = buffer.readPosition();
         }
         byte byte1 = buffer.readByte();
         byte byte2 = buffer.readByte();
         Class<? extends BlockAction> clazz;
-        BlockId blockId = BlockIds.getBlockId(buffer.readVarInt(), buffer.getVersion());
+        BlockId blockId = BlockIds.getBlockId(buffer.readVarInt(), buffer.getProtocolId());
         switch (blockId.getIdentifier()) {
             case "noteblock":
                 clazz = NoteBlockAction.class;

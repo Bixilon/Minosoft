@@ -27,7 +27,6 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.motives.Motives;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particles;
 import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.Statistics;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.Util;
 
 import java.io.IOException;

@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class FoxMetaData extends AnimalMetaData {
 
-    public FoxMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public FoxMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public FoxTypes getType() {

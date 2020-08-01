@@ -70,7 +70,9 @@ public class Packets {
         PLAY_GENERATE_STRUCTURE,
         PLAY_SET_DISPLAYED_RECIPE,
         PLAY_SET_RECIPE_BOOK_STATE,
-        PLAY_PLAYER_GROUND_CHANGE;
+        PLAY_PLAYER_GROUND_CHANGE,
+        PLAY_PREPARE_CRAFTING_GRID,
+        PLAY_VEHICLE_MOVEMENT;
 
         final ConnectionState state;
 

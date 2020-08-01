@@ -26,18 +26,10 @@ public class PacketEncryptionRequest implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                serverId = buffer.readString();
-                publicKey = buffer.readBytes(buffer.readShort()); // read length, then the bytes
-                verifyToken = buffer.readBytes(buffer.readShort()); // read length, then the bytes
-                return true;
-            default:
-                serverId = buffer.readString();
-                publicKey = buffer.readBytes(buffer.readVarInt()); // read length, then the bytes
-                verifyToken = buffer.readBytes(buffer.readVarInt()); // read length, then the bytes
-                return true;
-        }
+        serverId = buffer.readString();
+        publicKey = buffer.readByteArray();
+        verifyToken = buffer.readByteArray();
+        return true;
     }
 
     @Override

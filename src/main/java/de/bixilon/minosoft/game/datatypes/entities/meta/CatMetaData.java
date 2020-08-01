@@ -13,12 +13,12 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.Color;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class CatMetaData extends AnimalMetaData {
 
-    public CatMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public CatMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.modding.channels;
 
 import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public enum DefaultPluginChannels {
     MC_BRAND(new ChangeableIdentifier("MC|Brand", "minecraft:brand")),
@@ -29,7 +29,7 @@ public enum DefaultPluginChannels {
         this.changeableIdentifier = changeableIdentifier;
     }
 
-    public static DefaultPluginChannels byName(String name, ProtocolVersion version) {
+    public static DefaultPluginChannels byName(String name, int protocolId) {
         for (DefaultPluginChannels d : values()) {
             if (d.getChangeableIdentifier().get(version).equals(name)) {
                 return d;

@@ -31,29 +31,24 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                sound = buffer.readString();
-                location = new Location(buffer.readInt() * 8, buffer.readInt() * 8, buffer.readInt() * 8); // ToDo: check if it is not * 4
-                volume = buffer.readFloat();
-                pitch = (buffer.readByte() * pitchCalc) / 100F;
-                return true;
-            case VERSION_1_9_4:
-                sound = buffer.readString();
-                category = SoundCategories.byId(buffer.readVarInt());
-                location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
-                volume = buffer.readFloat();
-                pitch = (buffer.readByte() * pitchCalc) / 100F;
-                return true;
-            default:
-                sound = buffer.readString();
-                category = SoundCategories.byId(buffer.readVarInt());
-                location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
-                volume = buffer.readFloat();
-                pitch = buffer.readFloat();
-                return true;
+        if (buffer.getProtocolId() < 95) {
+            sound = buffer.readString();
+            location = new Location(buffer.readInt() * 8, buffer.readInt() * 8, buffer.readInt() * 8); // ToDo: check if it is not * 4
+            volume = buffer.readFloat();
+            pitch = (buffer.readByte() * pitchCalc) / 100F;
+            return true;
         }
+        sound = buffer.readString();
+        category = SoundCategories.byId(buffer.readVarInt());
+        location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
+        volume = buffer.readFloat();
+        if (buffer.getProtocolId() < 201) {
+            pitch = (buffer.readByte() * pitchCalc) / 100F;
+        } else {
+            pitch = buffer.readFloat();
+        }
+        return true;
+        //ToDo: 17w15a
     }
 
     @Override
@@ -69,6 +64,7 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
     public Location getLocation() {
         return location;
     }
+
     /**
      * @return Pitch in Percent
      */

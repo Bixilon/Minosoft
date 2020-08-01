@@ -14,12 +14,12 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particles;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class AreaEffectCloudMetaData extends EntityMetaData {
 
-    public AreaEffectCloudMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public AreaEffectCloudMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

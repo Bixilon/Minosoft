@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class RabbitMetaData extends AnimalMetaData {
 
-    public RabbitMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public RabbitMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

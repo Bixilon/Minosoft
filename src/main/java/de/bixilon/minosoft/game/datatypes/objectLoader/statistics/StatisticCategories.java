@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.objectLoader.statistics;
 
 import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public enum StatisticCategories {
     MINED(new ChangeableIdentifier("minecraft.mined"), 0),
@@ -36,7 +36,7 @@ public enum StatisticCategories {
         this.id = id;
     }
 
-    public static StatisticCategories byName(String name, ProtocolVersion version) {
+    public static StatisticCategories byName(String name, int protocolId) {
         for (StatisticCategories category : values()) {
             if (category.getChangeableIdentifier().isValidName(name, version)) {
                 return category;

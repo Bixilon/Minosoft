@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class StriderMetaData extends AnimalMetaData {
 
-    public StriderMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public StriderMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

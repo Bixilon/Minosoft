@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PigMetaData extends AnimalMetaData {
 
-    public PigMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public PigMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
 

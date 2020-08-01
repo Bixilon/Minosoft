@@ -14,12 +14,12 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class EggMetaData extends ItemedThrowableMetaData {
 
-    public EggMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public EggMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     @Override

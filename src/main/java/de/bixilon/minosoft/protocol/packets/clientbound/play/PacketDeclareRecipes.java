@@ -22,7 +22,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
 
 public class PacketDeclareRecipes implements ClientboundPacket {
     HashBiMap<String, Recipe> recipes = HashBiMap.create();
@@ -35,7 +35,7 @@ public class PacketDeclareRecipes implements ClientboundPacket {
             Recipe recipe;
             String identifier;
             String typeName;
-            if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            if (buffer.getProtocolId() >= 453) { //ToDo: find out version
                 typeName = buffer.readString();
                 identifier = buffer.readString();
             } else {

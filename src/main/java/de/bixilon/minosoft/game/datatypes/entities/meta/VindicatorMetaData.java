@@ -12,12 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class VindicatorMetaData extends AbstractIllagerMetaData {
 
-    public VindicatorMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public VindicatorMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public boolean hasTarget() {

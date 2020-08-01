@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimension;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
@@ -21,9 +20,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.ChunkUtil;
 import de.bixilon.minosoft.util.Util;
 
@@ -39,47 +36,48 @@ public class PacketChunkData implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        return false;
-    }
-
-    public boolean read(InPacketBuffer buffer, Dimension dimension) {
-        boolean containsSkyLight = dimension.hasSkyLight();
-        if (buffer.getVersion().getVersionNumber() <= ProtocolVersion.VERSION_1_7_10.getVersionNumber()) {
+        boolean containsSkyLight = buffer.getConnection().getPlayer().getWorld().getDimension().hasSkyLight();
+        if (buffer.getProtocolId() < 23) {
             this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             boolean groundUpContinuous = buffer.readBoolean();
             short sectionBitMask = buffer.readShort();
             short addBitMask = buffer.readShort();
 
             // decompress chunk data
-            InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInt()), buffer.getVersion());
+            InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInt()), buffer.getConnection());
 
             chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, containsSkyLight);
             return true;
         }
-        if (buffer.getVersion().getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (buffer.getProtocolId() < 62) { // ToDo: was this really changed in 62?
             this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             boolean groundUpContinuous = buffer.readBoolean();
-            short sectionBitMask = buffer.readShort();
+            int sectionBitMask;
+            if (buffer.getProtocolId() < 70) {
+                sectionBitMask = buffer.readShort();
+            } else {
+                sectionBitMask = buffer.readVarInt();
+            }
             int size = buffer.readVarInt();
             int lastPos = buffer.getPosition();
             buffer.setPosition(size + lastPos);
 
-            chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, containsSkyLight);
+            chunk = ChunkUtil.readChunkPacket(buffer, (short) sectionBitMask, (short) 0, groundUpContinuous, containsSkyLight);
             return true;
         }
         this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
         boolean groundUpContinuous = buffer.readBoolean();
-        if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+        if (buffer.getProtocolId() >= 743) { //ToDo: find out exact version
             this.ignoreOldData = buffer.readBoolean();
         }
         short sectionBitMask = (short) buffer.readVarInt();
-        if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (buffer.getProtocolId() >= 443) {
             heightMap = (CompoundTag) buffer.readNBT();
         }
         if (groundUpContinuous) {
-            if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+            if (buffer.getProtocolId() >= 743) { //ToDo: find out exact version
                 biomes = buffer.readVarIntArray(buffer.readVarInt());
-            } else if (buffer.getVersion().getVersionNumber() == ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+            } else if (buffer.getProtocolId() >= 552) {
                 biomes = buffer.readIntArray(1024);
             }
         }

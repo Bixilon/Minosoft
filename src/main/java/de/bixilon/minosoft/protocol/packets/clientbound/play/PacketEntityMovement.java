@@ -27,22 +27,21 @@ public class PacketEntityMovement implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                this.entityId = buffer.readInt();
-                this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                return true;
-            case VERSION_1_8:
-                this.entityId = buffer.readVarInt();
-                this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                this.onGround = buffer.readBoolean();
-                return true;
-            default:
-                this.entityId = buffer.readVarInt();
-                this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
-                this.onGround = buffer.readBoolean();
-                return true;
+        if (buffer.getProtocolId() < 22) {
+            this.entityId = buffer.readInt();
+            this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
+            return true;
         }
+        if (buffer.getProtocolId() < 100) {
+            this.entityId = buffer.readVarInt();
+            this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
+            this.onGround = buffer.readBoolean();
+            return true;
+        }
+        this.entityId = buffer.readVarInt();
+        this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
+        this.onGround = buffer.readBoolean();
+        return true;
     }
 
     @Override
