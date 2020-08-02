@@ -21,7 +21,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketUpdateSignSending implements ServerboundPacket {
     final BlockPosition position;
     final TextComponent[] lines;
@@ -30,7 +29,6 @@ public class PacketUpdateSignSending implements ServerboundPacket {
         this.position = position;
         this.lines = lines;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

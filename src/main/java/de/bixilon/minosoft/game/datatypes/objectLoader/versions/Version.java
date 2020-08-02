@@ -19,11 +19,9 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 public class Version {
     final String versionName;
     final int protocolVersion;
-    VersionMapping mapping;
-
     final HashBiMap<Packets.Serverbound, Integer> serverboundPacketMapping;
     final HashBiMap<Packets.Clientbound, Integer> clientboundPacketMapping;
-
+    VersionMapping mapping;
 
     public Version(String versionName, int protocolVersion, HashBiMap<Packets.Serverbound, Integer> serverboundPacketMapping, HashBiMap<Packets.Clientbound, Integer> clientboundPacketMapping) {
         this.versionName = versionName;
@@ -52,7 +50,6 @@ public class Version {
         return clientboundPacketMapping.get(packet);
     }
 
-
     public HashBiMap<Packets.Clientbound, Integer> getClientboundPacketMapping() {
         return clientboundPacketMapping;
     }
@@ -72,5 +69,21 @@ public class Version {
 
     public void setMapping(VersionMapping mapping) {
         this.mapping = mapping;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        if (hashCode() != obj.hashCode()) {
+            return false;
+        }
+        return getVersionName().equals(versionName);
+    }
+
+    @Override
+    public String toString() {
+        return getVersionName();
     }
 }

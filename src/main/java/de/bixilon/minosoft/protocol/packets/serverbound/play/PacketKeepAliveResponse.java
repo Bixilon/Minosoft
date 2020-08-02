@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketKeepAliveResponse implements ServerboundPacket {
 
     final long id;
@@ -31,7 +30,6 @@ public class PacketKeepAliveResponse implements ServerboundPacket {
     public PacketKeepAliveResponse(int id) {
         this.id = id;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

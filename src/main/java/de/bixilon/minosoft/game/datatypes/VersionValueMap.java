@@ -15,6 +15,7 @@ package de.bixilon.minosoft.game.datatypes;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 
+import java.util.Map;
 import java.util.TreeMap;
 
 public class VersionValueMap<V> {
@@ -34,7 +35,11 @@ public class VersionValueMap<V> {
     }
 
     public V get(int protocolId) {
-        return values.lowerEntry(protocolId).getValue();
+        Map.Entry<Integer, V> value = values.lowerEntry(protocolId);
+        if (value == null) {
+            return null;
+        }
+        return value.getValue();
     }
 
     public TreeMap<Integer, V> getAll() {

@@ -19,18 +19,15 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketSteerBoat implements ServerboundPacket {
 
     final boolean leftPaddle;
     final boolean rightPaddle;
 
-
     public PacketSteerBoat(boolean leftPaddle, boolean rightPaddle) {
         this.leftPaddle = leftPaddle;
         this.rightPaddle = rightPaddle;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

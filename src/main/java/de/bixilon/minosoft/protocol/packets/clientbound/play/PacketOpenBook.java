@@ -22,7 +22,6 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketOpenBook implements ClientboundPacket {
     Hand hand;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         hand = Hand.byId(buffer.readVarInt());

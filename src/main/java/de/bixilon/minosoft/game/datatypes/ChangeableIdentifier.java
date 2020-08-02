@@ -14,22 +14,21 @@
 package de.bixilon.minosoft.game.datatypes;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.TreeMap;
-
-import static de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.FLATTING_VERSION_ID;
 
 public class ChangeableIdentifier extends VersionValueMap<String> {
     String mod = "minecraft";
 
     public ChangeableIdentifier(String legacy, String water) {
         values.put(Versions.getLowestVersionSupported().getProtocolVersion(), legacy);
-        values.put(FLATTING_VERSION_ID, water);
+        values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
     }
 
     public ChangeableIdentifier(String legacy, String water, String mod) {
         values.put(Versions.getLowestVersionSupported().getProtocolVersion(), legacy);
-        values.put(FLATTING_VERSION_ID, water);
+        values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
         this.mod = mod;
     }
 

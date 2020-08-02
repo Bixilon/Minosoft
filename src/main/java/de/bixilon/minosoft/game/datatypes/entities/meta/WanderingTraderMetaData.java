@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class WanderingTraderMetaData extends VillagerMetaData {
 
     public WanderingTraderMetaData(MetaDataHashMap sets, int protocolId) {

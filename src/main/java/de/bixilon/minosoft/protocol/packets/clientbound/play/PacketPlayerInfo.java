@@ -30,7 +30,6 @@ import java.util.UUID;
 public class PacketPlayerInfo implements ClientboundPacket {
     final ArrayList<PlayerInfoBulk> infos = new ArrayList<>();
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 19) {

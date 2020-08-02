@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class PrimedTNTMetaData extends EntityMetaData {
 
     public PrimedTNTMetaData(MetaDataHashMap sets, int protocolId) {
@@ -21,7 +20,7 @@ public class PrimedTNTMetaData extends EntityMetaData {
 
     public int getFuseTime() {
         final int defaultValue = 80;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);

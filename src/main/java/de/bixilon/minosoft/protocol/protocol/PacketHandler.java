@@ -59,17 +59,17 @@ public class PacketHandler {
     public void handle(PacketStatusResponse pkg) {
         if (connection.getReason() == ConnectionReason.GET_VERSION) {
             // now we know the version, set it, if the config allows it
-            int version = Minosoft.getConfig().getInteger("debug.version");
-            if (version == -1) {
-                connection.setVersion(Versions.getVersionById(pkg.getResponse().getProtocolNumber()));
-            } else {
-                Version protocolVersion = Versions.getVersionById(version);
-                if (protocolVersion == null) {
-                    Log.fatal(String.format("In the config (debug.version) is a invalid version provided (version=%d). Exiting...", version));
-                    System.exit(1);
-                }
-                connection.setVersion(protocolVersion);
+            Version version;
+            int versionId = Minosoft.getConfig().getInteger("debug.version");
+            if (versionId == -1) {
+                versionId = pkg.getResponse().getProtocolNumber();
             }
+            version = Versions.getVersionById(versionId);
+            if (version == null) {
+                Log.fatal(String.format("Server is running on unknown version or a invalid version was forced (version=%d). Exiting...", versionId));
+                System.exit(1);
+            }
+            connection.setVersion(version);
         }
         Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getColoredMessage()));
     }

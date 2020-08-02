@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class DragonFireballMetaData extends AbstractFireballMetaData {
 
     public DragonFireballMetaData(MetaDataHashMap sets, int protocolId) {

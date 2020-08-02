@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketPlayerPositionAndRotation implements ClientboundPacket {
     Location location;
     float yaw;

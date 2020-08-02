@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class RaidParticipantMetaData extends MonsterMetaData {
 
     public RaidParticipantMetaData(MetaDataHashMap sets, int protocolId) {
@@ -21,7 +20,7 @@ public class RaidParticipantMetaData extends MonsterMetaData {
 
     public boolean isCelebrating() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -29,7 +28,7 @@ public class RaidParticipantMetaData extends MonsterMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

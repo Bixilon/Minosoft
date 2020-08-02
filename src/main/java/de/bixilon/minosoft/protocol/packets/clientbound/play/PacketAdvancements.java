@@ -35,7 +35,6 @@ public class PacketAdvancements implements ClientboundPacket {
     String[] toRemove;
     HashMap<String, AdvancementProgress> progresses = new HashMap<>();
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         reset = buffer.readBoolean();

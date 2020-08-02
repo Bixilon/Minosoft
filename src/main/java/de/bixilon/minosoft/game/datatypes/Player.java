@@ -154,15 +154,15 @@ public class Player {
     }
 
     public Slot getSlot(int windowId, InventorySlots.InventoryInterface slot, int protocolId) {
-        return getSlot(windowId, slot.getId(version));
+        return getSlot(windowId, slot.getId(protocolId));
     }
 
     public Slot getSlot(int windowId, int slot) {
         return inventories.get(windowId).getSlot(slot);
     }
 
-    public void setSlot(int windowId, InventorySlots.InventoryInterface slot, ProtocolVersion version, Slot data) {
-        setSlot(windowId, slot.getId(version), data);
+    public void setSlot(int windowId, InventorySlots.InventoryInterface slot, Integer protocolId, Slot data) {
+        setSlot(windowId, slot.getId(protocolId), data);
     }
 
     public void setSlot(int windowId, int slot, Slot data) {

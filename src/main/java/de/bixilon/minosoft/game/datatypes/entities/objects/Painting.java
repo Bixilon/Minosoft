@@ -16,13 +16,11 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.motives.Motive;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 
 import java.util.UUID;
-
 
 public class Painting extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
@@ -30,27 +28,22 @@ public class Painting extends EntityObject implements ObjectInterface {
     Motive motive;
 
     public Painting(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
-        super(entityId, uuid, location, yaw, pitch, null);
-        // objects do not spawn with metadata... reading additional info from the following int
+        super(entityId, uuid, location, yaw, pitch);
     }
 
-    public Painting(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(entityId, uuid, location, yaw, pitch, velocity);
-    }
-
-    public Painting(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
-        super(entityId, uuid, location, yaw, pitch, velocity);
+    public Painting(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
         this.metaData = new EntityMetaData(sets, protocolId);
     }
 
     public Painting(int entityId, UUID uuid, BlockPosition position, int direction, Motive motive) {
-        super(entityId, uuid, new Location(position.getX(), position.getY(), position.getZ()), (short) 0, (short) 0, null);
+        super(entityId, uuid, new Location(position.getX(), position.getY(), position.getZ()), 0, 0, 0);
         this.direction = direction;
         this.motive = motive;
     }
 
     public Painting(int entityId, UUID uuid, Motive motive, BlockPosition position, int direction) {
-        super(entityId, uuid, new Location(position.getX(), position.getY(), position.getZ()), 0, 0, null);
+        super(entityId, uuid, new Location(position.getX(), position.getY(), position.getZ()), 0, 0);
         this.direction = direction;
         this.motive = motive;
     }

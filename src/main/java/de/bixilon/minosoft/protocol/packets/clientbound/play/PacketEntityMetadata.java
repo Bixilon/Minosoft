@@ -26,7 +26,6 @@ public class PacketEntityMetadata implements ClientboundPacket {
     int entityId;
     int protocolId;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         this.protocolId = buffer.getProtocolId();
@@ -60,7 +59,7 @@ public class PacketEntityMetadata implements ClientboundPacket {
 
     public EntityMetaData getEntityData(Class<? extends EntityMetaData> clazz) {
         try {
-            return clazz.getConstructor(EntityMetaData.MetaDataHashMap.class, Integer.class).newInstance(sets, protocolId);
+            return clazz.getConstructor(EntityMetaData.MetaDataHashMap.class, int.class).newInstance(sets, protocolId);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }

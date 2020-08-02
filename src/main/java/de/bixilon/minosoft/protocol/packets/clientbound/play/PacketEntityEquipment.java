@@ -27,7 +27,6 @@ public class PacketEntityEquipment implements ClientboundPacket {
     int entityId;
     HashMap<InventorySlots.EntityInventory, Slot> slots = new HashMap<>();
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 7) {

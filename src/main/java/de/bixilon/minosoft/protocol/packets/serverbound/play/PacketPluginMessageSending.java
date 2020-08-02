@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketPluginMessageSending implements ServerboundPacket {
 
     public final String channel;
@@ -29,7 +28,6 @@ public class PacketPluginMessageSending implements ServerboundPacket {
         this.channel = channel;
         this.data = data;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

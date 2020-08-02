@@ -15,7 +15,6 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
 
-
 public class EggMetaData extends ItemedThrowableMetaData {
 
     public EggMetaData(MetaDataHashMap sets, int protocolId) {

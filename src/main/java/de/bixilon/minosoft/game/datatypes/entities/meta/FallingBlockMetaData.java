@@ -14,7 +14,6 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 
-
 public class FallingBlockMetaData extends EntityMetaData {
 
     public FallingBlockMetaData(MetaDataHashMap sets, int protocolId) {
@@ -23,7 +22,7 @@ public class FallingBlockMetaData extends EntityMetaData {
 
     public BlockPosition getSpawnPosition() {
         BlockPosition defaultValue = new BlockPosition(0, 0, 0);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getPosition(super.getLastDataIndex() + 1, defaultValue);
@@ -31,7 +30,7 @@ public class FallingBlockMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId <= 110) { //ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

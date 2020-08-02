@@ -87,7 +87,6 @@ public class ListTag implements NBTTag {
         return list;
     }
 
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

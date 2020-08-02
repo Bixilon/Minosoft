@@ -27,7 +27,6 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
     TextPosition position;
     UUID sender;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 7) {
@@ -55,7 +54,6 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
     public TextComponent getChatComponent() {
         return c;
     }
-
 
     @Override
     public void handle(PacketHandler h) {

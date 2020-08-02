@@ -75,7 +75,6 @@ public class InByteBuffer {
         return readBytes(count);
     }
 
-
     byte[] readBytes(int pos, int count) {
         byte[] ret = new byte[count];
         System.arraycopy(bytes, pos, ret, 0, count);
@@ -133,7 +132,6 @@ public class InByteBuffer {
         return new String(readBytes(length), StandardCharsets.UTF_8);
     }
 
-
     public String[] readStringArray(int length) {
         String[] ret = new String[length];
         for (int i = 0; i < length; i++) {
@@ -145,7 +143,6 @@ public class InByteBuffer {
     public String readString(int length) {
         return new String(readBytes(length));
     }
-
 
     public UUID readUUID() {
         return new UUID(readLong(), readLong());

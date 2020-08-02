@@ -22,12 +22,10 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketBlockEntityMetadata implements ClientboundPacket {
     BlockPosition position;
     Actions action;
     CompoundTag nbt;
-
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -58,11 +56,9 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         return position;
     }
 
-
     public CompoundTag getNbt() {
         return nbt;
     }
-
 
     public enum Actions {
         SPAWNER(new MapSet[]{new MapSet<>(0, 1)}),

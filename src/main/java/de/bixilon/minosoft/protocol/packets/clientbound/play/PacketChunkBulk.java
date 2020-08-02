@@ -27,7 +27,6 @@ import java.util.HashMap;
 public class PacketChunkBulk implements ClientboundPacket {
     final HashMap<ChunkLocation, Chunk> chunkMap = new HashMap<>();
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 23) {

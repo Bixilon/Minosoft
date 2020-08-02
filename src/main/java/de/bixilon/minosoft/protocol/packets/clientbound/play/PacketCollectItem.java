@@ -23,7 +23,6 @@ public class PacketCollectItem implements ClientboundPacket {
     int collectorId;
     int count;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 7) {

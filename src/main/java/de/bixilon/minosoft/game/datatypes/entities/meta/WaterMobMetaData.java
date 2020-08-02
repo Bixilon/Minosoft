@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class WaterMobMetaData extends CreatureMetaData {
 
     public WaterMobMetaData(MetaDataHashMap sets, int protocolId) {

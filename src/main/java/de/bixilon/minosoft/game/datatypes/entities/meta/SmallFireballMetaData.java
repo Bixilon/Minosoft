@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class SmallFireballMetaData extends ItemedFireballMetaData {
 
     public SmallFireballMetaData(MetaDataHashMap sets, int protocolId) {

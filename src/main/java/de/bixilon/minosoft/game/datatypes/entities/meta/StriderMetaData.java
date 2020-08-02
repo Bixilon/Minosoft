@@ -12,17 +12,15 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class StriderMetaData extends AnimalMetaData {
 
     public StriderMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);
     }
 
-
     public int getTotalTimeToBoost() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+        if (protocolId < 743) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -30,7 +28,7 @@ public class StriderMetaData extends AnimalMetaData {
 
     public boolean isShaking() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+        if (protocolId < 743) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
@@ -38,7 +36,7 @@ public class StriderMetaData extends AnimalMetaData {
 
     public boolean hasSaddle() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+        if (protocolId < 743) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);

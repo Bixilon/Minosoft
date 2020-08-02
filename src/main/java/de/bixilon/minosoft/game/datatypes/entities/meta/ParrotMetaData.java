@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class ParrotMetaData extends TameableMetaData {
 
     public ParrotMetaData(MetaDataHashMap sets, int protocolId) {
@@ -21,7 +20,7 @@ public class ParrotMetaData extends TameableMetaData {
 
     public ParrotVariants getVariant() {
         final int defaultValue = ParrotVariants.RED_BLUE.getId();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId < 335) { //ToDo
             return ParrotVariants.byId(defaultValue);
         }
         return ParrotVariants.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
@@ -29,12 +28,11 @@ public class ParrotMetaData extends TameableMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId < 335) { //ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;
     }
-
 
     public enum ParrotVariants {
         RED_BLUE(0),

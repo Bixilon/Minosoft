@@ -20,7 +20,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketUpdateJigsawBlock implements ServerboundPacket {
     final BlockPosition position;
     final String targetPool;
@@ -37,7 +36,6 @@ public class PacketUpdateJigsawBlock implements ServerboundPacket {
         this.finalState = finalState;
     }
 
-
     public PacketUpdateJigsawBlock(BlockPosition position, String name, String target, String targetPool, String finalState, String jointType) {
         this.position = position;
         this.name = name;
@@ -46,7 +44,6 @@ public class PacketUpdateJigsawBlock implements ServerboundPacket {
         this.finalState = finalState;
         this.jointType = jointType;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

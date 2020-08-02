@@ -23,43 +23,29 @@ public class LivingMetaData extends EntityMetaData {
         super(sets, protocolId);
     }
 
-
     public boolean isHandActive() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return sets.getBitMask(5, 0x01, defaultValue);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return sets.getBitMask(6, 0x01, defaultValue);
-        }
-        return sets.getBitMask(7, 0x01, defaultValue);
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
     }
 
     public Hand getActiveHand() {
         final int defaultValue = Hand.LEFT.getId();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return Hand.byId(defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return Hand.byBoolean(sets.getBitMask(5, 0x02, defaultValue == 0x01));
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return Hand.byBoolean(sets.getBitMask(6, 0x02, defaultValue == 0x01));
-        }
-        return Hand.byBoolean(sets.getBitMask(7, 0x02, defaultValue == 0x01));
+        return Hand.byBoolean(sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue == 0x01));
     }
 
     public boolean isRiptideSpinAttack() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 393) { //ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
     }
-
 
     public float getHealth() {
         final float defaultValue = 1.0F;
@@ -71,7 +57,6 @@ public class LivingMetaData extends EntityMetaData {
         final int defaultValue = 0;
         return sets.getInt(super.getLastDataIndex() + 3, defaultValue);
     }
-
 
     public boolean isPotionEffectAmbient() {
         final boolean defaultValue = false;
@@ -86,30 +71,29 @@ public class LivingMetaData extends EntityMetaData {
     @Nullable
     @Override
     public TextComponent getNameTag() {
-        switch (version) {
-            case VERSION_1_7_10:
-                return new TextComponent(sets.getString(10, null));
-            case VERSION_1_8:
-                return new TextComponent(sets.getString(2, null));
-            default:
-                return super.getNameTag();
+        if (protocolId < 7) { //ToDo
+            return new TextComponent(sets.getString(10, null));
         }
+        if (protocolId < 57) { //ToDo
+            return new TextComponent(sets.getString(2, null));
+        }
+        return super.getNameTag();
     }
 
     @Override
     public boolean isCustomNameVisible() {
-        switch (version) {
-            case VERSION_1_7_10:
-                return sets.getBoolean(11, super.isCustomNameVisible());
-            case VERSION_1_8:
-                return sets.getBoolean(3, super.isCustomNameVisible());
-            default:
-                return super.isCustomNameVisible();
+        if (protocolId < 7) { //ToDo
+            return sets.getBoolean(11, super.isCustomNameVisible());
         }
+
+        if (protocolId < 57) { //ToDo
+            return sets.getBoolean(3, super.isCustomNameVisible());
+        }
+        return super.isCustomNameVisible();
     }
 
     public boolean hasAI() {
-        if (version == ProtocolVersion.VERSION_1_8) {
+        if (protocolId == 47) { //ToDo
             return sets.getBoolean(15, false);
         }
         return false;
@@ -117,12 +101,15 @@ public class LivingMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        //ToDo
+        /*
+        if (protocolId <= 401) { // ToDo
             return super.getLastDataIndex() + 5;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId == 477) { // ToDo
             return super.getLastDataIndex() + 6;
         }
+         */
         return super.getLastDataIndex() + 7; // 5 + absorption hearts + unknown
     }
 

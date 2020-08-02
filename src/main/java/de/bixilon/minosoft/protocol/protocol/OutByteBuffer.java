@@ -151,7 +151,6 @@ public class OutByteBuffer {
         writeInt((int) (d * 32.0D));
     }
 
-
     public ArrayList<Byte> getBytes() {
         return bytes;
     }

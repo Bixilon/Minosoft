@@ -26,7 +26,7 @@ public class Log {
     static Thread logThread;
 
     public static void log(LogLevel l, String message, TextComponent.ChatAttributes color) {
-        if (l.getId() > level.getId()) {
+        if (l.ordinal() > level.ordinal()) {
             // log level too low
             return;
         }

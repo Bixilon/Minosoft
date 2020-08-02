@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketUpdateCommandBlockMinecart implements ServerboundPacket {
 
     final int entityId;
@@ -31,7 +30,6 @@ public class PacketUpdateCommandBlockMinecart implements ServerboundPacket {
         this.command = command;
         this.trackOutput = trackOutput;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

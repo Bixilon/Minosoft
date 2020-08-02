@@ -46,9 +46,7 @@ public enum InventoryAction {
     END_RIGHT_MOUSE_DRAG(5, 6, false),
     END_MIDDLE_MOUSE_DRAG(5, 10, false),
 
-
     DOUBLE_CLICK(6, 0);
-
 
     final byte mode;
     final byte button;
@@ -63,7 +61,6 @@ public enum InventoryAction {
     InventoryAction(int mode, int button, boolean hasSlot) {
         this((byte) mode, (byte) button, hasSlot);
     }
-
 
     InventoryAction(int mode, int button) {
         this(mode, button, true);

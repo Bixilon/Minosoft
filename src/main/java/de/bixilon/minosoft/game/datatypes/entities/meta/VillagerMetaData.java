@@ -14,24 +14,19 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
 
-
 public class VillagerMetaData extends AbstractMerchantMetaData {
 
     public VillagerMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);
     }
 
-
     public VillagerData.VillagerProfessions getProfession() {
-        final int defaultValue = VillagerData.VillagerProfessions.FARMER.getId(version);
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
-            return VillagerData.VillagerProfessions.byId(sets.getInt(16, defaultValue), version);
+        final int defaultValue = VillagerData.VillagerProfessions.FARMER.getId(protocolId);
+        if (protocolId < 57) {
+            return VillagerData.VillagerProfessions.byId(sets.getInt(16, defaultValue), protocolId);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return VillagerData.VillagerProfessions.byId(sets.getInt(12, defaultValue), version);
-        }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return VillagerData.VillagerProfessions.byId(sets.getInt(13, defaultValue), version);
+        if (protocolId < 451) {
+            return VillagerData.VillagerProfessions.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue), protocolId);
         }
         return getVillageData().getProfession();
     }
@@ -46,7 +41,7 @@ public class VillagerMetaData extends AbstractMerchantMetaData {
 
     public VillagerData getVillageData() {
         final VillagerData defaultValue = new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 451) {
             return defaultValue;
         }
         return sets.getVillagerData(super.getLastDataIndex() + 1, defaultValue);

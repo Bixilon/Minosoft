@@ -22,7 +22,6 @@ public class PackerResourcePackSend implements ClientboundPacket {
     String url;
     String hash;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         url = buffer.readString();

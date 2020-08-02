@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class FurnaceMinecartMetaData extends EntityMetaData {
 
     public FurnaceMinecartMetaData(MetaDataHashMap sets, int protocolId) {
@@ -21,7 +20,7 @@ public class FurnaceMinecartMetaData extends EntityMetaData {
 
     public boolean isPowered() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getBoolean(16, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);

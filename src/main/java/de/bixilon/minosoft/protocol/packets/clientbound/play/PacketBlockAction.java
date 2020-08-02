@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.blockIds.BlockId;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blockIds.BlockIds;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.actions.*;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
@@ -28,7 +27,6 @@ public class PacketBlockAction implements ClientboundPacket {
     BlockPosition position;
     BlockAction data;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         // that's the only difference here
@@ -40,7 +38,7 @@ public class PacketBlockAction implements ClientboundPacket {
         byte byte1 = buffer.readByte();
         byte byte2 = buffer.readByte();
         Class<? extends BlockAction> clazz;
-        BlockId blockId = BlockIds.getBlockId(buffer.readVarInt(), buffer.getProtocolId());
+        BlockId blockId = buffer.getConnection().getMapping().getBlockIdById(buffer.readVarInt());
         switch (blockId.getIdentifier()) {
             case "noteblock":
                 clazz = NoteBlockAction.class;

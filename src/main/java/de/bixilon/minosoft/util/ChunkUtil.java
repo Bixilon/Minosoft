@@ -21,23 +21,23 @@ import de.bixilon.minosoft.game.datatypes.world.ChunkNibbleLocation;
 import de.bixilon.minosoft.game.datatypes.world.palette.Palette;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.HashMap;
 
 public class ChunkUtil {
     public static Chunk readChunkPacket(InByteBuffer buffer, short sectionBitMask, short addBitMask, boolean groundUpContinuous, boolean containsSkyLight) {
-        switch (buffer.getProtocolId()) {
-            case VERSION_1_7_10: {
-                if (sectionBitMask == 0x00 && groundUpContinuous) {
-                    // unload chunk
-                    return null;
-                }
-                //chunk
-                byte sections = BitByte.getBitCount(sectionBitMask);
-                int totalBytes = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
-                int halfBytes = totalBytes / 2; // half bytes
+        if (buffer.getProtocolId() < 23) {
+            if (sectionBitMask == 0x00 && groundUpContinuous) {
+                // unload chunk
+                return null;
+            }
+            //chunk
+            byte sections = BitByte.getBitCount(sectionBitMask);
+            int totalBytes = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
+            int halfBytes = totalBytes / 2; // half bytes
 
-                byte[] blockTypes = buffer.readBytes(totalBytes);
+            byte[] blockTypes = buffer.readBytes(totalBytes);
                 byte[] meta = buffer.readBytes(halfBytes);
                 byte[] light = buffer.readBytes(halfBytes);
                 byte[] skyLight = null;
@@ -79,9 +79,8 @@ public class ChunkUtil {
                                         }
                                     }
 
-
-                                    // ToDo light, biome
-                                    Block block = Blocks.getBlockByLegacy(singeBlockId, singleMeta);
+// ToDo light, biome
+                                    Block block = buffer.getConnection().getMapping().getBlockByIdAndMetaData(singeBlockId, singleMeta);
                                     if (block.equals(Blocks.nullBlock)) {
                                         arrayPos++;
                                         continue;
@@ -94,19 +93,18 @@ public class ChunkUtil {
                         nibbleMap.put(c, new ChunkNibble(blockMap));
                     }
                 }
-                return new Chunk(nibbleMap);
+            return new Chunk(nibbleMap);
+        }
+        if (buffer.getProtocolId() < 62) { // ToDo: was this really changed in 62?
+            if (sectionBitMask == 0x00 && groundUpContinuous) {
+                // unload chunk
+                return null;
             }
-            case VERSION_1_8: {
-                if (sectionBitMask == 0x00 && groundUpContinuous) {
-                    // unload chunk
-                    return null;
-                }
-                byte sections = BitByte.getBitCount(sectionBitMask);
-                int totalBlocks = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
-                int halfBytes = totalBlocks / 2; // half bytes
+            byte sections = BitByte.getBitCount(sectionBitMask);
+            int totalBlocks = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
+            int halfBytes = totalBlocks / 2; // half bytes
 
-
-                short[] blockData = buffer.readShorts(totalBlocks); // blocks >>> 4, data & 0xF
+            short[] blockData = buffer.readShorts(totalBlocks); // blocks >>> 4, data & 0xF
 
                 byte[] light = buffer.readBytes(halfBytes);
                 byte[] skyLight = null;
@@ -129,7 +127,7 @@ public class ChunkUtil {
                     for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                         for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                             for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
-                                Block block = Blocks.getBlockByLegacy(blockData[arrayPos]);
+                                Block block = buffer.getConnection().getMapping().getBlockById(blockData[arrayPos]);
                                 if (block.equals(Blocks.nullBlock)) {
                                     arrayPos++;
                                     continue;
@@ -143,14 +141,13 @@ public class ChunkUtil {
                 }
                 return new Chunk(nibbleMap);
             }
-            default: {
                 // really big thanks to: https://wiki.vg/index.php?title=Chunk_Format&oldid=13712
                 HashMap<Byte, ChunkNibble> nibbleMap = new HashMap<>();
                 for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
                     if (!BitByte.isBitSet(sectionBitMask, c)) {
                         continue;
                     }
-                    if (buffer.getProtocolId() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+                    if (buffer.getProtocolId() >= 440) {
                         buffer.readShort(); // block count
                     }
                     Palette palette = Palette.choosePalette(buffer.readByte());
@@ -164,12 +161,10 @@ public class ChunkUtil {
                         for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                             for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
 
-
                                 int blockNumber = (((nibbleY * 16) + nibbleZ) * 16) + nibbleX;
                                 int startLong = (blockNumber * palette.getBitsPerBlock()) / 64;
                                 int startOffset = (blockNumber * palette.getBitsPerBlock()) % 64;
                                 int endLong = ((blockNumber + 1) * palette.getBitsPerBlock() - 1) / 64;
-
 
                                 int blockId;
                                 if (startLong == endLong) {
@@ -183,7 +178,7 @@ public class ChunkUtil {
                                 Block block = palette.byId(blockId);
                                 if (block == null) {
                                     String blockName;
-                                    if (buffer.getProtocolId() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+                                    if (buffer.getProtocolId() <= ProtocolDefinition.FLATTING_VERSION_ID) {
                                         blockName = String.format("%d:%d", blockId >> 4, blockId & 0xF);
                                     } else {
                                         blockName = String.valueOf(blockId);
@@ -199,7 +194,7 @@ public class ChunkUtil {
                         }
                     }
 
-                    if (buffer.getProtocolId() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+                    if (buffer.getProtocolId() < 440) {
                         byte[] light = buffer.readBytes(2048);
                         if (containsSkyLight) {
                             byte[] skyLight = buffer.readBytes(2048);
@@ -208,12 +203,10 @@ public class ChunkUtil {
 
                     nibbleMap.put(c, new ChunkNibble(blockMap));
                 }
-                if (buffer.getProtocolId() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
-                    byte[] biomes = buffer.readBytes(256);
-                }
-                return new Chunk(nibbleMap);
-            }
+        if (buffer.getProtocolId() < 552) {
+            byte[] biomes = buffer.readBytes(256);
         }
+                return new Chunk(nibbleMap);
     }
 
     public static void readSkyLightPacket(InByteBuffer buffer, int skyLightMask, int blockLightMask, int emptyBlockLightMask, int emptySkyLightMask) {

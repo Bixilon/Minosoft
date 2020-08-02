@@ -2,7 +2,7 @@
  * Codename Minosoft
  * Copyright (C) 2020 Moritz Zwerger
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later protocolId.
  *
  *  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class HorseMetaData extends AbstractHorseMetaData {
 
     public HorseMetaData(MetaDataHashMap sets, int protocolId) {
@@ -21,13 +20,13 @@ public class HorseMetaData extends AbstractHorseMetaData {
 
     public HorseColor getColor() {
         final int defaultValue = HorseColor.WHITE.getId();
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return HorseColor.byId(sets.getInt(20, defaultValue) & 0xFF);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId == 110) { //ToDo
             return HorseColor.byId(sets.getInt(14, defaultValue) & 0xFF);
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId <= 401) { // ToDo
             return HorseColor.byId(sets.getInt(15, defaultValue) & 0xFF);
         }
         return HorseColor.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue) & 0xFF);
@@ -35,28 +34,27 @@ public class HorseMetaData extends AbstractHorseMetaData {
 
     public HorseDots getDots() {
         final int defaultValue = HorseDots.NONE.getId() << 8;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return HorseDots.byId(sets.getInt(20, defaultValue) >> 8);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId == 110) { //ToDo
             return HorseDots.byId(sets.getInt(14, defaultValue) >> 8);
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId <= 401) { // ToDo
             return HorseDots.byId(sets.getInt(15, defaultValue) >> 8);
         }
         return HorseDots.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue) >> 8);
     }
 
-
     public HorseArmor getArmor() {
         final int defaultValue = HorseArmor.NO_ARMOR.getId();
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return HorseArmor.byId(sets.getInt(21, defaultValue));
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId == 204) { //ToDo
             return HorseArmor.byId(sets.getInt(17, defaultValue));
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 461) {
             return HorseArmor.byId(sets.getInt(16, defaultValue));
         }
         return HorseArmor.byId(defaultValue);
@@ -71,7 +69,6 @@ public class HorseMetaData extends AbstractHorseMetaData {
     protected int getLastDataIndex() {
         return super.getLastDataIndex() + 2;
     }
-
 
     public enum HorseArmor {
         NO_ARMOR(0),

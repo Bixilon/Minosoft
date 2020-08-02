@@ -25,10 +25,10 @@ public class ItemFrameMetaData extends HangingMetaData {
     @Nullable
     public Slot getItem() {
         final Slot defaultValue = null;
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_7_10.getVersionNumber()) {
+        if (protocolId < 7) { // ToDo
             return sets.getSlot(2, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) { // ToDo
             return sets.getSlot(8, defaultValue);
         }
         return sets.getSlot(super.getLastDataIndex() + 1, defaultValue);
@@ -36,10 +36,10 @@ public class ItemFrameMetaData extends HangingMetaData {
 
     public int getRotation() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_7_10.getVersionNumber()) {
+        if (protocolId < 7) { // ToDo
             return sets.getByte(3, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) { // ToDo
             return sets.getByte(9, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);

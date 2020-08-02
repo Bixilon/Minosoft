@@ -22,7 +22,6 @@ public class PacketTimeUpdate implements ClientboundPacket {
     long worldAge;
     long timeOfDay;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         worldAge = buffer.readLong();

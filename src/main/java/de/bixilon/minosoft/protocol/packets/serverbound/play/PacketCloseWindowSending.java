@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketCloseWindowSending implements ServerboundPacket {
 
     final byte windowId;
@@ -27,7 +26,6 @@ public class PacketCloseWindowSending implements ServerboundPacket {
     public PacketCloseWindowSending(byte windowId) {
         this.windowId = windowId;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

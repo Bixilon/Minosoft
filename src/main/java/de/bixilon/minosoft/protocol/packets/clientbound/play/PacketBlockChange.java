@@ -24,7 +24,6 @@ public class PacketBlockChange implements ClientboundPacket {
     BlockPosition position;
     Block block;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 6) {

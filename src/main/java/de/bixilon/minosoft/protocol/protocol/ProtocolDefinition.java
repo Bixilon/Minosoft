@@ -22,4 +22,5 @@ public final class ProtocolDefinition {
     public static final int PLAYER_INVENTORY_ID = 0;
 
     public static final int FLATTING_VERSION_ID = 346;
+    public static final int PRE_FLATTENING_VERSION_ID = 345;
 }

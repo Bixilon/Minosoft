@@ -38,7 +38,6 @@ public class ByteArrayTag implements NBTTag {
         buffer.writeBytes(value);
     }
 
-
     public byte[] getValue() {
         return value;
     }

@@ -12,17 +12,15 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class PigMetaData extends AnimalMetaData {
 
     public PigMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);
     }
 
-
     public boolean hasSaddle() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getBoolean(16, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -30,7 +28,7 @@ public class PigMetaData extends AnimalMetaData {
 
     public int getTotalBoostTime() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -38,7 +36,7 @@ public class PigMetaData extends AnimalMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return super.getLastDataIndex() + 1;
         }
         return super.getLastDataIndex() + 2;

@@ -44,7 +44,6 @@ public class BitByte {
         return ret;
     }
 
-
     public static short byteToUShort(byte b) {
         return (short) (b & 0xFF);
     }

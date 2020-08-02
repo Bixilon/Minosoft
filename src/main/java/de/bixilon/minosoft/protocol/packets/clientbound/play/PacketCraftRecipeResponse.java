@@ -34,6 +34,7 @@ public class PacketCraftRecipeResponse implements ClientboundPacket {
         recipeName = buffer.readString();
         return true;
     }
+
     @Override
     public void log() {
         Log.protocol(String.format("Received Crafting recipe response (windowId=%d, recipeId=%d)", windowId, recipeId));

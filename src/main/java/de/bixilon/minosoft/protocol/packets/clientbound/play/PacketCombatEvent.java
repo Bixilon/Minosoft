@@ -27,7 +27,6 @@ public class PacketCombatEvent implements ClientboundPacket {
     int entityId;
     TextComponent message;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         action = CombatEvent.byId(buffer.readVarInt());
@@ -64,7 +63,6 @@ public class PacketCombatEvent implements ClientboundPacket {
     public void handle(PacketHandler h) {
         h.handle(this);
     }
-
 
     public enum CombatEvent {
         ENTER_COMBAT(0),

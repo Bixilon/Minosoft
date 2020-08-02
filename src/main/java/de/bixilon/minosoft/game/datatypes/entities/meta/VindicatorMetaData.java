@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class VindicatorMetaData extends AbstractIllagerMetaData {
 
     public VindicatorMetaData(MetaDataHashMap sets, int protocolId) {
@@ -21,10 +20,10 @@ public class VindicatorMetaData extends AbstractIllagerMetaData {
 
     public boolean hasTarget() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId <= 335) { //ToDo
             return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
         }
         return defaultValue;
@@ -32,7 +31,7 @@ public class VindicatorMetaData extends AbstractIllagerMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_11_2.getVersionNumber() || version.getVersionNumber() == ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId >= 315 && protocolId <= 335) { //ToDo
             return super.getLastDataIndex() + 1;
         }
         return super.getLastDataIndex();

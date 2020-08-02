@@ -21,7 +21,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketTitle implements ClientboundPacket {
     TitleAction action;
 
@@ -31,7 +30,6 @@ public class PacketTitle implements ClientboundPacket {
     int fadeInTime;
     int stayTime;
     int fadeOutTime;
-
 
     @Override
     public boolean read(InByteBuffer buffer) {

@@ -137,6 +137,13 @@ public class Connection {
 
     public void setVersion(Version version) {
         this.version = version;
+        try {
+            Versions.loadVersionMappings(version.getProtocolVersion());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.fatal(String.format("Could not load mapping for %s. Exiting...", version));
+            System.exit(1);
+        }
         customMapping.setVersion(version);
     }
 
@@ -200,14 +207,13 @@ public class Connection {
         handleThread.start();
     }
 
-
     public PluginChannelHandler getPluginChannelHandler() {
         return pluginChannelHandler;
     }
 
     public void registerDefaultChannels() {
         // MC|Brand
-        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version), (handler, buffer) -> {
+        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version.getProtocolVersion()), (handler, buffer) -> {
             String serverVersion;
             String clientVersion = (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
             OutByteBuffer toSend = new OutByteBuffer(this);
@@ -222,11 +228,11 @@ public class Connection {
             }
             Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getVersionName()));
 
-            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version), toSend);
+            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version.getProtocolVersion()), toSend);
         });
 
         // MC|StopSound
-        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.STOP_SOUND.getChangeableIdentifier().get(version), (handler, buffer) -> {
+        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.STOP_SOUND.getChangeableIdentifier().get(version.getProtocolVersion()), (handler, buffer) -> {
             // it is basically a packet, handle it like a packet:
             PacketStopSound packet = new PacketStopSound();
             packet.read(buffer);
@@ -249,7 +255,6 @@ public class Connection {
     public CustomMapping getMapping() {
         return customMapping;
     }
-
 
     public int getPacketCommand(Packets.Serverbound packet) {
         if (packet.getState() == ConnectionState.PLAY) {

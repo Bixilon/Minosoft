@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketPlayerPositionAndRotationSending implements ServerboundPacket {
     final double x;
     final double feetY;
@@ -48,7 +47,6 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
         this.pitch = pitch;
         this.onGround = onGround;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

@@ -25,7 +25,6 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.UUID;
 
-
 public class PacketSpawnPlayer implements ClientboundPacket {
     OtherPlayer entity;
     Velocity velocity;

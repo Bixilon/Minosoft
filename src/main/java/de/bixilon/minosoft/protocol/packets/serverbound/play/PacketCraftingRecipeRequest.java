@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketCraftingRecipeRequest implements ServerboundPacket {
     final byte windowId;
     final int recipeId;
@@ -28,7 +27,6 @@ public class PacketCraftingRecipeRequest implements ServerboundPacket {
         this.windowId = windowId;
         this.recipeId = recipeId;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

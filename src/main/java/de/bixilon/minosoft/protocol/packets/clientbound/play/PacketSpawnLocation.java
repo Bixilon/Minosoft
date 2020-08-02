@@ -22,7 +22,6 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketSpawnLocation implements ClientboundPacket {
     BlockPosition location;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 6) {

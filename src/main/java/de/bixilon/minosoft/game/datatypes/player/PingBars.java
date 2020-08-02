@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.game.datatypes.player;
 
-
 public enum PingBars {
     NO_CONNECTION,
     BARS_5,
@@ -21,7 +20,6 @@ public enum PingBars {
     BARS_3,
     BARS_2,
     BRAS_1;
-
 
     public static PingBars byPing(long ping) {
         if (ping < 0) {

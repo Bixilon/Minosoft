@@ -23,7 +23,6 @@ public class PacketConfirmTransactionReceiving implements ClientboundPacket {
     short actionNumber;
     boolean accepted;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         this.windowId = buffer.readByte();

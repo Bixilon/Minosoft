@@ -25,7 +25,7 @@ public class CommandBlockMinecartMetaData extends EntityMetaData {
     @Nullable
     public String getCommand() {
         final String defaultValue = null;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getString(super.getLastDataIndex() + 1, defaultValue);
@@ -34,7 +34,7 @@ public class CommandBlockMinecartMetaData extends EntityMetaData {
     @Nullable
     public TextComponent getLastOutput() {
         final TextComponent defaultValue = null;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getTextComponent(super.getLastDataIndex() + 2, defaultValue);

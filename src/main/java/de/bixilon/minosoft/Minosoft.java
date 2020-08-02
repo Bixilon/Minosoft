@@ -126,7 +126,6 @@ public class Minosoft {
         }
     }
 
-
     private static void checkAssets() {
         try {
             FolderUtil.copyFolder(Minosoft.class.getResource("/assets").toURI(), Config.homeDir + "assets/");

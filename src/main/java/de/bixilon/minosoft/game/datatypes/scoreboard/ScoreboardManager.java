@@ -19,7 +19,6 @@ public class ScoreboardManager {
     final HashMap<String, Team> teams;
     final HashMap<String, ScoreboardObjective> objectives;
 
-
     public ScoreboardManager() {
         teams = new HashMap<>();
         objectives = new HashMap<>();

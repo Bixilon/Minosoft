@@ -16,7 +16,6 @@ package de.bixilon.minosoft.game.datatypes.inventory;
 import de.bixilon.minosoft.game.datatypes.MapSet;
 import de.bixilon.minosoft.game.datatypes.VersionValueMap;
 
-
 public class InventorySlots {
     public enum PlayerInventory implements InventoryInterface {
         CRAFTING_OUTPUT(0),
@@ -69,7 +68,6 @@ public class InventorySlots {
         HOTBAR_9(44),
         OFF_HAND(45);
 
-
         final int id;
 
         PlayerInventory(int id) {
@@ -78,7 +76,7 @@ public class InventorySlots {
 
         public static PlayerInventory byId(int id, int protocolId) {
             for (PlayerInventory i : values()) {
-                if (i.getId(version) == id) {
+                if (i.getId(protocolId) == id) {
                     return i;
                 }
             }
@@ -86,22 +84,22 @@ public class InventorySlots {
         }
 
         @Override
-        public int getId(ProtocolVersion version) {
+        public int getId(int protocolId) {
             return id;
         }
     }
 
     public enum EntityInventory implements InventoryInterface {
         MAIN_HAND(0),
-        OFF_HAND(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1)}),
-        BOOTS(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 2)}),
-        LEGGINGS(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 3)}),
-        CHESTPLATE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 3), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 4)}),
-        HELMET(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 5)});
+        OFF_HAND(new MapSet[]{new MapSet<>(49, 1)}),
+        BOOTS(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(49, 2)}),
+        LEGGINGS(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(49, 3)}),
+        CHESTPLATE(new MapSet[]{new MapSet<>(0, 3), new MapSet<>(49, 4)}),
+        HELMET(new MapSet[]{new MapSet<>(0, 4), new MapSet<>(49, 5)});
 
         final VersionValueMap<Integer> valueMap;
 
-        EntityInventory(MapSet<ProtocolVersion, Integer>[] values) {
+        EntityInventory(MapSet<Integer, Integer>[] values) {
             valueMap = new VersionValueMap<>(values, true);
         }
 
@@ -111,7 +109,7 @@ public class InventorySlots {
 
         public static EntityInventory byId(int id, int protocolId) {
             for (EntityInventory e : values()) {
-                if (e.getId(version) == id) {
+                if (e.getId(protocolId) == id) {
                     return e;
                 }
             }
@@ -119,13 +117,13 @@ public class InventorySlots {
         }
 
         @Override
-        public int getId(ProtocolVersion version) {
-            return valueMap.get(version);
+        public int getId(int protocolId) {
+            return valueMap.get(protocolId);
         }
     }
 
     public interface InventoryInterface {
-        int getId(ProtocolVersion version);
+        int getId(int protocolId);
     }
 
 }

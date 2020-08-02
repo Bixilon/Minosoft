@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketClientStatus implements ServerboundPacket {
 
     final ClientStatus status;
@@ -27,7 +26,6 @@ public class PacketClientStatus implements ServerboundPacket {
     public PacketClientStatus(ClientStatus status) {
         this.status = status;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

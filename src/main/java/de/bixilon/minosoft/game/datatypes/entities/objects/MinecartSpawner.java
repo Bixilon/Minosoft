@@ -15,22 +15,18 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 
+import java.util.UUID;
 
 public class MinecartSpawner extends Minecart implements ObjectInterface {
 
     public MinecartSpawner(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
-        super(entityId, location, yaw, pitch, additionalInt, null);
+        super(entityId, uuid, location, yaw, pitch, additionalInt);
     }
 
-    public MinecartSpawner(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(entityId, location, yaw, pitch, additionalInt, velocity);
-    }
-
-    public MinecartSpawner(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
-        super(entityId, location, yaw, pitch, 0, velocity);
+    public MinecartSpawner(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw, sets, protocolId);
     }
 
     @Override

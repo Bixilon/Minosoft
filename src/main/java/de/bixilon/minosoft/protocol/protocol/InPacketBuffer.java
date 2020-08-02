@@ -23,7 +23,6 @@ public class InPacketBuffer extends InByteBuffer {
         command = readVarInt();
     }
 
-
     public int getCommand() {
         return command;
     }

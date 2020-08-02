@@ -23,7 +23,6 @@ public class PacketRemoveEntityEffect implements ClientboundPacket {
     int entityId;
     MobEffect effect;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 7) {

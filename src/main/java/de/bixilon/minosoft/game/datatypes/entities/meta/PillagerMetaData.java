@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class PillagerMetaData extends AbstractIllagerMetaData {
 
     public PillagerMetaData(MetaDataHashMap sets, int protocolId) {

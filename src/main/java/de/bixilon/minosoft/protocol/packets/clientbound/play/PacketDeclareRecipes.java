@@ -23,10 +23,8 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketDeclareRecipes implements ClientboundPacket {
     HashBiMap<String, Recipe> recipes = HashBiMap.create();
-
 
     @Override
     public boolean read(InByteBuffer buffer) {

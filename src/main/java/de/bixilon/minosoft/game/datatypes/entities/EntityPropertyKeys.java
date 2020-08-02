@@ -15,7 +15,6 @@ package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
 
-
 public enum EntityPropertyKeys {
     MAX_HEALTH(new ChangeableIdentifier("generic.maxHealth")),
     FOLLOW_RANGE(new ChangeableIdentifier("generic.followRange")),

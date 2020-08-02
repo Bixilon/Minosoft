@@ -16,28 +16,22 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.ItemFrameMetaData;
 
+import java.util.UUID;
 
 public class ItemFrame extends EntityObject implements ObjectInterface {
     final FrameDirection direction;
     ItemFrameMetaData metaData;
 
     public ItemFrame(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
-        super(entityId, location, yaw, pitch, null);
-        // objects do not spawn with metadata... reading additional info from the following int
+        super(entityId, uuid, location, yaw, pitch);
         direction = FrameDirection.byId(additionalInt);
     }
 
-    public ItemFrame(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(entityId, location, yaw, pitch, velocity);
-        direction = FrameDirection.byId(additionalInt);
-    }
-
-    public ItemFrame(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
-        super(entityId, location, yaw, pitch, velocity);
+    public ItemFrame(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
         this.metaData = new ItemFrameMetaData(sets, protocolId);
         this.direction = FrameDirection.byId(0);
     }

@@ -167,7 +167,6 @@ public class Blocks {
         propertyHashMap.put("false", BlockProperties.NOT_SNOWY);
         propertiesMapping.put("snowy", propertyHashMap);
 
-
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperties.UP);
         propertyHashMap.put("false", BlockProperties.NOT_UP);
@@ -459,7 +458,7 @@ public class Blocks {
         rotationMapping.put("east_west", BlockRotation.EAST_WEST);
     }
 
-    public static HashBiMap<Integer, Block> load(String mod, JsonObject json) {
+    public static HashBiMap<Integer, Block> load(String mod, JsonObject json, boolean metaData) {
         HashBiMap<Integer, Block> versionMapping = HashBiMap.create();
         for (String identifierName : json.keySet()) {
             JsonObject identifierJSON = json.getAsJsonObject(identifierName);
@@ -497,7 +496,7 @@ public class Blocks {
                     // no properties, directly add block
                     block = new Block(mod, identifierName);
                 }
-                int blockId = getBlockId(statesJSON);
+                int blockId = getBlockId(statesJSON, metaData);
                 checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping);
                 versionMapping.put(blockId, block);
             }
@@ -505,12 +504,13 @@ public class Blocks {
         return versionMapping;
     }
 
-
-    private static int getBlockId(JsonObject json) {
+    private static int getBlockId(JsonObject json, boolean metaData) {
         int blockId = json.get("id").getAsInt();
+        if (metaData) {
+            blockId <<= 4;
+        }
         if (json.has("meta")) {
             // old format (with metadata)
-            blockId <<= 4;
             blockId |= json.get("meta").getAsByte();
         }
         return blockId;
@@ -518,7 +518,7 @@ public class Blocks {
 
     private static void checkAndCrashIfBlockIsIn(int blockId, String identifierName, HashBiMap<Integer, Block> versionMapping) {
         if (versionMapping.containsKey(blockId)) {
-            throw new RuntimeException(String.format("Block Id %s is already present for %d! (identifier=%s)", blockId, versionMapping.get(blockId), identifierName));
+            throw new RuntimeException(String.format("Block Id %s is already present for %s! (identifier=%s)", blockId, versionMapping.get(blockId), identifierName));
         }
     }
 }

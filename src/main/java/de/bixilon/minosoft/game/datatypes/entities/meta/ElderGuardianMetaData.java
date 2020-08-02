@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class ElderGuardianMetaData extends GuardianMetaData {
 
     public ElderGuardianMetaData(MetaDataHashMap sets, int protocolId) {

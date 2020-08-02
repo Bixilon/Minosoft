@@ -14,17 +14,15 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 
-
 public class TurtleMetaData extends AnimalMetaData {
 
     public TurtleMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);
     }
 
-
     public BlockPosition getHomePosition() {
         final BlockPosition defaultValue = new BlockPosition(0, 0, 0);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getPosition(super.getLastDataIndex() + 1, defaultValue);
@@ -32,7 +30,7 @@ public class TurtleMetaData extends AnimalMetaData {
 
     public boolean hasEgg() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
@@ -40,7 +38,7 @@ public class TurtleMetaData extends AnimalMetaData {
 
     public boolean isLayingEgg() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
@@ -48,7 +46,7 @@ public class TurtleMetaData extends AnimalMetaData {
 
     public BlockPosition getTravelPosition() {
         final BlockPosition defaultValue = new BlockPosition(0, 0, 0);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getPosition(super.getLastDataIndex() + 4, defaultValue);
@@ -56,7 +54,7 @@ public class TurtleMetaData extends AnimalMetaData {
 
     public boolean isGoingHome() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 5, defaultValue);
@@ -64,7 +62,7 @@ public class TurtleMetaData extends AnimalMetaData {
 
     public boolean isTraveling() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 6, defaultValue);
@@ -72,7 +70,7 @@ public class TurtleMetaData extends AnimalMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 6;

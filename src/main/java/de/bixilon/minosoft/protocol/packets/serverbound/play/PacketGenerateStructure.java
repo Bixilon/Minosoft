@@ -20,7 +20,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketGenerateStructure implements ServerboundPacket {
     final BlockPosition position;
     final int levels;
@@ -31,7 +30,6 @@ public class PacketGenerateStructure implements ServerboundPacket {
         this.levels = levels;
         this.keepJigsaw = keepJigsaw;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

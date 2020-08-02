@@ -20,14 +20,12 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketUseItem implements ServerboundPacket {
     Hand hand;
 
     public PacketUseItem(Hand hand) {
         this.hand = hand;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

@@ -22,7 +22,6 @@ public class PacketTabCompleteReceiving implements ClientboundPacket {
     int count;
     String[] match;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 37) {

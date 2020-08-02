@@ -14,17 +14,15 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.Color;
 
-
 public class SheepMetaData extends AnimalMetaData {
 
     public SheepMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);
     }
 
-
     public Color getColor() {
         final int defaultValue = Color.WHITE.getId();
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return Color.byId(sets.getInt(16, defaultValue) & 0xF);
         }
         return Color.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue) & 0xF);
@@ -32,7 +30,7 @@ public class SheepMetaData extends AnimalMetaData {
 
     public boolean isSheared() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getBitMask(16, 0x10, defaultValue);
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x10, defaultValue);

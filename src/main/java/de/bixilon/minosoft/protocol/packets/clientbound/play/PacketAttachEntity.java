@@ -23,7 +23,6 @@ public class PacketAttachEntity implements ClientboundPacket {
     int vehicleId;
     boolean leash;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 77) {

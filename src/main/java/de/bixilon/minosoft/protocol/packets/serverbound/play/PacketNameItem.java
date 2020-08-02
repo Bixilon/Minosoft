@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketNameItem implements ServerboundPacket {
 
     final String name;
@@ -27,7 +26,6 @@ public class PacketNameItem implements ServerboundPacket {
     public PacketNameItem(String name) {
         this.name = name;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

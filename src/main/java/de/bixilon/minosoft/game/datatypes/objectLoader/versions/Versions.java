@@ -16,20 +16,30 @@ package de.bixilon.minosoft.game.datatypes.objectLoader.versions;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.game.datatypes.Mappings;
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.Util;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
-
-import static de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.FLATTING_VERSION_ID;
-
+import java.util.Map;
 
 public class Versions {
 
+    private static final
+    HashMap<String, Mappings> mappingsHashMap = new HashMap<>();
     static VersionMapping legacyMapping;
     static HashBiMap<Integer, Version> versionMap = HashBiMap.create();
     static HashSet<Version> loadedVersion = new HashSet<>();
 
+    static {
+        mappingsHashMap.put("registries", Mappings.REGISTRIES);
+        mappingsHashMap.put("blocks", Mappings.BLOCKS);
+    }
 
     public static Version getVersionById(int protocolId) {
         return versionMap.get(protocolId);
@@ -81,22 +91,41 @@ public class Versions {
     public static void loadVersionMappings(Mappings type, JsonObject data, int protocolId) {
         Version version = versionMap.get(protocolId);
         VersionMapping mapping;
-        if (protocolId < FLATTING_VERSION_ID) {
+        if (protocolId < ProtocolDefinition.FLATTING_VERSION_ID) {
             if (legacyMapping == null) {
-                legacyMapping = new VersionMapping();
+                legacyMapping = new VersionMapping(version);
+            }
+            if (!legacyMapping.isFullyLoaded()) {
                 legacyMapping.load(type, data);
             }
             mapping = legacyMapping;
         } else {
-            mapping = new VersionMapping();
+            mapping = new VersionMapping(version);
             mapping.load(type, data);
         }
         version.setMapping(mapping);
         loadedVersion.add(version);
     }
 
+    public static void loadVersionMappings(int protocolId) throws IOException {
+        Version version;
+        if (protocolId < ProtocolDefinition.FLATTING_VERSION_ID) {
+            version = versionMap.get(ProtocolDefinition.PRE_FLATTENING_VERSION_ID);
+        } else {
+            version = versionMap.get(protocolId);
+        }
+        long startTime = System.currentTimeMillis();
+        for (Map.Entry<String, Mappings> mappingSet : mappingsHashMap.entrySet()) {
+            JsonObject data = Util.readJsonFromFile(Config.homeDir + String.format("assets/mapping/%s/%s.json", version.getVersionName(), mappingSet.getKey())).getAsJsonObject("minecraft");
+            loadVersionMappings(mappingSet.getValue(), data, protocolId);
+        }
+
+        Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", version, (System.currentTimeMillis() - startTime), version.getVersionName()));
+
+    }
+
     public static void unloadUnnecessaryVersions(int necessary) {
-        if (necessary >= FLATTING_VERSION_ID) {
+        if (necessary >= ProtocolDefinition.FLATTING_VERSION_ID) {
             legacyMapping.unload();
             legacyMapping = null;
         }

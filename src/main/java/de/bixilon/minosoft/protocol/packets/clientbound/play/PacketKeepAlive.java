@@ -21,7 +21,6 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketKeepAlive implements ClientboundPacket {
     long id;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 32) {

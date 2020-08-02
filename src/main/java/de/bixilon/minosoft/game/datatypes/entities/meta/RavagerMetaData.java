@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class RavagerMetaData extends RaidParticipantMetaData {
 
     public RavagerMetaData(MetaDataHashMap sets, int protocolId) {

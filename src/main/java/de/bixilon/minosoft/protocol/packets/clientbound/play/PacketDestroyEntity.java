@@ -20,7 +20,6 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.Arrays;
 
-
 public class PacketDestroyEntity implements ClientboundPacket {
     int[] entityIds;
 
@@ -48,7 +47,6 @@ public class PacketDestroyEntity implements ClientboundPacket {
     public int[] getEntityIds() {
         return entityIds;
     }
-
 
     @Override
     public void handle(PacketHandler h) {

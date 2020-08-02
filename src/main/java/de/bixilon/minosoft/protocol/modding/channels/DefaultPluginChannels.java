@@ -15,13 +15,11 @@ package de.bixilon.minosoft.protocol.modding.channels;
 
 import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
 
-
 public enum DefaultPluginChannels {
     MC_BRAND(new ChangeableIdentifier("MC|Brand", "minecraft:brand")),
     STOP_SOUND(new ChangeableIdentifier("MC|StopSound")),
     REGISTER(new ChangeableIdentifier("REGISTER", "minecraft:register")),
     UNREGISTER(new ChangeableIdentifier("UNREGISTER", "minecraft:unregister"));
-
 
     final ChangeableIdentifier changeableIdentifier;
 
@@ -31,7 +29,7 @@ public enum DefaultPluginChannels {
 
     public static DefaultPluginChannels byName(String name, int protocolId) {
         for (DefaultPluginChannels d : values()) {
-            if (d.getChangeableIdentifier().get(version).equals(name)) {
+            if (d.getChangeableIdentifier().get(protocolId).equals(name)) {
                 return d;
             }
         }

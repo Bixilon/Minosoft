@@ -17,7 +17,6 @@ import de.bixilon.minosoft.game.datatypes.entities.Pose;
 import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.nbt.tag.CompoundTag;
@@ -27,7 +26,6 @@ import de.bixilon.minosoft.util.BitByte;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.UUID;
-
 
 public class EntityMetaData {
 
@@ -120,7 +118,7 @@ public class EntityMetaData {
                 break;
             case BLOCK_ID:
                 int blockId = buffer.readVarInt();
-                data = Blocks.getBlock(blockId, buffer.getProtocolId());
+                data = buffer.getConnection().getMapping().getBlockById(blockId);
                 break;
             case OPT_VAR_INT:
                 data = buffer.readVarInt() - 1;
@@ -151,14 +149,14 @@ public class EntityMetaData {
     }
 
     public boolean isEating() {
-        if (version.getVersionNumber() > ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId > 335) { //ToDo
             return false;
         }
         return sets.getBitMask(0, 0x10, false);
     }
 
     private boolean isSwimming() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 358) {
             return false;
         }
         return sets.getBitMask(0, 0x10, false);
@@ -186,24 +184,24 @@ public class EntityMetaData {
 
     @Nullable
     public TextComponent getNameTag() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId <= 110) { //ToDo
             return null;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId <= 335) { //ToDo
             return new TextComponent(sets.getString(2, null));
         }
         return sets.getTextComponent(2, null);
     }
 
     public boolean isCustomNameVisible() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId <= 110) { //ToDo
             return false;
         }
         return sets.getBoolean(3, false);
     }
 
     public boolean isSilent() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId <= 110) { //ToDo
             return false;
         }
         return sets.getBoolean(4, false);
@@ -211,14 +209,14 @@ public class EntityMetaData {
     }
 
     public boolean hasGravity() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId <= 204) { //ToDo
             return true;
         }
         return !sets.getBoolean(5, false);
     }
 
     public Pose getPose() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 461) {
             if (isSneaking()) {
                 return Pose.SNEAKING;
             } else if (isSwimming()) {
@@ -231,13 +229,13 @@ public class EntityMetaData {
     }
 
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             throw new IllegalArgumentException("EntityMetaData::getLastDataIndex does not work below 1.9!");
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId == 110) { //ToDo
             return 4;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId <= 461) {
             return 5;
         }
         return 6;

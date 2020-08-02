@@ -26,9 +26,12 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
 import de.bixilon.minosoft.game.datatypes.objectLoader.motives.Motive;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
 import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.Statistic;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
+import java.util.HashSet;
 
 public class VersionMapping {
+    final Version version;
     HashBiMap<String, Motive> motiveIdentifierMap;
     HashBiMap<String, Particle> particleIdentifierMap;
     HashBiMap<String, Statistic> statisticIdentifierMap;
@@ -42,6 +45,11 @@ public class VersionMapping {
     HashBiMap<Integer, Enchantment> enchantmentMap;
     HashBiMap<Integer, Particle> particleIdMap;
     HashBiMap<Integer, Statistic> statisticIdMap;
+    HashSet<Mappings> loaded = new HashSet<>();
+
+    public VersionMapping(Version version) {
+        this.version = version;
+    }
 
     public Motive getMotiveByIdentifier(String identifier) {
         return motiveIdentifierMap.get(identifier);
@@ -54,7 +62,6 @@ public class VersionMapping {
     public Particle getParticleByIdentifier(String identifier) {
         return particleIdentifierMap.get(identifier);
     }
-
 
     public Item getItemById(int protocolId) {
         return itemMap.get(protocolId);
@@ -71,7 +78,6 @@ public class VersionMapping {
     public Motive getMotiveById(int protocolId) {
         return motiveIdMap.get(protocolId);
     }
-
 
     public MobEffect getMobEffectById(int protocolId) {
         return mobEffectMap.get(protocolId);
@@ -105,16 +111,9 @@ public class VersionMapping {
         return statisticIdMap.get(protocolId);
     }
 
-
     public void load(Mappings type, JsonObject data) {
         switch (type) {
             case REGISTRIES:
-
-                motiveIdentifierMap = HashBiMap.create();
-                particleIdentifierMap = HashBiMap.create();
-                statisticIdentifierMap = HashBiMap.create();
-                // FIXME: 01.08.20
-
                 JsonObject itemJson = data.getAsJsonObject("item").getAsJsonObject("entries");
                 itemMap = HashBiMap.create();
                 for (String identifier : itemJson.keySet()) {
@@ -135,7 +134,6 @@ public class VersionMapping {
                     entityMap.put(entityJson.getAsJsonObject(identifier).get("id").getAsInt(), identifier);
                 }
 
-
                 enchantmentMap = HashBiMap.create();
                 JsonObject enchantmentJson = data.getAsJsonObject("enchantment").getAsJsonObject("entries");
                 for (String identifier : enchantmentJson.keySet()) {
@@ -144,10 +142,14 @@ public class VersionMapping {
                 }
 
                 statisticIdMap = HashBiMap.create();
+                statisticIdentifierMap = HashBiMap.create();
                 JsonObject statisticJson = data.getAsJsonObject("custom_stat").getAsJsonObject("entries");
                 for (String identifier : statisticJson.keySet()) {
                     Statistic statistic = new Statistic("minecraft", identifier);
-                    statisticIdMap.put(statisticJson.getAsJsonObject(identifier).get("id").getAsInt(), statistic);
+                    if (statisticJson.getAsJsonObject(identifier).has("id")) {
+                        statisticIdMap.put(statisticJson.getAsJsonObject(identifier).get("id").getAsInt(), statistic);
+                    }
+                    statisticIdentifierMap.put(identifier, statistic);
                 }
 
                 blockIdMap = HashBiMap.create();
@@ -158,17 +160,25 @@ public class VersionMapping {
                 }
 
                 motiveIdMap = HashBiMap.create();
+                motiveIdentifierMap = HashBiMap.create();
                 JsonObject motiveJson = data.getAsJsonObject("motive").getAsJsonObject("entries");
                 for (String identifier : motiveJson.keySet()) {
                     Motive motive = new Motive("minecraft", identifier);
-                    motiveIdMap.put(motiveJson.getAsJsonObject(identifier).get("id").getAsInt(), motive);
+                    if (motiveJson.getAsJsonObject(identifier).has("id")) {
+                        motiveIdMap.put(motiveJson.getAsJsonObject(identifier).get("id").getAsInt(), motive);
+                    }
+                    motiveIdentifierMap.put(identifier, motive);
                 }
 
                 particleIdMap = HashBiMap.create();
+                particleIdentifierMap = HashBiMap.create();
                 JsonObject particleJson = data.getAsJsonObject("particle_type").getAsJsonObject("entries");
                 for (String identifier : particleJson.keySet()) {
                     Particle particle = new Particle("minecraft", identifier);
-                    particleIdMap.put(particleJson.getAsJsonObject(identifier).get("id").getAsInt(), particle);
+                    if (particleJson.getAsJsonObject(identifier).has("id")) {
+                        particleIdMap.put(particleJson.getAsJsonObject(identifier).get("id").getAsInt(), particle);
+                    }
+                    particleIdentifierMap.put(identifier, particle);
                 }
 
                 mobEffectMap = HashBiMap.create();
@@ -187,11 +197,11 @@ public class VersionMapping {
                 }
                 break;
             case BLOCKS:
-                blockMap = Blocks.load("minecraft", data);
+                blockMap = Blocks.load("minecraft", data, version.getProtocolVersion() < ProtocolDefinition.FLATTING_VERSION_ID);
                 break;
         }
+        loaded.add(type);
     }
-
 
     public void unload() {
         motiveIdentifierMap.clear();
@@ -207,5 +217,14 @@ public class VersionMapping {
         enchantmentMap.clear();
         particleIdMap.clear();
         statisticIdMap.clear();
+    }
+
+    public boolean isFullyLoaded() {
+        for (Mappings mapping : Mappings.values()) {
+            if (!loaded.contains(mapping)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

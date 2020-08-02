@@ -38,7 +38,6 @@ public class IntArrayTag implements NBTTag {
         buffer.writeIntegers(value);
     }
 
-
     public int[] getValue() {
         return value;
     }

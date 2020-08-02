@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class SpectralArrowMetaData extends AbstractArrowMetaData {
 
     public SpectralArrowMetaData(MetaDataHashMap sets, int protocolId) {

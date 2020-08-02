@@ -24,7 +24,6 @@ public class PacketBlockBreakAnimation implements ClientboundPacket {
     BlockPosition position;
     byte stage;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         entityId = buffer.readVarInt();

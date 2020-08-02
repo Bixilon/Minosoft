@@ -143,7 +143,6 @@ public abstract class Protocol {
         serverboundPacketMapping.get(ConnectionState.LOGIN).put(Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE, 0x01);
         serverboundPacketMapping.get(ConnectionState.LOGIN).put(Packets.Serverbound.LOGIN_PLUGIN_RESPONSE, 0x02);
 
-
         clientboundPacketMapping.put(ConnectionState.STATUS, HashBiMap.create());
         clientboundPacketMapping.put(ConnectionState.LOGIN, HashBiMap.create());
 

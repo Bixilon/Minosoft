@@ -19,10 +19,8 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketSelectAdvancementTab implements ClientboundPacket {
     AdvancementTabs tab;
-
 
     @Override
     public boolean read(InByteBuffer buffer) {

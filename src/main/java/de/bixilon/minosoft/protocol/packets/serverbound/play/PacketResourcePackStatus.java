@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketResourcePackStatus implements ServerboundPacket {
     final String hash;
     final ResourcePackStatus status;
@@ -28,7 +27,6 @@ public class PacketResourcePackStatus implements ServerboundPacket {
         this.hash = hash;
         this.status = status;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

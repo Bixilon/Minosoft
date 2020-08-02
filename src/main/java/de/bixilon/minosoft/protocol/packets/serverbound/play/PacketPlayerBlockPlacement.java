@@ -22,7 +22,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketPlayerBlockPlacement implements ServerboundPacket {
     final BlockPosition position;
     final byte direction;
@@ -32,7 +31,6 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
     final float cursorZ;
     final Hand hand;
     boolean insideBlock;
-
 
     public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Slot item, float cursorX, float cursorY, float cursorZ) {
         this.position = position;
@@ -66,7 +64,6 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
         this.cursorZ = cursorZ;
         this.insideBlock = insideBlock;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

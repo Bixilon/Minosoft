@@ -22,7 +22,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketClientSettings implements ServerboundPacket {
 
     public final Locale locale;
@@ -41,7 +40,6 @@ public class PacketClientSettings implements ServerboundPacket {
         this.renderDistance = (byte) renderDistance;
         this.mainHand = mainHand;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

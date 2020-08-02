@@ -14,17 +14,15 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.Color;
 
-
 public class CatMetaData extends AnimalMetaData {
 
     public CatMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);
     }
 
-
     public CatTypes getType() {
         final int defaultValue = CatTypes.BLACK.getId();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return CatTypes.byId(defaultValue);
         }
         return CatTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
@@ -32,7 +30,7 @@ public class CatMetaData extends AnimalMetaData {
 
     public Color getCollarColor() {
         final int defaultValue = Color.RED.getId();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return Color.byId(defaultValue);
         }
         return Color.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue));
@@ -40,7 +38,7 @@ public class CatMetaData extends AnimalMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

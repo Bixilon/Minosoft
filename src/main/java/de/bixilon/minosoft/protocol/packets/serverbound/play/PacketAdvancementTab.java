@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketAdvancementTab implements ServerboundPacket {
     final AdvancementTabStatus action;
     final String tabToOpen;
@@ -54,7 +53,6 @@ public class PacketAdvancementTab implements ServerboundPacket {
         CLOSE_TAB(1);
 
         final int id;
-
 
         AdvancementTabStatus(int id) {
             this.id = id;

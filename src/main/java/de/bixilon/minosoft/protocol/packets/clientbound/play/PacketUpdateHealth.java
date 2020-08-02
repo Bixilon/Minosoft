@@ -23,7 +23,6 @@ public class PacketUpdateHealth implements ClientboundPacket {
     int food;
     float saturation;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         health = buffer.readFloat();

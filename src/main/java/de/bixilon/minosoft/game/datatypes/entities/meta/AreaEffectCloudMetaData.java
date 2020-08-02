@@ -12,9 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particles;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
-
 
 public class AreaEffectCloudMetaData extends EntityMetaData {
 
@@ -22,10 +20,9 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
         super(sets, protocolId);
     }
 
-
     public float getRadius() {
         final float defaultValue = 0.5F;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getFloat(super.getLastDataIndex() + 1, defaultValue);
@@ -33,7 +30,7 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
 
     public int getColor() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -41,29 +38,31 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
 
     public boolean ignoreRadius() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
     }
 
     public ParticleData getParticle() {
-        final ParticleData defaultValue = new ParticleData(Particles.byIdentifier("minecraft:effect"));
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        // ToDo: final ParticleData defaultValue = new ParticleData(Particles.byIdentifier("minecraft:effect"));
+        final ParticleData defaultValue = null;
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            return new ParticleData(Particles.byId(sets.getInt(super.getLastDataIndex() + 4, 0), version));
+        if (protocolId <= 335) { //ToDo
+            //ToDo return new ParticleData(Particles.byId(sets.getInt(super.getLastDataIndex() + 4, 0), version));
+            return null;
         }
         return sets.getParticle(super.getLastDataIndex() + 4, defaultValue);
     }
 
     public int getParticleParameter1() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId < 204) { //ToDo
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId <= 335) { //ToDo
             return sets.getInt(super.getLastDataIndex() + 5, defaultValue);
         }
         return defaultValue;
@@ -71,10 +70,10 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
 
     public int getParticleParameter2() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId < 204) { //ToDo
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId <= 335) { //ToDo
             return sets.getInt(super.getLastDataIndex() + 6, defaultValue);
         }
         return defaultValue;
@@ -82,10 +81,10 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return super.getLastDataIndex();
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId <= 335) { //ToDo
             return super.getLastDataIndex() + 6;
         }
         return super.getLastDataIndex() + 4;

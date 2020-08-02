@@ -28,7 +28,6 @@ public class PacketOpenWindow implements ClientboundPacket {
     byte slotCount;
     int entityId;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 6) {

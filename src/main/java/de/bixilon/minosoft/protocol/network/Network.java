@@ -69,7 +69,6 @@ public class Network {
                 inputStream = socket.getInputStream();
                 cipherInputStream = inputStream;
 
-
                 while (connection.getConnectionState() != ConnectionState.DISCONNECTING) {
                     // wait for data or send until it should disconnect
                     // first send, then receive
@@ -78,7 +77,6 @@ public class Network {
                     if (!socket.isConnected() || socket.isClosed()) {
                         break;
                     }
-
 
                     while (queue.size() > 0) {
                         ServerboundPacket packet = queue.get(0);
@@ -120,8 +118,7 @@ public class Network {
                         }
                     }
 
-
-                    // everything sent for now, waiting for data
+// everything sent for now, waiting for data
                     if (inputStream.available() > 0) { // available seems not to work in CipherInputStream
                         int numRead = 0;
                         int length = 0;
@@ -138,7 +135,6 @@ public class Network {
                         } while ((read & 0b10000000) != 0);
 
                         byte[] data = cipherInputStream.readNBytes(length);
-
 
                         if (compressionThreshold != -1) {
                             // compression is enabled
@@ -207,7 +203,6 @@ public class Network {
         socketThread.setName("Socket-Thread");
         socketThread.start();
     }
-
 
     public void sendPacket(ServerboundPacket p) {
         queue.add(p);

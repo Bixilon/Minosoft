@@ -145,7 +145,6 @@ public class CompoundTag implements NBTTag {
         data.put("z", new IntTag(position.getZ()));
     }
 
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

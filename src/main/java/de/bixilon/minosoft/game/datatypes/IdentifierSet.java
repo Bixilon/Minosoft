@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-
 public class IdentifierSet extends MapSet<Integer, String> {
     public IdentifierSet(Integer key, String value) {
         super(key, value);

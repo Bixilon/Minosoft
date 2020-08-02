@@ -25,7 +25,6 @@ public class PacketScoreboardObjective implements ClientboundPacket {
     ScoreboardObjectiveAction action;
     ScoreboardObjectiveTypes type;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 7) { // ToDo

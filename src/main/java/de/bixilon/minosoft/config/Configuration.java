@@ -72,7 +72,6 @@ public class Configuration {
         return getString(config.getPath());
     }
 
-
     public void putBoolean(ConfigEnum config, boolean value) {
         putBoolean(config.getPath(), value);
     }

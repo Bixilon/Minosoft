@@ -29,33 +29,33 @@ public abstract class Entity implements EntityInterface {
     final HashMap<InventorySlots.EntityInventory, Slot> equipment;
     final ArrayList<StatusEffect> effectList;
     Location location;
-    short yaw;
-    short pitch;
-    short headYaw;
+    int yaw;
+    int pitch;
+    int headYaw;
     int attachedTo = -1;
 
     public Entity(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw) {
+        this(entityId, uuid, location, yaw, (int) pitch, headYaw);
+    }
+
+    public Entity(int entityId, UUID uuid, Location location, int yaw, int pitch, int headYaw) {
+        this(entityId, uuid, location, yaw, pitch);
+        this.headYaw = headYaw;
+    }
+
+    public Entity(int entityId, UUID uuid, Location location, short yaw, short pitch) {
+        this(entityId, uuid, location, yaw, (int) pitch);
+    }
+
+    public Entity(int entityId, UUID uuid, Location location, int yaw, int pitch) {
         this.entityId = entityId;
         this.uuid = uuid;
         this.location = location;
         this.yaw = yaw;
         this.pitch = pitch;
-        this.headYaw = headYaw;
         this.equipment = new HashMap<>();
         this.effectList = new ArrayList<>();
     }
-
-    public Entity(int entityId, UUID uuid, Location location, int yaw, int pitch, int headYaw) {
-        this.entityId = entityId;
-        this.uuid = uuid;
-        this.location = location;
-        this.yaw = (short) yaw;
-        this.pitch = (short) pitch;
-        this.headYaw = (short) headYaw;
-        this.equipment = new HashMap<>();
-        this.effectList = new ArrayList<>();
-    }
-
 
     public int getEntityId() {
         return entityId;
@@ -74,19 +74,19 @@ public abstract class Entity implements EntityInterface {
         location = new Location(location.getX() + relativeLocation.getX(), location.getY() + relativeLocation.getY(), location.getZ() + relativeLocation.getZ());
     }
 
-    public short getYaw() {
+    public int getYaw() {
         return yaw;
     }
 
-    public void setYaw(short yaw) {
+    public void setYaw(int yaw) {
         this.yaw = yaw;
     }
 
-    public short getPitch() {
+    public int getPitch() {
         return pitch;
     }
 
-    public void setPitch(short pitch) {
+    public void setPitch(int pitch) {
         this.pitch = pitch;
     }
 
@@ -102,11 +102,11 @@ public abstract class Entity implements EntityInterface {
         return uuid;
     }
 
-    public short getHeadYaw() {
+    public int getHeadYaw() {
         return headYaw;
     }
 
-    public void setHeadYaw(short headYaw) {
+    public void setHeadYaw(int headYaw) {
         this.headYaw = headYaw;
     }
 

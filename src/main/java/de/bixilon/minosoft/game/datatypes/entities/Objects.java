@@ -56,7 +56,6 @@ public enum Objects implements EntityEnumInterface {
         this.clazz = clazz;
     }
 
-
     public static Objects byType(int type) {
         for (Objects b : values()) {
             if (b.getType() == type) {

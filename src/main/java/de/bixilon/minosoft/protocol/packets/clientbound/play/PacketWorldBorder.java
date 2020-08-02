@@ -35,7 +35,6 @@ public class PacketWorldBorder implements ClientboundPacket {
     int warningTime;
     int warningBlocks;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         action = WorldBorderAction.byId(buffer.readVarInt());

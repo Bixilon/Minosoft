@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketSteerVehicle implements ServerboundPacket {
 
     final float sideways;
@@ -33,7 +32,6 @@ public class PacketSteerVehicle implements ServerboundPacket {
         this.jump = jump;
         this.unmount = unmount;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

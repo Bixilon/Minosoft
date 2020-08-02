@@ -82,7 +82,6 @@ public class PacketEntityStatus implements ClientboundPacket {
         PORTAL_PARTICLE_CHORUS(46);
         // ToDo: 1.11+ (for each entity)
 
-
         final int id;
 
         Status(int id) {

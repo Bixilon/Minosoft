@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class SlimeMetaData extends InsentientMetaData {
 
     public SlimeMetaData(MetaDataHashMap sets, int protocolId) {
@@ -21,7 +20,7 @@ public class SlimeMetaData extends InsentientMetaData {
 
     public int getSize() {
         final int defaultValue = 1;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getByte(16, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);

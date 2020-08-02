@@ -24,7 +24,7 @@ public class LlamaMetaData extends ChestedHorseMetaData {
 
     public int getStrength() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -33,7 +33,7 @@ public class LlamaMetaData extends ChestedHorseMetaData {
     @Nullable
     public Color getCarpetColor() {
         final int defaultValue = -1;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return Color.byId(defaultValue);
         }
         return Color.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue));
@@ -41,7 +41,7 @@ public class LlamaMetaData extends ChestedHorseMetaData {
 
     public LlamaVariants getVariant() {
         final int defaultValue = LlamaVariants.CREAMY.getId();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return LlamaVariants.byId(defaultValue);
         }
         return LlamaVariants.byId(sets.getInt(super.getLastDataIndex() + 3, defaultValue));
@@ -49,7 +49,7 @@ public class LlamaMetaData extends ChestedHorseMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 3;

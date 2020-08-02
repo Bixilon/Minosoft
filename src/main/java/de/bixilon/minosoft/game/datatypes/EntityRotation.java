@@ -24,7 +24,6 @@ public class EntityRotation {
         this.roll = roll;
     }
 
-
     public float getYaw() {
         return yaw;
     }

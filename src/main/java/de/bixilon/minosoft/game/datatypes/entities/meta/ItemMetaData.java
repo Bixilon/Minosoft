@@ -25,7 +25,7 @@ public class ItemMetaData extends EntityMetaData {
     @Nullable
     public Slot getSlot() {
         final Slot defaultValue = null;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getSlot(10, defaultValue);
         }
         return sets.getSlot(super.getLastDataIndex() + 1, defaultValue);

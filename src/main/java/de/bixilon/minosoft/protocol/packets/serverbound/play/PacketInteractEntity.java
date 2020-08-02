@@ -22,7 +22,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketInteractEntity implements ServerboundPacket {
     final int entityId;
     final Click click;
@@ -66,7 +65,6 @@ public class PacketInteractEntity implements ServerboundPacket {
         this.hand = hand;
         this.sneaking = sneaking;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

@@ -23,7 +23,6 @@ public class PacketUseBed implements ClientboundPacket {
     int entityId;
     BlockPosition position;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         entityId = buffer.readInt();

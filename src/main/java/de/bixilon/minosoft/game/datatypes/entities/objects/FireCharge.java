@@ -16,27 +16,21 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 
+import java.util.UUID;
 
 public class FireCharge extends EntityObject implements ObjectInterface {
     final int thrower;
     EntityMetaData metaData;
 
     public FireCharge(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
-        super(entityId, location, yaw, pitch, null);
-        // objects do not spawn with metadata... reading additional info from the following int
+        super(entityId, uuid, location, yaw, pitch);
         this.thrower = additionalInt;
     }
 
-    public FireCharge(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(entityId, location, yaw, pitch, velocity);
-        this.thrower = additionalInt;
-    }
-
-    public FireCharge(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
-        super(entityId, location, yaw, pitch, velocity);
+    public FireCharge(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
         this.metaData = new EntityMetaData(sets, protocolId);
         this.thrower = 0; // ToDo
     }

@@ -33,11 +33,10 @@
         </plugins>
     </build>
 
-
-    <properties>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.target>14</maven.compiler.target>
-    </properties>
+<properties>
+    <maven.compiler.source>14</maven.compiler.source>
+    <maven.compiler.target>14</maven.compiler.target>
+</properties>
 
     <dependencies>
         <dependency>

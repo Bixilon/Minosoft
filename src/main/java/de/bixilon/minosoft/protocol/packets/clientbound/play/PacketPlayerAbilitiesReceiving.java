@@ -27,7 +27,6 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
     float flyingSpeed;
     float walkingSpeed;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 6) { //ToDo

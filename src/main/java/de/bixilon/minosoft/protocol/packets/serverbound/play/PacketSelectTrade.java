@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketSelectTrade implements ServerboundPacket {
 
     final int id;
@@ -27,7 +26,6 @@ public class PacketSelectTrade implements ServerboundPacket {
     public PacketSelectTrade(int id) {
         this.id = id;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

@@ -25,7 +25,6 @@ import java.util.HashMap;
 public class PacketStatistics implements ClientboundPacket {
     HashMap<Statistic, Integer> statistics = new HashMap<>();
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         int length = buffer.readVarInt();

@@ -20,19 +20,16 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketPlayerDigging implements ServerboundPacket {
     final DiggingStatus status;
     final BlockPosition position;
     final DiggingFace face;
-
 
     public PacketPlayerDigging(DiggingStatus status, BlockPosition position, DiggingFace face) {
         this.status = status;
         this.position = position;
         this.face = face;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {
@@ -79,7 +76,6 @@ public class PacketPlayerDigging implements ServerboundPacket {
             this.id = id;
         }
 
-
         public static DiggingStatus byId(int id) {
             for (DiggingStatus status : values()) {
                 if (status.getId() == id) {
@@ -102,7 +98,6 @@ public class PacketPlayerDigging implements ServerboundPacket {
         WEST(4),
         EAST(5),
         SPECIAL(255);
-
 
         final byte id;
 

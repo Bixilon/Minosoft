@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class DrownedMetaData extends ZombieMetaData {
 
     public DrownedMetaData(MetaDataHashMap sets, int protocolId) {

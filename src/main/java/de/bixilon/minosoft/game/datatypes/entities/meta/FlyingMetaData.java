@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class FlyingMetaData extends InsentientMetaData {
 
     public FlyingMetaData(MetaDataHashMap sets, int protocolId) {

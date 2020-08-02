@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class MooshroomMetaData extends AnimalMetaData {
 
     public MooshroomMetaData(MetaDataHashMap sets, int protocolId) {
@@ -21,7 +20,7 @@ public class MooshroomMetaData extends AnimalMetaData {
 
     public MooshroomTypes getType() {
         final String defaultValue = MooshroomTypes.RED.getTypeName();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return MooshroomTypes.byTypeName(defaultValue);
         }
         return MooshroomTypes.byTypeName(sets.getString(super.getLastDataIndex() + 1, defaultValue));
@@ -29,7 +28,7 @@ public class MooshroomMetaData extends AnimalMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

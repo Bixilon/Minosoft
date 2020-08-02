@@ -34,7 +34,6 @@ public class PacketTeams implements ClientboundPacket {
     TextComponent.ChatAttributes color = TextComponent.ChatAttributes.WHITE;
     String[] playerNames;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         name = buffer.readString();

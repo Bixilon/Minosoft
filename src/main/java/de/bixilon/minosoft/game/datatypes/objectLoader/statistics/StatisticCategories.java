@@ -15,7 +15,6 @@ package de.bixilon.minosoft.game.datatypes.objectLoader.statistics;
 
 import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
 
-
 public enum StatisticCategories {
     MINED(new ChangeableIdentifier("minecraft.mined"), 0),
     CRAFTED(new ChangeableIdentifier("minecraft.crafted"), 1),
@@ -27,7 +26,6 @@ public enum StatisticCategories {
     KILLED_BY(new ChangeableIdentifier("minecraft.killed_by"), 7),
     CUSTOM(new ChangeableIdentifier("minecraft.custom"), 8);
 
-
     final ChangeableIdentifier changeableIdentifier;
     final int id;
 
@@ -38,7 +36,7 @@ public enum StatisticCategories {
 
     public static StatisticCategories byName(String name, int protocolId) {
         for (StatisticCategories category : values()) {
-            if (category.getChangeableIdentifier().isValidName(name, version)) {
+            if (category.getChangeableIdentifier().isValidName(name, protocolId)) {
                 return category;
             }
         }

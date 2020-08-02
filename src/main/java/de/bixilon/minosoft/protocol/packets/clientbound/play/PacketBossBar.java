@@ -33,7 +33,6 @@ public class PacketBossBar implements ClientboundPacket {
     BossBarDivisions divisions;
     byte flags;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         uuid = buffer.readUUID();
@@ -118,7 +117,6 @@ public class PacketBossBar implements ClientboundPacket {
         return title;
     }
 
-
     public byte getFlags() {
         return flags;
     }
@@ -142,7 +140,6 @@ public class PacketBossBar implements ClientboundPacket {
         UPDATE_TITLE(3),
         UPDATE_STYLE(4),
         UPDATE_FLAGS(5);
-
 
         final int id;
 
@@ -173,7 +170,6 @@ public class PacketBossBar implements ClientboundPacket {
         PURPLE(5),
         WHITE(6);
 
-
         final int id;
 
         BossBarColor(int id) {
@@ -200,7 +196,6 @@ public class PacketBossBar implements ClientboundPacket {
         NOTCHES_10(2),
         NOTCHES_12(3),
         NOTCHES_20(4);
-
 
         final int id;
 

@@ -23,7 +23,6 @@ public class PacketOpenHorseWindow implements ClientboundPacket {
     int slotCount;
     int entityId;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         this.windowId = buffer.readByte();

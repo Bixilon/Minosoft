@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class SpellcasterMetaData extends LivingMetaData {
 
     public SpellcasterMetaData(MetaDataHashMap sets, int protocolId) {
@@ -21,7 +20,7 @@ public class SpellcasterMetaData extends LivingMetaData {
 
     public SpellTypes getSpell() {
         final int defaultValue = SpellTypes.NONE.getId();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return SpellTypes.byId(defaultValue);
         }
         return SpellTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));

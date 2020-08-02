@@ -23,7 +23,6 @@ public class PacketServerDifficulty implements ClientboundPacket {
     Difficulty difficulty;
     boolean locked;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         difficulty = Difficulty.byId(buffer.readByte());

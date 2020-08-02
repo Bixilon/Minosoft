@@ -21,7 +21,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketClickWindow implements ServerboundPacket {
 
     final byte windowId;
@@ -37,7 +36,6 @@ public class PacketClickWindow implements ServerboundPacket {
         this.actionNumber = actionNumber;
         this.clickedItem = clickedItem;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

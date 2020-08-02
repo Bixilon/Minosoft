@@ -63,7 +63,6 @@ public class OtherPlayer extends Mob implements MobInterface {
         }
     }
 
-
     @Override
     public EntityMetaData getMetaData() {
         return metaData;
@@ -86,7 +85,6 @@ public class OtherPlayer extends Mob implements MobInterface {
     public PlayerPropertyData[] getProperties() {
         return properties;
     }
-
 
     public short getCurrentItem() {
         return currentItem;

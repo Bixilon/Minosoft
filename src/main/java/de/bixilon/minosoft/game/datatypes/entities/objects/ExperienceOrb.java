@@ -21,9 +21,8 @@ public class ExperienceOrb extends Entity {
     final short count;
     EntityMetaData metaData;
 
-
     public ExperienceOrb(int entityId, Location location, short count) {
-        super(entityId, location, 0, 0, null);
+        super(entityId, null, location, 0, 0);
         this.count = count;
     }
 

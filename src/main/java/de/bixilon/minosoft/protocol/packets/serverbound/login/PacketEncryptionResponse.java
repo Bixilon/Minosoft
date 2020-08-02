@@ -29,13 +29,11 @@ public class PacketEncryptionResponse implements ServerboundPacket {
     final byte[] token;
     final SecretKey secretKey;
 
-
     public PacketEncryptionResponse(SecretKey secret, byte[] token, PublicKey key) {
         this.secretKey = secret;
         this.secret = CryptManager.encryptData(key, secret.getEncoded());
         this.token = CryptManager.encryptData(key, token);
     }
-
 
     public SecretKey getSecretKey() {
         return secretKey;

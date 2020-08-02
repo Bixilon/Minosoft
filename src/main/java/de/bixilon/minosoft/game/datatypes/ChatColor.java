@@ -37,7 +37,6 @@ public enum ChatColor {
     ITALIC(20),
     RESET(21);
 
-
     final int color;
     final String prefix;
 

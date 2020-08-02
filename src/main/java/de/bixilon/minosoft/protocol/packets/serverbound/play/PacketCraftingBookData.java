@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketCraftingBookData implements ServerboundPacket {
     final BookDataStatus action;
 
@@ -54,7 +53,6 @@ public class PacketCraftingBookData implements ServerboundPacket {
         this.craftingFilter = craftingFilter;
         this.blastingBookOpen = blastingBookOpen;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {
@@ -100,7 +98,6 @@ public class PacketCraftingBookData implements ServerboundPacket {
         CRAFTING_BOOK_STATUS(1);
 
         final int id;
-
 
         BookDataStatus(int id) {
             this.id = id;

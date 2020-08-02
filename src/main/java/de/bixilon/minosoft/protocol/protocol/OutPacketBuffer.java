@@ -36,7 +36,6 @@ public class OutPacketBuffer extends OutByteBuffer {
         writeVarInt(getCommand(), after); // second: command
         after.addAll(before); // rest ist raw data
 
-
         byte[] ret = new byte[after.size()];
         for (int i = 0; i < after.size(); i++) {
             ret[i] = after.get(i);

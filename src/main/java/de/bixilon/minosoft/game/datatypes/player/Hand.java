@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.game.datatypes.player;
 
-
 public enum Hand {
     LEFT(0),
     RIGHT(1);

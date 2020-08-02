@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class IllusionerMetaData extends SpellcasterMetaData {
 
     public IllusionerMetaData(MetaDataHashMap sets, int protocolId) {

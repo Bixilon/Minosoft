@@ -13,22 +13,22 @@
 
 package de.bixilon.minosoft.game.datatypes.world.palette;
 
+import de.bixilon.minosoft.game.datatypes.objectLoader.CustomMapping;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-
 public class DirectPalette implements Palette {
-    ProtocolVersion version;
+    int protocolId;
+    CustomMapping mapping;
 
     @Override
     public Block byId(int id) {
-        return Blocks.getBlock(id, version);
+        return mapping.getBlockById(id);
     }
 
     @Override
     public byte getBitsPerBlock() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId < 367) {
             return 13;
         }
         return 14;
@@ -36,7 +36,8 @@ public class DirectPalette implements Palette {
 
     @Override
     public void read(InByteBuffer buffer) {
-        this.version = buffer.getProtocolId();
+        this.protocolId = buffer.getProtocolId();
+        mapping = buffer.getConnection().getMapping();
         buffer.readVarInt();
     }
 }

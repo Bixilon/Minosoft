@@ -28,7 +28,6 @@ public class PacketSpectate implements ServerboundPacket {
         this.entityUUID = entityUUID;
     }
 
-
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_SPECTATE);

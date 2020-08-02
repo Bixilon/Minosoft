@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class ZombieHorseMetaData extends AbstractHorseMetaData {
 
     public ZombieHorseMetaData(MetaDataHashMap sets, int protocolId) {

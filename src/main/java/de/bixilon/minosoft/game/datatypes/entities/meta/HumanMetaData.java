@@ -23,10 +23,9 @@ public class HumanMetaData extends LivingMetaData {
         super(sets, protocolId);
     }
 
-
     public float getAdditionalHearts() {
         final float defaultValue = 0.F;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getFloat(17, defaultValue);
         }
         return sets.getFloat(super.getLastDataIndex() + 1, defaultValue);
@@ -34,16 +33,15 @@ public class HumanMetaData extends LivingMetaData {
 
     public int getScore() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getInt(18, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
     }
 
-
     public Hand getMainHand() {
         final int defaultValue = Hand.LEFT.getId();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return Hand.byId(defaultValue);
         }
         return Hand.byId(sets.getByte(super.getLastDataIndex() + 4, defaultValue));
@@ -52,7 +50,7 @@ public class HumanMetaData extends LivingMetaData {
     @Nullable
     public CompoundTag getLeftShoulderEntityData() {
         final CompoundTag defaultValue = null;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId < 318) {
             return defaultValue;
         }
         return sets.getNBT(super.getLastDataIndex() + 5, defaultValue);
@@ -61,7 +59,7 @@ public class HumanMetaData extends LivingMetaData {
     @Nullable
     public CompoundTag getRightShoulderEntityData() {
         final CompoundTag defaultValue = null;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId < 318) {
             return defaultValue;
         }
         return sets.getNBT(super.getLastDataIndex() + 6, defaultValue);
@@ -69,7 +67,7 @@ public class HumanMetaData extends LivingMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 318) {
             return super.getLastDataIndex() + 4;
         }
         return super.getLastDataIndex() + 6;

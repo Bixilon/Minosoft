@@ -275,7 +275,6 @@ public class TextComponent {
             this.name = null;
         }
 
-
         public static ChatAttributes byName(String name) {
             for (ChatAttributes c : values()) {
                 if ((c.getName() != null && c.getName().toLowerCase().equals(name.toLowerCase())) || c.name().toLowerCase().equals(name.toLowerCase())) {

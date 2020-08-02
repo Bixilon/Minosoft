@@ -23,7 +23,6 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
     ScoreboardAnimation action;
     String scoreName;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         action = ScoreboardAnimation.byId(buffer.readByte());
@@ -40,7 +39,6 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
     public void handle(PacketHandler h) {
         h.handle(this);
     }
-
 
     public enum ScoreboardAnimation {
         LIST(0),

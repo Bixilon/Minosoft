@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class MonsterMetaData extends CreatureMetaData {
 
     public MonsterMetaData(MetaDataHashMap sets, int protocolId) {

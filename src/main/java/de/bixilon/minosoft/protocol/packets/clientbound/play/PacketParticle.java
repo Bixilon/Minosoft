@@ -86,7 +86,6 @@ public class PacketParticle implements ClientboundPacket {
         h.handle(this);
     }
 
-
     public double getX() {
         return x;
     }

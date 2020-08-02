@@ -27,7 +27,6 @@ public class PacketAcknowledgePlayerDigging implements ClientboundPacket {
     PacketPlayerDigging.DiggingStatus status;
     boolean successful;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         position = buffer.readPosition();

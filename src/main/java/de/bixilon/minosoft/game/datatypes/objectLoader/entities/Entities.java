@@ -18,12 +18,9 @@ import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.entities.mob.*;
 import de.bixilon.minosoft.game.datatypes.entities.objects.*;
 
-import java.util.HashMap;
-
 public class Entities {
 
     static HashBiMap<String, Class<? extends Entity>> entityClassMap = HashBiMap.create();
-    static HashMap<ProtocolVersion, HashBiMap<Integer, String>> entityMapping = new HashMap<>();
 
     static {
         registerEntityClass("minecraft:item", ItemStack.class);

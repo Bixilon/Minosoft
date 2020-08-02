@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class GuardianMetaData extends MonsterMetaData {
 
     public GuardianMetaData(MetaDataHashMap sets, int protocolId) {
@@ -21,13 +20,13 @@ public class GuardianMetaData extends MonsterMetaData {
 
     public boolean isElderly() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 21) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId == 21) {
             return sets.getBitMask(16, 0x04, defaultValue);
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId <= 204) { //ToDo
             return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
         }
         return defaultValue;
@@ -35,25 +34,24 @@ public class GuardianMetaData extends MonsterMetaData {
 
     public boolean isRetractingSpikes() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 21) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId == 21) {
             return sets.getBitMask(16, 0x02, defaultValue);
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId <= 204) { //ToDo
             return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
     }
 
-
     public int getTargetEntityId() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 21) {
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId == 21) {
             return sets.getInt(17, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);

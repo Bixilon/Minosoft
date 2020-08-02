@@ -156,11 +156,9 @@ public class PacketMapData implements ClientboundPacket {
         return colors;
     }
 
-
     public ArrayList<MapPinSet> getPins() {
         return pins;
     }
-
 
     public byte getScale() {
         return scale;
@@ -190,7 +188,6 @@ public class PacketMapData implements ClientboundPacket {
             return id;
         }
     }
-
 
     public enum MapPinType {
         WHITE_ARROW(0),

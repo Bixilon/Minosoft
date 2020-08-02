@@ -218,7 +218,6 @@ public enum BlockProperties {
     NOTE_23,
     NOTE_24,
 
-
     // redstone
     POWER_0,
     POWER_1,
@@ -350,7 +349,6 @@ public enum BlockProperties {
     BITES_4,
     BITES_5,
     BITES_6,
-
 
     // bamboo
     SMALL,

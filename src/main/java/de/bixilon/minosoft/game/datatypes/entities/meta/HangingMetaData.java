@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class HangingMetaData extends EntityMetaData {
 
     public HangingMetaData(MetaDataHashMap sets, int protocolId) {

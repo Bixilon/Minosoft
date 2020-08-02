@@ -22,7 +22,6 @@ public class PacketPluginMessageReceiving implements ClientboundPacket {
     String channel;
     byte[] data;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         channel = buffer.readString();

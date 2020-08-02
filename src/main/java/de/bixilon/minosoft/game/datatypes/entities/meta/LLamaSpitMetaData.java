@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class LLamaSpitMetaData extends ChestedHorseMetaData {
 
     public LLamaSpitMetaData(MetaDataHashMap sets, int protocolId) {

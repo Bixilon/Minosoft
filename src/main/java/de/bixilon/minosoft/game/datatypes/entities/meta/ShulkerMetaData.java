@@ -26,7 +26,7 @@ public class ShulkerMetaData extends GolemMetaData {
 
     public Direction getDirection() {
         final Direction defaultValue = Direction.DOWN;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getDirection(super.getLastDataIndex(), defaultValue);
@@ -35,7 +35,7 @@ public class ShulkerMetaData extends GolemMetaData {
     @Nullable
     public BlockPosition getAttachmentPosition() {
         final BlockPosition defaultValue = null;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getPosition(super.getLastDataIndex(), defaultValue);
@@ -43,7 +43,7 @@ public class ShulkerMetaData extends GolemMetaData {
 
     public byte getShieldHeight() {
         final byte defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getByte(super.getLastDataIndex(), defaultValue);
@@ -51,7 +51,7 @@ public class ShulkerMetaData extends GolemMetaData {
 
     public Color getColor() {
         final int defaultValue = Color.PURPLE.getId();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return Color.byId(defaultValue);
         }
         return Color.byId(sets.getByte(super.getLastDataIndex(), defaultValue));

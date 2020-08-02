@@ -12,13 +12,11 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class InsentientMetaData extends LivingMetaData {
 
     public InsentientMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);
     }
-
 
     @Override
     public boolean hasAI() {

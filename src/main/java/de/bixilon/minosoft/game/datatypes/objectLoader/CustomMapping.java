@@ -48,6 +48,21 @@ public class CustomMapping {
 
     public CustomMapping(Version version) {
         this.version = version;
+
+        motiveIdentifierMap = new HashMap<>();
+        particleIdentifierMap = new HashMap<>();
+        statisticIdentifierMap = new HashMap<>();
+        itemMap = HashBiMap.create();
+        entityMap = HashBiMap.create();
+        motiveIdMap = HashBiMap.create();
+        mobEffectMap = HashBiMap.create();
+        dimensionMap = HashBiMap.create();
+        dimensionIdentifierMap = new HashMap<>();
+        blockMap = HashBiMap.create();
+        blockIdMap = HashBiMap.create();
+        enchantmentMap = HashBiMap.create();
+        particleIdMap = HashBiMap.create();
+        statisticIdMap = HashBiMap.create();
     }
 
     public Version getVersion() {
@@ -91,7 +106,6 @@ public class CustomMapping {
         return null;
     }
 
-
     public Item getItemById(int protocolId) {
         if (itemMap.containsKey(protocolId)) {
             return itemMap.get(protocolId);
@@ -119,7 +133,6 @@ public class CustomMapping {
         return item;
     }
 
-
     public String getEntityIdentifierById(int protocolId) {
         if (itemMap.containsKey(protocolId)) {
             return entityMap.get(protocolId);
@@ -133,7 +146,6 @@ public class CustomMapping {
         }
         return version.getMapping().getMotiveById(protocolId);
     }
-
 
     public MobEffect getMobEffectById(int protocolId) {
         if (mobEffectMap.containsKey(protocolId)) {
@@ -195,7 +207,6 @@ public class CustomMapping {
         }
         return version.getMapping().getStatisticById(protocolId);
     }
-
 
     public void unload() {
         motiveIdentifierMap.clear();

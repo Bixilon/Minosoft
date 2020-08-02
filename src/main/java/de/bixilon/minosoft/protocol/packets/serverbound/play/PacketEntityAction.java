@@ -21,12 +21,10 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketEntityAction implements ServerboundPacket {
     final int entityId;
     final EntityActions action;
     final int parameter; // only for horse (jump boost)
-
 
     public PacketEntityAction(int entityId, EntityActions action) {
         this.entityId = entityId;
@@ -39,7 +37,6 @@ public class PacketEntityAction implements ServerboundPacket {
         this.action = action;
         this.parameter = parameter;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

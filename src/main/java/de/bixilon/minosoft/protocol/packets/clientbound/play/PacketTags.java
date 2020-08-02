@@ -25,7 +25,6 @@ public class PacketTags implements ClientboundPacket {
     Tag[] fluidTags;
     Tag[] entityTags;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         blockTags = readTags(buffer);

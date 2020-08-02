@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class ChestedHorseMetaData extends AbstractHorseMetaData {
 
     public ChestedHorseMetaData(MetaDataHashMap sets, int protocolId) {
@@ -21,13 +20,13 @@ public class ChestedHorseMetaData extends AbstractHorseMetaData {
 
     public boolean hasChest() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getBitMask(16, 0x08, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId == 110) { //ToDo
             return sets.getBitMask(12, 0x08, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId == 204) { //ToDo
             return sets.getBitMask(13, 0x08, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -35,7 +34,7 @@ public class ChestedHorseMetaData extends AbstractHorseMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId <= 204) { //ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

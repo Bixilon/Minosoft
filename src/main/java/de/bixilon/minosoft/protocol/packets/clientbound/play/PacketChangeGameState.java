@@ -21,7 +21,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketChangeGameState implements ClientboundPacket {
     Reason reason;
     float value;
@@ -77,7 +76,6 @@ public class PacketChangeGameState implements ClientboundPacket {
         PLAY_PUFFERFISH_STING_SOUND(new MapSet[]{new MapSet<>(0, 9)}),
         PLAY_ELDER_GUARDIAN_MOB_APPEARANCE(new MapSet[]{new MapSet<>(0, 10)}),
         ENABLE_RESPAWN_SCREEN(new MapSet[]{new MapSet<>(552, 11)});
-
 
         final VersionValueMap<Integer> valueMap;
 

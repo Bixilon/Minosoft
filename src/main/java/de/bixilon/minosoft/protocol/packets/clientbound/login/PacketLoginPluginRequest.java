@@ -23,7 +23,6 @@ public class PacketLoginPluginRequest implements ClientboundPacket {
     String channel;
     byte[] data;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         messageId = buffer.readVarInt();

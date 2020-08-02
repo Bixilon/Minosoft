@@ -31,7 +31,6 @@ public enum Color {
     RED(0x0E),
     BLACK(0x0F);
 
-
     final int color;
 
     Color(int color) {

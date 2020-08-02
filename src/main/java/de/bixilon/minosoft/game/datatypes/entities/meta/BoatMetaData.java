@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class BoatMetaData extends EntityMetaData {
 
     public BoatMetaData(MetaDataHashMap sets, int protocolId) {
@@ -21,7 +20,7 @@ public class BoatMetaData extends EntityMetaData {
 
     public int getTimeSinceHit() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getInt(17, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -29,7 +28,7 @@ public class BoatMetaData extends EntityMetaData {
 
     public int getForwardDirection() {
         final int defaultValue = 1;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getInt(18, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -37,7 +36,7 @@ public class BoatMetaData extends EntityMetaData {
 
     public float getDamageTaken() {
         final float defaultValue = 0.0F;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getFloat(19, defaultValue);
         }
         return sets.getFloat(super.getLastDataIndex() + 3, defaultValue);
@@ -45,7 +44,7 @@ public class BoatMetaData extends EntityMetaData {
 
     public BoatMaterial getMaterial() {
         final int defaultValue = BoatMaterial.OAK.getId();
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return BoatMaterial.byId(defaultValue);
         }
         return BoatMaterial.byId(sets.getInt(super.getLastDataIndex() + 4, defaultValue));
@@ -53,7 +52,7 @@ public class BoatMetaData extends EntityMetaData {
 
     public boolean isRightPaddleTurning() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 5, defaultValue);
@@ -61,7 +60,7 @@ public class BoatMetaData extends EntityMetaData {
 
     public boolean isLeftPaddleTurning() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 6, defaultValue);
@@ -69,7 +68,7 @@ public class BoatMetaData extends EntityMetaData {
 
     public int getSplashTimer() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 7, defaultValue);
@@ -77,10 +76,10 @@ public class BoatMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return super.getLastDataIndex() + 4;
         }
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return super.getLastDataIndex() + 5;
         }
         return super.getLastDataIndex() + 6;

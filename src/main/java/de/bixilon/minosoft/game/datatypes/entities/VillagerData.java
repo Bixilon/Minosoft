@@ -16,7 +16,6 @@ package de.bixilon.minosoft.game.datatypes.entities;
 import de.bixilon.minosoft.game.datatypes.MapSet;
 import de.bixilon.minosoft.game.datatypes.VersionValueMap;
 
-
 public class VillagerData {
     final VillagerTypes type;
     final VillagerProfessions profession;
@@ -64,26 +63,26 @@ public class VillagerData {
     }
 
     public enum VillagerProfessions {
-        NONE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 0)}),
-        ARMORER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 1)}),
-        BUTCHER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4), new MapSet<>(ProtocolVersion.VERSION_1_14_4, 2)}),
-        CARTOGRAPHER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 3)}),
-        CLERIC(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 4)}),
-        FARMER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 0), new MapSet<>(ProtocolVersion.VERSION_1_14_4, 5)}),
-        FISHERMAN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 6)}),
-        FLETCHER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 7)}),
-        LEATHER_WORKER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 8)}),
-        LIBRARIAN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1), new MapSet<>(ProtocolVersion.VERSION_1_14_4, 9)}),
-        MASON(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 10)}),
-        NITWIT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 5), new MapSet<>(ProtocolVersion.VERSION_1_11_2, 5), new MapSet<>(ProtocolVersion.VERSION_1_14_4, 11)}),
-        SHEPHERD(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 12)}),
-        TOOL_SMITH(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 13)}),
-        WEAPON_SMITH(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 14)}),
-        PRIEST(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2), new MapSet<>(ProtocolVersion.VERSION_1_14_4, -1)}),
-        BLACKSMITH(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 3), new MapSet<>(ProtocolVersion.VERSION_1_14_4, -1)}),
+        NONE(new MapSet[]{new MapSet<>(451, 0)}),
+        ARMORER(new MapSet[]{new MapSet<>(451, 1)}),
+        BUTCHER(new MapSet[]{new MapSet<>(0, 4), new MapSet<>(451, 2)}),
+        CARTOGRAPHER(new MapSet[]{new MapSet<>(451, 3)}),
+        CLERIC(new MapSet[]{new MapSet<>(451, 4)}),
+        FARMER(new MapSet[]{new MapSet<>(0, 0), new MapSet<>(451, 5)}),
+        FISHERMAN(new MapSet[]{new MapSet<>(451, 6)}),
+        FLETCHER(new MapSet[]{new MapSet<>(451, 7)}),
+        LEATHER_WORKER(new MapSet[]{new MapSet<>(451, 8)}),
+        LIBRARIAN(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(451, 9)}),
+        MASON(new MapSet[]{new MapSet<>(451, 10)}),
+        NITWIT(new MapSet[]{new MapSet<>(0, 5), new MapSet<>(451, 11)}),
+        SHEPHERD(new MapSet[]{new MapSet<>(451, 12)}),
+        TOOL_SMITH(new MapSet[]{new MapSet<>(451, 13)}),
+        WEAPON_SMITH(new MapSet[]{new MapSet<>(451, 14)}),
+        PRIEST(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(451, -1)}),
+        BLACKSMITH(new MapSet[]{new MapSet<>(0, 3), new MapSet<>(451, -1)}),
 
-        HUSK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 5), new MapSet<>(ProtocolVersion.VERSION_1_11_2, -100)}),
-        ZOMBIE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, -1), new MapSet<>(ProtocolVersion.VERSION_1_11_2, -100)}); // used earlier (ZombieVillagerMeta)
+        HUSK(new MapSet[]{new MapSet<>(204, 5), new MapSet<>(315, -100)}), //ToDo
+        ZOMBIE(new MapSet[]{new MapSet<>(204, -1), new MapSet<>(315, -100)}); // used earlier (ZombieVillagerMeta)
 
         final VersionValueMap<Integer> valueMap;
 

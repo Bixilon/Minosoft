@@ -23,7 +23,6 @@ public class PacketSetExperience implements ClientboundPacket {
     int level;
     int total;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         bar = buffer.readFloat();

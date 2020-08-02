@@ -24,7 +24,6 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
     String scoreName;
     int scoreValue;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 7) { // ToDo

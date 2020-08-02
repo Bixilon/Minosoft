@@ -21,7 +21,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketEffect implements ClientboundPacket {
     // is this class used??? What about PacketParticle or PacketSoundEffect?
     EffectEffects effect;
@@ -74,7 +73,6 @@ public class PacketEffect implements ClientboundPacket {
         return null;
     }
     // ToDo all other dataTypes
-
 
     public boolean isDisableRelativeVolume() {
         return disableRelativeVolume;
@@ -153,7 +151,6 @@ public class PacketEffect implements ClientboundPacket {
         END_GATEWAY_SPAWN(new MapSet[]{new MapSet<>(110, 3000)}),
         MOB_ENDER_DRAGON_GROWL(new MapSet[]{new MapSet<>(110, 3001)});
 
-
         final VersionValueMap<Integer> valueMap;
 
         EffectEffects(MapSet<Integer, Integer>[] values) {
@@ -188,7 +185,6 @@ public class PacketEffect implements ClientboundPacket {
         NORTH_EAST(6),
         NORTH(7),
         NORTH_WEST(8);
-
 
         final int id;
 

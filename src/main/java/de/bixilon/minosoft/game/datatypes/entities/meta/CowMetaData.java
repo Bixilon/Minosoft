@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-
 public class CowMetaData extends AnimalMetaData {
 
     public CowMetaData(MetaDataHashMap sets, int protocolId) {

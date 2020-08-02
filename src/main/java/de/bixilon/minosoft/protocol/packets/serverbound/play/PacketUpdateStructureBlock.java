@@ -20,7 +20,6 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketUpdateStructureBlock implements ServerboundPacket {
     final BlockPosition position;
     final StructureBlockActions action;
@@ -60,7 +59,6 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
         this.seed = seed;
         this.flags = flags;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {
@@ -171,7 +169,6 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
         CLOCKWISE_90(1),
         CLOCKWISE_180(2),
         COUNTERCLOCKWISE_90(3);
-
 
         final int id;
 

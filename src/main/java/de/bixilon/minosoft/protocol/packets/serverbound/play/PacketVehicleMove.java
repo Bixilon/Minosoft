@@ -19,14 +19,12 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-
 public class PacketVehicleMove implements ServerboundPacket {
     final double x;
     final double y;
     final double z;
     final float yaw;
     final float pitch;
-
 
     public PacketVehicleMove(double x, double y, double z, float yaw, float pitch) {
         this.x = x;
@@ -35,7 +33,6 @@ public class PacketVehicleMove implements ServerboundPacket {
         this.yaw = yaw;
         this.pitch = pitch;
     }
-
 
     @Override
     public OutPacketBuffer write(Connection connection) {

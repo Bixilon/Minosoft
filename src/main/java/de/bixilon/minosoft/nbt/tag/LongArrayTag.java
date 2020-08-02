@@ -38,7 +38,6 @@ public class LongArrayTag implements NBTTag {
         buffer.writeLongs(value);
     }
 
-
     public long[] getValue() {
         return value;
     }
