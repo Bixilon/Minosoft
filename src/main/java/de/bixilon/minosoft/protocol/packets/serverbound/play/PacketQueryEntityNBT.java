@@ -32,7 +32,7 @@ public class PacketQueryEntityNBT implements ServerboundPacket {
 
     @Override
     public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ENTITY_NBT_REQUEST))
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ENTITY_NBT_REQUEST);
         buffer.writeVarInt(transactionId);
         buffer.writeVarInt(entityId);
         return buffer;

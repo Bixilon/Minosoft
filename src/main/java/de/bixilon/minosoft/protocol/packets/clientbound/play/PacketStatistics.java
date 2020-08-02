@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.Statistic;
 import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.StatisticCategories;
-import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.Statistics;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -29,28 +28,16 @@ public class PacketStatistics implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getProtocolId()) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2: {
-                int length = buffer.readVarInt();
-                for (int i = 0; i < length; i++) {
-                    statistics.put(Statistics.getStatisticByIdentifier(buffer.readString(), buffer.getProtocolId()), buffer.readVarInt());
-                }
-                return true;
-            }
-            default: {
-                int length = buffer.readVarInt();
-                for (int i = 0; i < length; i++) {
-                    StatisticCategories category = StatisticCategories.byId(buffer.readVarInt());
-                    statistics.put(Statistics.getStatisticById(buffer.readVarInt(), buffer.getProtocolId()), buffer.readVarInt());
-                }
-                return true;
+        int length = buffer.readVarInt();
+        for (int i = 0; i < length; i++) {
+            if (buffer.getProtocolId() < 346) { // ToDo
+                statistics.put(buffer.getConnection().getMapping().getStatisticByIdentifier(buffer.readString()), buffer.readVarInt());
+            } else {
+                StatisticCategories category = StatisticCategories.byId(buffer.readVarInt());
+                statistics.put(buffer.getConnection().getMapping().getStatisticById(buffer.readVarInt()), buffer.readVarInt());
             }
         }
+        return true;
     }
 
     @Override

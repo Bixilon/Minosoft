@@ -29,32 +29,29 @@ public abstract class Entity implements EntityInterface {
     final HashMap<InventorySlots.EntityInventory, Slot> equipment;
     final ArrayList<StatusEffect> effectList;
     Location location;
-    Velocity velocity;
     short yaw;
     short pitch;
     short headYaw;
     int attachedTo = -1;
 
-    public Entity(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, Velocity velocity) {
+    public Entity(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw) {
         this.entityId = entityId;
         this.uuid = uuid;
         this.location = location;
         this.yaw = yaw;
         this.pitch = pitch;
         this.headYaw = headYaw;
-        this.velocity = velocity;
         this.equipment = new HashMap<>();
         this.effectList = new ArrayList<>();
     }
 
-    public Entity(int entityId, UUID uuid, Location location, int yaw, int pitch, int headYaw, Velocity velocity) {
+    public Entity(int entityId, UUID uuid, Location location, int yaw, int pitch, int headYaw) {
         this.entityId = entityId;
         this.uuid = uuid;
         this.location = location;
         this.yaw = (short) yaw;
         this.pitch = (short) pitch;
         this.headYaw = (short) headYaw;
-        this.velocity = velocity;
         this.equipment = new HashMap<>();
         this.effectList = new ArrayList<>();
     }
@@ -75,14 +72,6 @@ public abstract class Entity implements EntityInterface {
     public void setLocation(RelativeLocation relativeLocation) {
         // change relative location
         location = new Location(location.getX() + relativeLocation.getX(), location.getY() + relativeLocation.getY(), location.getZ() + relativeLocation.getZ());
-    }
-
-    public Velocity getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(Velocity velocity) {
-        this.velocity = velocity;
     }
 
     public short getYaw() {
@@ -109,6 +98,9 @@ public abstract class Entity implements EntityInterface {
         return equipment.get(slot);
     }
 
+    public UUID getUUID() {
+        return uuid;
+    }
 
     public short getHeadYaw() {
         return headYaw;

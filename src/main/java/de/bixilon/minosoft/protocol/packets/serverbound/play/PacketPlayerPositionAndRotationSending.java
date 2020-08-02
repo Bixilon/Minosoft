@@ -53,25 +53,15 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_POSITION_AND_ROTATION);
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeDouble(x);
-                buffer.writeDouble(feetY);
-                buffer.writeDouble(headY);
-                buffer.writeDouble(z);
-                buffer.writeFloat(yaw);
-                buffer.writeFloat(pitch);
-                buffer.writeBoolean(onGround);
-                break;
-            default:
-                buffer.writeDouble(x);
-                buffer.writeDouble(feetY);
-                buffer.writeDouble(z);
-                buffer.writeFloat(yaw);
-                buffer.writeFloat(pitch);
-                buffer.writeBoolean(onGround);
-                break;
+        buffer.writeDouble(x);
+        buffer.writeDouble(feetY);
+        if (buffer.getProtocolId() < 10) {
+            buffer.writeDouble(headY);
         }
+        buffer.writeDouble(z);
+        buffer.writeFloat(yaw);
+        buffer.writeFloat(pitch);
+        buffer.writeBoolean(onGround);
         return buffer;
     }
 

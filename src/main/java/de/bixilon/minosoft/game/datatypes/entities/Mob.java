@@ -16,11 +16,11 @@ package de.bixilon.minosoft.game.datatypes.entities;
 import java.util.UUID;
 
 public abstract class Mob extends Entity implements MobInterface {
-    public Mob(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, Velocity velocity) {
-        super(entityId, uuid, location, yaw, pitch, headYaw, velocity);
+    public Mob(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
     }
 
-    public Mob(int entityId, UUID uuid, Location location, int yaw, int pitch, int headYaw, Velocity velocity) {
-        super(entityId, uuid, location, yaw, pitch, headYaw, velocity);
+    public Mob(int entityId, UUID uuid, Location location, int yaw, int pitch, int headYaw) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
     }
 }

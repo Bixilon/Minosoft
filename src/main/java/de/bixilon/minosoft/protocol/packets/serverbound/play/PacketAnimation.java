@@ -32,12 +32,8 @@ public class PacketAnimation implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ANIMATION);
-        switch (version) {
-            case VERSION_1_8:
-                break;
-            default:
-                buffer.writeVarInt(hand.getId());
-                break;
+        if (buffer.getProtocolId() >= 49) {
+            buffer.writeVarInt(hand.getId());
         }
         return buffer;
     }

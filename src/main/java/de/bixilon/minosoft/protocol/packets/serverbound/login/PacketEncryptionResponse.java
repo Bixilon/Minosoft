@@ -44,20 +44,8 @@ public class PacketEncryptionResponse implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE);
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeShort((short) secret.length);
-                buffer.writeBytes(secret);
-                buffer.writeShort((short) token.length);
-                buffer.writeBytes(token);
-                break;
-            default:
-                buffer.writeVarInt(secret.length);
-                buffer.writeBytes(secret);
-                buffer.writeVarInt(token.length);
-                buffer.writeBytes(token);
-                break;
-        }
+        buffer.writeByteArray(secret);
+        buffer.writeByteArray(token);
         return buffer;
     }
 

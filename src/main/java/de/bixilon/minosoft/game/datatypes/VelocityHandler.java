@@ -11,24 +11,23 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.packets.serverbound.status;
+package de.bixilon.minosoft.game.datatypes;
 
-import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.game.datatypes.entities.Entity;
+import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import java.util.HashMap;
 
-public class PacketStatusRequest implements ServerboundPacket {
+public class VelocityHandler {
+    final Connection connection;
+    final HashMap<Entity, Velocity> entities = new HashMap<>();
 
-    @Override
-    public OutPacketBuffer write(Connection connection) {
-        return new OutPacketBuffer(connection, Packets.Serverbound.STATUS_REQUEST);
+    public VelocityHandler(Connection connection) {
+        this.connection = connection;
     }
 
-    @Override
-    public void log() {
-        Log.protocol("Sending status request packet");
+    public void handleVelocity(Entity entity, Velocity velocity) {
+        // ToDo
     }
 }

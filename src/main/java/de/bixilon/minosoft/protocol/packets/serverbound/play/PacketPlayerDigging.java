@@ -37,37 +37,25 @@ public class PacketPlayerDigging implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_DIGGING);
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeByte((byte) status.getId());
-                if (position == null) {
-                    buffer.writeInt(0);
-                    buffer.writeByte((byte) 0);
-                    buffer.writeInt(0);
-                } else {
-                    buffer.writeBlockPositionByte(position);
-                }
-                buffer.writeByte(face.getId());
-                break;
-            case VERSION_1_8:
-                buffer.writeByte((byte) status.getId());
-                if (position == null) {
-                    buffer.writeLong(0L);
-                } else {
-                    buffer.writePosition(position);
-                }
-                buffer.writeByte(face.getId());
-                break;
-            default:
-                buffer.writeVarInt(status.getId());
-                if (position == null) {
-                    buffer.writeLong(0L);
-                } else {
-                    buffer.writePosition(position);
-                }
-                buffer.writeByte(face.getId());
-                break;
+        if (buffer.getProtocolId() < 49) { //ToDo
+            buffer.writeByte((byte) status.getId());
+        } else {
+            buffer.writeVarInt(status.getId());
         }
+
+        if (buffer.getProtocolId() < 7) {
+            if (position == null) {
+                buffer.writeInt(0);
+                buffer.writeByte((byte) 0);
+                buffer.writeInt(0);
+            } else {
+                buffer.writeBlockPositionByte(position);
+            }
+        } else {
+            buffer.writePosition(position);
+        }
+
+        buffer.writeByte(face.getId());
         return buffer;
     }
 

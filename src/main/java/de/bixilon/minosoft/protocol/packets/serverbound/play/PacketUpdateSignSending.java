@@ -35,25 +35,19 @@ public class PacketUpdateSignSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_SIGN);
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeBlockPositionByte(position);
-                for (int i = 0; i < 4; i++) {
-                    buffer.writeString(lines[i].getRawMessage());
-                }
-                break;
-            case VERSION_1_8:
-                buffer.writePosition(position);
-                for (int i = 0; i < 4; i++) {
-                    buffer.writeTextComponent(lines[i]);
-                }
-                break;
-            default:
-                buffer.writePosition(position);
-                for (int i = 0; i < 4; i++) {
-                    buffer.writeString(lines[i].getRawMessage());
-                }
-                break;
+        if (buffer.getProtocolId() < 7) {
+            buffer.writeBlockPositionByte(position);
+        } else {
+            buffer.writePosition(position);
+        }
+        if (buffer.getProtocolId() < 21 || buffer.getProtocolId() >= 62) {
+            for (int i = 0; i < 4; i++) {
+                buffer.writeString(lines[i].getRawMessage());
+            }
+        } else {
+            for (int i = 0; i < 4; i++) {
+                buffer.writeTextComponent(lines[i]);
+            }
         }
         return buffer;
     }

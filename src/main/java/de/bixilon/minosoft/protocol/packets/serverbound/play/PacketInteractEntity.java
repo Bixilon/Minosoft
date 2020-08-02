@@ -71,35 +71,19 @@ public class PacketInteractEntity implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_INTERACT_ENTITY);
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeInt(entityId);
-                buffer.writeByte((byte) click.getId());
-                break;
-            case VERSION_1_8:
-                buffer.writeInt(entityId);
-                buffer.writeByte((byte) click.getId());
-                if (click == Click.INTERACT_AT) {
-                    // position
-                    buffer.writeFloat((float) location.getX());
-                    buffer.writeFloat((float) location.getY());
-                    buffer.writeFloat((float) location.getZ());
-                }
-                break;
-            default:
-                buffer.writeInt(entityId);
-                buffer.writeByte((byte) click.getId());
-                if (click == Click.INTERACT_AT) {
-                    // position
-                    buffer.writeFloat((float) location.getX());
-                    buffer.writeFloat((float) location.getY());
-                    buffer.writeFloat((float) location.getZ());
-                    buffer.writeVarInt(hand.getId());
-                }
-                if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
-                    buffer.writeBoolean(sneaking);
-                }
-                break;
+        buffer.writeInt(entityId);
+        buffer.writeByte((byte) click.getId());
+        if (click == Click.INTERACT_AT) {
+            // position
+            buffer.writeFloat((float) location.getX());
+            buffer.writeFloat((float) location.getY());
+            buffer.writeFloat((float) location.getZ());
+            if (buffer.getProtocolId() >= 49) {
+                buffer.writeVarInt(hand.getId());
+            }
+        }
+        if (buffer.getProtocolId() >= 743) { //ToDo
+            buffer.writeBoolean(sneaking);
         }
         return buffer;
     }

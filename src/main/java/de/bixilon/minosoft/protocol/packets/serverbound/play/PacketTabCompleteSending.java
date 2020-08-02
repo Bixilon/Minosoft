@@ -48,32 +48,17 @@ public class PacketTabCompleteSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_TAB_COMPLETE);
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeString(text);
-                break;
-            case VERSION_1_8:
-                buffer.writeString(text);
-                if (position == null) {
-                    buffer.writeBoolean(false);
-                } else {
-                    buffer.writeBoolean(true);
-                    buffer.writePosition(position);
-                }
-                break;
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                buffer.writeString(text);
-                buffer.writeBoolean(assumeCommand);
-                if (position == null) {
-                    buffer.writeBoolean(false);
-                } else {
-                    buffer.writeBoolean(true);
-                    buffer.writePosition(position);
-                }
-                break;
+        buffer.writeString(text);
+        if (buffer.getProtocolId() >= 59) {
+            buffer.writeBoolean(assumeCommand);
+        }
+        if (buffer.getProtocolId() >= 37) {
+            if (position == null) {
+                buffer.writeBoolean(false);
+            } else {
+                buffer.writeBoolean(true);
+                buffer.writePosition(position);
+            }
         }
         return buffer;
     }

@@ -23,9 +23,9 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketUpdateJigsawBlock implements ServerboundPacket {
     final BlockPosition position;
-    String attachmentType;
     final String targetPool;
     final String finalState;
+    String attachmentType;
     String name;
     String target;
     String jointType;
@@ -52,17 +52,17 @@ public class PacketUpdateJigsawBlock implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_JIGSAW_BLOCK);
         buffer.writePosition(position);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+        if (buffer.getProtocolId() < 743) { //ToDo
             buffer.writeString(attachmentType);
             buffer.writeString(targetPool);
             buffer.writeString(finalState);
-            return buffer;
+        } else {
+            buffer.writeString(name);
+            buffer.writeString(target);
+            buffer.writeString(targetPool);
+            buffer.writeString(finalState);
+            buffer.writeString(jointType);
         }
-        buffer.writeString(name);
-        buffer.writeString(target);
-        buffer.writeString(targetPool);
-        buffer.writeString(finalState);
-        buffer.writeString(jointType);
         return buffer;
     }
 

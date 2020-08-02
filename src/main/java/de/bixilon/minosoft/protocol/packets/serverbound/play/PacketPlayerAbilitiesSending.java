@@ -36,7 +36,7 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
             flags |= 0b10;
         }
         buffer.writeByte(flags);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_16_2.getVersionNumber()) {
+        if (buffer.getProtocolId() < 743) { //ToDo
             // only fly matters, everything else ignored
             buffer.writeFloat(0.0F);
             buffer.writeFloat(0.0F);

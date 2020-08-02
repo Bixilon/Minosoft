@@ -104,14 +104,14 @@ public class PacketTitle implements ClientboundPacket {
 
         SET_TITLE(0),
         SET_SUBTITLE(1),
-        SET_ACTION_BAR(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_11_2, 2)}),
-        SET_TIMES_AND_DISPLAY(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 2), new MapSet<>(ProtocolVersion.VERSION_1_11_2, 3)}),
-        HIDE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 3), new MapSet<>(ProtocolVersion.VERSION_1_11_2, 4)}),
-        RESET(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 4), new MapSet<>(ProtocolVersion.VERSION_1_11_2, 5)});
+        SET_ACTION_BAR(new MapSet[]{new MapSet<>(302, 2)}),
+        SET_TIMES_AND_DISPLAY(new MapSet[]{new MapSet<>(18, 2), new MapSet<>(302, 3)}),
+        HIDE(new MapSet[]{new MapSet<>(18, 3), new MapSet<>(302, 4)}),
+        RESET(new MapSet[]{new MapSet<>(18, 4), new MapSet<>(302, 5)});
 
         final VersionValueMap<Integer> valueMap;
 
-        TitleAction(MapSet<ProtocolVersion, Integer>[] values) {
+        TitleAction(MapSet<Integer, Integer>[] values) {
             valueMap = new VersionValueMap<>(values, true);
         }
 
@@ -121,15 +121,15 @@ public class PacketTitle implements ClientboundPacket {
 
         public static TitleAction byId(int id, int protocolId) {
             for (TitleAction action : values()) {
-                if (action.getId(version) == id) {
+                if (action.getId(protocolId) == id) {
                     return action;
                 }
             }
             return null;
         }
 
-        public int getId(ProtocolVersion version) {
-            Integer ret = valueMap.get(version);
+        public int getId(int protocolId) {
+            Integer ret = valueMap.get(protocolId);
             if (ret == null) {
                 return -2;
             }

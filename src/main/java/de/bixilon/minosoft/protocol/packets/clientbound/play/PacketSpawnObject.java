@@ -27,21 +27,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public class PacketSpawnObject implements ClientboundPacket {
-    Entity object;
-
-    @Override
-    public void log() {
-        Log.protocol(String.format("Object spawned at %s (entityId=%d, type=%s)", object.getLocation().toString(), object.getEntityId(), object.getIdentifier()));
-    }
-
-    public Entity getObject() {
-        return object;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
+    Entity entity;
+    Velocity velocity;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -74,7 +61,6 @@ public class PacketSpawnObject implements ClientboundPacket {
         short yaw = buffer.readAngle();
         short pitch = buffer.readAngle();
         int data = buffer.readInt();
-        Velocity velocity = null;
 
         if (buffer.getProtocolId() < 49) {
             if (data != 0) {
@@ -85,11 +71,30 @@ public class PacketSpawnObject implements ClientboundPacket {
         }
 
         try {
-            object = typeClass.getConstructor(int.class, UUID.class, Location.class, short.class, short.class, int.class, Velocity.class).newInstance(entityId, uuid, location, yaw, pitch, data, velocity);
+            entity = typeClass.getConstructor(int.class, UUID.class, Location.class, short.class, short.class, int.class).newInstance(entityId, uuid, location, yaw, pitch, data);
             return true;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
         return false;
     }
+
+    @Override
+    public void log() {
+        Log.protocol(String.format("Object spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity.getIdentifier()));
+    }
+
+    @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    public Entity getEntity() {
+        return entity;
+    }
+
+    public Velocity getVelocity() {
+        return velocity;
+    }
+
 }

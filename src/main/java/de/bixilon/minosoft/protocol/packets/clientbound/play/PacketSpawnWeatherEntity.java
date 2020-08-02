@@ -14,45 +14,32 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.objects.LightningBolt;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketSpawnWeatherEntity implements ClientboundPacket {
-    int entityId;
-    Location location;
+    LightningBolt entity;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getProtocolId()) {
-            case VERSION_1_7_10:
-            case VERSION_1_8: {
-                entityId = buffer.readVarInt();
-                // only thunderbolts
-                byte type = buffer.readByte();
-                if (type != 1) {
-                    throw new RuntimeException(String.format("Illegal global entity spawned (entityType=%d)!", type));
-                }
-                location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-                return true;
-            }
-            default: {
-                entityId = buffer.readVarInt();
-                // only thunderbolts
-                byte type = buffer.readByte();
-                if (type != 1) {
-                    throw new RuntimeException(String.format("Illegal global entity spawned (entityType=%d)!", type));
-                }
-                location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
-                return true;
-            }
+        int entityId = buffer.readVarInt();
+        byte type = buffer.readByte();
+        Location location;
+        if (buffer.getProtocolId() < 100) {
+            location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
+        } else {
+            location = buffer.readLocation();
         }
+        entity = new LightningBolt(entityId, location, buffer.getProtocolId());
+        return true;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Thunderbolt spawned at %s (entityId=%d)", location, entityId));
+        Log.protocol(String.format("Thunderbolt spawned at %s (entityId=%d)", entity.getLocation(), entity.getEntityId()));
     }
 
     @Override
@@ -60,11 +47,7 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
         h.handle(this);
     }
 
-    public int getEntityId() {
-        return entityId;
-    }
-
-    public Location getLocation() {
-        return location;
+    public LightningBolt getEntity() {
+        return entity;
     }
 }

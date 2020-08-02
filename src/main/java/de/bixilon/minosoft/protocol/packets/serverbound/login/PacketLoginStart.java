@@ -35,8 +35,7 @@ public class PacketLoginStart implements ServerboundPacket {
 
     @Override
     public OutPacketBuffer write(Connection connection) {
-        // no version checking, is the same in all versions (1.7.x - 1.15.2)
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.LOGIN_LOGIN_START))
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.LOGIN_LOGIN_START);
         buffer.writeString(username);
         return buffer;
     }

@@ -39,15 +39,10 @@ public class PacketLoginPluginResponse implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.LOGIN_PLUGIN_RESPONSE);
-        switch (version) {
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-            case VERSION_1_15_2:
-                buffer.writeVarInt(messageId);
-                buffer.writeBoolean(successful);
-                if (successful) {
-                    buffer.writeBytes(data);
-                }
+        buffer.writeVarInt(messageId);
+        buffer.writeBoolean(successful);
+        if (successful) {
+            buffer.writeBytes(data);
         }
         return buffer;
     }

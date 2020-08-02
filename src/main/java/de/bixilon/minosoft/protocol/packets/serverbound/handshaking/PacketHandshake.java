@@ -44,9 +44,8 @@ public class PacketHandshake implements ServerboundPacket {
 
     @Override
     public OutPacketBuffer write(Connection connection) {
-        // no version checking, is the same in all versions (1.7.x - 1.15.2)
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, version.getPacketCommand(Packets.Serverbound.HANDSHAKING_HANDSHAKE);
-        buffer.writeVarInt((nextState == ConnectionState.STATUS ? -1 : version.getVersionNumber())); // get best protocol version
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.HANDSHAKING_HANDSHAKE);
+        buffer.writeVarInt((nextState == ConnectionState.STATUS ? -1 : connection.getVersion().getProtocolVersion())); // get best protocol version
         buffer.writeString(address);
         buffer.writeShort((short) port);
         buffer.writeVarInt(nextState.getId());

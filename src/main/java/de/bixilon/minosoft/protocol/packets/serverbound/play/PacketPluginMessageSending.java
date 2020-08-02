@@ -34,17 +34,12 @@ public class PacketPluginMessageSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLUGIN_MESSAGE);
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeString(channel); // name
-                buffer.writeShort((short) data.length); // length
-                buffer.writeBytes(data); // data
-                break;
-            default:
-                buffer.writeString(channel); // name
-                buffer.writeBytes(data); // data
-                break;
+        buffer.writeString(channel);
+
+        if (buffer.getProtocolId() < 32) {
+            buffer.writeShort((short) data.length);
         }
+        buffer.writeBytes(data);
         return buffer;
     }
 

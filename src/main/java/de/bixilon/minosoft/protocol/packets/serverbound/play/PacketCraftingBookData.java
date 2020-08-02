@@ -59,35 +59,26 @@ public class PacketCraftingBookData implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_RECIPE_BOOK_DATA);
-        switch (version) {
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                buffer.writeVarInt(action.getId());
-                switch (action) {
-                    case DISPLAY_RECIPE:
-                        buffer.writeVarInt(recipeId);
-                        break;
-                    case CRAFTING_BOOK_STATUS:
-                        buffer.writeBoolean(craftingBookOpen);
-                        buffer.writeBoolean(craftingFilter);
-                        break;
+        if (buffer.getProtocolId() < 333) {
+            buffer.writeInt(action.getId());
+        } else {
+            buffer.writeVarInt(action.getId());
+        }
+
+        switch (action) {
+            case DISPLAY_RECIPE:
+                buffer.writeVarInt(recipeId);
+                break;
+            case CRAFTING_BOOK_STATUS:
+                buffer.writeBoolean(craftingBookOpen);
+                buffer.writeBoolean(craftingFilter);
+                if (buffer.getProtocolId() >= 451) { //ToDo
+                    buffer.writeBoolean(blastingBookOpen);
+                    buffer.writeBoolean(blastingFilter);
+                    buffer.writeBoolean(smokingBookOpen);
+                    buffer.writeBoolean(smokingFilter);
                 }
                 break;
-            default:
-                buffer.writeVarInt(action.getId());
-                switch (action) {
-                    case DISPLAY_RECIPE:
-                        buffer.writeVarInt(recipeId);
-                        break;
-                    case CRAFTING_BOOK_STATUS:
-                        buffer.writeBoolean(craftingBookOpen);
-                        buffer.writeBoolean(craftingFilter);
-                        buffer.writeBoolean(blastingBookOpen);
-                        buffer.writeBoolean(blastingFilter);
-                        buffer.writeBoolean(smokingBookOpen);
-                        buffer.writeBoolean(smokingFilter);
-                        break;
-                }
         }
         return buffer;
     }

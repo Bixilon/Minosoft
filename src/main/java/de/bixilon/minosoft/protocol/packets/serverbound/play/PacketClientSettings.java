@@ -46,30 +46,18 @@ public class PacketClientSettings implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CLIENT_SETTINGS);
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeString(locale.getName()); // locale
-                buffer.writeByte(renderDistance); // render Distance
-                buffer.writeByte((byte) 0x00); // chat settings (nobody uses them)
-                buffer.writeBoolean(true); // chat colors
-                buffer.writeByte((byte) Difficulty.NORMAL.getId()); // difficulty
-                buffer.writeBoolean(true); // cape
-                break;
-            case VERSION_1_8:
-                buffer.writeString(locale.getName()); // locale
-                buffer.writeByte(renderDistance); // render Distance
-                buffer.writeByte((byte) 0x00); // chat settings (nobody uses them)
-                buffer.writeBoolean(true); // chat colors
-                buffer.writeByte((byte) 0b01111111); // skin parts
-                break;
-            default:
-                buffer.writeString(locale.getName()); // locale
-                buffer.writeByte(renderDistance); // render Distance
-                buffer.writeVarInt(0x00); // chat settings (nobody uses them)
-                buffer.writeBoolean(true); // chat colors
-                buffer.writeByte((byte) 0b01111111); // skin parts
-                buffer.writeVarInt(mainHand.getId());
-                break;
+        buffer.writeString(locale.getName()); // locale
+        buffer.writeByte(renderDistance); // render Distance
+        buffer.writeByte((byte) 0x00); // chat settings (nobody uses them)
+        buffer.writeBoolean(true); // chat colors
+        if (buffer.getProtocolId() < 6) {
+            buffer.writeByte((byte) Difficulty.NORMAL.getId()); // difficulty
+            buffer.writeBoolean(true); // cape
+        } else {
+            buffer.writeByte((byte) 0b01111111); // ToDo: skin parts
+        }
+        if (buffer.getProtocolId() >= 49) {
+            buffer.writeVarInt(mainHand.getId());
         }
         return buffer;
     }

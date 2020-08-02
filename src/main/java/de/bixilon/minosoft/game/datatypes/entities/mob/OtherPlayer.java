@@ -14,7 +14,10 @@
 package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.PlayerPropertyData;
-import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Mob;
+import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
+import de.bixilon.minosoft.game.datatypes.entities.Pose;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 
@@ -27,8 +30,8 @@ public class OtherPlayer extends Mob implements MobInterface {
     HumanMetaData metaData;
     Pose status = Pose.STANDING;
 
-    public OtherPlayer(int entityId, String name, UUID uuid, PlayerPropertyData[] properties, Location location, Velocity velocity, short yaw, short pitch, short headYaw, short currentItem, HumanMetaData metaData) {
-        super(entityId, uuid, location, yaw, pitch, headYaw, velocity);
+    public OtherPlayer(int entityId, String name, UUID uuid, PlayerPropertyData[] properties, Location location, int yaw, int pitch, int headYaw, short currentItem, HumanMetaData metaData) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
         this.name = name;
         this.properties = properties;
         this.currentItem = currentItem;

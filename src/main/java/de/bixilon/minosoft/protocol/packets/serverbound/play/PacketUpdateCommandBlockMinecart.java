@@ -35,7 +35,7 @@ public class PacketUpdateCommandBlockMinecart implements ServerboundPacket {
 
     @Override
     public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_COMMAND_BLOCK_MINECART))
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_COMMAND_BLOCK_MINECART);
         buffer.writeVarInt(entityId);
         buffer.writeString(command);
         buffer.writeBoolean(trackOutput);

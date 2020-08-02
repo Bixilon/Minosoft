@@ -28,6 +28,7 @@ import java.util.UUID;
 
 public class PacketSpawnMob implements ClientboundPacket {
     Entity entity;
+    Velocity velocity;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -52,7 +53,7 @@ public class PacketSpawnMob implements ClientboundPacket {
         short yaw = buffer.readAngle();
         short pitch = buffer.readAngle();
         short headYaw = buffer.readAngle();
-        Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+        velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
 
         EntityMetaData.MetaDataHashMap metaData = null;
         if (buffer.getProtocolId() < 550) {
@@ -60,7 +61,7 @@ public class PacketSpawnMob implements ClientboundPacket {
         }
 
         try {
-            entity = typeClass.getConstructor(int.class, UUID.class, Location.class, short.class, short.class, short.class, Velocity.class, EntityMetaData.MetaDataHashMap.class, Integer.class).newInstance(entityId, uuid, location, yaw, pitch, headYaw, velocity, metaData, buffer.getProtocolId());
+            entity = typeClass.getConstructor(int.class, UUID.class, Location.class, short.class, short.class, short.class, EntityMetaData.MetaDataHashMap.class, Integer.class).newInstance(entityId, uuid, location, yaw, pitch, headYaw, metaData, buffer.getProtocolId());
             return true;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
             e.printStackTrace();
@@ -73,12 +74,17 @@ public class PacketSpawnMob implements ClientboundPacket {
         Log.protocol(String.format("Mob spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity.getIdentifier()));
     }
 
-    public Entity getMob() {
+    public Entity getEntity() {
         return entity;
+    }
+
+    public Velocity getVelocity() {
+        return velocity;
     }
 
     @Override
     public void handle(PacketHandler h) {
         h.handle(this);
     }
+
 }

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.protocol.network;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
+import de.bixilon.minosoft.game.datatypes.VelocityHandler;
 import de.bixilon.minosoft.game.datatypes.objectLoader.CustomMapping;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
@@ -41,10 +42,11 @@ public class Connection {
     final PacketHandler handler;
     final PacketSender sender;
     final ArrayList<ClientboundPacket> handlingQueue;
+    final VelocityHandler velocityHandler = new VelocityHandler(this);
     PluginChannelHandler pluginChannelHandler;
     Thread handleThread;
     Version version = Versions.getLowestVersionSupported(); // default
-    CustomMapping customMapping = new CustomMapping(version);
+    final CustomMapping customMapping = new CustomMapping(version);
     Player player;
     ConnectionState state = ConnectionState.DISCONNECTED;
     ConnectionReason reason;
@@ -261,5 +263,9 @@ public class Connection {
             return version.getPacketByCommand(command);
         }
         return Protocol.getPacketByCommand(state, command);
+    }
+
+    public VelocityHandler getVelocityHandler() {
+        return velocityHandler;
     }
 }

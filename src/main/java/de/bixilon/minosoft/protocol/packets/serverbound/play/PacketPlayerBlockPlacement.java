@@ -70,57 +70,37 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
 
     @Override
     public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_BLOCK_PLACEMENT))
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeBlockPositionByte(position);
-                buffer.writeByte(direction);
-                buffer.writeSlot(item);
-
-                buffer.writeByte((byte) (cursorX * 15.0F));
-                buffer.writeByte((byte) (cursorY * 15.0F));
-                buffer.writeByte((byte) (cursorZ * 15.0F));
-                break;
-            case VERSION_1_8:
-                buffer.writePosition(position);
-                buffer.writeByte(direction);
-                buffer.writeSlot(item);
-
-                buffer.writeByte((byte) (cursorX * 15.0F));
-                buffer.writeByte((byte) (cursorY * 15.0F));
-                buffer.writeByte((byte) (cursorZ * 15.0F));
-                break;
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-                buffer.writePosition(position);
-                buffer.writeVarInt(direction);
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_BLOCK_PLACEMENT);
+        if (buffer.getProtocolId() >= 453) {
+            buffer.writeVarInt(hand.getId());
+        }
+        if (buffer.getProtocolId() < 7) {
+            buffer.writeBlockPositionByte(position);
+        } else {
+            buffer.writePosition(position);
+        }
+        if (buffer.getProtocolId() < 49) {
+            buffer.writeByte(direction);
+            buffer.writeSlot(item);
+        } else {
+            buffer.writeVarInt(direction);
+            if (buffer.getProtocolId() < 453) {
                 buffer.writeVarInt(hand.getId());
+            }
+        }
 
-                buffer.writeByte((byte) (cursorX * 15.0F));
-                buffer.writeByte((byte) (cursorY * 15.0F));
-                buffer.writeByte((byte) (cursorZ * 15.0F));
-                break;
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                buffer.writePosition(position);
-                buffer.writeVarInt(direction);
-                buffer.writeVarInt(hand.getId());
+        if (buffer.getProtocolId() >= 453) {
+            buffer.writeBoolean(insideBlock);
+        }
 
-                buffer.writeFloat(cursorX);
-                buffer.writeFloat(cursorY);
-                buffer.writeFloat(cursorZ);
-                break;
-            default:
-                buffer.writeVarInt(hand.getId());
-                buffer.writePosition(position);
-                buffer.writeVarInt(direction);
-
-                buffer.writeFloat(cursorX);
-                buffer.writeFloat(cursorY);
-                buffer.writeFloat(cursorZ);
-                buffer.writeBoolean(insideBlock);
-                break;
+        if (buffer.getProtocolId() < 309) {
+            buffer.writeByte((byte) (cursorX * 15.0F));
+            buffer.writeByte((byte) (cursorY * 15.0F));
+            buffer.writeByte((byte) (cursorZ * 15.0F));
+        } else {
+            buffer.writeFloat(cursorX);
+            buffer.writeFloat(cursorY);
+            buffer.writeFloat(cursorZ);
         }
         return buffer;
     }

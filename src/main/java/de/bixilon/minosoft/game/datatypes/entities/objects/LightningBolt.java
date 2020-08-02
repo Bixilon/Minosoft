@@ -11,21 +11,25 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities.mob;
+package de.bixilon.minosoft.game.datatypes.entities.objects;
 
+import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.entities.Mob;
-import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
+import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
 import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 
 
-public class LightningBolt extends Mob implements MobInterface {
+public class LightningBolt extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
 
     public LightningBolt(int entityId, UUID uuid, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, location, yaw, pitch, velocity);
         this.metaData = new EntityMetaData(sets, protocolId);
+    }
+
+    public LightningBolt(int entityId, Location location, int protocolId) {
+        super(entityId, null, location, 0, 0);
     }
 
     @Override
@@ -46,10 +50,5 @@ public class LightningBolt extends Mob implements MobInterface {
     @Override
     public float getHeight() {
         return 0.0F;
-    }
-
-    @Override
-    public int getMaxHealth() {
-        return 1;
     }
 }

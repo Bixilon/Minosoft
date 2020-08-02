@@ -62,6 +62,15 @@ public class OutByteBuffer {
         }
     }
 
+    public void writeByteArray(byte[] data) {
+        if (protocolId < 19) {
+            writeShort((short) data.length);
+        } else {
+            writeVarInt(data.length);
+        }
+        writeBytes(data);
+    }
+
     public void writeBoolean(boolean b) {
         bytes.add((byte) ((b) ? 0x01 : 0x00));
     }
@@ -151,12 +160,16 @@ public class OutByteBuffer {
         writeString(j.toString());
     }
 
-    public void writePosition(BlockPosition location) {
-        if (protocolId < 440) {
-            writeLong((((long) location.getX() & 0x3FFFFFF) << 38) | (((long) location.getZ() & 0x3FFFFFF)) | ((long) location.getY() & 0xFFF) << 26);
+    public void writePosition(BlockPosition position) {
+        if (position == null) {
+            writeLong(0L);
             return;
         }
-        writeLong((((long) (location.getX() & 0x3FFFFFF) << 38) | ((long) (location.getZ() & 0x3FFFFFF) << 12) | (long) (location.getY() & 0xFFF)));
+        if (protocolId < 440) {
+            writeLong((((long) position.getX() & 0x3FFFFFF) << 38) | (((long) position.getZ() & 0x3FFFFFF)) | ((long) position.getY() & 0xFFF) << 26);
+            return;
+        }
+        writeLong((((long) (position.getX() & 0x3FFFFFF) << 38) | ((long) (position.getZ() & 0x3FFFFFF) << 12) | (long) (position.getY() & 0xFFF)));
     }
 
     public void writeTextComponent(TextComponent component) {
@@ -218,5 +231,9 @@ public class OutByteBuffer {
         for (long long_long : data) {
             writeLong(long_long);
         }
+    }
+
+    public int getProtocolId() {
+        return protocolId;
     }
 }

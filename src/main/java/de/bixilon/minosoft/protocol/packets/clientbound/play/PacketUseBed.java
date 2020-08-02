@@ -26,16 +26,13 @@ public class PacketUseBed implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getProtocolId()) {
-            case VERSION_1_7_10:
-                entityId = buffer.readInt();
-                position = buffer.readBlockPosition();
-                return true;
-            default:
-                entityId = buffer.readVarInt();
-                position = buffer.readPosition();
-                return true;
+        entityId = buffer.readInt();
+        if (buffer.getProtocolId() < 7) {
+            position = buffer.readBlockPosition();
+        } else {
+            position = buffer.readPosition();
         }
+        return true;
     }
 
     @Override
