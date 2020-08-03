@@ -190,7 +190,8 @@ public class Packets {
         PLAY_SPAWN_ENTITY,
         PLAY_TITLE,
         PLAY_ENTITY_INITIALISATION,
-        PLAY_SET_COMPRESSION;
+        PLAY_SET_COMPRESSION,
+        PLAY_ADVANCEMENT_PROGRESS;
 
         final ConnectionState state;
 

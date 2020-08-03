@@ -69,9 +69,9 @@ public class PacketHandler {
                 Log.fatal(String.format("Server is running on unknown version or a invalid version was forced (version=%d). Exiting...", versionId));
                 System.exit(1);
             }
+            Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getColoredMessage()));
             connection.setVersion(version);
         }
-        Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getColoredMessage()));
     }
 
     public void handle(PacketStatusPong pkg) {

@@ -38,6 +38,8 @@ public class DirectPalette implements Palette {
     public void read(InByteBuffer buffer) {
         this.protocolId = buffer.getProtocolId();
         mapping = buffer.getConnection().getMapping();
-        buffer.readVarInt();
+        if (buffer.getProtocolId() < 346) {
+            buffer.readVarInt();
+        }
     }
 }
