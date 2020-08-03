@@ -19,6 +19,7 @@ import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.game.datatypes.Mappings;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.protocol.ConnectionState;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Util;
@@ -60,8 +61,8 @@ public class Versions {
             return;
         }
 
-        HashBiMap<Packets.Serverbound, Integer> serverboundPacketMapping;
-        HashBiMap<Packets.Clientbound, Integer> clientboundPacketMapping;
+        HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
+        HashMap<ConnectionState, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
         if (versionJson.get("mapping").isJsonPrimitive()) {
             // inherits or copies mapping from an other version
             if (!versionMap.containsKey(protocolId)) {
@@ -72,16 +73,24 @@ public class Versions {
             clientboundPacketMapping = parent.getClientboundPacketMapping();
         } else {
             JsonObject mappingJson = versionJson.getAsJsonObject("mapping");
-            serverboundPacketMapping = HashBiMap.create();
+            serverboundPacketMapping = new HashMap<>();
 
             for (JsonElement packetElement : mappingJson.getAsJsonArray("serverbound")) {
                 String packetName = packetElement.getAsString();
-                serverboundPacketMapping.put(Packets.Serverbound.valueOf(packetName), serverboundPacketMapping.size());
+                Packets.Serverbound packet = Packets.Serverbound.valueOf(packetName);
+                if (!serverboundPacketMapping.containsKey(packet.getState())) {
+                    serverboundPacketMapping.put(packet.getState(), HashBiMap.create());
+                }
+                serverboundPacketMapping.get(packet.getState()).put(packet, serverboundPacketMapping.get(packet.getState()).size());
             }
-            clientboundPacketMapping = HashBiMap.create();
+            clientboundPacketMapping = new HashMap<>();
             for (JsonElement packetElement : mappingJson.getAsJsonArray("clientbound")) {
                 String packetName = packetElement.getAsString();
-                clientboundPacketMapping.put(Packets.Clientbound.valueOf(packetName), clientboundPacketMapping.size());
+                Packets.Clientbound packet = Packets.Clientbound.valueOf(packetName);
+                if (!clientboundPacketMapping.containsKey(packet.getState())) {
+                    clientboundPacketMapping.put(packet.getState(), HashBiMap.create());
+                }
+                clientboundPacketMapping.get(packet.getState()).put(packet, clientboundPacketMapping.get(packet.getState()).size());
             }
         }
         Version version = new Version(versionName, protocolId, serverboundPacketMapping, clientboundPacketMapping);

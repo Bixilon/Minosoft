@@ -14,16 +14,19 @@
 package de.bixilon.minosoft.game.datatypes.objectLoader.versions;
 
 import com.google.common.collect.HashBiMap;
+import de.bixilon.minosoft.protocol.protocol.ConnectionState;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+
+import java.util.HashMap;
 
 public class Version {
     final String versionName;
     final int protocolVersion;
-    final HashBiMap<Packets.Serverbound, Integer> serverboundPacketMapping;
-    final HashBiMap<Packets.Clientbound, Integer> clientboundPacketMapping;
+    final HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
+    final HashMap<ConnectionState, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
     VersionMapping mapping;
 
-    public Version(String versionName, int protocolVersion, HashBiMap<Packets.Serverbound, Integer> serverboundPacketMapping, HashBiMap<Packets.Clientbound, Integer> clientboundPacketMapping) {
+    public Version(String versionName, int protocolVersion, HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping, HashMap<ConnectionState, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping) {
         this.versionName = versionName;
         this.protocolVersion = protocolVersion;
         this.serverboundPacketMapping = serverboundPacketMapping;
@@ -38,23 +41,25 @@ public class Version {
         return protocolVersion;
     }
 
-    public Packets.Clientbound getPacketByCommand(int command) { // state must be play!
-        return clientboundPacketMapping.inverse().get(command);
+    public Packets.Clientbound getPacketByCommand(ConnectionState state, int command) {
+        if (clientboundPacketMapping.containsKey(state) && clientboundPacketMapping.get(state).containsValue(command)) {
+            return clientboundPacketMapping.get(state).inverse().get(command);
+        }
+        return null;
     }
 
-    public int getCommandByPacket(Packets.Serverbound packet) {
-        return serverboundPacketMapping.get(packet);
+    public Integer getCommandByPacket(Packets.Serverbound packet) {
+        if (serverboundPacketMapping.containsKey(packet.getState()) && serverboundPacketMapping.get(packet.getState()).containsKey(packet)) {
+            return serverboundPacketMapping.get(packet.getState()).get(packet);
+        }
+        return null;
     }
 
-    public int getCommandByPacket(Packets.Clientbound packet) {
-        return clientboundPacketMapping.get(packet);
-    }
-
-    public HashBiMap<Packets.Clientbound, Integer> getClientboundPacketMapping() {
+    public HashMap<ConnectionState, HashBiMap<Packets.Clientbound, Integer>> getClientboundPacketMapping() {
         return clientboundPacketMapping;
     }
 
-    public HashBiMap<Packets.Serverbound, Integer> getServerboundPacketMapping() {
+    public HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> getServerboundPacketMapping() {
         return serverboundPacketMapping;
     }
 

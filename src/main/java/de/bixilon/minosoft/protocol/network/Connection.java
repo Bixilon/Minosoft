@@ -257,17 +257,25 @@ public class Connection {
     }
 
     public int getPacketCommand(Packets.Serverbound packet) {
-        if (packet.getState() == ConnectionState.PLAY) {
-            return version.getCommandByPacket(packet);
+        Integer command = null;
+        if (getReason() != ConnectionReason.GET_VERSION) {
+            command = version.getCommandByPacket(packet);
         }
-        return Protocol.getPacketCommand(packet);
+        if (command == null) {
+            return Protocol.getPacketCommand(packet);
+        }
+        return command;
     }
 
     public Packets.Clientbound getPacketByCommand(ConnectionState state, int command) {
-        if (state == ConnectionState.PLAY) {
-            return version.getPacketByCommand(command);
+        Packets.Clientbound packet = null;
+        if (getReason() != ConnectionReason.GET_VERSION) {
+            packet = version.getPacketByCommand(state, command);
         }
-        return Protocol.getPacketByCommand(state, command);
+        if (packet == null) {
+            return Protocol.getPacketByCommand(state, command);
+        }
+        return packet;
     }
 
     public VelocityHandler getVelocityHandler() {
