@@ -155,7 +155,7 @@ public class Network {
                         Packets.Clientbound p = null;
                         try {
                             p = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
-                            Class<? extends ClientboundPacket> clazz = Protocol.getPacketByPacket(p);
+                            Class<? extends ClientboundPacket> clazz = p.getClazz();
 
                             if (clazz == null) {
                                 Log.warn(String.format("[IN] Received unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), p, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
