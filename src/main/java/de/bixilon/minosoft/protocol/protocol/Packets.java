@@ -78,7 +78,8 @@ public class Packets {
         PLAY_SET_RECIPE_BOOK_STATE,
         PLAY_PLAYER_GROUND_CHANGE,
         PLAY_PREPARE_CRAFTING_GRID,
-        PLAY_VEHICLE_MOVEMENT;
+        PLAY_VEHICLE_MOVEMENT,
+        PLAY_QUERY_ENTITY_NBT;
 
         final ConnectionState state;
 

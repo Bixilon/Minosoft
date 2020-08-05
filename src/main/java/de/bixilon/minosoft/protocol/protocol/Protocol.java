@@ -26,6 +26,7 @@ public abstract class Protocol {
         serverboundPacketMapping.put(ConnectionState.HANDSHAKING, HashBiMap.create());
         serverboundPacketMapping.put(ConnectionState.STATUS, HashBiMap.create());
         serverboundPacketMapping.put(ConnectionState.LOGIN, HashBiMap.create());
+        serverboundPacketMapping.put(ConnectionState.PLAY, HashBiMap.create());
 
         // handshake
         serverboundPacketMapping.get(ConnectionState.HANDSHAKING).put(Packets.Serverbound.HANDSHAKING_HANDSHAKE, 0x00);
@@ -39,6 +40,7 @@ public abstract class Protocol {
 
         clientboundPacketMapping.put(ConnectionState.STATUS, HashBiMap.create());
         clientboundPacketMapping.put(ConnectionState.LOGIN, HashBiMap.create());
+        clientboundPacketMapping.put(ConnectionState.PLAY, HashBiMap.create());
 
         clientboundPacketMapping.get(ConnectionState.STATUS).put(Packets.Clientbound.STATUS_RESPONSE, 0x00);
         clientboundPacketMapping.get(ConnectionState.STATUS).put(Packets.Clientbound.STATUS_PONG, 0x01);

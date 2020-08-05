@@ -152,40 +152,40 @@ public class Network {
                         }
 
                         InPacketBuffer inPacketBuffer = new InPacketBuffer(data, connection);
-                        Packets.Clientbound p = null;
+                        Packets.Clientbound packet = null;
                         try {
-                            p = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
-                            Class<? extends ClientboundPacket> clazz = p.getClazz();
+                            packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
+                            Class<? extends ClientboundPacket> clazz = packet.getClazz();
 
                             if (clazz == null) {
-                                Log.warn(String.format("[IN] Received unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), p, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
+                                Log.warn(String.format("[IN] Received unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), packet, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
                                 continue;
                             }
                             try {
-                                ClientboundPacket packet = clazz.getConstructor().newInstance();
-                                boolean success = packet.read(inPacketBuffer);
+                                ClientboundPacket packetInstance = clazz.getConstructor().newInstance();
+                                boolean success = packetInstance.read(inPacketBuffer);
                                 if (inPacketBuffer.getBytesLeft() > 0 || !success) {
                                     // warn not all data used
-                                    Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", p, inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
+                                    Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packet, inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
 
                                     continue;
                                 }
 
-                                if (packet instanceof PacketLoginSuccess) {
+                                if (packetInstance instanceof PacketLoginSuccess) {
                                     // login was okay, setting play status to avoid miss timing issues
                                     connection.setConnectionState(ConnectionState.PLAY);
-                                } else if (packet instanceof PacketLoginSetCompression) {
+                                } else if (packetInstance instanceof PacketLoginSetCompression) {
                                     // instantly set compression. because handling is to slow...
                                     // compressionThreshold = ((PacketLoginSetCompression) packet).getThreshold();
                                     compressionThreshold = Integer.MAX_VALUE; // FIXME: 29.07.20  see #2
                                 }
-                                connection.handle(packet);
+                                connection.handle(packetInstance);
                             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                                 // safety first, but will not occur
                                 e.printStackTrace();
                             }
                         } catch (Exception e) {
-                            Log.protocol(String.format("An error occurred while parsing an packet (%s): %s", p, e));
+                            Log.protocol(String.format("An error occurred while parsing an packet (%s): %s", packet, e));
                             e.printStackTrace();
                         }
                     }
