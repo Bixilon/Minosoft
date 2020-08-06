@@ -155,6 +155,10 @@ public class Network {
                         Packets.Clientbound packet = null;
                         try {
                             packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
+                            if (packet == null) {
+                                Log.fatal("Version packet enum does not contain a packet with id 0x%x. Your version.json is broken!");
+                                System.exit(1);
+                            }
                             Class<? extends ClientboundPacket> clazz = packet.getClazz();
 
                             if (clazz == null) {

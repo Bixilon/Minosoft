@@ -76,7 +76,9 @@ public class PacketJoinGame implements ClientboundPacket {
             if (buffer.getProtocolId() >= 552) {
                 hashedSeed = buffer.readLong();
             }
-            difficulty = Difficulty.byId(buffer.readByte());
+            if (buffer.getProtocolId() < 464) {
+                difficulty = Difficulty.byId(buffer.readByte());
+            }
             maxPlayers = buffer.readByte();
             levelType = LevelType.byType(buffer.readString());
             if (buffer.getProtocolId() >= 468) {
