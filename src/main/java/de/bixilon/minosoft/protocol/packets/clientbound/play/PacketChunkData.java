@@ -99,10 +99,12 @@ public class PacketChunkData implements ClientboundPacket {
             // set position of the byte buffer, because of some reasons HyPixel makes some weired stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
             buffer.setPosition(size + lastPos);
         }
-        int blockEntitiesCount = buffer.readVarInt();
-        for (int i = 0; i < blockEntitiesCount; i++) {
-            CompoundTag tag = (CompoundTag) buffer.readNBT();
-            blockEntities.put(new BlockPosition(tag.getIntTag("x").getValue(), (short) tag.getIntTag("y").getValue(), tag.getIntTag("z").getValue()), tag);
+        if (buffer.getProtocolId() >= 110) {
+            int blockEntitiesCount = buffer.readVarInt();
+            for (int i = 0; i < blockEntitiesCount; i++) {
+                CompoundTag tag = (CompoundTag) buffer.readNBT();
+                blockEntities.put(new BlockPosition(tag.getIntTag("x").getValue(), (short) tag.getIntTag("y").getValue(), tag.getIntTag("z").getValue()), tag);
+            }
         }
         return true;
     }

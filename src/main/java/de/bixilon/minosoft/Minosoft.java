@@ -56,12 +56,14 @@ public class Minosoft {
         checkAssets();
         Log.info("Assets checking done");
         Log.info("Loading versions.json...");
+        long mappingStartLoadingTime = System.currentTimeMillis();
         try {
             Versions.load(Util.readJsonFromFile(Config.homeDir + "assets/mapping/versions.json"));
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
+        Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
 
         checkClientToken();
 
