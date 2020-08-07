@@ -120,10 +120,12 @@ public class VersionMapping {
                     Item item = new Item("minecraft", identifier);
                     JsonObject identifierJSON = itemJson.getAsJsonObject(identifier);
                     int itemId = identifierJSON.get("id").getAsInt();
-                    if (identifierJSON.has("meta")) {
-                        // old format (with metadata)
-                        itemId <<= 4;
-                        itemId |= identifierJSON.get("meta").getAsInt();
+                    if (version.getProtocolVersion() < ProtocolDefinition.FLATTING_VERSION_ID) {
+                        itemId <<= 16;
+                        if (identifierJSON.has("meta")) {
+                            // old format (with metadata)
+                            itemId |= identifierJSON.get("meta").getAsInt();
+                        }
                     }
                     itemMap.put(itemId, item);
                 }

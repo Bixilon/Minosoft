@@ -121,14 +121,14 @@ public class CustomMapping {
     }
 
     public Item getItemByLegacy(int itemId, int metaData) {
-        int protocolId = itemId << 4;
-        if (metaData > 0 && metaData < 16) {
+        int protocolId = itemId << 16;
+        if (metaData > 0 && metaData < Short.MAX_VALUE) {
             protocolId |= metaData;
         }
         Item item = getItemById(protocolId);
         if (item == null) {
             // ignore meta data ?
-            return getItemById(itemId << 4);
+            return getItemById(itemId << 16);
         }
         return item;
     }

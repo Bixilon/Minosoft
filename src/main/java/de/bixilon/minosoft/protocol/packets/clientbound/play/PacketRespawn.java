@@ -35,7 +35,11 @@ public class PacketRespawn implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 743) { //ToDo
-            dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
+            if (buffer.getProtocolId() < 108) {
+                dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
+            } else {
+                dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
+            }
             if (buffer.getProtocolId() < 464) {
                 difficulty = Difficulty.byId(buffer.readByte());
             }

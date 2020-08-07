@@ -65,7 +65,7 @@ public class Slot {
         if (nbt != null && nbt.containsKey("display") && nbt.getCompoundTag("display").containsKey("Name")) { // check if object has nbt data, and a custom display name
             return String.format("%s (%s)", new TextComponent(nbt.getCompoundTag("display").getStringTag("Name").getValue()).getColoredMessage(), item);
         }
-        return item.toString(); // ToDo display name per Item (from language file)
+        return (item == null ? "AIR" : item.toString()); // ToDo display name per Item (from language file)
     }
 
     @Override

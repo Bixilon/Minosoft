@@ -61,6 +61,10 @@ public class PacketEntityEquipment implements ClientboundPacket {
     public void log() {
         if (slots.size() == 1) {
             Map.Entry<InventorySlots.EntityInventory, Slot> set = slots.entrySet().iterator().next();
+            if (set.getValue() == null) {
+                Log.protocol(String.format("Entity equipment changed (entityId=%d, slot=%s): AIR", entityId, set.getKey()));
+                return;
+            }
             Log.protocol(String.format("Entity equipment changed (entityId=%d, slot=%s): %dx %s", entityId, set.getKey(), set.getValue().getItemCount(), set.getValue().getDisplayName()));
         } else {
             Log.protocol(String.format("Entity equipment changed (entityId=%d, slotCount=%d)", entityId, slots.size()));
