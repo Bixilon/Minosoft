@@ -53,10 +53,16 @@ public class PacketJoinGame implements ClientboundPacket {
             gameModeRaw &= ~0x8;
             gameMode = GameMode.byId(gameModeRaw);
 
-            dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
+            if (buffer.getProtocolId() < 100) {
+                dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
+            } else {
+                dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readVarInt());
+            }
             difficulty = Difficulty.byId(buffer.readByte());
             maxPlayers = buffer.readByte();
-            levelType = LevelType.byType(buffer.readString());
+            if (buffer.getProtocolId() >= 1) {
+                levelType = LevelType.byType(buffer.readString());
+            }
 
             if (buffer.getProtocolId() < 29) {
                 return true;

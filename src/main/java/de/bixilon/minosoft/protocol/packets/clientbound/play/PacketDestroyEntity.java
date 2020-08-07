@@ -27,14 +27,12 @@ public class PacketDestroyEntity implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 7) {
             this.entityIds = new int[buffer.readByte()];
-            for (int i = 0; i < entityIds.length; i++) {
-                entityIds[i] = buffer.readInt();
-            }
-            return true;
+        } else {
+            this.entityIds = new int[buffer.readVarInt()];
         }
-        this.entityIds = new int[buffer.readVarInt()];
+
         for (int i = 0; i < entityIds.length; i++) {
-            entityIds[i] = buffer.readVarInt();
+            entityIds[i] = buffer.readEntityId();
         }
         return true;
     }

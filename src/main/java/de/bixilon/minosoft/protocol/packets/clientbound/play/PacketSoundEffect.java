@@ -31,7 +31,9 @@ public class PacketSoundEffect implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         soundId = buffer.readVarInt();
-        category = SoundCategories.byId(buffer.readVarInt());
+        if (buffer.getProtocolId() >= 95) {
+            category = SoundCategories.byId(buffer.readVarInt());
+        }
         location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
         volume = buffer.readFloat();
         if (buffer.getProtocolId() < 201) {

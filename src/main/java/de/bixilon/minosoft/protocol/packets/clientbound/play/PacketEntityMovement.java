@@ -26,20 +26,15 @@ public class PacketEntityMovement implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 22) {
-            this.entityId = buffer.readInt();
-            this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-            return true;
-        }
+        this.entityId = buffer.readEntityId();
         if (buffer.getProtocolId() < 100) {
-            this.entityId = buffer.readVarInt();
             this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-            this.onGround = buffer.readBoolean();
-            return true;
+        } else {
+            this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
         }
-        this.entityId = buffer.readVarInt();
-        this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
-        this.onGround = buffer.readBoolean();
+        if (buffer.getProtocolId() >= 22) {
+            this.onGround = buffer.readBoolean();
+        }
         return true;
     }
 

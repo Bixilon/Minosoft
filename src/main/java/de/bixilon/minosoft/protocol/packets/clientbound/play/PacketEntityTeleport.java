@@ -28,26 +28,19 @@ public class PacketEntityTeleport implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 7) {
-            this.entityId = buffer.readInt();
-            this.location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-            this.yaw = buffer.readAngle();
-            this.pitch = buffer.readAngle();
-            return true;
-        }
+        this.entityId = buffer.readEntityId();
+
         if (buffer.getProtocolId() < 100) {
-            this.entityId = buffer.readVarInt();
             this.location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-            this.yaw = buffer.readAngle();
-            this.pitch = buffer.readAngle();
-            this.onGround = buffer.readBoolean();
-            return true;
+        } else {
+            this.location = buffer.readLocation();
         }
-        this.entityId = buffer.readVarInt();
-        this.location = buffer.readLocation();
         this.yaw = buffer.readAngle();
         this.pitch = buffer.readAngle();
-        this.onGround = buffer.readBoolean();
+
+        if (buffer.getProtocolId() >= 22) {
+            this.onGround = buffer.readBoolean();
+        }
         return true;
     }
 

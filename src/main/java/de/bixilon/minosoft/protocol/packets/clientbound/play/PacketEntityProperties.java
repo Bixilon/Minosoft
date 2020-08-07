@@ -29,8 +29,8 @@ public class PacketEntityProperties implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
+        this.entityId = buffer.readEntityId();
         if (buffer.getProtocolId() < 7) {
-            entityId = buffer.readInt();
             int count = buffer.readInt();
             for (int i = 0; i < count; i++) {
                 EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString(), buffer.getProtocolId());
@@ -46,7 +46,6 @@ public class PacketEntityProperties implements ClientboundPacket {
             }
             return true;
         }
-        entityId = buffer.readVarInt();
         int count = buffer.readInt();
         for (int i = 0; i < count; i++) {
             EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString(), buffer.getProtocolId());

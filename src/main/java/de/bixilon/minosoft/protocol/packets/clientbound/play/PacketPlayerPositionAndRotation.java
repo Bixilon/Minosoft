@@ -36,8 +36,9 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
         if (buffer.getProtocolId() < 6) {
             onGround = buffer.readBoolean();
             return true;
+        } else {
+            flags = buffer.readByte();
         }
-        flags = buffer.readByte();
         if (buffer.getProtocolId() >= 79) {
             teleportId = buffer.readVarInt();
         }

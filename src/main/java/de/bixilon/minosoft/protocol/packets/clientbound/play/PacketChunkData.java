@@ -44,7 +44,12 @@ public class PacketChunkData implements ClientboundPacket {
             short addBitMask = buffer.readShort();
 
             // decompress chunk data
-            InByteBuffer decompressed = Util.decompress(buffer.readBytes(buffer.readInt()), buffer.getConnection());
+            InByteBuffer decompressed;
+            if (buffer.getProtocolId() < 27) {
+                decompressed = Util.decompress(buffer.readBytes(buffer.readInt()), buffer.getConnection());
+            } else {
+                decompressed = buffer;
+            }
 
             chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, containsSkyLight);
             return true;
@@ -53,10 +58,10 @@ public class PacketChunkData implements ClientboundPacket {
             this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             boolean groundUpContinuous = buffer.readBoolean();
             int sectionBitMask;
-            if (buffer.getProtocolId() < 70) {
+            if (buffer.getProtocolId() < 60) {
                 sectionBitMask = buffer.readShort();
             } else {
-                sectionBitMask = buffer.readVarInt();
+                sectionBitMask = buffer.readInt();
             }
             int size = buffer.readVarInt();
             int lastPos = buffer.getPosition();
@@ -70,7 +75,12 @@ public class PacketChunkData implements ClientboundPacket {
         if (buffer.getProtocolId() >= 743) { //ToDo: find out exact version
             this.ignoreOldData = buffer.readBoolean();
         }
-        short sectionBitMask = (short) buffer.readVarInt();
+        int sectionBitMask;
+        if (buffer.getProtocolId() < 70) {
+            sectionBitMask = buffer.readInt();
+        } else {
+            sectionBitMask = buffer.readVarInt();
+        }
         if (buffer.getProtocolId() >= 443) {
             heightMap = (CompoundTag) buffer.readNBT();
         }
@@ -85,7 +95,7 @@ public class PacketChunkData implements ClientboundPacket {
         int lastPos = buffer.getPosition();
 
         if (size > 0) {
-            chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, (short) 0, groundUpContinuous, containsSkyLight);
+            chunk = ChunkUtil.readChunkPacket(buffer, (short) sectionBitMask, (short) 0, groundUpContinuous, containsSkyLight);
             // set position of the byte buffer, because of some reasons HyPixel makes some weired stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
             buffer.setPosition(size + lastPos);
         }

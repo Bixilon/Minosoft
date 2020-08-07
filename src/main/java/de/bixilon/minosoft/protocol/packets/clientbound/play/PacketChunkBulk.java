@@ -35,7 +35,12 @@ public class PacketChunkBulk implements ClientboundPacket {
             boolean containsSkyLight = buffer.readBoolean();
 
             // decompress chunk data
-            InByteBuffer decompressed = Util.decompress(buffer.readBytes(dataLen), buffer.getConnection());
+            InByteBuffer decompressed;
+            if (buffer.getProtocolId() < 27) {
+                decompressed = Util.decompress(buffer.readBytes(dataLen), buffer.getConnection());
+            } else {
+                decompressed = buffer;
+            }
 
             // chunk meta data
             for (int i = 0; i < chunkCount; i++) {

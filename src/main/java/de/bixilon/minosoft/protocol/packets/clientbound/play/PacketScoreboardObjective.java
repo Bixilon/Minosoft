@@ -27,20 +27,23 @@ public class PacketScoreboardObjective implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 7) { // ToDo
-            name = buffer.readString();
-            value = buffer.readTextComponent();
-            action = ScoreboardObjectiveAction.byId(buffer.readByte());
-            return true;
-        }
         name = buffer.readString();
+        if (buffer.getProtocolId() < 7) { // ToDo
+            value = buffer.readTextComponent();
+        }
         action = ScoreboardObjectiveAction.byId(buffer.readByte());
         if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
-            value = buffer.readTextComponent();
-            if (buffer.getProtocolId() < 349) {
-                type = ScoreboardObjectiveTypes.byName(buffer.readString());
-            } else {
-                type = ScoreboardObjectiveTypes.byId(buffer.readVarInt());
+
+            if (buffer.getProtocolId() >= 7) { // ToDo
+                value = buffer.readTextComponent();
+
+            }
+            if (buffer.getProtocolId() >= 12) {
+                if (buffer.getProtocolId() < 349) {
+                    type = ScoreboardObjectiveTypes.byName(buffer.readString());
+                } else {
+                    type = ScoreboardObjectiveTypes.byId(buffer.readVarInt());
+                }
             }
         }
         return true;

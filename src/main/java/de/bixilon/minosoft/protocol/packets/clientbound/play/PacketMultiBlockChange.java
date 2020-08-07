@@ -30,7 +30,11 @@ public class PacketMultiBlockChange implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 25) {
-            location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+            if (buffer.getProtocolId() < 4) {
+                location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
+            } else {
+                location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+            }
             short count = buffer.readShort();
             int dataSize = buffer.readInt(); // should be count * 4
             for (int i = 0; i < count; i++) {

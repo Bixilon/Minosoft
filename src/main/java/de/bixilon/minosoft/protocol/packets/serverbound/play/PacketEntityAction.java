@@ -41,12 +41,11 @@ public class PacketEntityAction implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ENTITY_ACTION);
+        buffer.writeEntityId(entityId);
         if (buffer.getProtocolId() < 7) {
-            buffer.writeInt(entityId);
             buffer.writeByte((byte) action.getId(buffer.getProtocolId()));
             buffer.writeInt(parameter);
         } else {
-            buffer.writeVarInt(entityId);
             buffer.writeVarInt(action.getId(buffer.getProtocolId()));
             buffer.writeVarInt(parameter);
         }

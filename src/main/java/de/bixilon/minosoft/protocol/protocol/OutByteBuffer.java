@@ -235,4 +235,12 @@ public class OutByteBuffer {
     public int getProtocolId() {
         return protocolId;
     }
+
+    public void writeEntityId(int entityId) {
+        if (protocolId < 7) {
+            writeInt(entityId);
+        } else {
+            writeVarInt(entityId);
+        }
+    }
 }

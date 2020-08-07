@@ -13,27 +13,23 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffect;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketRemoveEntityEffect implements ClientboundPacket {
-    int entityId;
-    MobEffect effect;
+public class PacketSetCompression implements ClientboundPacket {
+    int threshold;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        this.entityId = buffer.readEntityId();
-
-        effect = buffer.getConnection().getMapping().getMobEffectById(buffer.readByte());
+        threshold = buffer.readVarInt();
         return true;
     }
 
     @Override
     public void log() {
-        Log.game(String.format("Entity effect removed (entityId=%d, effect=%s)", entityId, effect));
+        Log.protocol(String.format("Received set compression packet (threshold=%d)", threshold));
     }
 
     @Override
@@ -41,11 +37,7 @@ public class PacketRemoveEntityEffect implements ClientboundPacket {
         h.handle(this);
     }
 
-    public int getEntityId() {
-        return entityId;
-    }
-
-    public MobEffect getEffect() {
-        return effect;
+    public int getThreshold() {
+        return threshold;
     }
 }

@@ -28,26 +28,18 @@ public class PacketEntityMovementAndRotation implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 22) {
-            this.entityId = buffer.readInt();
-            this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-            this.yaw = buffer.readAngle();
-            this.pitch = buffer.readAngle();
-            return true;
-        }
+        this.entityId = buffer.readEntityId();
+
         if (buffer.getProtocolId() < 100) {
-            this.entityId = buffer.readVarInt();
             this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-            this.yaw = buffer.readAngle();
-            this.pitch = buffer.readAngle();
-            onGround = buffer.readBoolean();
-            return true;
+        } else {
+            this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
         }
-        this.entityId = buffer.readVarInt();
-        this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
         this.yaw = buffer.readAngle();
         this.pitch = buffer.readAngle();
-        this.onGround = buffer.readBoolean();
+        if (buffer.getProtocolId() >= 22) {
+            onGround = buffer.readBoolean();
+        }
         return true;
     }
 

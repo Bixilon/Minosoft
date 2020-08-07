@@ -198,7 +198,7 @@ public class Packets {
         PLAY_SPAWN_ENTITY(PacketSpawnObject.class),
         PLAY_TITLE(PacketTitle.class),
         PLAY_ENTITY_INITIALISATION(null),
-        PLAY_SET_COMPRESSION(null),
+        PLAY_SET_COMPRESSION(PacketSetCompression.class),
         PLAY_ADVANCEMENT_PROGRESS(null);
 
 

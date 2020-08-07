@@ -32,8 +32,16 @@ public class PacketPlayerInfo implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 19) {
-            infos.add(new PlayerInfoBulk(buffer.readString(), buffer.readShort(), (buffer.readBoolean() ? PlayerInfoAction.UPDATE_LATENCY : PlayerInfoAction.REMOVE_PLAYER)));
+        if (buffer.getProtocolId() < 17) { //ToDo: 19?
+            String name = buffer.readString();
+            int ping;
+            if (buffer.getProtocolId() < 7) {
+                ping = buffer.readShort();
+            } else {
+                ping = buffer.readVarInt();
+            }
+            PlayerInfoAction action = (buffer.readBoolean() ? PlayerInfoAction.UPDATE_LATENCY : PlayerInfoAction.REMOVE_PLAYER);
+            infos.add(new PlayerInfoBulk(name, ping, action));
             return true;
         }
         PlayerInfoAction action = PlayerInfoAction.byId(buffer.readVarInt());

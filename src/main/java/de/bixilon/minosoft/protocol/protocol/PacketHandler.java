@@ -649,4 +649,7 @@ public class PacketHandler {
 
     public void handle(PacketEntitySoundEffect pkg) {
     }
+
+    public void handle(PacketSetCompression pkg) {
+    }
 }

@@ -40,15 +40,12 @@ public class PacketSpawnPainting implements ClientboundPacket {
             motive = buffer.getConnection().getMapping().getMotiveById(buffer.getProtocolId());
         }
         BlockPosition position;
-        if (buffer.getProtocolId() < 7) {
-            position = buffer.readBlockPositionInteger();
-        } else {
-            position = buffer.readPosition();
-        }
         int direction;
         if (buffer.getProtocolId() < 8) {
+            position = buffer.readBlockPositionInteger();
             direction = buffer.readInt();
         } else {
+            position = buffer.readPosition();
             direction = buffer.readByte();
         }
         entity = new Painting(entityId, uuid, motive, position, direction);

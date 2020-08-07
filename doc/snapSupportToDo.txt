@@ -1,0 +1,15 @@
+1.7.6:          Added new fields to Spawn Player
+14w04a:         Encoding for 'Position' changed
+                ?
+14w07a:         Added two new fields to Teams
+14w21a:         Player list item changes
+                Spawn Player changes
+14w2a:          Changed chunk sending
+14w2c:          Changed Multi Block Change to using packed block ids
+                Changed Block Change to using packed block ids
+14w28b:         Added Display name fields to Player List Item
+14w31a:         Changed a few fields in World Border to VarLong
+14w33a:         Added new fields to Tab-Complete (Serverbound)
+15w31a:         Removed Open inventory (6) from valid values for Entity Action's Action enum
+15w34c:         Significantly reworked Map Chunk Bulk (0x26)
+15w44a:         Click Window (0x07)'s mode field is now a VarInt enum instead of a byte enum

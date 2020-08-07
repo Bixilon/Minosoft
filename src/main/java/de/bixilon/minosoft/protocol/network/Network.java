@@ -18,6 +18,7 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSetCompression;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSetCompression;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.Util;
@@ -181,6 +182,10 @@ public class Network {
                                 } else if (packetInstance instanceof PacketLoginSetCompression) {
                                     // instantly set compression. because handling is to slow...
                                     // compressionThreshold = ((PacketLoginSetCompression) packet).getThreshold();
+                                    compressionThreshold = Integer.MAX_VALUE; // FIXME: 29.07.20  see #2
+                                } else if (packetInstance instanceof PacketSetCompression) {
+                                    // instantly set compression. because handling is to slow...
+                                    // compressionThreshold = ((PacketSetCompression) packet).getThreshold();
                                     compressionThreshold = Integer.MAX_VALUE; // FIXME: 29.07.20  see #2
                                 }
                                 connection.handle(packetInstance);

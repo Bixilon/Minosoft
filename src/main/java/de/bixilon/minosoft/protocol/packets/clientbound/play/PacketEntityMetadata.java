@@ -29,11 +29,7 @@ public class PacketEntityMetadata implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.protocolId = buffer.getProtocolId();
-        if (buffer.getProtocolId() < 7) {//ToDo
-            entityId = buffer.readInt();
-        } else {
-            entityId = buffer.readVarInt();
-        }
+        this.entityId = buffer.readEntityId();
 
         sets = buffer.readMetaData();
         return true;

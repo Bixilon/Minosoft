@@ -24,31 +24,25 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketInteractEntity implements ServerboundPacket {
     final int entityId;
-    final Click click;
-    final Location location;
-
-    final Hand hand;
+    Location location;
+    Hand hand;
+    Click click;
     boolean sneaking;
 
     public PacketInteractEntity(Entity entity, Click click) {
         this.entityId = entity.getEntityId();
         this.click = click;
-        location = null;
-        hand = Hand.RIGHT;
     }
 
     public PacketInteractEntity(int entityId, Click click) {
         this.entityId = entityId;
         this.click = click;
-        location = null;
-        hand = Hand.RIGHT;
     }
 
     public PacketInteractEntity(int entityId, Click click, Location location) {
         this.entityId = entityId;
         this.click = click;
         this.location = location;
-        hand = Hand.RIGHT;
     }
 
     public PacketInteractEntity(int entityId, Click click, Location location, Hand hand) {
@@ -69,15 +63,25 @@ public class PacketInteractEntity implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_INTERACT_ENTITY);
-        buffer.writeInt(entityId);
+        buffer.writeEntityId(entityId);
+        if (buffer.getProtocolId() < 33) {
+            if (click == Click.INTERACT_AT) {
+                click = Click.INTERACT;
+            }
+        }
         buffer.writeByte((byte) click.getId());
-        if (click == Click.INTERACT_AT) {
-            // position
-            buffer.writeFloat((float) location.getX());
-            buffer.writeFloat((float) location.getY());
-            buffer.writeFloat((float) location.getZ());
-            if (buffer.getProtocolId() >= 49) {
-                buffer.writeVarInt(hand.getId());
+        if (buffer.getProtocolId() >= 33) {
+            if (click == Click.INTERACT_AT) {
+                // position
+                buffer.writeFloat((float) location.getX());
+                buffer.writeFloat((float) location.getY());
+                buffer.writeFloat((float) location.getZ());
+            }
+
+            if (click == Click.INTERACT_AT || click == Click.INTERACT) {
+                if (buffer.getProtocolId() >= 49) {
+                    buffer.writeVarInt(hand.getId());
+                }
             }
         }
         if (buffer.getProtocolId() >= 743) { //ToDo
@@ -92,8 +96,8 @@ public class PacketInteractEntity implements ServerboundPacket {
     }
 
     public enum Click {
-        RIGHT(0),
-        LEFT(1),
+        INTERACT(0),
+        ATTACK(1),
         INTERACT_AT(2);
 
         final int id;

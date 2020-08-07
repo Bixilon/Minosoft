@@ -26,9 +26,9 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
+        itemName = buffer.readString();
+        action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
         if (buffer.getProtocolId() < 7) { // ToDo
-            itemName = buffer.readString();
-            action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
             if (action == ScoreboardUpdateScoreAction.REMOVE) {
                 return true;
             }
@@ -37,8 +37,6 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
             scoreValue = buffer.readInt();
             return true;
         }
-        itemName = buffer.readString();
-        action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
         scoreName = buffer.readString();
 
         if (action == ScoreboardUpdateScoreAction.REMOVE) {

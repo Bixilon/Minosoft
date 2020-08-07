@@ -198,6 +198,7 @@ public class InByteBuffer {
     }
 
     public BlockPosition readPosition() {
+        //ToDo: protocol id 7
         if (protocolId < 440) {
             Long raw = readLong();
             int x = (int) (raw >> 38);
@@ -470,5 +471,12 @@ public class InByteBuffer {
 
     public Connection getConnection() {
         return connection;
+    }
+
+    public int readEntityId() {
+        if (protocolId < 7) {
+            return readInt();
+        }
+        return readVarInt();
     }
 }

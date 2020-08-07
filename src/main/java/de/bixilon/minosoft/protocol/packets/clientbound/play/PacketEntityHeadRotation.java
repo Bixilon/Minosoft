@@ -24,12 +24,8 @@ public class PacketEntityHeadRotation implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 7) {
-            this.entityId = buffer.readInt();
-            this.headYaw = buffer.readAngle();
-            return true;
-        }
-        this.entityId = buffer.readVarInt();
+        this.entityId = buffer.readEntityId();
+
         this.headYaw = buffer.readAngle();
         return true;
     }
