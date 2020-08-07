@@ -72,7 +72,7 @@ public class VersionMapping {
     }
 
     public String getEntityIdentifierById(int protocolId) {
-        return entityMap.get(protocolId);
+        return "minecraft:" + entityMap.get(protocolId);
     }
 
     public Motive getMotiveById(int protocolId) {
