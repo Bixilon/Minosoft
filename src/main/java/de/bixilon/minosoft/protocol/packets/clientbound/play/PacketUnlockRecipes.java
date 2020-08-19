@@ -35,7 +35,11 @@ public class PacketUnlockRecipes implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        action = UnlockRecipeActions.byId(buffer.readVarInt());
+        if (buffer.getProtocolId() < 333) {
+            action = UnlockRecipeActions.byId(buffer.readInt());
+        } else {
+            action = UnlockRecipeActions.byId(buffer.readVarInt());
+        }
         isCraftingBookOpen = buffer.readBoolean();
         isCraftingFilteringActive = buffer.readBoolean();
         if (buffer.getProtocolId() >= 348) { //ToDo

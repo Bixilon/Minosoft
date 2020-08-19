@@ -178,8 +178,7 @@ public class Packets {
         PLAY_SPAWN_POSITION(PacketSpawnLocation.class),
         PLAY_TIME_UPDATE(PacketTimeUpdate.class),
         PLAY_ENTITY_SOUND_EFFECT(PacketEntitySoundEffect.class),
-        PLAY_SOUND_EFFECT(
-                PacketSoundEffect.class),
+        PLAY_SOUND_EFFECT(PacketSoundEffect.class),
         PLAY_STOP_SOUND(PacketStopSound.class),
         PLAY_PLAYER_LIST_HEADER_AND_FOOTER(PacketTabHeaderAndFooter.class),
         PLAY_NBT_QUERY_RESPONSE(PacketNBTQueryResponse.class),

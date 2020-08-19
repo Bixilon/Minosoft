@@ -100,6 +100,6 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Send player block placement(position=%s, direction=%d, item=%s, cursor=%s %s %s)", position, direction, item, cursorX, cursorY, cursorZ));
+        Log.protocol(String.format("Send player block placement (position=%s, direction=%d, item=%s, cursor=%s %s %s)", position, direction, item, cursorX, cursorY, cursorZ));
     }
 }

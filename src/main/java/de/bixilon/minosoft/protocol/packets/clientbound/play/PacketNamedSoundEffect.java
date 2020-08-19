@@ -30,12 +30,23 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
+        if (buffer.getProtocolId() >= 321 && buffer.getProtocolId() < 326) {
+            // category was moved to the top
+            category = SoundCategories.byId(buffer.readVarInt());
+        }
         sound = buffer.readString();
+
+        if (buffer.getProtocolId() >= 321 && buffer.getProtocolId() < 326) {
+            buffer.readString(); // parrot entity type
+        }
         if (buffer.getProtocolId() < 95) {
             location = new Location(buffer.readInt() * 8, buffer.readInt() * 8, buffer.readInt() * 8); // ToDo: check if it is not * 4
         }
-        if (buffer.getProtocolId() >= 95) {
-            category = SoundCategories.byId(buffer.readVarInt());
+
+        if (buffer.getProtocolId() < 321 && buffer.getProtocolId() >= 326) {
+            if (buffer.getProtocolId() >= 95) {
+                category = SoundCategories.byId(buffer.readVarInt());
+            }
         }
         if (buffer.getProtocolId() >= 95) {
             location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
@@ -47,7 +58,6 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
             pitch = buffer.readFloat();
         }
         return true;
-        //ToDo: 17w15a
     }
 
     @Override

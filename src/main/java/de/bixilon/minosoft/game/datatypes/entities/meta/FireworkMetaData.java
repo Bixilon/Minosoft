@@ -33,7 +33,7 @@ public class FireworkMetaData extends EntityMetaData {
 
     public int getEntityIdOfUser() {
         final int defaultValue = 0;
-        if (protocolId < 315) { // ToDo
+        if (protocolId < 316) {
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -49,7 +49,7 @@ public class FireworkMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 315) { // ToDo
+        if (protocolId < 316) {
             return super.getLastDataIndex() + 1;
         }
         if (protocolId < 477) { // ToDo
