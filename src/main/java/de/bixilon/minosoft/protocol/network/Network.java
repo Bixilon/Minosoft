@@ -16,9 +16,8 @@ package de.bixilon.minosoft.protocol.network;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSetCompression;
+import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.PacketCompressionInterface;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSetCompression;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.Util;
@@ -179,10 +178,8 @@ public class Network {
                                 //set special settings to avoid miss timing issues
                                 if (packetInstance instanceof PacketLoginSuccess) {
                                     connection.setConnectionState(ConnectionState.PLAY);
-                                } else if (packetInstance instanceof PacketLoginSetCompression) {
-                                    compressionThreshold = ((PacketLoginSetCompression) packetInstance).getThreshold();
-                                } else if (packetInstance instanceof PacketSetCompression) {
-                                    compressionThreshold = ((PacketSetCompression) packetInstance).getThreshold();
+                                } else if (packetInstance instanceof PacketCompressionInterface) {
+                                    compressionThreshold = ((PacketCompressionInterface) packetInstance).getThreshold();
                                 }
                                 connection.handle(packetInstance);
                             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
