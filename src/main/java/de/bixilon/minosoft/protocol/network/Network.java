@@ -176,17 +176,13 @@ public class Network {
                                     continue;
                                 }
 
+                                //set special settings to avoid miss timing issues
                                 if (packetInstance instanceof PacketLoginSuccess) {
-                                    // login was okay, setting play status to avoid miss timing issues
                                     connection.setConnectionState(ConnectionState.PLAY);
                                 } else if (packetInstance instanceof PacketLoginSetCompression) {
-                                    // instantly set compression. because handling is to slow...
-                                    // compressionThreshold = ((PacketLoginSetCompression) packet).getThreshold();
-                                    compressionThreshold = Integer.MAX_VALUE; // FIXME: 29.07.20  see #2
+                                    compressionThreshold = ((PacketLoginSetCompression) packetInstance).getThreshold();
                                 } else if (packetInstance instanceof PacketSetCompression) {
-                                    // instantly set compression. because handling is to slow...
-                                    // compressionThreshold = ((PacketSetCompression) packet).getThreshold();
-                                    compressionThreshold = Integer.MAX_VALUE; // FIXME: 29.07.20  see #2
+                                    compressionThreshold = ((PacketSetCompression) packetInstance).getThreshold();
                                 }
                                 connection.handle(packetInstance);
                             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
