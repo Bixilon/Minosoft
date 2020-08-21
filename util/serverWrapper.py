@@ -20,7 +20,7 @@ javaPath = "/usr/lib/jvm/java-8-openjdk-amd64/bin/java"
 print("Minecraft server wrapper")
 while True:
     version = input('Enter a minecraft version: ')
-    if len(version) < 2 or len(version) > 10 or not version.find("/"):
+    if len(version) < 2 or len(version) > 12 or not version.find("/"):
         print("Invalid version!")
         continue
     if not os.path.isfile("./" + version + "/server.jar"):

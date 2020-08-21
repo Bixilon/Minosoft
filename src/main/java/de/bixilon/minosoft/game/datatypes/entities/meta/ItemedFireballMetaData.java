@@ -23,7 +23,7 @@ public class ItemedFireballMetaData extends AbstractFireballMetaData {
 
     public Slot getItem() {
         final Slot defaultValue = new Slot(new Item("minecraft", "fire_charge"));
-        if (protocolId <= 477) { // ToDo
+        if (protocolId <= 451) {
             return defaultValue;
         }
         return sets.getSlot(7, defaultValue);

@@ -22,3 +22,14 @@
                 Unlock Recipes (0x31)
 17w18a:         Advancements (0x08)
 1.12-pre1:      Removed show toast and has background booleans from Advancements (0x08); changed it to a flags Integer (0x1: has background texture; 0x2: show_toast; 0x4: hidden).
+pre 18w02a:     Added support for feet/eyes and restructured Face Entity
+18w06a:         Added Smelting Recipe Book Open and Smelting Recipe Book Filter Active fields to Unlock Recipes and Recipe Book Data
+                Chunk Data biome array is now an array of Ints instead of Bytes
+18w07a:         Added some new particles, which shifted particle IDs.
+18w10a:         Added Has Display Name and Display Name to Map packet; added a lot of new markers
+1.13-pre4:      Removed most serverbound plugin messages, replacing them with dedicated packets:
+18w43a:         Added Update Light (0x57) (bit masks not introduced yet)
+18w49a:         Fixed MC-111480 by changing the fireworks shooter ID from a VarInt (with 0 meaning nobody) to an optional UUID
+19w02a:         Menu IDs are no longer sent as strings, but instead numeric IDs specified by the minecraft:menu registry.
+19w03a:         Declare Recipes:
+19w11a:         Added new fields to Trade List: XP, Special Price, Price Multiplier (in the trades array), villager level, experience, is regular villager (only one for the packet)

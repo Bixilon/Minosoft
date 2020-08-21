@@ -14,12 +14,13 @@
 package de.bixilon.minosoft.protocol.modding.channels;
 
 import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
+import de.bixilon.minosoft.game.datatypes.IdentifierSet;
 
 public enum DefaultPluginChannels {
-    MC_BRAND(new ChangeableIdentifier("MC|Brand", "minecraft:brand")),
+    MC_BRAND(new ChangeableIdentifier(new IdentifierSet(0, "MC|Brand"), new IdentifierSet(385, "minecraft:brand"))),
     STOP_SOUND(new ChangeableIdentifier("MC|StopSound")),
-    REGISTER(new ChangeableIdentifier("REGISTER", "minecraft:register")),
-    UNREGISTER(new ChangeableIdentifier("UNREGISTER", "minecraft:unregister"));
+    REGISTER(new ChangeableIdentifier(new IdentifierSet(0, "REGISTER"), new IdentifierSet(385, "minecraft:register"))),
+    UNREGISTER(new ChangeableIdentifier(new IdentifierSet(0, "UNREGISTER"), new IdentifierSet(385, "minecraft:unregister")));
 
     final ChangeableIdentifier changeableIdentifier;
 

@@ -37,7 +37,7 @@ public class AbstractArrowMetaData extends EntityMetaData {
     @Nullable
     public UUID getShooterUUID() {
         final UUID defaultValue = null;
-        if (protocolId < 450) {
+        if (protocolId < 394) {
             return defaultValue;
         }
         if (protocolId >= 743) { //ToDo
@@ -60,7 +60,7 @@ public class AbstractArrowMetaData extends EntityMetaData {
             return super.getLastDataIndex() + 1;
         }
         // ToDo
-        /*if ( protocolId == 401) { // ToDo
+        /*if ( protocolId == 401) { // ToDo (440?)
             return super.getLastDataIndex() + 2;
         }
         */

@@ -41,7 +41,7 @@ public class FireworkMetaData extends EntityMetaData {
 
     public boolean wasShotFromAngle() {
         final boolean defaultValue = false;
-        if (protocolId < 477) { // ToDo
+        if (protocolId < 440) {
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
@@ -52,7 +52,7 @@ public class FireworkMetaData extends EntityMetaData {
         if (protocolId < 316) {
             return super.getLastDataIndex() + 1;
         }
-        if (protocolId < 477) { // ToDo
+        if (protocolId < 440) {
             return super.getLastDataIndex() + 2;
         }
         return super.getLastDataIndex() + 3;

@@ -46,13 +46,18 @@ public class PacketTradeList implements ClientboundPacket {
             int xp = buffer.readInt();
             int specialPrice = buffer.readInt();
             float priceMultiplier = buffer.readFloat();
-            int demand = buffer.readInt();
+            int demand = 0;
+            if (buffer.getProtocolId() >= 495) {
+                demand = buffer.readInt();
+            }
             trades[i] = new Trade(input1, input2, enabled, usages, maxUsages, xp, specialPrice, priceMultiplier, demand);
         }
         level = VillagerData.VillagerLevels.byId(buffer.readVarInt());
         experience = buffer.readVarInt();
         isRegularVillager = buffer.readBoolean();
-        canRestock = buffer.readBoolean();
+        if (buffer.getProtocolId() >= 486) {
+            canRestock = buffer.readBoolean();
+        }
         return true;
     }
 

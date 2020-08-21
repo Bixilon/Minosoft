@@ -41,7 +41,7 @@ public class PacketBlockAction implements ClientboundPacket {
         BlockId blockId = buffer.getConnection().getMapping().getBlockIdById(buffer.readVarInt());
         switch (blockId.getIdentifier()) {
             case "noteblock":
-                clazz = NoteBlockAction.class;
+                clazz = NoteBlockAction.class; // ToDo: was replaced in 17w47a (346) with the block id
                 break;
             case "sticky_piston":
             case "piston":

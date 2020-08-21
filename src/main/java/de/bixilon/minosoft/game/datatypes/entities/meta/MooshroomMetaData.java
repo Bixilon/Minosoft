@@ -20,7 +20,7 @@ public class MooshroomMetaData extends AnimalMetaData {
 
     public MooshroomTypes getType() {
         final String defaultValue = MooshroomTypes.RED.getTypeName();
-        if (protocolId < 477) { // ToDo
+        if (protocolId < 461) {
             return MooshroomTypes.byTypeName(defaultValue);
         }
         return MooshroomTypes.byTypeName(sets.getString(super.getLastDataIndex() + 1, defaultValue));
@@ -28,7 +28,7 @@ public class MooshroomMetaData extends AnimalMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 477) { // ToDo
+        if (protocolId < 461) {
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

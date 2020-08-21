@@ -37,7 +37,7 @@ public class PacketSpawnPainting implements ClientboundPacket {
         if (buffer.getProtocolId() < 353) {
             motive = buffer.getConnection().getMapping().getMotiveByIdentifier(buffer.readString());
         } else {
-            motive = buffer.getConnection().getMapping().getMotiveById(buffer.getProtocolId());
+            motive = buffer.getConnection().getMapping().getMotiveById(buffer.readVarInt());
         }
         BlockPosition position;
         int direction;

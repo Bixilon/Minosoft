@@ -45,7 +45,9 @@ public class PacketOpenWindow implements ClientboundPacket {
         this.windowId = buffer.readByte();
         this.type = InventoryType.byName(buffer.readString());
         this.title = buffer.readTextComponent();
-        slotCount = buffer.readByte();
+        if (buffer.getProtocolId() < 452 || buffer.getProtocolId() >= 464) {
+            slotCount = buffer.readByte();
+        }
         if (type == InventoryType.HORSE) {
             this.entityId = buffer.readInt();
         }

@@ -29,6 +29,11 @@ public class Llama extends Mob implements MobInterface {
         this.metaData = new LlamaMetaData(sets, protocolId);
     }
 
+    public Llama(int entityId, UUID uuid, Location location, short yaw, short pitch, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, 0);
+        this.metaData = new LlamaMetaData(sets, protocolId);
+    }
+
     @Override
     public EntityMetaData getMetaData() {
         return metaData;

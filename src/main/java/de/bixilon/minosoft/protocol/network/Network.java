@@ -171,7 +171,6 @@ public class Network {
                                 if (inPacketBuffer.getBytesLeft() > 0 || !success) {
                                     // warn not all data used
                                     Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packet, inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
-
                                     continue;
                                 }
 

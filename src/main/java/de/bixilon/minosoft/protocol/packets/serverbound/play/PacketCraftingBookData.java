@@ -70,7 +70,7 @@ public class PacketCraftingBookData implements ServerboundPacket {
             case CRAFTING_BOOK_STATUS:
                 buffer.writeBoolean(craftingBookOpen);
                 buffer.writeBoolean(craftingFilter);
-                if (buffer.getProtocolId() >= 451) { //ToDo
+                if (buffer.getProtocolId() >= 451) {
                     buffer.writeBoolean(blastingBookOpen);
                     buffer.writeBoolean(blastingFilter);
                     buffer.writeBoolean(smokingBookOpen);

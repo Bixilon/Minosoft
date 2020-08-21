@@ -39,6 +39,11 @@ public class PacketScoreboardObjective implements ClientboundPacket {
 
             }
             if (buffer.getProtocolId() >= 12) {
+
+                if (buffer.getProtocolId() >= 346 && buffer.getProtocolId() < 349) {
+                    // got removed in these 3 versions
+                    return true;
+                }
                 if (buffer.getProtocolId() < 349) {
                     type = ScoreboardObjectiveTypes.byName(buffer.readString());
                 } else {

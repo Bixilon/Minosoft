@@ -247,7 +247,7 @@ public class InByteBuffer {
     }
 
     public ParticleData readParticleData(Particle type) {
-        if (protocolId < 358) {
+        if (protocolId < 343) {
             // old particle format
             switch (type.getIdentifier()) {
                 case "iconcrack":
@@ -340,7 +340,11 @@ public class InByteBuffer {
                 return null;
             }
             byte count = readByte();
-            short metaData = readShort();
+            short metaData = 0;
+
+            if (protocolId < ProtocolDefinition.FLATTING_VERSION_ID) {
+                metaData = readShort();
+            }
             CompoundTag nbt = (CompoundTag) readNBT(protocolId < 28);
             return new Slot(connection.getMapping().getItemByLegacy(id, metaData), count, metaData, nbt);
         }
