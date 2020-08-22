@@ -83,18 +83,18 @@ public class Network {
                         packet.log();
                         queue.remove(packet);
                         byte[] data = packet.write(connection).getOutBytes();
-                        if (compressionThreshold != -1) {
+                        if (compressionThreshold >= 0) {
                             // compression is enabled
                             // check if there is a need to compress it and if so, do it!
                             OutByteBuffer outRawBuffer = new OutByteBuffer(connection);
                             if (data.length >= compressionThreshold) {
                                 // compress it
+                                OutByteBuffer compressedBuffer = new OutByteBuffer(connection);
                                 byte[] compressed = Util.compress(data);
-                                OutByteBuffer buffer = new OutByteBuffer(connection);
-                                buffer.writeVarInt(compressed.length);
-                                buffer.writeBytes(compressed);
-                                outRawBuffer.writeVarInt(buffer.getBytes().size());
-                                outRawBuffer.writeBytes(buffer.getOutBytes());
+                                compressedBuffer.writeVarInt(data.length);
+                                compressedBuffer.writeBytes(compressed);
+                                outRawBuffer.writeVarInt(compressedBuffer.getOutBytes().length);
+                                outRawBuffer.writeBytes(compressedBuffer.getOutBytes());
                             } else {
                                 outRawBuffer.writeVarInt(data.length + 1); // 1 for the compressed length (0)
                                 outRawBuffer.writeVarInt(0);
@@ -136,7 +136,7 @@ public class Network {
 
                         byte[] data = cipherInputStream.readNBytes(length);
 
-                        if (compressionThreshold != -1) {
+                        if (compressionThreshold >= 0) {
                             // compression is enabled
                             // check if there is a need to decompress it and if so, do it!
                             InByteBuffer rawBuffer = new InByteBuffer(data, connection);
@@ -156,7 +156,7 @@ public class Network {
                         try {
                             packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
                             if (packet == null) {
-                                Log.fatal("Version packet enum does not contain a packet with id 0x%x. Your version.json is broken!");
+                                Log.fatal(String.format("Version packet enum does not contain a packet with id 0x%x. Your version.json is broken!", inPacketBuffer.getCommand()));
                                 System.exit(1);
                             }
                             Class<? extends ClientboundPacket> clazz = packet.getClazz();
