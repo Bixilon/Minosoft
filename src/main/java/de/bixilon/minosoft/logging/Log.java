@@ -34,6 +34,8 @@ public class Log {
         builder.append("[");
         builder.append(timeFormat.format(System.currentTimeMillis()));
         builder.append("] [");
+        builder.append(Thread.currentThread().getName());
+        builder.append("] [");
         builder.append(l.name());
         builder.append("] ");
         if (color != null && Config.colorLog) {
@@ -67,7 +69,7 @@ public class Log {
                 }
             }
         });
-        logThread.setName("Log-Thread");
+        logThread.setName("Log");
         logThread.start();
     }
 

@@ -208,7 +208,7 @@ public class Network {
                 e.printStackTrace();
             }
         });
-        socketThread.setName("Socket-Thread");
+        socketThread.setName(String.format("%d/Socket", connection.getConnectionId()));
         socketThread.start();
     }
 

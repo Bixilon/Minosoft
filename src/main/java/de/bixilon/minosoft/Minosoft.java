@@ -68,7 +68,6 @@ public class Minosoft {
 
         checkClientToken();
 
-        Connection c = new Connection(config.getString("debug.host"));
         accountList = config.getMojangAccounts();
         if (accountList.size() == 0) {
             /*
@@ -84,7 +83,7 @@ public class Minosoft {
         } else {
             Log.mojang("Could not refresh session, you will not be able to join premium servers!");
         }
-        c.setPlayer(new Player(account));
+        Connection c = new Connection(1, config.getString("debug.host"), new Player(account));
         c.resolve(ConnectionReason.CONNECT); // resolve dns address and connect
     }
 

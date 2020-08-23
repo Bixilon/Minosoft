@@ -45,18 +45,21 @@ public class Connection {
     final PacketSender sender;
     final ArrayList<ClientboundPacket> handlingQueue;
     final VelocityHandler velocityHandler = new VelocityHandler(this);
+    final int connectionId;
     ServerAddress address;
     PluginChannelHandler pluginChannelHandler;
     Thread handleThread;
     Version version = Versions.getLowestVersionSupported(); // default
     final CustomMapping customMapping = new CustomMapping(version);
-    Player player;
+    final Player player;
     ConnectionState state = ConnectionState.DISCONNECTED;
     ConnectionReason reason;
     ConnectionReason nextReason;
     ConnectionPing connectionStatusPing;
 
-    public Connection(String hostname) {
+    public Connection(int connectionId, String hostname, Player player) {
+        this.connectionId = connectionId;
+        this.player = player;
         try {
             addresses = DNSUtil.getServerAddresses(hostname);
         } catch (TextParseException e) {
@@ -216,10 +219,6 @@ public class Connection {
         return player;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
     public void sendPacket(ServerboundPacket p) {
         network.sendPacket(p);
     }
@@ -245,7 +244,7 @@ public class Connection {
                 }
             }
         });
-        handleThread.setName("Handle-Thread");
+        handleThread.setName(String.format("%d/Handling", connectionId));
         handleThread.start();
     }
 
@@ -322,5 +321,9 @@ public class Connection {
 
     public VelocityHandler getVelocityHandler() {
         return velocityHandler;
+    }
+
+    public int getConnectionId() {
+        return connectionId;
     }
 }
