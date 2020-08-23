@@ -20,6 +20,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.PacketCompres
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.*;
+import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.Util;
 
 import javax.crypto.Cipher;
@@ -30,7 +31,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 public class Network {
@@ -51,7 +54,7 @@ public class Network {
         this.queue = new ArrayList<>();
     }
 
-    public void connect() {
+    public void connect(ServerAddress address) {
         // wait for data or send until it should disconnect
         // first send, then receive
         // something to send it, send it
@@ -61,7 +64,9 @@ public class Network {
         // Could not connect
         socketThread = new Thread(() -> {
             try {
-                socket = new Socket(connection.getHost(), connection.getPort());
+                socket = new Socket();
+                socket.setSoTimeout(ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
+                socket.connect(new InetSocketAddress(address.getHostname(), address.getPort()), ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
                 connected = true;
                 connection.setConnectionState(ConnectionState.HANDSHAKING);
                 socket.setKeepAlive(true);
@@ -197,7 +202,9 @@ public class Network {
                 connection.setConnectionState(ConnectionState.DISCONNECTED);
             } catch (IOException e) {
                 // Could not connect
-                connection.setConnectionState(ConnectionState.DISCONNECTED);
+                if (e instanceof SocketTimeoutException) {
+                    connection.setConnectionState(ConnectionState.FAILED);
+                }
                 e.printStackTrace();
             }
         });

@@ -20,7 +20,8 @@ public enum ConnectionState {
     LOGIN(2),
     PLAY(3),
     DISCONNECTING(5),
-    DISCONNECTED(6);
+    DISCONNECTED(6),
+    FAILED(7);
 
     final int id;
 

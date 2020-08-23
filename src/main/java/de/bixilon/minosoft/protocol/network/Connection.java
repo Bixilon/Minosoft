@@ -32,17 +32,20 @@ import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest;
 import de.bixilon.minosoft.protocol.protocol.*;
+import de.bixilon.minosoft.util.DNSUtil;
+import de.bixilon.minosoft.util.ServerAddress;
+import org.xbill.DNS.TextParseException;
 
 import java.util.ArrayList;
 
 public class Connection {
-    final String host;
-    final int port;
+    final ArrayList<ServerAddress> addresses;
     final Network network;
     final PacketHandler handler;
     final PacketSender sender;
     final ArrayList<ClientboundPacket> handlingQueue;
     final VelocityHandler velocityHandler = new VelocityHandler(this);
+    ServerAddress address;
     PluginChannelHandler pluginChannelHandler;
     Thread handleThread;
     Version version = Versions.getLowestVersionSupported(); // default
@@ -50,11 +53,16 @@ public class Connection {
     Player player;
     ConnectionState state = ConnectionState.DISCONNECTED;
     ConnectionReason reason;
+    ConnectionReason nextReason;
     ConnectionPing connectionStatusPing;
 
-    public Connection(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public Connection(String hostname) {
+        try {
+            addresses = DNSUtil.getServerAddresses(hostname);
+        } catch (TextParseException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
         network = new Network(this);
         handlingQueue = new ArrayList<>();
         handler = new PacketHandler(this);
@@ -65,29 +73,41 @@ public class Connection {
      * Sends an server ping to the server (player count, motd, ...)
      */
     public void ping() {
-        Log.info(String.format("Pinging server: %s:%d", host, port));
+        Log.info(String.format("Pinging server: %s", address));
         reason = ConnectionReason.PING;
-        network.connect();
+        network.connect(address);
+    }
+
+    public void resolve(ConnectionReason reason) {
+        address = addresses.get(0);
+        this.nextReason = reason;
+        Log.info(String.format("Trying to connect to %s", address));
+        resolve(address);
+    }
+
+    public void resolve(ServerAddress address) {
+        reason = ConnectionReason.DNS;
+        network.connect(address);
     }
 
     /**
      * Tries to connect to the server and login
      */
     public void connect() {
-        Log.info(String.format("Connecting to server: %s:%d", host, port));
-        if (reason == null) {
+        Log.info(String.format("Connecting to server: %s", address));
+        if (reason == null || reason == ConnectionReason.DNS) {
             // first get version, then login
             reason = ConnectionReason.GET_VERSION;
         }
-        network.connect();
+        network.connect(address);
     }
 
-    public String getHost() {
-        return host;
+    public ServerAddress getAddress() {
+        return address;
     }
 
-    public int getPort() {
-        return port;
+    public ArrayList<ServerAddress> getAvailableAddresses() {
+        return addresses;
     }
 
     public ConnectionState getConnectionState() {
@@ -105,7 +125,17 @@ public class Connection {
                 // connection established, starting threads and logging in
                 startHandlingThread();
                 ConnectionState next = ((reason == ConnectionReason.CONNECT) ? ConnectionState.LOGIN : ConnectionState.STATUS);
-                network.sendPacket(new PacketHandshake(getHost(), getPort(), next, (next == ConnectionState.STATUS) ? -1 : getVersion().getProtocolVersion()));
+                if (reason == ConnectionReason.DNS) {
+                    // valid hostname found
+                    if (nextReason == ConnectionReason.CONNECT) {
+                        // connecting, we must get the version first
+                        reason = ConnectionReason.GET_VERSION;
+                    } else {
+                        reason = nextReason;
+                    }
+                    Log.info(String.format("Connection to %s seems to be okay, connecting...", address));
+                }
+                network.sendPacket(new PacketHandshake(address, next, (next == ConnectionState.STATUS) ? -1 : getVersion().getProtocolVersion()));
                 // after sending it, switch to next state
                 setConnectionState(next);
                 break;
@@ -128,6 +158,18 @@ public class Connection {
                     // unregister all custom recipes
                     Recipes.removeCustomRecipes();
                 }
+                break;
+            case FAILED:
+                // connect to next hostname, if available
+                int nextIndex = addresses.indexOf(address) + 1;
+                if (addresses.size() > nextIndex) {
+                    ServerAddress nextAddress = addresses.get(nextIndex);
+                    Log.warn(String.format("Could not connect to %s, trying next hostname: %s", address, nextAddress));
+                    this.address = nextAddress;
+                    resolve(address);
+                }
+                // else: failed
+                break;
         }
     }
 

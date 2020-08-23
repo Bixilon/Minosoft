@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 public enum ConnectionReason {
+    DNS,
     PING,
     GET_VERSION,
     CONNECT

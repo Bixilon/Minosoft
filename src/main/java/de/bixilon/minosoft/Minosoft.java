@@ -21,6 +21,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevel;
 import de.bixilon.minosoft.mojang.api.MojangAccount;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.protocol.ConnectionReason;
 import de.bixilon.minosoft.util.FolderUtil;
 import de.bixilon.minosoft.util.OSUtil;
 import de.bixilon.minosoft.util.Util;
@@ -67,7 +68,7 @@ public class Minosoft {
 
         checkClientToken();
 
-        Connection c = new Connection(config.getString("debug.host"), config.getInteger("debug.port"));
+        Connection c = new Connection(config.getString("debug.host"));
         accountList = config.getMojangAccounts();
         if (accountList.size() == 0) {
             /*
@@ -84,7 +85,7 @@ public class Minosoft {
             Log.mojang("Could not refresh session, you will not be able to join premium servers!");
         }
         c.setPlayer(new Player(account));
-        c.connect();
+        c.resolve(ConnectionReason.CONNECT); // resolve dns address and connect
     }
 
     /**

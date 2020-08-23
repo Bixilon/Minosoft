@@ -17,6 +17,5 @@ account:
 
 # this will be removed soon, only for debugging (pre alpha stage): some features are not implemented yet -/-
 debug:
-  host: "127.0.0.1"
-  port: 25565
+  server: "127.0.0.1"
   version: -1

@@ -19,26 +19,23 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionState;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.ServerAddress;
 
 public class PacketHandshake implements ServerboundPacket {
 
-    final String address;
-    final int port;
+    final ServerAddress address;
     final ConnectionState nextState;
     final int version;
 
-    public PacketHandshake(String address, int port, ConnectionState nextState, int version) {
+    public PacketHandshake(ServerAddress address, ConnectionState nextState, int version) {
         this.address = address;
-        this.port = port;
         this.nextState = nextState;
         this.version = version;
     }
 
-    public PacketHandshake(String address, int version) {
+    public PacketHandshake(ServerAddress address, int version) {
         this.address = address;
         this.version = version;
-        this.port = ProtocolDefinition.DEFAULT_PORT;
         this.nextState = ConnectionState.STATUS;
     }
 
@@ -46,14 +43,14 @@ public class PacketHandshake implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.HANDSHAKING_HANDSHAKE);
         buffer.writeVarInt((nextState == ConnectionState.STATUS ? -1 : connection.getVersion().getProtocolVersion())); // get best protocol version
-        buffer.writeString(address);
-        buffer.writeShort((short) port);
+        buffer.writeString(address.getHostname());
+        buffer.writeShort((short) address.getPort());
         buffer.writeVarInt(nextState.getId());
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending handshake packet (host=%s, port=%d)", address, port));
+        Log.protocol(String.format("Sending handshake packet (address=%s)", address));
     }
 }

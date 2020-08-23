@@ -11,18 +11,27 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol;
+package de.bixilon.minosoft.util;
 
-public final class ProtocolDefinition {
-    public static final int STRING_MAX_LEN = 32767;
-    public static final int DEFAULT_PORT = 25565;
-    public static final int SOCKET_CONNECT_TIMEOUT = 5000;
-    public static final int SOCKET_TIMEOUT = 30000;
-    public static final int PROTOCOL_PACKET_MAX_SIZE = 2097152;
-    public static final float ANGLE_CALCULATION_CONSTANT = 360.0F / 256.0F;
+public class ServerAddress {
+    final String hostname;
+    final int port;
 
-    public static final int PLAYER_INVENTORY_ID = 0;
+    public ServerAddress(String hostname, int port) {
+        this.hostname = hostname;
+        this.port = port;
+    }
 
-    public static final int FLATTING_VERSION_ID = 346;
-    public static final int PRE_FLATTENING_VERSION_ID = 345;
+    public String getHostname() {
+        return hostname;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    @Override
+    public String toString() {
+        return getHostname() + ":" + getPort();
+    }
 }
