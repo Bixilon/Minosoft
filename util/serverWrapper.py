@@ -18,6 +18,47 @@ import sys
 
 javaPath = "/usr/lib/jvm/java-8-openjdk-amd64/bin/java"
 print("Minecraft server wrapper")
+
+
+def download(manifest, version):
+    versionJson = ""
+    for key in manifest["versions"]:
+        if key["id"] == version:
+            versionJson = key["url"]
+            break
+    if versionJson == "":
+        print("Snapshot not found!")
+        return
+    downloadVersion(requests.get(versionJson).json())
+
+
+def downloadVersion(versionJson):
+    server = versionJson["downloads"]["server"]["url"]
+    if server == "":
+        print("Invalid server jar url!")
+        return
+
+    print("Copying template...", end="")
+    shutil.copytree("TEMPLATE", versionJson["id"])
+    print("done")
+
+    print("Downloading server.jar (" + versionJson["id"] + ")...", end="")
+    server = requests.get(server)
+    with open("./" + versionJson["id"] + '/server.jar', 'wb') as f:
+        f.write(server.content)
+    print("done")
+
+
+if len(sys.argv) > 1:
+    # check args
+    if sys.argv[1] == "download-all":
+        # download all versions
+        manifest = requests.get('https://launchermeta.mojang.com/mc/game/version_manifest.json').json()
+
+        for key in manifest["versions"]:
+            if not os.path.isfile("./" + key["id"] + "/server.jar"):
+                downloadVersion(requests.get(key["url"]).json())
+
 while True:
     version = input('Enter a minecraft version: ')
     if len(version) < 2 or len(version) > 12 or not version.find("/"):
@@ -26,29 +67,7 @@ while True:
     if not os.path.isfile("./" + version + "/server.jar"):
         # download
         manifest = requests.get('https://launchermeta.mojang.com/mc/game/version_manifest.json').json()
-        versionJson = ""
-        for key in manifest["versions"]:
-            if key["id"] == version:
-                versionJson = key["url"]
-                break
-        if versionJson == "":
-            print("Snapshot not found!")
-            continue
-        versionJson = requests.get(versionJson).json()
-        server = versionJson["downloads"]["server"]["url"]
-        if server == "":
-            print("Invalid server jar url!")
-            continue
-
-        print("Copying template...", end="")
-        shutil.copytree("TEMPLATE", version)
-        print("done")
-
-        print("Downloading server.jar...", end="")
-        server = requests.get(server)
-        with open("./" + version + '/server.jar', 'wb') as f:
-            f.write(server.content)
-        print("done")
+        download(manifest, version)
 
     print("Starting server...", end="")
 
