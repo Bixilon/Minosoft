@@ -23,8 +23,8 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.game.datatypes.player.PingBars;
-import de.bixilon.minosoft.game.datatypes.player.PlayerInfo;
-import de.bixilon.minosoft.game.datatypes.player.PlayerInfoBulk;
+import de.bixilon.minosoft.game.datatypes.player.PlayerListItem;
+import de.bixilon.minosoft.game.datatypes.player.PlayerListItemBulk;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardObjective;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardScore;
 import de.bixilon.minosoft.game.datatypes.scoreboard.Team;
@@ -125,45 +125,45 @@ public class PacketHandler {
         connection.disconnect();
     }
 
-    public void handle(PacketPlayerInfo pkg) {
-        for (PlayerInfoBulk bulk : pkg.getInfos()) {
+    public void handle(PacketPlayerListItem pkg) {
+        for (PlayerListItemBulk bulk : pkg.getPlayerList()) {
             switch (bulk.getAction()) {
                 case ADD:
-                    connection.getPlayer().getPlayerInfos().put(bulk.getUUID(), new PlayerInfo(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGameMode(), bulk.getDisplayName(), bulk.getProperties()));
+                    connection.getPlayer().getPlayerList().put(bulk.getUUID(), new PlayerListItem(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGameMode(), bulk.getDisplayName(), bulk.getProperties()));
                     break;
                 case UPDATE_LATENCY:
                     if (bulk.isLegacy()) {
                         //add or update
-                        PlayerInfo info = connection.getPlayer().getPlayerInfo(bulk.getName());
-                        if (info == null) {
+                        PlayerListItem playerListItem = connection.getPlayer().getPlayerListItem(bulk.getName());
+                        if (playerListItem == null) {
                             // create
                             UUID uuid = UUID.randomUUID();
-                            connection.getPlayer().getPlayerInfos().put(uuid, new PlayerInfo(uuid, bulk.getName(), bulk.getPing()));
+                            connection.getPlayer().getPlayerList().put(uuid, new PlayerListItem(uuid, bulk.getName(), bulk.getPing()));
                         } else {
                             // update ping
-                            info.setPing(bulk.getPing());
+                            playerListItem.setPing(bulk.getPing());
                         }
                         return;
                     }
-                    connection.getPlayer().getPlayerInfos().get(bulk.getUUID()).setPing(bulk.getPing());
+                    connection.getPlayer().getPlayerList().get(bulk.getUUID()).setPing(bulk.getPing());
                     break;
                 case REMOVE_PLAYER:
                     if (bulk.isLegacy()) {
-                        PlayerInfo info = connection.getPlayer().getPlayerInfo(bulk.getName());
-                        if (info == null) {
+                        PlayerListItem playerListItem = connection.getPlayer().getPlayerListItem(bulk.getName());
+                        if (playerListItem == null) {
                             // not initialized yet
                             return;
                         }
-                        connection.getPlayer().getPlayerInfos().remove(connection.getPlayer().getPlayerInfo(bulk.getName()).getUUID());
+                        connection.getPlayer().getPlayerList().remove(connection.getPlayer().getPlayerListItem(bulk.getName()).getUUID());
                         return;
                     }
-                    connection.getPlayer().getPlayerInfos().remove(bulk.getUUID());
+                    connection.getPlayer().getPlayerList().remove(bulk.getUUID());
                     break;
                 case UPDATE_GAMEMODE:
-                    connection.getPlayer().getPlayerInfos().get(bulk.getUUID()).setGameMode(bulk.getGameMode());
+                    connection.getPlayer().getPlayerList().get(bulk.getUUID()).setGameMode(bulk.getGameMode());
                     break;
                 case UPDATE_DISPLAY_NAME:
-                    connection.getPlayer().getPlayerInfos().get(bulk.getUUID()).setDisplayName(bulk.getDisplayName());
+                    connection.getPlayer().getPlayerList().get(bulk.getUUID()).setDisplayName(bulk.getDisplayName());
                     break;
             }
         }

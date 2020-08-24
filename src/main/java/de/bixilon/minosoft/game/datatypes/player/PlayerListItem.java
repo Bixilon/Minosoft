@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 // The holder for the data on <tab>
-public class PlayerInfo {
+public class PlayerListItem {
     // required fields
     final UUID uuid;
     final String name;
@@ -37,14 +37,14 @@ public class PlayerInfo {
      * @param name Player name
      * @param ping Ping in milliseconds
      */
-    public PlayerInfo(UUID uuid, String name, int ping) {
+    public PlayerListItem(UUID uuid, String name, int ping) {
         this.uuid = uuid;
         this.name = name;
         this.ping = ping;
         this.legacy = true;
     }
 
-    public PlayerInfo(UUID uuid, String name, int ping, GameModes gameMode, TextComponent displayName, HashMap<PlayerProperties, PlayerProperty> properties) {
+    public PlayerListItem(UUID uuid, String name, int ping, GameModes gameMode, TextComponent displayName, HashMap<PlayerProperties, PlayerProperty> properties) {
         this.uuid = uuid;
         this.name = name;
         this.ping = ping;

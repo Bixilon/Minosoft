@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.GameModes;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.game.datatypes.player.PlayerInfoBulk;
+import de.bixilon.minosoft.game.datatypes.player.PlayerListItemBulk;
 import de.bixilon.minosoft.game.datatypes.player.PlayerProperties;
 import de.bixilon.minosoft.game.datatypes.player.PlayerProperty;
 import de.bixilon.minosoft.logging.Log;
@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class PacketPlayerInfo implements ClientboundPacket {
-    final ArrayList<PlayerInfoBulk> infos = new ArrayList<>();
+public class PacketPlayerListItem implements ClientboundPacket {
+    final ArrayList<PlayerListItemBulk> playerList = new ArrayList<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -40,15 +40,15 @@ public class PacketPlayerInfo implements ClientboundPacket {
             } else {
                 ping = buffer.readVarInt();
             }
-            PlayerInfoActions action = (buffer.readBoolean() ? PlayerInfoActions.UPDATE_LATENCY : PlayerInfoActions.REMOVE_PLAYER);
-            infos.add(new PlayerInfoBulk(name, ping, action));
+            PlayerListItemActions action = (buffer.readBoolean() ? PlayerListItemActions.UPDATE_LATENCY : PlayerListItemActions.REMOVE_PLAYER);
+            playerList.add(new PlayerListItemBulk(name, ping, action));
             return true;
         }
-        PlayerInfoActions action = PlayerInfoActions.byId(buffer.readVarInt());
+        PlayerListItemActions action = PlayerListItemActions.byId(buffer.readVarInt());
         int count = buffer.readVarInt();
         for (int i = 0; i < count; i++) {
             UUID uuid = buffer.readUUID();
-            PlayerInfoBulk infoBulk;
+            PlayerListItemBulk listItemBulk;
             //UUID uuid, String name, int ping, GameMode gameMode, TextComponent displayName, HashMap< PlayerProperties, PlayerProperty > properties, PacketPlayerInfo.PlayerInfoAction action) {
             switch (action) {
                 case ADD:
@@ -62,36 +62,36 @@ public class PacketPlayerInfo implements ClientboundPacket {
                     GameModes gameMode = GameModes.byId(buffer.readVarInt());
                     int ping = buffer.readVarInt();
                     TextComponent displayName = (buffer.readBoolean() ? buffer.readTextComponent() : null);
-                    infoBulk = new PlayerInfoBulk(uuid, name, ping, gameMode, displayName, playerProperties, action);
+                    listItemBulk = new PlayerListItemBulk(uuid, name, ping, gameMode, displayName, playerProperties, action);
                     break;
                 case UPDATE_GAMEMODE:
-                    infoBulk = new PlayerInfoBulk(uuid, null, 0, GameModes.byId(buffer.readVarInt()), null, null, action);
+                    listItemBulk = new PlayerListItemBulk(uuid, null, 0, GameModes.byId(buffer.readVarInt()), null, null, action);
                     break;
                 case UPDATE_LATENCY:
-                    infoBulk = new PlayerInfoBulk(uuid, null, buffer.readVarInt(), null, null, null, action);
+                    listItemBulk = new PlayerListItemBulk(uuid, null, buffer.readVarInt(), null, null, null, action);
                     break;
                 case UPDATE_DISPLAY_NAME:
-                    infoBulk = new PlayerInfoBulk(uuid, null, 0, null, (buffer.readBoolean() ? buffer.readTextComponent() : null), null, action);
+                    listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, (buffer.readBoolean() ? buffer.readTextComponent() : null), null, action);
                     break;
                 case REMOVE_PLAYER:
-                    infoBulk = new PlayerInfoBulk(uuid, null, 0, null, null, null, action);
+                    listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, null, null, action);
                     break;
                 default:
-                    infoBulk = null;
+                    listItemBulk = null;
                     break;
             }
-            infos.add(infoBulk);
+            playerList.add(listItemBulk);
         }
         return true;
     }
 
     @Override
     public void log() {
-        for (PlayerInfoBulk property : infos) {
+        for (PlayerListItemBulk property : playerList) {
             if (property.isLegacy()) {
-                Log.game(String.format("[TAB] Player info bulk (uuid=%s, name=%s, ping=%d)", property.getUUID(), property.getName(), property.getPing()));
+                Log.game(String.format("[TAB] Player list item bulk (uuid=%s, name=%s, ping=%d)", property.getUUID(), property.getName(), property.getPing()));
             } else {
-                Log.game(String.format("[TAB] Player info bulk (uuid=%s, action=%s, name=%s, gameMode=%s, ping=%d, displayName=%s)", property.getUUID(), property.getAction(), property.getName(), property.getGameMode(), property.getPing(), property.getDisplayName()));
+                Log.game(String.format("[TAB] Player list item bulk (uuid=%s, action=%s, name=%s, gameMode=%s, ping=%d, displayName=%s)", property.getUUID(), property.getAction(), property.getName(), property.getGameMode(), property.getPing(), property.getDisplayName()));
             }
         }
     }
@@ -101,34 +101,23 @@ public class PacketPlayerInfo implements ClientboundPacket {
         h.handle(this);
     }
 
-    public ArrayList<PlayerInfoBulk> getInfos() {
-        return infos;
+    public ArrayList<PlayerListItemBulk> getPlayerList() {
+        return playerList;
     }
 
-    public enum PlayerInfoActions {
-        ADD(0),
-        UPDATE_GAMEMODE(1),
-        UPDATE_LATENCY(2),
-        UPDATE_DISPLAY_NAME(3),
-        REMOVE_PLAYER(4);
+    public enum PlayerListItemActions {
+        ADD,
+        UPDATE_GAMEMODE,
+        UPDATE_LATENCY,
+        UPDATE_DISPLAY_NAME,
+        REMOVE_PLAYER;
 
-        final int id;
-
-        PlayerInfoActions(int id) {
-            this.id = id;
-        }
-
-        public static PlayerInfoActions byId(int id) {
-            for (PlayerInfoActions action : values()) {
-                if (action.getId() == id) {
-                    return action;
-                }
-            }
-            return null;
+        public static PlayerListItemActions byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

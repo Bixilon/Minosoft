@@ -15,13 +15,13 @@ package de.bixilon.minosoft.game.datatypes.player;
 
 import de.bixilon.minosoft.game.datatypes.GameModes;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerInfo;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerListItem;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 // The holder for the data on <tab>
-public class PlayerInfoBulk {
+public class PlayerListItemBulk {
     // required fields
     final UUID uuid;
     final String name;
@@ -31,7 +31,7 @@ public class PlayerInfoBulk {
     final GameModes gameMode;
     final TextComponent displayName;
     final HashMap<PlayerProperties, PlayerProperty> properties;
-    final PacketPlayerInfo.PlayerInfoActions action;
+    final PacketPlayerListItem.PlayerListItemActions action;
 
     /**
      * Legacy (1.7.10)
@@ -40,7 +40,7 @@ public class PlayerInfoBulk {
      * @param ping   Ping in milliseconds
      * @param action
      */
-    public PlayerInfoBulk(String name, int ping, PacketPlayerInfo.PlayerInfoActions action) {
+    public PlayerListItemBulk(String name, int ping, PacketPlayerListItem.PlayerListItemActions action) {
         this.action = action;
         this.uuid = UUID.randomUUID();
         this.name = name;
@@ -51,7 +51,7 @@ public class PlayerInfoBulk {
         this.legacy = true;
     }
 
-    public PlayerInfoBulk(UUID uuid, String name, int ping, GameModes gameMode, TextComponent displayName, HashMap<PlayerProperties, PlayerProperty> properties, PacketPlayerInfo.PlayerInfoActions action) {
+    public PlayerListItemBulk(UUID uuid, String name, int ping, GameModes gameMode, TextComponent displayName, HashMap<PlayerProperties, PlayerProperty> properties, PacketPlayerListItem.PlayerListItemActions action) {
         this.uuid = uuid;
         this.name = name;
         this.ping = ping;
@@ -98,7 +98,7 @@ public class PlayerInfoBulk {
         return legacy;
     }
 
-    public PacketPlayerInfo.PlayerInfoActions getAction() {
+    public PacketPlayerListItem.PlayerListItemActions getAction() {
         return action;
     }
 }

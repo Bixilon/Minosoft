@@ -150,7 +150,7 @@ public class Packets {
         PLAY_CRAFT_RECIPE_RESPONSE(PacketCraftRecipeResponse.class),
         PLAY_PLAYER_ABILITIES(PacketPlayerAbilitiesReceiving.class),
         PLAY_COMBAT_EVENT(PacketCombatEvent.class),
-        PLAY_PLAYER_LIST_ITEM(PacketPlayerInfo.class),
+        PLAY_PLAYER_LIST_ITEM(PacketPlayerListItem.class),
         PLAY_FACE_PLAYER(PacketFacePlayer.class),
         PLAY_PLAYER_POSITION_AND_ROTATION(PacketPlayerPositionAndRotation.class),
         PLAY_UNLOCK_RECIPES(PacketUnlockRecipes.class),

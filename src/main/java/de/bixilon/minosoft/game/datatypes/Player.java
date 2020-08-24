@@ -18,7 +18,7 @@ import de.bixilon.minosoft.game.datatypes.inventory.Inventory;
 import de.bixilon.minosoft.game.datatypes.inventory.InventoryProperties;
 import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.player.PlayerInfo;
+import de.bixilon.minosoft.game.datatypes.player.PlayerListItem;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardManager;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.World;
@@ -32,7 +32,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.PLAYER_IN
 public class Player {
     final MojangAccount acc;
     final ScoreboardManager scoreboardManager = new ScoreboardManager();
-    public HashMap<UUID, PlayerInfo> playerInfos = new HashMap<>();
+    public HashMap<UUID, PlayerListItem> playerList = new HashMap<>();
     float health;
     int food;
     float saturation;
@@ -189,15 +189,15 @@ public class Player {
         return scoreboardManager;
     }
 
-    public HashMap<UUID, PlayerInfo> getPlayerInfos() {
-        return playerInfos;
+    public HashMap<UUID, PlayerListItem> getPlayerList() {
+        return playerList;
     }
 
-    public PlayerInfo getPlayerInfo(String name) {
+    public PlayerListItem getPlayerListItem(String name) {
         // only legacy
-        for (PlayerInfo info : playerInfos.values()) {
-            if (info.getName().equals(name)) {
-                return info;
+        for (PlayerListItem listItem : playerList.values()) {
+            if (listItem.getName().equals(name)) {
+                return listItem;
             }
         }
         return null;
