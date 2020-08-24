@@ -200,13 +200,13 @@ public class InByteBuffer {
     public BlockPosition readPosition() {
         //ToDo: protocol id 7
         if (protocolId < 440) {
-            Long raw = readLong();
+            long raw = readLong();
             int x = (int) (raw >> 38);
             short y = (short) ((raw >> 26) & 0xFFF);
             int z = (int) (raw & 0x3FFFFFF);
             return new BlockPosition(x, y, z);
         }
-        Long raw = readLong();
+        long raw = readLong();
         int x = (int) (raw >> 38);
         short y = (short) (raw & 0xFFF);
         int z = (int) (raw << 26 >> 38);

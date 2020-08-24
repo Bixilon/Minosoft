@@ -21,14 +21,14 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketStatusPing implements ServerboundPacket {
-    final Long id;
+    final long id;
 
-    public PacketStatusPing(Long id) {
+    public PacketStatusPing(long id) {
         this.id = id;
     }
 
     public PacketStatusPing(int id) {
-        this.id = (long) id;
+        this.id = id;
     }
 
     public PacketStatusPing(ConnectionPing ping) {
