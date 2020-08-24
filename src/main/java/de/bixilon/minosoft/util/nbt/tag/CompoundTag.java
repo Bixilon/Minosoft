@@ -11,7 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.nbt.tag;
+package de.bixilon.minosoft.util.nbt.tag;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;

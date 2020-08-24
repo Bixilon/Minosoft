@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.HashMap;
 
-public class ChunkUtil {
+public final class ChunkUtil {
     public static Chunk readChunkPacket(InByteBuffer buffer, short sectionBitMask, short addBitMask, boolean groundUpContinuous, boolean containsSkyLight) {
         if (buffer.getProtocolId() < 23) {
             if (sectionBitMask == 0x00 && groundUpContinuous) {

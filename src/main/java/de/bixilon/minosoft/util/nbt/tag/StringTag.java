@@ -11,20 +11,39 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft;
+package de.bixilon.minosoft.util.nbt.tag;
 
-public class EntityPropertyModifier {
-    double amount;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-    public EntityPropertyModifier(double amount) {
-        this.amount = amount;
+public class StringTag implements NBTTag {
+    final String value;
+
+    public StringTag(String value) {
+        this.value = value;
     }
 
-    public double getAmount() {
-        return amount;
+    public StringTag(InByteBuffer buffer) {
+        value = buffer.readString(new ShortTag(buffer).getValue());
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
+    @Override
+    public TagTypes getType() {
+        return TagTypes.STRING;
+    }
+
+    @Override
+    public void writeBytes(OutByteBuffer buffer) {
+        buffer.writeShort((short) value.length());
+        buffer.writeStringNoLength(value);
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return "\"" + value + "\"";
     }
 }

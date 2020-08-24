@@ -11,38 +11,48 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.nbt.tag;
+package de.bixilon.minosoft.util.nbt.tag;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-public class DoubleTag implements NBTTag {
-    final double value;
+public class LongArrayTag implements NBTTag {
+    final long[] value;
 
-    public DoubleTag(double value) {
+    public LongArrayTag(long[] value) {
         this.value = value;
     }
 
-    public DoubleTag(InByteBuffer buffer) {
-        this.value = buffer.readDouble();
+    public LongArrayTag(InByteBuffer buffer) {
+        this.value = buffer.readLongArray(new IntTag(buffer).getValue());
     }
 
     @Override
     public TagTypes getType() {
-        return TagTypes.DOUBLE;
+        return TagTypes.LONG_ARRAY;
     }
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeDouble(value);
+        new IntTag(value.length).writeBytes(buffer);
+        buffer.writeLongs(value);
     }
 
-    public double getValue() {
+    public long[] getValue() {
         return value;
     }
 
     @Override
     public String toString() {
-        return value + "D";
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (long l : value) {
+            builder.append(l);
+            builder.append("L, ");
+        }
+        builder.delete(builder.length() - 2, builder.length()); // delete last comma
+        builder.append("]");
+
+        return builder.toString();
     }
 }

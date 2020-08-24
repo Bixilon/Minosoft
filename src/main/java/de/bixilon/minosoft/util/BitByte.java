@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util;
 
-public class BitByte {
+public final class BitByte {
     public static boolean isBitSet(int in, int pos) {
         boolean bitSet;
         int mask = 1 << pos;

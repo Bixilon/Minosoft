@@ -19,7 +19,7 @@ import org.xbill.DNS.*;
 
 import java.util.ArrayList;
 
-public class DNSUtil {
+public final class DNSUtil {
 
     public static ArrayList<ServerAddress> getServerAddresses(String hostname) throws TextParseException {
         ServerAddress fallbackAddress = getServerAddress(hostname);

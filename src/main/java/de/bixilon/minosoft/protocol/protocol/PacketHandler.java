@@ -31,8 +31,6 @@ import de.bixilon.minosoft.game.datatypes.scoreboard.Team;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.nbt.tag.CompoundTag;
-import de.bixilon.minosoft.nbt.tag.StringTag;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
@@ -41,6 +39,8 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusRespo
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketResourcePackStatus;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.util.nbt.tag.StringTag;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;

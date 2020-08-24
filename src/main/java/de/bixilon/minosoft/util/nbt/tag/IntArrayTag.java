@@ -11,34 +11,34 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.nbt.tag;
+package de.bixilon.minosoft.util.nbt.tag;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-public class ByteArrayTag implements NBTTag {
-    final byte[] value;
+public class IntArrayTag implements NBTTag {
+    final int[] value;
 
-    public ByteArrayTag(byte[] value) {
+    public IntArrayTag(int[] value) {
         this.value = value;
     }
 
-    public ByteArrayTag(InByteBuffer buffer) {
-        this.value = buffer.readBytes(new IntTag(buffer).getValue());
+    public IntArrayTag(InByteBuffer buffer) {
+        this.value = buffer.readIntArray(new IntTag(buffer).getValue());
     }
 
     @Override
     public TagTypes getType() {
-        return TagTypes.BYTE_ARRAY;
+        return TagTypes.INT_ARRAY;
     }
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
         new IntTag(value.length).writeBytes(buffer);
-        buffer.writeBytes(value);
+        buffer.writeIntegers(value);
     }
 
-    public byte[] getValue() {
+    public int[] getValue() {
         return value;
     }
 
@@ -46,11 +46,11 @@ public class ByteArrayTag implements NBTTag {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
-        for (byte b : value) {
-            builder.append(b);
-            builder.append("b, ");
+        for (int i : value) {
+            builder.append(i);
+            builder.append(", ");
         }
-        builder.delete(builder.length() - 2, builder.length()); // delete last comma
+        builder.delete(builder.length() - 1, builder.length()); // delete last comma
         builder.append("]");
 
         return builder.toString();

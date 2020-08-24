@@ -17,8 +17,8 @@ import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;

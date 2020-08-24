@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.player.Hand;
-import de.bixilon.minosoft.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import javax.annotation.Nullable;
 

@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 
-public class FolderUtil {
+public final class FolderUtil {
 
     public static void copyFolder(URI from, String to) throws IOException {
         File folder = new File(from);

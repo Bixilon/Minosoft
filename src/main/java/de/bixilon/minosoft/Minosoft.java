@@ -19,12 +19,12 @@ import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevel;
-import de.bixilon.minosoft.mojang.api.MojangAccount;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.ConnectionReason;
 import de.bixilon.minosoft.util.FolderUtil;
 import de.bixilon.minosoft.util.OSUtil;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 
 import java.io.File;
 import java.io.IOException;

@@ -11,7 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.mojang.api;
+package de.bixilon.minosoft.util.mojang.api;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.HTTP;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 
-public class MojangStatus {
+public final class MojangStatus {
     public static HashMap<Services, ServiceStatus> getStatus() {
         HttpResponse<String> response = HTTP.get(MojangURLs.STATUS.getUrl());
         if (response == null) {

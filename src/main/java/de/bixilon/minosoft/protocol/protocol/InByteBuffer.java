@@ -28,10 +28,10 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ItemParticl
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Ingredient;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.nbt.tag.*;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.nbt.tag.*;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

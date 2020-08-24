@@ -11,7 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.mojang.api;
+package de.bixilon.minosoft.util.mojang.api;
 
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.HTTP;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MojangBlockedServers {
+public final class MojangBlockedServers {
 
     public static ArrayList<String> getBlockedServers() {
         HttpResponse<String> response = HTTP.get(MojangURLs.BLOCKED_SERVERS.getUrl());

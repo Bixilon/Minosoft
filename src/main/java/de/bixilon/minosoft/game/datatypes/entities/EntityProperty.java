@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-import de.bixilon.minosoft.EntityPropertyModifier;
-
 import java.util.HashMap;
 import java.util.UUID;
 

@@ -17,12 +17,12 @@ import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.ChunkUtil;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import java.util.HashMap;
 

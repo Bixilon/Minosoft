@@ -11,7 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.mojang.api;
+package de.bixilon.minosoft.util.mojang.api;
 
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Config;

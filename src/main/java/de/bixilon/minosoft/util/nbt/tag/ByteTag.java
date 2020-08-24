@@ -11,38 +11,38 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.nbt.tag;
+package de.bixilon.minosoft.util.nbt.tag;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-public class ShortTag implements NBTTag {
-    final short value;
+public class ByteTag implements NBTTag {
+    final byte value;
 
-    public ShortTag(short value) {
+    public ByteTag(byte value) {
         this.value = value;
     }
 
-    public ShortTag(InByteBuffer buffer) {
-        this.value = buffer.readShort();
+    public ByteTag(InByteBuffer buffer) {
+        this.value = buffer.readByte();
     }
 
     @Override
     public TagTypes getType() {
-        return TagTypes.SHORT;
+        return TagTypes.BYTE;
     }
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeShort(value);
+        buffer.writeByte(value);
     }
 
-    public short getValue() {
+    public byte getValue() {
         return value;
     }
 
     @Override
     public String toString() {
-        return value + "s";
+        return value + "b";
     }
 }

@@ -11,36 +11,38 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.mojang.api;
+package de.bixilon.minosoft.util.nbt.tag;
 
-public enum MojangURLs {
-    STATUS("https://status.mojang.com/check"),
-    BLOCKED_SERVERS("https://sessionserver.mojang.com/blockedservers"),
-    LOGIN("https://authserver.mojang.com/authenticate"),
-    JOIN("https://sessionserver.mojang.com/session/minecraft/join"),
-    REFRESH("https://authserver.mojang.com/refresh");
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-    final String url;
+public class IntTag implements NBTTag {
+    final int value;
 
-    MojangURLs(String url) {
-        this.url = url;
+    public IntTag(int value) {
+        this.value = value;
     }
 
-    public static MojangURLs byUrl(String key) {
-        for (MojangURLs s : values()) {
-            if (s.getUrl().equals(key)) {
-                return s;
-            }
-        }
-        return null;
+    public IntTag(InByteBuffer buffer) {
+        this.value = buffer.readInt();
     }
 
-    public String getUrl() {
-        return url;
+    @Override
+    public TagTypes getType() {
+        return TagTypes.INT;
+    }
+
+    @Override
+    public void writeBytes(OutByteBuffer buffer) {
+        buffer.writeInt(value);
+    }
+
+    public int getValue() {
+        return value;
     }
 
     @Override
     public String toString() {
-        return url;
+        return String.valueOf(value);
     }
 }

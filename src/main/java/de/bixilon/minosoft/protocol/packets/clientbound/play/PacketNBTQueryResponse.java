@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 public class PacketNBTQueryResponse implements ClientboundPacket {
     int transactionId;

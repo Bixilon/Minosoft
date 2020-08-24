@@ -11,7 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.mojang.api;
+package de.bixilon.minosoft.util.mojang.api;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.HTTP;
 
 import java.net.http.HttpResponse;
 
-public class MojangAuthentication {
+public final class MojangAuthentication {
 
     public static MojangAccount login(String clientToken, String username, String password) {
         JsonObject agent = new JsonObject();

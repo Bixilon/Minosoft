@@ -26,12 +26,11 @@ public class PacketClientSettings implements ServerboundPacket {
     public final String locale;
     public final byte renderDistance;
 
-    public final Hand mainHand;
+    public Hand mainHand;
 
     public PacketClientSettings(String locale, int renderDistance) {
         this.locale = locale;
         this.renderDistance = (byte) renderDistance;
-        this.mainHand = Hand.RIGHT; // unused; >= 1.9
     }
 
     public PacketClientSettings(String locale, int renderDistance, Hand mainHand) {

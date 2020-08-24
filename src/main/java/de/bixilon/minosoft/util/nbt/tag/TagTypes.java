@@ -11,39 +11,39 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.nbt.tag;
+package de.bixilon.minosoft.util.nbt.tag;
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
+public enum TagTypes {
+    END(0),
+    BYTE(1),
+    SHORT(2),
+    INT(3),
+    LONG(4),
+    FLOAT(5),
+    DOUBLE(6),
+    BYTE_ARRAY(7),
+    STRING(8),
+    LIST(9),
+    COMPOUND(10),
+    INT_ARRAY(11),
+    LONG_ARRAY(12);
 
-public class StringTag implements NBTTag {
-    final String value;
+    final int id;
 
-    public StringTag(String value) {
-        this.value = value;
+    TagTypes(int id) {
+        this.id = id;
     }
 
-    public StringTag(InByteBuffer buffer) {
-        value = buffer.readString(new ShortTag(buffer).getValue());
+    public static TagTypes getById(int id) {
+        for (TagTypes state : values()) {
+            if (state.getId() == id) {
+                return state;
+            }
+        }
+        return null;
     }
 
-    @Override
-    public TagTypes getType() {
-        return TagTypes.STRING;
-    }
-
-    @Override
-    public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeShort((short) value.length());
-        buffer.writeStringNoLength(value);
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return "\"" + value + "\"";
+    public int getId() {
+        return this.id;
     }
 }
