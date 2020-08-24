@@ -14,26 +14,16 @@
 package de.bixilon.minosoft.game.datatypes;
 
 public enum TextPosition {
-    CHAT_BOX(0),
-    SYSTEM_MESSAGE(1),
-    ABOVE_HOTBAR(2);
+    CHAT_BOX,
+    SYSTEM_MESSAGE,
+    ABOVE_HOTBAR;
 
-    final int id;
-
-    TextPosition(int id) {
-        this.id = id;
-    }
 
     public static TextPosition byId(int id) {
-        for (TextPosition g : values()) {
-            if (g.getId() == id) {
-                return g;
-            }
-        }
-        return null;
+        return values()[id];
     }
 
     public int getId() {
-        return id;
+        return ordinal();
     }
 }

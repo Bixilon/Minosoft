@@ -1,6 +1,6 @@
 /*
  * Codename Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright  2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,51 +14,38 @@
 package de.bixilon.minosoft.game.datatypes;
 
 public enum ChatColor {
-    BLACK(0x00),
-    DARK_BLUE(0x01),
-    DARK_GREEN(0x02),
-    DARK_AQUA(0x03),
-    DARK_RED(0x04),
-    DARK_PURPLE(0x05),
-    GOLD(0x06),
-    GRAY(0x07),
-    DARK_GRAY(0x08),
-    BLUE(0x09),
-    GREEN(0x0A),
-    AQUA(0x0B),
-    RED(0x0C),
-    PURPLE(0x0D),
-    YELLOW(0x0E),
-    WHITE(0x0F),
-    OBFUSCATED(16),
-    BOLD(17),
-    STRIKETHROUGH(18),
-    UNDERLINED(19),
-    ITALIC(20),
-    RESET(21);
-
-    final int color;
-    final String prefix;
-
-    ChatColor(int color) {
-        this.color = color;
-        this.prefix = String.format("%x", color);
-    }
+    BLACK,
+    DARK_BLUE,
+    DARK_GREEN,
+    DARK_AQUA,
+    DARK_RED,
+    DARK_PURPLE,
+    GOLD,
+    GRAY,
+    DARK_GRAY,
+    BLUE,
+    GREEN,
+    AQUA,
+    RED,
+    PURPLE,
+    YELLOW,
+    WHITE,
+    OBFUSCATED,
+    BOLD,
+    STRIKETHROUGH,
+    UNDERLINED,
+    ITALIC,
+    RESET;
 
     public static ChatColor byId(int id) {
-        for (ChatColor c : values()) {
-            if (c.getColor() == id) {
-                return c;
-            }
-        }
-        return null;
+        return values()[id];
     }
 
     public int getColor() {
-        return color;
+        return ordinal();
     }
 
     public String getPrefix() {
-        return prefix;
+        return String.format("%x", getColor());
     }
 }

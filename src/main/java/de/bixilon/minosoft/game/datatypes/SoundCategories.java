@@ -2,7 +2,7 @@
  * Codename Minosoft
  * Copyright (C) 2020 Moritz Zwerger
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later protocolId.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
@@ -14,33 +14,22 @@
 package de.bixilon.minosoft.game.datatypes;
 
 public enum SoundCategories {
-    MASTER(0),
-    MUSIC(1),
-    RECORD(2),
-    WEATHER(3),
-    BLOCK(4),
-    HOSTILE(5),
-    NEUTRAL(6),
-    PLAYER(7),
-    AMBIENT(8),
-    VOICE(9);
-
-    final int id;
-
-    SoundCategories(int id) {
-        this.id = id;
-    }
+    MASTER,
+    MUSIC,
+    RECORD,
+    WEATHER,
+    BLOCK,
+    HOSTILE,
+    NEUTRAL,
+    PLAYER,
+    AMBIENT,
+    VOICE;
 
     public static SoundCategories byId(int id) {
-        for (SoundCategories category : values()) {
-            if (category.getId() == id) {
-                return category;
-            }
-        }
-        return null;
+        return values()[id];
     }
 
     public int getId() {
-        return id;
+        return ordinal();
     }
 }

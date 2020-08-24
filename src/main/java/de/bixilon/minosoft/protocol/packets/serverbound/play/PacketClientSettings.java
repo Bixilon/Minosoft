@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.game.datatypes.Difficulty;
-import de.bixilon.minosoft.game.datatypes.Locale;
 import de.bixilon.minosoft.game.datatypes.player.Hand;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -24,18 +23,18 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketClientSettings implements ServerboundPacket {
 
-    public final Locale locale;
+    public final String locale;
     public final byte renderDistance;
 
     public final Hand mainHand;
 
-    public PacketClientSettings(Locale locale, int renderDistance) {
+    public PacketClientSettings(String locale, int renderDistance) {
         this.locale = locale;
         this.renderDistance = (byte) renderDistance;
         this.mainHand = Hand.RIGHT; // unused; >= 1.9
     }
 
-    public PacketClientSettings(Locale locale, int renderDistance, Hand mainHand) {
+    public PacketClientSettings(String locale, int renderDistance, Hand mainHand) {
         this.locale = locale;
         this.renderDistance = (byte) renderDistance;
         this.mainHand = mainHand;
@@ -44,7 +43,7 @@ public class PacketClientSettings implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CLIENT_SETTINGS);
-        buffer.writeString(locale.getName()); // locale
+        buffer.writeString(locale); // locale
         buffer.writeByte(renderDistance); // render Distance
         buffer.writeByte((byte) 0x00); // chat settings (nobody uses them)
         buffer.writeBoolean(true); // chat colors
@@ -62,6 +61,6 @@ public class PacketClientSettings implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending settings (locale=%s, renderDistance=%d)", locale.getName(), renderDistance));
+        Log.protocol(String.format("Sending settings (locale=%s, renderDistance=%d)", locale, renderDistance));
     }
 }

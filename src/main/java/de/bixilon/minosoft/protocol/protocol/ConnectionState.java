@@ -14,31 +14,21 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 public enum ConnectionState {
-    CONNECTING(4),
-    HANDSHAKING(0),
-    STATUS(1),
-    LOGIN(2),
-    PLAY(3),
-    DISCONNECTING(5),
-    DISCONNECTED(6),
-    FAILED(7);
+    HANDSHAKING,
+    STATUS,
+    LOGIN,
+    PLAY,
+    CONNECTING,
+    DISCONNECTING,
+    DISCONNECTED,
+    FAILED;
 
-    final int id;
-
-    ConnectionState(int id) {
-        this.id = id;
-    }
 
     public static ConnectionState byId(int id) {
-        for (ConnectionState state : values()) {
-            if (state.getId() == id) {
-                return state;
-            }
-        }
-        return null;
+        return values()[id];
     }
 
     public int getId() {
-        return this.id;
+        return ordinal();
     }
 }

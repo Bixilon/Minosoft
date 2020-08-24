@@ -126,7 +126,7 @@ public class Versions {
         } else {
             version = versionMap.get(protocolId);
         }
-        Log.verbose(String.format("Loaded mappings for version %s...", version));
+        Log.verbose(String.format("Loading mappings for version %s...", version));
         long startTime = System.currentTimeMillis();
         for (Map.Entry<String, Mappings> mappingSet : mappingsHashMap.entrySet()) {
             JsonObject data = Util.readJsonFromFile(Config.homeDir + String.format("assets/mapping/%s/%s.json", version.getVersionName(), mappingSet.getKey())).getAsJsonObject("minecraft");

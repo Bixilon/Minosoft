@@ -36,18 +36,13 @@ public enum InventoryType {
     }
 
     public static InventoryType byId(int id) {
-        for (InventoryType t : values()) {
-            if (t.getId() == id) {
-                return t;
-            }
-        }
-        return null;
+        return values()[id];
     }
 
     public static InventoryType byName(String name) {
-        for (InventoryType t : values()) {
-            if (t.getName().equals(name)) {
-                return t;
+        for (InventoryType type : values()) {
+            if (type.getName().equals(name)) {
+                return type;
             }
         }
         return null;

@@ -14,22 +14,11 @@
 package de.bixilon.minosoft.game.datatypes.player;
 
 public enum Hand {
-    LEFT(0),
-    RIGHT(1);
-
-    final int id;
-
-    Hand(int id) {
-        this.id = id;
-    }
+    LEFT,
+    RIGHT;
 
     public static Hand byId(int id) {
-        for (Hand h : values()) {
-            if (h.getId() == id) {
-                return h;
-            }
-        }
-        return null;
+        return values()[id];
     }
 
     public static Hand byBoolean(boolean id) {
@@ -37,6 +26,6 @@ public enum Hand {
     }
 
     public int getId() {
-        return id;
+        return ordinal();
     }
 }

@@ -14,29 +14,18 @@
 package de.bixilon.minosoft.game.datatypes;
 
 public enum Direction {
-    DOWN(0),
-    UP(1),
-    NORTH(2),
-    SOUTH(3),
-    WEST(3),
-    EAST(3);
-
-    final int id;
-
-    Direction(int id) {
-        this.id = id;
-    }
+    DOWN,
+    UP,
+    NORTH,
+    SOUTH,
+    WEST,
+    EAST;
 
     public static Direction byId(int id) {
-        for (Direction g : values()) {
-            if (g.getId() == id) {
-                return g;
-            }
-        }
-        return null;
+        return values()[id];
     }
 
     public int getId() {
-        return id;
+        return ordinal();
     }
 }

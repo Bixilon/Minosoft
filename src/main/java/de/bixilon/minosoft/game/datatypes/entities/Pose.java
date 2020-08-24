@@ -14,30 +14,19 @@
 package de.bixilon.minosoft.game.datatypes.entities;
 
 public enum Pose {
-    STANDING(0),
-    FLYING(1),
-    SLEEPING(2),
-    SWIMMING(3),
-    SPIN_ATTACK(4),
-    SNEAKING(5),
-    DYING(6);
-
-    final int id;
-
-    Pose(int id) {
-        this.id = id;
-    }
+    STANDING,
+    FLYING,
+    SLEEPING,
+    SWIMMING,
+    SPIN_ATTACK,
+    SNEAKING,
+    DYING;
 
     public static Pose byId(int id) {
-        for (Pose g : values()) {
-            if (g.getId() == id) {
-                return g;
-            }
-        }
-        return null;
+        return values()[id];
     }
 
     public int getId() {
-        return id;
+        return ordinal();
     }
 }
