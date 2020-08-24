@@ -143,7 +143,7 @@ public class Packets {
         PLAY_ENTITY_MOVEMENT_AND_ROTATION(PacketEntityMovementAndRotation.class),
         PLAY_ENTITY_ROTATION(PacketEntityRotation.class),
         PLAY_ENTITY_MOVEMENT(PacketEntityMovement.class),
-        PLAY_VEHICLE_MOVEMENT(null),
+        PLAY_VEHICLE_MOVEMENT(PacketVehicleMovement.class),
         PLAY_OPEN_BOOK(PacketOpenBook.class),
         PLAY_OPEN_WINDOW(PacketOpenWindow.class),
         PLAY_OPEN_SIGN_EDITOR(PacketOpenSignEditor.class),
@@ -196,7 +196,7 @@ public class Packets {
         PLAY_STATISTICS(PacketStatistics.class),
         PLAY_SPAWN_ENTITY(PacketSpawnObject.class),
         PLAY_TITLE(PacketTitle.class),
-        PLAY_ENTITY_INITIALISATION(null),
+        PLAY_ENTITY_INITIALISATION(PacketEntityInitialisation.class),
         PLAY_SET_COMPRESSION(PacketSetCompression.class),
         PLAY_ADVANCEMENT_PROGRESS(null);
 

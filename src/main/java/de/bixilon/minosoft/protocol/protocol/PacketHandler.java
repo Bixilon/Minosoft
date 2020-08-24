@@ -645,4 +645,10 @@ public class PacketHandler {
 
     public void handle(PacketSetCompression pkg) {
     }
+
+    public void handle(PacketEntityInitialisation pkg) {
+    }
+
+    public void handle(PacketVehicleMovement pkg) {
+    }
 }
