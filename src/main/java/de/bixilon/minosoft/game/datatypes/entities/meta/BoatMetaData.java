@@ -42,12 +42,12 @@ public class BoatMetaData extends EntityMetaData {
         return sets.getFloat(super.getLastDataIndex() + 3, defaultValue);
     }
 
-    public BoatMaterial getMaterial() {
-        final int defaultValue = BoatMaterial.OAK.getId();
+    public BoatMaterials getMaterial() {
+        final int defaultValue = BoatMaterials.OAK.getId();
         if (protocolId < 57) {
-            return BoatMaterial.byId(defaultValue);
+            return BoatMaterials.byId(defaultValue);
         }
-        return BoatMaterial.byId(sets.getInt(super.getLastDataIndex() + 4, defaultValue));
+        return BoatMaterials.byId(sets.getInt(super.getLastDataIndex() + 4, defaultValue));
     }
 
     public boolean isRightPaddleTurning() {
@@ -85,7 +85,7 @@ public class BoatMetaData extends EntityMetaData {
         return super.getLastDataIndex() + 6;
     }
 
-    public enum BoatMaterial {
+    public enum BoatMaterials {
         OAK(0),
         SPRUCE(1),
         BIRCH(2),
@@ -95,12 +95,12 @@ public class BoatMetaData extends EntityMetaData {
 
         final int id;
 
-        BoatMaterial(int id) {
+        BoatMaterials(int id) {
             this.id = id;
         }
 
-        public static BoatMaterial byId(int id) {
-            for (BoatMaterial material : values()) {
+        public static BoatMaterials byId(int id) {
+            for (BoatMaterials material : values()) {
                 if (material.getId() == id) {
                     return material;
                 }

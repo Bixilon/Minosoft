@@ -25,23 +25,23 @@ import java.util.Map;
 
 public class PacketEntityEquipment implements ClientboundPacket {
     int entityId;
-    HashMap<InventorySlots.EntityInventory, Slot> slots = new HashMap<>();
+    HashMap<InventorySlots.EntityInventorySlots, Slot> slots = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 7) {
             entityId = buffer.readInt();
-            slots.put(InventorySlots.EntityInventory.byId(buffer.readShort(), buffer.getProtocolId()), buffer.readSlot());
+            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getProtocolId()), buffer.readSlot());
             return true;
         }
         if (buffer.getProtocolId() < 49) {
             entityId = buffer.readVarInt();
-            slots.put(InventorySlots.EntityInventory.byId(buffer.readShort(), buffer.getProtocolId()), buffer.readSlot());
+            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getProtocolId()), buffer.readSlot());
             return true;
         }
         if (buffer.getProtocolId() < 743) { //ToDo: find out version
             entityId = buffer.readVarInt();
-            slots.put(InventorySlots.EntityInventory.byId(buffer.readVarInt(), buffer.getProtocolId()), buffer.readSlot());
+            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readVarInt(), buffer.getProtocolId()), buffer.readSlot());
             return true;
         }
         entityId = buffer.readVarInt();
@@ -52,7 +52,7 @@ public class PacketEntityEquipment implements ClientboundPacket {
                 slotAvailable = false;
             }
             slotId &= 0x7F;
-            slots.put(InventorySlots.EntityInventory.byId(slotId, buffer.getProtocolId()), buffer.readSlot());
+            slots.put(InventorySlots.EntityInventorySlots.byId(slotId, buffer.getProtocolId()), buffer.readSlot());
         }
         return true;
     }
@@ -60,7 +60,7 @@ public class PacketEntityEquipment implements ClientboundPacket {
     @Override
     public void log() {
         if (slots.size() == 1) {
-            Map.Entry<InventorySlots.EntityInventory, Slot> set = slots.entrySet().iterator().next();
+            Map.Entry<InventorySlots.EntityInventorySlots, Slot> set = slots.entrySet().iterator().next();
             if (set.getValue() == null) {
                 Log.protocol(String.format("Entity equipment changed (entityId=%d, slot=%s): AIR", entityId, set.getKey()));
                 return;
@@ -80,7 +80,7 @@ public class PacketEntityEquipment implements ClientboundPacket {
         return entityId;
     }
 
-    public HashMap<InventorySlots.EntityInventory, Slot> getSlots() {
+    public HashMap<InventorySlots.EntityInventorySlots, Slot> getSlots() {
         return slots;
     }
 }

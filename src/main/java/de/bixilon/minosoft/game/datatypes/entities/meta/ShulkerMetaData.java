@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.Color;
-import de.bixilon.minosoft.game.datatypes.Direction;
+import de.bixilon.minosoft.game.datatypes.Colors;
+import de.bixilon.minosoft.game.datatypes.Directions;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 
 import javax.annotation.Nullable;
@@ -24,8 +24,8 @@ public class ShulkerMetaData extends GolemMetaData {
         super(sets, protocolId);
     }
 
-    public Direction getDirection() {
-        final Direction defaultValue = Direction.DOWN;
+    public Directions getDirection() {
+        final Directions defaultValue = Directions.DOWN;
         if (protocolId < 110) { //ToDo
             return defaultValue;
         }
@@ -49,12 +49,12 @@ public class ShulkerMetaData extends GolemMetaData {
         return sets.getByte(super.getLastDataIndex(), defaultValue);
     }
 
-    public Color getColor() {
-        final int defaultValue = Color.PURPLE.getId();
+    public Colors getColor() {
+        final int defaultValue = Colors.PURPLE.getId();
         if (protocolId < 110) { //ToDo
-            return Color.byId(defaultValue);
+            return Colors.byId(defaultValue);
         }
-        return Color.byId(sets.getByte(super.getLastDataIndex(), defaultValue));
+        return Colors.byId(sets.getByte(super.getLastDataIndex(), defaultValue));
     }
 
     @Override

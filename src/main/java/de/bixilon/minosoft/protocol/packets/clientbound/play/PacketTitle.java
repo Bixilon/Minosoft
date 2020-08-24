@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketTitle implements ClientboundPacket {
-    TitleAction action;
+    TitleActions action;
 
     //fields depend on action
     TextComponent text;
@@ -33,7 +33,7 @@ public class PacketTitle implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        action = TitleAction.byId(buffer.readVarInt(), buffer.getProtocolId());
+        action = TitleActions.byId(buffer.readVarInt(), buffer.getProtocolId());
         switch (action) {
             case SET_TITLE:
                 text = buffer.readTextComponent();
@@ -94,12 +94,11 @@ public class PacketTitle implements ClientboundPacket {
         return text;
     }
 
-    public TitleAction getAction() {
+    public TitleActions getAction() {
         return action;
     }
 
-    public enum TitleAction {
-
+    public enum TitleActions {
         SET_TITLE(0),
         SET_SUBTITLE(1),
         SET_ACTION_BAR(new MapSet[]{new MapSet<>(302, 2)}),
@@ -109,16 +108,16 @@ public class PacketTitle implements ClientboundPacket {
 
         final VersionValueMap<Integer> valueMap;
 
-        TitleAction(MapSet<Integer, Integer>[] values) {
+        TitleActions(MapSet<Integer, Integer>[] values) {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        TitleAction(int id) {
+        TitleActions(int id) {
             valueMap = new VersionValueMap<>(id);
         }
 
-        public static TitleAction byId(int id, int protocolId) {
-            for (TitleAction action : values()) {
+        public static TitleActions byId(int id, int protocolId) {
+            for (TitleActions action : values()) {
                 if (action.getId(protocolId) == id) {
                     return action;
                 }

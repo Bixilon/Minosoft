@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.*;
-import de.bixilon.minosoft.game.datatypes.entities.Pose;
+import de.bixilon.minosoft.game.datatypes.entities.Poses;
 import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
@@ -49,7 +49,7 @@ public class EntityMetaData {
         this.protocolId = protocolId;
     }
 
-    public static Object getData(EntityMetaData.Types type, InByteBuffer buffer) {
+    public static Object getData(EntityMetaDataValueTypes type, InByteBuffer buffer) {
         Object data = null;
 
         switch (type) {
@@ -215,17 +215,17 @@ public class EntityMetaData {
         return !sets.getBoolean(5, false);
     }
 
-    public Pose getPose() {
+    public Poses getPose() {
         if (protocolId < 461) {
             if (isSneaking()) {
-                return Pose.SNEAKING;
+                return Poses.SNEAKING;
             } else if (isSwimming()) {
-                return Pose.SWIMMING;
+                return Poses.SWIMMING;
             } else {
-                return Pose.STANDING;
+                return Poses.STANDING;
             }
         }
-        return sets.getPose(6, Pose.STANDING);
+        return sets.getPose(6, Poses.STANDING);
     }
 
     protected int getLastDataIndex() {
@@ -241,7 +241,7 @@ public class EntityMetaData {
         return 6;
     }
 
-    public enum Types {
+    public enum EntityMetaDataValueTypes {
         BYTE(0),
         SHORT(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(57, 1000)}), // got removed in 1.9
         INT(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(57, 1001)}),
@@ -268,16 +268,16 @@ public class EntityMetaData {
 
         final VersionValueMap<Integer> valueMap;
 
-        Types(MapSet<Integer, Integer>[] values) {
+        EntityMetaDataValueTypes(MapSet<Integer, Integer>[] values) {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        Types(int id) {
+        EntityMetaDataValueTypes(int id) {
             valueMap = new VersionValueMap<>(id);
         }
 
-        public static Types byId(int id, int protocolId) {
-            for (Types types : values()) {
+        public static EntityMetaDataValueTypes byId(int id, int protocolId) {
+            for (EntityMetaDataValueTypes types : values()) {
                 if (types.getId(protocolId) == id) {
                     return types;
                 }
@@ -295,8 +295,8 @@ public class EntityMetaData {
     }
 
     public static class MetaDataHashMap extends HashMap<Integer, Object> {
-        public Pose getPose(int index, Pose defaultValue) {
-            return (Pose) get(index, defaultValue);
+        public Poses getPose(int index, Poses defaultValue) {
+            return (Poses) get(index, defaultValue);
         }
 
         public VillagerData getVillagerData(int index, VillagerData defaultValue) {
@@ -319,8 +319,8 @@ public class EntityMetaData {
             return (UUID) get(index, defaultValue);
         }
 
-        public Direction getDirection(int index, Direction defaultValue) {
-            return (Direction) get(index, defaultValue);
+        public Directions getDirection(int index, Directions defaultValue) {
+            return (Directions) get(index, defaultValue);
         }
 
         public BlockPosition getPosition(int index, BlockPosition defaultValue) {

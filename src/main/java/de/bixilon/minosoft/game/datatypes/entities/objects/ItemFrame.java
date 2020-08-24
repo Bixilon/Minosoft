@@ -22,18 +22,18 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.ItemFrameMetaData;
 import java.util.UUID;
 
 public class ItemFrame extends EntityObject implements ObjectInterface {
-    final FrameDirection direction;
+    final FrameDirections direction;
     ItemFrameMetaData metaData;
 
     public ItemFrame(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, uuid, location, yaw, pitch);
-        direction = FrameDirection.byId(additionalInt);
+        direction = FrameDirections.byId(additionalInt);
     }
 
     public ItemFrame(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
         this.metaData = new ItemFrameMetaData(sets, protocolId);
-        this.direction = FrameDirection.byId(0);
+        this.direction = FrameDirections.byId(0);
     }
 
     @Override
@@ -61,33 +61,22 @@ public class ItemFrame extends EntityObject implements ObjectInterface {
         return ItemFrameMetaData.class;
     }
 
-    public FrameDirection getDirection() { // orientation
+    public FrameDirections getDirection() { // orientation
         return direction;
     }
 
-    public enum FrameDirection {
-        SOUTH(0),
-        WEST(1),
-        NORTH(2),
-        EAST(3);
+    public enum FrameDirections {
+        SOUTH,
+        WEST,
+        NORTH,
+        EAST;
 
-        final int id;
-
-        FrameDirection(int id) {
-            this.id = id;
-        }
-
-        public static FrameDirection byId(int id) {
-            for (FrameDirection d : values()) {
-                if (d.getId() == id) {
-                    return d;
-                }
-            }
-            return null;
+        public static FrameDirections byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

@@ -22,18 +22,18 @@ import de.bixilon.minosoft.game.datatypes.entities.meta.MinecartMetaData;
 import java.util.UUID;
 
 public class Minecart extends EntityObject implements ObjectInterface {
-    final MinecartType type;
+    final MinecartTypes type;
     MinecartMetaData metaData;
 
     public Minecart(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, uuid, location, yaw, pitch);
-        type = MinecartType.byType(additionalInt);
+        type = MinecartTypes.byId(additionalInt);
     }
 
     public Minecart(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
         this.metaData = new MinecartMetaData(sets, protocolId);
-        type = MinecartType.EMPTY; // ToDo
+        type = MinecartTypes.EMPTY; // ToDo
     }
 
     @Override
@@ -61,36 +61,25 @@ public class Minecart extends EntityObject implements ObjectInterface {
         return MinecartMetaData.class;
     }
 
-    public MinecartType getType() {
+    public MinecartTypes getType() {
         return type;
     }
 
-    public enum MinecartType {
-        EMPTY(0),
-        CHEST(1),
-        FURNACE(2),
-        TNT(3),
-        SPAWNER(4),
-        HOPPER(5),
-        COMMAND_BLOCK(6);
+    public enum MinecartTypes {
+        EMPTY,
+        CHEST,
+        FURNACE,
+        TNT,
+        SPAWNER,
+        HOPPER,
+        COMMAND_BLOCK;
 
-        final int id;
-
-        MinecartType(int id) {
-            this.id = id;
-        }
-
-        public static MinecartType byType(int type) {
-            for (MinecartType t : values()) {
-                if (t.getId() == type) {
-                    return t;
-                }
-            }
-            return null;
+        public static MinecartTypes byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

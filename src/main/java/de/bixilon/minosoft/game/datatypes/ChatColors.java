@@ -13,32 +13,39 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-public enum LevelType {
-    DEFAULT("default"),
-    FLAT("flat"),
-    LARGE_BIOMES("largeBiomes"),
-    AMPLIFIED("amplified"),
-    DEFAULT_1_1("default_1_1"),
-    CUSTOMIZED("customized"),
-    BUFFET("buffet"),
-    UNKNOWN("unknown");
+public enum ChatColors {
+    BLACK,
+    DARK_BLUE,
+    DARK_GREEN,
+    DARK_AQUA,
+    DARK_RED,
+    DARK_PURPLE,
+    GOLD,
+    GRAY,
+    DARK_GRAY,
+    BLUE,
+    GREEN,
+    AQUA,
+    RED,
+    PURPLE,
+    YELLOW,
+    WHITE,
+    OBFUSCATED,
+    BOLD,
+    STRIKETHROUGH,
+    UNDERLINED,
+    ITALIC,
+    RESET;
 
-    final String type;
-
-    LevelType(String type) {
-        this.type = type;
+    public static ChatColors byId(int id) {
+        return values()[id];
     }
 
-    public static LevelType byType(String type) {
-        for (LevelType g : values()) {
-            if (g.getId().equals(type)) {
-                return g;
-            }
-        }
-        return null;
+    public int getColor() {
+        return ordinal();
     }
 
-    public String getId() {
-        return type;
+    public String getPrefix() {
+        return String.format("%x", getColor());
     }
 }

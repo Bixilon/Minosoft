@@ -11,21 +11,15 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.player;
+package de.bixilon.minosoft.logging;
 
-public enum Hand {
-    LEFT,
-    RIGHT;
-
-    public static Hand byId(int id) {
-        return values()[id];
-    }
-
-    public static Hand byBoolean(boolean id) {
-        return id ? LEFT : RIGHT;
-    }
-
-    public int getId() {
-        return ordinal();
-    }
+public enum LogLevels {
+    FATAL,
+    INFO,
+    MOJANG,
+    WARNING,
+    GAME,
+    DEBUG,
+    VERBOSE,
+    PROTOCOL
 }

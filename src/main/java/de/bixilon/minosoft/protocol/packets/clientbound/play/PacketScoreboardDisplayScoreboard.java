@@ -13,19 +13,19 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.ChatColor;
+import de.bixilon.minosoft.game.datatypes.ChatColors;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
-    ScoreboardAnimation action;
+    ScoreboardAnimations action;
     String scoreName;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        action = ScoreboardAnimation.byId(buffer.readByte());
+        action = ScoreboardAnimations.byId(buffer.readByte());
         scoreName = buffer.readString();
         return true;
     }
@@ -40,37 +40,37 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
         h.handle(this);
     }
 
-    public enum ScoreboardAnimation {
+    public enum ScoreboardAnimations {
         LIST(0),
         SIDEBAR(1),
         BELOW_NAME(2),
-        TEAM_BLACK(ChatColor.BLACK.getColor() + 3),
-        TEAM_DARK_BLUE(ChatColor.DARK_BLUE.getColor() + 3),
-        TEAM_DARK_GREEN(ChatColor.DARK_GREEN.getColor() + 3),
-        TEAM_DARK_AQUA(ChatColor.DARK_AQUA.getColor() + 3),
-        TEAM_DARK_RED(ChatColor.DARK_RED.getColor() + 3),
-        TEAM_DARK_PURPLE(ChatColor.DARK_PURPLE.getColor() + 3),
-        TEAM_GOLD(ChatColor.GOLD.getColor() + 3),
-        TEAM_GRAY(ChatColor.GRAY.getColor() + 3),
-        TEAM_DARK_GRAY(ChatColor.DARK_GRAY.getColor() + 3),
-        TEAM_BLUE(ChatColor.BLUE.getColor() + 3),
-        TEAM_GREEN(ChatColor.GREEN.getColor() + 3),
-        TEAM_AQUA(ChatColor.AQUA.getColor() + 3),
-        TEAM_RED(ChatColor.RED.getColor() + 3),
-        TEAM_PURPLE(ChatColor.PURPLE.getColor() + 3),
-        TEAM_YELLOW(ChatColor.YELLOW.getColor() + 3),
-        TEAM_WHITE(ChatColor.WHITE.getColor() + 3);
+        TEAM_BLACK(ChatColors.BLACK.getColor() + 3),
+        TEAM_DARK_BLUE(ChatColors.DARK_BLUE.getColor() + 3),
+        TEAM_DARK_GREEN(ChatColors.DARK_GREEN.getColor() + 3),
+        TEAM_DARK_AQUA(ChatColors.DARK_AQUA.getColor() + 3),
+        TEAM_DARK_RED(ChatColors.DARK_RED.getColor() + 3),
+        TEAM_DARK_PURPLE(ChatColors.DARK_PURPLE.getColor() + 3),
+        TEAM_GOLD(ChatColors.GOLD.getColor() + 3),
+        TEAM_GRAY(ChatColors.GRAY.getColor() + 3),
+        TEAM_DARK_GRAY(ChatColors.DARK_GRAY.getColor() + 3),
+        TEAM_BLUE(ChatColors.BLUE.getColor() + 3),
+        TEAM_GREEN(ChatColors.GREEN.getColor() + 3),
+        TEAM_AQUA(ChatColors.AQUA.getColor() + 3),
+        TEAM_RED(ChatColors.RED.getColor() + 3),
+        TEAM_PURPLE(ChatColors.PURPLE.getColor() + 3),
+        TEAM_YELLOW(ChatColors.YELLOW.getColor() + 3),
+        TEAM_WHITE(ChatColors.WHITE.getColor() + 3);
 
         final int id;
 
-        ScoreboardAnimation(int id) {
+        ScoreboardAnimations(int id) {
             this.id = id;
         }
 
-        public static ScoreboardAnimation byId(int id) {
-            for (ScoreboardAnimation a : values()) {
-                if (a.getId() == id) {
-                    return a;
+        public static ScoreboardAnimations byId(int id) {
+            for (ScoreboardAnimations animation : values()) {
+                if (animation.getId() == id) {
+                    return animation;
                 }
             }
             return null;

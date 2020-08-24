@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 public class PacketMapData implements ClientboundPacket {
     int mapId;
-    PacketMapDataData dataData;
+    PacketMapDataDataActions dataData;
 
     // depends on data
     // start
@@ -47,7 +47,7 @@ public class PacketMapData implements ClientboundPacket {
             mapId = buffer.readVarInt(); // mapId
             short length = buffer.readShort();
             // read action
-            dataData = PacketMapDataData.byId(buffer.readByte());
+            dataData = PacketMapDataDataActions.byId(buffer.readByte());
             switch (dataData) {
                 case START:
                     xStart = buffer.readByte();
@@ -61,7 +61,7 @@ public class PacketMapData implements ClientboundPacket {
                         byte directionAndType = buffer.readByte();
                         byte x = buffer.readByte();
                         byte z = buffer.readByte();
-                        pins.add(new MapPinSet(MapPinType.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
+                        pins.add(new MapPinSet(MapPinTypes.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
                     }
                     break;
                 case SCALE:
@@ -83,9 +83,9 @@ public class PacketMapData implements ClientboundPacket {
                 byte x = buffer.readByte();
                 byte z = buffer.readByte();
                 if (buffer.getProtocolId() >= 340) { //ToDo
-                    pins.add(new MapPinSet(MapPinType.byId(directionAndType >>> 4), directionAndType & 0xF, x, z));
+                    pins.add(new MapPinSet(MapPinTypes.byId(directionAndType >>> 4), directionAndType & 0xF, x, z));
                 } else {
-                    pins.add(new MapPinSet(MapPinType.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
+                    pins.add(new MapPinSet(MapPinTypes.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
                 }
             }
             short columns = BitByte.byteToUShort(buffer.readByte());
@@ -108,7 +108,7 @@ public class PacketMapData implements ClientboundPacket {
         int pinCount = buffer.readVarInt();
         pins = new ArrayList<>();
         for (int i = 0; i < pinCount; i++) {
-            MapPinType type = MapPinType.byId(buffer.readVarInt());
+            MapPinTypes type = MapPinTypes.byId(buffer.readVarInt());
             byte x = buffer.readByte();
             byte z = buffer.readByte();
             byte direction = buffer.readByte();
@@ -140,7 +140,7 @@ public class PacketMapData implements ClientboundPacket {
         h.handle(this);
     }
 
-    public PacketMapDataData getDataData() {
+    public PacketMapDataDataActions getDataData() {
         return dataData;
     }
 
@@ -164,89 +164,68 @@ public class PacketMapData implements ClientboundPacket {
         return scale;
     }
 
-    public enum PacketMapDataData {
-        START(0),
-        PLAYERS(1),
-        SCALE(2);
+    public enum PacketMapDataDataActions {
+        START,
+        PLAYERS,
+        SCALE;
 
-        final int id;
 
-        PacketMapDataData(int id) {
-            this.id = id;
-        }
-
-        public static PacketMapDataData byId(int id) {
-            for (PacketMapDataData d : values()) {
-                if (d.getId() == id) {
-                    return d;
-                }
-            }
-            return null;
+        public static PacketMapDataDataActions byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 
-    public enum MapPinType {
-        WHITE_ARROW(0),
-        GREEN_ARROW(1),
-        RED_ARROW(2),
-        BLUE_ARROW(3),
-        WHITE_CROSS(4),
-        RED_POINTER(5),
-        WHITE_CIRCLE(6),
-        BLUE_SQUARE(7),
-        SMALL_WHITE_CIRCLE(8),
-        MANSION(8),
-        TEMPLE(9),
-        WHITE_BANNER(10),
-        ORANGE_BANNER(11),
-        MAGENTA_BANNER(12),
-        LIGHT_BLUE_BANNER(13),
-        YELLOW_BANNER(14),
-        LIME_BANNER(15),
-        PINK_BANNER(16),
-        GRAY_BANNER(17),
-        LIGHT_GRAY_BANNER(18),
-        CYAN_BANNER(19),
-        PURPLE_BANNER(20),
-        BLUE_BANNER(21),
-        BROWN_BANNER(22),
-        GREEN_BANNER(23),
-        RED_BANNER(24),
-        BLACK_BANNER(25),
-        TREASURE_MARKER(26);
+    public enum MapPinTypes {
+        WHITE_ARROW,
+        GREEN_ARROW,
+        RED_ARROW,
+        BLUE_ARROW,
+        WHITE_CROSS,
+        RED_POINTER,
+        WHITE_CIRCLE,
+        BLUE_SQUARE,
+        SMALL_WHITE_CIRCLE,
+        MANSION,
+        TEMPLE,
+        WHITE_BANNER,
+        ORANGE_BANNER,
+        MAGENTA_BANNER,
+        LIGHT_BLUE_BANNER,
+        YELLOW_BANNER,
+        LIME_BANNER,
+        PINK_BANNER,
+        GRAY_BANNER,
+        LIGHT_GRAY_BANNER,
+        CYAN_BANNER,
+        PURPLE_BANNER,
+        BLUE_BANNER,
+        BROWN_BANNER,
+        GREEN_BANNER,
+        RED_BANNER,
+        BLACK_BANNER,
+        TREASURE_MARKER;
 
-        final int id;
-
-        MapPinType(int id) {
-            this.id = id;
-        }
-
-        public static MapPinType byId(int id) {
-            for (MapPinType type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return BLUE_SQUARE;
+        public static MapPinTypes byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 
     public static class MapPinSet {
-        final MapPinType type;
+        final MapPinTypes type;
         final byte direction;
         final byte x;
         final byte z;
         final TextComponent displayName;
 
-        public MapPinSet(MapPinType type, int direction, byte x, byte z) {
+        public MapPinSet(MapPinTypes type, int direction, byte x, byte z) {
             this.type = type;
             this.direction = (byte) direction;
             this.x = x;
@@ -254,7 +233,7 @@ public class PacketMapData implements ClientboundPacket {
             displayName = null;
         }
 
-        public MapPinSet(MapPinType type, int direction, byte x, byte z, TextComponent displayName) {
+        public MapPinSet(MapPinTypes type, int direction, byte x, byte z, TextComponent displayName) {
             this.type = type;
             this.direction = (byte) direction;
             this.x = x;
@@ -262,7 +241,7 @@ public class PacketMapData implements ClientboundPacket {
             this.displayName = displayName;
         }
 
-        public MapPinType getType() {
+        public MapPinTypes getType() {
             return type;
         }
 

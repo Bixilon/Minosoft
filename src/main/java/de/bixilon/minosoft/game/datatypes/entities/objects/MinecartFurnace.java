@@ -58,7 +58,7 @@ public class MinecartFurnace extends EntityObject implements ObjectInterface {
         return FurnaceMinecartMetaData.class;
     }
 
-    public Minecart.MinecartType getType() {
-        return Minecart.MinecartType.FURNACE;
+    public Minecart.MinecartTypes getType() {
+        return Minecart.MinecartTypes.FURNACE;
     }
 }

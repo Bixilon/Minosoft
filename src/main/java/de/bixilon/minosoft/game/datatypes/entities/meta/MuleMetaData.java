@@ -19,7 +19,7 @@ public class MuleMetaData extends ChestedHorseMetaData {
     }
 
     @Override
-    public HorseType getType() {
-        return HorseType.MULE;
+    public HorseTypes getType() {
+        return HorseTypes.MULE;
     }
 }

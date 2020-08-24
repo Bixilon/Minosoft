@@ -23,9 +23,9 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 public class PacketPlayerDigging implements ServerboundPacket {
     final DiggingStatus status;
     final BlockPosition position;
-    final DiggingFace face;
+    final DiggingFaces face;
 
-    public PacketPlayerDigging(DiggingStatus status, BlockPosition position, DiggingFace face) {
+    public PacketPlayerDigging(DiggingStatus status, BlockPosition position, DiggingFaces face) {
         this.status = status;
         this.position = position;
         this.face = face;
@@ -90,7 +90,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
         }
     }
 
-    public enum DiggingFace {
+    public enum DiggingFaces {
         BOTTOM(0),
         TOP(1),
         NORTH(2),
@@ -101,7 +101,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
 
         final byte id;
 
-        DiggingFace(int id) {
+        DiggingFaces(int id) {
             this.id = (byte) id;
         }
 

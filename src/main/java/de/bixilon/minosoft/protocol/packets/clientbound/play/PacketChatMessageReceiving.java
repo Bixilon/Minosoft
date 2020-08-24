@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.ChatTextPositions;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.game.datatypes.TextPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -24,24 +24,24 @@ import java.util.UUID;
 
 public class PacketChatMessageReceiving implements ClientboundPacket {
     TextComponent c;
-    TextPosition position;
+    ChatTextPositions position;
     UUID sender;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 7) {
             c = buffer.readTextComponent();
-            position = TextPosition.CHAT_BOX;
+            position = ChatTextPositions.CHAT_BOX;
             return true;
         }
         if (buffer.getProtocolId() < 743) { //ToDo: when exactly did this change?
             c = buffer.readTextComponent();
-            position = TextPosition.byId(buffer.readByte());
+            position = ChatTextPositions.byId(buffer.readByte());
             return true;
         }
 
         c = buffer.readTextComponent();
-        position = TextPosition.byId(buffer.readByte());
+        position = ChatTextPositions.byId(buffer.readByte());
         sender = buffer.readUUID();
         return true;
     }

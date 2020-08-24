@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.game.datatypes.GameMode;
+import de.bixilon.minosoft.game.datatypes.GameModes;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.mob.OtherPlayer;
@@ -56,7 +56,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketStatusResponse pkg) {
-        if (connection.getReason() == ConnectionReason.GET_VERSION) {
+        if (connection.getReason() == ConnectionReasons.GET_VERSION) {
             // now we know the version, set it, if the config allows it
             Version version;
             int versionId = Minosoft.getConfig().getInteger("debug.version");
@@ -224,7 +224,7 @@ public class PacketHandler {
                 connection.getPlayer().getWorld().setRaining(false);
                 break;
             case CHANGE_GAMEMODE:
-                connection.getPlayer().setGameMode(GameMode.byId(pkg.getValue().intValue()));
+                connection.getPlayer().setGameMode(GameModes.byId(pkg.getValue().intValue()));
                 break;
             // ToDo: handle all updates
         }
@@ -544,7 +544,7 @@ public class PacketHandler {
 
     public void handle(PackerResourcePackSend pkg) {
         // ToDo ask user, download pack. for now just send an okay
-        connection.sendPacket(new PacketResourcePackStatus(pkg.getHash(), PacketResourcePackStatus.ResourcePackStatus.SUCCESSFULLY));
+        connection.sendPacket(new PacketResourcePackStatus(pkg.getHash(), PacketResourcePackStatus.ResourcePackStates.SUCCESSFULLY));
     }
 
     public void handle(PacketEntityProperties pkg) {

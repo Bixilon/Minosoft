@@ -11,19 +11,11 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes;
+package de.bixilon.minosoft.protocol.protocol;
 
-public enum TextPosition {
-    CHAT_BOX,
-    SYSTEM_MESSAGE,
-    ABOVE_HOTBAR;
-
-
-    public static TextPosition byId(int id) {
-        return values()[id];
-    }
-
-    public int getId() {
-        return ordinal();
-    }
+public enum ConnectionReasons {
+    DNS,
+    PING,
+    GET_VERSION,
+    CONNECT
 }

@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 public class PacketBlockEntityMetadata implements ClientboundPacket {
     BlockPosition position;
-    Actions action;
+    BlockEntityActions action;
     CompoundTag nbt;
 
     @Override
@@ -32,12 +32,12 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
 
         if (buffer.getProtocolId() < 6) {
             position = buffer.readBlockPositionShort();
-            action = Actions.byId(buffer.readByte(), buffer.getProtocolId());
+            action = BlockEntityActions.byId(buffer.readByte(), buffer.getProtocolId());
             nbt = (CompoundTag) buffer.readNBT(true);
             return true;
         }
         position = buffer.readPosition();
-        action = Actions.byId(buffer.readByte(), buffer.getProtocolId());
+        action = BlockEntityActions.byId(buffer.readByte(), buffer.getProtocolId());
         nbt = (CompoundTag) buffer.readNBT();
         return true;
     }
@@ -60,7 +60,7 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         return nbt;
     }
 
-    public enum Actions {
+    public enum BlockEntityActions {
         SPAWNER(new MapSet[]{new MapSet<>(0, 1)}),
         COMMAND_BLOCK_TEXT(new MapSet[]{new MapSet<>(0, 2)}),
         BEACON(new MapSet[]{new MapSet<>(33, 3)}),
@@ -79,12 +79,12 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
 
         final VersionValueMap<Integer> valueMap;
 
-        Actions(MapSet<Integer, Integer>[] values) {
+        BlockEntityActions(MapSet<Integer, Integer>[] values) {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static Actions byId(int id, int protocolId) {
-            for (Actions actions : values()) {
+        public static BlockEntityActions byId(int id, int protocolId) {
+            for (BlockEntityActions actions : values()) {
                 if (actions.getId(protocolId) == id) {
                     return actions;
                 }

@@ -19,7 +19,7 @@ public class SkeletonHorseMetaData extends AbstractHorseMetaData {
     }
 
     @Override
-    public HorseType getType() {
-        return HorseType.SKELETON;
+    public HorseTypes getType() {
+        return HorseTypes.SKELETON;
     }
 }

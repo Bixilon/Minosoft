@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Difficulty;
-import de.bixilon.minosoft.game.datatypes.GameMode;
-import de.bixilon.minosoft.game.datatypes.LevelType;
+import de.bixilon.minosoft.game.datatypes.Difficulties;
+import de.bixilon.minosoft.game.datatypes.GameModes;
+import de.bixilon.minosoft.game.datatypes.LevelTypes;
 import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimension;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -24,9 +24,9 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketRespawn implements ClientboundPacket {
     Dimension dimension;
-    Difficulty difficulty;
-    GameMode gameMode;
-    LevelType levelType;
+    Difficulties difficulty;
+    GameModes gameMode;
+    LevelTypes levelType;
     long hashedSeed;
     boolean isDebug = false;
     boolean isFlat = false;
@@ -41,21 +41,21 @@ public class PacketRespawn implements ClientboundPacket {
                 dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
             }
             if (buffer.getProtocolId() < 464) {
-                difficulty = Difficulty.byId(buffer.readByte());
+                difficulty = Difficulties.byId(buffer.readByte());
             }
             if (buffer.getProtocolId() >= 552) {
                 hashedSeed = buffer.readLong();
             }
-            gameMode = GameMode.byId(buffer.readByte());
+            gameMode = GameModes.byId(buffer.readByte());
             if (buffer.getProtocolId() >= 1) {
-                levelType = LevelType.byType(buffer.readString());
+                levelType = LevelTypes.byType(buffer.readString());
             }
             return true;
         }
         dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(buffer.readString());
         buffer.readString(); // world
         hashedSeed = buffer.readLong();
-        gameMode = GameMode.byId(buffer.readByte());
+        gameMode = GameModes.byId(buffer.readByte());
         buffer.readByte(); // previous game mode
         isDebug = buffer.readBoolean();
         isFlat = buffer.readBoolean();
@@ -72,15 +72,15 @@ public class PacketRespawn implements ClientboundPacket {
         return dimension;
     }
 
-    public Difficulty getDifficulty() {
+    public Difficulties getDifficulty() {
         return difficulty;
     }
 
-    public GameMode getGameMode() {
+    public GameModes getGameMode() {
         return gameMode;
     }
 
-    public LevelType getLevelType() {
+    public LevelTypes getLevelType() {
         return levelType;
     }
 

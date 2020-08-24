@@ -13,19 +13,19 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Difficulty;
+import de.bixilon.minosoft.game.datatypes.Difficulties;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketServerDifficulty implements ClientboundPacket {
-    Difficulty difficulty;
+    Difficulties difficulty;
     boolean locked;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        difficulty = Difficulty.byId(buffer.readByte());
+        difficulty = Difficulties.byId(buffer.readByte());
         if (buffer.getProtocolId() > 464) {
             locked = buffer.readBoolean();
         }
@@ -42,7 +42,7 @@ public class PacketServerDifficulty implements ClientboundPacket {
         h.handle(this);
     }
 
-    public Difficulty getDifficulty() {
+    public Difficulties getDifficulty() {
         return difficulty;
     }
 }

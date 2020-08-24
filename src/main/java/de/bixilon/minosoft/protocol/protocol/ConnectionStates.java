@@ -11,49 +11,24 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.objectLoader.blocks;
+package de.bixilon.minosoft.protocol.protocol;
 
-public enum BlockRotation {
-    NONE,
-    SOUTH,
-    SOUTH_SOUTH_WEST,
-    SOUTH_WEST,
-    WEST_SOUTH_WEST,
-    WEST,
-    WEST_NORTH_WEST,
-    NORTH_WEST,
-    NORTH_NORTH_WEST,
-    NORTH,
-    NORTH_NORTH_EAST,
-    NORTH_EAST,
-    EAST_NORTH_EAST,
-    EAST,
-    EAST_SOUTH_EAST,
-    SOUTH_EAST,
-    SOUTH_SOUTH_EAST,
+public enum ConnectionStates {
+    HANDSHAKING,
+    STATUS,
+    LOGIN,
+    PLAY,
+    CONNECTING,
+    DISCONNECTING,
+    DISCONNECTED,
+    FAILED;
 
-    NORTH_SOUTH,
-    EAST_WEST,
-    ASCENDING_EAST,
-    ASCENDING_WEST,
-    ASCENDING_NORTH,
-    ASCENDING_SOUTH,
 
-    UP,
-    DOWN,
+    public static ConnectionStates byId(int id) {
+        return values()[id];
+    }
 
-    // 1.16+
-
-    DOWN_EAST,
-    DOWN_WEST,
-    DOWN_NORTH,
-    DOWN_SOUTH,
-    UP_EAST,
-    EAST_UP,
-    UP_WEST,
-    WEST_UP,
-    UP_NORTH,
-    NORTH_UP,
-    UP_SOUTH,
-    SOUTH_UP,
+    public int getId() {
+        return ordinal();
+    }
 }

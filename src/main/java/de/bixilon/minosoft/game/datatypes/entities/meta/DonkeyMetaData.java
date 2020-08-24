@@ -19,7 +19,7 @@ public class DonkeyMetaData extends ChestedHorseMetaData {
     }
 
     @Override
-    public HorseType getType() {
-        return HorseType.DONKEY;
+    public HorseTypes getType() {
+        return HorseTypes.DONKEY;
     }
 }

@@ -17,7 +17,7 @@ import de.bixilon.minosoft.game.datatypes.PlayerPropertyData;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Pose;
+import de.bixilon.minosoft.game.datatypes.entities.Poses;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 
@@ -28,7 +28,7 @@ public class OtherPlayer extends Mob implements MobInterface {
     PlayerPropertyData[] properties;
     short currentItem;
     HumanMetaData metaData;
-    Pose status = Pose.STANDING;
+    Poses status = Poses.STANDING;
 
     public OtherPlayer(int entityId, String name, UUID uuid, PlayerPropertyData[] properties, Location location, int yaw, int pitch, int headYaw, short currentItem, HumanMetaData metaData) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
@@ -90,7 +90,7 @@ public class OtherPlayer extends Mob implements MobInterface {
         return currentItem;
     }
 
-    public Pose getStatus() {
+    public Poses getStatus() {
         return status;
     }
 

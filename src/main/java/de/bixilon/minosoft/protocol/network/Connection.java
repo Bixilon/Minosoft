@@ -52,9 +52,9 @@ public class Connection {
     Version version = Versions.getLowestVersionSupported(); // default
     final CustomMapping customMapping = new CustomMapping(version);
     final Player player;
-    ConnectionState state = ConnectionState.DISCONNECTED;
-    ConnectionReason reason;
-    ConnectionReason nextReason;
+    ConnectionStates state = ConnectionStates.DISCONNECTED;
+    ConnectionReasons reason;
+    ConnectionReasons nextReason;
     ConnectionPing connectionStatusPing;
 
     public Connection(int connectionId, String hostname, Player player) {
@@ -77,11 +77,11 @@ public class Connection {
      */
     public void ping() {
         Log.info(String.format("Pinging server: %s", address));
-        reason = ConnectionReason.PING;
+        reason = ConnectionReasons.PING;
         network.connect(address);
     }
 
-    public void resolve(ConnectionReason reason) {
+    public void resolve(ConnectionReasons reason) {
         address = addresses.get(0);
         this.nextReason = reason;
         Log.info(String.format("Trying to connect to %s", address));
@@ -89,7 +89,7 @@ public class Connection {
     }
 
     public void resolve(ServerAddress address) {
-        reason = ConnectionReason.DNS;
+        reason = ConnectionReasons.DNS;
         network.connect(address);
     }
 
@@ -98,9 +98,9 @@ public class Connection {
      */
     public void connect() {
         Log.info(String.format("Connecting to server: %s", address));
-        if (reason == null || reason == ConnectionReason.DNS) {
+        if (reason == null || reason == ConnectionReasons.DNS) {
             // first get version, then login
-            reason = ConnectionReason.GET_VERSION;
+            reason = ConnectionReasons.GET_VERSION;
         }
         network.connect(address);
     }
@@ -113,11 +113,11 @@ public class Connection {
         return addresses;
     }
 
-    public ConnectionState getConnectionState() {
+    public ConnectionStates getConnectionState() {
         return state;
     }
 
-    public void setConnectionState(ConnectionState state) {
+    public void setConnectionState(ConnectionStates state) {
         if (this.state == state) {
             return;
         }
@@ -127,18 +127,18 @@ public class Connection {
             case HANDSHAKING:
                 // connection established, starting threads and logging in
                 startHandlingThread();
-                ConnectionState next = ((reason == ConnectionReason.CONNECT) ? ConnectionState.LOGIN : ConnectionState.STATUS);
-                if (reason == ConnectionReason.DNS) {
+                ConnectionStates next = ((reason == ConnectionReasons.CONNECT) ? ConnectionStates.LOGIN : ConnectionStates.STATUS);
+                if (reason == ConnectionReasons.DNS) {
                     // valid hostname found
-                    if (nextReason == ConnectionReason.CONNECT) {
+                    if (nextReason == ConnectionReasons.CONNECT) {
                         // connecting, we must get the version first
-                        reason = ConnectionReason.GET_VERSION;
+                        reason = ConnectionReasons.GET_VERSION;
                     } else {
                         reason = nextReason;
                     }
                     Log.info(String.format("Connection to %s seems to be okay, connecting...", address));
                 }
-                network.sendPacket(new PacketHandshake(address, next, (next == ConnectionState.STATUS) ? -1 : getVersion().getProtocolVersion()));
+                network.sendPacket(new PacketHandshake(address, next, (next == ConnectionStates.STATUS) ? -1 : getVersion().getProtocolVersion()));
                 // after sending it, switch to next state
                 setConnectionState(next);
                 break;
@@ -154,8 +154,8 @@ public class Connection {
                 registerDefaultChannels();
                 break;
             case DISCONNECTED:
-                if (reason == ConnectionReason.GET_VERSION) {
-                    setReason(ConnectionReason.CONNECT);
+                if (reason == ConnectionReasons.GET_VERSION) {
+                    setReason(ConnectionReasons.CONNECT);
                     connect();
                 } else {
                     // unregister all custom recipes
@@ -201,16 +201,16 @@ public class Connection {
         handleThread.interrupt();
     }
 
-    public ConnectionReason getReason() {
+    public ConnectionReasons getReason() {
         return reason;
     }
 
-    public void setReason(ConnectionReason reason) {
+    public void setReason(ConnectionReasons reason) {
         this.reason = reason;
     }
 
     public void disconnect() {
-        setConnectionState(ConnectionState.DISCONNECTING);
+        setConnectionState(ConnectionStates.DISCONNECTING);
         network.disconnect();
         handleThread.interrupt();
     }
@@ -225,7 +225,7 @@ public class Connection {
 
     void startHandlingThread() {
         handleThread = new Thread(() -> {
-            while (getConnectionState() != ConnectionState.DISCONNECTING) {
+            while (getConnectionState() != ConnectionStates.DISCONNECTING) {
                 while (handlingQueue.size() > 0) {
                     ClientboundPacket packet = handlingQueue.get(0);
                     try {
@@ -299,7 +299,7 @@ public class Connection {
 
     public int getPacketCommand(Packets.Serverbound packet) {
         Integer command = null;
-        if (getReason() != ConnectionReason.GET_VERSION) {
+        if (getReason() != ConnectionReasons.GET_VERSION) {
             command = version.getCommandByPacket(packet);
         }
         if (command == null) {
@@ -308,9 +308,9 @@ public class Connection {
         return command;
     }
 
-    public Packets.Clientbound getPacketByCommand(ConnectionState state, int command) {
+    public Packets.Clientbound getPacketByCommand(ConnectionStates state, int command) {
         Packets.Clientbound packet = null;
-        if (getReason() != ConnectionReason.GET_VERSION) {
+        if (getReason() != ConnectionReasons.GET_VERSION) {
             packet = version.getPacketByCommand(state, command);
         }
         if (packet == null) {

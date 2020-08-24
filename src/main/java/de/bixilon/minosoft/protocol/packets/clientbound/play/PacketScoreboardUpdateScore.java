@@ -20,16 +20,16 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketScoreboardUpdateScore implements ClientboundPacket {
     String itemName;
-    ScoreboardUpdateScoreAction action;
+    ScoreboardUpdateScoreActions action;
     String scoreName;
     int scoreValue;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         itemName = buffer.readString();
-        action = ScoreboardUpdateScoreAction.byId(buffer.readByte());
+        action = ScoreboardUpdateScoreActions.byId(buffer.readByte());
         if (buffer.getProtocolId() < 7) { // ToDo
-            if (action == ScoreboardUpdateScoreAction.REMOVE) {
+            if (action == ScoreboardUpdateScoreActions.REMOVE) {
                 return true;
             }
             // not present id action == REMOVE
@@ -39,7 +39,7 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
         }
         scoreName = buffer.readString();
 
-        if (action == ScoreboardUpdateScoreAction.REMOVE) {
+        if (action == ScoreboardUpdateScoreActions.REMOVE) {
             return true;
         }
         // not present id action == REMOVE
@@ -61,7 +61,7 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
         return itemName;
     }
 
-    public ScoreboardUpdateScoreAction getAction() {
+    public ScoreboardUpdateScoreActions getAction() {
         return action;
     }
 
@@ -73,27 +73,16 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
         return scoreValue;
     }
 
-    public enum ScoreboardUpdateScoreAction {
-        CREATE_UPDATE(0),
-        REMOVE(1);
+    public enum ScoreboardUpdateScoreActions {
+        CREATE_UPDATE,
+        REMOVE;
 
-        final int id;
-
-        ScoreboardUpdateScoreAction(int id) {
-            this.id = id;
-        }
-
-        public static ScoreboardUpdateScoreAction byId(int id) {
-            for (ScoreboardUpdateScoreAction a : values()) {
-                if (a.getId() == id) {
-                    return a;
-                }
-            }
-            return null;
+        public static ScoreboardUpdateScoreActions byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

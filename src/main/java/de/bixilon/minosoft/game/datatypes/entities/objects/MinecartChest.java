@@ -29,7 +29,7 @@ public class MinecartChest extends Minecart {
     }
 
     @Override
-    public MinecartType getType() {
-        return MinecartType.CHEST;
+    public MinecartTypes getType() {
+        return MinecartTypes.CHEST;
     }
 }

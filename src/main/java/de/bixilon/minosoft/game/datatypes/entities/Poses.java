@@ -11,28 +11,18 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes;
+package de.bixilon.minosoft.game.datatypes.entities;
 
-public enum Color {
-    WHITE,
-    ORANGE,
-    MAGENTA,
-    LIGHT_BLUE,
-    YELLOW,
-    LIME,
-    PINK,
-    GRAY,
-    SILVER,
-    CYAN,
-    PURPLE,
-    BLUE,
-    BROWN,
-    GREEN,
-    RED,
-    BLACK;
+public enum Poses {
+    STANDING,
+    FLYING,
+    SLEEPING,
+    SWIMMING,
+    SPIN_ATTACK,
+    SNEAKING,
+    DYING;
 
-
-    public static Color byId(int id) {
+    public static Poses byId(int id) {
         return values()[id];
     }
 

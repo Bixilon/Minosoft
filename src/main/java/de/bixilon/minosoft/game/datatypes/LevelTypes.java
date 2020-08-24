@@ -11,11 +11,34 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol;
+package de.bixilon.minosoft.game.datatypes;
 
-public enum ConnectionReason {
-    DNS,
-    PING,
-    GET_VERSION,
-    CONNECT
+public enum LevelTypes {
+    DEFAULT("default"),
+    FLAT("flat"),
+    LARGE_BIOMES("largeBiomes"),
+    AMPLIFIED("amplified"),
+    DEFAULT_1_1("default_1_1"),
+    CUSTOMIZED("customized"),
+    BUFFET("buffet"),
+    UNKNOWN("unknown");
+
+    final String type;
+
+    LevelTypes(String type) {
+        this.type = type;
+    }
+
+    public static LevelTypes byType(String type) {
+        for (LevelTypes levelType : values()) {
+            if (levelType.getId().equals(type)) {
+                return levelType;
+            }
+        }
+        return null;
+    }
+
+    public String getId() {
+        return type;
+    }
 }

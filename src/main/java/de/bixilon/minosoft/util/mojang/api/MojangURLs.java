@@ -27,9 +27,9 @@ public enum MojangURLs {
     }
 
     public static MojangURLs byUrl(String key) {
-        for (MojangURLs s : values()) {
-            if (s.getUrl().equals(key)) {
-                return s;
+        for (MojangURLs url : values()) {
+            if (url.getUrl().equals(key)) {
+                return url;
             }
         }
         return null;

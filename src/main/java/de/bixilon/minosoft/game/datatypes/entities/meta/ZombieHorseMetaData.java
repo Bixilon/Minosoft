@@ -19,7 +19,7 @@ public class ZombieHorseMetaData extends AbstractHorseMetaData {
     }
 
     @Override
-    public HorseType getType() {
-        return HorseType.ZOMBIE;
+    public HorseTypes getType() {
+        return HorseTypes.ZOMBIE;
     }
 }

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.player.Hand;
+import de.bixilon.minosoft.game.datatypes.player.Hands;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -25,34 +25,34 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 public class PacketInteractEntity implements ServerboundPacket {
     final int entityId;
     Location location;
-    Hand hand;
-    Click click;
+    Hands hand;
+    EntityInteractionClicks click;
     boolean sneaking;
 
-    public PacketInteractEntity(Entity entity, Click click) {
+    public PacketInteractEntity(Entity entity, EntityInteractionClicks click) {
         this.entityId = entity.getEntityId();
         this.click = click;
     }
 
-    public PacketInteractEntity(int entityId, Click click) {
+    public PacketInteractEntity(int entityId, EntityInteractionClicks click) {
         this.entityId = entityId;
         this.click = click;
     }
 
-    public PacketInteractEntity(int entityId, Click click, Location location) {
+    public PacketInteractEntity(int entityId, EntityInteractionClicks click, Location location) {
         this.entityId = entityId;
         this.click = click;
         this.location = location;
     }
 
-    public PacketInteractEntity(int entityId, Click click, Location location, Hand hand) {
+    public PacketInteractEntity(int entityId, EntityInteractionClicks click, Location location, Hands hand) {
         this.entityId = entityId;
         this.click = click;
         this.location = location;
         this.hand = hand;
     }
 
-    public PacketInteractEntity(int entityId, Click click, Location location, Hand hand, boolean sneaking) {
+    public PacketInteractEntity(int entityId, EntityInteractionClicks click, Location location, Hands hand, boolean sneaking) {
         this.entityId = entityId;
         this.click = click;
         this.location = location;
@@ -65,20 +65,20 @@ public class PacketInteractEntity implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_INTERACT_ENTITY);
         buffer.writeEntityId(entityId);
         if (buffer.getProtocolId() < 33) {
-            if (click == Click.INTERACT_AT) {
-                click = Click.INTERACT;
+            if (click == EntityInteractionClicks.INTERACT_AT) {
+                click = EntityInteractionClicks.INTERACT;
             }
         }
         buffer.writeByte((byte) click.getId());
         if (buffer.getProtocolId() >= 33) {
-            if (click == Click.INTERACT_AT) {
+            if (click == EntityInteractionClicks.INTERACT_AT) {
                 // position
                 buffer.writeFloat((float) location.getX());
                 buffer.writeFloat((float) location.getY());
                 buffer.writeFloat((float) location.getZ());
             }
 
-            if (click == Click.INTERACT_AT || click == Click.INTERACT) {
+            if (click == EntityInteractionClicks.INTERACT_AT || click == EntityInteractionClicks.INTERACT) {
                 if (buffer.getProtocolId() >= 49) {
                     buffer.writeVarInt(hand.getId());
                 }
@@ -95,14 +95,14 @@ public class PacketInteractEntity implements ServerboundPacket {
         Log.protocol(String.format("Interacting with entity (entityId=%d, click=%s)", entityId, click));
     }
 
-    public enum Click {
+    public enum EntityInteractionClicks {
         INTERACT(0),
         ATTACK(1),
         INTERACT_AT(2);
 
         final int id;
 
-        Click(int id) {
+        EntityInteractionClicks(int id) {
             this.id = id;
         }
 

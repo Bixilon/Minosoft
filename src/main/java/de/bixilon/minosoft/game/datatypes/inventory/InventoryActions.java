@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.inventory;
 
-public enum InventoryAction {
+public enum InventoryActions {
     LEFT_MOUSE_CLICK(0, 0),
     RIGHT_MOUSE_CLICK(0, 1),
 
@@ -52,17 +52,17 @@ public enum InventoryAction {
     final byte button;
     final boolean hasSlot;
 
-    InventoryAction(byte mode, byte button, boolean hasSlot) {
+    InventoryActions(byte mode, byte button, boolean hasSlot) {
         this.mode = mode;
         this.button = button;
         this.hasSlot = hasSlot;
     }
 
-    InventoryAction(int mode, int button, boolean hasSlot) {
+    InventoryActions(int mode, int button, boolean hasSlot) {
         this((byte) mode, (byte) button, hasSlot);
     }
 
-    InventoryAction(int mode, int button) {
+    InventoryActions(int mode, int button) {
         this(mode, button, true);
     }
 

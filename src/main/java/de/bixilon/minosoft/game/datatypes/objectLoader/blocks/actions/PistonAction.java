@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.game.datatypes.objectLoader.blocks.actions;
 
-import de.bixilon.minosoft.game.datatypes.Direction;
+import de.bixilon.minosoft.game.datatypes.Directions;
 
 public class PistonAction implements BlockAction {
     final PistonStates status;
-    final Direction direction;
+    final Directions direction;
 
     public PistonAction(byte status, byte direction) {
         this.status = PistonStates.byId(status);
-        this.direction = Direction.byId(direction);
+        this.direction = Directions.byId(direction);
     }
 
     @Override
@@ -40,9 +40,9 @@ public class PistonAction implements BlockAction {
         }
 
         public static PistonStates byId(int id) {
-            for (PistonStates s : values()) {
-                if (s.getId() == id) {
-                    return s;
+            for (PistonStates state : values()) {
+                if (state.getId() == id) {
+                    return state;
                 }
             }
             return null;

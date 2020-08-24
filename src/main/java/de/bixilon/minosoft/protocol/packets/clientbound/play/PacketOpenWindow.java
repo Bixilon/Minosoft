@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.inventory.InventoryProperties;
-import de.bixilon.minosoft.game.datatypes.inventory.InventoryType;
+import de.bixilon.minosoft.game.datatypes.inventory.InventoryTypes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketOpenWindow implements ClientboundPacket {
     byte windowId;
-    InventoryType type;
+    InventoryTypes type;
     TextComponent title;
     byte slotCount;
     int entityId;
@@ -32,7 +32,7 @@ public class PacketOpenWindow implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 6) {
             this.windowId = buffer.readByte();
-            this.type = InventoryType.byId(buffer.readByte());
+            this.type = InventoryTypes.byId(buffer.readByte());
             this.title = buffer.readTextComponent();
             slotCount = buffer.readByte();
             if (!buffer.readBoolean()) {
@@ -43,12 +43,12 @@ public class PacketOpenWindow implements ClientboundPacket {
             return true;
         }
         this.windowId = buffer.readByte();
-        this.type = InventoryType.byName(buffer.readString());
+        this.type = InventoryTypes.byName(buffer.readString());
         this.title = buffer.readTextComponent();
         if (buffer.getProtocolId() < 452 || buffer.getProtocolId() >= 464) {
             slotCount = buffer.readByte();
         }
-        if (type == InventoryType.HORSE) {
+        if (type == InventoryTypes.HORSE) {
             this.entityId = buffer.readInt();
         }
         return true;
@@ -80,7 +80,7 @@ public class PacketOpenWindow implements ClientboundPacket {
         return title;
     }
 
-    public InventoryType getType() {
+    public InventoryTypes getType() {
         return type;
     }
 

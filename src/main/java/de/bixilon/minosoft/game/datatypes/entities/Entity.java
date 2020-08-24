@@ -26,7 +26,7 @@ import java.util.UUID;
 public abstract class Entity implements EntityInterface {
     final int entityId;
     final UUID uuid;
-    final HashMap<InventorySlots.EntityInventory, Slot> equipment;
+    final HashMap<InventorySlots.EntityInventorySlots, Slot> equipment;
     final ArrayList<StatusEffect> effectList;
     Location location;
     int yaw;
@@ -90,11 +90,11 @@ public abstract class Entity implements EntityInterface {
         this.pitch = pitch;
     }
 
-    public void setEquipment(HashMap<InventorySlots.EntityInventory, Slot> slots) {
+    public void setEquipment(HashMap<InventorySlots.EntityInventorySlots, Slot> slots) {
         equipment.putAll(slots);
     }
 
-    public Slot getEquipment(InventorySlots.EntityInventory slot) {
+    public Slot getEquipment(InventorySlots.EntityInventorySlots slot) {
         return equipment.get(slot);
     }
 

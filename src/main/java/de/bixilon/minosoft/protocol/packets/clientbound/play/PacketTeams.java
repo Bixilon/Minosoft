@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.ChatColor;
+import de.bixilon.minosoft.game.datatypes.ChatColors;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -57,9 +57,9 @@ public class PacketTeams implements ClientboundPacket {
                     collisionRule = TeamCollisionRules.byName(buffer.readString());
                 }
                 if (buffer.getProtocolId() < 352) {
-                    color = TextComponent.ChatAttributes.byColor(ChatColor.byId(buffer.readByte()));
+                    color = TextComponent.ChatAttributes.byColor(ChatColors.byId(buffer.readByte()));
                 } else {
-                    color = TextComponent.ChatAttributes.byColor(ChatColor.byId(buffer.readVarInt()));
+                    color = TextComponent.ChatAttributes.byColor(ChatColors.byId(buffer.readVarInt()));
                 }
             }
             if (buffer.getProtocolId() >= 375) {
@@ -166,9 +166,9 @@ public class PacketTeams implements ClientboundPacket {
         }
 
         public static TeamActions byId(int id) {
-            for (TeamActions a : values()) {
-                if (a.getId() == id) {
-                    return a;
+            for (TeamActions action : values()) {
+                if (action.getId() == id) {
+                    return action;
                 }
             }
             return null;
@@ -192,9 +192,9 @@ public class PacketTeams implements ClientboundPacket {
         }
 
         public static TeamNameTagVisibilities byName(String name) {
-            for (TeamNameTagVisibilities v : values()) {
-                if (v.getName().equals(name)) {
-                    return v;
+            for (TeamNameTagVisibilities visibility : values()) {
+                if (visibility.getName().equals(name)) {
+                    return visibility;
                 }
             }
             return null;

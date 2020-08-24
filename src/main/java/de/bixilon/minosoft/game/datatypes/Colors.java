@@ -11,20 +11,28 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol;
+package de.bixilon.minosoft.game.datatypes;
 
-public enum ConnectionState {
-    HANDSHAKING,
-    STATUS,
-    LOGIN,
-    PLAY,
-    CONNECTING,
-    DISCONNECTING,
-    DISCONNECTED,
-    FAILED;
+public enum Colors {
+    WHITE,
+    ORANGE,
+    MAGENTA,
+    LIGHT_BLUE,
+    YELLOW,
+    LIME,
+    PINK,
+    GRAY,
+    SILVER,
+    CYAN,
+    PURPLE,
+    BLUE,
+    BROWN,
+    GREEN,
+    RED,
+    BLACK;
 
 
-    public static ConnectionState byId(int id) {
+    public static Colors byId(int id) {
         return values()[id];
     }
 

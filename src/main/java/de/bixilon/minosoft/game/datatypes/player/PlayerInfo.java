@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.player;
 
-import de.bixilon.minosoft.game.datatypes.GameMode;
+import de.bixilon.minosoft.game.datatypes.GameModes;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class PlayerInfo {
     final boolean legacy;
     int ping;
     //optional fields
-    GameMode gameMode;
+    GameModes gameMode;
     TextComponent displayName;
     HashMap<PlayerProperties, PlayerProperty> properties;
 
@@ -44,7 +44,7 @@ public class PlayerInfo {
         this.legacy = true;
     }
 
-    public PlayerInfo(UUID uuid, String name, int ping, GameMode gameMode, TextComponent displayName, HashMap<PlayerProperties, PlayerProperty> properties) {
+    public PlayerInfo(UUID uuid, String name, int ping, GameModes gameMode, TextComponent displayName, HashMap<PlayerProperties, PlayerProperty> properties) {
         this.uuid = uuid;
         this.name = name;
         this.ping = ping;
@@ -70,11 +70,11 @@ public class PlayerInfo {
         this.ping = ping;
     }
 
-    public GameMode getGameMode() {
+    public GameModes getGameMode() {
         return gameMode;
     }
 
-    public void setGameMode(GameMode gameMode) {
+    public void setGameMode(GameModes gameMode) {
         this.gameMode = gameMode;
     }
 

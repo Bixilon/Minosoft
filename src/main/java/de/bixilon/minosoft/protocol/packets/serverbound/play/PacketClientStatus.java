@@ -21,9 +21,9 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketClientStatus implements ServerboundPacket {
 
-    final ClientStatus status;
+    final ClientStates status;
 
-    public PacketClientStatus(ClientStatus status) {
+    public PacketClientStatus(ClientStates status) {
         this.status = status;
     }
 
@@ -43,28 +43,18 @@ public class PacketClientStatus implements ServerboundPacket {
         Log.protocol(String.format("Sending client status packet (status=%s)", status));
     }
 
-    public enum ClientStatus {
-        PERFORM_RESPAWN(0),
-        REQUEST_STATISTICS(1),
-        OPEN_INVENTORY(2);
+    public enum ClientStates {
+        PERFORM_RESPAWN,
+        REQUEST_STATISTICS,
+        OPEN_INVENTORY;
 
-        final int id;
 
-        ClientStatus(int id) {
-            this.id = id;
-        }
-
-        public static ClientStatus byId(int id) {
-            for (ClientStatus s : values()) {
-                if (s.getId() == id) {
-                    return s;
-                }
-            }
-            return null;
+        public static ClientStates byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

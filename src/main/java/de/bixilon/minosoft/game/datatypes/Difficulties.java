@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-public enum Difficulty {
+public enum Difficulties {
     PEACEFUL,
     EASY,
     NORMAL,
     HARD;
 
-    public static Difficulty byId(int id) {
+    public static Difficulties byId(int id) {
         return values()[id];
     }
 

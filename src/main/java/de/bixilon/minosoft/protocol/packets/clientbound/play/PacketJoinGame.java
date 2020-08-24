@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.game.datatypes.Difficulty;
-import de.bixilon.minosoft.game.datatypes.GameMode;
-import de.bixilon.minosoft.game.datatypes.LevelType;
+import de.bixilon.minosoft.game.datatypes.Difficulties;
+import de.bixilon.minosoft.game.datatypes.GameModes;
+import de.bixilon.minosoft.game.datatypes.LevelTypes;
 import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimension;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -32,12 +32,12 @@ import java.util.HashMap;
 public class PacketJoinGame implements ClientboundPacket {
     int entityId;
     boolean hardcore;
-    GameMode gameMode;
+    GameModes gameMode;
     Dimension dimension;
-    Difficulty difficulty;
+    Difficulties difficulty;
     int viewDistance = -1;
     int maxPlayers;
-    LevelType levelType;
+    LevelTypes levelType;
     boolean reducedDebugScreen;
     boolean enableRespawnScreen = true;
     long hashedSeed;
@@ -51,17 +51,17 @@ public class PacketJoinGame implements ClientboundPacket {
             hardcore = BitByte.isBitSet(gameModeRaw, 3);
             // remove hardcore bit and get gamemode
             gameModeRaw &= ~0x8;
-            gameMode = GameMode.byId(gameModeRaw);
+            gameMode = GameModes.byId(gameModeRaw);
 
             if (buffer.getProtocolId() < 108) {
                 dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
             } else {
                 dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
             }
-            difficulty = Difficulty.byId(buffer.readByte());
+            difficulty = Difficulties.byId(buffer.readByte());
             maxPlayers = buffer.readByte();
             if (buffer.getProtocolId() >= 1) {
-                levelType = LevelType.byType(buffer.readString());
+                levelType = LevelTypes.byType(buffer.readString());
             }
 
             if (buffer.getProtocolId() < 29) {
@@ -76,17 +76,17 @@ public class PacketJoinGame implements ClientboundPacket {
             hardcore = BitByte.isBitSet(gameModeRaw, 3);
             // remove hardcore bit and get gamemode
             gameModeRaw &= ~0x8;
-            gameMode = GameMode.byId(gameModeRaw);
+            gameMode = GameModes.byId(gameModeRaw);
 
             dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
             if (buffer.getProtocolId() >= 552) {
                 hashedSeed = buffer.readLong();
             }
             if (buffer.getProtocolId() < 464) {
-                difficulty = Difficulty.byId(buffer.readByte());
+                difficulty = Difficulties.byId(buffer.readByte());
             }
             maxPlayers = buffer.readByte();
-            levelType = LevelType.byType(buffer.readString());
+            levelType = LevelTypes.byType(buffer.readString());
             if (buffer.getProtocolId() >= 468) {
                 viewDistance = buffer.readVarInt();
             }
@@ -98,7 +98,7 @@ public class PacketJoinGame implements ClientboundPacket {
         }
         this.entityId = buffer.readInt();
         hardcore = buffer.readBoolean();
-        gameMode = GameMode.byId(buffer.readByte());
+        gameMode = GameModes.byId(buffer.readByte());
         buffer.readByte(); // previous game mode
         // worlds
         String[] worlds = buffer.readStringArray(buffer.readVarInt());
@@ -109,13 +109,13 @@ public class PacketJoinGame implements ClientboundPacket {
         buffer.readString(); // world name
         hashedSeed = buffer.readLong();
         maxPlayers = buffer.readByte();
-        levelType = LevelType.UNKNOWN;
+        levelType = LevelTypes.UNKNOWN;
         viewDistance = buffer.readVarInt();
         reducedDebugScreen = buffer.readBoolean();
         enableRespawnScreen = buffer.readBoolean();
         boolean isDebug = buffer.readBoolean();
         if (buffer.readBoolean()) {
-            levelType = LevelType.FLAT;
+            levelType = LevelTypes.FLAT;
         }
         return true;
     }
@@ -153,7 +153,7 @@ public class PacketJoinGame implements ClientboundPacket {
         return entityId;
     }
 
-    public GameMode getGameMode() {
+    public GameModes getGameMode() {
         return gameMode;
     }
 
@@ -161,11 +161,11 @@ public class PacketJoinGame implements ClientboundPacket {
         return maxPlayers;
     }
 
-    public LevelType getLevelType() {
+    public LevelTypes getLevelType() {
         return levelType;
     }
 
-    public Difficulty getDifficulty() {
+    public Difficulties getDifficulty() {
         return difficulty;
     }
 

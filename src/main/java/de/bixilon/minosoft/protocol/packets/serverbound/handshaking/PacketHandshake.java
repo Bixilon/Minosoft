@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.packets.serverbound.handshaking;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.ConnectionState;
+import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.util.ServerAddress;
@@ -24,10 +24,10 @@ import de.bixilon.minosoft.util.ServerAddress;
 public class PacketHandshake implements ServerboundPacket {
 
     final ServerAddress address;
-    final ConnectionState nextState;
+    final ConnectionStates nextState;
     final int version;
 
-    public PacketHandshake(ServerAddress address, ConnectionState nextState, int version) {
+    public PacketHandshake(ServerAddress address, ConnectionStates nextState, int version) {
         this.address = address;
         this.nextState = nextState;
         this.version = version;
@@ -36,13 +36,13 @@ public class PacketHandshake implements ServerboundPacket {
     public PacketHandshake(ServerAddress address, int version) {
         this.address = address;
         this.version = version;
-        this.nextState = ConnectionState.STATUS;
+        this.nextState = ConnectionStates.STATUS;
     }
 
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.HANDSHAKING_HANDSHAKE);
-        buffer.writeVarInt((nextState == ConnectionState.STATUS ? -1 : connection.getVersion().getProtocolVersion())); // get best protocol version
+        buffer.writeVarInt((nextState == ConnectionStates.STATUS ? -1 : connection.getVersion().getProtocolVersion())); // get best protocol version
         buffer.writeString(address.getHostname());
         buffer.writeShort((short) address.getPort());
         buffer.writeVarInt(nextState.getId());

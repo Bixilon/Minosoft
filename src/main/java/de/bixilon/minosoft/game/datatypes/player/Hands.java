@@ -11,18 +11,18 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes;
+package de.bixilon.minosoft.game.datatypes.player;
 
-public enum Direction {
-    DOWN,
-    UP,
-    NORTH,
-    SOUTH,
-    WEST,
-    EAST;
+public enum Hands {
+    LEFT,
+    RIGHT;
 
-    public static Direction byId(int id) {
+    public static Hands byId(int id) {
         return values()[id];
+    }
+
+    public static Hands byBoolean(boolean id) {
+        return id ? LEFT : RIGHT;
     }
 
     public int getId() {

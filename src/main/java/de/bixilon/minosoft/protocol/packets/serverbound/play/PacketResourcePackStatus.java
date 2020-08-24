@@ -21,9 +21,9 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketResourcePackStatus implements ServerboundPacket {
     final String hash;
-    final ResourcePackStatus status;
+    final ResourcePackStates status;
 
-    public PacketResourcePackStatus(String hash, ResourcePackStatus status) {
+    public PacketResourcePackStatus(String hash, ResourcePackStates status) {
         this.hash = hash;
         this.status = status;
     }
@@ -43,7 +43,7 @@ public class PacketResourcePackStatus implements ServerboundPacket {
         Log.protocol(String.format("Sending resource pack status (status=%s, hash=%s)", status, hash));
     }
 
-    public enum ResourcePackStatus {
+    public enum ResourcePackStates {
         SUCCESSFULLY(0),
         DECLINED(1),
         FAILED_DOWNLOAD(2),
@@ -51,7 +51,7 @@ public class PacketResourcePackStatus implements ServerboundPacket {
 
         final int id;
 
-        ResourcePackStatus(int id) {
+        ResourcePackStates(int id) {
             this.id = id;
         }
 

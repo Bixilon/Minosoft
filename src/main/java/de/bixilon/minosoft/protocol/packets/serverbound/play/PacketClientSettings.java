@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Difficulty;
-import de.bixilon.minosoft.game.datatypes.player.Hand;
+import de.bixilon.minosoft.game.datatypes.Difficulties;
+import de.bixilon.minosoft.game.datatypes.player.Hands;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -26,14 +26,14 @@ public class PacketClientSettings implements ServerboundPacket {
     public final String locale;
     public final byte renderDistance;
 
-    public Hand mainHand;
+    public Hands mainHand;
 
     public PacketClientSettings(String locale, int renderDistance) {
         this.locale = locale;
         this.renderDistance = (byte) renderDistance;
     }
 
-    public PacketClientSettings(String locale, int renderDistance, Hand mainHand) {
+    public PacketClientSettings(String locale, int renderDistance, Hands mainHand) {
         this.locale = locale;
         this.renderDistance = (byte) renderDistance;
         this.mainHand = mainHand;
@@ -47,7 +47,7 @@ public class PacketClientSettings implements ServerboundPacket {
         buffer.writeByte((byte) 0x00); // chat settings (nobody uses them)
         buffer.writeBoolean(true); // chat colors
         if (buffer.getProtocolId() < 6) {
-            buffer.writeByte((byte) Difficulty.NORMAL.getId()); // difficulty
+            buffer.writeByte((byte) Difficulties.NORMAL.getId()); // difficulty
             buffer.writeBoolean(true); // cape
         } else {
             buffer.writeByte((byte) 0b01111111); // ToDo: skin parts

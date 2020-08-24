@@ -13,39 +13,17 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-public enum ChatColor {
-    BLACK,
-    DARK_BLUE,
-    DARK_GREEN,
-    DARK_AQUA,
-    DARK_RED,
-    DARK_PURPLE,
-    GOLD,
-    GRAY,
-    DARK_GRAY,
-    BLUE,
-    GREEN,
-    AQUA,
-    RED,
-    PURPLE,
-    YELLOW,
-    WHITE,
-    OBFUSCATED,
-    BOLD,
-    STRIKETHROUGH,
-    UNDERLINED,
-    ITALIC,
-    RESET;
+public enum ChatTextPositions {
+    CHAT_BOX,
+    SYSTEM_MESSAGE,
+    ABOVE_HOTBAR;
 
-    public static ChatColor byId(int id) {
+
+    public static ChatTextPositions byId(int id) {
         return values()[id];
     }
 
-    public int getColor() {
+    public int getId() {
         return ordinal();
-    }
-
-    public String getPrefix() {
-        return String.format("%x", getColor());
     }
 }

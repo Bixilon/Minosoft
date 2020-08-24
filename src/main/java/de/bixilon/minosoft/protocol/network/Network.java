@@ -68,13 +68,13 @@ public class Network {
                 socket.setSoTimeout(ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
                 socket.connect(new InetSocketAddress(address.getHostname(), address.getPort()), ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
                 connected = true;
-                connection.setConnectionState(ConnectionState.HANDSHAKING);
+                connection.setConnectionState(ConnectionStates.HANDSHAKING);
                 socket.setKeepAlive(true);
                 outputStream = socket.getOutputStream();
                 inputStream = socket.getInputStream();
                 cipherInputStream = inputStream;
 
-                while (connection.getConnectionState() != ConnectionState.DISCONNECTING) {
+                while (connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
                     // wait for data or send until it should disconnect
                     // first send, then receive
 
@@ -181,7 +181,7 @@ public class Network {
 
                                 //set special settings to avoid miss timing issues
                                 if (packetInstance instanceof PacketLoginSuccess) {
-                                    connection.setConnectionState(ConnectionState.PLAY);
+                                    connection.setConnectionState(ConnectionStates.PLAY);
                                 } else if (packetInstance instanceof PacketCompressionInterface) {
                                     compressionThreshold = ((PacketCompressionInterface) packetInstance).getThreshold();
                                 }
@@ -199,11 +199,11 @@ public class Network {
                 }
                 socket.close();
                 connected = false;
-                connection.setConnectionState(ConnectionState.DISCONNECTED);
+                connection.setConnectionState(ConnectionStates.DISCONNECTED);
             } catch (IOException e) {
                 // Could not connect
                 if (e instanceof SocketTimeoutException) {
-                    connection.setConnectionState(ConnectionState.FAILED);
+                    connection.setConnectionState(ConnectionStates.FAILED);
                 }
                 e.printStackTrace();
             }

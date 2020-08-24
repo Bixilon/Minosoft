@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.player.Hand;
+import de.bixilon.minosoft.game.datatypes.player.Hands;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketOpenBook implements ClientboundPacket {
-    Hand hand;
+    Hands hand;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        hand = Hand.byId(buffer.readVarInt());
+        hand = Hands.byId(buffer.readVarInt());
         return true;
     }
 
@@ -38,7 +38,7 @@ public class PacketOpenBook implements ClientboundPacket {
         h.handle(this);
     }
 
-    public Hand getHand() {
+    public Hands getHand() {
         return hand;
     }
 }

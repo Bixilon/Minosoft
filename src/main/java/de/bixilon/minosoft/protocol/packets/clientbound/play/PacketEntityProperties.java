@@ -39,7 +39,7 @@ public class PacketEntityProperties implements ClientboundPacket {
                 for (int ii = 0; ii < listLength; ii++) {
                     UUID uuid = buffer.readUUID();
                     double amount = buffer.readDouble();
-                    ModifierAction operation = ModifierAction.byId(buffer.readByte());
+                    ModifierActions operation = ModifierActions.byId(buffer.readByte());
                     // ToDo: modifiers
                 }
                 properties.put(key, new EntityProperty(value));
@@ -54,7 +54,7 @@ public class PacketEntityProperties implements ClientboundPacket {
             for (int ii = 0; ii < listLength; ii++) {
                 UUID uuid = buffer.readUUID();
                 double amount = buffer.readDouble();
-                ModifierAction operation = ModifierAction.byId(buffer.readByte());
+                ModifierActions operation = ModifierActions.byId(buffer.readByte());
                 // ToDo: modifiers
             }
             properties.put(key, new EntityProperty(value));
@@ -76,28 +76,17 @@ public class PacketEntityProperties implements ClientboundPacket {
         return entityId;
     }
 
-    public enum ModifierAction {
-        ADD(0),
-        ADD_PERCENT(1),
-        MULTIPLY(2);
+    public enum ModifierActions {
+        ADD,
+        ADD_PERCENT,
+        MULTIPLY;
 
-        final int id;
-
-        ModifierAction(int id) {
-            this.id = id;
-        }
-
-        public static ModifierAction byId(int id) {
-            for (ModifierAction a : values()) {
-                if (a.getId() == id) {
-                    return a;
-                }
-            }
-            return null;
+        public static ModifierActions byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

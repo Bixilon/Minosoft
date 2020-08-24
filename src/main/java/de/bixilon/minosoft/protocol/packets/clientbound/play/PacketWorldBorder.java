@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketWorldBorder implements ClientboundPacket {
-    WorldBorderAction action;
+    WorldBorderActions action;
 
     //fields depend on action
     double radius;
@@ -37,7 +37,7 @@ public class PacketWorldBorder implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        action = WorldBorderAction.byId(buffer.readVarInt());
+        action = WorldBorderActions.byId(buffer.readVarInt());
         switch (action) {
             case SET_SIZE:
                 radius = buffer.readDouble();
@@ -132,31 +132,20 @@ public class PacketWorldBorder implements ClientboundPacket {
         return warningBlocks;
     }
 
-    public enum WorldBorderAction {
-        SET_SIZE(0),
-        LERP_SIZE(1),
-        SET_CENTER(2),
-        INITIALIZE(3),
-        SET_WARNING_TIME(4),
-        SET_WARNING_BLOCKS(5);
+    public enum WorldBorderActions {
+        SET_SIZE,
+        LERP_SIZE,
+        SET_CENTER,
+        INITIALIZE,
+        SET_WARNING_TIME,
+        SET_WARNING_BLOCKS;
 
-        final int id;
-
-        WorldBorderAction(int id) {
-            this.id = id;
-        }
-
-        public static WorldBorderAction byId(int id) {
-            for (WorldBorderAction a : values()) {
-                if (a.getId() == id) {
-                    return a;
-                }
-            }
-            return null;
+        public static WorldBorderActions byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

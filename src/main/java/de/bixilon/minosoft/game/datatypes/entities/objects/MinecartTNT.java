@@ -30,7 +30,7 @@ public class MinecartTNT extends Minecart implements ObjectInterface {
     }
 
     @Override
-    public MinecartType getType() {
-        return MinecartType.TNT;
+    public MinecartTypes getType() {
+        return MinecartTypes.TNT;
     }
 }

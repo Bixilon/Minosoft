@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.Color;
+import de.bixilon.minosoft.game.datatypes.Colors;
 
 public class CatMetaData extends AnimalMetaData {
 
@@ -28,12 +28,12 @@ public class CatMetaData extends AnimalMetaData {
         return CatTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
     }
 
-    public Color getCollarColor() {
-        final int defaultValue = Color.RED.getId();
+    public Colors getCollarColor() {
+        final int defaultValue = Colors.RED.getId();
         if (protocolId < 477) { // ToDo
-            return Color.byId(defaultValue);
+            return Colors.byId(defaultValue);
         }
-        return Color.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue));
+        return Colors.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue));
     }
 
     @Override

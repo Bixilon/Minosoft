@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.objectLoader.versions;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.protocol.protocol.ConnectionState;
+import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 import java.util.HashMap;
@@ -22,11 +22,11 @@ import java.util.HashMap;
 public class Version {
     final String versionName;
     final int protocolVersion;
-    final HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
-    final HashMap<ConnectionState, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
+    final HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
+    final HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
     VersionMapping mapping;
 
-    public Version(String versionName, int protocolVersion, HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping, HashMap<ConnectionState, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping) {
+    public Version(String versionName, int protocolVersion, HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping, HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping) {
         this.versionName = versionName;
         this.protocolVersion = protocolVersion;
         this.serverboundPacketMapping = serverboundPacketMapping;
@@ -41,7 +41,7 @@ public class Version {
         return protocolVersion;
     }
 
-    public Packets.Clientbound getPacketByCommand(ConnectionState state, int command) {
+    public Packets.Clientbound getPacketByCommand(ConnectionStates state, int command) {
         if (clientboundPacketMapping.containsKey(state) && clientboundPacketMapping.get(state).containsValue(command)) {
             return clientboundPacketMapping.get(state).inverse().get(command);
         }
@@ -55,11 +55,11 @@ public class Version {
         return null;
     }
 
-    public HashMap<ConnectionState, HashBiMap<Packets.Clientbound, Integer>> getClientboundPacketMapping() {
+    public HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> getClientboundPacketMapping() {
         return clientboundPacketMapping;
     }
 
-    public HashMap<ConnectionState, HashBiMap<Packets.Serverbound, Integer>> getServerboundPacketMapping() {
+    public HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> getServerboundPacketMapping() {
         return serverboundPacketMapping;
     }
 

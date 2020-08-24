@@ -22,7 +22,7 @@ import java.util.HashSet;
 public class Blocks {
     public static final Block nullBlock = new Block("minecraft", "air");
     static HashMap<String, HashMap<String, BlockProperties>> propertiesMapping = new HashMap<>();
-    static HashMap<String, BlockRotation> rotationMapping = new HashMap<>();
+    static HashMap<String, BlockRotations> rotationMapping = new HashMap<>();
 
     static {
         HashMap<String, BlockProperties> propertyHashMap;
@@ -416,46 +416,46 @@ public class Blocks {
         propertyHashMap.put("ascending_south", BlockProperties.ASCENDING_SOUTH);
         propertiesMapping.put("shape", propertyHashMap);
 
-        rotationMapping.put("0", BlockRotation.SOUTH);
-        rotationMapping.put("1", BlockRotation.SOUTH_SOUTH_WEST);
-        rotationMapping.put("2", BlockRotation.SOUTH_WEST);
-        rotationMapping.put("3", BlockRotation.WEST_SOUTH_WEST);
-        rotationMapping.put("4", BlockRotation.WEST);
-        rotationMapping.put("5", BlockRotation.WEST_NORTH_WEST);
-        rotationMapping.put("6", BlockRotation.NORTH_WEST);
-        rotationMapping.put("7", BlockRotation.NORTH_NORTH_WEST);
-        rotationMapping.put("8", BlockRotation.NORTH);
-        rotationMapping.put("9", BlockRotation.NORTH_NORTH_EAST);
-        rotationMapping.put("10", BlockRotation.NORTH_EAST);
-        rotationMapping.put("11", BlockRotation.EAST_NORTH_EAST);
-        rotationMapping.put("12", BlockRotation.EAST);
-        rotationMapping.put("13", BlockRotation.EAST_SOUTH_EAST);
-        rotationMapping.put("14", BlockRotation.SOUTH_EAST);
-        rotationMapping.put("15", BlockRotation.SOUTH_SOUTH_EAST);
-        rotationMapping.put("south", BlockRotation.SOUTH);
-        rotationMapping.put("east", BlockRotation.EAST);
-        rotationMapping.put("north", BlockRotation.NONE);
-        rotationMapping.put("west", BlockRotation.WEST);
-        rotationMapping.put("up", BlockRotation.UP);
-        rotationMapping.put("down", BlockRotation.DOWN);
-        rotationMapping.put("ascending_east", BlockRotation.ASCENDING_EAST);
-        rotationMapping.put("ascending_west", BlockRotation.ASCENDING_WEST);
-        rotationMapping.put("ascending_north", BlockRotation.ASCENDING_NORTH);
-        rotationMapping.put("ascending_south", BlockRotation.ASCENDING_SOUTH);
-        rotationMapping.put("down_east", BlockRotation.DOWN_EAST);
-        rotationMapping.put("down_west", BlockRotation.DOWN_WEST);
-        rotationMapping.put("down_north", BlockRotation.DOWN_NORTH);
-        rotationMapping.put("down_south", BlockRotation.DOWN_SOUTH);
-        rotationMapping.put("up_east", BlockRotation.UP_EAST);
-        rotationMapping.put("east_up", BlockRotation.EAST_UP);
-        rotationMapping.put("up_west", BlockRotation.UP_WEST);
-        rotationMapping.put("west_up", BlockRotation.WEST_UP);
-        rotationMapping.put("up_north", BlockRotation.UP_NORTH);
-        rotationMapping.put("north_up", BlockRotation.NORTH_UP);
-        rotationMapping.put("up_south", BlockRotation.UP_SOUTH);
-        rotationMapping.put("south_up", BlockRotation.SOUTH_UP);
-        rotationMapping.put("north_south", BlockRotation.NORTH_SOUTH);
-        rotationMapping.put("east_west", BlockRotation.EAST_WEST);
+        rotationMapping.put("0", BlockRotations.SOUTH);
+        rotationMapping.put("1", BlockRotations.SOUTH_SOUTH_WEST);
+        rotationMapping.put("2", BlockRotations.SOUTH_WEST);
+        rotationMapping.put("3", BlockRotations.WEST_SOUTH_WEST);
+        rotationMapping.put("4", BlockRotations.WEST);
+        rotationMapping.put("5", BlockRotations.WEST_NORTH_WEST);
+        rotationMapping.put("6", BlockRotations.NORTH_WEST);
+        rotationMapping.put("7", BlockRotations.NORTH_NORTH_WEST);
+        rotationMapping.put("8", BlockRotations.NORTH);
+        rotationMapping.put("9", BlockRotations.NORTH_NORTH_EAST);
+        rotationMapping.put("10", BlockRotations.NORTH_EAST);
+        rotationMapping.put("11", BlockRotations.EAST_NORTH_EAST);
+        rotationMapping.put("12", BlockRotations.EAST);
+        rotationMapping.put("13", BlockRotations.EAST_SOUTH_EAST);
+        rotationMapping.put("14", BlockRotations.SOUTH_EAST);
+        rotationMapping.put("15", BlockRotations.SOUTH_SOUTH_EAST);
+        rotationMapping.put("south", BlockRotations.SOUTH);
+        rotationMapping.put("east", BlockRotations.EAST);
+        rotationMapping.put("north", BlockRotations.NONE);
+        rotationMapping.put("west", BlockRotations.WEST);
+        rotationMapping.put("up", BlockRotations.UP);
+        rotationMapping.put("down", BlockRotations.DOWN);
+        rotationMapping.put("ascending_east", BlockRotations.ASCENDING_EAST);
+        rotationMapping.put("ascending_west", BlockRotations.ASCENDING_WEST);
+        rotationMapping.put("ascending_north", BlockRotations.ASCENDING_NORTH);
+        rotationMapping.put("ascending_south", BlockRotations.ASCENDING_SOUTH);
+        rotationMapping.put("down_east", BlockRotations.DOWN_EAST);
+        rotationMapping.put("down_west", BlockRotations.DOWN_WEST);
+        rotationMapping.put("down_north", BlockRotations.DOWN_NORTH);
+        rotationMapping.put("down_south", BlockRotations.DOWN_SOUTH);
+        rotationMapping.put("up_east", BlockRotations.UP_EAST);
+        rotationMapping.put("east_up", BlockRotations.EAST_UP);
+        rotationMapping.put("up_west", BlockRotations.UP_WEST);
+        rotationMapping.put("west_up", BlockRotations.WEST_UP);
+        rotationMapping.put("up_north", BlockRotations.UP_NORTH);
+        rotationMapping.put("north_up", BlockRotations.NORTH_UP);
+        rotationMapping.put("up_south", BlockRotations.UP_SOUTH);
+        rotationMapping.put("south_up", BlockRotations.SOUTH_UP);
+        rotationMapping.put("north_south", BlockRotations.NORTH_SOUTH);
+        rotationMapping.put("east_west", BlockRotations.EAST_WEST);
     }
 
     public static HashBiMap<Integer, Block> load(String mod, JsonObject json, boolean metaData) {
@@ -469,7 +469,7 @@ public class Blocks {
                 if (statesJSON.has("properties")) {
                     // properties are optional
                     JsonObject propertiesJSON = statesJSON.getAsJsonObject("properties");
-                    BlockRotation rotation = BlockRotation.NONE;
+                    BlockRotations rotation = BlockRotations.NONE;
                     if (propertiesJSON.has("facing")) {
                         rotation = rotationMapping.get(propertiesJSON.get("facing").getAsString());
                         propertiesJSON.remove("facing");

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketCombatEvent implements ClientboundPacket {
-    CombatEvent action;
+    CombatEvents action;
 
     int duration;
     int playerId;
@@ -29,7 +29,7 @@ public class PacketCombatEvent implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        action = CombatEvent.byId(buffer.readVarInt());
+        action = CombatEvents.byId(buffer.readVarInt());
         switch (action) {
             case END_COMBAT:
                 duration = buffer.readVarInt();
@@ -64,28 +64,18 @@ public class PacketCombatEvent implements ClientboundPacket {
         h.handle(this);
     }
 
-    public enum CombatEvent {
-        ENTER_COMBAT(0),
-        END_COMBAT(1),
-        ENTITY_DEAD(2);
+    public enum CombatEvents {
+        ENTER_COMBAT,
+        END_COMBAT,
+        ENTITY_DEAD;
 
-        final int id;
 
-        CombatEvent(int id) {
-            this.id = id;
-        }
-
-        public static CombatEvent byId(int id) {
-            for (CombatEvent a : values()) {
-                if (a.getId() == id) {
-                    return a;
-                }
-            }
-            return null;
+        public static CombatEvents byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

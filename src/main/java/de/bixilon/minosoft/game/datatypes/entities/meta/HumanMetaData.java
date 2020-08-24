@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.player.Hand;
+import de.bixilon.minosoft.game.datatypes.player.Hands;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import javax.annotation.Nullable;
@@ -39,12 +39,12 @@ public class HumanMetaData extends LivingMetaData {
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
     }
 
-    public Hand getMainHand() {
-        final int defaultValue = Hand.LEFT.getId();
+    public Hands getMainHand() {
+        final int defaultValue = Hands.LEFT.getId();
         if (protocolId < 110) { //ToDo
-            return Hand.byId(defaultValue);
+            return Hands.byId(defaultValue);
         }
-        return Hand.byId(sets.getByte(super.getLastDataIndex() + 4, defaultValue));
+        return Hands.byId(sets.getByte(super.getLastDataIndex() + 4, defaultValue));
     }
 
     @Nullable

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.inventory;
 
-public enum InventoryType {
+public enum InventoryTypes {
     CHEST(0, "minecraft:chest"),
     WORKBENCH(1, "minecraft:crafting_table"),
     FURNACE(2, "minecraft:furnace"),
@@ -30,17 +30,17 @@ public enum InventoryType {
     final int id;
     final String name;
 
-    InventoryType(int id, String name) {
+    InventoryTypes(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static InventoryType byId(int id) {
+    public static InventoryTypes byId(int id) {
         return values()[id];
     }
 
-    public static InventoryType byName(String name) {
-        for (InventoryType type : values()) {
+    public static InventoryTypes byName(String name) {
+        for (InventoryTypes type : values()) {
             if (type.getName().equals(name)) {
                 return type;
             }

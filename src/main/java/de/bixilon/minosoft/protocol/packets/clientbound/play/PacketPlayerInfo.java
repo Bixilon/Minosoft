@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.GameMode;
+import de.bixilon.minosoft.game.datatypes.GameModes;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.player.PlayerInfoBulk;
 import de.bixilon.minosoft.game.datatypes.player.PlayerProperties;
@@ -40,11 +40,11 @@ public class PacketPlayerInfo implements ClientboundPacket {
             } else {
                 ping = buffer.readVarInt();
             }
-            PlayerInfoAction action = (buffer.readBoolean() ? PlayerInfoAction.UPDATE_LATENCY : PlayerInfoAction.REMOVE_PLAYER);
+            PlayerInfoActions action = (buffer.readBoolean() ? PlayerInfoActions.UPDATE_LATENCY : PlayerInfoActions.REMOVE_PLAYER);
             infos.add(new PlayerInfoBulk(name, ping, action));
             return true;
         }
-        PlayerInfoAction action = PlayerInfoAction.byId(buffer.readVarInt());
+        PlayerInfoActions action = PlayerInfoActions.byId(buffer.readVarInt());
         int count = buffer.readVarInt();
         for (int i = 0; i < count; i++) {
             UUID uuid = buffer.readUUID();
@@ -59,13 +59,13 @@ public class PacketPlayerInfo implements ClientboundPacket {
                         PlayerProperty property = new PlayerProperty(PlayerProperties.byName(buffer.readString()), buffer.readString(), (buffer.readBoolean() ? buffer.readString() : null));
                         playerProperties.put(property.getProperty(), property);
                     }
-                    GameMode gameMode = GameMode.byId(buffer.readVarInt());
+                    GameModes gameMode = GameModes.byId(buffer.readVarInt());
                     int ping = buffer.readVarInt();
                     TextComponent displayName = (buffer.readBoolean() ? buffer.readTextComponent() : null);
                     infoBulk = new PlayerInfoBulk(uuid, name, ping, gameMode, displayName, playerProperties, action);
                     break;
                 case UPDATE_GAMEMODE:
-                    infoBulk = new PlayerInfoBulk(uuid, null, 0, GameMode.byId(buffer.readVarInt()), null, null, action);
+                    infoBulk = new PlayerInfoBulk(uuid, null, 0, GameModes.byId(buffer.readVarInt()), null, null, action);
                     break;
                 case UPDATE_LATENCY:
                     infoBulk = new PlayerInfoBulk(uuid, null, buffer.readVarInt(), null, null, null, action);
@@ -105,7 +105,7 @@ public class PacketPlayerInfo implements ClientboundPacket {
         return infos;
     }
 
-    public enum PlayerInfoAction {
+    public enum PlayerInfoActions {
         ADD(0),
         UPDATE_GAMEMODE(1),
         UPDATE_LATENCY(2),
@@ -114,14 +114,14 @@ public class PacketPlayerInfo implements ClientboundPacket {
 
         final int id;
 
-        PlayerInfoAction(int id) {
+        PlayerInfoActions(int id) {
             this.id = id;
         }
 
-        public static PlayerInfoAction byId(int id) {
-            for (PlayerInfoAction a : values()) {
-                if (a.getId() == id) {
-                    return a;
+        public static PlayerInfoActions byId(int id) {
+            for (PlayerInfoActions action : values()) {
+                if (action.getId() == id) {
+                    return action;
                 }
             }
             return null;

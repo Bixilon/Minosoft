@@ -11,22 +11,25 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.entities;
+package de.bixilon.minosoft.game.datatypes;
 
-public enum Pose {
-    STANDING,
-    FLYING,
-    SLEEPING,
-    SWIMMING,
-    SPIN_ATTACK,
-    SNEAKING,
-    DYING;
+public enum GameModes {
+    SURVIVAL(0),
+    CREATIVE(1),
+    ADVENTURE(2),
+    SPECTATOR(3);
 
-    public static Pose byId(int id) {
+    final int id;
+
+    GameModes(int id) {
+        this.id = id;
+    }
+
+    public static GameModes byId(int id) {
         return values()[id];
     }
 
     public int getId() {
-        return ordinal();
+        return id;
     }
 }

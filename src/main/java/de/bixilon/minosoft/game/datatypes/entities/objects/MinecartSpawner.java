@@ -30,7 +30,7 @@ public class MinecartSpawner extends Minecart implements ObjectInterface {
     }
 
     @Override
-    public MinecartType getType() {
-        return MinecartType.SPAWNER;
+    public MinecartTypes getType() {
+        return MinecartTypes.SPAWNER;
     }
 }

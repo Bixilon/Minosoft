@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.game.datatypes.player.Hand;
+import de.bixilon.minosoft.game.datatypes.player.Hands;
 
 import javax.annotation.Nullable;
 
@@ -31,12 +31,12 @@ public class LivingMetaData extends EntityMetaData {
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
     }
 
-    public Hand getActiveHand() {
-        final int defaultValue = Hand.LEFT.getId();
+    public Hands getActiveHand() {
+        final int defaultValue = Hands.LEFT.getId();
         if (protocolId < 110) { //ToDo
-            return Hand.byId(defaultValue);
+            return Hands.byId(defaultValue);
         }
-        return Hand.byBoolean(sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue == 0x01));
+        return Hands.byBoolean(sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue == 0x01));
     }
 
     public boolean isRiptideSpinAttack() {

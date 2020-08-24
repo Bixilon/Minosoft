@@ -13,23 +13,19 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-public enum GameMode {
-    SURVIVAL(0),
-    CREATIVE(1),
-    ADVENTURE(2),
-    SPECTATOR(3);
+public enum Directions {
+    DOWN,
+    UP,
+    NORTH,
+    SOUTH,
+    WEST,
+    EAST;
 
-    final int id;
-
-    GameMode(int id) {
-        this.id = id;
-    }
-
-    public static GameMode byId(int id) {
+    public static Directions byId(int id) {
         return values()[id];
     }
 
     public int getId() {
-        return id;
+        return ordinal();
     }
 }

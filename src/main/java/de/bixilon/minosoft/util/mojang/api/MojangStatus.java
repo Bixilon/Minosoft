@@ -82,9 +82,9 @@ public final class MojangStatus {
         }
 
         public static Services byKey(String key) {
-            for (Services s : values()) {
-                if (s.getKey().equals(key)) {
-                    return s;
+            for (Services service : values()) {
+                if (service.getKey().equals(key)) {
+                    return service;
                 }
             }
             return null;
@@ -102,9 +102,9 @@ public final class MojangStatus {
         UNKNOWN;
 
         public static ServiceStatus byKey(String key) {
-            for (ServiceStatus s : values()) {
-                if (s.name().equals(key)) {
-                    return s;
+            for (ServiceStatus status : values()) {
+                if (status.name().equals(key)) {
+                    return status;
                 }
             }
             return UNKNOWN;

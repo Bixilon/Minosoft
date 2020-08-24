@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.inventory.InventoryAction;
+import de.bixilon.minosoft.game.datatypes.inventory.InventoryActions;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -25,11 +25,11 @@ public class PacketClickWindow implements ServerboundPacket {
 
     final byte windowId;
     final short slot;
-    final InventoryAction action;
+    final InventoryActions action;
     final short actionNumber;
     final Slot clickedItem;
 
-    public PacketClickWindow(byte windowId, short slot, InventoryAction action, short actionNumber, Slot clickedItem) {
+    public PacketClickWindow(byte windowId, short slot, InventoryActions action, short actionNumber, Slot clickedItem) {
         this.windowId = windowId;
         this.slot = slot;
         this.action = action;

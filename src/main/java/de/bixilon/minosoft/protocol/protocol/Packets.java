@@ -81,13 +81,13 @@ public class Packets {
         PLAY_VEHICLE_MOVEMENT,
         PLAY_QUERY_ENTITY_NBT;
 
-        final ConnectionState state;
+        final ConnectionStates state;
 
         Serverbound() {
-            this.state = ConnectionState.valueOf(name().split("_")[0]);
+            this.state = ConnectionStates.valueOf(name().split("_")[0]);
         }
 
-        public ConnectionState getState() {
+        public ConnectionStates getState() {
             return state;
         }
     }
@@ -201,15 +201,15 @@ public class Packets {
         PLAY_ADVANCEMENT_PROGRESS(null);
 
 
-        final ConnectionState state;
+        final ConnectionStates state;
         final Class<? extends ClientboundPacket> clazz;
 
         Clientbound(Class<? extends ClientboundPacket> clazz) {
-            this.state = ConnectionState.valueOf(name().split("_")[0]);
+            this.state = ConnectionStates.valueOf(name().split("_")[0]);
             this.clazz = clazz;
         }
 
-        public ConnectionState getState() {
+        public ConnectionStates getState() {
             return state;
         }
 

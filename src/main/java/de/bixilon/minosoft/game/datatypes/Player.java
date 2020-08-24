@@ -37,7 +37,7 @@ public class Player {
     int food;
     float saturation;
     BlockPosition spawnLocation;
-    GameMode gameMode;
+    GameModes gameMode;
     World world = new World("world");
     byte selectedSlot;
     int level;
@@ -99,11 +99,11 @@ public class Player {
         this.spawnLocation = spawnLocation;
     }
 
-    public GameMode getGameMode() {
+    public GameModes getGameMode() {
         return gameMode;
     }
 
-    public void setGameMode(GameMode gameMode) {
+    public void setGameMode(GameModes gameMode) {
         this.gameMode = gameMode;
     }
 

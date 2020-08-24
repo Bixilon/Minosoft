@@ -15,10 +15,10 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.bixilon.minosoft.game.datatypes.Direction;
+import de.bixilon.minosoft.game.datatypes.Directions;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.entities.Pose;
+import de.bixilon.minosoft.game.datatypes.entities.Poses;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
@@ -233,12 +233,12 @@ public class InByteBuffer {
         return bytes.length - pos;
     }
 
-    public Direction readDirection() {
-        return Direction.byId(readVarInt());
+    public Directions readDirection() {
+        return Directions.byId(readVarInt());
     }
 
-    public Pose readPose() {
-        return Pose.byId(readVarInt());
+    public Poses readPose() {
+        return Poses.byId(readVarInt());
     }
 
     public ParticleData readParticle() {
@@ -414,21 +414,21 @@ public class InByteBuffer {
 
             while (item != 0x7F) {
                 byte index = (byte) (item & 0x1F);
-                EntityMetaData.Types type = EntityMetaData.Types.byId((item & 0xFF) >> 5, protocolId);
+                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId((item & 0xFF) >> 5, protocolId);
                 sets.put((int) index, EntityMetaData.getData(type, this));
                 item = readByte();
             }
         } else if (protocolId < 107) {
             byte index = readByte();
             while (index != (byte) 0xFF) {
-                EntityMetaData.Types type = EntityMetaData.Types.byId(readByte(), protocolId);
+                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId(readByte(), protocolId);
                 sets.put((int) index, EntityMetaData.getData(type, this));
                 index = readByte();
             }
         } else {
             byte index = readByte();
             while (index != (byte) 0xFF) {
-                EntityMetaData.Types type = EntityMetaData.Types.byId(readVarInt(), protocolId);
+                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId(readVarInt(), protocolId);
                 sets.put((int) index, EntityMetaData.getData(type, this));
                 index = readByte();
             }

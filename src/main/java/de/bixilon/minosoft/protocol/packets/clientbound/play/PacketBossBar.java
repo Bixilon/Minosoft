@@ -24,24 +24,24 @@ import java.util.UUID;
 
 public class PacketBossBar implements ClientboundPacket {
     UUID uuid;
-    BossBarAction action;
+    BossBarActions action;
 
     //fields depend on action
     TextComponent title;
     float health;
-    BossBarColor color;
+    BossBarColors color;
     BossBarDivisions divisions;
     byte flags;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         uuid = buffer.readUUID();
-        action = BossBarAction.byId(buffer.readVarInt());
+        action = BossBarActions.byId(buffer.readVarInt());
         switch (action) {
             case ADD:
                 title = buffer.readTextComponent();
                 health = buffer.readFloat();
-                color = BossBarColor.byId(buffer.readVarInt());
+                color = BossBarColors.byId(buffer.readVarInt());
                 divisions = BossBarDivisions.byId(buffer.readVarInt());
                 flags = buffer.readByte();
                 break;
@@ -54,7 +54,7 @@ public class PacketBossBar implements ClientboundPacket {
                 title = buffer.readTextComponent();
                 break;
             case UPDATE_STYLE:
-                color = BossBarColor.byId(buffer.readVarInt());
+                color = BossBarColors.byId(buffer.readVarInt());
                 divisions = BossBarDivisions.byId(buffer.readVarInt());
                 break;
             case UPDATE_FLAGS:
@@ -97,7 +97,7 @@ public class PacketBossBar implements ClientboundPacket {
         return uuid;
     }
 
-    public BossBarAction getAction() {
+    public BossBarActions getAction() {
         return action;
     }
 
@@ -105,7 +105,7 @@ public class PacketBossBar implements ClientboundPacket {
         return divisions;
     }
 
-    public BossBarColor getColor() {
+    public BossBarColors getColor() {
         return color;
     }
 
@@ -133,87 +133,56 @@ public class PacketBossBar implements ClientboundPacket {
         return BitByte.isBitMask(flags, 0x04);
     }
 
-    public enum BossBarAction {
-        ADD(0),
-        REMOVE(1),
-        UPDATE_HEALTH(2),
-        UPDATE_TITLE(3),
-        UPDATE_STYLE(4),
-        UPDATE_FLAGS(5);
+    public enum BossBarActions {
+        ADD,
+        REMOVE,
+        UPDATE_HEALTH,
+        UPDATE_TITLE,
+        UPDATE_STYLE,
+        UPDATE_FLAGS;
 
-        final int id;
 
-        BossBarAction(int id) {
-            this.id = id;
-        }
-
-        public static BossBarAction byId(int id) {
-            for (BossBarAction a : values()) {
-                if (a.getId() == id) {
-                    return a;
-                }
-            }
-            return null;
+        public static BossBarActions byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 
-    public enum BossBarColor {
-        PINK(0),
-        BLUE(1),
-        RED(2),
-        GREEN(3),
-        YELLOW(4),
-        PURPLE(5),
-        WHITE(6);
+    public enum BossBarColors {
+        PINK,
+        BLUE,
+        RED,
+        GREEN,
+        YELLOW,
+        PURPLE,
+        WHITE;
 
-        final int id;
-
-        BossBarColor(int id) {
-            this.id = id;
-        }
-
-        public static BossBarColor byId(int id) {
-            for (BossBarColor c : values()) {
-                if (c.getId() == id) {
-                    return c;
-                }
-            }
-            return null;
+        public static BossBarColors byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 
     public enum BossBarDivisions {
-        NO_DIVISIONS(0),
-        NOTCHES_6(1),
-        NOTCHES_10(2),
-        NOTCHES_12(3),
-        NOTCHES_20(4);
+        NO_DIVISIONS,
+        NOTCHES_6,
+        NOTCHES_10,
+        NOTCHES_12,
+        NOTCHES_20;
 
-        final int id;
-
-        BossBarDivisions(int id) {
-            this.id = id;
-        }
 
         public static BossBarDivisions byId(int id) {
-            for (BossBarDivisions d : values()) {
-                if (d.getId() == id) {
-                    return d;
-                }
-            }
-            return null;
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

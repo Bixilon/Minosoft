@@ -55,15 +55,15 @@ public class AbstractHorseMetaData extends AnimalMetaData {
         return isOptionBitMask(0x40, false);
     }
 
-    public HorseType getType() {
-        final int defaultValue = HorseType.HORSE.getId();
+    public HorseTypes getType() {
+        final int defaultValue = HorseTypes.HORSE.getId();
         if (protocolId < 57) {
-            return HorseType.byId(sets.getInt(19, defaultValue));
+            return HorseTypes.byId(sets.getInt(19, defaultValue));
         }
         if (protocolId < 204) {
-            return HorseType.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
+            return HorseTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
         }
-        return HorseType.byId(defaultValue);
+        return HorseTypes.byId(defaultValue);
     }
 
     @Nullable
@@ -94,30 +94,19 @@ public class AbstractHorseMetaData extends AnimalMetaData {
         return super.getLastDataIndex() + 2;
     }
 
-    public enum HorseType {
-        HORSE(0),
-        DONKEY(1),
-        MULE(2),
-        ZOMBIE(3),
-        SKELETON(4);
+    public enum HorseTypes {
+        HORSE,
+        DONKEY,
+        MULE,
+        ZOMBIE,
+        SKELETON;
 
-        final int id;
-
-        HorseType(int id) {
-            this.id = id;
-        }
-
-        public static HorseType byId(int id) {
-            for (HorseType h : values()) {
-                if (h.getId() == id) {
-                    return h;
-                }
-            }
-            return null;
+        public static HorseTypes byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

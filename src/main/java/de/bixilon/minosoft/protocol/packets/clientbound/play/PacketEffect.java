@@ -66,9 +66,9 @@ public class PacketEffect implements ClientboundPacket {
         return data;
     }
 
-    public SmokeDirection getSmokeDirection() {
+    public SmokeDirections getSmokeDirection() {
         if (effect == EffectEffects.PARTICLE_10_SMOKE) {
-            return SmokeDirection.byId(data);
+            return SmokeDirections.byId(data);
         }
         return null;
     }
@@ -158,9 +158,9 @@ public class PacketEffect implements ClientboundPacket {
         }
 
         public static EffectEffects byId(int id, int protocolId) {
-            for (EffectEffects e : values()) {
-                if (e.getId(protocolId) == id) {
-                    return e;
+            for (EffectEffects effect : values()) {
+                if (effect.getId(protocolId) == id) {
+                    return effect;
                 }
             }
             return null;
@@ -175,7 +175,7 @@ public class PacketEffect implements ClientboundPacket {
         }
     }
 
-    public enum SmokeDirection {
+    public enum SmokeDirections {
         SOUTH_EAST(0),
         SOUTH(1),
         SOUTH_WEST(2),
@@ -188,14 +188,14 @@ public class PacketEffect implements ClientboundPacket {
 
         final int id;
 
-        SmokeDirection(int id) {
+        SmokeDirections(int id) {
             this.id = id;
         }
 
-        public static SmokeDirection byId(int id) {
-            for (SmokeDirection s : values()) {
-                if (s.getId() == id) {
-                    return s;
+        public static SmokeDirections byId(int id) {
+            for (SmokeDirections direction : values()) {
+                if (direction.getId() == id) {
+                    return direction;
                 }
             }
             return null;

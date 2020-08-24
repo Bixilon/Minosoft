@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketScoreboardObjective implements ClientboundPacket {
     String name;
     TextComponent value;
-    ScoreboardObjectiveAction action;
+    ScoreboardObjectiveActions action;
     ScoreboardObjectiveTypes type;
 
     @Override
@@ -31,8 +31,8 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         if (buffer.getProtocolId() < 7) { // ToDo
             value = buffer.readTextComponent();
         }
-        action = ScoreboardObjectiveAction.byId(buffer.readByte());
-        if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
+        action = ScoreboardObjectiveActions.byId(buffer.readByte());
+        if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
 
             if (buffer.getProtocolId() >= 7) { // ToDo
                 value = buffer.readTextComponent();
@@ -56,7 +56,7 @@ public class PacketScoreboardObjective implements ClientboundPacket {
 
     @Override
     public void log() {
-        if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
+        if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
             Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\", type=%s)", action, name, value.getColoredMessage(), type));
         } else {
             Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\")", action, name));
@@ -76,32 +76,21 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         return value;
     }
 
-    public ScoreboardObjectiveAction getAction() {
+    public ScoreboardObjectiveActions getAction() {
         return action;
     }
 
-    public enum ScoreboardObjectiveAction {
-        CREATE(0),
-        REMOVE(1),
-        UPDATE(2);
+    public enum ScoreboardObjectiveActions {
+        CREATE,
+        REMOVE,
+        UPDATE;
 
-        final int id;
-
-        ScoreboardObjectiveAction(int id) {
-            this.id = id;
-        }
-
-        public static ScoreboardObjectiveAction byId(int id) {
-            for (ScoreboardObjectiveAction a : values()) {
-                if (a.getId() == id) {
-                    return a;
-                }
-            }
-            return null;
+        public static ScoreboardObjectiveActions byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 
