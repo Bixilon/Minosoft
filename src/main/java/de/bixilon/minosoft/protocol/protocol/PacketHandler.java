@@ -128,10 +128,8 @@ public class PacketHandler {
     public void handle(PacketPlayerListItem pkg) {
         for (PlayerListItemBulk bulk : pkg.getPlayerList()) {
             switch (bulk.getAction()) {
-                case ADD:
-                    connection.getPlayer().getPlayerList().put(bulk.getUUID(), new PlayerListItem(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGameMode(), bulk.getDisplayName(), bulk.getProperties()));
-                    break;
-                case UPDATE_LATENCY:
+                case ADD -> connection.getPlayer().getPlayerList().put(bulk.getUUID(), new PlayerListItem(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGameMode(), bulk.getDisplayName(), bulk.getProperties()));
+                case UPDATE_LATENCY -> {
                     if (bulk.isLegacy()) {
                         //add or update
                         PlayerListItem playerListItem = connection.getPlayer().getPlayerListItem(bulk.getName());
@@ -146,8 +144,8 @@ public class PacketHandler {
                         return;
                     }
                     connection.getPlayer().getPlayerList().get(bulk.getUUID()).setPing(bulk.getPing());
-                    break;
-                case REMOVE_PLAYER:
+                }
+                case REMOVE_PLAYER -> {
                     if (bulk.isLegacy()) {
                         PlayerListItem playerListItem = connection.getPlayer().getPlayerListItem(bulk.getName());
                         if (playerListItem == null) {
@@ -158,13 +156,9 @@ public class PacketHandler {
                         return;
                     }
                     connection.getPlayer().getPlayerList().remove(bulk.getUUID());
-                    break;
-                case UPDATE_GAMEMODE:
-                    connection.getPlayer().getPlayerList().get(bulk.getUUID()).setGameMode(bulk.getGameMode());
-                    break;
-                case UPDATE_DISPLAY_NAME:
-                    connection.getPlayer().getPlayerList().get(bulk.getUUID()).setDisplayName(bulk.getDisplayName());
-                    break;
+                }
+                case UPDATE_GAMEMODE -> connection.getPlayer().getPlayerList().get(bulk.getUUID()).setGameMode(bulk.getGameMode());
+                case UPDATE_DISPLAY_NAME -> connection.getPlayer().getPlayerList().get(bulk.getUUID()).setDisplayName(bulk.getDisplayName());
             }
         }
     }
@@ -216,17 +210,11 @@ public class PacketHandler {
     }
 
     public void handle(PacketChangeGameState pkg) {
+        // ToDo: handle all updates
         switch (pkg.getReason()) {
-            case START_RAIN:
-                connection.getPlayer().getWorld().setRaining(true);
-                break;
-            case END_RAIN:
-                connection.getPlayer().getWorld().setRaining(false);
-                break;
-            case CHANGE_GAMEMODE:
-                connection.getPlayer().setGameMode(GameModes.byId(pkg.getValue().intValue()));
-                break;
-            // ToDo: handle all updates
+            case START_RAIN -> connection.getPlayer().getWorld().setRaining(true);
+            case END_RAIN -> connection.getPlayer().getWorld().setRaining(false);
+            case CHANGE_GAMEMODE -> connection.getPlayer().setGameMode(GameModes.byId(pkg.getValue().intValue()));
         }
     }
 
@@ -474,32 +462,24 @@ public class PacketHandler {
 
     public void handle(PacketScoreboardObjective pkg) {
         switch (pkg.getAction()) {
-            case CREATE:
-                connection.getPlayer().getScoreboardManager().addObjective(new ScoreboardObjective(pkg.getName(), pkg.getValue()));
-                break;
-            case UPDATE:
-                connection.getPlayer().getScoreboardManager().getObjective(pkg.getName()).setValue(pkg.getValue());
-                break;
-            case REMOVE:
-                connection.getPlayer().getScoreboardManager().removeObjective(pkg.getName());
-                break;
+            case CREATE -> connection.getPlayer().getScoreboardManager().addObjective(new ScoreboardObjective(pkg.getName(), pkg.getValue()));
+            case UPDATE -> connection.getPlayer().getScoreboardManager().getObjective(pkg.getName()).setValue(pkg.getValue());
+            case REMOVE -> connection.getPlayer().getScoreboardManager().removeObjective(pkg.getName());
         }
     }
 
     public void handle(PacketScoreboardUpdateScore pkg) {
+        // ToDo handle correctly
         switch (pkg.getAction()) {
-            case CREATE_UPDATE:
-                connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName()).addScore(new ScoreboardScore(pkg.getItemName(), pkg.getScoreName(), pkg.getScoreValue()));
-                break;
-            case REMOVE:
+            case CREATE_UPDATE -> connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName()).addScore(new ScoreboardScore(pkg.getItemName(), pkg.getScoreName(), pkg.getScoreValue()));
+            case REMOVE -> {
                 ScoreboardObjective objective = connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName());
-                // ToDo handle correctly
                 if (objective == null) {
                     Log.warn(String.format("Server tried to remove score witch was not created before (itemName=\"%s\", scoreName=\"%s\")!", pkg.getItemName(), pkg.getScoreName()));
                 } else {
                     objective.removeScore(pkg.getItemName());
                 }
-                break;
+            }
         }
     }
 
@@ -509,21 +489,11 @@ public class PacketHandler {
 
     public void handle(PacketTeams pkg) {
         switch (pkg.getAction()) {
-            case CREATE:
-                connection.getPlayer().getScoreboardManager().addTeam(new Team(pkg.getName(), pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.isFriendlyFireEnabled(), pkg.isSeeingFriendlyInvisibles(), pkg.getPlayerNames()));
-                break;
-            case INFORMATION_UPDATE:
-                connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).updateInformation(pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.isFriendlyFireEnabled(), pkg.isSeeingFriendlyInvisibles());
-                break;
-            case REMOVE:
-                connection.getPlayer().getScoreboardManager().removeTeam(pkg.getName());
-                break;
-            case PLAYER_ADD:
-                connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).addPlayers(Arrays.asList(pkg.getPlayerNames()));
-                break;
-            case PLAYER_REMOVE:
-                connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).removePlayers(Arrays.asList(pkg.getPlayerNames()));
-                break;
+            case CREATE -> connection.getPlayer().getScoreboardManager().addTeam(new Team(pkg.getName(), pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.isFriendlyFireEnabled(), pkg.isSeeingFriendlyInvisibles(), pkg.getPlayerNames()));
+            case INFORMATION_UPDATE -> connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).updateInformation(pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.isFriendlyFireEnabled(), pkg.isSeeingFriendlyInvisibles());
+            case REMOVE -> connection.getPlayer().getScoreboardManager().removeTeam(pkg.getName());
+            case PLAYER_ADD -> connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).addPlayers(Arrays.asList(pkg.getPlayerNames()));
+            case PLAYER_REMOVE -> connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).removePlayers(Arrays.asList(pkg.getPlayerNames()));
         }
     }
 

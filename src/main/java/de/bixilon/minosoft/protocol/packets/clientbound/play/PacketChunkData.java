@@ -32,7 +32,7 @@ public class PacketChunkData implements ClientboundPacket {
     CompoundTag heightMap;
     int[] biomes;
     boolean ignoreOldData;
-    HashMap<BlockPosition, CompoundTag> blockEntities = new HashMap<>();
+    final HashMap<BlockPosition, CompoundTag> blockEntities = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {

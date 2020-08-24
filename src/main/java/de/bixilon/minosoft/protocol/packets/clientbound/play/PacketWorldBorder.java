@@ -39,19 +39,17 @@ public class PacketWorldBorder implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         action = WorldBorderActions.byId(buffer.readVarInt());
         switch (action) {
-            case SET_SIZE:
-                radius = buffer.readDouble();
-                break;
-            case LERP_SIZE:
+            case SET_SIZE -> radius = buffer.readDouble();
+            case LERP_SIZE -> {
                 oldRadius = buffer.readDouble();
                 newRadius = buffer.readDouble();
                 speed = buffer.readVarLong();
-                break;
-            case SET_CENTER:
+            }
+            case SET_CENTER -> {
                 x = buffer.readDouble();
                 z = buffer.readDouble();
-                break;
-            case INITIALIZE:
+            }
+            case INITIALIZE -> {
                 x = buffer.readDouble();
                 z = buffer.readDouble();
                 oldRadius = buffer.readDouble();
@@ -60,13 +58,9 @@ public class PacketWorldBorder implements ClientboundPacket {
                 portalBound = buffer.readVarInt();
                 warningTime = buffer.readVarInt();
                 warningBlocks = buffer.readVarInt();
-                break;
-            case SET_WARNING_TIME:
-                warningTime = buffer.readVarInt();
-                break;
-            case SET_WARNING_BLOCKS:
-                warningBlocks = buffer.readVarInt();
-                break;
+            }
+            case SET_WARNING_TIME -> warningTime = buffer.readVarInt();
+            case SET_WARNING_BLOCKS -> warningBlocks = buffer.readVarInt();
         }
         return true;
     }
@@ -74,24 +68,12 @@ public class PacketWorldBorder implements ClientboundPacket {
     @Override
     public void log() {
         switch (action) {
-            case SET_SIZE:
-                Log.protocol(String.format("Receiving world border packet (action=%s, radius=%s)", action, radius));
-                break;
-            case LERP_SIZE:
-                Log.protocol(String.format("Receiving world border packet (action=%s, oldRadius=%s, newRadius=%s, speed=%s", action, oldRadius, newRadius, speed));
-                break;
-            case SET_CENTER:
-                Log.protocol(String.format("Receiving world border packet (action=%s, x=%s, z=%s)", action, x, z));
-                break;
-            case INITIALIZE:
-                Log.protocol(String.format("Receiving world border packet (action=%s, x=%s, z=%s, oldRadius=%s, newRadius=%s, speed=%s, portalBound=%s, warningTime=%s, warningBlocks=%s)", action, x, z, oldRadius, newRadius, speed, portalBound, warningTime, warningBlocks));
-                break;
-            case SET_WARNING_TIME:
-                Log.protocol(String.format("Receiving world border packet (action=%s, warningTime=%s)", action, warningTime));
-                break;
-            case SET_WARNING_BLOCKS:
-                Log.protocol(String.format("Receiving world border packet (action=%s, warningBlocks=%s)", action, warningBlocks));
-                break;
+            case SET_SIZE -> Log.protocol(String.format("Receiving world border packet (action=%s, radius=%s)", action, radius));
+            case LERP_SIZE -> Log.protocol(String.format("Receiving world border packet (action=%s, oldRadius=%s, newRadius=%s, speed=%s", action, oldRadius, newRadius, speed));
+            case SET_CENTER -> Log.protocol(String.format("Receiving world border packet (action=%s, x=%s, z=%s)", action, x, z));
+            case INITIALIZE -> Log.protocol(String.format("Receiving world border packet (action=%s, x=%s, z=%s, oldRadius=%s, newRadius=%s, speed=%s, portalBound=%s, warningTime=%s, warningBlocks=%s)", action, x, z, oldRadius, newRadius, speed, portalBound, warningTime, warningBlocks));
+            case SET_WARNING_TIME -> Log.protocol(String.format("Receiving world border packet (action=%s, warningTime=%s)", action, warningTime));
+            case SET_WARNING_BLOCKS -> Log.protocol(String.format("Receiving world border packet (action=%s, warningBlocks=%s)", action, warningBlocks));
         }
     }
 

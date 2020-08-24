@@ -57,29 +57,19 @@ public class TextComponent {
                     }
                     if (colorCheck == null) {
                         //this is not a color, append attribute to list
+                        //save and clear
                         switch (paragraph.substring(0, 1)) {
-                            case "k":
-                                attributesList.add(ChatAttributes.OBFUSCATED);
-                                break;
-                            case "l":
-                                attributesList.add(ChatAttributes.BOLD);
-                                break;
-                            case "m":
-                                attributesList.add(ChatAttributes.STRIKETHROUGH);
-                                break;
-                            case "n":
-                                attributesList.add(ChatAttributes.UNDERLINED);
-                                break;
-                            case "o":
-                                attributesList.add(ChatAttributes.ITALIC);
-                                break;
-                            case "r":
-                                //save and clear
+                            case "k" -> attributesList.add(ChatAttributes.OBFUSCATED);
+                            case "l" -> attributesList.add(ChatAttributes.BOLD);
+                            case "m" -> attributesList.add(ChatAttributes.STRIKETHROUGH);
+                            case "n" -> attributesList.add(ChatAttributes.UNDERLINED);
+                            case "o" -> attributesList.add(ChatAttributes.ITALIC);
+                            case "r" -> {
                                 extra.add(getExtraByAttributes(message.toString(), color, attributesList));
                                 attributesList.clear();
                                 color = ChatAttributes.WHITE;
                                 message = new StringBuilder();
-                                break;
+                            }
                         }
                     } else {
                         // save current

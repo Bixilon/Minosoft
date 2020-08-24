@@ -51,7 +51,7 @@ public class PacketPlayerListItem implements ClientboundPacket {
             PlayerListItemBulk listItemBulk;
             //UUID uuid, String name, int ping, GameMode gameMode, TextComponent displayName, HashMap< PlayerProperties, PlayerProperty > properties, PacketPlayerInfo.PlayerInfoAction action) {
             switch (action) {
-                case ADD:
+                case ADD -> {
                     String name = buffer.readString();
                     int propertiesCount = buffer.readVarInt();
                     HashMap<PlayerProperties, PlayerProperty> playerProperties = new HashMap<>();
@@ -63,22 +63,12 @@ public class PacketPlayerListItem implements ClientboundPacket {
                     int ping = buffer.readVarInt();
                     TextComponent displayName = (buffer.readBoolean() ? buffer.readTextComponent() : null);
                     listItemBulk = new PlayerListItemBulk(uuid, name, ping, gameMode, displayName, playerProperties, action);
-                    break;
-                case UPDATE_GAMEMODE:
-                    listItemBulk = new PlayerListItemBulk(uuid, null, 0, GameModes.byId(buffer.readVarInt()), null, null, action);
-                    break;
-                case UPDATE_LATENCY:
-                    listItemBulk = new PlayerListItemBulk(uuid, null, buffer.readVarInt(), null, null, null, action);
-                    break;
-                case UPDATE_DISPLAY_NAME:
-                    listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, (buffer.readBoolean() ? buffer.readTextComponent() : null), null, action);
-                    break;
-                case REMOVE_PLAYER:
-                    listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, null, null, action);
-                    break;
-                default:
-                    listItemBulk = null;
-                    break;
+                }
+                case UPDATE_GAMEMODE -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, GameModes.byId(buffer.readVarInt()), null, null, action);
+                case UPDATE_LATENCY -> listItemBulk = new PlayerListItemBulk(uuid, null, buffer.readVarInt(), null, null, null, action);
+                case UPDATE_DISPLAY_NAME -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, (buffer.readBoolean() ? buffer.readTextComponent() : null), null, action);
+                case REMOVE_PLAYER -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, null, null, action);
+                default -> listItemBulk = null;
             }
             playerList.add(listItemBulk);
         }

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketUseItem implements ServerboundPacket {
-    Hands hand;
+    final Hands hand;
 
     public PacketUseItem(Hands hand) {
         this.hand = hand;

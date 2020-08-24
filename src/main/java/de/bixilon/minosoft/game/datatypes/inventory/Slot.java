@@ -18,7 +18,7 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 public class Slot {
-    Item item;
+    final Item item;
     int itemCount;
     short itemMetadata;
     CompoundTag nbt;

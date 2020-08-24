@@ -45,7 +45,7 @@ public class VersionMapping {
     HashBiMap<Integer, Enchantment> enchantmentMap;
     HashBiMap<Integer, Particle> particleIdMap;
     HashBiMap<Integer, Statistic> statisticIdMap;
-    HashSet<Mappings> loaded = new HashSet<>();
+    final HashSet<Mappings> loaded = new HashSet<>();
 
     public VersionMapping(Version version) {
         this.version = version;
@@ -113,7 +113,7 @@ public class VersionMapping {
 
     public void load(Mappings type, JsonObject data) {
         switch (type) {
-            case REGISTRIES:
+            case REGISTRIES -> {
                 JsonObject itemJson = data.getAsJsonObject("item").getAsJsonObject("entries");
                 itemMap = HashBiMap.create();
                 for (String identifier : itemJson.keySet()) {
@@ -129,20 +129,17 @@ public class VersionMapping {
                     }
                     itemMap.put(itemId, item);
                 }
-
                 entityMap = HashBiMap.create();
                 JsonObject entityJson = data.getAsJsonObject("entity_type").getAsJsonObject("entries");
                 for (String identifier : entityJson.keySet()) {
                     entityMap.put(entityJson.getAsJsonObject(identifier).get("id").getAsInt(), identifier);
                 }
-
                 enchantmentMap = HashBiMap.create();
                 JsonObject enchantmentJson = data.getAsJsonObject("enchantment").getAsJsonObject("entries");
                 for (String identifier : enchantmentJson.keySet()) {
                     Enchantment enchantment = new Enchantment("minecraft", identifier);
                     enchantmentMap.put(enchantmentJson.getAsJsonObject(identifier).get("id").getAsInt(), enchantment);
                 }
-
                 statisticIdMap = HashBiMap.create();
                 statisticIdentifierMap = HashBiMap.create();
                 JsonObject statisticJson = data.getAsJsonObject("custom_stat").getAsJsonObject("entries");
@@ -153,14 +150,12 @@ public class VersionMapping {
                     }
                     statisticIdentifierMap.put(identifier, statistic);
                 }
-
                 blockIdMap = HashBiMap.create();
                 JsonObject blockIdJson = data.getAsJsonObject("block").getAsJsonObject("entries");
                 for (String identifier : blockIdJson.keySet()) {
                     BlockId blockId = new BlockId("minecraft", identifier);
                     blockIdMap.put(blockIdJson.getAsJsonObject(identifier).get("id").getAsInt(), blockId);
                 }
-
                 motiveIdMap = HashBiMap.create();
                 motiveIdentifierMap = HashBiMap.create();
                 JsonObject motiveJson = data.getAsJsonObject("motive").getAsJsonObject("entries");
@@ -171,7 +166,6 @@ public class VersionMapping {
                     }
                     motiveIdentifierMap.put(identifier, motive);
                 }
-
                 particleIdMap = HashBiMap.create();
                 particleIdentifierMap = HashBiMap.create();
                 JsonObject particleJson = data.getAsJsonObject("particle_type").getAsJsonObject("entries");
@@ -182,7 +176,6 @@ public class VersionMapping {
                     }
                     particleIdentifierMap.put(identifier, particle);
                 }
-
                 mobEffectMap = HashBiMap.create();
                 JsonObject mobEffectJson = data.getAsJsonObject("mob_effect").getAsJsonObject("entries");
                 for (String identifier : mobEffectJson.keySet()) {
@@ -197,10 +190,8 @@ public class VersionMapping {
                         dimensionMap.put(dimensionJson.getAsJsonObject(identifier).get("id").getAsInt(), dimension);
                     }
                 }
-                break;
-            case BLOCKS:
-                blockMap = Blocks.load("minecraft", data, version.getProtocolVersion() < ProtocolDefinition.FLATTING_VERSION_ID);
-                break;
+            }
+            case BLOCKS -> blockMap = Blocks.load("minecraft", data, version.getProtocolVersion() < ProtocolDefinition.FLATTING_VERSION_ID);
         }
         loaded.add(type);
     }

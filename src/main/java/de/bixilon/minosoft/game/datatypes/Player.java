@@ -32,18 +32,18 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.PLAYER_IN
 public class Player {
     final MojangAccount acc;
     final ScoreboardManager scoreboardManager = new ScoreboardManager();
-    public HashMap<UUID, PlayerListItem> playerList = new HashMap<>();
+    public final HashMap<UUID, PlayerListItem> playerList = new HashMap<>();
     float health;
     int food;
     float saturation;
     BlockPosition spawnLocation;
     GameModes gameMode;
-    World world = new World("world");
+    final World world = new World("world");
     byte selectedSlot;
     int level;
     int totalExperience;
     OtherPlayer player;
-    HashMap<Integer, Inventory> inventories = new HashMap<>();
+    final HashMap<Integer, Inventory> inventories = new HashMap<>();
     boolean spawnConfirmed = false;
 
     TextComponent tabHeader;

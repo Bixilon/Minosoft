@@ -138,16 +138,12 @@ public class PacketTeams implements ClientboundPacket {
 
     private void setFriendlyFireByLegacy(byte raw) {
         switch (raw) {
-            case 0:
-                friendlyFire = false;
-                break;
-            case 1:
-                friendlyFire = true;
-                break;
-            case 2:
+            case 0 -> friendlyFire = false;
+            case 1 -> friendlyFire = true;
+            case 2 -> {
                 friendlyFire = false;
                 seeFriendlyInvisibles = true;
-                break;
+            }
         }
         // ToDo: seeFriendlyInvisibles for case 0 and 1
     }

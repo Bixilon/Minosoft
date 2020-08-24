@@ -21,8 +21,8 @@ import java.util.HashSet;
 
 public class Blocks {
     public static final Block nullBlock = new Block("minecraft", "air");
-    static HashMap<String, HashMap<String, BlockProperties>> propertiesMapping = new HashMap<>();
-    static HashMap<String, BlockRotations> rotationMapping = new HashMap<>();
+    static final HashMap<String, HashMap<String, BlockProperties>> propertiesMapping = new HashMap<>();
+    static final HashMap<String, BlockRotations> rotationMapping = new HashMap<>();
 
     static {
         HashMap<String, BlockProperties> propertyHashMap;

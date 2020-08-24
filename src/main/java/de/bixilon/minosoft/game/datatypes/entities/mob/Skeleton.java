@@ -41,22 +41,18 @@ public class Skeleton extends Mob implements MobInterface {
 
     @Override
     public float getWidth() {
-        switch (metaData.getSkeletonType()) {
-            case WITHER:
-                return 0.7F;
-            default:
-                return 0.6F;
+        if (metaData.getSkeletonType() == SkeletonMetaData.SkeletonTypes.WITHER) {
+            return 0.7F;
         }
+        return 0.6F;
     }
 
     @Override
     public float getHeight() {
-        switch (metaData.getSkeletonType()) {
-            case WITHER:
-                return 2.4F;
-            default:
-                return 1.99F;
+        if (metaData.getSkeletonType() == SkeletonMetaData.SkeletonTypes.WITHER) {
+            return 2.4F;
         }
+        return 1.99F;
     }
 
     @Override

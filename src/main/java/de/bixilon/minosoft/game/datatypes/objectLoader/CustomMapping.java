@@ -28,41 +28,25 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
 import java.util.HashMap;
 
 public class CustomMapping {
-    Version version;
-
     // used for custom mappings (mod support)
-    HashMap<String, HashBiMap<String, Motive>> motiveIdentifierMap;
-    HashMap<String, HashBiMap<String, Particle>> particleIdentifierMap;
-    HashMap<String, HashBiMap<String, Statistic>> statisticIdentifierMap;
-    HashBiMap<Integer, Item> itemMap;
-    HashBiMap<Integer, String> entityMap;
-    HashBiMap<Integer, Motive> motiveIdMap;
-    HashBiMap<Integer, MobEffect> mobEffectMap;
-    HashBiMap<Integer, Dimension> dimensionMap;
-    HashMap<String, HashBiMap<String, Dimension>> dimensionIdentifierMap;
-    HashBiMap<Integer, Block> blockMap;
-    HashBiMap<Integer, BlockId> blockIdMap;
-    HashBiMap<Integer, Enchantment> enchantmentMap;
-    HashBiMap<Integer, Particle> particleIdMap;
-    HashBiMap<Integer, Statistic> statisticIdMap;
+    final HashMap<String, HashBiMap<String, Motive>> motiveIdentifierMap = new HashMap<>();
+    final HashMap<String, HashBiMap<String, Particle>> particleIdentifierMap = new HashMap<>();
+    final HashMap<String, HashBiMap<String, Statistic>> statisticIdentifierMap = new HashMap<>();
+    final HashBiMap<Integer, Item> itemMap = HashBiMap.create();
+    final HashBiMap<Integer, String> entityMap = HashBiMap.create();
+    final HashBiMap<Integer, Motive> motiveIdMap = HashBiMap.create();
+    final HashBiMap<Integer, MobEffect> mobEffectMap = HashBiMap.create();
+    final HashBiMap<Integer, Dimension> dimensionMap = HashBiMap.create();
+    final HashBiMap<Integer, Block> blockMap = HashBiMap.create();
+    final HashBiMap<Integer, BlockId> blockIdMap = HashBiMap.create();
+    final HashBiMap<Integer, Enchantment> enchantmentMap = HashBiMap.create();
+    final HashBiMap<Integer, Particle> particleIdMap = HashBiMap.create();
+    final HashBiMap<Integer, Statistic> statisticIdMap = HashBiMap.create();
+    Version version;
+    HashMap<String, HashBiMap<String, Dimension>> dimensionIdentifierMap = new HashMap<>();
 
     public CustomMapping(Version version) {
         this.version = version;
-
-        motiveIdentifierMap = new HashMap<>();
-        particleIdentifierMap = new HashMap<>();
-        statisticIdentifierMap = new HashMap<>();
-        itemMap = HashBiMap.create();
-        entityMap = HashBiMap.create();
-        motiveIdMap = HashBiMap.create();
-        mobEffectMap = HashBiMap.create();
-        dimensionMap = HashBiMap.create();
-        dimensionIdentifierMap = new HashMap<>();
-        blockMap = HashBiMap.create();
-        blockIdMap = HashBiMap.create();
-        enchantmentMap = HashBiMap.create();
-        particleIdMap = HashBiMap.create();
-        statisticIdMap = HashBiMap.create();
     }
 
     public Version getVersion() {

@@ -33,36 +33,16 @@ public class ListTag implements NBTTag {
         list = new ArrayList<>();
         for (int i = 0; i < length; i++) {
             switch (type) {
-                case BYTE:
-                    list.add(new ByteTag(buffer));
-                    break;
-                case SHORT:
-                    list.add(new ShortTag(buffer));
-                    break;
-                case INT:
-                    list.add(new IntTag(buffer));
-                    break;
-                case LONG:
-                    list.add(new LongTag(buffer));
-                    break;
-                case FLOAT:
-                    list.add(new FloatTag(buffer));
-                    break;
-                case DOUBLE:
-                    list.add(new DoubleTag(buffer));
-                    break;
-                case BYTE_ARRAY:
-                    list.add(new ByteArrayTag(buffer));
-                    break;
-                case STRING:
-                    list.add(new StringTag(buffer));
-                    break;
-                case LIST:
-                    list.add(new ListTag(buffer));
-                    break;
-                case COMPOUND:
-                    list.add(new CompoundTag(true, buffer));
-                    break;
+                case BYTE -> list.add(new ByteTag(buffer));
+                case SHORT -> list.add(new ShortTag(buffer));
+                case INT -> list.add(new IntTag(buffer));
+                case LONG -> list.add(new LongTag(buffer));
+                case FLOAT -> list.add(new FloatTag(buffer));
+                case DOUBLE -> list.add(new DoubleTag(buffer));
+                case BYTE_ARRAY -> list.add(new ByteArrayTag(buffer));
+                case STRING -> list.add(new StringTag(buffer));
+                case LIST -> list.add(new ListTag(buffer));
+                case COMPOUND -> list.add(new CompoundTag(true, buffer));
             }
         }
     }

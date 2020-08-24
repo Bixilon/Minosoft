@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class PacketEntityEquipment implements ClientboundPacket {
     int entityId;
-    HashMap<InventorySlots.EntityInventorySlots, Slot> slots = new HashMap<>();
+    final HashMap<InventorySlots.EntityInventorySlots, Slot> slots = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {

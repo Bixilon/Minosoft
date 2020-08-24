@@ -33,13 +33,6 @@ public class PlayerListItemBulk {
     final HashMap<PlayerProperties, PlayerProperty> properties;
     final PacketPlayerListItem.PlayerListItemActions action;
 
-    /**
-     * Legacy (1.7.10)
-     *
-     * @param name   Player name
-     * @param ping   Ping in milliseconds
-     * @param action
-     */
     public PlayerListItemBulk(String name, int ping, PacketPlayerListItem.PlayerListItemActions action) {
         this.action = action;
         this.uuid = UUID.randomUUID();

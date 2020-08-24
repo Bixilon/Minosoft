@@ -39,49 +39,17 @@ public class PacketBlockAction implements ClientboundPacket {
         byte byte2 = buffer.readByte();
         Class<? extends BlockAction> clazz;
         BlockId blockId = buffer.getConnection().getMapping().getBlockIdById(buffer.readVarInt());
-        switch (blockId.getIdentifier()) {
-            case "noteblock":
-                clazz = NoteBlockAction.class; // ToDo: was replaced in 17w47a (346) with the block id
-                break;
-            case "sticky_piston":
-            case "piston":
-                clazz = PistonAction.class;
-                break;
-            case "chest":
-            case "ender_chest":
-            case "trapped_chest":
-            case "white_shulkerbox":
-            case "orange_shulkerbox":
-            case "magenta_shulkerbox":
-            case "light_blue_shulkerbox":
-            case "yellow_shulkerbox":
-            case "lime_shulkerbox":
-            case "pink_shulkerbox":
-            case "gray_shulkerbox":
-            case "silver_shulkerbox":
-            case "cyan_shulkerbox":
-            case "purple_shulkerbox":
-            case "blue_shulkerbox":
-            case "brown_shulkerbox":
-            case "green_shulkerbox":
-            case "red_shulkerbox":
-            case "black_shulkerbox":
-                clazz = ChestAction.class;
-                break;
-            case "beacon":
-                // beacon
-                clazz = BeaconAction.class;
-                break;
-            case "mob_spawner":
-                clazz = MobSpawnerAction.class;
-                break;
-            case "end_gateway":
-                // end gateway
-                clazz = EndGatewayAction.class;
-                break;
-            default:
-                throw new IllegalStateException(String.format("Unexpected block action (blockId=%s)", blockId));
-        }
+        // beacon
+        // end gateway
+        clazz = switch (blockId.getIdentifier()) {
+            case "noteblock" -> NoteBlockAction.class; // ToDo: was replaced in 17w47a (346) with the block id
+            case "sticky_piston", "piston" -> PistonAction.class;
+            case "chest", "ender_chest", "trapped_chest", "white_shulkerbox", "orange_shulkerbox", "magenta_shulkerbox", "light_blue_shulkerbox", "yellow_shulkerbox", "lime_shulkerbox", "pink_shulkerbox", "gray_shulkerbox", "silver_shulkerbox", "cyan_shulkerbox", "purple_shulkerbox", "blue_shulkerbox", "brown_shulkerbox", "green_shulkerbox", "red_shulkerbox", "black_shulkerbox" -> ChestAction.class;
+            case "beacon" -> BeaconAction.class;
+            case "mob_spawner" -> MobSpawnerAction.class;
+            case "end_gateway" -> EndGatewayAction.class;
+            default -> throw new IllegalStateException(String.format("Unexpected block action (blockId=%s)", blockId));
+        };
         try {
             data = clazz.getConstructor(byte.class, byte.class).newInstance(byte1, byte2);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {

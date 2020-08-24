@@ -35,17 +35,13 @@ public class PacketTitle implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         action = TitleActions.byId(buffer.readVarInt(), buffer.getProtocolId());
         switch (action) {
-            case SET_TITLE:
-                text = buffer.readTextComponent();
-                break;
-            case SET_SUBTITLE:
-                subText = buffer.readTextComponent();
-                break;
-            case SET_TIMES_AND_DISPLAY:
+            case SET_TITLE -> text = buffer.readTextComponent();
+            case SET_SUBTITLE -> subText = buffer.readTextComponent();
+            case SET_TIMES_AND_DISPLAY -> {
                 fadeInTime = buffer.readInt();
                 stayTime = buffer.readInt();
                 fadeOutTime = buffer.readInt();
-                break;
+            }
         }
         return true;
     }
@@ -53,19 +49,10 @@ public class PacketTitle implements ClientboundPacket {
     @Override
     public void log() {
         switch (action) {
-            case SET_TITLE:
-                Log.protocol(String.format("Received title (action=%s, text=%s)", action, text.getColoredMessage()));
-                break;
-            case SET_SUBTITLE:
-                Log.protocol(String.format("Received title (action=%s, subText=%s)", action, subText.getColoredMessage()));
-                break;
-            case SET_TIMES_AND_DISPLAY:
-                Log.protocol(String.format("Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", action, fadeInTime, stayTime, fadeOutTime));
-                break;
-            case HIDE:
-            case RESET:
-                Log.protocol(String.format("Received title (action=%s)", action));
-                break;
+            case SET_TITLE -> Log.protocol(String.format("Received title (action=%s, text=%s)", action, text.getColoredMessage()));
+            case SET_SUBTITLE -> Log.protocol(String.format("Received title (action=%s, subText=%s)", action, subText.getColoredMessage()));
+            case SET_TIMES_AND_DISPLAY -> Log.protocol(String.format("Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", action, fadeInTime, stayTime, fadeOutTime));
+            case HIDE, RESET -> Log.protocol(String.format("Received title (action=%s)", action));
         }
     }
 

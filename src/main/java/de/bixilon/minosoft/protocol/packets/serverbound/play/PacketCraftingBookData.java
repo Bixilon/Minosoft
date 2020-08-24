@@ -64,10 +64,8 @@ public class PacketCraftingBookData implements ServerboundPacket {
         }
 
         switch (action) {
-            case DISPLAY_RECIPE:
-                buffer.writeVarInt(recipeId);
-                break;
-            case CRAFTING_BOOK_STATUS:
+            case DISPLAY_RECIPE -> buffer.writeVarInt(recipeId);
+            case CRAFTING_BOOK_STATUS -> {
                 buffer.writeBoolean(craftingBookOpen);
                 buffer.writeBoolean(craftingFilter);
                 if (buffer.getProtocolId() >= 451) {
@@ -76,7 +74,7 @@ public class PacketCraftingBookData implements ServerboundPacket {
                     buffer.writeBoolean(smokingBookOpen);
                     buffer.writeBoolean(smokingFilter);
                 }
-                break;
+            }
         }
         return buffer;
     }
@@ -84,12 +82,8 @@ public class PacketCraftingBookData implements ServerboundPacket {
     @Override
     public void log() {
         switch (action) {
-            case DISPLAY_RECIPE:
-                Log.protocol(String.format("Sending crafting book status (action=%s, recipeId=%d)", action, recipeId));
-                break;
-            case CRAFTING_BOOK_STATUS:
-                Log.protocol(String.format("Sending crafting book status (action=%s, craftingBookOpen=%s, craftingFilter=%s)", action, craftingBookOpen, craftingFilter));
-                break;
+            case DISPLAY_RECIPE -> Log.protocol(String.format("Sending crafting book status (action=%s, recipeId=%d)", action, recipeId));
+            case CRAFTING_BOOK_STATUS -> Log.protocol(String.format("Sending crafting book status (action=%s, craftingBookOpen=%s, craftingFilter=%s)", action, craftingBookOpen, craftingFilter));
         }
     }
 

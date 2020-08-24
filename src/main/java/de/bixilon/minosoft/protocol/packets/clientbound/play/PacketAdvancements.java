@@ -31,9 +31,9 @@ import java.util.HashMap;
 public class PacketAdvancements implements ClientboundPacket {
     boolean reset;
 
-    HashMap<String, Advancement> advancements = new HashMap<>();
+    final HashMap<String, Advancement> advancements = new HashMap<>();
     String[] toRemove;
-    HashMap<String, AdvancementProgress> progresses = new HashMap<>();
+    final HashMap<String, AdvancementProgress> progresses = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {

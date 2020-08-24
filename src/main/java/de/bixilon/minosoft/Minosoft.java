@@ -96,18 +96,10 @@ public class Minosoft {
             path += "/";
         }
         switch (OSUtil.getOS()) {
-            case LINUX:
-                path += ".local/share/minosoft/";
-                break;
-            case WINDOWS:
-                path += "AppData/Roaming/Minosoft/";
-                break;
-            case MAC:
-                path += "Library/Application Support/Minosoft/";
-                break;
-            case OTHER:
-                path += ".minosoft/";
-                break;
+            case LINUX -> path += ".local/share/minosoft/";
+            case WINDOWS -> path += "AppData/Roaming/Minosoft/";
+            case MAC -> path += "Library/Application Support/Minosoft/";
+            case OTHER -> path += ".minosoft/";
         }
         File folder = new File(path);
         if (!folder.exists() && !folder.mkdirs()) {

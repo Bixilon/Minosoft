@@ -20,7 +20,7 @@ import de.bixilon.minosoft.game.datatypes.entities.objects.*;
 
 public class Entities {
 
-    static HashBiMap<String, Class<? extends Entity>> entityClassMap = HashBiMap.create();
+    static final HashBiMap<String, Class<? extends Entity>> entityClassMap = HashBiMap.create();
 
     static {
         registerEntityClass("minecraft:item", ItemStack.class);

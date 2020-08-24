@@ -249,28 +249,18 @@ public class InByteBuffer {
     public ParticleData readParticleData(Particle type) {
         if (protocolId < 343) {
             // old particle format
-            switch (type.getIdentifier()) {
-                case "iconcrack":
-                    return new ItemParticleData(new Slot(connection.getMapping().getItemByLegacy(readVarInt(), readVarInt())), type);
-                case "blockcrack":
-                case "blockdust":
-                case "falling_dust":
-                    return new BlockParticleData(connection.getMapping().getBlockById(readVarInt() << 4), type);
-                default:
-                    return new ParticleData(type);
-            }
+            return switch (type.getIdentifier()) {
+                case "iconcrack" -> new ItemParticleData(new Slot(connection.getMapping().getItemByLegacy(readVarInt(), readVarInt())), type);
+                case "blockcrack", "blockdust", "falling_dust" -> new BlockParticleData(connection.getMapping().getBlockById(readVarInt() << 4), type);
+                default -> new ParticleData(type);
+            };
         }
-        switch (type.getIdentifier()) {
-            case "block":
-            case "falling_dust":
-                return new BlockParticleData(connection.getMapping().getBlockById(readVarInt()), type);
-            case "dust":
-                return new DustParticleData(readFloat(), readFloat(), readFloat(), readFloat(), type);
-            case "item":
-                return new ItemParticleData(readSlot(), type);
-            default:
-                return new ParticleData(type);
-        }
+        return switch (type.getIdentifier()) {
+            case "block", "falling_dust" -> new BlockParticleData(connection.getMapping().getBlockById(readVarInt()), type);
+            case "dust" -> new DustParticleData(readFloat(), readFloat(), readFloat(), readFloat(), type);
+            case "item" -> new ItemParticleData(readSlot(), type);
+            default -> new ParticleData(type);
+        };
     }
 
     public NBTTag readNBT(boolean compressed) {
@@ -297,35 +287,21 @@ public class InByteBuffer {
     }
 
     public NBTTag readNBT(TagTypes tagType) {
-        switch (tagType) {
-            case END:
-                return null;
-            case BYTE:
-                return new ByteTag(this);
-            case SHORT:
-                return new ShortTag(this);
-            case INT:
-                return new IntTag(this);
-            case LONG:
-                return new LongTag(this);
-            case FLOAT:
-                return new FloatTag(this);
-            case DOUBLE:
-                return new DoubleTag(this);
-            case BYTE_ARRAY:
-                return new ByteArrayTag(this);
-            case STRING:
-                return new StringTag(this);
-            case LIST:
-                return new ListTag(this);
-            case COMPOUND:
-                return new CompoundTag(true, this);
-            case INT_ARRAY:
-                return new IntArrayTag(this);
-            case LONG_ARRAY:
-                return new LongArrayTag(this);
-        }
-        return null;
+        return switch (tagType) {
+            case END -> null;
+            case BYTE -> new ByteTag(this);
+            case SHORT -> new ShortTag(this);
+            case INT -> new IntTag(this);
+            case LONG -> new LongTag(this);
+            case FLOAT -> new FloatTag(this);
+            case DOUBLE -> new DoubleTag(this);
+            case BYTE_ARRAY -> new ByteArrayTag(this);
+            case STRING -> new StringTag(this);
+            case LIST -> new ListTag(this);
+            case COMPOUND -> new CompoundTag(true, this);
+            case INT_ARRAY -> new IntArrayTag(this);
+            case LONG_ARRAY -> new LongArrayTag(this);
+        };
     }
 
     public NBTTag readNBT() {

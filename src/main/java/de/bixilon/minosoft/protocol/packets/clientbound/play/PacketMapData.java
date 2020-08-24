@@ -49,12 +49,12 @@ public class PacketMapData implements ClientboundPacket {
             // read action
             dataData = PacketMapDataDataActions.byId(buffer.readByte());
             switch (dataData) {
-                case START:
+                case START -> {
                     xStart = buffer.readByte();
                     yStart = buffer.readByte();
                     colors = buffer.readBytes(length - 3); // 3: dataData(1) + xStart (1) + yStart (1)
-                    break;
-                case PLAYERS:
+                }
+                case PLAYERS -> {
                     pins = new ArrayList<>();
                     length--; // minus the dataData
                     for (int i = 0; i < length / 3; i++) { // loop over all sets ( 1 set: 3 bytes)
@@ -63,10 +63,8 @@ public class PacketMapData implements ClientboundPacket {
                         byte z = buffer.readByte();
                         pins.add(new MapPinSet(MapPinTypes.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
                     }
-                    break;
-                case SCALE:
-                    scale = buffer.readByte();
-                    break;
+                }
+                case SCALE -> scale = buffer.readByte();
             }
             return true;
         }

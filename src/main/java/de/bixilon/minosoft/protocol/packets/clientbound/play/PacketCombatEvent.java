@@ -31,15 +31,15 @@ public class PacketCombatEvent implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         action = CombatEvents.byId(buffer.readVarInt());
         switch (action) {
-            case END_COMBAT:
+            case END_COMBAT -> {
                 duration = buffer.readVarInt();
                 entityId = buffer.readInt();
-                break;
-            case ENTITY_DEAD:
+            }
+            case ENTITY_DEAD -> {
                 playerId = buffer.readVarInt();
                 entityId = buffer.readInt();
                 message = buffer.readTextComponent();
-                break;
+            }
         }
         return true;
     }
@@ -47,15 +47,9 @@ public class PacketCombatEvent implements ClientboundPacket {
     @Override
     public void log() {
         switch (action) {
-            case ENTER_COMBAT:
-                Log.protocol(String.format("Received combat packet (action=%s)", action));
-                break;
-            case END_COMBAT:
-                Log.protocol(String.format("Received combat packet (action=%s, duration=%d, entityId=%d)", action, duration, entityId));
-                break;
-            case ENTITY_DEAD:
-                Log.protocol(String.format("Received combat packet (action=%s, playerId=%d, entityId=%d, message=\"%s\")", action, playerId, entityId, message));
-                break;
+            case ENTER_COMBAT -> Log.protocol(String.format("Received combat packet (action=%s)", action));
+            case END_COMBAT -> Log.protocol(String.format("Received combat packet (action=%s, duration=%d, entityId=%d)", action, duration, entityId));
+            case ENTITY_DEAD -> Log.protocol(String.format("Received combat packet (action=%s, playerId=%d, entityId=%d, message=\"%s\")", action, playerId, entityId, message));
         }
     }
 

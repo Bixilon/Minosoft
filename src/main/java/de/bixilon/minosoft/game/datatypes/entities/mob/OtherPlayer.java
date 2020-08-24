@@ -25,10 +25,10 @@ import java.util.UUID;
 
 public class OtherPlayer extends Mob implements MobInterface {
     final String name;
-    PlayerPropertyData[] properties;
-    short currentItem;
+    final PlayerPropertyData[] properties;
+    final short currentItem;
     HumanMetaData metaData;
-    Poses status = Poses.STANDING;
+    final Poses status = Poses.STANDING;
 
     public OtherPlayer(int entityId, String name, UUID uuid, PlayerPropertyData[] properties, Location location, int yaw, int pitch, int headYaw, short currentItem, HumanMetaData metaData) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
@@ -40,27 +40,20 @@ public class OtherPlayer extends Mob implements MobInterface {
 
     @Override
     public float getWidth() {
-        switch (status) {
-            default:
-                return 0.6F;
-            case SLEEPING:
-                return 0.2F;
+        if (status == Poses.SLEEPING) {
+            return 0.2F;
         }
+        return 0.6F;
     }
 
     @Override
     public float getHeight() {
-        switch (status) {
-            default:
-                return 1.8F;
-            case SNEAKING:
-                return 1.5F;
-            case FLYING:
-            case SWIMMING:
-                return 0.6F;
-            case SLEEPING:
-                return 0.2F;
-        }
+        return switch (status) {
+            default -> 1.8F;
+            case SNEAKING -> 1.5F;
+            case FLYING, SWIMMING -> 0.6F;
+            case SLEEPING -> 0.2F;
+        };
     }
 
     @Override

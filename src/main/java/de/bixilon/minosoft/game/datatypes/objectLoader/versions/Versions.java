@@ -34,8 +34,8 @@ public class Versions {
     private static final
     HashMap<String, Mappings> mappingsHashMap = new HashMap<>();
     static VersionMapping legacyMapping;
-    static HashBiMap<Integer, Version> versionMap = HashBiMap.create();
-    static HashSet<Version> loadedVersion = new HashSet<>();
+    static final HashBiMap<Integer, Version> versionMap = HashBiMap.create();
+    static final HashSet<Version> loadedVersion = new HashSet<>();
 
     static {
         mappingsHashMap.put("registries", Mappings.REGISTRIES);

@@ -112,8 +112,8 @@ public final class Util {
     public static String readFile(String fileName) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         StringBuilder stringBuilder = new StringBuilder();
-        String line = null;
         String ls = System.getProperty("line.separator");
+        String line;
         while ((line = reader.readLine()) != null) {
             stringBuilder.append(line);
             stringBuilder.append(ls);
