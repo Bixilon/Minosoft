@@ -19,13 +19,12 @@ import java.util.HashMap;
 
 public class ScoreboardObjective {
     final String objectiveName;
-    final HashMap<String, ScoreboardScore> scores;
+    final HashMap<String, ScoreboardScore> scores = new HashMap<>();
     TextComponent objectiveValue;
 
     public ScoreboardObjective(String objectiveName, TextComponent objectiveValue) {
         this.objectiveName = objectiveName;
         this.objectiveValue = objectiveValue;
-        this.scores = new HashMap<>();
     }
 
     public String getObjectiveName() {

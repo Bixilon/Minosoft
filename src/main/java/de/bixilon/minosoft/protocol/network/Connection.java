@@ -40,10 +40,10 @@ import java.util.ArrayList;
 
 public class Connection {
     final ArrayList<ServerAddress> addresses;
-    final Network network;
-    final PacketHandler handler;
-    final PacketSender sender;
-    final ArrayList<ClientboundPacket> handlingQueue;
+    final Network network = new Network(this);
+    final PacketHandler handler = new PacketHandler(this);
+    final PacketSender sender = new PacketSender(this);
+    final ArrayList<ClientboundPacket> handlingQueue = new ArrayList<>();
     final VelocityHandler velocityHandler = new VelocityHandler(this);
     final int connectionId;
     ServerAddress address;
@@ -66,10 +66,6 @@ public class Connection {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        network = new Network(this);
-        handlingQueue = new ArrayList<>();
-        handler = new PacketHandler(this);
-        sender = new PacketSender(this);
     }
 
     /**

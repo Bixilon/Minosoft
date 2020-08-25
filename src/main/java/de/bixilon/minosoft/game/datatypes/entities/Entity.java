@@ -19,15 +19,15 @@ import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffect;
 import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.UUID;
 
 public abstract class Entity implements EntityInterface {
     final int entityId;
     final UUID uuid;
-    final HashMap<InventorySlots.EntityInventorySlots, Slot> equipment;
-    final ArrayList<StatusEffect> effectList;
+    final HashMap<InventorySlots.EntityInventorySlots, Slot> equipment = new HashMap<>();
+    final HashSet<StatusEffect> effectList = new HashSet<>();
     Location location;
     int yaw;
     int pitch;
@@ -53,8 +53,6 @@ public abstract class Entity implements EntityInterface {
         this.location = location;
         this.yaw = yaw;
         this.pitch = pitch;
-        this.equipment = new HashMap<>();
-        this.effectList = new ArrayList<>();
     }
 
     public int getEntityId() {
@@ -114,7 +112,7 @@ public abstract class Entity implements EntityInterface {
         return EntityMetaData.class;
     }
 
-    public ArrayList<StatusEffect> getEffectList() {
+    public HashSet<StatusEffect> getEffectList() {
         return effectList;
     }
 

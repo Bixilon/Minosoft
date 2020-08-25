@@ -26,19 +26,16 @@ import java.util.Map;
  * Collection of ChunkColumns
  */
 public class World {
-    final HashMap<ChunkLocation, Chunk> chunks;
-    final HashMap<Integer, Entity> entities;
+    final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
+    final HashMap<Integer, Entity> entities = new HashMap<>();
     final String name;
-    final HashMap<BlockPosition, CompoundTag> blockEntityMeta;
+    final HashMap<BlockPosition, CompoundTag> blockEntityMeta = new HashMap<>();
     boolean hardcore;
     boolean raining;
     Dimension dimension; // used for sky color, etc
 
     public World(String name) {
         this.name = name;
-        chunks = new HashMap<>();
-        entities = new HashMap<>();
-        blockEntityMeta = new HashMap<>();
     }
 
     public String getName() {

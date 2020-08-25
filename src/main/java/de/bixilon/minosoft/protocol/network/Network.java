@@ -38,7 +38,7 @@ import java.util.ArrayList;
 
 public class Network {
     final Connection connection;
-    final ArrayList<ServerboundPacket> queue;
+    final ArrayList<ServerboundPacket> queue = new ArrayList<>();
     Thread socketThread;
     int compressionThreshold = -1;
     Socket socket;
@@ -49,9 +49,8 @@ public class Network {
     SecretKey secretKey;
     boolean connected;
 
-    public Network(Connection c) {
-        this.connection = c;
-        this.queue = new ArrayList<>();
+    public Network(Connection connection) {
+        this.connection = connection;
     }
 
     public void connect(ServerAddress address) {
