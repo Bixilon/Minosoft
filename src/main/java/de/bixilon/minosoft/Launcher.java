@@ -21,11 +21,13 @@ import de.bixilon.minosoft.gui.main.ServerListCell;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.Map;
 
@@ -37,7 +39,7 @@ public class Launcher extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
         GUITools.versions.add(Versions.getLowestVersionSupported());
         for (Map.Entry<Integer, Version> version : Versions.getVersionMap().entrySet()) {
             GUITools.versions.add(version.getValue());
@@ -50,17 +52,21 @@ public class Launcher extends Application {
             }
             return (b.getProtocolVersion() - a.getProtocolVersion());
         });
-        ListView<Server> listView = new ListView<>();
-        listView.setCellFactory((lv) -> ServerListCell.newInstance());
+        ServerListCell.listView.setCellFactory((lv) -> ServerListCell.newInstance());
 
         ObservableList<Server> servers = FXCollections.observableArrayList();
         servers.addAll(Minosoft.serverList);
-        listView.setItems(servers);
+        ServerListCell.listView.setItems(servers);
 
-        Scene scene = new Scene(new BorderPane(listView), 550, 800);
+        VBox root = FXMLLoader.load(getClass().getResource("/layout/main.fxml"));
+
+        Scene scene = new Scene(root, 600, 800);
         primaryStage.setScene(scene);
+
         primaryStage.setTitle("Minosoft");
         primaryStage.getIcons().add(GUITools.logo);
         primaryStage.show();
+
+        ((BorderPane) scene.lookup("#serversPane")).setCenter(ServerListCell.listView);
     }
 }

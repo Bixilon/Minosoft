@@ -116,6 +116,10 @@ public class Configuration {
         }
     }
 
+    public void removeServer(Server server) {
+        remove(String.format("servers.%d", server.getId()));
+    }
+
     public Object get(String path) {
         if (path.contains(".")) {
             // split
@@ -147,6 +151,24 @@ public class Configuration {
             return;
         }
         config.put(path, value);
+    }
+
+    public void remove(String path) {
+        if (path.contains(".")) {
+            // split
+            String[] spilt = path.split("\\.");
+            LinkedHashMap<String, Object> temp = config;
+            for (int i = 0; i < spilt.length - 1; i++) {
+                // not yet existing, creating it
+                temp = (LinkedHashMap<String, Object>) temp.get(spilt[i]);
+                if (temp == null) {
+                    return;
+                }
+            }
+            temp.remove(spilt[spilt.length - 1]);
+            return;
+        }
+        config.remove(path);
     }
 
     public void saveToFile(String filename) {

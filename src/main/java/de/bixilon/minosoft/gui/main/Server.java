@@ -99,6 +99,11 @@ public class Server {
         Minosoft.getConfig().saveToFile(Config.configFileName);
     }
 
+    public void delete() {
+        Minosoft.getConfig().removeServer(this);
+        Minosoft.getConfig().saveToFile(Config.configFileName);
+    }
+
     @Override
     public String toString() {
         return getName() + " (" + getAddress() + ")";

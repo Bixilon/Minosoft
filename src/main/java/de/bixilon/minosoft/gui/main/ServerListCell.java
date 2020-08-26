@@ -41,7 +41,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ServerListCell extends ListCell<Server> implements Initializable {
-
+        public static ListView<Server> listView = new ListView<>();
     @FXML
     public ImageView icon;
     @FXML
@@ -105,6 +105,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 connection.resolve(ConnectionReasons.CONNECT, server.getDesiredVersion());
             });
             optionsEdit.setOnAction(e -> edit());
+            optionsDelete.setOnAction(e -> delete());
 
             Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), null);
             connection.addPingCallback(ping -> Platform.runLater(() -> {
@@ -224,5 +225,10 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         });
 
         dialog.showAndWait();
+    }
+
+    public void delete() {
+        listView.getItems().remove(server);
+        server.delete();
     }
 }
