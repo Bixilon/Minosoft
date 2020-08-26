@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.inventory.InventoryProperties;
-import de.bixilon.minosoft.game.datatypes.inventory.InventoryType;
+import de.bixilon.minosoft.game.datatypes.inventory.InventoryTypes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -23,36 +23,35 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketOpenWindow implements ClientboundPacket {
     byte windowId;
-    InventoryType type;
+    InventoryTypes type;
     TextComponent title;
     byte slotCount;
     int entityId;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                this.windowId = buffer.readByte();
-                this.type = InventoryType.byId(buffer.readByte());
-                this.title = buffer.readTextComponent();
-                slotCount = buffer.readByte();
-                if (!buffer.readBoolean()) {
-                    // no custom name
-                    title = null;
-                }
-                this.entityId = buffer.readInt();
-                return true;
-            default:
-                this.windowId = buffer.readByte();
-                this.type = InventoryType.byName(buffer.readString());
-                this.title = buffer.readTextComponent();
-                slotCount = buffer.readByte();
-                if (type == InventoryType.HORSE) {
-                    this.entityId = buffer.readInt();
-                }
-                return true;
+        if (buffer.getProtocolId() < 6) {
+            this.windowId = buffer.readByte();
+            this.type = InventoryTypes.byId(buffer.readByte());
+            this.title = buffer.readTextComponent();
+            slotCount = buffer.readByte();
+            if (!buffer.readBoolean()) {
+                // no custom name
+                title = null;
+            }
+            this.entityId = buffer.readInt();
+            return true;
         }
+        this.windowId = buffer.readByte();
+        this.type = InventoryTypes.byName(buffer.readString());
+        this.title = buffer.readTextComponent();
+        if (buffer.getProtocolId() < 452 || buffer.getProtocolId() >= 464) {
+            slotCount = buffer.readByte();
+        }
+        if (type == InventoryTypes.HORSE) {
+            this.entityId = buffer.readInt();
+        }
+        return true;
     }
 
     @Override
@@ -81,7 +80,7 @@ public class PacketOpenWindow implements ClientboundPacket {
         return title;
     }
 
-    public InventoryType getType() {
+    public InventoryTypes getType() {
         return type;
     }
 

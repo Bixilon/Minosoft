@@ -12,17 +12,15 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class TridentMetaData extends AbstractArrowMetaData {
 
-    public TridentMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public TridentMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public int getLoyaltyLevel() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getByte(super.getLastDataIndex() + 1, defaultValue);
@@ -30,7 +28,7 @@ public class TridentMetaData extends AbstractArrowMetaData {
 
     public boolean hasEnchantmentGlint() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+        if (protocolId < 573) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
@@ -38,10 +36,10 @@ public class TridentMetaData extends AbstractArrowMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return super.getLastDataIndex();
         }
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+        if (protocolId < 573) { // ToDo
             return super.getLastDataIndex() + 1;
         }
         return super.getLastDataIndex() + 2;

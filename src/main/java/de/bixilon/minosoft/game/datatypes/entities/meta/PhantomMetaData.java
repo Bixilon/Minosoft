@@ -12,17 +12,15 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class PhantomMetaData extends InsentientMetaData {
 
-    public PhantomMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public PhantomMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public int getSize() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -30,7 +28,7 @@ public class PhantomMetaData extends InsentientMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

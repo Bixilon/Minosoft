@@ -23,7 +23,6 @@ public class PacketWindowItems implements ClientboundPacket {
     byte windowId;
     Slot[] data;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         windowId = buffer.readByte();

@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.game.datatypes.world;
 
-import de.bixilon.minosoft.game.datatypes.Dimension;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
-import de.bixilon.minosoft.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimension;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,19 +26,16 @@ import java.util.Map;
  * Collection of ChunkColumns
  */
 public class World {
-    final HashMap<ChunkLocation, Chunk> chunks;
-    final HashMap<Integer, Entity> entities;
+    final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
+    final HashMap<Integer, Entity> entities = new HashMap<>();
     final String name;
-    final HashMap<BlockPosition, CompoundTag> blockEntityMeta;
+    final HashMap<BlockPosition, CompoundTag> blockEntityMeta = new HashMap<>();
     boolean hardcore;
     boolean raining;
     Dimension dimension; // used for sky color, etc
 
     public World(String name) {
         this.name = name;
-        chunks = new HashMap<>();
-        entities = new HashMap<>();
-        blockEntityMeta = new HashMap<>();
     }
 
     public String getName() {

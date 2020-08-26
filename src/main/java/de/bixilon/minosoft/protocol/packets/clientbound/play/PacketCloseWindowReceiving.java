@@ -21,7 +21,6 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketCloseWindowReceiving implements ClientboundPacket {
     byte windowId;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         this.windowId = buffer.readByte();
@@ -37,7 +36,6 @@ public class PacketCloseWindowReceiving implements ClientboundPacket {
     public void handle(PacketHandler h) {
         h.handle(this);
     }
-
 
     public byte getWindowId() {
         return windowId;

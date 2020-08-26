@@ -23,26 +23,21 @@ public class PacketUpdateHealth implements ClientboundPacket {
     int food;
     float saturation;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                health = buffer.readFloat();
-                food = buffer.readShort();
-                saturation = buffer.readFloat();
-                return true;
-            default:
-                health = buffer.readFloat();
-                food = buffer.readVarInt();
-                saturation = buffer.readFloat();
-                return true;
+        health = buffer.readFloat();
+        if (buffer.getProtocolId() < 7) {
+            food = buffer.readShort();
+        } else {
+            food = buffer.readVarInt();
         }
+        saturation = buffer.readFloat();
+        return true;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Health update. Now at %s hearts and %s food level and %s saturation", (Math.round(health * 10) / 10.0), (Math.round(food * 10) / 10.0), saturation));
+        Log.protocol(String.format("Health update. Now at %s hearts and %s food level and %s saturation", health, food, saturation));
     }
 
     @Override

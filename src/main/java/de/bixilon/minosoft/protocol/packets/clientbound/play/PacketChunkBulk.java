@@ -27,48 +27,49 @@ import java.util.HashMap;
 public class PacketChunkBulk implements ClientboundPacket {
     final HashMap<ChunkLocation, Chunk> chunkMap = new HashMap<>();
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10: {
-                short chunkCount = buffer.readShort();
-                int dataLen = buffer.readInt();
-                boolean containsSkyLight = buffer.readBoolean();
+        if (buffer.getProtocolId() < 23) {
+            short chunkCount = buffer.readShort();
+            int dataLen = buffer.readInt();
+            boolean containsSkyLight = buffer.readBoolean();
 
-                // decompress chunk data
-                InByteBuffer decompressed = Util.decompress(buffer.readBytes(dataLen), buffer.getVersion());
-
-                // chunk meta data
-                for (int i = 0; i < chunkCount; i++) {
-                    int x = buffer.readInt();
-                    int z = buffer.readInt();
-                    short sectionBitMask = buffer.readShort();
-                    short addBitMask = buffer.readShort();
-
-                    chunkMap.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
-                }
-                return true;
+            // decompress chunk data
+            InByteBuffer decompressed;
+            if (buffer.getProtocolId() < 27) {
+                decompressed = Util.decompress(buffer.readBytes(dataLen), buffer.getConnection());
+            } else {
+                decompressed = buffer;
             }
-            case VERSION_1_8: {
-                boolean containsSkyLight = buffer.readBoolean();
-                int chunks = buffer.readVarInt();
-                int[] x = new int[chunks];
-                int[] z = new int[chunks];
-                short[] sectionBitMask = new short[chunks];
-                for (int i = 0; i < chunks; i++) {
-                    x[i] = buffer.readInt();
-                    z[i] = buffer.readInt();
-                    sectionBitMask[i] = buffer.readShort();
-                }
-                for (int i = 0; i < chunks; i++) {
-                    chunkMap.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
-                }
-                return true;
+
+            // chunk meta data
+            for (int i = 0; i < chunkCount; i++) {
+                int x = buffer.readInt();
+                int z = buffer.readInt();
+                short sectionBitMask = buffer.readShort();
+                short addBitMask = buffer.readShort();
+
+                chunkMap.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
             }
+            return true;
         }
+        boolean containsSkyLight = buffer.readBoolean();
+        int chunks = buffer.readVarInt();
+        int[] x = new int[chunks];
+        int[] z = new int[chunks];
+        short[] sectionBitMask = new short[chunks];
 
-        return false;
+        //ToDo: this was still compressed in 14w28a
+
+        for (int i = 0; i < chunks; i++) {
+            x[i] = buffer.readInt();
+            z[i] = buffer.readInt();
+            sectionBitMask[i] = buffer.readShort();
+        }
+        for (int i = 0; i < chunks; i++) {
+            chunkMap.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
+        }
+        return true;
     }
 
     @Override

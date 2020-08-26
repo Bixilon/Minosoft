@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketPlayerPositionAndRotation implements ClientboundPacket {
     Location location;
     float yaw;
@@ -31,27 +30,19 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                location = buffer.readLocation();
-                yaw = buffer.readFloat();
-                pitch = buffer.readFloat();
-                onGround = buffer.readBoolean();
-                return true;
-            case VERSION_1_8:
-                location = buffer.readLocation();
-                yaw = buffer.readFloat();
-                pitch = buffer.readFloat();
-                flags = buffer.readByte();
-                return true;
-            default:
-                location = buffer.readLocation();
-                yaw = buffer.readFloat();
-                pitch = buffer.readFloat();
-                flags = buffer.readByte();
-                teleportId = buffer.readVarInt();
-                return true;
+        location = buffer.readLocation();
+        yaw = buffer.readFloat();
+        pitch = buffer.readFloat();
+        if (buffer.getProtocolId() < 6) {
+            onGround = buffer.readBoolean();
+            return true;
+        } else {
+            flags = buffer.readByte();
         }
+        if (buffer.getProtocolId() >= 79) {
+            teleportId = buffer.readVarInt();
+        }
+        return true;
     }
 
     @Override

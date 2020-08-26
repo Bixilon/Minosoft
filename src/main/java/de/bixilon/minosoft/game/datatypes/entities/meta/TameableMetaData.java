@@ -12,21 +12,18 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class TameableMetaData extends AnimalMetaData {
 
-    public TameableMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public TameableMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
-
 
     public boolean isSitting() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
@@ -34,7 +31,7 @@ public class TameableMetaData extends AnimalMetaData {
 
     public boolean isTame() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
@@ -42,7 +39,7 @@ public class TameableMetaData extends AnimalMetaData {
 
     public boolean isAngry() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue);
@@ -50,10 +47,8 @@ public class TameableMetaData extends AnimalMetaData {
 
     @Nullable
     public String getOwnerName() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return sets.getString(17, null);
+        if (protocolId < 57) { //ToDo
+            return sets.getString(17, null);
         }
         return null;
     }
@@ -61,7 +56,7 @@ public class TameableMetaData extends AnimalMetaData {
     @Nullable
     public UUID getOwnerUUID() {
         final UUID defaultValue = null;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getUUID(super.getLastDataIndex() + 2, defaultValue);

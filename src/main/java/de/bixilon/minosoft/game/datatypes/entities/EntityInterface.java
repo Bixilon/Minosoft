@@ -16,8 +16,6 @@ package de.bixilon.minosoft.game.datatypes.entities;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 
 public interface EntityInterface {
-
-
     EntityMetaData getMetaData();
 
     void setMetaData(EntityMetaData metaData);

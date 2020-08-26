@@ -12,16 +12,14 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class SkeletonHorseMetaData extends AbstractHorseMetaData {
 
-    public SkeletonHorseMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public SkeletonHorseMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     @Override
-    public HorseType getType() {
-        return HorseType.SKELETON;
+    public HorseTypes getType() {
+        return HorseTypes.SKELETON;
     }
 }

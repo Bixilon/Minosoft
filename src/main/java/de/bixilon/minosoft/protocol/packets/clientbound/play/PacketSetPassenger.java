@@ -22,7 +22,6 @@ public class PacketSetPassenger implements ClientboundPacket {
     int vehicleId;
     int[] entityIds;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         this.vehicleId = buffer.readVarInt();

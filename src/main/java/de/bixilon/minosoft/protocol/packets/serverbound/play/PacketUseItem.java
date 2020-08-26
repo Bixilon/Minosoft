@@ -13,24 +13,23 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.player.Hand;
+import de.bixilon.minosoft.game.datatypes.player.Hands;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketUseItem implements ServerboundPacket {
-    Hand hand;
+    final Hands hand;
 
-    public PacketUseItem(Hand hand) {
+    public PacketUseItem(Hands hand) {
         this.hand = hand;
     }
 
-
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_USE_ITEM));
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_USE_ITEM);
         buffer.writeVarInt(hand.getId());
         return buffer;
     }

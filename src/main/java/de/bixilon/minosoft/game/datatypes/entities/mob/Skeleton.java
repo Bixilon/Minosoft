@@ -16,17 +16,17 @@ package de.bixilon.minosoft.game.datatypes.entities.mob;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.SkeletonMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.UUID;
 
 public class Skeleton extends Mob implements MobInterface {
     SkeletonMetaData metaData;
 
-    public Skeleton(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
-        super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new SkeletonMetaData(sets, version);
+    public Skeleton(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
+        this.metaData = new SkeletonMetaData(sets, protocolId);
     }
 
     @Override
@@ -41,22 +41,18 @@ public class Skeleton extends Mob implements MobInterface {
 
     @Override
     public float getWidth() {
-        switch (metaData.getSkeletonType()) {
-            case WITHER:
-                return 0.7F;
-            default:
-                return 0.6F;
+        if (metaData.getSkeletonType() == SkeletonMetaData.SkeletonTypes.WITHER) {
+            return 0.7F;
         }
+        return 0.6F;
     }
 
     @Override
     public float getHeight() {
-        switch (metaData.getSkeletonType()) {
-            case WITHER:
-                return 2.4F;
-            default:
-                return 1.99F;
+        if (metaData.getSkeletonType() == SkeletonMetaData.SkeletonTypes.WITHER) {
+            return 2.4F;
         }
+        return 1.99F;
     }
 
     @Override

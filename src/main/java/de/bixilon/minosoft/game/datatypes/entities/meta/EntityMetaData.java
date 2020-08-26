@@ -13,27 +13,24 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.*;
-import de.bixilon.minosoft.game.datatypes.entities.Pose;
+import de.bixilon.minosoft.game.datatypes.entities.Poses;
 import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.UUID;
 
-
 public class EntityMetaData {
 
     final MetaDataHashMap sets;
-    final ProtocolVersion version;
+    final int protocolId;
 
     /*
     1.7.10: https://wiki.vg/index.php?title=Entity_metadata&oldid=5991
@@ -47,12 +44,12 @@ public class EntityMetaData {
     1.15: https://wiki.vg/index.php?title=Entity_metadata&oldid=15885
      */
 
-    public EntityMetaData(MetaDataHashMap sets, ProtocolVersion version) {
+    public EntityMetaData(MetaDataHashMap sets, int protocolId) {
         this.sets = sets;
-        this.version = version;
+        this.protocolId = protocolId;
     }
 
-    public static Object getData(EntityMetaData.Types type, InByteBuffer buffer) {
+    public static Object getData(EntityMetaDataValueTypes type, InByteBuffer buffer) {
         Object data = null;
 
         switch (type) {
@@ -121,13 +118,13 @@ public class EntityMetaData {
                 break;
             case BLOCK_ID:
                 int blockId = buffer.readVarInt();
-                data = Blocks.getBlock(blockId, buffer.getVersion());
+                data = buffer.getConnection().getMapping().getBlockById(blockId);
                 break;
             case OPT_VAR_INT:
                 data = buffer.readVarInt() - 1;
                 break;
             case VILLAGER_DATA:
-                data = new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getVersion()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
+                data = new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getProtocolId()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
@@ -152,14 +149,14 @@ public class EntityMetaData {
     }
 
     public boolean isEating() {
-        if (version.getVersionNumber() > ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId > 335) { //ToDo
             return false;
         }
         return sets.getBitMask(0, 0x10, false);
     }
 
     private boolean isSwimming() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 358) {
             return false;
         }
         return sets.getBitMask(0, 0x10, false);
@@ -187,24 +184,24 @@ public class EntityMetaData {
 
     @Nullable
     public TextComponent getNameTag() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId <= 110) { //ToDo
             return null;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId <= 335) { //ToDo
             return new TextComponent(sets.getString(2, null));
         }
         return sets.getTextComponent(2, null);
     }
 
     public boolean isCustomNameVisible() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId <= 110) { //ToDo
             return false;
         }
         return sets.getBoolean(3, false);
     }
 
     public boolean isSilent() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId <= 110) { //ToDo
             return false;
         }
         return sets.getBoolean(4, false);
@@ -212,84 +209,84 @@ public class EntityMetaData {
     }
 
     public boolean hasGravity() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId <= 204) { //ToDo
             return true;
         }
         return !sets.getBoolean(5, false);
     }
 
-    public Pose getPose() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+    public Poses getPose() {
+        if (protocolId < 461) {
             if (isSneaking()) {
-                return Pose.SNEAKING;
+                return Poses.SNEAKING;
             } else if (isSwimming()) {
-                return Pose.SWIMMING;
+                return Poses.SWIMMING;
             } else {
-                return Pose.STANDING;
+                return Poses.STANDING;
             }
         }
-        return sets.getPose(6, Pose.STANDING);
+        return sets.getPose(6, Poses.STANDING);
     }
 
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             throw new IllegalArgumentException("EntityMetaData::getLastDataIndex does not work below 1.9!");
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId == 110) { //ToDo
             return 4;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId <= 461) {
             return 5;
         }
         return 6;
     }
 
-    public enum Types {
+    public enum EntityMetaDataValueTypes {
         BYTE(0),
-        SHORT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1000)}), // got removed in 1.9
-        INT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1001)}),
-        VAR_INT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1)}),
-        FLOAT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 3), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 2)}),
-        STRING(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 3)}),
-        CHAT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 4)}),
-        OPT_CHAT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 5)}),
-        SLOT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 5), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 6)}),
-        BOOLEAN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 6), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 7)}),
-        VECTOR(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 6), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 1002)}),
-        ROTATION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 7), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 8)}),
-        POSITION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 8), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 9)}),
-        OPT_POSITION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 9), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 10)}),
-        DIRECTION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 10), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 11)}),
-        OPT_UUID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 11), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 12)}),
-        BLOCK_ID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 12), new MapSet<>(ProtocolVersion.VERSION_1_10, 1003)}),
-        OPT_BLOCK_ID(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_10, 12), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 13)}),
-        NBT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_12_2, 13), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 14)}),
-        PARTICLE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 15)}),
-        VILLAGER_DATA(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 16)}),
-        OPT_VAR_INT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 17)}),
-        POSE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 18)});
+        SHORT(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(57, 1000)}), // got removed in 1.9
+        INT(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(57, 1001)}),
+        VAR_INT(new MapSet[]{new MapSet<>(57, 1)}),
+        FLOAT(new MapSet[]{new MapSet<>(0, 3), new MapSet<>(57, 2)}),
+        STRING(new MapSet[]{new MapSet<>(0, 4), new MapSet<>(57, 3)}),
+        CHAT(new MapSet[]{new MapSet<>(57, 4)}),
+        OPT_CHAT(new MapSet[]{new MapSet<>(346, 5)}), // ToDo: when where the 1.13 changes? in 346?
+        SLOT(new MapSet[]{new MapSet<>(0, 5), new MapSet<>(346, 6)}),
+        BOOLEAN(new MapSet[]{new MapSet<>(57, 6), new MapSet<>(346, 7)}),
+        VECTOR(new MapSet[]{new MapSet<>(0, 6), new MapSet<>(57, 1002)}),
+        ROTATION(new MapSet[]{new MapSet<>(44, 7), new MapSet<>(346, 8)}),
+        POSITION(new MapSet[]{new MapSet<>(57, 8), new MapSet<>(346, 9)}),
+        OPT_POSITION(new MapSet[]{new MapSet<>(57, 9), new MapSet<>(346, 10)}),
+        DIRECTION(new MapSet[]{new MapSet<>(57, 10), new MapSet<>(346, 11)}),
+        OPT_UUID(new MapSet[]{new MapSet<>(57, 11), new MapSet<>(346, 12)}),
+        BLOCK_ID(new MapSet[]{new MapSet<>(67, 12), new MapSet<>(210, -1)}), // ToDo: test: 1.10 blockId replacement
+        OPT_BLOCK_ID(new MapSet[]{new MapSet<>(210, 12), new MapSet<>(346, 13)}),
+        NBT(new MapSet[]{new MapSet<>(318, 13), new MapSet<>(346, 14)}),
+        PARTICLE(new MapSet[]{new MapSet<>(346, 15)}),
+        VILLAGER_DATA(new MapSet[]{new MapSet<>(451, 16)}),
+        OPT_VAR_INT(new MapSet[]{new MapSet<>(459, 17)}),
+        POSE(new MapSet[]{new MapSet<>(461, 18)});
 
         final VersionValueMap<Integer> valueMap;
 
-        Types(MapSet<ProtocolVersion, Integer>[] values) {
+        EntityMetaDataValueTypes(MapSet<Integer, Integer>[] values) {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        Types(int id) {
+        EntityMetaDataValueTypes(int id) {
             valueMap = new VersionValueMap<>(id);
         }
 
-        public static Types byId(int id, ProtocolVersion version) {
-            for (Types types : values()) {
-                if (types.getId(version) == id) {
+        public static EntityMetaDataValueTypes byId(int id, int protocolId) {
+            for (EntityMetaDataValueTypes types : values()) {
+                if (types.getId(protocolId) == id) {
                     return types;
                 }
             }
             return null;
         }
 
-        public int getId(ProtocolVersion version) {
-            Integer ret = valueMap.get(version);
+        public int getId(Integer protocolId) {
+            Integer ret = valueMap.get(protocolId);
             if (ret == null) {
                 return -2;
             }
@@ -298,8 +295,8 @@ public class EntityMetaData {
     }
 
     public static class MetaDataHashMap extends HashMap<Integer, Object> {
-        public Pose getPose(int index, Pose defaultValue) {
-            return (Pose) get(index, defaultValue);
+        public Poses getPose(int index, Poses defaultValue) {
+            return (Poses) get(index, defaultValue);
         }
 
         public VillagerData getVillagerData(int index, VillagerData defaultValue) {
@@ -322,8 +319,8 @@ public class EntityMetaData {
             return (UUID) get(index, defaultValue);
         }
 
-        public Direction getDirection(int index, Direction defaultValue) {
-            return (Direction) get(index, defaultValue);
+        public Directions getDirection(int index, Directions defaultValue) {
+            return (Directions) get(index, defaultValue);
         }
 
         public BlockPosition getPosition(int index, BlockPosition defaultValue) {

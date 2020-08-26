@@ -15,58 +15,44 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketPlayerDigging implements ServerboundPacket {
     final DiggingStatus status;
     final BlockPosition position;
-    final DiggingFace face;
+    final DiggingFaces face;
 
-
-    public PacketPlayerDigging(DiggingStatus status, BlockPosition position, DiggingFace face) {
+    public PacketPlayerDigging(DiggingStatus status, BlockPosition position, DiggingFaces face) {
         this.status = status;
         this.position = position;
         this.face = face;
     }
 
-
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_DIGGING));
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeByte((byte) status.getId());
-                if (position == null) {
-                    buffer.writeInt(0);
-                    buffer.writeByte((byte) 0);
-                    buffer.writeInt(0);
-                } else {
-                    buffer.writeBlockPositionByte(position);
-                }
-                buffer.writeByte(face.getId());
-                break;
-            case VERSION_1_8:
-                buffer.writeByte((byte) status.getId());
-                if (position == null) {
-                    buffer.writeLong(0L);
-                } else {
-                    buffer.writePosition(position);
-                }
-                buffer.writeByte(face.getId());
-                break;
-            default:
-                buffer.writeVarInt(status.getId());
-                if (position == null) {
-                    buffer.writeLong(0L);
-                } else {
-                    buffer.writePosition(position);
-                }
-                buffer.writeByte(face.getId());
-                break;
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_DIGGING);
+        if (buffer.getProtocolId() < 49) { //ToDo
+            buffer.writeByte((byte) status.getId());
+        } else {
+            buffer.writeVarInt(status.getId());
         }
+
+        if (buffer.getProtocolId() < 7) {
+            if (position == null) {
+                buffer.writeInt(0);
+                buffer.writeByte((byte) 0);
+                buffer.writeInt(0);
+            } else {
+                buffer.writeBlockPositionByte(position);
+            }
+        } else {
+            buffer.writePosition(position);
+        }
+
+        buffer.writeByte(face.getId());
         return buffer;
     }
 
@@ -90,7 +76,6 @@ public class PacketPlayerDigging implements ServerboundPacket {
             this.id = id;
         }
 
-
         public static DiggingStatus byId(int id) {
             for (DiggingStatus status : values()) {
                 if (status.getId() == id) {
@@ -105,7 +90,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
         }
     }
 
-    public enum DiggingFace {
+    public enum DiggingFaces {
         BOTTOM(0),
         TOP(1),
         NORTH(2),
@@ -114,10 +99,9 @@ public class PacketPlayerDigging implements ServerboundPacket {
         EAST(5),
         SPECIAL(255);
 
-
         final byte id;
 
-        DiggingFace(int id) {
+        DiggingFaces(int id) {
             this.id = (byte) id;
         }
 

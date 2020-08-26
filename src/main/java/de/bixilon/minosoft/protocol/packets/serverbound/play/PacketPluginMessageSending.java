@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketPluginMessageSending implements ServerboundPacket {
 
@@ -29,21 +29,18 @@ public class PacketPluginMessageSending implements ServerboundPacket {
         this.data = data;
     }
 
-
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_PLUGIN_MESSAGE));
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeString(channel); // name
-                buffer.writeShort((short) data.length); // length
-                buffer.writeBytes(data); // data
-                break;
-            default:
-                buffer.writeString(channel); // name
-                buffer.writeBytes(data); // data
-                break;
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLUGIN_MESSAGE);
+        buffer.writeString(channel);
+
+        if (buffer.getProtocolId() < 29) {
+            buffer.writeShort((short) data.length);
+        } else if (buffer.getProtocolId() < 32) {
+            buffer.writeVarInt(data.length);
         }
+
+        buffer.writeBytes(data);
         return buffer;
     }
 

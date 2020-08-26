@@ -20,7 +20,6 @@ public enum GameConfiguration implements ConfigEnum {
     GENERAL_LOG_LEVEL("general.log-level"),
     CLIENT_TOKEN("account.clientToken");
 
-
     final String path;
 
     GameConfiguration(String path) {

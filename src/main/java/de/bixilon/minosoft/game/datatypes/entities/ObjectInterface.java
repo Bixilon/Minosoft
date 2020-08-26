@@ -13,6 +13,5 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-
 public interface ObjectInterface extends EntityInterface {
 }

@@ -12,17 +12,15 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class PandaMetaData extends AnimalMetaData {
 
-    public PandaMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public PandaMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public int getBreedTimer() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -30,7 +28,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public int getSneezeTimer() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -38,7 +36,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public int getEatTimer() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 3, defaultValue);
@@ -46,7 +44,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public byte getMainGene() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getByte(super.getLastDataIndex() + 4, defaultValue);
@@ -54,7 +52,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public byte getHiddenGene() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getByte(super.getLastDataIndex() + 5, defaultValue);
@@ -62,7 +60,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public boolean isSneezing() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 6, 0x02, defaultValue);
@@ -70,7 +68,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public boolean isRolling() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 6, 0x04, defaultValue);
@@ -78,7 +76,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public boolean isSitting() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 6, 0x08, defaultValue);
@@ -86,7 +84,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public boolean isOnBack() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 6, 0x10, defaultValue);

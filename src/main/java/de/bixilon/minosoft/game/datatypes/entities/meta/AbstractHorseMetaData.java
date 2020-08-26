@@ -12,23 +12,20 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class AbstractHorseMetaData extends AnimalMetaData {
 
-    public AbstractHorseMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public AbstractHorseMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
-
     private boolean isOptionBitMask(int bitMask, boolean defaultValue) {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId < 335) { //ToDo
             bitMask *= 2;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getBitMask(16, bitMask, defaultValue);
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, bitMask, defaultValue);
@@ -58,26 +55,21 @@ public class AbstractHorseMetaData extends AnimalMetaData {
         return isOptionBitMask(0x40, false);
     }
 
-    public HorseType getType() {
-        final int defaultValue = HorseType.HORSE.getId();
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return HorseType.byId(sets.getInt(19, defaultValue));
-            case VERSION_1_9_4:
-                return HorseType.byId(sets.getInt(13, defaultValue));
-            case VERSION_1_10:
-                return HorseType.byId(sets.getInt(14, defaultValue));
+    public HorseTypes getType() {
+        final int defaultValue = HorseTypes.HORSE.getId();
+        if (protocolId < 57) {
+            return HorseTypes.byId(sets.getInt(19, defaultValue));
         }
-        return HorseType.HORSE;
+        if (protocolId < 204) {
+            return HorseTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
+        }
+        return HorseTypes.byId(defaultValue);
     }
 
     @Nullable
     public String getOwnerName() {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-                return sets.getString(21, null);
+        if (protocolId < 57) { //ToDo
+            return sets.getString(21, null);
         }
         return null;
     }
@@ -85,48 +77,36 @@ public class AbstractHorseMetaData extends AnimalMetaData {
     @Nullable
     public UUID getOwnerUUID() {
         final UUID defaultValue = null;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return null;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId == 110) { //ToDo
             return sets.getUUID(15, defaultValue);
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId == 204) { //ToDo
             return sets.getUUID(16, defaultValue);
         }
         return sets.getUUID(super.getLastDataIndex() + 1, defaultValue);
     }
-
 
     @Override
     protected int getLastDataIndex() {
         return super.getLastDataIndex() + 2;
     }
 
-    public enum HorseType {
-        HORSE(0),
-        DONKEY(1),
-        MULE(2),
-        ZOMBIE(3),
-        SKELETON(4);
+    public enum HorseTypes {
+        HORSE,
+        DONKEY,
+        MULE,
+        ZOMBIE,
+        SKELETON;
 
-        final int id;
-
-        HorseType(int id) {
-            this.id = id;
-        }
-
-        public static HorseType byId(int id) {
-            for (HorseType h : values()) {
-                if (h.getId() == id) {
-                    return h;
-                }
-            }
-            return null;
+        public static HorseTypes byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

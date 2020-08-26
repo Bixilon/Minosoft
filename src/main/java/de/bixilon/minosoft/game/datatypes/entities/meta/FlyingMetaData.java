@@ -12,11 +12,9 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class FlyingMetaData extends InsentientMetaData {
 
-    public FlyingMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public FlyingMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 }

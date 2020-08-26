@@ -14,7 +14,10 @@
 package de.bixilon.minosoft.game.datatypes.entities.mob;
 
 import de.bixilon.minosoft.game.datatypes.PlayerPropertyData;
-import de.bixilon.minosoft.game.datatypes.entities.*;
+import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.game.datatypes.entities.Mob;
+import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
+import de.bixilon.minosoft.game.datatypes.entities.Poses;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
 
@@ -22,16 +25,14 @@ import java.util.UUID;
 
 public class OtherPlayer extends Mob implements MobInterface {
     final String name;
-    final UUID uuid;
-    PlayerPropertyData[] properties;
-    short currentItem;
+    final PlayerPropertyData[] properties;
+    final short currentItem;
     HumanMetaData metaData;
-    Pose status = Pose.STANDING;
+    final Poses status = Poses.STANDING;
 
-    public OtherPlayer(int entityId, String name, UUID uuid, PlayerPropertyData[] properties, Location location, Velocity velocity, short yaw, short pitch, short currentItem, HumanMetaData metaData) {
-        super(entityId, location, yaw, pitch, velocity);
+    public OtherPlayer(int entityId, String name, UUID uuid, PlayerPropertyData[] properties, Location location, int yaw, int pitch, int headYaw, short currentItem, HumanMetaData metaData) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
         this.name = name;
-        this.uuid = uuid;
         this.properties = properties;
         this.currentItem = currentItem;
         this.metaData = metaData;
@@ -39,29 +40,21 @@ public class OtherPlayer extends Mob implements MobInterface {
 
     @Override
     public float getWidth() {
-        switch (status) {
-            default:
-                return 0.6F;
-            case SLEEPING:
-                return 0.2F;
+        if (status == Poses.SLEEPING) {
+            return 0.2F;
         }
+        return 0.6F;
     }
 
     @Override
     public float getHeight() {
-        switch (status) {
-            default:
-                return 1.8F;
-            case SNEAKING:
-                return 1.5F;
-            case FLYING:
-            case SWIMMING:
-                return 0.6F;
-            case SLEEPING:
-                return 0.2F;
-        }
+        return switch (status) {
+            default -> 1.8F;
+            case SNEAKING -> 1.5F;
+            case FLYING, SWIMMING -> 0.6F;
+            case SLEEPING -> 0.2F;
+        };
     }
-
 
     @Override
     public EntityMetaData getMetaData() {
@@ -86,15 +79,11 @@ public class OtherPlayer extends Mob implements MobInterface {
         return properties;
     }
 
-    public UUID getUUID() {
-        return uuid;
-    }
-
     public short getCurrentItem() {
         return currentItem;
     }
 
-    public Pose getStatus() {
+    public Poses getStatus() {
         return status;
     }
 

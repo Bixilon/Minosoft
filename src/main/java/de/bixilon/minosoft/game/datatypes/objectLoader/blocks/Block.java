@@ -18,10 +18,10 @@ import java.util.HashSet;
 public class Block {
     final String mod;
     final String identifier;
-    final BlockRotation rotation;
+    final BlockRotations rotation;
     final HashSet<BlockProperties> properties;
 
-    public Block(String mod, String identifier, HashSet<BlockProperties> properties, BlockRotation rotation) {
+    public Block(String mod, String identifier, HashSet<BlockProperties> properties, BlockRotations rotation) {
         this.mod = mod;
         this.identifier = identifier;
         this.properties = properties;
@@ -32,10 +32,10 @@ public class Block {
         this.mod = mod;
         this.identifier = identifier;
         this.properties = properties;
-        this.rotation = BlockRotation.NONE;
+        this.rotation = BlockRotations.NONE;
     }
 
-    public Block(String mod, String identifier, BlockRotation rotation) {
+    public Block(String mod, String identifier, BlockRotations rotation) {
         this.mod = mod;
         this.identifier = identifier;
         this.properties = new HashSet<>();
@@ -46,7 +46,7 @@ public class Block {
         this.mod = mod;
         this.identifier = identifier;
         this.properties = new HashSet<>();
-        this.rotation = BlockRotation.NONE;
+        this.rotation = BlockRotations.NONE;
     }
 
     public String getMod() {
@@ -57,7 +57,7 @@ public class Block {
         return identifier;
     }
 
-    public BlockRotation getRotation() {
+    public BlockRotations getRotation() {
         return rotation;
     }
 
@@ -68,7 +68,7 @@ public class Block {
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
-        if (rotation != BlockRotation.NONE) {
+        if (rotation != BlockRotations.NONE) {
             out.append(" (");
             out.append("rotation=");
             out.append(getRotation());

@@ -15,10 +15,10 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketTabCompleteSending implements ServerboundPacket {
     final String text;
@@ -37,7 +37,6 @@ public class PacketTabCompleteSending implements ServerboundPacket {
         assumeCommand = false;
     }
 
-
     public PacketTabCompleteSending(String text, boolean assumeCommand, BlockPosition position) {
         this.text = text;
         this.position = position;
@@ -45,34 +44,19 @@ public class PacketTabCompleteSending implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_TAB_COMPLETE));
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeString(text);
-                break;
-            case VERSION_1_8:
-                buffer.writeString(text);
-                if (position == null) {
-                    buffer.writeBoolean(false);
-                } else {
-                    buffer.writeBoolean(true);
-                    buffer.writePosition(position);
-                }
-                break;
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                buffer.writeString(text);
-                buffer.writeBoolean(assumeCommand);
-                if (position == null) {
-                    buffer.writeBoolean(false);
-                } else {
-                    buffer.writeBoolean(true);
-                    buffer.writePosition(position);
-                }
-                break;
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_TAB_COMPLETE);
+        buffer.writeString(text);
+        if (buffer.getProtocolId() >= 59) {
+            buffer.writeBoolean(assumeCommand);
+        }
+        if (buffer.getProtocolId() >= 37) {
+            if (position == null) {
+                buffer.writeBoolean(false);
+            } else {
+                buffer.writeBoolean(true);
+                buffer.writePosition(position);
+            }
         }
         return buffer;
     }

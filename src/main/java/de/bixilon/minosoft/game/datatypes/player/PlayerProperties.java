@@ -24,9 +24,9 @@ public enum PlayerProperties {
     }
 
     public static PlayerProperties byName(String name) {
-        for (PlayerProperties g : values()) {
-            if (g.getName().equals(name)) {
-                return g;
+        for (PlayerProperties property : values()) {
+            if (property.getName().equals(name)) {
+                return property;
             }
         }
         return null;

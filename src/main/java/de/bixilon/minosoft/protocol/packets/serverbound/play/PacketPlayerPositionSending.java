@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketPlayerPositionSending implements ServerboundPacket {
     final double x;
@@ -42,25 +42,16 @@ public class PacketPlayerPositionSending implements ServerboundPacket {
         this.onGround = onGround;
     }
 
-
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_POSITION));
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeDouble(x);
-                buffer.writeDouble(feetY);
-                buffer.writeDouble(headY);
-                buffer.writeDouble(z);
-                buffer.writeBoolean(onGround);
-                break;
-            default:
-                buffer.writeDouble(x);
-                buffer.writeDouble(feetY);
-                buffer.writeDouble(z);
-                buffer.writeBoolean(onGround);
-                break;
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_POSITION);
+        buffer.writeDouble(x);
+        buffer.writeDouble(feetY);
+        if (buffer.getProtocolId() < 10) {
+            buffer.writeDouble(headY);
         }
+        buffer.writeDouble(z);
+        buffer.writeBoolean(onGround);
         return buffer;
     }
 

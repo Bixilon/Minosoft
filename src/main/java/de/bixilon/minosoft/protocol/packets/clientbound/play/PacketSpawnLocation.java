@@ -22,17 +22,14 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketSpawnLocation implements ClientboundPacket {
     BlockPosition location;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                location = new BlockPosition(buffer.readInt(), (short) buffer.readInt(), buffer.readInt());
-                return true;
-            default:
-                location = buffer.readPosition();
-                return true;
+        if (buffer.getProtocolId() < 6) {
+            location = buffer.readBlockPositionInteger();
+            return true;
         }
+        location = buffer.readPosition();
+        return true;
     }
 
     @Override

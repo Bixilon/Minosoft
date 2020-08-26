@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketCraftingBookData implements ServerboundPacket {
     final BookDataStatus action;
@@ -54,39 +54,27 @@ public class PacketCraftingBookData implements ServerboundPacket {
         this.blastingBookOpen = blastingBookOpen;
     }
 
-
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_RECIPE_BOOK_DATA));
-        switch (version) {
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                buffer.writeVarInt(action.getId());
-                switch (action) {
-                    case DISPLAY_RECIPE:
-                        buffer.writeVarInt(recipeId);
-                        break;
-                    case CRAFTING_BOOK_STATUS:
-                        buffer.writeBoolean(craftingBookOpen);
-                        buffer.writeBoolean(craftingFilter);
-                        break;
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_RECIPE_BOOK_DATA);
+        if (buffer.getProtocolId() < 333) {
+            buffer.writeInt(action.getId());
+        } else {
+            buffer.writeVarInt(action.getId());
+        }
+
+        switch (action) {
+            case DISPLAY_RECIPE -> buffer.writeVarInt(recipeId);
+            case CRAFTING_BOOK_STATUS -> {
+                buffer.writeBoolean(craftingBookOpen);
+                buffer.writeBoolean(craftingFilter);
+                if (buffer.getProtocolId() >= 451) {
+                    buffer.writeBoolean(blastingBookOpen);
+                    buffer.writeBoolean(blastingFilter);
+                    buffer.writeBoolean(smokingBookOpen);
+                    buffer.writeBoolean(smokingFilter);
                 }
-                break;
-            default:
-                buffer.writeVarInt(action.getId());
-                switch (action) {
-                    case DISPLAY_RECIPE:
-                        buffer.writeVarInt(recipeId);
-                        break;
-                    case CRAFTING_BOOK_STATUS:
-                        buffer.writeBoolean(craftingBookOpen);
-                        buffer.writeBoolean(craftingFilter);
-                        buffer.writeBoolean(blastingBookOpen);
-                        buffer.writeBoolean(blastingFilter);
-                        buffer.writeBoolean(smokingBookOpen);
-                        buffer.writeBoolean(smokingFilter);
-                        break;
-                }
+            }
         }
         return buffer;
     }
@@ -94,12 +82,8 @@ public class PacketCraftingBookData implements ServerboundPacket {
     @Override
     public void log() {
         switch (action) {
-            case DISPLAY_RECIPE:
-                Log.protocol(String.format("Sending crafting book status (action=%s, recipeId=%d)", action, recipeId));
-                break;
-            case CRAFTING_BOOK_STATUS:
-                Log.protocol(String.format("Sending crafting book status (action=%s, craftingBookOpen=%s, craftingFilter=%s)", action, craftingBookOpen, craftingFilter));
-                break;
+            case DISPLAY_RECIPE -> Log.protocol(String.format("Sending crafting book status (action=%s, recipeId=%d)", action, recipeId));
+            case CRAFTING_BOOK_STATUS -> Log.protocol(String.format("Sending crafting book status (action=%s, craftingBookOpen=%s, craftingFilter=%s)", action, craftingBookOpen, craftingFilter));
         }
     }
 
@@ -108,7 +92,6 @@ public class PacketCraftingBookData implements ServerboundPacket {
         CRAFTING_BOOK_STATUS(1);
 
         final int id;
-
 
         BookDataStatus(int id) {
             this.id = id;

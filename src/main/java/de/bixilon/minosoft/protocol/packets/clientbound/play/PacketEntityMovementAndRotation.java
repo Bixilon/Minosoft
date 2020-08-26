@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketEntityMovementAndRotation implements ClientboundPacket {
     int entityId;
     RelativeLocation location;
@@ -29,28 +28,19 @@ public class PacketEntityMovementAndRotation implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                this.entityId = buffer.readInt();
-                this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                this.yaw = buffer.readAngle();
-                this.pitch = buffer.readAngle();
-                return true;
-            case VERSION_1_8:
-                this.entityId = buffer.readVarInt();
-                this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                this.yaw = buffer.readAngle();
-                this.pitch = buffer.readAngle();
-                onGround = buffer.readBoolean();
-                return true;
-            default:
-                this.entityId = buffer.readVarInt();
-                this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
-                this.yaw = buffer.readAngle();
-                this.pitch = buffer.readAngle();
-                this.onGround = buffer.readBoolean();
-                return true;
+        this.entityId = buffer.readEntityId();
+
+        if (buffer.getProtocolId() < 100) {
+            this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
+        } else {
+            this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
         }
+        this.yaw = buffer.readAngle();
+        this.pitch = buffer.readAngle();
+        if (buffer.getProtocolId() >= 22) {
+            onGround = buffer.readBoolean();
+        }
+        return true;
     }
 
     @Override

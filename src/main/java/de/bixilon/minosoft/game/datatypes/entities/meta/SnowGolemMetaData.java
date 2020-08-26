@@ -12,20 +12,18 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class SnowGolemMetaData extends GolemMetaData {
 
-    public SnowGolemMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public SnowGolemMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public boolean hasNoPumpkinHead() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId <= 315) { // ToDo
             return sets.getBitMask(super.getLastDataIndex() + 1, 0x10, defaultValue);
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x1, defaultValue);

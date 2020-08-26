@@ -14,34 +14,27 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketResourcePackStatus implements ServerboundPacket {
     final String hash;
-    final ResourcePackStatus status;
+    final ResourcePackStates status;
 
-    public PacketResourcePackStatus(String hash, ResourcePackStatus status) {
+    public PacketResourcePackStatus(String hash, ResourcePackStates status) {
         this.hash = hash;
         this.status = status;
     }
 
-
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_RESOURCE_PACK_STATUS));
-        switch (version) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-                buffer.writeString(hash);
-                buffer.writeVarInt(status.getId());
-                break;
-            default:
-                buffer.writeVarInt(status.getId());
-                break;
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_RESOURCE_PACK_STATUS);
+        if (buffer.getProtocolId() < 204) {
+            buffer.writeString(hash);
         }
+        buffer.writeVarInt(status.getId());
         return buffer;
     }
 
@@ -50,7 +43,7 @@ public class PacketResourcePackStatus implements ServerboundPacket {
         Log.protocol(String.format("Sending resource pack status (status=%s, hash=%s)", status, hash));
     }
 
-    public enum ResourcePackStatus {
+    public enum ResourcePackStates {
         SUCCESSFULLY(0),
         DECLINED(1),
         FAILED_DOWNLOAD(2),
@@ -58,7 +51,7 @@ public class PacketResourcePackStatus implements ServerboundPacket {
 
         final int id;
 
-        ResourcePackStatus(int id) {
+        ResourcePackStates(int id) {
             this.id = id;
         }
 

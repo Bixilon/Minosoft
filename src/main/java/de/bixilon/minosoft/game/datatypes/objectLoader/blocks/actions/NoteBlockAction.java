@@ -41,9 +41,9 @@ public class NoteBlockAction implements BlockAction {
         }
 
         public static Instruments byId(int id) {
-            for (Instruments i : values()) {
-                if (i.getId() == id) {
-                    return i;
+            for (Instruments instrument : values()) {
+                if (instrument.getId() == id) {
+                    return instrument;
                 }
             }
             return null;

@@ -13,36 +13,31 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.EntityRotation;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class ArmorStandMetaData extends LivingMetaData {
 
-    public ArmorStandMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public ArmorStandMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
-
 
     public boolean isSmall() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 33) {
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
     }
 
     public boolean hasGravity() {
-        switch (version) {
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-                return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, super.hasGravity());
+        if (protocolId < 204) { //ToDo
+            return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, super.hasGravity());
         }
         return super.hasGravity();
     }
 
     public boolean hasArms() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 33) {
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
@@ -50,7 +45,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public boolean removeBasePlate() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 33) {
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x08, defaultValue);
@@ -58,7 +53,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public boolean hasMarker() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 33) {
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x10, defaultValue);
@@ -66,7 +61,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public EntityRotation getHeadRotation() {
         final EntityRotation defaultValue = new EntityRotation(0, 0, 0);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 33) {
             return defaultValue;
         }
         return sets.getRotation(super.getLastDataIndex() + 2, defaultValue);
@@ -74,7 +69,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public EntityRotation getBodyRotation() {
         final EntityRotation defaultValue = new EntityRotation(0, 0, 0);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 33) {
             return defaultValue;
         }
         return sets.getRotation(super.getLastDataIndex() + 3, defaultValue);
@@ -82,7 +77,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public EntityRotation getLeftArmRotation() {
         final EntityRotation defaultValue = new EntityRotation(-10, 0, -10);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 33) {
             return defaultValue;
         }
         return sets.getRotation(super.getLastDataIndex() + 4, defaultValue);
@@ -90,7 +85,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public EntityRotation getRightArmRotation() {
         final EntityRotation defaultValue = new EntityRotation(-15, 0, 10);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 33) {
             return defaultValue;
         }
         return sets.getRotation(super.getLastDataIndex() + 5, defaultValue);
@@ -98,7 +93,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public EntityRotation getLeftLegRotation() {
         final EntityRotation defaultValue = new EntityRotation(-1, 0, -1);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 33) {
             return defaultValue;
         }
         return sets.getRotation(super.getLastDataIndex() + 6, defaultValue);
@@ -106,7 +101,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public EntityRotation getRightLegRotation() {
         final EntityRotation defaultValue = new EntityRotation(1, 0, 1);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 33) {
             return defaultValue;
         }
         return sets.getRotation(super.getLastDataIndex() + 7, defaultValue);

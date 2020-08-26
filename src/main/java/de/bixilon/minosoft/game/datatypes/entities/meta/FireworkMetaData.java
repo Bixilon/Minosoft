@@ -13,20 +13,19 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import javax.annotation.Nullable;
 
 public class FireworkMetaData extends EntityMetaData {
 
-    public FireworkMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public FireworkMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     @Nullable
     public Slot getInfo() {
         final Slot defaultValue = null;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getSlot(8, defaultValue);
         }
         return sets.getSlot(super.getLastDataIndex() + 1, defaultValue);
@@ -34,7 +33,7 @@ public class FireworkMetaData extends EntityMetaData {
 
     public int getEntityIdOfUser() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 316) {
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -42,7 +41,7 @@ public class FireworkMetaData extends EntityMetaData {
 
     public boolean wasShotFromAngle() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 440) {
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
@@ -50,10 +49,10 @@ public class FireworkMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 316) {
             return super.getLastDataIndex() + 1;
         }
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 440) {
             return super.getLastDataIndex() + 2;
         }
         return super.getLastDataIndex() + 3;

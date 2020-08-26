@@ -22,80 +22,51 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public class PacketSpawnMob implements ClientboundPacket {
     Entity entity;
+    Velocity velocity;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-            case VERSION_1_8: {
-                int entityId = buffer.readVarInt();
-                Class<? extends Entity> type = Entities.byId(buffer.readByte(), buffer.getVersion());
-                Location location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-                short yaw = buffer.readAngle();
-                short pitch = buffer.readAngle();
-                int headYaw = buffer.readAngle();
-                Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-
-                assert type != null;
-                try {
-                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, EntityMetaData.MetaDataHashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
-                    return true;
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
-                    e.printStackTrace();
-                }
-            }
-            return false;
-            case VERSION_1_9_4:
-            case VERSION_1_10: {
-                int entityId = buffer.readVarInt();
-                UUID uuid = buffer.readUUID();
-                Class<? extends Entity> type = Entities.byId(buffer.readByte(), buffer.getVersion());
-                Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
-                short yaw = buffer.readAngle();
-                short pitch = buffer.readAngle();
-                int headYaw = buffer.readAngle();
-                Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-
-                assert type != null;
-                try {
-                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, EntityMetaData.MetaDataHashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, buffer.readMetaData(), buffer.getVersion());
-                    return true;
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
-                    e.printStackTrace();
-                }
-                return false;
-            }
-            default: {
-                int entityId = buffer.readVarInt();
-                UUID uuid = buffer.readUUID();
-                Class<? extends Entity> type = Entities.byId(buffer.readVarInt(), buffer.getVersion());
-                Location location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
-                short yaw = buffer.readAngle();
-                short pitch = buffer.readAngle();
-                int headYaw = buffer.readAngle();
-                Velocity velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-
-
-                EntityMetaData.MetaDataHashMap mataData = null;
-                if (buffer.getVersion().getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
-                    mataData = buffer.readMetaData();
-                }
-                try {
-                    entity = type.getConstructor(int.class, Location.class, short.class, short.class, Velocity.class, EntityMetaData.MetaDataHashMap.class, ProtocolVersion.class).newInstance(entityId, location, yaw, pitch, velocity, mataData, buffer.getVersion());
-                    return true;
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
-                    e.printStackTrace();
-                }
-                return false;
-            }
+        int entityId = buffer.readVarInt();
+        UUID uuid = null;
+        if (buffer.getProtocolId() >= 49) {
+            uuid = buffer.readUUID();
         }
+        int type;
+        if (buffer.getProtocolId() < 301) {
+            type = buffer.readByte();
+        } else {
+            type = buffer.readVarInt();
+        }
+        Class<? extends Entity> typeClass = Entities.getClassByIdentifier(buffer.getConnection().getMapping().getEntityIdentifierById(type));
+        Location location;
+        if (buffer.getProtocolId() < 100) {
+            location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
+        } else {
+            location = buffer.readLocation();
+        }
+        short yaw = buffer.readAngle();
+        short pitch = buffer.readAngle();
+        short headYaw = buffer.readAngle();
+        velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+
+        EntityMetaData.MetaDataHashMap metaData = null;
+        if (buffer.getProtocolId() < 550) {
+            metaData = buffer.readMetaData();
+        }
+
+        try {
+            entity = typeClass.getConstructor(int.class, UUID.class, Location.class, short.class, short.class, short.class, EntityMetaData.MetaDataHashMap.class, int.class).newInstance(entityId, uuid, location, yaw, pitch, headYaw, metaData, buffer.getProtocolId());
+            return true;
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
@@ -103,12 +74,17 @@ public class PacketSpawnMob implements ClientboundPacket {
         Log.protocol(String.format("Mob spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity.getIdentifier()));
     }
 
-    public Entity getMob() {
+    public Entity getEntity() {
         return entity;
+    }
+
+    public Velocity getVelocity() {
+        return velocity;
     }
 
     @Override
     public void handle(PacketHandler h) {
         h.handle(this);
     }
+
 }

@@ -20,26 +20,21 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.Arrays;
 
-
 public class PacketDestroyEntity implements ClientboundPacket {
     int[] entityIds;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                this.entityIds = new int[buffer.readByte()];
-                for (int i = 0; i < entityIds.length; i++) {
-                    entityIds[i] = buffer.readInt();
-                }
-                return true;
-            default:
-                this.entityIds = new int[buffer.readVarInt()];
-                for (int i = 0; i < entityIds.length; i++) {
-                    entityIds[i] = buffer.readVarInt();
-                }
-                return true;
+        if (buffer.getProtocolId() < 7) {
+            this.entityIds = new int[buffer.readByte()];
+        } else {
+            this.entityIds = new int[buffer.readVarInt()];
         }
+
+        for (int i = 0; i < entityIds.length; i++) {
+            entityIds[i] = buffer.readEntityId();
+        }
+        return true;
     }
 
     @Override
@@ -50,7 +45,6 @@ public class PacketDestroyEntity implements ClientboundPacket {
     public int[] getEntityIds() {
         return entityIds;
     }
-
 
     @Override
     public void handle(PacketHandler h) {

@@ -13,20 +13,19 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import javax.annotation.Nullable;
 
 public class ItemMetaData extends EntityMetaData {
 
-    public ItemMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public ItemMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     @Nullable
     public Slot getSlot() {
         final Slot defaultValue = null;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getSlot(10, defaultValue);
         }
         return sets.getSlot(super.getLastDataIndex() + 1, defaultValue);

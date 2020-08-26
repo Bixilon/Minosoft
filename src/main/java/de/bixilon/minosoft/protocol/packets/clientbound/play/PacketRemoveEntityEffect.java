@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffect;
-import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffects;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -24,19 +23,12 @@ public class PacketRemoveEntityEffect implements ClientboundPacket {
     int entityId;
     MobEffect effect;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                entityId = buffer.readInt();
-                effect = MobEffects.byId(buffer.readByte(), buffer.getVersion());
-                return true;
-            default:
-                entityId = buffer.readVarInt();
-                effect = MobEffects.byId(buffer.readByte(), buffer.getVersion());
-                return true;
-        }
+        this.entityId = buffer.readEntityId();
+
+        effect = buffer.getConnection().getMapping().getMobEffectById(buffer.readByte());
+        return true;
     }
 
     @Override

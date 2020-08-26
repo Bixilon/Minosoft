@@ -14,18 +14,13 @@
 package de.bixilon.minosoft.game.datatypes.objectLoader.entities;
 
 import com.google.common.collect.HashBiMap;
-import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.entities.mob.*;
 import de.bixilon.minosoft.game.datatypes.entities.objects.*;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
-import java.util.HashMap;
 
 public class Entities {
 
-    static HashBiMap<String, Class<? extends Entity>> entityClassMap = HashBiMap.create();
-    static HashMap<ProtocolVersion, HashBiMap<Integer, String>> entityMapping = new HashMap<>();
+    static final HashBiMap<String, Class<? extends Entity>> entityClassMap = HashBiMap.create();
 
     static {
         registerEntityClass("minecraft:item", ItemStack.class);
@@ -76,7 +71,7 @@ public class Entities {
         registerEntityClass("minecraft:zombie", Zombie.class);
         registerEntityClass("minecraft:slime", Slime.class);
         registerEntityClass("minecraft:ghast", Ghast.class);
-        registerEntityClass("minecraft:zombie_pigman", ZombiePigman.class);
+        registerEntityClass("minecraft:zombified_piglin", ZombifiedPiglin.class);
         registerEntityClass("minecraft:enderman", Enderman.class);
         registerEntityClass("minecraft:cave_spider", CaveSpider.class);
         registerEntityClass("minecraft:silverfish", Silverfish.class);
@@ -130,6 +125,11 @@ public class Entities {
         registerEntityClass("minecraft:pillager", Pillager.class);
         registerEntityClass("minecraft:ravager", Ravager.class);
         registerEntityClass("minecraft:bee", Bee.class);
+        registerEntityClass("minecraft:strider", Strider.class);
+        registerEntityClass("minecraft:hoglin", Hoglin.class);
+        registerEntityClass("minecraft:zoglin", Zoglin.class);
+        registerEntityClass("minecraft:piglin", Piglin.class);
+        registerEntityClass("minecraft:piglin_brute", PiglinBrute.class);
 
         // not a thing anymore
         registerEntityClass("minecraft:falling_dragon_Egg", FallingDragonEgg.class);
@@ -141,28 +141,11 @@ public class Entities {
         entityClassMap.put(identifier, clazz);
     }
 
-
-    public static Class<? extends Entity> byId(int id, ProtocolVersion version) {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            version = ProtocolVersion.VERSION_1_12_2;
-        }
-        return getClassByIdentifier(entityMapping.get(version).get(id));
-    }
-
     public static String getIdentifierByClass(Class<? extends Entity> clazz) {
         return entityClassMap.inverse().get(clazz);
     }
 
-
     public static Class<? extends Entity> getClassByIdentifier(String identifier) {
         return entityClassMap.get(identifier);
-    }
-
-    public static void load(String mod, JsonObject json, ProtocolVersion version) {
-        HashBiMap<Integer, String> versionMapping = HashBiMap.create();
-        for (String identifierName : json.keySet()) {
-            versionMapping.put(json.getAsJsonObject(identifierName).get("id").getAsInt(), mod + ":" + identifierName);
-        }
-        entityMapping.put(version, versionMapping);
     }
 }

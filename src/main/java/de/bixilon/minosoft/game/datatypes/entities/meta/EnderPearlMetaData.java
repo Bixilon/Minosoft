@@ -13,20 +13,19 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
 
 public class EnderPearlMetaData extends ItemedThrowableMetaData {
 
-    public EnderPearlMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public EnderPearlMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     @Override
     public Slot getItem() {
         Slot superSlot = super.getItem();
         if (superSlot == null) {
-            return new Slot(Items.getItem("minecraft", "ender_pearl"));
+            return new Slot(new Item("minecraft", "ender_pearl"));
         }
         return superSlot;
     }

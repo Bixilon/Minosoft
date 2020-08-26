@@ -17,7 +17,8 @@ import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -26,10 +27,12 @@ import java.util.UUID;
 
 public class OutByteBuffer {
     final ArrayList<Byte> bytes = new ArrayList<>();
-    final ProtocolVersion version;
+    final Connection connection;
+    final int protocolId;
 
-    public OutByteBuffer(ProtocolVersion version) {
-        this.version = version;
+    public OutByteBuffer(Connection connection) {
+        this.connection = connection;
+        this.protocolId = connection.getVersion().getProtocolVersion();
     }
 
     public static void writeByte(byte b, ArrayList<Byte> write) {
@@ -57,6 +60,15 @@ public class OutByteBuffer {
         for (byte value : b) {
             bytes.add(value);
         }
+    }
+
+    public void writeByteArray(byte[] data) {
+        if (protocolId < 19) {
+            writeShort((short) data.length);
+        } else {
+            writeVarInt(data.length);
+        }
+        writeBytes(data);
     }
 
     public void writeBoolean(boolean b) {
@@ -139,10 +151,6 @@ public class OutByteBuffer {
         writeInt((int) (d * 32.0D));
     }
 
-    public void writeFixedPointNumberByte(double d) {
-        writeInt((int) (d * 32.0D));
-    }
-
     public ArrayList<Byte> getBytes() {
         return bytes;
     }
@@ -151,12 +159,16 @@ public class OutByteBuffer {
         writeString(j.toString());
     }
 
-    public void writePosition(BlockPosition location) {
-        if (version.getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            writeLong((((long) (location.getX() & 0x3FFFFFF) << 38) | ((long) (location.getZ() & 0x3FFFFFF) << 12) | (long) (location.getY() & 0xFFF)));
-        } else {
-            writeLong((((long) location.getX() & 0x3FFFFFF) << 38) | (((long) location.getZ() & 0x3FFFFFF)) | ((long) location.getY() & 0xFFF) << 26);
+    public void writePosition(BlockPosition position) {
+        if (position == null) {
+            writeLong(0L);
+            return;
         }
+        if (protocolId < 440) {
+            writeLong((((long) position.getX() & 0x3FFFFFF) << 38) | (((long) position.getZ() & 0x3FFFFFF)) | ((long) position.getY() & 0xFFF) << 26);
+            return;
+        }
+        writeLong((((long) (position.getX() & 0x3FFFFFF) << 38) | ((long) (position.getZ() & 0x3FFFFFF) << 12) | (long) (position.getY() & 0xFFF)));
     }
 
     public void writeTextComponent(TextComponent component) {
@@ -164,31 +176,23 @@ public class OutByteBuffer {
     }
 
     public void writeSlot(Slot slot) {
-        switch (version) {
-            case VERSION_1_7_10:
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                if (slot == null) {
-                    writeShort((short) -1);
-                    return;
-                }
-                writeShort((short) slot.getItemId(version));
-                writeByte((byte) slot.getItemCount());
-                writeShort(slot.getItemMetadata());
-                writeNBT(slot.getNbt());
-                break;
-            default:
-                if (slot == null) {
-                    writeBoolean(false);
-                    return;
-                }
-                writeVarInt(slot.getItemId(version));
-                writeByte((byte) slot.getItemCount());
-                writeNBT(slot.getNbt());
+        if (protocolId < 402) {
+            if (slot == null) {
+                writeShort((short) -1);
+                return;
+            }
+            writeShort((short) connection.getMapping().getItemId(slot.getItem()));
+            writeByte((byte) slot.getItemCount());
+            writeShort(slot.getItemMetadata());
+            writeNBT(slot.getNbt());
         }
+        if (slot == null) {
+            writeBoolean(false);
+            return;
+        }
+        writeVarInt(connection.getMapping().getItemId(slot.getItem()));
+        writeByte((byte) slot.getItemCount());
+        writeNBT(slot.getNbt());
     }
 
     void writeNBT(CompoundTag nbt) {
@@ -200,18 +204,6 @@ public class OutByteBuffer {
         for (byte b : s.getBytes(StandardCharsets.UTF_8)) {
             bytes.add(b);
         }
-    }
-
-    public void writeBlockPositionInteger(BlockPosition pos) {
-        writeInt(pos.getX());
-        writeInt(pos.getY());
-        writeInt(pos.getZ());
-    }
-
-    public void writeBlockPositionShort(BlockPosition pos) {
-        writeInt(pos.getX());
-        writeShort((short) pos.getY());
-        writeInt(pos.getZ());
     }
 
     public void writeBlockPositionByte(BlockPosition pos) {
@@ -237,6 +229,18 @@ public class OutByteBuffer {
     public void writeLongs(long[] data) {
         for (long long_long : data) {
             writeLong(long_long);
+        }
+    }
+
+    public int getProtocolId() {
+        return protocolId;
+    }
+
+    public void writeEntityId(int entityId) {
+        if (protocolId < 7) {
+            writeInt(entityId);
+        } else {
+            writeVarInt(entityId);
         }
     }
 }

@@ -15,17 +15,14 @@ package de.bixilon.minosoft.game.datatypes.objectLoader.blocks;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.util.HashMap;
 import java.util.HashSet;
 
 public class Blocks {
-    public static Block nullBlock;
-    static HashSet<Block> blockList = new HashSet<>();
-    static HashMap<ProtocolVersion, HashBiMap<Integer, Block>> blockMap = new HashMap<>(); // version -> (protocolId > block)
-    static HashMap<String, HashMap<String, BlockProperties>> propertiesMapping = new HashMap<>();
-    static HashMap<String, BlockRotation> rotationMapping = new HashMap<>();
+    public static final Block nullBlock = new Block("minecraft", "air");
+    static final HashMap<String, HashMap<String, BlockProperties>> propertiesMapping = new HashMap<>();
+    static final HashMap<String, BlockRotations> rotationMapping = new HashMap<>();
 
     static {
         HashMap<String, BlockProperties> propertyHashMap;
@@ -115,6 +112,12 @@ public class Blocks {
         propertiesMapping.put("note", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
+        for (int i = 0; i <= 4; i++) {
+            propertyHashMap.put(String.valueOf(i), BlockProperties.valueOf(String.format("CHARGES_%d", i)));
+        }
+        propertiesMapping.put("charges", propertyHashMap);
+
+        propertyHashMap = new HashMap<>();
         propertyHashMap.put("0", BlockProperties.STAGE_0);
         propertyHashMap.put("1", BlockProperties.STAGE_1);
         propertiesMapping.put("stage", propertyHashMap);
@@ -122,6 +125,8 @@ public class Blocks {
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperties.EAST);
         propertyHashMap.put("up", BlockProperties.EAST_UP);
+        propertyHashMap.put("low", BlockProperties.EAST_LOW);
+        propertyHashMap.put("tall", BlockProperties.EAST_TALL);
         propertyHashMap.put("side", BlockProperties.EAST_SIDE);
         propertyHashMap.put("false", BlockProperties.NOT_EAST);
         propertyHashMap.put("none", BlockProperties.EAST_NONE);
@@ -130,6 +135,8 @@ public class Blocks {
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperties.WEST);
         propertyHashMap.put("up", BlockProperties.WEST_UP);
+        propertyHashMap.put("low", BlockProperties.WEST_LOW);
+        propertyHashMap.put("tall", BlockProperties.WEST_TALL);
         propertyHashMap.put("side", BlockProperties.WEST_SIDE);
         propertyHashMap.put("false", BlockProperties.NOT_WEST);
         propertyHashMap.put("none", BlockProperties.WEST_NONE);
@@ -138,6 +145,8 @@ public class Blocks {
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperties.SOUTH);
         propertyHashMap.put("up", BlockProperties.SOUTH_UP);
+        propertyHashMap.put("low", BlockProperties.SOUTH_LOW);
+        propertyHashMap.put("tall", BlockProperties.SOUTH_TALL);
         propertyHashMap.put("side", BlockProperties.SOUTH_SIDE);
         propertyHashMap.put("false", BlockProperties.NOT_SOUTH);
         propertyHashMap.put("none", BlockProperties.SOUTH_NONE);
@@ -146,6 +155,8 @@ public class Blocks {
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperties.NORTH);
         propertyHashMap.put("up", BlockProperties.NORTH_UP);
+        propertyHashMap.put("low", BlockProperties.NORTH_LOW);
+        propertyHashMap.put("tall", BlockProperties.NORTH_TALL);
         propertyHashMap.put("side", BlockProperties.NORTH_SIDE);
         propertyHashMap.put("false", BlockProperties.NOT_NORTH);
         propertyHashMap.put("none", BlockProperties.NORTH_NONE);
@@ -155,7 +166,6 @@ public class Blocks {
         propertyHashMap.put("true", BlockProperties.SNOWY);
         propertyHashMap.put("false", BlockProperties.NOT_SNOWY);
         propertiesMapping.put("snowy", propertyHashMap);
-
 
         propertyHashMap = new HashMap<>();
         propertyHashMap.put("true", BlockProperties.UP);
@@ -406,54 +416,49 @@ public class Blocks {
         propertyHashMap.put("ascending_south", BlockProperties.ASCENDING_SOUTH);
         propertiesMapping.put("shape", propertyHashMap);
 
-        rotationMapping.put("0", BlockRotation.SOUTH);
-        rotationMapping.put("1", BlockRotation.SOUTH_SOUTH_WEST);
-        rotationMapping.put("2", BlockRotation.SOUTH_WEST);
-        rotationMapping.put("3", BlockRotation.WEST_SOUTH_WEST);
-        rotationMapping.put("4", BlockRotation.WEST);
-        rotationMapping.put("5", BlockRotation.WEST_NORTH_WEST);
-        rotationMapping.put("6", BlockRotation.NORTH_WEST);
-        rotationMapping.put("7", BlockRotation.NORTH_NORTH_WEST);
-        rotationMapping.put("8", BlockRotation.NORTH);
-        rotationMapping.put("9", BlockRotation.NORTH_NORTH_EAST);
-        rotationMapping.put("10", BlockRotation.NORTH_EAST);
-        rotationMapping.put("11", BlockRotation.EAST_NORTH_EAST);
-        rotationMapping.put("12", BlockRotation.EAST);
-        rotationMapping.put("13", BlockRotation.EAST_SOUTH_EAST);
-        rotationMapping.put("14", BlockRotation.SOUTH_EAST);
-        rotationMapping.put("15", BlockRotation.SOUTH_SOUTH_EAST);
-        rotationMapping.put("south", BlockRotation.SOUTH);
-        rotationMapping.put("east", BlockRotation.EAST);
-        rotationMapping.put("north", BlockRotation.NONE);
-        rotationMapping.put("west", BlockRotation.WEST);
-        rotationMapping.put("up", BlockRotation.UP);
-        rotationMapping.put("down", BlockRotation.DOWN);
-        rotationMapping.put("ascending_east", BlockRotation.ASCENDING_EAST);
-        rotationMapping.put("ascending_west", BlockRotation.ASCENDING_WEST);
-        rotationMapping.put("ascending_north", BlockRotation.ASCENDING_NORTH);
-        rotationMapping.put("ascending_south", BlockRotation.ASCENDING_SOUTH);
-        rotationMapping.put("north_south", BlockRotation.NORTH_SOUTH);
-        rotationMapping.put("east_west", BlockRotation.EAST_WEST);
+        rotationMapping.put("0", BlockRotations.SOUTH);
+        rotationMapping.put("1", BlockRotations.SOUTH_SOUTH_WEST);
+        rotationMapping.put("2", BlockRotations.SOUTH_WEST);
+        rotationMapping.put("3", BlockRotations.WEST_SOUTH_WEST);
+        rotationMapping.put("4", BlockRotations.WEST);
+        rotationMapping.put("5", BlockRotations.WEST_NORTH_WEST);
+        rotationMapping.put("6", BlockRotations.NORTH_WEST);
+        rotationMapping.put("7", BlockRotations.NORTH_NORTH_WEST);
+        rotationMapping.put("8", BlockRotations.NORTH);
+        rotationMapping.put("9", BlockRotations.NORTH_NORTH_EAST);
+        rotationMapping.put("10", BlockRotations.NORTH_EAST);
+        rotationMapping.put("11", BlockRotations.EAST_NORTH_EAST);
+        rotationMapping.put("12", BlockRotations.EAST);
+        rotationMapping.put("13", BlockRotations.EAST_SOUTH_EAST);
+        rotationMapping.put("14", BlockRotations.SOUTH_EAST);
+        rotationMapping.put("15", BlockRotations.SOUTH_SOUTH_EAST);
+        rotationMapping.put("south", BlockRotations.SOUTH);
+        rotationMapping.put("east", BlockRotations.EAST);
+        rotationMapping.put("north", BlockRotations.NONE);
+        rotationMapping.put("west", BlockRotations.WEST);
+        rotationMapping.put("up", BlockRotations.UP);
+        rotationMapping.put("down", BlockRotations.DOWN);
+        rotationMapping.put("ascending_east", BlockRotations.ASCENDING_EAST);
+        rotationMapping.put("ascending_west", BlockRotations.ASCENDING_WEST);
+        rotationMapping.put("ascending_north", BlockRotations.ASCENDING_NORTH);
+        rotationMapping.put("ascending_south", BlockRotations.ASCENDING_SOUTH);
+        rotationMapping.put("down_east", BlockRotations.DOWN_EAST);
+        rotationMapping.put("down_west", BlockRotations.DOWN_WEST);
+        rotationMapping.put("down_north", BlockRotations.DOWN_NORTH);
+        rotationMapping.put("down_south", BlockRotations.DOWN_SOUTH);
+        rotationMapping.put("up_east", BlockRotations.UP_EAST);
+        rotationMapping.put("east_up", BlockRotations.EAST_UP);
+        rotationMapping.put("up_west", BlockRotations.UP_WEST);
+        rotationMapping.put("west_up", BlockRotations.WEST_UP);
+        rotationMapping.put("up_north", BlockRotations.UP_NORTH);
+        rotationMapping.put("north_up", BlockRotations.NORTH_UP);
+        rotationMapping.put("up_south", BlockRotations.UP_SOUTH);
+        rotationMapping.put("south_up", BlockRotations.SOUTH_UP);
+        rotationMapping.put("north_south", BlockRotations.NORTH_SOUTH);
+        rotationMapping.put("east_west", BlockRotations.EAST_WEST);
     }
 
-    public static Block getBlockByLegacy(int protocolId, int protocolMetaData) {
-        int blockId = protocolId << 4 | protocolMetaData;
-        return getBlock(blockId, ProtocolVersion.VERSION_1_12_2);
-    }
-
-
-    public static Block getBlockByLegacy(int blockIdAndMetaData) {
-        return getBlock(blockIdAndMetaData, ProtocolVersion.VERSION_1_12_2);
-    }
-
-    public static Block getBlock(int protocolId, ProtocolVersion version) {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            version = ProtocolVersion.VERSION_1_12_2;
-        }
-        return blockMap.get(version).get(protocolId);
-    }
-
-    public static void load(String mod, JsonObject json, ProtocolVersion version) {
+    public static HashBiMap<Integer, Block> load(String mod, JsonObject json, boolean metaData) {
         HashBiMap<Integer, Block> versionMapping = HashBiMap.create();
         for (String identifierName : json.keySet()) {
             JsonObject identifierJSON = json.getAsJsonObject(identifierName);
@@ -464,13 +469,16 @@ public class Blocks {
                 if (statesJSON.has("properties")) {
                     // properties are optional
                     JsonObject propertiesJSON = statesJSON.getAsJsonObject("properties");
-                    BlockRotation rotation = BlockRotation.NONE;
+                    BlockRotations rotation = BlockRotations.NONE;
                     if (propertiesJSON.has("facing")) {
                         rotation = rotationMapping.get(propertiesJSON.get("facing").getAsString());
                         propertiesJSON.remove("facing");
                     } else if (propertiesJSON.has("rotation")) {
                         rotation = rotationMapping.get(propertiesJSON.get("rotation").getAsString());
                         propertiesJSON.remove("rotation");
+                    } else if (propertiesJSON.has("orientation")) {
+                        rotation = rotationMapping.get(propertiesJSON.get("orientation").getAsString());
+                        propertiesJSON.remove("orientation");
                     }
                     HashSet<BlockProperties> properties = new HashSet<>();
                     for (String propertyName : propertiesJSON.keySet()) {
@@ -488,46 +496,29 @@ public class Blocks {
                     // no properties, directly add block
                     block = new Block(mod, identifierName);
                 }
-                int blockId = getBlockId(statesJSON, version);
-                checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping, version);
+                int blockId = getBlockId(statesJSON, metaData);
+                checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping);
                 versionMapping.put(blockId, block);
-                blockList.add(block);
             }
         }
-        blockMap.put(version, versionMapping);
+        return versionMapping;
     }
 
-
-    private static int getBlockId(JsonObject json, ProtocolVersion version) {
+    private static int getBlockId(JsonObject json, boolean metaData) {
         int blockId = json.get("id").getAsInt();
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            // old format (with metadata)
+        if (metaData) {
             blockId <<= 4;
-            if (json.has("meta")) {
-                blockId |= json.get("meta").getAsByte();
-            }
+        }
+        if (json.has("meta")) {
+            // old format (with metadata)
+            blockId |= json.get("meta").getAsByte();
         }
         return blockId;
     }
 
-    public static void checkAndCrashIfBlockIsIn(int blockId, String identifierName, HashBiMap<Integer, Block> versionMapping, ProtocolVersion version) {
+    private static void checkAndCrashIfBlockIsIn(int blockId, String identifierName, HashBiMap<Integer, Block> versionMapping) {
         if (versionMapping.containsKey(blockId)) {
-            String blockIdString;
-            if (version == ProtocolVersion.VERSION_1_12_2) {
-                blockIdString = String.format("%d:%d", blockId >> 4, blockId & 0xF);
-            } else {
-                blockIdString = String.valueOf(blockId);
-            }
-            throw new RuntimeException(String.format("Block Id %s is already present for %s! (identifier=%s, version=%s)", blockIdString, versionMapping.get(blockId), identifierName, version));
+            throw new RuntimeException(String.format("Block Id %s is already present for %s! (identifier=%s)", blockId, versionMapping.get(blockId), identifierName));
         }
-    }
-
-
-    public static int getBlockId(Block block, ProtocolVersion version) {
-        int blockId = blockMap.get(version).inverse().get(block);
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-            return blockId >> 4;
-        }
-        return blockId;
     }
 }

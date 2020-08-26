@@ -14,51 +14,46 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.player.Hand;
+import de.bixilon.minosoft.game.datatypes.player.Hands;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketPlayerBlockPlacement implements ServerboundPacket {
     final BlockPosition position;
     final byte direction;
-    final Slot item;
     final float cursorX;
     final float cursorY;
     final float cursorZ;
-    final Hand hand;
+    Slot item;
+    Hands hand;
     boolean insideBlock;
-
 
     public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Slot item, float cursorX, float cursorY, float cursorZ) {
         this.position = position;
         this.direction = direction;
         this.item = item;
-        this.hand = Hand.RIGHT;
         this.cursorX = cursorX;
         this.cursorY = cursorY;
         this.cursorZ = cursorZ;
     }
 
     // >= 1.9
-    public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Hand hand, float cursorX, float cursorY, float cursorZ) {
+    public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Hands hand, float cursorX, float cursorY, float cursorZ) {
         this.position = position;
         this.direction = direction;
-        this.item = null;
-        this.hand = hand;
         this.cursorX = cursorX;
         this.cursorY = cursorY;
         this.cursorZ = cursorZ;
     }
 
     // >= 1.14
-    public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Hand hand, float cursorX, float cursorY, float cursorZ, boolean insideBlock) {
+    public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Hands hand, float cursorX, float cursorY, float cursorZ, boolean insideBlock) {
         this.position = position;
         this.direction = direction;
-        this.item = null;
         this.hand = hand;
         this.cursorX = cursorX;
         this.cursorY = cursorY;
@@ -66,66 +61,45 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
         this.insideBlock = insideBlock;
     }
 
-
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_PLAYER_BLOCK_PLACEMENT));
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeBlockPositionByte(position);
-                buffer.writeByte(direction);
-                buffer.writeSlot(item);
-
-                buffer.writeByte((byte) (cursorX * 15.0F));
-                buffer.writeByte((byte) (cursorY * 15.0F));
-                buffer.writeByte((byte) (cursorZ * 15.0F));
-                break;
-            case VERSION_1_8:
-                buffer.writePosition(position);
-                buffer.writeByte(direction);
-                buffer.writeSlot(item);
-
-                buffer.writeByte((byte) (cursorX * 15.0F));
-                buffer.writeByte((byte) (cursorY * 15.0F));
-                buffer.writeByte((byte) (cursorZ * 15.0F));
-                break;
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-                buffer.writePosition(position);
-                buffer.writeVarInt(direction);
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_BLOCK_PLACEMENT);
+        if (buffer.getProtocolId() >= 453) {
+            buffer.writeVarInt(hand.getId());
+        }
+        if (buffer.getProtocolId() < 7) {
+            buffer.writeBlockPositionByte(position);
+        } else {
+            buffer.writePosition(position);
+        }
+        if (buffer.getProtocolId() < 49) {
+            buffer.writeByte(direction);
+            buffer.writeSlot(item);
+        } else {
+            buffer.writeVarInt(direction);
+            if (buffer.getProtocolId() < 453) {
                 buffer.writeVarInt(hand.getId());
+            }
+        }
 
-                buffer.writeByte((byte) (cursorX * 15.0F));
-                buffer.writeByte((byte) (cursorY * 15.0F));
-                buffer.writeByte((byte) (cursorZ * 15.0F));
-                break;
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-                buffer.writePosition(position);
-                buffer.writeVarInt(direction);
-                buffer.writeVarInt(hand.getId());
+        if (buffer.getProtocolId() >= 453) {
+            buffer.writeBoolean(insideBlock);
+        }
 
-                buffer.writeFloat(cursorX);
-                buffer.writeFloat(cursorY);
-                buffer.writeFloat(cursorZ);
-                break;
-            default:
-                buffer.writeVarInt(hand.getId());
-                buffer.writePosition(position);
-                buffer.writeVarInt(direction);
-
-                buffer.writeFloat(cursorX);
-                buffer.writeFloat(cursorY);
-                buffer.writeFloat(cursorZ);
-                buffer.writeBoolean(insideBlock);
-                break;
+        if (buffer.getProtocolId() < 309) {
+            buffer.writeByte((byte) (cursorX * 15.0F));
+            buffer.writeByte((byte) (cursorY * 15.0F));
+            buffer.writeByte((byte) (cursorZ * 15.0F));
+        } else {
+            buffer.writeFloat(cursorX);
+            buffer.writeFloat(cursorY);
+            buffer.writeFloat(cursorZ);
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Send player block placement(position=%s, direction=%d, item=%s, cursor=%s %s %s)", position, direction, item, cursorX, cursorY, cursorZ));
+        Log.protocol(String.format("Send player block placement (position=%s, direction=%d, item=%s, cursor=%s %s %s)", position, direction, item, cursorX, cursorY, cursorZ));
     }
 }

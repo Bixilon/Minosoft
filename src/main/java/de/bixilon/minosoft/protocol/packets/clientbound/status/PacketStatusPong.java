@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketStatusPong implements ClientboundPacket {
-    Long id;
+    long id;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -37,7 +37,7 @@ public class PacketStatusPong implements ClientboundPacket {
         h.handle(this);
     }
 
-    public Long getID() {
+    public long getID() {
         return this.id;
     }
 }

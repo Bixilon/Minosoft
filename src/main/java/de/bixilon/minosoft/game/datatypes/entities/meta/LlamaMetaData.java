@@ -12,37 +12,36 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.Color;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.game.datatypes.Colors;
 
 import javax.annotation.Nullable;
 
 public class LlamaMetaData extends ChestedHorseMetaData {
 
-    public LlamaMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public LlamaMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public int getStrength() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
     }
 
     @Nullable
-    public Color getCarpetColor() {
+    public Colors getCarpetColor() {
         final int defaultValue = -1;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
-            return Color.byId(defaultValue);
+        if (protocolId < 315) { // ToDo
+            return Colors.byId(defaultValue);
         }
-        return Color.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue));
+        return Colors.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue));
     }
 
     public LlamaVariants getVariant() {
         final int defaultValue = LlamaVariants.CREAMY.getId();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return LlamaVariants.byId(defaultValue);
         }
         return LlamaVariants.byId(sets.getInt(super.getLastDataIndex() + 3, defaultValue));
@@ -50,7 +49,7 @@ public class LlamaMetaData extends ChestedHorseMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 3;

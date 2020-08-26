@@ -20,7 +20,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketSoundEffect implements ClientboundPacket {
     static final float pitchCalc = 100.0F / 63.0F;
     Location location;
@@ -31,22 +30,28 @@ public class PacketSoundEffect implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_9_4:
-                soundId = buffer.readVarInt();
-                category = SoundCategories.byId(buffer.readVarInt());
-                location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
-                volume = buffer.readFloat();
-                pitch = (buffer.readByte() * pitchCalc) / 100F;
-                return true;
-            default:
-                soundId = buffer.readVarInt();
-                category = SoundCategories.byId(buffer.readVarInt());
-                location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
-                volume = buffer.readFloat();
-                pitch = buffer.readFloat();
-                return true;
+        if (buffer.getProtocolId() >= 321 && buffer.getProtocolId() < 326) {
+            // category was moved to the top
+            category = SoundCategories.byId(buffer.readVarInt());
         }
+        soundId = buffer.readVarInt();
+
+        if (buffer.getProtocolId() >= 321 && buffer.getProtocolId() < 326) {
+            buffer.readString(); // parrot entity type
+        }
+        if (buffer.getProtocolId() < 321 && buffer.getProtocolId() >= 326) {
+            if (buffer.getProtocolId() >= 95) {
+                category = SoundCategories.byId(buffer.readVarInt());
+            }
+        }
+        location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
+        volume = buffer.readFloat();
+        if (buffer.getProtocolId() < 201) {
+            pitch = (buffer.readByte() * pitchCalc) / 100F;
+        } else {
+            pitch = buffer.readFloat();
+        }
+        return true;
     }
 
     @Override

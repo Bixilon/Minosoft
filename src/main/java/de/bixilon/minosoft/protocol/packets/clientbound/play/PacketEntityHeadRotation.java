@@ -18,23 +18,16 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketEntityHeadRotation implements ClientboundPacket {
     int entityId;
     short headYaw;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                this.entityId = buffer.readInt();
-                this.headYaw = buffer.readAngle();
-                return true;
-            default:
-                this.entityId = buffer.readVarInt();
-                this.headYaw = buffer.readAngle();
-                return true;
-        }
+        this.entityId = buffer.readEntityId();
+
+        this.headYaw = buffer.readAngle();
+        return true;
     }
 
     @Override
@@ -46,11 +39,9 @@ public class PacketEntityHeadRotation implements ClientboundPacket {
         return entityId;
     }
 
-
     public short getHeadYaw() {
         return headYaw;
     }
-
 
     @Override
     public void handle(PacketHandler h) {

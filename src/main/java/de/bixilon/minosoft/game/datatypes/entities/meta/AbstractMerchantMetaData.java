@@ -12,17 +12,15 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class AbstractMerchantMetaData extends AgeableMetaData {
 
-    public AbstractMerchantMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public AbstractMerchantMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public int getShakeTimer() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -30,7 +28,7 @@ public class AbstractMerchantMetaData extends AgeableMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

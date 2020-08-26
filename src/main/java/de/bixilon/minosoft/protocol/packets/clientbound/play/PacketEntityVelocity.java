@@ -19,23 +19,16 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketEntityVelocity implements ClientboundPacket {
     int entityId;
     Velocity velocity;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                this.entityId = buffer.readInt();
-                this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-                return true;
-            default:
-                this.entityId = buffer.readVarInt();
-                this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-                return true;
-        }
+        this.entityId = buffer.readEntityId();
+
+        this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+        return true;
     }
 
     @Override

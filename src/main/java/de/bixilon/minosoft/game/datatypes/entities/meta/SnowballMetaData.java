@@ -13,20 +13,19 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
 
 public class SnowballMetaData extends ItemedThrowableMetaData {
 
-    public SnowballMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public SnowballMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     @Override
     public Slot getItem() {
         Slot superSlot = super.getItem();
         if (superSlot == null) {
-            return new Slot(Items.getItem("minecraft", "snowball"));
+            return new Slot(new Item("minecraft", "snowball"));
         }
         return superSlot;
     }

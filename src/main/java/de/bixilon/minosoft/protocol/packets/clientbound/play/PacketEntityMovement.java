@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketEntityMovement implements ClientboundPacket {
     int entityId;
     RelativeLocation location;
@@ -27,22 +26,16 @@ public class PacketEntityMovement implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                this.entityId = buffer.readInt();
-                this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                return true;
-            case VERSION_1_8:
-                this.entityId = buffer.readVarInt();
-                this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
-                this.onGround = buffer.readBoolean();
-                return true;
-            default:
-                this.entityId = buffer.readVarInt();
-                this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
-                this.onGround = buffer.readBoolean();
-                return true;
+        this.entityId = buffer.readEntityId();
+        if (buffer.getProtocolId() < 100) {
+            this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
+        } else {
+            this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
         }
+        if (buffer.getProtocolId() >= 22) {
+            this.onGround = buffer.readBoolean();
+        }
+        return true;
     }
 
     @Override

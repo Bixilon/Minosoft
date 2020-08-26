@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.game.datatypes.player.Hand;
+import de.bixilon.minosoft.game.datatypes.player.Hands;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.*;
 
@@ -42,12 +42,12 @@ public class PacketSender {
         connection.sendPacket(new PacketHeldItemChangeSending(slotId));
     }
 
-    public void swingArm(Hand hand) {
+    public void swingArm(Hands hand) {
         connection.sendPacket(new PacketAnimation(hand));
     }
 
     public void swingArm() {
-        connection.sendPacket(new PacketAnimation(Hand.RIGHT));
+        connection.sendPacket(new PacketAnimation(Hands.RIGHT));
     }
 
     public void sendAction(PacketEntityAction.EntityActions action) {
@@ -59,26 +59,26 @@ public class PacketSender {
     }
 
     public void dropItem() {
-        connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.DROP_ITEM, null, PacketPlayerDigging.DiggingFace.BOTTOM));
+        connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.DROP_ITEM, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
     }
 
     public void dropItemStack() {
-        connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.DROP_ITEM_STACK, null, PacketPlayerDigging.DiggingFace.BOTTOM));
+        connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.DROP_ITEM_STACK, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
     }
 
     public void swapItemInHand() {
-        connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.SWAP_ITEMS_IN_HAND, null, PacketPlayerDigging.DiggingFace.BOTTOM));
+        connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.SWAP_ITEMS_IN_HAND, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
     }
 
     public void closeWindow(byte windowId) {
         connection.sendPacket(new PacketCloseWindowSending(windowId));
     }
 
-    public void sendClientStatus(PacketClientStatus.ClientStatus status) {
+    public void sendClientStatus(PacketClientStatus.ClientStates status) {
         connection.sendPacket(new PacketClientStatus(status));
     }
 
     public void respawn() {
-        sendClientStatus(PacketClientStatus.ClientStatus.PERFORM_RESPAWN);
+        sendClientStatus(PacketClientStatus.ClientStates.PERFORM_RESPAWN);
     }
 }

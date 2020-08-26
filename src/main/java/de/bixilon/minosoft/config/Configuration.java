@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.config;
 
 import de.bixilon.minosoft.Config;
-import de.bixilon.minosoft.mojang.api.MojangAccount;
+import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -37,8 +37,8 @@ public class Configuration {
             if (input == null) {
                 throw new FileNotFoundException(String.format("[Config] Missing default config: %s!", filename));
             }
-            File c_folder = new File(Config.homeDir + "config/");
-            if (!c_folder.exists() && !c_folder.mkdirs()) {
+            File folder = new File(Config.homeDir + "config/");
+            if (!folder.exists() && !folder.mkdirs()) {
                 throw new IOException("[Config] Could not create config folder!");
             }
             Files.copy(input, Paths.get(file.getAbsolutePath()));
@@ -71,7 +71,6 @@ public class Configuration {
     public String getString(ConfigEnum config) {
         return getString(config.getPath());
     }
-
 
     public void putBoolean(ConfigEnum config, boolean value) {
         putBoolean(config.getPath(), value);

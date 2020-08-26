@@ -12,11 +12,9 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class IllusionerMetaData extends SpellcasterMetaData {
 
-    public IllusionerMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public IllusionerMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 }

@@ -12,11 +12,9 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class LLamaSpitMetaData extends ChestedHorseMetaData {
 
-    public LLamaSpitMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public LLamaSpitMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 }

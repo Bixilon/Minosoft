@@ -14,34 +14,22 @@
 package de.bixilon.minosoft.game.datatypes;
 
 public enum SoundCategories {
-    MASTER(0),
-    MUSIC(1),
-    RECORD(2),
-    WEATHER(3),
-    BLOCK(4),
-    HOSTILE(5),
-    NEUTRAL(6),
-    PLAYER(7),
-    AMBIENT(8),
-    VOICE(9);
-
-
-    final int id;
-
-    SoundCategories(int id) {
-        this.id = id;
-    }
+    MASTER,
+    MUSIC,
+    RECORD,
+    WEATHER,
+    BLOCK,
+    HOSTILE,
+    NEUTRAL,
+    PLAYER,
+    AMBIENT,
+    VOICE;
 
     public static SoundCategories byId(int id) {
-        for (SoundCategories category : values()) {
-            if (category.getId() == id) {
-                return category;
-            }
-        }
-        return null;
+        return values()[id];
     }
 
     public int getId() {
-        return id;
+        return ordinal();
     }
 }

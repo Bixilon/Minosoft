@@ -27,31 +27,26 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
     float flyingSpeed;
     float walkingSpeed;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10: {
-                byte flags = buffer.readByte();
-                creative = BitByte.isBitSet(flags, 0);
-                flying = BitByte.isBitSet(flags, 1);
-                canFly = BitByte.isBitSet(flags, 2);
-                godMode = BitByte.isBitSet(flags, 3);
-                flyingSpeed = buffer.readFloat();
-                walkingSpeed = buffer.readFloat();
-                return true;
-            }
-            default: {
-                byte flags = buffer.readByte();
-                godMode = BitByte.isBitSet(flags, 0);
-                flying = BitByte.isBitSet(flags, 1);
-                canFly = BitByte.isBitSet(flags, 2);
-                creative = BitByte.isBitSet(flags, 3);
-                flyingSpeed = buffer.readFloat();
-                walkingSpeed = buffer.readFloat();
-                return true;
-            }
+        if (buffer.getProtocolId() < 6) { //ToDo
+            byte flags = buffer.readByte();
+            creative = BitByte.isBitSet(flags, 0);
+            flying = BitByte.isBitSet(flags, 1);
+            canFly = BitByte.isBitSet(flags, 2);
+            godMode = BitByte.isBitSet(flags, 3);
+            flyingSpeed = buffer.readFloat();
+            walkingSpeed = buffer.readFloat();
+            return true;
         }
+        byte flags = buffer.readByte();
+        godMode = BitByte.isBitSet(flags, 0);
+        flying = BitByte.isBitSet(flags, 1);
+        canFly = BitByte.isBitSet(flags, 2);
+        creative = BitByte.isBitSet(flags, 3);
+        flyingSpeed = buffer.readFloat();
+        walkingSpeed = buffer.readFloat();
+        return true;
     }
 
     @Override

@@ -16,13 +16,15 @@ package de.bixilon.minosoft;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
-import de.bixilon.minosoft.game.datatypes.objectLoader.ObjectLoader;
+import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.logging.LogLevel;
-import de.bixilon.minosoft.mojang.api.MojangAccount;
+import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.protocol.ConnectionReasons;
 import de.bixilon.minosoft.util.FolderUtil;
 import de.bixilon.minosoft.util.OSUtil;
+import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,19 +51,23 @@ public class Minosoft {
         }
         Log.info(String.format("Loaded config file (version=%s)", config.getInteger(GameConfiguration.CONFIG_VERSION)));
         // set log level from config
-        Log.setLevel(LogLevel.byName(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
+        Log.setLevel(LogLevels.valueOf(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
         Log.info(String.format("Logging info with level: %s", Log.getLevel()));
         Log.info("Checking assets...");
         checkAssets();
         Log.info("Assets checking done");
-        Log.info("Loading all mappings...");
-        long mappingsStart = System.currentTimeMillis();
-        ObjectLoader.loadMappings();
-        Log.info(String.format("Mappings loaded within %sms", (System.currentTimeMillis() - mappingsStart)));
+        Log.info("Loading versions.json...");
+        long mappingStartLoadingTime = System.currentTimeMillis();
+        try {
+            Versions.load(Util.readJsonFromFile(Config.homeDir + "assets/mapping/versions.json"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
 
         checkClientToken();
 
-        Connection c = new Connection(config.getString("debug.host"), config.getInteger("debug.port"));
         accountList = config.getMojangAccounts();
         if (accountList.size() == 0) {
             /*
@@ -77,8 +83,8 @@ public class Minosoft {
         } else {
             Log.mojang("Could not refresh session, you will not be able to join premium servers!");
         }
-        c.setPlayer(new Player(account));
-        c.connect();
+        Connection c = new Connection(1, config.getString("debug.host"), new Player(account));
+        c.resolve(ConnectionReasons.CONNECT); // resolve dns address and connect
     }
 
     /**
@@ -90,18 +96,10 @@ public class Minosoft {
             path += "/";
         }
         switch (OSUtil.getOS()) {
-            case LINUX:
-                path += ".local/share/minosoft/";
-                break;
-            case WINDOWS:
-                path += "AppData/Roaming/Minosoft/";
-                break;
-            case MAC:
-                path += "Library/Application Support/Minosoft/";
-                break;
-            case OTHER:
-                path += ".minosoft/";
-                break;
+            case LINUX -> path += ".local/share/minosoft/";
+            case WINDOWS -> path += "AppData/Roaming/Minosoft/";
+            case MAC -> path += "Library/Application Support/Minosoft/";
+            case OTHER -> path += ".minosoft/";
         }
         File folder = new File(path);
         if (!folder.exists() && !folder.mkdirs()) {
@@ -121,7 +119,6 @@ public class Minosoft {
             config.saveToFile(Config.configFileName);
         }
     }
-
 
     private static void checkAssets() {
         try {

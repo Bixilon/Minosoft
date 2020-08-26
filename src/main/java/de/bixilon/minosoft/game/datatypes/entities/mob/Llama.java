@@ -16,17 +16,22 @@ package de.bixilon.minosoft.game.datatypes.entities.mob;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.LlamaMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.UUID;
 
 public class Llama extends Mob implements MobInterface {
     LlamaMetaData metaData;
 
-    public Llama(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
-        super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new LlamaMetaData(sets, version);
+    public Llama(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
+        this.metaData = new LlamaMetaData(sets, protocolId);
+    }
+
+    public Llama(int entityId, UUID uuid, Location location, short yaw, short pitch, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, 0);
+        this.metaData = new LlamaMetaData(sets, protocolId);
     }
 
     @Override

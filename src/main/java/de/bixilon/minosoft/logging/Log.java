@@ -22,17 +22,19 @@ import java.util.ArrayList;
 public class Log {
     final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     final static ArrayList<String> queue = new ArrayList<>();
-    static LogLevel level = LogLevel.PROTOCOL;
+    static LogLevels level = LogLevels.PROTOCOL;
     static Thread logThread;
 
-    public static void log(LogLevel l, String message, TextComponent.ChatAttributes color) {
-        if (l.getId() > level.getId()) {
+    public static void log(LogLevels l, String message, TextComponent.ChatAttributes color) {
+        if (l.ordinal() > level.ordinal()) {
             // log level too low
             return;
         }
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         builder.append(timeFormat.format(System.currentTimeMillis()));
+        builder.append("] [");
+        builder.append(Thread.currentThread().getName());
         builder.append("] [");
         builder.append(l.name());
         builder.append("] ");
@@ -67,7 +69,7 @@ public class Log {
                 }
             }
         });
-        logThread.setName("Log-Thread");
+        logThread.setName("Log");
         logThread.start();
     }
 
@@ -77,7 +79,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void game(String message) {
-        log(LogLevel.GAME, message, TextComponent.ChatAttributes.GREEN);
+        log(LogLevels.GAME, message, TextComponent.ChatAttributes.GREEN);
     }
 
     /**
@@ -86,7 +88,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void fatal(String message) {
-        log(LogLevel.FATAL, message, TextComponent.ChatAttributes.DARK_RED);
+        log(LogLevels.FATAL, message, TextComponent.ChatAttributes.DARK_RED);
     }
 
     /**
@@ -95,7 +97,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void info(String message) {
-        log(LogLevel.INFO, message, TextComponent.ChatAttributes.WHITE);
+        log(LogLevels.INFO, message, TextComponent.ChatAttributes.WHITE);
     }
 
     /**
@@ -104,7 +106,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void warn(String message) {
-        log(LogLevel.WARNING, message, TextComponent.ChatAttributes.RED);
+        log(LogLevels.WARNING, message, TextComponent.ChatAttributes.RED);
     }
 
     /**
@@ -113,7 +115,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void debug(String message) {
-        log(LogLevel.DEBUG, message, TextComponent.ChatAttributes.GRAY);
+        log(LogLevels.DEBUG, message, TextComponent.ChatAttributes.GRAY);
     }
 
     /**
@@ -122,7 +124,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void verbose(String message) {
-        log(LogLevel.VERBOSE, message, TextComponent.ChatAttributes.YELLOW);
+        log(LogLevels.VERBOSE, message, TextComponent.ChatAttributes.YELLOW);
     }
 
     /**
@@ -131,7 +133,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void protocol(String message) {
-        log(LogLevel.PROTOCOL, message, TextComponent.ChatAttributes.BLUE);
+        log(LogLevels.PROTOCOL, message, TextComponent.ChatAttributes.BLUE);
     }
 
     /**
@@ -140,14 +142,14 @@ public class Log {
      * @param message Raw message to log
      */
     public static void mojang(String message) {
-        log(LogLevel.MOJANG, message, TextComponent.ChatAttributes.AQUA);
+        log(LogLevels.MOJANG, message, TextComponent.ChatAttributes.AQUA);
     }
 
-    public static LogLevel getLevel() {
+    public static LogLevels getLevel() {
         return level;
     }
 
-    public static void setLevel(LogLevel level) {
+    public static void setLevel(LogLevels level) {
         Log.level = level;
     }
 }

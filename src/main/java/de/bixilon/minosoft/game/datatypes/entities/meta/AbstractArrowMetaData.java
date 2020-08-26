@@ -12,20 +12,18 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class AbstractArrowMetaData extends EntityMetaData {
 
-    public AbstractArrowMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public AbstractArrowMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public boolean isCritical() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getBoolean(16, defaultValue);
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
@@ -33,16 +31,16 @@ public class AbstractArrowMetaData extends EntityMetaData {
 
     public boolean isNoClip() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
-            return defaultValue;
-        }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue);
     }
 
     @Nullable
     public UUID getShooterUUID() {
         final UUID defaultValue = null;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 394) {
+            return defaultValue;
+        }
+        if (protocolId >= 743) { //ToDo
             return defaultValue;
         }
         return sets.getUUID(super.getLastDataIndex() + 2, defaultValue);
@@ -50,21 +48,25 @@ public class AbstractArrowMetaData extends EntityMetaData {
 
     public byte getPeircingLevel() {
         final byte defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 440) {
             return defaultValue;
         }
         return sets.getByte(super.getLastDataIndex() + 3, defaultValue);
     }
 
-
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 450) {
             return super.getLastDataIndex() + 1;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        // ToDo
+        /*if ( protocolId == 401) { // ToDo (440?)
             return super.getLastDataIndex() + 2;
         }
-        return super.getLastDataIndex() + 3;
+        */
+        if (protocolId < 743) { //ToDo
+            return super.getLastDataIndex() + 3;
+        }
+        return super.getLastDataIndex() + 2;
     }
 }

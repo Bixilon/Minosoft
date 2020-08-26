@@ -14,26 +14,24 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class EndermanMetaData extends LivingMetaData {
 
-    public EndermanMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public EndermanMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
-
 
     public Block getCarriedBlock() {
         final Block defaultValue = Blocks.nullBlock;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
-            return Blocks.getBlockByLegacy(sets.getInt(16, 0), sets.getInt(17, 0));
+        if (protocolId < 57) {
+            //ToDo return Blocks.getBlockByLegacy(sets.getInt(16, 0), sets.getInt(17, 0));
         }
         return sets.getBlock(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public boolean isScreaming() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getBoolean(18, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
@@ -41,7 +39,7 @@ public class EndermanMetaData extends LivingMetaData {
 
     public boolean isStarredAt() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+        if (protocolId < 573) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
@@ -49,7 +47,7 @@ public class EndermanMetaData extends LivingMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+        if (protocolId < 573) { // ToDo
             return super.getLastDataIndex() + 2;
         }
         return super.getLastDataIndex() + 3;

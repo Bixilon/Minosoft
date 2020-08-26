@@ -12,16 +12,14 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class ZombieHorseMetaData extends AbstractHorseMetaData {
 
-    public ZombieHorseMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public ZombieHorseMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     @Override
-    public HorseType getType() {
-        return HorseType.ZOMBIE;
+    public HorseTypes getType() {
+        return HorseTypes.ZOMBIE;
     }
 }

@@ -12,17 +12,15 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class WitchMetaData extends RaidParticipantMetaData {
 
-    public WitchMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public WitchMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public boolean isAggressive() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getBoolean(21, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -30,7 +28,7 @@ public class WitchMetaData extends RaidParticipantMetaData {
 
     public boolean isDrinkingPotion() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
+        if (protocolId < 335) { //ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.game.datatypes.objectLoader.particle.data;
 
-
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
 
 public class DustParticleData extends ParticleData {

@@ -18,27 +18,19 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import java.lang.reflect.InvocationTargetException;
 
 public class PacketEntityMetadata implements ClientboundPacket {
     EntityMetaData.MetaDataHashMap sets;
     int entityId;
-    ProtocolVersion version;
-
+    int protocolId;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        this.version = buffer.getVersion();
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                entityId = buffer.readInt();
-                break;
-            default:
-                entityId = buffer.readVarInt();
-                break;
-        }
+        this.protocolId = buffer.getProtocolId();
+        this.entityId = buffer.readEntityId();
+
         sets = buffer.readMetaData();
         return true;
     }
@@ -63,7 +55,7 @@ public class PacketEntityMetadata implements ClientboundPacket {
 
     public EntityMetaData getEntityData(Class<? extends EntityMetaData> clazz) {
         try {
-            return clazz.getConstructor(EntityMetaData.MetaDataHashMap.class, ProtocolVersion.class).newInstance(sets, version);
+            return clazz.getConstructor(EntityMetaData.MetaDataHashMap.class, int.class).newInstance(sets, protocolId);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }

@@ -12,18 +12,15 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class PolarBearMetaData extends AgeableMetaData {
 
-    public PolarBearMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public PolarBearMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
-
 
     public boolean isStandingUp() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId < 204) { //ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -31,7 +28,7 @@ public class PolarBearMetaData extends AgeableMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

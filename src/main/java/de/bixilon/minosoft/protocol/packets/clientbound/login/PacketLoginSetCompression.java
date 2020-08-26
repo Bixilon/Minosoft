@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.PacketCompressionInterface;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketLoginSetCompression implements ClientboundPacket {
+public class PacketLoginSetCompression implements PacketCompressionInterface {
     int threshold;
 
     @Override
@@ -37,6 +37,7 @@ public class PacketLoginSetCompression implements ClientboundPacket {
         h.handle(this);
     }
 
+    @Override
     public int getThreshold() {
         return threshold;
     }

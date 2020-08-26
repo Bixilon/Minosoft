@@ -16,17 +16,17 @@ package de.bixilon.minosoft.game.datatypes.entities.mob;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.PandaMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.UUID;
 
 public class Panda extends Mob implements MobInterface {
     PandaMetaData metaData;
 
-    public Panda(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
-        super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new PandaMetaData(sets, version);
+    public Panda(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
+        this.metaData = new PandaMetaData(sets, protocolId);
     }
 
     @Override

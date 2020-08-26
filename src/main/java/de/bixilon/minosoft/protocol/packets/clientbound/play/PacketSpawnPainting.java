@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.entities.objects.Painting;
 import de.bixilon.minosoft.game.datatypes.objectLoader.motives.Motive;
-import de.bixilon.minosoft.game.datatypes.objectLoader.motives.Motives;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -24,50 +24,37 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import java.util.UUID;
 
 public class PacketSpawnPainting implements ClientboundPacket {
-    int entityId;
-    UUID uuid;
-    Motive motive;
-    BlockPosition position;
-    int direction;
+    Painting entity;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                entityId = buffer.readVarInt();
-                motive = Motives.byIdentifier(buffer.readString());
-                position = buffer.readBlockPositionInteger();
-                direction = buffer.readInt();
-                return true;
-            case VERSION_1_8:
-                entityId = buffer.readVarInt();
-                motive = Motives.byIdentifier(buffer.readString());
-                position = buffer.readPosition();
-                direction = buffer.readByte();
-                return true;
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                entityId = buffer.readVarInt();
-                uuid = buffer.readUUID();
-                motive = Motives.byIdentifier(buffer.readString());
-                position = buffer.readPosition();
-                direction = buffer.readByte();
-                return true;
-            default:
-                entityId = buffer.readVarInt();
-                uuid = buffer.readUUID();
-                motive = Motives.byId(buffer.readVarInt(), buffer.getVersion());
-                position = buffer.readPosition();
-                direction = buffer.readByte();
-                return true;
+        int entityId = buffer.readVarInt();
+        UUID uuid = null;
+        if (buffer.getProtocolId() >= 95) {
+            uuid = buffer.readUUID();
         }
+        Motive motive;
+        if (buffer.getProtocolId() < 353) {
+            motive = buffer.getConnection().getMapping().getMotiveByIdentifier(buffer.readString());
+        } else {
+            motive = buffer.getConnection().getMapping().getMotiveById(buffer.readVarInt());
+        }
+        BlockPosition position;
+        int direction;
+        if (buffer.getProtocolId() < 8) {
+            position = buffer.readBlockPositionInteger();
+            direction = buffer.readInt();
+        } else {
+            position = buffer.readPosition();
+            direction = buffer.readByte();
+        }
+        entity = new Painting(entityId, uuid, motive, position, direction);
+        return true;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Spawning painting at %s (entityId=%d, motive=%s, direction=%d)", position, entityId, motive, direction));
+        Log.protocol(String.format("Spawning painting at %s (entityId=%d, motive=%s, direction=%d)", entity.getLocation(), entity.getEntityId(), entity.getMotive(), entity.getDirection()));
     }
 
     @Override
@@ -75,19 +62,8 @@ public class PacketSpawnPainting implements ClientboundPacket {
         h.handle(this);
     }
 
-    public int getEntityId() {
-        return entityId;
-    }
-
-    public Motive getMotive() {
-        return motive;
-    }
-
-    public BlockPosition getPosition() {
-        return position;
-    }
-
-    public int getDirection() {
-        return direction;
+    public Painting getEntity() {
+        return entity;
     }
 }
+

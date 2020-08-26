@@ -13,18 +13,17 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class ZombieVillagerMetaData extends ZombieMetaData {
 
-    public ZombieVillagerMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public ZombieVillagerMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     @Override
     public boolean isConverting() {
         final boolean defaultValue = super.isConverting();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -32,9 +31,9 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
 
     @Override
     public VillagerData.VillagerProfessions getProfession() {
-        final int defaultValue = super.getProfession().getId(version);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-            return VillagerData.VillagerProfessions.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue), version);
+        final int defaultValue = super.getProfession().getId(protocolId);
+        if (protocolId < 451) {
+            return VillagerData.VillagerProfessions.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue), protocolId);
         }
         return getVillageData().getProfession();
     }
@@ -49,16 +48,15 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
 
     public VillagerData getVillageData() {
         final VillagerData defaultValue = new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE);
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 451) {
             return defaultValue;
         }
         return sets.getVillagerData(super.getLastDataIndex() + 2, defaultValue);
     }
 
-
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 2;

@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.game.datatypes.entities;
 
 import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public enum EntityPropertyKeys {
     MAX_HEALTH(new ChangeableIdentifier("generic.maxHealth")),
@@ -31,9 +30,9 @@ public enum EntityPropertyKeys {
         this.changeableIdentifier = changeableIdentifier;
     }
 
-    public static EntityPropertyKeys byName(String name, ProtocolVersion version) {
+    public static EntityPropertyKeys byName(String name, int protocolId) {
         for (EntityPropertyKeys propertyKey : values()) {
-            if (propertyKey.getChangeableIdentifier().isValidName(name, version)) {
+            if (propertyKey.getChangeableIdentifier().isValidName(name, protocolId)) {
                 return propertyKey;
             }
         }

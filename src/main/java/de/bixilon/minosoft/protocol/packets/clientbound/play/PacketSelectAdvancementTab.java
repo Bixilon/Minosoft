@@ -18,16 +18,14 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketSelectAdvancementTab implements ClientboundPacket {
     AdvancementTabs tab;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.readBoolean()) {
-            tab = AdvancementTabs.byName(buffer.readString(), buffer.getVersion());
+            tab = AdvancementTabs.byName(buffer.readString(), buffer.getProtocolId());
         }
         return true;
     }
@@ -59,9 +57,9 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
             this.changeableIdentifier = changeableIdentifier;
         }
 
-        public static AdvancementTabs byName(String name, ProtocolVersion version) {
+        public static AdvancementTabs byName(String name, int protocolId) {
             for (AdvancementTabs advancementTab : values()) {
-                if (advancementTab.getChangeableIdentifier().get(version).equals(name)) {
+                if (advancementTab.getChangeableIdentifier().get(protocolId).equals(name)) {
                     return advancementTab;
                 }
             }

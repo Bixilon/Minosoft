@@ -16,26 +16,21 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.AreaEffectCloudMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.UUID;
 
 public class AreaEffectCloud extends EntityObject implements ObjectInterface {
     AreaEffectCloudMetaData metaData;
 
-    public AreaEffectCloud(int entityId, Location location, short yaw, short pitch, int additionalInt) {
-        super(entityId, location, yaw, pitch, null);
-        // objects do not spawn with metadata... reading additional info from the following int
+    public AreaEffectCloud(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, uuid, location, yaw, pitch);
     }
 
-    public AreaEffectCloud(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(entityId, location, yaw, pitch, velocity);
-    }
-
-    public AreaEffectCloud(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
-        super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new AreaEffectCloudMetaData(sets, version);
+    public AreaEffectCloud(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
+        this.metaData = new AreaEffectCloudMetaData(sets, protocolId);
     }
 
     @Override

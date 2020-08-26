@@ -22,7 +22,6 @@ public class Recipes {
     final static HashBiMap<Integer, Recipe> recipeIdMap = HashBiMap.create(); // ids for version <= VERSION_1_12_2
     final static HashBiMap<String, Recipe> recipeNameMap = HashBiMap.create();
 
-
     public static Recipe getRecipeById(int id) {
         return recipeIdMap.get(id);
     }

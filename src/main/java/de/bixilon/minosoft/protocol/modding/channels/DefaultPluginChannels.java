@@ -14,14 +14,13 @@
 package de.bixilon.minosoft.protocol.modding.channels;
 
 import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.game.datatypes.IdentifierSet;
 
 public enum DefaultPluginChannels {
-    MC_BRAND(new ChangeableIdentifier("MC|Brand", "minecraft:brand")),
+    MC_BRAND(new ChangeableIdentifier(new IdentifierSet(0, "MC|Brand"), new IdentifierSet(385, "minecraft:brand"))),
     STOP_SOUND(new ChangeableIdentifier("MC|StopSound")),
-    REGISTER(new ChangeableIdentifier("REGISTER", "minecraft:register")),
-    UNREGISTER(new ChangeableIdentifier("UNREGISTER", "minecraft:unregister"));
-
+    REGISTER(new ChangeableIdentifier(new IdentifierSet(0, "REGISTER"), new IdentifierSet(385, "minecraft:register"))),
+    UNREGISTER(new ChangeableIdentifier(new IdentifierSet(0, "UNREGISTER"), new IdentifierSet(385, "minecraft:unregister")));
 
     final ChangeableIdentifier changeableIdentifier;
 
@@ -29,10 +28,10 @@ public enum DefaultPluginChannels {
         this.changeableIdentifier = changeableIdentifier;
     }
 
-    public static DefaultPluginChannels byName(String name, ProtocolVersion version) {
-        for (DefaultPluginChannels d : values()) {
-            if (d.getChangeableIdentifier().get(version).equals(name)) {
-                return d;
+    public static DefaultPluginChannels byName(String name, int protocolId) {
+        for (DefaultPluginChannels channel : values()) {
+            if (channel.getChangeableIdentifier().get(protocolId).equals(name)) {
+                return channel;
             }
         }
         return null;

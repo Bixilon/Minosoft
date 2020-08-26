@@ -15,26 +15,22 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.UUID;
 
 public class MinecartHopper extends Minecart implements ObjectInterface {
 
-    public MinecartHopper(int entityId, Location location, short yaw, short pitch, int additionalInt) {
-        super(entityId, location, yaw, pitch, additionalInt, null);
+    public MinecartHopper(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, uuid, location, yaw, pitch, additionalInt);
     }
 
-    public MinecartHopper(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(entityId, location, yaw, pitch, additionalInt, velocity);
-    }
-
-    public MinecartHopper(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
-        super(entityId, location, yaw, pitch, 0, velocity);
+    public MinecartHopper(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw, sets, protocolId);
     }
 
     @Override
-    public Minecart.MinecartType getType() {
-        return MinecartType.HOPPER;
+    public MinecartTypes getType() {
+        return MinecartTypes.HOPPER;
     }
 }

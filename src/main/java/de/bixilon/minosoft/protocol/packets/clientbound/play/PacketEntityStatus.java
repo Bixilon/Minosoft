@@ -20,12 +20,12 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketEntityStatus implements ClientboundPacket {
     int entityId;
-    Status status;
+    EntityStates status;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         entityId = buffer.readInt();
-        status = Status.byId(buffer.readByte());
+        status = EntityStates.byId(buffer.readByte());
         return true;
     }
 
@@ -39,67 +39,56 @@ public class PacketEntityStatus implements ClientboundPacket {
         h.handle(this);
     }
 
-    public enum Status {
-        SPAWN_TIPPED_ARROW(0),
-        RESET_MOB_SPAWNER_MINECART_TIMER(1),
-        LIVING_ENTITY_HURT(2),
-        LIVING_ENTITY_DEATH(3),
-        IRON_GOLEM_SWING_ARMS(4),
-        TAMING_HARTS(6),
-        TAMING_SMOKE(7),
-        WOLF_SHAKE_WATER(8),
-        EATING_ACCEPTED(9),
-        SHEEP_EATING_GRASS(10),
-        IRON_GOLEM_HAND_OVER_ROSE(11),
-        VILLAGER_MATING_HEARTS(12),
-        VILLAGER_ANGRY(13),
-        VILLAGER_HAPPY(14),
-        WITCH_MAGIC(15),
-        ZOMBIE_CONVERTING(16),
-        FIREWORK_EXPLODING(17),
-        ANIMAL_IN_LOVE(18),
-        RESET_SQUID_ROTATION(19),
-        SPAWN_EXPLOSION_PARTICLE(20),
-        PLAY_GUARDIAN_SOUND(21),
-        ENABLE_REDUCED_DEBUG_SCREEN(22),
-        DISABLE_REDUCED_DEBUG_SCREEN(23),
-        OP_PERMISSION_LEVEL_0(24),
-        OP_PERMISSION_LEVEL_1(25),
-        OP_PERMISSION_LEVEL_2(26),
-        OP_PERMISSION_LEVEL_3(27),
-        OP_PERMISSION_LEVEL_4(28),
-        SHIELD_BLOCK_SOUND(29),
-        SHIELD_BREAK_SOUND(30),
-        FISHING_ROD_BOBBER(31),
-        ARMOR_STAND_HIT(32),
-        ENTITY_HURT_THORNS(33),
-        PUT_AWAY_GOLEM_POPPY(34),
-        TOTEM_OF_UNDYING_ANIMATION(35),
-        ENTITY_HURT_DROWN(36),
-        ENTITY_HURT_BURN(37),
-        SPAWN_CLOUD_PARTICLE(43),
-        ENTITY_HURT_BERRY_BUSH(44),
-        PORTAL_PARTICLE_CHORUS(46);
+    public enum EntityStates {
+        SPAWN_TIPPED_ARROW,
+        RESET_MOB_SPAWNER_MINECART_TIMER,
+        LIVING_ENTITY_HURT,
+        LIVING_ENTITY_DEATH,
+        IRON_GOLEM_SWING_ARMS,
+        TAMING_HARTS,
+        TAMING_SMOKE,
+        WOLF_SHAKE_WATER,
+        EATING_ACCEPTED,
+        SHEEP_EATING_GRASS,
+        IRON_GOLEM_HAND_OVER_ROSE,
+        VILLAGER_MATING_HEARTS,
+        VILLAGER_ANGRY,
+        VILLAGER_HAPPY,
+        WITCH_MAGIC,
+        ZOMBIE_CONVERTING,
+        FIREWORK_EXPLODING,
+        ANIMAL_IN_LOVE,
+        RESET_SQUID_ROTATION,
+        SPAWN_EXPLOSION_PARTICLE,
+        PLAY_GUARDIAN_SOUND,
+        ENABLE_REDUCED_DEBUG_SCREEN,
+        DISABLE_REDUCED_DEBUG_SCREEN,
+        OP_PERMISSION_LEVEL_0,
+        OP_PERMISSION_LEVEL_1,
+        OP_PERMISSION_LEVEL_2,
+        OP_PERMISSION_LEVEL_3,
+        OP_PERMISSION_LEVEL_4,
+        SHIELD_BLOCK_SOUND,
+        SHIELD_BREAK_SOUND,
+        FISHING_ROD_BOBBER,
+        ARMOR_STAND_HIT,
+        ENTITY_HURT_THORNS,
+        PUT_AWAY_GOLEM_POPPY,
+        TOTEM_OF_UNDYING_ANIMATION,
+        ENTITY_HURT_DROWN,
+        ENTITY_HURT_BURN,
+        SPAWN_CLOUD_PARTICLE,
+        ENTITY_HURT_BERRY_BUSH,
+        PORTAL_PARTICLE_CHORUS;
         // ToDo: 1.11+ (for each entity)
 
 
-        final int id;
-
-        Status(int id) {
-            this.id = id;
-        }
-
-        public static Status byId(int id) {
-            for (Status s : values()) {
-                if (s.getId() == id) {
-                    return s;
-                }
-            }
-            return null;
+        public static EntityStates byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

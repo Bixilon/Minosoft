@@ -48,6 +48,12 @@ public class Recipe {
         this.result = result;
     }
 
+    public Recipe(RecipeTypes type, Ingredient base, Ingredient addition, Slot result) {
+        this.type = type;
+        this.ingredients = new Ingredient[]{base, addition};
+        this.result = result;
+    }
+
     public Recipe(RecipeTypes type, String group, Ingredient ingredient, Slot result, float experience, int cookingTime) {
         this.type = type;
         this.group = group;

@@ -13,44 +13,36 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-import de.bixilon.minosoft.protocol.protocol.Protocol;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class VersionValueMap<V> {
-    HashMap<ProtocolVersion, V> values = new HashMap<>();
+    TreeMap<Integer, V> values = new TreeMap<>();
 
     public VersionValueMap() {
     }
 
-    public VersionValueMap(MapSet<ProtocolVersion, V>[] sets, boolean unused) {
-        for (MapSet<ProtocolVersion, V> set : sets) {
+    public VersionValueMap(MapSet<Integer, V>[] sets, boolean unused) {
+        for (MapSet<Integer, V> set : sets) {
             values.put(set.getKey(), set.getValue());
         }
     }
 
     public VersionValueMap(V value) {
-        values.put(Protocol.getLowestVersionSupported(), value);
+        values.put(Versions.getLowestVersionSupported().getProtocolVersion(), value);
     }
 
-    public ProtocolVersion getSuitableProtocolVersion(ProtocolVersion version) {
-        for (int i = Arrays.binarySearch(ProtocolVersion.versionMappingArray, version); i >= 0; i--) {
-            // count backwards to find best version
-            if (values.containsKey(ProtocolVersion.versionMappingArray[i])) {
-                return ProtocolVersion.versionMappingArray[i];
-            }
+    public V get(int protocolId) {
+        Map.Entry<Integer, V> value = values.lowerEntry(protocolId);
+        if (value == null) {
+            return null;
         }
-        return Protocol.getLowestVersionSupported();
+        return value.getValue();
     }
 
-    public V get(ProtocolVersion version) {
-        return values.get(getSuitableProtocolVersion(version));
-    }
-
-    public HashMap<ProtocolVersion, V> getAll() {
+    public TreeMap<Integer, V> getAll() {
         return values;
     }
 
@@ -59,16 +51,7 @@ public class VersionValueMap<V> {
         if (super.equals(obj)) {
             return true;
         }
-        VersionValueMap<V> that = (VersionValueMap<V>) obj;
-        for (Map.Entry<ProtocolVersion, V> set : values.entrySet()) {
-            V theirValue = that.get(set.getKey());
-            if (theirValue == null) {
-                continue;
-            }
-            if (set.getValue().equals(theirValue)) {
-                return true;
-            }
-        }
-        return false;
+        VersionValueMap<V> their = (VersionValueMap<V>) obj;
+        return getAll().equals(their.getAll());
     }
 }

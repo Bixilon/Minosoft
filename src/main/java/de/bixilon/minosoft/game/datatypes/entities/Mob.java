@@ -13,16 +13,14 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
-import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.entities.meta.LivingMetaData;
+import java.util.UUID;
 
 public abstract class Mob extends Entity implements MobInterface {
-    public Mob(int entityId, Location location, short yaw, short pitch, Velocity velocity) {
-        super(entityId, location, yaw, pitch, velocity);
+    public Mob(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
     }
 
-    @Override
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return LivingMetaData.class;
+    public Mob(int entityId, UUID uuid, Location location, int yaw, int pitch, int headYaw) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
     }
 }

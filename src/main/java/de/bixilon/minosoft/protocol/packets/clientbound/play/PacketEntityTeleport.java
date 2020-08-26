@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-
 public class PacketEntityTeleport implements ClientboundPacket {
     int entityId;
     Location location;
@@ -29,28 +28,20 @@ public class PacketEntityTeleport implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                this.entityId = buffer.readInt();
-                this.location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-                this.yaw = buffer.readAngle();
-                this.pitch = buffer.readAngle();
-                return true;
-            case VERSION_1_8:
-                this.entityId = buffer.readVarInt();
-                this.location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
-                this.yaw = buffer.readAngle();
-                this.pitch = buffer.readAngle();
-                this.onGround = buffer.readBoolean();
-                return true;
-            default:
-                this.entityId = buffer.readVarInt();
-                this.location = new Location(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
-                this.yaw = buffer.readAngle();
-                this.pitch = buffer.readAngle();
-                this.onGround = buffer.readBoolean();
-                return true;
+        this.entityId = buffer.readEntityId();
+
+        if (buffer.getProtocolId() < 100) {
+            this.location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
+        } else {
+            this.location = buffer.readLocation();
         }
+        this.yaw = buffer.readAngle();
+        this.pitch = buffer.readAngle();
+
+        if (buffer.getProtocolId() >= 22) {
+            this.onGround = buffer.readBoolean();
+        }
+        return true;
     }
 
     @Override

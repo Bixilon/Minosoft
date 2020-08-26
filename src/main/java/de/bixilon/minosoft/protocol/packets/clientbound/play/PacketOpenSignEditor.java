@@ -22,17 +22,14 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketOpenSignEditor implements ClientboundPacket {
     BlockPosition position;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                position = buffer.readBlockPositionInteger();
-                return true;
-            default:
-                position = buffer.readPosition();
-                return true;
+        if (buffer.getProtocolId() < 6) {
+            position = buffer.readBlockPositionInteger();
+            return true;
         }
+        position = buffer.readPosition();
+        return true;
     }
 
     @Override

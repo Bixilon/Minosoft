@@ -12,11 +12,9 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class WaterMobMetaData extends CreatureMetaData {
 
-    public WaterMobMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public WaterMobMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 }

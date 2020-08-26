@@ -25,7 +25,6 @@ public class PacketFacePlayer implements ClientboundPacket {
     int entityId = -1;
     PlayerFaces entityFace;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         face = PlayerFaces.byId(buffer.readVarInt());

@@ -13,18 +13,16 @@
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class MinecartMetaData extends EntityMetaData {
 
-    public MinecartMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public MinecartMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public int getShakingPower() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getInt(17, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -32,7 +30,7 @@ public class MinecartMetaData extends EntityMetaData {
 
     public int getShakingDirection() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getInt(18, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -40,7 +38,7 @@ public class MinecartMetaData extends EntityMetaData {
 
     public float getMultiplier() {
         final float defaultValue = 0.0F;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getFloat(19, defaultValue);
         }
         return sets.getFloat(super.getLastDataIndex() + 3, defaultValue);
@@ -48,15 +46,16 @@ public class MinecartMetaData extends EntityMetaData {
 
     public Block getBlock() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
-            return Blocks.getBlockByLegacy(sets.getInt(20, defaultValue));
+        if (protocolId < 57) {
+            //ToDo return Blocks.getBlockByLegacy(sets.getInt(20, defaultValue));
         }
-        return Blocks.getBlock(sets.getInt(super.getLastDataIndex() + 4, defaultValue), version);
+        //ToDo return Blocks.getBlock(sets.getInt(super.getLastDataIndex() + 4, defaultValue), protocolId);
+        return null;
     }
 
     public int getBlockYPosition() {
         final int defaultValue = 6; //ToDo
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getInt(21, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 5, defaultValue);
@@ -64,7 +63,7 @@ public class MinecartMetaData extends EntityMetaData {
 
     public boolean isShowingBlock() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return sets.getBoolean(22, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 6, defaultValue);

@@ -20,40 +20,54 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PacketEntityEquipment implements ClientboundPacket {
     int entityId;
-    InventorySlots.EntityInventory slot;
-    Slot data;
-
+    final HashMap<InventorySlots.EntityInventorySlots, Slot> slots = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                entityId = buffer.readInt();
-                this.slot = InventorySlots.EntityInventory.byId(buffer.readShort(), buffer.getVersion());
-                this.data = buffer.readSlot();
-                return true;
-            case VERSION_1_8:
-                entityId = buffer.readVarInt();
-                this.slot = InventorySlots.EntityInventory.byId(buffer.readShort(), buffer.getVersion());
-                this.data = buffer.readSlot();
-                return true;
-            default:
-                entityId = buffer.readVarInt();
-                this.slot = InventorySlots.EntityInventory.byId(buffer.readVarInt(), buffer.getVersion());
-                this.data = buffer.readSlot();
-                return true;
+        if (buffer.getProtocolId() < 7) {
+            entityId = buffer.readInt();
+            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getProtocolId()), buffer.readSlot());
+            return true;
         }
+        if (buffer.getProtocolId() < 49) {
+            entityId = buffer.readVarInt();
+            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getProtocolId()), buffer.readSlot());
+            return true;
+        }
+        if (buffer.getProtocolId() < 743) { //ToDo: find out version
+            entityId = buffer.readVarInt();
+            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readVarInt(), buffer.getProtocolId()), buffer.readSlot());
+            return true;
+        }
+        entityId = buffer.readVarInt();
+        boolean slotAvailable = true;
+        while (slotAvailable) {
+            int slotId = buffer.readByte();
+            if (slotId >= 0) {
+                slotAvailable = false;
+            }
+            slotId &= 0x7F;
+            slots.put(InventorySlots.EntityInventorySlots.byId(slotId, buffer.getProtocolId()), buffer.readSlot());
+        }
+        return true;
     }
 
     @Override
     public void log() {
-        if (data != null) {
-            Log.protocol(String.format("Entity equipment changed (entityId=%d, slot=%s): %dx %s", entityId, slot, data.getItemCount(), data.getDisplayName()));
+        if (slots.size() == 1) {
+            Map.Entry<InventorySlots.EntityInventorySlots, Slot> set = slots.entrySet().iterator().next();
+            if (set.getValue() == null) {
+                Log.protocol(String.format("Entity equipment changed (entityId=%d, slot=%s): AIR", entityId, set.getKey()));
+                return;
+            }
+            Log.protocol(String.format("Entity equipment changed (entityId=%d, slot=%s): %dx %s", entityId, set.getKey(), set.getValue().getItemCount(), set.getValue().getDisplayName()));
         } else {
-            // null means nothing, means air
-            Log.protocol(String.format("Entity equipment changed (entityId=%d, slot=%s): AIR", entityId, slot));
+            Log.protocol(String.format("Entity equipment changed (entityId=%d, slotCount=%d)", entityId, slots.size()));
         }
     }
 
@@ -66,11 +80,7 @@ public class PacketEntityEquipment implements ClientboundPacket {
         return entityId;
     }
 
-    public InventorySlots.EntityInventory getSlot() {
-        return slot;
-    }
-
-    public Slot getData() {
-        return data;
+    public HashMap<InventorySlots.EntityInventorySlots, Slot> getSlots() {
+        return slots;
     }
 }

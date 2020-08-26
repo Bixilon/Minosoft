@@ -13,14 +13,16 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import de.bixilon.minosoft.protocol.network.Connection;
+
 import java.util.ArrayList;
 
 public class OutPacketBuffer extends OutByteBuffer {
     final int command;
 
-    public OutPacketBuffer(ProtocolVersion version, int command) {
-        super(version);
-        this.command = command;
+    public OutPacketBuffer(Connection connection, Packets.Serverbound command) {
+        super(connection);
+        this.command = connection.getPacketCommand(command);
     }
 
     public int getCommand() {
@@ -33,7 +35,6 @@ public class OutPacketBuffer extends OutByteBuffer {
         ArrayList<Byte> after = new ArrayList<>();
         writeVarInt(getCommand(), after); // second: command
         after.addAll(before); // rest ist raw data
-
 
         byte[] ret = new byte[after.size()];
         for (int i = 0; i < after.size(); i++) {

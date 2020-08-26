@@ -16,26 +16,21 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EyeOfEnderMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.UUID;
 
 public class EyeOfEnder extends EntityObject implements ObjectInterface {
     EyeOfEnderMetaData metaData;
 
-    public EyeOfEnder(int entityId, Location location, short yaw, short pitch, int additionalInt) {
-        super(entityId, location, yaw, pitch, null);
-        // objects do not spawn with metadata... reading additional info from the following int
+    public EyeOfEnder(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, uuid, location, yaw, pitch);
     }
 
-    public EyeOfEnder(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(entityId, location, yaw, pitch, velocity);
-    }
-
-    public EyeOfEnder(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
-        super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new EyeOfEnderMetaData(sets, version);
+    public EyeOfEnder(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
+        this.metaData = new EyeOfEnderMetaData(sets, protocolId);
     }
 
     @Override

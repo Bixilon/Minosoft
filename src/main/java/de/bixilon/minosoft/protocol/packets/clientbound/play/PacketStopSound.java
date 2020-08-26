@@ -24,30 +24,21 @@ public class PacketStopSound implements ClientboundPacket {
     SoundCategories category;
     String soundIdentifier;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-                category = SoundCategories.valueOf(buffer.readString().toUpperCase());
-                soundIdentifier = buffer.readString();
-                return true;
-            case VERSION_1_12_2:
-                soundIdentifier = buffer.readString();
-                category = SoundCategories.valueOf(buffer.readString().toUpperCase());
-                return true;
-            default:
-                byte flags = buffer.readByte();
-                if (BitByte.isBitMask(flags, 0x01)) {
-                    category = SoundCategories.byId(buffer.readVarInt());
-                }
-                if (BitByte.isBitMask(flags, 0x02)) {
-                    soundIdentifier = buffer.readString();
-                }
-                return true;
+        if (buffer.getProtocolId() < 343) { //ToDo: these 2 values need to be switched in before 1.12.2
+            category = SoundCategories.valueOf(buffer.readString().toUpperCase());
+            soundIdentifier = buffer.readString();
+            return true;
         }
+        byte flags = buffer.readByte();
+        if (BitByte.isBitMask(flags, 0x01)) {
+            category = SoundCategories.byId(buffer.readVarInt());
+        }
+        if (BitByte.isBitMask(flags, 0x02)) {
+            soundIdentifier = buffer.readString();
+        }
+        return true;
     }
 
     @Override

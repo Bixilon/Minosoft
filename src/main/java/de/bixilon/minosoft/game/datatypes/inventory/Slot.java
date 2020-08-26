@@ -15,12 +15,10 @@ package de.bixilon.minosoft.game.datatypes.inventory;
 
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
-import de.bixilon.minosoft.game.datatypes.objectLoader.items.Items;
-import de.bixilon.minosoft.nbt.tag.CompoundTag;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 public class Slot {
-    Item item;
+    final Item item;
     int itemCount;
     short itemMetadata;
     CompoundTag nbt;
@@ -51,10 +49,6 @@ public class Slot {
         return item;
     }
 
-    public int getItemId(ProtocolVersion version) {
-        return Items.getItemId(item, version);
-    }
-
     public int getItemCount() {
         return itemCount;
     }
@@ -71,7 +65,7 @@ public class Slot {
         if (nbt != null && nbt.containsKey("display") && nbt.getCompoundTag("display").containsKey("Name")) { // check if object has nbt data, and a custom display name
             return String.format("%s (%s)", new TextComponent(nbt.getCompoundTag("display").getStringTag("Name").getValue()).getColoredMessage(), item);
         }
-        return item.toString(); // ToDo display name per Item (from language file)
+        return (item == null ? "AIR" : item.toString()); // ToDo display name per Item (from language file)
     }
 
     @Override

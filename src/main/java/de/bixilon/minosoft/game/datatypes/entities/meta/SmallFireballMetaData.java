@@ -12,11 +12,9 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class SmallFireballMetaData extends ItemedFireballMetaData {
 
-    public SmallFireballMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public SmallFireballMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 }

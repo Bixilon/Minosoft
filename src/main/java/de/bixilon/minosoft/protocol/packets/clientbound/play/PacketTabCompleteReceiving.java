@@ -22,27 +22,22 @@ public class PacketTabCompleteReceiving implements ClientboundPacket {
     int count;
     String[] match;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                count = buffer.readVarInt();
-                match = new String[]{buffer.readString()};
-                return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                count = buffer.readVarInt();
-                match = new String[count];
-                for (int i = 0; i < count; i++) {
-                    match[i] = buffer.readString();
-                }
-                return true;
+        if (buffer.getProtocolId() < 37) {
+            count = buffer.readVarInt();
+            match = new String[]{buffer.readString()};
+            return true;
         }
-
+        if (buffer.getProtocolId() < 343) {
+            count = buffer.readVarInt();
+            match = new String[count];
+            for (int i = 0; i < count; i++) {
+                match[i] = buffer.readString();
+            }
+            return true;
+        }
+        // ToDo
         return false;
     }
 

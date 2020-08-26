@@ -12,22 +12,19 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class PufferfishMetaData extends AbstractFishMetaData {
 
-    public PufferfishMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public PufferfishMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public PufferStates getPufferState() {
         final int defaultValue = PufferStates.UN_PUFFED.getId();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId < 401) { // ToDo
             return PufferStates.byId(defaultValue);
         }
         return PufferStates.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
     }
-
 
     @Override
     protected int getLastDataIndex() {
@@ -38,7 +35,6 @@ public class PufferfishMetaData extends AbstractFishMetaData {
         UN_PUFFED(0),
         SEMI_PUFFED(1),
         FULLY_PUFFED(2);
-
 
         final int id;
 

@@ -23,7 +23,6 @@ public class PacketWindowProperty implements ClientboundPacket {
     short property;
     short value;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         this.windowId = buffer.readByte();

@@ -12,20 +12,18 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class SkeletonMetaData extends MonsterMetaData {
 
-    public SkeletonMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public SkeletonMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public SkeletonTypes getSkeletonType() {
         final int defaultValue = SkeletonTypes.NORMAL.getId();
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return SkeletonTypes.byId(sets.getInt(13, defaultValue));
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId <= 204) { //ToDo
             return SkeletonTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
         }
         return SkeletonTypes.byId(defaultValue);
@@ -33,13 +31,13 @@ public class SkeletonMetaData extends MonsterMetaData {
 
     public boolean isSwingingArms() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId <= 204) { //ToDo
             return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId <= 401) { // ToDo
             return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
         }
         return defaultValue;
@@ -47,7 +45,7 @@ public class SkeletonMetaData extends MonsterMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber() || version.getVersionNumber() == ProtocolVersion.VERSION_1_10.getVersionNumber()) {
+        if (protocolId == 110 || protocolId == 204) { //ToDo
             return super.getLastDataIndex() + 2;
         }
         return super.getLastDataIndex() + 1;
@@ -57,7 +55,6 @@ public class SkeletonMetaData extends MonsterMetaData {
         NORMAL(0),
         WITHER(1),
         STRAY(2);
-
 
         final int id;
 

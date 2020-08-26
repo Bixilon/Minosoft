@@ -13,27 +13,27 @@
 
 package de.bixilon.minosoft.game.datatypes;
 
-import de.bixilon.minosoft.protocol.protocol.Protocol;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 
 public class ChangeableIdentifier extends VersionValueMap<String> {
     String mod = "minecraft";
 
     public ChangeableIdentifier(String legacy, String water) {
-        values.put(Protocol.getLowestVersionSupported(), legacy);
-        values.put(ProtocolVersion.VERSION_1_13_2, water);
+        values.put(Versions.getLowestVersionSupported().getProtocolVersion(), legacy);
+        values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
     }
 
     public ChangeableIdentifier(String legacy, String water, String mod) {
-        values.put(Protocol.getLowestVersionSupported(), legacy);
-        values.put(ProtocolVersion.VERSION_1_13_2, water);
+        values.put(Versions.getLowestVersionSupported().getProtocolVersion(), legacy);
+        values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
         this.mod = mod;
     }
 
-    public ChangeableIdentifier(HashMap<ProtocolVersion, String> names) {
-        this.values = names;
+    public ChangeableIdentifier(TreeMap<Integer, String> values) {
+        this.values = values;
     }
 
     public ChangeableIdentifier(IdentifierSet... sets) {
@@ -44,7 +44,7 @@ public class ChangeableIdentifier extends VersionValueMap<String> {
         super(name);
     }
 
-    public boolean isValidName(String name, ProtocolVersion version) {
+    public boolean isValidName(String name, int protocolId) {
         name = name.toLowerCase();
         if (name.indexOf(":") != 0) {
             String[] splittedName = name.split(":", 2);
@@ -56,6 +56,6 @@ public class ChangeableIdentifier extends VersionValueMap<String> {
             // split and check mod
         }
 
-        return get(version).equals(name);
+        return get(protocolId).equals(name);
     }
 }

@@ -22,7 +22,6 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketDisconnect implements ClientboundPacket {
     TextComponent reason;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         reason = buffer.readTextComponent();
@@ -37,7 +36,6 @@ public class PacketDisconnect implements ClientboundPacket {
     public TextComponent getReason() {
         return reason;
     }
-
 
     @Override
     public void handle(PacketHandler h) {

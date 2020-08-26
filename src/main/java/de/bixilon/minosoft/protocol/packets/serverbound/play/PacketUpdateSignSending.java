@@ -16,10 +16,10 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketUpdateSignSending implements ServerboundPacket {
     final BlockPosition position;
@@ -30,29 +30,22 @@ public class PacketUpdateSignSending implements ServerboundPacket {
         this.lines = lines;
     }
 
-
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_UPDATE_SIGN));
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeBlockPositionByte(position);
-                for (int i = 0; i < 4; i++) {
-                    buffer.writeString(lines[i].getRawMessage());
-                }
-                break;
-            case VERSION_1_8:
-                buffer.writePosition(position);
-                for (int i = 0; i < 4; i++) {
-                    buffer.writeTextComponent(lines[i]);
-                }
-                break;
-            default:
-                buffer.writePosition(position);
-                for (int i = 0; i < 4; i++) {
-                    buffer.writeString(lines[i].getRawMessage());
-                }
-                break;
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_SIGN);
+        if (buffer.getProtocolId() < 7) {
+            buffer.writeBlockPositionByte(position);
+        } else {
+            buffer.writePosition(position);
+        }
+        if (buffer.getProtocolId() < 21 || buffer.getProtocolId() >= 62) {
+            for (int i = 0; i < 4; i++) {
+                buffer.writeString(lines[i].getRawMessage());
+            }
+        } else {
+            for (int i = 0; i < 4; i++) {
+                buffer.writeTextComponent(lines[i]);
+            }
         }
         return buffer;
     }

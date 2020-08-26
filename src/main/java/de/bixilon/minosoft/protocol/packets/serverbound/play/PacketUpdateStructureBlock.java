@@ -15,10 +15,10 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketUpdateStructureBlock implements ServerboundPacket {
     final BlockPosition position;
@@ -60,10 +60,9 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
         this.flags = flags;
     }
 
-
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_UPDATE_STRUCTURE_BLOCK));
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_STRUCTURE_BLOCK);
         buffer.writePosition(position);
         buffer.writeVarInt(action.getId());
         buffer.writeVarInt(mode.getId());
@@ -170,7 +169,6 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
         CLOCKWISE_90(1),
         CLOCKWISE_180(2),
         COUNTERCLOCKWISE_90(3);
-
 
         final int id;
 

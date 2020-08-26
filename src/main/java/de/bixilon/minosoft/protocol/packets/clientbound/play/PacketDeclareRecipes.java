@@ -22,11 +22,9 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketDeclareRecipes implements ClientboundPacket {
-    HashBiMap<String, Recipe> recipes = HashBiMap.create();
-
+    final HashBiMap<String, Recipe> recipes = HashBiMap.create();
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -35,7 +33,7 @@ public class PacketDeclareRecipes implements ClientboundPacket {
             Recipe recipe;
             String identifier;
             String typeName;
-            if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+            if (buffer.getProtocolId() >= 453) { //ToDo: find out version
                 typeName = buffer.readString();
                 identifier = buffer.readString();
             } else {
@@ -44,14 +42,14 @@ public class PacketDeclareRecipes implements ClientboundPacket {
             }
             RecipeTypes type = RecipeTypes.byName(typeName);
             switch (type) {
-                case SHAPELESS: {
+                case SHAPELESS -> {
                     String group = buffer.readString();
                     Ingredient[] ingredients = buffer.readIngredientArray(buffer.readVarInt());
                     Slot result = buffer.readSlot();
                     recipe = new Recipe(type, group, ingredients, result);
                     break;
                 }
-                case SHAPED: {
+                case SHAPED -> {
                     int width = buffer.readVarInt();
                     int height = buffer.readVarInt();
                     String group = buffer.readString();
@@ -60,10 +58,7 @@ public class PacketDeclareRecipes implements ClientboundPacket {
                     recipe = new Recipe(width, height, type, group, ingredients, result);
                     break;
                 }
-                case SMELTING:
-                case BLASTING:
-                case SMOKING:
-                case CAMPFIRE: {
+                case SMELTING, BLASTING, SMOKING, CAMPFIRE -> {
                     String group = buffer.readString();
                     Ingredient ingredient = buffer.readIngredient();
                     Slot result = buffer.readSlot();
@@ -72,16 +67,21 @@ public class PacketDeclareRecipes implements ClientboundPacket {
                     recipe = new Recipe(type, group, ingredient, result, experience, cookingTime);
                     break;
                 }
-                case STONE_CUTTING: {
+                case STONE_CUTTING -> {
                     String group = buffer.readString();
                     Ingredient ingredient = buffer.readIngredient();
                     Slot result = buffer.readSlot();
                     recipe = new Recipe(type, group, ingredient, result);
                     break;
                 }
-                default:
-                    recipe = new Recipe(type);
+                case SMITHING -> {
+                    Ingredient base = buffer.readIngredient();
+                    Ingredient addition = buffer.readIngredient();
+                    Slot result = buffer.readSlot();
+                    recipe = new Recipe(type, base, addition, result);
                     break;
+                }
+                default -> recipe = new Recipe(type);
             }
             recipes.put(identifier, recipe);
         }

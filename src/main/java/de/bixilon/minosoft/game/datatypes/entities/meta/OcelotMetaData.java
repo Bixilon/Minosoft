@@ -12,24 +12,21 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class OcelotMetaData extends AnimalMetaData {
 
-    public OcelotMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public OcelotMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
-
 
     public OcelotTypes getType() {
         final int defaultValue = OcelotTypes.UNTAMED.getId();
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_8.getVersionNumber()) {
+        if (protocolId < 57) {
             return OcelotTypes.byId(sets.getInt(18, defaultValue));
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId == 110) { //ToDo
             return OcelotTypes.byId(sets.getInt(14, defaultValue));
         }
-        if (version.getVersionNumber() <= ProtocolVersion.VERSION_1_13_2.getVersionNumber()) {
+        if (protocolId <= 401) { // ToDo
             return OcelotTypes.byId(sets.getInt(15, defaultValue));
         }
         return OcelotTypes.UNTAMED;
@@ -37,12 +34,11 @@ public class OcelotMetaData extends AnimalMetaData {
 
     public boolean isTrusting() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
+        if (protocolId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
     }
-
 
     @Override
     protected int getLastDataIndex() {

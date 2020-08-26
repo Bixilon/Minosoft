@@ -12,11 +12,9 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class DragonFireballMetaData extends AbstractFireballMetaData {
 
-    public DragonFireballMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public DragonFireballMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 }

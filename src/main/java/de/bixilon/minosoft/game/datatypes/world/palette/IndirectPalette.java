@@ -14,15 +14,15 @@
 package de.bixilon.minosoft.game.datatypes.world.palette;
 
 import com.google.common.collect.HashBiMap;
+import de.bixilon.minosoft.game.datatypes.objectLoader.CustomMapping;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class IndirectPalette implements Palette {
-    ProtocolVersion version;
-    HashBiMap<Integer, Integer> map = HashBiMap.create();
-    byte bitsPerBlock;
+    int protocolId;
+    CustomMapping mapping;
+    final HashBiMap<Integer, Integer> map = HashBiMap.create();
+    final byte bitsPerBlock;
 
     public IndirectPalette(byte bitsPerBlock) {
         this.bitsPerBlock = bitsPerBlock;
@@ -30,13 +30,7 @@ public class IndirectPalette implements Palette {
 
     @Override
     public Block byId(int id) {
-        Block block;
-        if (map.containsKey(id)) {
-            block = Blocks.getBlock(map.get(id), version);
-        } else {
-            block = Blocks.getBlock(id, version);
-        }
-        return block;
+        return mapping.getBlockById(map.getOrDefault(id, id));
     }
 
     @Override
@@ -46,7 +40,8 @@ public class IndirectPalette implements Palette {
 
     @Override
     public void read(InByteBuffer buffer) {
-        this.version = buffer.getVersion();
+        this.protocolId = buffer.getProtocolId();
+        this.mapping = buffer.getConnection().getMapping();
         int paletteLength = buffer.readVarInt();
         for (int i = 0; i < paletteLength; i++) {
             map.put(i, buffer.readVarInt());

@@ -21,7 +21,6 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketCamera implements ClientboundPacket {
     int entityId;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         entityId = buffer.readVarInt();

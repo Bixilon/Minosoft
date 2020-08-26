@@ -16,31 +16,24 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.PotionMetaData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffect;
-import de.bixilon.minosoft.game.datatypes.objectLoader.effects.MobEffects;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.UUID;
 
 public class ThrownPotion extends EntityObject implements ObjectInterface {
     PotionMetaData metaData;
     MobEffect potion;
 
-    public ThrownPotion(int entityId, Location location, short yaw, short pitch, int additionalInt) {
-        super(entityId, location, yaw, pitch, null);
-        // objects do not spawn with metadata... reading additional info from the following int
-        this.potion = MobEffects.byId(additionalInt, ProtocolVersion.VERSION_1_12_2);
+    public ThrownPotion(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, uuid, location, yaw, pitch);
+        // ToDo: this.potion = MobEffects.byId(additionalInt, ProtocolVersion.VERSION_1_12_2);
     }
 
-    public ThrownPotion(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(entityId, location, yaw, pitch, velocity);
-        this.potion = MobEffects.byId(additionalInt, ProtocolVersion.VERSION_1_12_2);
-    }
-
-    public ThrownPotion(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
-        super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new PotionMetaData(sets, version);
+    public ThrownPotion(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
+        this.metaData = new PotionMetaData(sets, protocolId);
     }
 
     @Override

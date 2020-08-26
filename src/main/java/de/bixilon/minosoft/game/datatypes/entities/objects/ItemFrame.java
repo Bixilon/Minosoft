@@ -16,30 +16,24 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.ItemFrameMetaData;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+
+import java.util.UUID;
 
 public class ItemFrame extends EntityObject implements ObjectInterface {
-    final FrameDirection direction;
+    final FrameDirections direction;
     ItemFrameMetaData metaData;
 
-    public ItemFrame(int entityId, Location location, short yaw, short pitch, int additionalInt) {
-        super(entityId, location, yaw, pitch, null);
-        // objects do not spawn with metadata... reading additional info from the following int
-        direction = FrameDirection.byId(additionalInt);
+    public ItemFrame(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
+        super(entityId, uuid, location, yaw, pitch);
+        direction = FrameDirections.byId(additionalInt);
     }
 
-    public ItemFrame(int entityId, Location location, short yaw, short pitch, int additionalInt, Velocity velocity) {
-        super(entityId, location, yaw, pitch, velocity);
-        direction = FrameDirection.byId(additionalInt);
-    }
-
-    public ItemFrame(int entityId, Location location, short yaw, short pitch, Velocity velocity, EntityMetaData.MetaDataHashMap sets, ProtocolVersion version) {
-        super(entityId, location, yaw, pitch, velocity);
-        this.metaData = new ItemFrameMetaData(sets, version);
-        this.direction = FrameDirection.byId(0);
+    public ItemFrame(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
+        this.metaData = new ItemFrameMetaData(sets, protocolId);
+        this.direction = FrameDirections.byId(0);
     }
 
     @Override
@@ -67,33 +61,22 @@ public class ItemFrame extends EntityObject implements ObjectInterface {
         return ItemFrameMetaData.class;
     }
 
-    public FrameDirection getDirection() { // orientation
+    public FrameDirections getDirection() { // orientation
         return direction;
     }
 
-    public enum FrameDirection {
-        SOUTH(0),
-        WEST(1),
-        NORTH(2),
-        EAST(3);
+    public enum FrameDirections {
+        SOUTH,
+        WEST,
+        NORTH,
+        EAST;
 
-        final int id;
-
-        FrameDirection(int id) {
-            this.id = id;
-        }
-
-        public static FrameDirection byId(int id) {
-            for (FrameDirection d : values()) {
-                if (d.getId() == id) {
-                    return d;
-                }
-            }
-            return null;
+        public static FrameDirections byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

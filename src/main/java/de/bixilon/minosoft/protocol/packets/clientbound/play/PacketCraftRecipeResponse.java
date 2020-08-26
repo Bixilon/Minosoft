@@ -25,16 +25,14 @@ public class PacketCraftRecipeResponse implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_12_2:
-                windowId = buffer.readByte();
-                recipeId = buffer.readVarInt();
-                return true;
-            default:
-                windowId = buffer.readByte();
-                recipeName = buffer.readString();
-                return true;
+        if (buffer.getProtocolId() < 346) { //ToDo: was this really in 346?
+            windowId = buffer.readByte();
+            recipeId = buffer.readVarInt();
+            return true;
         }
+        windowId = buffer.readByte();
+        recipeName = buffer.readString();
+        return true;
     }
 
     @Override

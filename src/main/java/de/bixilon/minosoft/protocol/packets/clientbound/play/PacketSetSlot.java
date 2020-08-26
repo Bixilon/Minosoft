@@ -24,7 +24,6 @@ public class PacketSetSlot implements ClientboundPacket {
     short slotId;
     Slot slot; // ToDo use enum Slots
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         this.windowId = buffer.readByte();

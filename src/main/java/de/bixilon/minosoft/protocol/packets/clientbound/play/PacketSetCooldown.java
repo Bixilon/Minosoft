@@ -23,7 +23,6 @@ public class PacketSetCooldown implements ClientboundPacket {
     int item;
     int cooldownTicks;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         item = buffer.readVarInt();

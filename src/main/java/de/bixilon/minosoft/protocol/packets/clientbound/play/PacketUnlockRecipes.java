@@ -23,49 +23,54 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketUnlockRecipes implements ClientboundPacket {
     UnlockRecipeActions action;
     boolean isCraftingBookOpen;
-    boolean isSmeltingBookOpen;
+    boolean isSmeltingBookOpen = false;
+    boolean isBlastFurnaceBookOpen = false;
+    boolean isSmokerBookOpen = false;
     boolean isCraftingFilteringActive;
-    boolean isSmeltingFilteringActive;
+    boolean isSmeltingFilteringActive = false;
+    boolean isBlastFurnaceFilteringActive = false;
+    boolean isSmokerFilteringActive = false;
     Recipe[] listed;
     Recipe[] tagged;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_12_2:
-                action = UnlockRecipeActions.byId(buffer.readVarInt());
-                isCraftingBookOpen = buffer.readBoolean();
-                isCraftingFilteringActive = buffer.readBoolean();
-                listed = new Recipe[buffer.readVarInt()];
-                for (int i = 0; i < listed.length; i++) {
-                    listed[i] = Recipes.getRecipeById(buffer.readVarInt());
-                }
-                if (action == UnlockRecipeActions.INITIALIZE) {
-                    tagged = new Recipe[buffer.readVarInt()];
-                    for (int i = 0; i < tagged.length; i++) {
-                        tagged[i] = Recipes.getRecipeById(buffer.readVarInt());
-                    }
-                }
-                return true;
-            default:
-                action = UnlockRecipeActions.byId(buffer.readVarInt());
-                isCraftingBookOpen = buffer.readBoolean();
-                isCraftingFilteringActive = buffer.readBoolean();
-                isSmeltingBookOpen = buffer.readBoolean();
-                isSmeltingFilteringActive = buffer.readBoolean();
-                listed = new Recipe[buffer.readVarInt()];
-                for (int i = 0; i < listed.length; i++) {
-                    listed[i] = Recipes.getRecipe(buffer.readString());
-                }
-                if (action == UnlockRecipeActions.INITIALIZE) {
-                    tagged = new Recipe[buffer.readVarInt()];
-                    for (int i = 0; i < tagged.length; i++) {
-                        tagged[i] = Recipes.getRecipe(buffer.readString());
-                    }
-                }
-                return true;
+        if (buffer.getProtocolId() < 333) {
+            action = UnlockRecipeActions.byId(buffer.readInt());
+        } else {
+            action = UnlockRecipeActions.byId(buffer.readVarInt());
         }
+        isCraftingBookOpen = buffer.readBoolean();
+        isCraftingFilteringActive = buffer.readBoolean();
+        if (buffer.getProtocolId() >= 348) { //ToDo
+            isSmeltingBookOpen = buffer.readBoolean();
+            isSmeltingFilteringActive = buffer.readBoolean();
+        }
+        if (buffer.getProtocolId() >= 743) { //ToDo
+            isBlastFurnaceBookOpen = buffer.readBoolean();
+            isBlastFurnaceFilteringActive = buffer.readBoolean();
+            isSmokerBookOpen = buffer.readBoolean();
+            isSmokerFilteringActive = buffer.readBoolean();
+        }
+        listed = new Recipe[buffer.readVarInt()];
+        for (int i = 0; i < listed.length; i++) {
+            if (buffer.getProtocolId() < 348) {
+                listed[i] = Recipes.getRecipeById(buffer.readVarInt());
+            } else {
+                listed[i] = Recipes.getRecipe(buffer.readString());
+            }
+        }
+        if (action == UnlockRecipeActions.INITIALIZE) {
+            tagged = new Recipe[buffer.readVarInt()];
+            for (int i = 0; i < tagged.length; i++) {
+                if (buffer.getProtocolId() < 348) {
+                    tagged[i] = Recipes.getRecipeById(buffer.readVarInt());
+                } else {
+                    tagged[i] = Recipes.getRecipe(buffer.readString());
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -84,6 +89,30 @@ public class PacketUnlockRecipes implements ClientboundPacket {
 
     public boolean isCraftingFilteringActive() {
         return isCraftingFilteringActive;
+    }
+
+    public boolean isBlastFurnaceBookOpen() {
+        return isBlastFurnaceBookOpen;
+    }
+
+    public boolean isBlastFurnaceFilteringActive() {
+        return isBlastFurnaceFilteringActive;
+    }
+
+    public boolean isSmeltingBookOpen() {
+        return isSmeltingBookOpen;
+    }
+
+    public boolean isSmeltingFilteringActive() {
+        return isSmeltingFilteringActive;
+    }
+
+    public boolean isSmokerBookOpen() {
+        return isSmokerBookOpen;
+    }
+
+    public boolean isSmokerFilteringActive() {
+        return isSmokerFilteringActive;
     }
 
     public Recipe[] getListed() {

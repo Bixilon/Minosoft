@@ -34,7 +34,6 @@ public class MapSet<K, V> implements Map.Entry<K, V> {
         return value;
     }
 
-
     @Override
     public V setValue(V value) {
         this.value = value;

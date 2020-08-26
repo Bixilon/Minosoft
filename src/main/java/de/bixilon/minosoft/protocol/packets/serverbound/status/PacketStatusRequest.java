@@ -14,17 +14,16 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.status;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketStatusRequest implements ServerboundPacket {
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        // no version checking, is the same in all versions (1.7.x - 1.15.2)
-        return new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.STATUS_REQUEST));
+    public OutPacketBuffer write(Connection connection) {
+        return new OutPacketBuffer(connection, Packets.Serverbound.STATUS_REQUEST);
     }
 
     @Override

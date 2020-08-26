@@ -22,45 +22,42 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketScoreboardObjective implements ClientboundPacket {
     String name;
     TextComponent value;
-    ScoreboardObjectiveAction action;
+    ScoreboardObjectiveActions action;
     ScoreboardObjectiveTypes type;
-
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                name = buffer.readString();
+        name = buffer.readString();
+        if (buffer.getProtocolId() < 7) { // ToDo
+            value = buffer.readTextComponent();
+        }
+        action = ScoreboardObjectiveActions.byId(buffer.readByte());
+        if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
+
+            if (buffer.getProtocolId() >= 7) { // ToDo
                 value = buffer.readTextComponent();
-                action = ScoreboardObjectiveAction.byId(buffer.readByte());
-                return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-                name = buffer.readString();
-                action = ScoreboardObjectiveAction.byId(buffer.readByte());
-                if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
-                    value = buffer.readTextComponent();
-                    type = ScoreboardObjectiveTypes.byName(buffer.readString());
+
+            }
+            if (buffer.getProtocolId() >= 12) {
+
+                if (buffer.getProtocolId() >= 346 && buffer.getProtocolId() < 349) {
+                    // got removed in these 3 versions
+                    return true;
                 }
-                return true;
-            default:
-                name = buffer.readString();
-                action = ScoreboardObjectiveAction.byId(buffer.readByte());
-                if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
-                    value = buffer.readTextComponent();
+                if (buffer.getProtocolId() < 349) {
+                    type = ScoreboardObjectiveTypes.byName(buffer.readString());
+                } else {
                     type = ScoreboardObjectiveTypes.byId(buffer.readVarInt());
                 }
-                return true;
+            }
         }
+        return true;
     }
 
     @Override
     public void log() {
-        if (action == ScoreboardObjectiveAction.CREATE || action == ScoreboardObjectiveAction.UPDATE) {
-            Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\", type=%s", action, name, value.getColoredMessage(), type));
+        if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
+            Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\", type=%s)", action, name, value.getColoredMessage(), type));
         } else {
             Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\")", action, name));
         }
@@ -79,32 +76,21 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         return value;
     }
 
-    public ScoreboardObjectiveAction getAction() {
+    public ScoreboardObjectiveActions getAction() {
         return action;
     }
 
-    public enum ScoreboardObjectiveAction {
-        CREATE(0),
-        REMOVE(1),
-        UPDATE(2);
+    public enum ScoreboardObjectiveActions {
+        CREATE,
+        REMOVE,
+        UPDATE;
 
-        final int id;
-
-        ScoreboardObjectiveAction(int id) {
-            this.id = id;
-        }
-
-        public static ScoreboardObjectiveAction byId(int id) {
-            for (ScoreboardObjectiveAction a : values()) {
-                if (a.getId() == id) {
-                    return a;
-                }
-            }
-            return null;
+        public static ScoreboardObjectiveActions byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 

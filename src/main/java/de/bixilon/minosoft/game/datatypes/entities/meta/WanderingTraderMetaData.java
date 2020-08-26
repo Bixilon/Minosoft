@@ -12,11 +12,9 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class WanderingTraderMetaData extends VillagerMetaData {
 
-    public WanderingTraderMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public WanderingTraderMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 }

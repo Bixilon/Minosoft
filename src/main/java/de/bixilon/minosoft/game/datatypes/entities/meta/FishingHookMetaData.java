@@ -12,31 +12,39 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class FishingHookMetaData extends EntityMetaData {
 
-    public FishingHookMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public FishingHookMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
-
 
     public int getHookedEntityId() {
         final int defaultValue = -1;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
-        if (version.getVersionNumber() == ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId == 110) { //ToDo
             return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue) - 1;
     }
 
+    public boolean isCatchable() {
+        final boolean defaultValue = false;
+        if (protocolId < 743) { // ToDo
+            return defaultValue;
+        }
+        return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
+    }
+
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return super.getLastDataIndex();
         }
-        return super.getLastDataIndex() + 1;
+        if (protocolId <= 573) { // ToDo
+            return super.getLastDataIndex() + 1;
+        }
+        return super.getLastDataIndex() + 2;
     }
 }

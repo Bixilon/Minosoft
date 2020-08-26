@@ -17,11 +17,11 @@ import de.bixilon.minosoft.game.datatypes.TextComponent;
 
 public class InventoryProperties {
     final int windowId;
-    final InventoryType type;
+    final InventoryTypes type;
     final TextComponent title;
     final byte slotCount;
 
-    public InventoryProperties(int windowId, InventoryType type, TextComponent title, byte slotCount) {
+    public InventoryProperties(int windowId, InventoryTypes type, TextComponent title, byte slotCount) {
         this.windowId = windowId;
         this.type = type;
         this.title = title;
@@ -32,7 +32,7 @@ public class InventoryProperties {
         return windowId;
     }
 
-    public InventoryType getType() {
+    public InventoryTypes getType() {
         return type;
     }
 

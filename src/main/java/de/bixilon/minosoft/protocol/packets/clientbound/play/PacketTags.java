@@ -25,22 +25,15 @@ public class PacketTags implements ClientboundPacket {
     Tag[] fluidTags;
     Tag[] entityTags;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_13_2:
-                blockTags = readTags(buffer);
-                itemTags = readTags(buffer);
-                fluidTags = readTags(buffer);
-                return true;
-            default:
-                blockTags = readTags(buffer);
-                itemTags = readTags(buffer);
-                fluidTags = readTags(buffer);
-                entityTags = readTags(buffer);
-                return true;
+        blockTags = readTags(buffer);
+        itemTags = readTags(buffer);
+        fluidTags = readTags(buffer); // ToDo: when was this added? Was not available in 18w01
+        if (buffer.getProtocolId() >= 440) {
+            entityTags = readTags(buffer);
         }
+        return true;
     }
 
     private Tag[] readTags(InByteBuffer buffer) {

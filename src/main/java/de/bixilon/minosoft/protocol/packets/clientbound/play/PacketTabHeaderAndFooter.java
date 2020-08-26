@@ -23,7 +23,6 @@ public class PacketTabHeaderAndFooter implements ClientboundPacket {
     TextComponent header;
     TextComponent footer;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         header = buffer.readTextComponent();

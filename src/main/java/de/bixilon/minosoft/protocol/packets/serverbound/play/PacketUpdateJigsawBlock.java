@@ -15,16 +15,19 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketUpdateJigsawBlock implements ServerboundPacket {
     final BlockPosition position;
-    final String attachmentType;
     final String targetPool;
     final String finalState;
+    String attachmentType;
+    String name;
+    String target;
+    String jointType;
 
     public PacketUpdateJigsawBlock(BlockPosition position, String attachmentType, String targetPool, String finalState) {
         this.position = position;
@@ -33,11 +36,30 @@ public class PacketUpdateJigsawBlock implements ServerboundPacket {
         this.finalState = finalState;
     }
 
+    public PacketUpdateJigsawBlock(BlockPosition position, String name, String target, String targetPool, String finalState, String jointType) {
+        this.position = position;
+        this.name = name;
+        this.target = target;
+        this.targetPool = targetPool;
+        this.finalState = finalState;
+        this.jointType = jointType;
+    }
 
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_UPDATE_JIGSAW_BLOCK));
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_JIGSAW_BLOCK);
         buffer.writePosition(position);
+        if (buffer.getProtocolId() < 743) { //ToDo
+            buffer.writeString(attachmentType);
+            buffer.writeString(targetPool);
+            buffer.writeString(finalState);
+        } else {
+            buffer.writeString(name);
+            buffer.writeString(target);
+            buffer.writeString(targetPool);
+            buffer.writeString(finalState);
+            buffer.writeString(jointType);
+        }
         return buffer;
     }
 

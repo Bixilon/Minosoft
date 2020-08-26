@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
-import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particles;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -36,60 +35,45 @@ public class PacketParticle implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                particleType = Particles.byIdentifier(buffer.readString());
-                x = buffer.readFloat();
-                y = buffer.readFloat();
-                z = buffer.readFloat();
+        if (buffer.getProtocolId() < 569) {
 
-                // offset
-                offsetX = buffer.readFloat();
-                offsetY = buffer.readFloat();
-                offsetZ = buffer.readFloat();
-
-                particleDataFloat = buffer.readFloat();
-                count = buffer.readInt();
-                return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2:
-            case VERSION_1_13_2:
-            case VERSION_1_14_4:
-                particleType = Particles.byId(buffer.readInt(), buffer.getVersion());
+            if (buffer.getProtocolId() < 17) {
+                particleType = buffer.getConnection().getMapping().getParticleByIdentifier(buffer.readString());
+            } else {
+                particleType = buffer.getConnection().getMapping().getParticleById(buffer.readInt());
+            }
+            if (buffer.getProtocolId() >= 29) {
                 longDistance = buffer.readBoolean();
-                x = buffer.readFloat();
-                y = buffer.readFloat();
-                z = buffer.readFloat();
+            }
+            x = buffer.readFloat();
+            y = buffer.readFloat();
+            z = buffer.readFloat();
 
-                // offset
-                offsetX = buffer.readFloat();
-                offsetY = buffer.readFloat();
-                offsetZ = buffer.readFloat();
+            // offset
+            offsetX = buffer.readFloat();
+            offsetY = buffer.readFloat();
+            offsetZ = buffer.readFloat();
 
-                particleDataFloat = buffer.readFloat();
-                count = buffer.readInt();
-                particleData = buffer.readParticleData(particleType);
-                return true;
-            default:
-                particleType = Particles.byId(buffer.readInt(), buffer.getVersion());
-                longDistance = buffer.readBoolean();
-                x = buffer.readDouble();
-                y = buffer.readDouble();
-                z = buffer.readDouble();
-
-                // offset
-                offsetX = buffer.readFloat();
-                offsetY = buffer.readFloat();
-                offsetZ = buffer.readFloat();
-
-                particleDataFloat = buffer.readFloat();
-                count = buffer.readInt();
-                particleData = buffer.readParticleData(particleType);
-                return true;
+            particleDataFloat = buffer.readFloat();
+            count = buffer.readInt();
+            particleData = buffer.readParticleData(particleType);
+            return true;
         }
+        particleType = buffer.getConnection().getMapping().getParticleById(buffer.readInt());
+        longDistance = buffer.readBoolean();
+        x = buffer.readDouble();
+        y = buffer.readDouble();
+        z = buffer.readDouble();
+
+        // offset
+        offsetX = buffer.readFloat();
+        offsetY = buffer.readFloat();
+        offsetZ = buffer.readFloat();
+
+        particleDataFloat = buffer.readFloat();
+        count = buffer.readInt();
+        particleData = buffer.readParticleData(particleType);
+        return true;
     }
 
     @Override
@@ -101,7 +85,6 @@ public class PacketParticle implements ClientboundPacket {
     public void handle(PacketHandler h) {
         h.handle(this);
     }
-
 
     public double getX() {
         return x;

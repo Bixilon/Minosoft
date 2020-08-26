@@ -21,7 +21,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class HTTP {
+public final class HTTP {
 
     public static HttpResponse<String> postJson(String url, JsonObject json) {
         HttpClient client = HttpClient.newHttpClient();

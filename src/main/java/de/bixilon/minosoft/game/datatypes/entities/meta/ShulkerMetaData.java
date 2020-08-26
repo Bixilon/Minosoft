@@ -12,22 +12,21 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.Color;
-import de.bixilon.minosoft.game.datatypes.Direction;
+import de.bixilon.minosoft.game.datatypes.Colors;
+import de.bixilon.minosoft.game.datatypes.Directions;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 import javax.annotation.Nullable;
 
 public class ShulkerMetaData extends GolemMetaData {
 
-    public ShulkerMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public ShulkerMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
-    public Direction getDirection() {
-        final Direction defaultValue = Direction.DOWN;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+    public Directions getDirection() {
+        final Directions defaultValue = Directions.DOWN;
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getDirection(super.getLastDataIndex(), defaultValue);
@@ -36,7 +35,7 @@ public class ShulkerMetaData extends GolemMetaData {
     @Nullable
     public BlockPosition getAttachmentPosition() {
         final BlockPosition defaultValue = null;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getPosition(super.getLastDataIndex(), defaultValue);
@@ -44,18 +43,18 @@ public class ShulkerMetaData extends GolemMetaData {
 
     public byte getShieldHeight() {
         final byte defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
+        if (protocolId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getByte(super.getLastDataIndex(), defaultValue);
     }
 
-    public Color getColor() {
-        final int defaultValue = Color.PURPLE.getId();
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-            return Color.byId(defaultValue);
+    public Colors getColor() {
+        final int defaultValue = Colors.PURPLE.getId();
+        if (protocolId < 110) { //ToDo
+            return Colors.byId(defaultValue);
         }
-        return Color.byId(sets.getByte(super.getLastDataIndex(), defaultValue));
+        return Colors.byId(sets.getByte(super.getLastDataIndex(), defaultValue));
     }
 
     @Override

@@ -17,32 +17,29 @@ import de.bixilon.minosoft.game.datatypes.MapSet;
 import de.bixilon.minosoft.game.datatypes.VersionValueMap;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 public class PacketBlockEntityMetadata implements ClientboundPacket {
     BlockPosition position;
-    Actions action;
+    BlockEntityActions action;
     CompoundTag nbt;
-
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                position = buffer.readBlockPositionShort();
-                action = Actions.byId(buffer.readByte(), buffer.getVersion());
-                nbt = buffer.readNBT(true);
-                return true;
-            default:
-                position = buffer.readPosition();
-                action = Actions.byId(buffer.readByte(), buffer.getVersion());
-                nbt = buffer.readNBT();
-                return true;
+
+        if (buffer.getProtocolId() < 6) {
+            position = buffer.readBlockPositionShort();
+            action = BlockEntityActions.byId(buffer.readByte(), buffer.getProtocolId());
+            nbt = (CompoundTag) buffer.readNBT(true);
+            return true;
         }
+        position = buffer.readPosition();
+        action = BlockEntityActions.byId(buffer.readByte(), buffer.getProtocolId());
+        nbt = (CompoundTag) buffer.readNBT();
+        return true;
     }
 
     @Override
@@ -59,45 +56,44 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         return position;
     }
 
-
     public CompoundTag getNbt() {
         return nbt;
     }
 
-
-    public enum Actions {
-        SPAWNER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1)}),
-        COMMAND_BLOCK_TEXT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2)}),
-        BEACON(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 3)}),
-        SKULL(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 3), new MapSet<>(ProtocolVersion.VERSION_1_8, 4)}),
-        FLOWER_POT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4), new MapSet<>(ProtocolVersion.VERSION_1_8, 5), new MapSet<>(ProtocolVersion.VERSION_1_13_2, 1000)}),
-        DECLARE_CONDUIT(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_13_2, 5)}),
-        BANNER(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_8, 6)}),
-        DATA_STRUCTURE_TILE_ENTITY(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 7)}),
-        END_GATEWAY_DESTINATION(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 8)}),
-        SET_TEXT_ON_SIGN(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 9)}),
-        DECLARE_SHULKER_BOX(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_11_2, 10)}),
-        SET_BED_COLOR(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_12_2, 11)}),
-        SET_DATA_JIGSAW(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 12)}),
-        SET_ITEMS_IN_CAMPFIRE(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_14_4, 13)});
+    public enum BlockEntityActions {
+        SPAWNER(new MapSet[]{new MapSet<>(0, 1)}),
+        COMMAND_BLOCK_TEXT(new MapSet[]{new MapSet<>(0, 2)}),
+        BEACON(new MapSet[]{new MapSet<>(33, 3)}),
+        SKULL(new MapSet[]{new MapSet<>(0, 3), new MapSet<>(33, 4)}),
+        FLOWER_POT(new MapSet[]{new MapSet<>(0, 4), new MapSet<>(33, 5), new MapSet<>(346, -1)}),
+        DECLARE_CONDUIT(new MapSet[]{new MapSet<>(371, 5)}),
+        BANNER(new MapSet[]{new MapSet<>(30, 6)}),
+        DATA_STRUCTURE_TILE_ENTITY(new MapSet[]{new MapSet<>(49, 7)}), // ToDo: was this really in 49?
+        END_GATEWAY_DESTINATION(new MapSet[]{new MapSet<>(49, 8)}),
+        SET_TEXT_ON_SIGN(new MapSet[]{new MapSet<>(110, 9)}),
+        DECLARE_SHULKER_BOX(new MapSet[]{new MapSet<>(307, 10)}),
+        SET_BED_COLOR(new MapSet[]{new MapSet<>(321, 11)}),
+        SET_DATA_JIGSAW(new MapSet[]{new MapSet<>(445, 12)}),
+        SET_ITEMS_IN_CAMPFIRE(new MapSet[]{new MapSet<>(452, 13)}),
+        BEE_HIVE(new MapSet[]{new MapSet<>(550, 14)});
 
         final VersionValueMap<Integer> valueMap;
 
-        Actions(MapSet<ProtocolVersion, Integer>[] values) {
+        BlockEntityActions(MapSet<Integer, Integer>[] values) {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static Actions byId(int id, ProtocolVersion version) {
-            for (Actions actions : values()) {
-                if (actions.getId(version) == id) {
+        public static BlockEntityActions byId(int id, int protocolId) {
+            for (BlockEntityActions actions : values()) {
+                if (actions.getId(protocolId) == id) {
                     return actions;
                 }
             }
             return null;
         }
 
-        public int getId(ProtocolVersion version) {
-            Integer ret = valueMap.get(version);
+        public int getId(int protocolId) {
+            Integer ret = valueMap.get(protocolId);
             if (ret == null) {
                 return -2;
             }

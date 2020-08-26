@@ -22,7 +22,6 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketUnloadChunk implements ClientboundPacket {
     ChunkLocation location;
 
-
     @Override
     public boolean read(InByteBuffer buffer) {
         location = new ChunkLocation(buffer.readInt(), buffer.readInt());

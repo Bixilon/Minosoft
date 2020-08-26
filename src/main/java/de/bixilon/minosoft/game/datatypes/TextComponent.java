@@ -50,36 +50,26 @@ public class TextComponent {
                         continue;
                     }
                     // only 1 code without message, append to list
-                    ChatColor colorCheck = null;
+                    ChatColors colorCheck = null;
                     try {
-                        colorCheck = ChatColor.byId(Integer.parseInt(paragraph.substring(0, 1), 16));
+                        colorCheck = ChatColors.byId(Integer.parseInt(paragraph.substring(0, 1), 16));
                     } catch (NumberFormatException ignored) {
                     }
                     if (colorCheck == null) {
                         //this is not a color, append attribute to list
+                        //save and clear
                         switch (paragraph.substring(0, 1)) {
-                            case "k":
-                                attributesList.add(ChatAttributes.OBFUSCATED);
-                                break;
-                            case "l":
-                                attributesList.add(ChatAttributes.BOLD);
-                                break;
-                            case "m":
-                                attributesList.add(ChatAttributes.STRIKETHROUGH);
-                                break;
-                            case "n":
-                                attributesList.add(ChatAttributes.UNDERLINED);
-                                break;
-                            case "o":
-                                attributesList.add(ChatAttributes.ITALIC);
-                                break;
-                            case "r":
-                                //save and clear
+                            case "k" -> attributesList.add(ChatAttributes.OBFUSCATED);
+                            case "l" -> attributesList.add(ChatAttributes.BOLD);
+                            case "m" -> attributesList.add(ChatAttributes.STRIKETHROUGH);
+                            case "n" -> attributesList.add(ChatAttributes.UNDERLINED);
+                            case "o" -> attributesList.add(ChatAttributes.ITALIC);
+                            case "r" -> {
                                 extra.add(getExtraByAttributes(message.toString(), color, attributesList));
                                 attributesList.clear();
                                 color = ChatAttributes.WHITE;
                                 message = new StringBuilder();
-                                break;
+                            }
                         }
                     } else {
                         // save current
@@ -166,15 +156,13 @@ public class TextComponent {
         if (json.has("extra")) {
             JsonArray arr = json.getAsJsonArray("extra");
             for (int i = 0; i < arr.size(); i++) {
-                JsonObject object;
-                try {
-                    object = arr.get(i).getAsJsonObject();
-                } catch (Exception e) {
-                    // reset text
+                if (arr.get(i).isJsonPrimitive()) {
                     buffer.append(ChatAttributes.RESET);
+                    buffer.append(" ");
                     buffer.append(arr.get(i).getAsString());
                     continue;
                 }
+                JsonObject object = arr.get(i).getAsJsonObject();
                 if (object.has("bold") && object.get("bold").getAsBoolean()) {
                     buffer.append(ChatAttributes.BOLD);
                 }
@@ -196,9 +184,22 @@ public class TextComponent {
                 buffer.append(object.get("text").getAsString());
             }
             buffer.append(ChatAttributes.RESET);
-            return buffer.toString();
         }
-        return "";
+        if (json.has("with")) {
+            JsonArray arr = json.getAsJsonArray("with");
+            for (int i = 0; i < arr.size(); i++) {
+                if (arr.get(i).isJsonPrimitive()) {
+                    buffer.append(ChatAttributes.RESET);
+                    buffer.append(" ");
+                    buffer.append(arr.get(i).getAsString());
+                    continue;
+                }
+                JsonObject object = arr.get(i).getAsJsonObject();
+                buffer.append(object.get("text").getAsString());
+            }
+            buffer.append(ChatAttributes.RESET);
+        }
+        return buffer.toString();
     }
 
     @Override
@@ -207,22 +208,22 @@ public class TextComponent {
     }
 
     public enum ChatAttributes {
-        BLACK("\033[38;2;0;0;0m", ChatColor.BLACK),
-        DARK_BLUE("\033[38;2;0;0;170m", ChatColor.DARK_BLUE),
-        DARK_GREEN("\033[38;2;0;170;0m", ChatColor.DARK_GREEN),
-        DARK_AQUA("\033[38;2;0;170;170m", ChatColor.DARK_AQUA),
-        DARK_RED("\033[38;2;170;0;0m", ChatColor.DARK_RED),
-        DARK_PURPLE("\033[38;2;170;0;170m", ChatColor.DARK_PURPLE),
-        GOLD("\033[38;2;255;170;0m", ChatColor.GOLD),
-        GRAY("\033[38;2;170;170;170m", ChatColor.GRAY),
-        DARK_GRAY("\033[38;2;85;85;85m", ChatColor.DARK_GRAY),
-        BLUE("\033[38;2;85;85;255m", ChatColor.DARK_BLUE),
-        GREEN("\033[38;2;85;255;85m", ChatColor.GREEN),
-        AQUA("\033[38;2;85;255;255m", ChatColor.AQUA),
-        RED("\033[38;2;255;85;85m", ChatColor.RED),
-        PURPLE("\033[38;2;255;85;255m", ChatColor.PURPLE, "light_purple"),
-        YELLOW("\033[38;2;255;255;85m", ChatColor.YELLOW),
-        WHITE("\033[38;2;255;255;255m", ChatColor.WHITE),
+        BLACK("\033[38;2;0;0;0m", ChatColors.BLACK),
+        DARK_BLUE("\033[38;2;0;0;170m", ChatColors.DARK_BLUE),
+        DARK_GREEN("\033[38;2;0;170;0m", ChatColors.DARK_GREEN),
+        DARK_AQUA("\033[38;2;0;170;170m", ChatColors.DARK_AQUA),
+        DARK_RED("\033[38;2;170;0;0m", ChatColors.DARK_RED),
+        DARK_PURPLE("\033[38;2;170;0;170m", ChatColors.DARK_PURPLE),
+        GOLD("\033[38;2;255;170;0m", ChatColors.GOLD),
+        GRAY("\033[38;2;170;170;170m", ChatColors.GRAY),
+        DARK_GRAY("\033[38;2;85;85;85m", ChatColors.DARK_GRAY),
+        BLUE("\033[38;2;85;85;255m", ChatColors.DARK_BLUE),
+        GREEN("\033[38;2;85;255;85m", ChatColors.GREEN),
+        AQUA("\033[38;2;85;255;255m", ChatColors.AQUA),
+        RED("\033[38;2;255;85;85m", ChatColors.RED),
+        PURPLE("\033[38;2;255;85;255m", ChatColors.PURPLE, "light_purple"),
+        YELLOW("\033[38;2;255;255;85m", ChatColors.YELLOW),
+        WHITE("\033[38;2;255;255;255m", ChatColors.WHITE),
 
         RESET("\u001b[0m", "r"),
         BOLD("\u001b[1m", "l"),
@@ -232,18 +233,18 @@ public class TextComponent {
         OBFUSCATED("\u001b[47;1m", "k"); // ToDo
 
         final String consolePrefix;
-        final ChatColor color;
+        final ChatColors color;
         final String prefix;
         final String name;
 
-        ChatAttributes(String consolePrefix, ChatColor color, String name) {
+        ChatAttributes(String consolePrefix, ChatColors color, String name) {
             this.consolePrefix = consolePrefix;
             this.color = color;
             this.name = name;
             this.prefix = null;
         }
 
-        ChatAttributes(String consolePrefix, ChatColor color) {
+        ChatAttributes(String consolePrefix, ChatColors color) {
             this.consolePrefix = consolePrefix;
             this.color = color;
             this.name = null;
@@ -264,20 +265,19 @@ public class TextComponent {
             this.name = null;
         }
 
-
         public static ChatAttributes byName(String name) {
-            for (ChatAttributes c : values()) {
-                if ((c.getName() != null && c.getName().toLowerCase().equals(name.toLowerCase())) || c.name().toLowerCase().equals(name.toLowerCase())) {
-                    return c;
+            for (ChatAttributes attribute : values()) {
+                if ((attribute.getName() != null && attribute.getName().toLowerCase().equals(name.toLowerCase())) || attribute.name().toLowerCase().equals(name.toLowerCase())) {
+                    return attribute;
                 }
             }
             return null;
         }
 
-        public static ChatAttributes byColor(ChatColor color) {
-            for (ChatAttributes c : values()) {
-                if (c.getColor() == color) {
-                    return c;
+        public static ChatAttributes byColor(ChatColors color) {
+            for (ChatAttributes attribute : values()) {
+                if (attribute.getColor() == color) {
+                    return attribute;
                 }
             }
             return null;
@@ -294,7 +294,7 @@ public class TextComponent {
             return prefix;
         }
 
-        public ChatColor getColor() {
+        public ChatColors getColor() {
             return color;
         }
 

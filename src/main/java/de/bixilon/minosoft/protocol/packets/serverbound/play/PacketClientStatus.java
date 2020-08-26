@@ -14,30 +14,26 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketClientStatus implements ServerboundPacket {
 
-    final ClientStatus status;
+    final ClientStates status;
 
-    public PacketClientStatus(ClientStatus status) {
+    public PacketClientStatus(ClientStates status) {
         this.status = status;
     }
 
-
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_CLIENT_STATUS));
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeByte((byte) status.getId());
-                break;
-            default:
-                buffer.writeVarInt(status.getId());
-                break;
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CLIENT_STATUS);
+        if (buffer.getProtocolId() < 7) {
+            buffer.writeByte((byte) status.getId());
+        } else {
+            buffer.writeVarInt(status.getId());
         }
         return buffer;
     }
@@ -47,28 +43,18 @@ public class PacketClientStatus implements ServerboundPacket {
         Log.protocol(String.format("Sending client status packet (status=%s)", status));
     }
 
-    public enum ClientStatus {
-        PERFORM_RESPAWN(0),
-        REQUEST_STATISTICS(1),
-        OPEN_INVENTORY(2);
+    public enum ClientStates {
+        PERFORM_RESPAWN,
+        REQUEST_STATISTICS,
+        OPEN_INVENTORY;
 
-        final int id;
 
-        ClientStatus(int id) {
-            this.id = id;
-        }
-
-        public static ClientStatus byId(int id) {
-            for (ClientStatus s : values()) {
-                if (s.getId() == id) {
-                    return s;
-                }
-            }
-            return null;
+        public static ClientStates byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 }

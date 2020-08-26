@@ -12,17 +12,15 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class BeeMetaData extends AnimalMetaData {
 
-    public BeeMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public BeeMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public boolean isAngry() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+        if (protocolId < 573) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue);
@@ -30,7 +28,7 @@ public class BeeMetaData extends AnimalMetaData {
 
     public boolean hasStung() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+        if (protocolId < 573) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
@@ -38,7 +36,7 @@ public class BeeMetaData extends AnimalMetaData {
 
     public boolean hasNectar() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+        if (protocolId < 573) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x08, defaultValue);
@@ -46,16 +44,15 @@ public class BeeMetaData extends AnimalMetaData {
 
     public int getAngerInTicks() {
         final int defaultValue = 0;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+        if (protocolId < 573) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
     }
 
-
     @Override
     protected int getLastDataIndex() {
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_15_2.getVersionNumber()) {
+        if (protocolId < 573) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 2;

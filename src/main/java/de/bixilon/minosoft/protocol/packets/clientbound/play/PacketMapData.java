@@ -18,14 +18,13 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 import de.bixilon.minosoft.util.BitByte;
 
 import java.util.ArrayList;
 
 public class PacketMapData implements ClientboundPacket {
     int mapId;
-    PacketMapDataData dataData;
+    PacketMapDataDataActions dataData;
 
     // depends on data
     // start
@@ -44,98 +43,89 @@ public class PacketMapData implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10:
-                mapId = buffer.readVarInt(); // mapId
-                short length = buffer.readShort();
-                // read action
-                dataData = PacketMapDataData.byId(buffer.readByte());
-                switch (dataData) {
-                    case START:
-                        xStart = buffer.readByte();
-                        yStart = buffer.readByte();
-                        colors = buffer.readBytes(length - 3); // 3: dataData(1) + xStart (1) + yStart (1)
-                        break;
-                    case PLAYERS:
-                        pins = new ArrayList<>();
-                        length--; // minus the dataData
-                        for (int i = 0; i < length / 3; i++) { // loop over all sets ( 1 set: 3 bytes)
-                            byte directionAndType = buffer.readByte();
-                            byte x = buffer.readByte();
-                            byte z = buffer.readByte();
-                            pins.add(new MapPinSet(MapPinType.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
-                        }
-                        break;
-                    case SCALE:
-                        scale = buffer.readByte();
-                        break;
+        if (buffer.getProtocolId() < 27) {
+            mapId = buffer.readVarInt(); // mapId
+            short length = buffer.readShort();
+            // read action
+            dataData = PacketMapDataDataActions.byId(buffer.readByte());
+            switch (dataData) {
+                case START -> {
+                    xStart = buffer.readByte();
+                    yStart = buffer.readByte();
+                    colors = buffer.readBytes(length - 3); // 3: dataData(1) + xStart (1) + yStart (1)
                 }
-                return true;
-            case VERSION_1_8:
-            case VERSION_1_9_4:
-            case VERSION_1_10:
-            case VERSION_1_11_2:
-            case VERSION_1_12_2: {
-                mapId = buffer.readVarInt();
-                scale = buffer.readByte();
-                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_9_4.getVersionNumber()) {
-                    boolean trackPosition = buffer.readBoolean();
-                }
-                int pinCount = buffer.readVarInt();
-                pins = new ArrayList<>();
-                for (int i = 0; i < pinCount; i++) {
-                    byte directionAndType = buffer.readByte();
-                    byte x = buffer.readByte();
-                    byte z = buffer.readByte();
-                    if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_12_2.getVersionNumber()) {
-                        pins.add(new MapPinSet(MapPinType.byId(directionAndType >>> 4), directionAndType & 0xF, x, z));
-                    } else {
-                        pins.add(new MapPinSet(MapPinType.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
+                case PLAYERS -> {
+                    pins = new ArrayList<>();
+                    length--; // minus the dataData
+                    for (int i = 0; i < length / 3; i++) { // loop over all sets ( 1 set: 3 bytes)
+                        byte directionAndType = buffer.readByte();
+                        byte x = buffer.readByte();
+                        byte z = buffer.readByte();
+                        pins.add(new MapPinSet(MapPinTypes.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
                     }
                 }
-                short columns = BitByte.byteToUShort(buffer.readByte());
-                if (columns > 0) {
-                    byte rows = buffer.readByte();
-                    byte xOffset = buffer.readByte();
-                    byte zOffset = buffer.readByte();
-
-                    int dataLength = buffer.readVarInt();
-                    data = buffer.readBytes(dataLength);
-                }
-                return true;
+                case SCALE -> scale = buffer.readByte();
             }
-            default: {
-                mapId = buffer.readVarInt();
-                scale = buffer.readByte();
-                boolean trackPosition = buffer.readBoolean();
-                if (buffer.getVersion().getVersionNumber() >= ProtocolVersion.VERSION_1_14_4.getVersionNumber()) {
-                    locked = buffer.readBoolean();
-                }
-                int pinCount = buffer.readVarInt();
-                pins = new ArrayList<>();
-                for (int i = 0; i < pinCount; i++) {
-                    MapPinType type = MapPinType.byId(buffer.readVarInt());
-                    byte x = buffer.readByte();
-                    byte z = buffer.readByte();
-                    byte direction = buffer.readByte();
-                    TextComponent displayName = null;
-                    if (buffer.readBoolean()) {
-                        displayName = buffer.readTextComponent();
-                    }
-                    pins.add(new MapPinSet(type, direction, x, z, displayName));
-                }
-                short columns = BitByte.byteToUShort(buffer.readByte());
-                if (columns > 0) {
-                    byte rows = buffer.readByte();
-                    byte xOffset = buffer.readByte();
-                    byte zOffset = buffer.readByte();
-
-                    int dataLength = buffer.readVarInt();
-                    data = buffer.readBytes(dataLength);
-                }
-                return true;
-            }
+            return true;
         }
+        if (buffer.getProtocolId() < 373) {
+            mapId = buffer.readVarInt();
+            scale = buffer.readByte();
+            if (buffer.getProtocolId() >= 58) {
+                boolean trackPosition = buffer.readBoolean();
+            }
+            int pinCount = buffer.readVarInt();
+            pins = new ArrayList<>();
+            for (int i = 0; i < pinCount; i++) {
+                byte directionAndType = buffer.readByte();
+                byte x = buffer.readByte();
+                byte z = buffer.readByte();
+                if (buffer.getProtocolId() >= 340) { //ToDo
+                    pins.add(new MapPinSet(MapPinTypes.byId(directionAndType >>> 4), directionAndType & 0xF, x, z));
+                } else {
+                    pins.add(new MapPinSet(MapPinTypes.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
+                }
+            }
+            short columns = BitByte.byteToUShort(buffer.readByte());
+            if (columns > 0) {
+                byte rows = buffer.readByte();
+                byte xOffset = buffer.readByte();
+                byte zOffset = buffer.readByte();
+
+                int dataLength = buffer.readVarInt();
+                data = buffer.readBytes(dataLength);
+            }
+            return true;
+        }
+        mapId = buffer.readVarInt();
+        scale = buffer.readByte();
+        boolean trackPosition = buffer.readBoolean();
+        if (buffer.getProtocolId() >= 452) {
+            locked = buffer.readBoolean();
+        }
+        int pinCount = buffer.readVarInt();
+        pins = new ArrayList<>();
+        for (int i = 0; i < pinCount; i++) {
+            MapPinTypes type = MapPinTypes.byId(buffer.readVarInt());
+            byte x = buffer.readByte();
+            byte z = buffer.readByte();
+            byte direction = buffer.readByte();
+            TextComponent displayName = null;
+            if (buffer.readBoolean()) {
+                displayName = buffer.readTextComponent();
+            }
+            pins.add(new MapPinSet(type, direction, x, z, displayName));
+        }
+        short columns = BitByte.byteToUShort(buffer.readByte());
+        if (columns > 0) {
+            byte rows = buffer.readByte();
+            byte xOffset = buffer.readByte();
+            byte zOffset = buffer.readByte();
+
+            int dataLength = buffer.readVarInt();
+            data = buffer.readBytes(dataLength);
+        }
+        return true;
     }
 
     @Override
@@ -148,7 +138,7 @@ public class PacketMapData implements ClientboundPacket {
         h.handle(this);
     }
 
-    public PacketMapDataData getDataData() {
+    public PacketMapDataDataActions getDataData() {
         return dataData;
     }
 
@@ -164,100 +154,76 @@ public class PacketMapData implements ClientboundPacket {
         return colors;
     }
 
-
     public ArrayList<MapPinSet> getPins() {
         return pins;
     }
-
 
     public byte getScale() {
         return scale;
     }
 
-    public enum PacketMapDataData {
-        START(0),
-        PLAYERS(1),
-        SCALE(2);
+    public enum PacketMapDataDataActions {
+        START,
+        PLAYERS,
+        SCALE;
 
-        final int id;
 
-        PacketMapDataData(int id) {
-            this.id = id;
-        }
-
-        public static PacketMapDataData byId(int id) {
-            for (PacketMapDataData d : values()) {
-                if (d.getId() == id) {
-                    return d;
-                }
-            }
-            return null;
+        public static PacketMapDataDataActions byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 
+    public enum MapPinTypes {
+        WHITE_ARROW,
+        GREEN_ARROW,
+        RED_ARROW,
+        BLUE_ARROW,
+        WHITE_CROSS,
+        RED_POINTER,
+        WHITE_CIRCLE,
+        BLUE_SQUARE,
+        SMALL_WHITE_CIRCLE,
+        MANSION,
+        TEMPLE,
+        WHITE_BANNER,
+        ORANGE_BANNER,
+        MAGENTA_BANNER,
+        LIGHT_BLUE_BANNER,
+        YELLOW_BANNER,
+        LIME_BANNER,
+        PINK_BANNER,
+        GRAY_BANNER,
+        LIGHT_GRAY_BANNER,
+        CYAN_BANNER,
+        PURPLE_BANNER,
+        BLUE_BANNER,
+        BROWN_BANNER,
+        GREEN_BANNER,
+        RED_BANNER,
+        BLACK_BANNER,
+        TREASURE_MARKER;
 
-    public enum MapPinType {
-        WHITE_ARROW(0),
-        GREEN_ARROW(1),
-        RED_ARROW(2),
-        BLUE_ARROW(3),
-        WHITE_CROSS(4),
-        RED_POINTER(5),
-        WHITE_CIRCLE(6),
-        BLUE_SQUARE(7),
-        SMALL_WHITE_CIRCLE(8),
-        MANSION(8),
-        TEMPLE(9),
-        WHITE_BANNER(10),
-        ORANGE_BANNER(11),
-        MAGENTA_BANNER(12),
-        LIGHT_BLUE_BANNER(13),
-        YELLOW_BANNER(14),
-        LIME_BANNER(15),
-        PINK_BANNER(16),
-        GRAY_BANNER(17),
-        LIGHT_GRAY_BANNER(18),
-        CYAN_BANNER(19),
-        PURPLE_BANNER(20),
-        BLUE_BANNER(21),
-        BROWN_BANNER(22),
-        GREEN_BANNER(23),
-        RED_BANNER(24),
-        BLACK_BANNER(25),
-        TREASURE_MARKER(26);
-
-        final int id;
-
-        MapPinType(int id) {
-            this.id = id;
-        }
-
-        public static MapPinType byId(int id) {
-            for (MapPinType type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return BLUE_SQUARE;
+        public static MapPinTypes byId(int id) {
+            return values()[id];
         }
 
         public int getId() {
-            return id;
+            return ordinal();
         }
     }
 
     public static class MapPinSet {
-        final MapPinType type;
+        final MapPinTypes type;
         final byte direction;
         final byte x;
         final byte z;
         final TextComponent displayName;
 
-        public MapPinSet(MapPinType type, int direction, byte x, byte z) {
+        public MapPinSet(MapPinTypes type, int direction, byte x, byte z) {
             this.type = type;
             this.direction = (byte) direction;
             this.x = x;
@@ -265,7 +231,7 @@ public class PacketMapData implements ClientboundPacket {
             displayName = null;
         }
 
-        public MapPinSet(MapPinType type, int direction, byte x, byte z, TextComponent displayName) {
+        public MapPinSet(MapPinTypes type, int direction, byte x, byte z, TextComponent displayName) {
             this.type = type;
             this.direction = (byte) direction;
             this.x = x;
@@ -273,7 +239,7 @@ public class PacketMapData implements ClientboundPacket {
             this.displayName = displayName;
         }
 
-        public MapPinType getType() {
+        public MapPinTypes getType() {
             return type;
         }
 

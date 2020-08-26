@@ -12,17 +12,15 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
-
 public class VexMetaData extends MonsterMetaData {
 
-    public VexMetaData(MetaDataHashMap sets, ProtocolVersion version) {
-        super(sets, version);
+    public VexMetaData(MetaDataHashMap sets, int protocolId) {
+        super(sets, protocolId);
     }
 
     public boolean isInAttackMode() {
         final boolean defaultValue = false;
-        if (version.getVersionNumber() < ProtocolVersion.VERSION_1_11_2.getVersionNumber()) {
+        if (protocolId < 315) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);

@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -78,16 +77,8 @@ public class CryptManager {
         return null;
     }
 
-    public static SecretKey decryptSharedKey(PrivateKey key, byte[] data) {
-        return new SecretKeySpec(decryptData(key, data), "AES");
-    }
-
     public static byte[] encryptData(Key key, byte[] data) {
         return cipherOperation(1, key, data);
-    }
-
-    public static byte[] decryptData(Key key, byte[] data) {
-        return cipherOperation(2, key, data);
     }
 
     static byte[] cipherOperation(int p_75885_0_, Key key, byte[] data) {

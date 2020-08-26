@@ -16,16 +16,15 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 import de.bixilon.minosoft.game.datatypes.MapSet;
 import de.bixilon.minosoft.game.datatypes.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersion;
 
 public class PacketEntityAction implements ServerboundPacket {
     final int entityId;
     final EntityActions action;
     final int parameter; // only for horse (jump boost)
-
 
     public PacketEntityAction(int entityId, EntityActions action) {
         this.entityId = entityId;
@@ -39,21 +38,16 @@ public class PacketEntityAction implements ServerboundPacket {
         this.parameter = parameter;
     }
 
-
     @Override
-    public OutPacketBuffer write(ProtocolVersion version) {
-        OutPacketBuffer buffer = new OutPacketBuffer(version, version.getPacketCommand(Packets.Serverbound.PLAY_ENTITY_ACTION));
-        switch (version) {
-            case VERSION_1_7_10:
-                buffer.writeInt(entityId);
-                buffer.writeByte((byte) action.getId(version));
-                buffer.writeInt(parameter);
-                break;
-            default:
-                buffer.writeVarInt(entityId);
-                buffer.writeVarInt(action.getId(version));
-                buffer.writeVarInt(parameter);
-                break;
+    public OutPacketBuffer write(Connection connection) {
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ENTITY_ACTION);
+        buffer.writeEntityId(entityId);
+        if (buffer.getProtocolId() < 7) {
+            buffer.writeByte((byte) action.getId(buffer.getProtocolId()));
+            buffer.writeInt(parameter);
+        } else {
+            buffer.writeVarInt(action.getId(buffer.getProtocolId()));
+            buffer.writeVarInt(parameter);
         }
         return buffer;
     }
@@ -64,33 +58,33 @@ public class PacketEntityAction implements ServerboundPacket {
     }
 
     public enum EntityActions {
-        SNEAK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 0)}),
-        UN_SNEAK(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 1)}),
-        LEAVE_BED(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 2)}),
-        START_SPRINTING(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 3)}),
-        STOP_SPRINTING(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 4)}),
-        START_HORSE_JUMP(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 5)}),
-        STOP_HORSE_JUMP(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 6)}),
-        OPEN_HORSE_INVENTORY(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_7_10, 6), new MapSet<>(ProtocolVersion.VERSION_1_9_4, 7)}),
-        START_ELYTRA_FLYING(new MapSet[]{new MapSet<>(ProtocolVersion.VERSION_1_9_4, 8)});
+        SNEAK(new MapSet[]{new MapSet<>(0, 0)}),
+        UN_SNEAK(new MapSet[]{new MapSet<>(0, 1)}),
+        LEAVE_BED(new MapSet[]{new MapSet<>(0, 2)}),
+        START_SPRINTING(new MapSet[]{new MapSet<>(0, 3)}),
+        STOP_SPRINTING(new MapSet[]{new MapSet<>(0, 4)}),
+        START_HORSE_JUMP(new MapSet[]{new MapSet<>(0, 5)}),
+        STOP_HORSE_JUMP(new MapSet[]{new MapSet<>(77, 6)}), // ToDo: when did they change? really in 77?
+        OPEN_HORSE_INVENTORY(new MapSet[]{new MapSet<>(0, 6), new MapSet<>(77, 7)}),
+        START_ELYTRA_FLYING(new MapSet[]{new MapSet<>(77, 8)});
 
         final VersionValueMap<Integer> valueMap;
 
-        EntityActions(MapSet<ProtocolVersion, Integer>[] values) {
+        EntityActions(MapSet<Integer, Integer>[] values) {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static EntityActions byId(int id, ProtocolVersion version) {
+        public static EntityActions byId(int id, int protocolId) {
             for (EntityActions action : values()) {
-                if (action.getId(version) == id) {
+                if (action.getId(protocolId) == id) {
                     return action;
                 }
             }
             return null;
         }
 
-        public int getId(ProtocolVersion version) {
-            Integer ret = valueMap.get(version);
+        public int getId(int protocolId) {
+            Integer ret = valueMap.get(protocolId);
             if (ret == null) {
                 return -2;
             }

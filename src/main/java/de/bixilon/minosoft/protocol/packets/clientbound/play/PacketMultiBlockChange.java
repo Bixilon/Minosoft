@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
 import de.bixilon.minosoft.game.datatypes.world.InChunkLocation;
 import de.bixilon.minosoft.logging.Log;
@@ -30,37 +29,45 @@ public class PacketMultiBlockChange implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        switch (buffer.getVersion()) {
-            case VERSION_1_7_10: {
+        if (buffer.getProtocolId() < 25) {
+            if (buffer.getProtocolId() < 4) {
+                location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
+            } else {
                 location = new ChunkLocation(buffer.readInt(), buffer.readInt());
-                short count = buffer.readShort();
-                int dataSize = buffer.readInt(); // should be count * 4
-                if (dataSize != count * 4) {
-                    throw new IllegalArgumentException(String.format("Not enough data (%d) for %d blocks", dataSize, count));
-                }
-                for (int i = 0; i < count; i++) {
-                    int raw = buffer.readInt();
-                    byte meta = (byte) (raw & 0xF);
-                    short blockId = (short) ((raw & 0xFF_F0) >>> 4);
-                    byte y = (byte) ((raw & 0xFF_00_00) >>> 16);
-                    byte z = (byte) ((raw & 0x0F_00_00_00) >>> 24);
-                    byte x = (byte) ((raw & 0xF0_00_00_00) >>> 28);
-                    blocks.put(new InChunkLocation(x, y, z), Blocks.getBlockByLegacy(blockId, meta));
-                }
-                return true;
             }
-            default: {
-                location = new ChunkLocation(buffer.readInt(), buffer.readInt());
-                int count = buffer.readVarInt();
-                for (int i = 0; i < count; i++) {
-                    byte pos = buffer.readByte();
-                    byte y = buffer.readByte();
-                    int blockId = buffer.readVarInt();
-                    blocks.put(new InChunkLocation(((pos & 0xF0 >>> 4) & 0xF), y, (pos & 0xF)), Blocks.getBlock(blockId, buffer.getVersion()));
-                }
-                return true;
+            short count = buffer.readShort();
+            int dataSize = buffer.readInt(); // should be count * 4
+            for (int i = 0; i < count; i++) {
+                int raw = buffer.readInt();
+                byte meta = (byte) (raw & 0xF);
+                short blockId = (short) ((raw & 0xFF_F0) >>> 4);
+                byte y = (byte) ((raw & 0xFF_00_00) >>> 16);
+                byte z = (byte) ((raw & 0x0F_00_00_00) >>> 24);
+                byte x = (byte) ((raw & 0xF0_00_00_00) >>> 28);
+                blocks.put(new InChunkLocation(x, y, z), buffer.getConnection().getMapping().getBlockByIdAndMetaData(blockId, meta));
             }
+            return true;
         }
+        if (buffer.getProtocolId() < 743) { //ToDo
+            location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+            int count = buffer.readVarInt();
+            for (int i = 0; i < count; i++) {
+                byte pos = buffer.readByte();
+                byte y = buffer.readByte();
+                int blockId = buffer.readVarInt();
+                blocks.put(new InChunkLocation((pos & 0xF0 >>> 4) & 0xF, y, pos & 0xF), buffer.getConnection().getMapping().getBlockById(blockId));
+            }
+            return true;
+        }
+        long rawPos = buffer.readLong();
+        location = new ChunkLocation((int) (rawPos >> 42), (int) (rawPos << 22 >> 42));
+        int yOffset = ((int) rawPos & 0xFFFFF) * 16;
+        int count = buffer.readVarInt();
+        for (int i = 0; i < count; i++) {
+            long data = buffer.readVarLong();
+            blocks.put(new InChunkLocation((int) ((data >> 8) & 0xF), yOffset + (int) ((data >> 4) & 0xF), (int) (data & 0xF)), buffer.getConnection().getMapping().getBlockById(((int) (data >>> 12))));
+        }
+        return true;
     }
 
     @Override

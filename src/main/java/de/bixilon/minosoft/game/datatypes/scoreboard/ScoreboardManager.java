@@ -16,14 +16,9 @@ package de.bixilon.minosoft.game.datatypes.scoreboard;
 import java.util.HashMap;
 
 public class ScoreboardManager {
-    final HashMap<String, Team> teams;
-    final HashMap<String, ScoreboardObjective> objectives;
+    final HashMap<String, Team> teams = new HashMap<>();
+    final HashMap<String, ScoreboardObjective> objectives = new HashMap<>();
 
-
-    public ScoreboardManager() {
-        teams = new HashMap<>();
-        objectives = new HashMap<>();
-    }
 
     public void addTeam(Team team) {
         teams.put(team.getName(), team);
