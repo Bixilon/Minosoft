@@ -184,14 +184,16 @@ public class Connection {
 
     public void setVersion(Version version) {
         this.version = version;
-        try {
-            Versions.loadVersionMappings(version.getProtocolVersion());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.fatal(String.format("Could not load mapping for %s. Exiting...", version));
-            System.exit(1);
+        if (reason == ConnectionReasons.GET_VERSION) {
+            try {
+                Versions.loadVersionMappings(version.getProtocolVersion());
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.fatal(String.format("Could not load mapping for %s. Exiting...", version));
+                System.exit(1);
+            }
+            customMapping.setVersion(version);
         }
-        customMapping.setVersion(version);
     }
 
     public PacketHandler getHandler() {

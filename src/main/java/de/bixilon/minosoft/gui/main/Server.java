@@ -98,4 +98,9 @@ public class Server {
         Minosoft.getConfig().putServer(this);
         Minosoft.getConfig().saveToFile(Config.configFileName);
     }
+
+    @Override
+    public String toString() {
+        return getName() + " (" + getAddress() + ")";
+    }
 }

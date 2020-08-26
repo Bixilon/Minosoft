@@ -63,8 +63,7 @@ public class PacketHandler {
         }
         version = Versions.getVersionById(versionId);
         if (version == null) {
-            Log.fatal(String.format("Server is running on unknown version or a invalid version was forced (version=%d). Disconnecting...", versionId));
-            connection.disconnect();
+            Log.fatal(String.format("Server is running on unknown version or a invalid version was forced (version=%d, brand=\"%s\")", versionId, pkg.getResponse().getServerVersion()));
         } else {
             connection.setVersion(version);
         }

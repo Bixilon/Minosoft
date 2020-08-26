@@ -138,7 +138,6 @@ public class TextComponent {
                 }
                 buffer.append(object.get("text").getAsString());
             }
-            buffer.append(ChatAttributes.RESET);
             return buffer.toString();
         }
         return "";

@@ -29,10 +29,6 @@ public class ServerListPing {
         return raw.getAsJsonObject("version").get("protocol").getAsInt();
     }
 
-    public String getServerBrand() {
-        return raw.getAsJsonObject("version").get("name").getAsString();
-    }
-
     public int getPlayerOnline() {
         return raw.getAsJsonObject("players").get("online").getAsInt();
     }
@@ -62,5 +58,13 @@ public class ServerListPing {
 
     public JsonObject getRaw() {
         return this.raw;
+    }
+
+    public String getServerVersion() {
+        return raw.getAsJsonObject("version").get("name").getAsString();
+    }
+
+    public boolean isForgeServer() {
+        return raw.has("modinfo") && raw.getAsJsonObject("modinfo").has("type") && raw.getAsJsonObject("modinfo").get("type").getAsString().equals("FML");
     }
 }

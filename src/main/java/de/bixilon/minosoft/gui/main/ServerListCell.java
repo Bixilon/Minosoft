@@ -29,6 +29,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 
 import java.io.IOException;
 import java.net.URL;
@@ -94,8 +95,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
             icon.setImage(favicon);
 
-            Connection c = new Connection(server.getId(), server.getAddress(), new Player(Minosoft.accountList.get(0)));
-            c.addPingCallback(ping -> Platform.runLater(() -> {
+            Connection connection = new Connection(server.getId(), server.getAddress(), new Player(Minosoft.accountList.get(0)));
+            connection.addPingCallback(ping -> Platform.runLater(() -> {
                 if (ping == null) {
                     // Offline
                     players.setText("");
@@ -106,7 +107,9 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 players.setText(String.format("%d/%d", ping.getPlayerOnline(), ping.getMaxPlayers()));
                 Version serverVersion = Versions.getVersionById(ping.getProtocolNumber());
                 if (serverVersion == null) {
-                    version.setText(String.format("UNKNOWN(%d)", ping.getProtocolNumber()));
+                    version.setText(ping.getServerVersion());
+                    version.setTextFill(Color.RED);
+                    optionsConnect.setDisable(true);
                 } else {
                     version.setText(serverVersion.getVersionName());
                 }
@@ -117,7 +120,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                     icon.setImage(ping.getFavicon());
                 }
             }));
-            c.resolve(ConnectionReasons.PING); // resolve dns address and connect
+            connection.resolve(ConnectionReasons.PING); // resolve dns address and connect
         }
         this.model = server;
     }
