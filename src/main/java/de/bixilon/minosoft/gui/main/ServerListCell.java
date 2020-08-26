@@ -102,7 +102,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             icon.setImage(favicon);
             optionsConnect.setOnAction(e -> {
                 Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), new Player(Minosoft.accountList.get(0)));
-                connection.resolve(ConnectionReasons.CONNECT);
+                connection.resolve(ConnectionReasons.CONNECT, server.getDesiredVersion());
             });
             optionsEdit.setOnAction(e -> edit());
 

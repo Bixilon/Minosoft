@@ -82,11 +82,18 @@ public class Connection {
         network.connect(address);
     }
 
-    public void resolve(ConnectionReasons reason) {
+    public void resolve(ConnectionReasons reason, int protocolId) {
         address = addresses.get(0);
         this.nextReason = reason;
         Log.info(String.format("Trying to connect to %s", address));
+        if (protocolId != -1) {
+            setVersion(Versions.getVersionById(protocolId));
+        }
         resolve(address);
+    }
+
+    public void resolve(ConnectionReasons reason) {
+        resolve(reason, -1);
     }
 
     public void resolve(ServerAddress address) {

@@ -385,7 +385,7 @@ public class InByteBuffer {
     public EntityMetaData.MetaDataHashMap readMetaData() {
         EntityMetaData.MetaDataHashMap sets = new EntityMetaData.MetaDataHashMap();
 
-        if (protocolId < 47) {
+        if (protocolId < 48) {
             byte item = readByte();
 
             while (item != 0x7F) {
