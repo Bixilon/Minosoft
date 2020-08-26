@@ -15,12 +15,10 @@ package de.bixilon.minosoft;
 
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
-import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.protocol.ConnectionReasons;
 import de.bixilon.minosoft.util.FolderUtil;
 import de.bixilon.minosoft.util.OSUtil;
 import de.bixilon.minosoft.util.Util;
@@ -33,7 +31,8 @@ import java.util.UUID;
 
 public class Minosoft {
     static Configuration config;
-    static ArrayList<MojangAccount> accountList;
+    public static ArrayList<MojangAccount> accountList;
+    public static ArrayList<Server> serverList;
 
     public static void main(String[] args) {
         // init log thread
@@ -49,7 +48,7 @@ public class Minosoft {
             e.printStackTrace();
             return;
         }
-        Log.info(String.format("Loaded config file (version=%s)", config.getInteger(GameConfiguration.CONFIG_VERSION)));
+        Log.info(String.format("Loaded config file (version=%s)", config.getInt(GameConfiguration.CONFIG_VERSION)));
         // set log level from config
         Log.setLevel(LogLevels.valueOf(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
         Log.info(String.format("Logging info with level: %s", Log.getLevel()));
@@ -83,8 +82,9 @@ public class Minosoft {
         } else {
             Log.mojang("Could not refresh session, you will not be able to join premium servers!");
         }
-        Connection c = new Connection(1, config.getString("debug.host"), new Player(account));
-        c.resolve(ConnectionReasons.CONNECT); // resolve dns address and connect
+
+        serverList = config.getServers();
+        Launcher.main(args);
     }
 
     /**

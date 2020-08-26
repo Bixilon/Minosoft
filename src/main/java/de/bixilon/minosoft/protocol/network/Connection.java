@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.protocol.network;
 
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.PingCallback;
+import de.bixilon.minosoft.ServerListPing;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.game.datatypes.VelocityHandler;
@@ -45,13 +47,15 @@ public class Connection {
     final PacketSender sender = new PacketSender(this);
     final ArrayList<ClientboundPacket> handlingQueue = new ArrayList<>();
     final VelocityHandler velocityHandler = new VelocityHandler(this);
+    final ArrayList<PingCallback> pingCallbacks = new ArrayList<>();
     final int connectionId;
+    final Player player;
+    int desiredVersionNumber = -1;
     ServerAddress address;
     PluginChannelHandler pluginChannelHandler;
     Thread handleThread;
     Version version = Versions.getLowestVersionSupported(); // default
     final CustomMapping customMapping = new CustomMapping(version);
-    final Player player;
     ConnectionStates state = ConnectionStates.DISCONNECTED;
     ConnectionReasons reason;
     ConnectionReasons nextReason;
@@ -166,8 +170,10 @@ public class Connection {
                     Log.warn(String.format("Could not connect to %s, trying next hostname: %s", address, nextAddress));
                     this.address = nextAddress;
                     resolve(address);
+                } else {
+                    // no connection and no servers available anymore... sorry, but you can not play today :(
+                    handleCallbacks(null);
                 }
-                // else: failed
                 break;
         }
     }
@@ -295,7 +301,7 @@ public class Connection {
 
     public int getPacketCommand(Packets.Serverbound packet) {
         Integer command = null;
-        if (getReason() != ConnectionReasons.GET_VERSION) {
+        if (getReason() == ConnectionReasons.CONNECT) {
             command = version.getCommandByPacket(packet);
         }
         if (command == null) {
@@ -306,7 +312,7 @@ public class Connection {
 
     public Packets.Clientbound getPacketByCommand(ConnectionStates state, int command) {
         Packets.Clientbound packet = null;
-        if (getReason() != ConnectionReasons.GET_VERSION) {
+        if (getReason() == ConnectionReasons.CONNECT) {
             packet = version.getPacketByCommand(state, command);
         }
         if (packet == null) {
@@ -321,5 +327,27 @@ public class Connection {
 
     public int getConnectionId() {
         return connectionId;
+    }
+
+    public void addPingCallback(PingCallback pingCallback) {
+        pingCallbacks.add(pingCallback);
+    }
+
+    public ArrayList<PingCallback> getPingCallbacks() {
+        return pingCallbacks;
+    }
+
+    public int getDesiredVersionNumber() {
+        return desiredVersionNumber;
+    }
+
+    public void setDesiredVersionNumber(int desiredVersionNumber) {
+        this.desiredVersionNumber = desiredVersionNumber;
+    }
+
+    public void handleCallbacks(ServerListPing ping) {
+        for (PingCallback callback : getPingCallbacks()) {
+            callback.handle(ping);
+        }
     }
 }

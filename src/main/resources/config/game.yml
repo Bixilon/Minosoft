@@ -15,7 +15,4 @@ account:
   clientToken: "randomGenerated"
   accounts:
 
-# this will be removed soon, only for debugging (pre alpha stage): some features are not implemented yet -/-
-debug:
-  server: "127.0.0.1"
-  version: -1
+servers:

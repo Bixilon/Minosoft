@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.game.datatypes.GameModes;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
@@ -56,21 +55,21 @@ public class PacketHandler {
     }
 
     public void handle(PacketStatusResponse pkg) {
-        if (connection.getReason() == ConnectionReasons.GET_VERSION) {
-            // now we know the version, set it, if the config allows it
-            Version version;
-            int versionId = Minosoft.getConfig().getInteger("debug.version");
-            if (versionId == -1) {
-                versionId = pkg.getResponse().getProtocolNumber();
-            }
-            version = Versions.getVersionById(versionId);
-            if (version == null) {
-                Log.fatal(String.format("Server is running on unknown version or a invalid version was forced (version=%d). Exiting...", versionId));
-                System.exit(1);
-            }
-            Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getColoredMessage()));
+        // now we know the version, set it, if the config allows it
+        Version version;
+        int versionId = connection.getDesiredVersionNumber();
+        if (versionId == -1) {
+            versionId = pkg.getResponse().getProtocolNumber();
+        }
+        version = Versions.getVersionById(versionId);
+        if (version == null) {
+            Log.fatal(String.format("Server is running on unknown version or a invalid version was forced (version=%d). Disconnecting...", versionId));
+            connection.disconnect();
+        } else {
             connection.setVersion(version);
         }
+        Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getColoredMessage()));
+        connection.handleCallbacks(pkg.getResponse());
     }
 
     public void handle(PacketStatusPong pkg) {

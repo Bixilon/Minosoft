@@ -15,6 +15,8 @@ package de.bixilon.minosoft;
 
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.gui.main.GUITools;
+import javafx.scene.image.Image;
 
 public class ServerListPing {
     final JsonObject raw;
@@ -40,7 +42,14 @@ public class ServerListPing {
     }
 
     public String getBase64EncodedFavicon() {
-        return raw.get("favicon").getAsString();
+        if (raw.has("favicon")) {
+            return raw.get("favicon").getAsString().replace("data:image/png;base64,", "");
+        }
+        return null;
+    }
+
+    public Image getFavicon() {
+        return GUITools.getImageFromBase64(getBase64EncodedFavicon());
     }
 
     public TextComponent getMotd() {
