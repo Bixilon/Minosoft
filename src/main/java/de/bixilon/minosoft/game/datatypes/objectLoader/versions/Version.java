@@ -81,6 +81,9 @@ public class Version {
         if (super.equals(obj)) {
             return true;
         }
+        if (obj == null) {
+            return false;
+        }
         if (hashCode() != obj.hashCode()) {
             return false;
         }

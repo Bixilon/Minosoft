@@ -52,7 +52,7 @@ public final class DNSUtil {
 
     }
 
-    public String correctHostName(String hostname) {
+    public static String correctHostName(String hostname) {
         // replaces invalid chars to avoid copy and paste issues (like spaces, ...)
         hostname = hostname.replaceAll("\\s", "");
         return hostname;

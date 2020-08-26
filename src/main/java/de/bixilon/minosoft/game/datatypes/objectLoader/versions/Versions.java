@@ -151,6 +151,10 @@ public class Versions {
     }
 
     public static Version getLowestVersionSupported() {
-        return new Version("13w41b", 0, null, null);
+        return new Version("Automatic", -1, null, null);
+    }
+
+    public static HashBiMap<Integer, Version> getVersionMap() {
+        return versionMap;
     }
 }

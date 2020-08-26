@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft;
 
+import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
+import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.gui.main.GUITools;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.gui.main.ServerListCell;
@@ -24,6 +26,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.util.Comparator;
+import java.util.Map;
+
 
 public class Launcher extends Application {
 
@@ -33,6 +38,18 @@ public class Launcher extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        GUITools.versions.add(Versions.getLowestVersionSupported());
+        for (Map.Entry<Integer, Version> version : Versions.getVersionMap().entrySet()) {
+            GUITools.versions.add(version.getValue());
+        }
+        Comparator<Version> comparator = Comparator.comparingInt(Version::getProtocolVersion);
+        FXCollections.sort(GUITools.versions, comparator);
+        GUITools.versions.sort((a, b) -> {
+            if (a.getProtocolVersion() == -1) {
+                return -Integer.MAX_VALUE;
+            }
+            return (b.getProtocolVersion() - a.getProtocolVersion());
+        });
         ListView<Server> listView = new ListView<>();
         listView.setCellFactory((lv) -> ServerListCell.newInstance());
 
@@ -40,7 +57,7 @@ public class Launcher extends Application {
         servers.addAll(Minosoft.serverList);
         listView.setItems(servers);
 
-        Scene scene = new Scene(new BorderPane(listView), 400, 450);
+        Scene scene = new Scene(new BorderPane(listView), 550, 800);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Minosoft");
         primaryStage.getIcons().add(GUITools.logo);

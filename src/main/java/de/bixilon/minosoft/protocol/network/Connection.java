@@ -41,6 +41,7 @@ import org.xbill.DNS.TextParseException;
 import java.util.ArrayList;
 
 public class Connection {
+    public static int lastConnectionId;
     final ArrayList<ServerAddress> addresses;
     final Network network = new Network(this);
     final PacketHandler handler = new PacketHandler(this);
@@ -352,4 +353,5 @@ public class Connection {
             callback.handle(ping);
         }
     }
+
 }

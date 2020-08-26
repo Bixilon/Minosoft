@@ -54,7 +54,7 @@ public class InByteBuffer {
     public byte readByte() {
         byte ret;
         ret = bytes[pos];
-        pos = pos + 1;
+        pos++;
         return ret;
     }
 
