@@ -30,6 +30,14 @@
                     <target>14</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.4</version>
+                <configuration>
+                    <mainClass>de.bixilon.minosoft.Minosoft</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
