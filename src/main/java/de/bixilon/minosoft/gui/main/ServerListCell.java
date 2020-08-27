@@ -62,6 +62,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     @FXML
     private AnchorPane root;
     private Server server;
+    boolean canConnect = false;
 
     public static ServerListCell newInstance() {
         FXMLLoader loader = new FXMLLoader(ServerListCell.class.getResource("/layout/cells/server.fxml"));
@@ -99,10 +100,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 favicon = GUITools.logo;
             }
             icon.setImage(favicon);
-            optionsConnect.setOnAction(e -> {
-                Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), new Player(Minosoft.accountList.get(0)));
-                connection.resolve(ConnectionReasons.CONNECT, server.getDesiredVersion());
-            });
+            optionsConnect.setOnAction(e -> connect());
             optionsEdit.setOnAction(e -> edit());
             optionsDelete.setOnAction(e -> delete());
 
@@ -113,6 +111,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                     players.setText("");
                     version.setText("Offline");
                     optionsConnect.setDisable(true);
+                    canConnect = false;
                     return;
                 }
                 players.setText(String.format("%d/%d", ping.getPlayerOnline(), ping.getMaxPlayers()));
@@ -126,8 +125,10 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                     version.setText(ping.getServerVersion());
                     version.setTextFill(Color.RED);
                     optionsConnect.setDisable(true);
+                    canConnect = false;
                 } else {
                     version.setText(serverVersion.getVersionName());
+                    canConnect = true;
                 }
                 motd.setText(ping.getMotd().getRawMessage());
                 if (ping.getFavicon() != null) {
@@ -138,6 +139,11 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }));
             connection.resolve(ConnectionReasons.PING); // resolve dns address and ping
         }
+        setOnMouseClicked(click -> {
+            if (click.getClickCount() == 2) {
+                connect();
+            }
+        });
     }
 
     @Override
@@ -205,5 +211,14 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public void delete() {
         listView.getItems().remove(server);
         server.delete();
+    }
+
+    public void connect() {
+        if (!canConnect) {
+            return;
+        }
+        Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), new Player(Minosoft.accountList.get(0)));
+        connection.resolve(ConnectionReasons.CONNECT, server.getDesiredVersion());
+        setStyle("-fx-background-color: darkseagreen;");
     }
 }

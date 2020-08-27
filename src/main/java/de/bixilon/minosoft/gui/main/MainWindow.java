@@ -18,7 +18,6 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.DNSUtil;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -41,7 +40,7 @@ public class MainWindow implements Initializable {
     }
 
     @FXML
-    public void addServer(ActionEvent e) {
+    public void addServer() {
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Add server");
         dialog.setHeaderText("Enter the details of the server");
@@ -92,7 +91,7 @@ public class MainWindow implements Initializable {
     }
 
     @FXML
-    public void quit(ActionEvent e) {
+    public void quit() {
         System.exit(0);
     }
 }
