@@ -23,9 +23,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -52,6 +54,21 @@ public class Launcher extends Application {
             }
             return (b.getProtocolVersion() - a.getProtocolVersion());
         });
+
+        GUITools.versionList.setCellFactory(new Callback<>() {
+            @Override
+            public ListCell<Version> call(ListView<Version> p) {
+                return new ListCell<>() {
+                    @Override
+                    protected void updateItem(Version version, boolean empty) {
+                        super.updateItem(version, empty);
+                        if (!empty && version != null) {
+                            setText(String.format("%s (%d)", version.getVersionName(), version.getProtocolVersion()));
+                        }
+                    }
+                };
+            }
+        });
         ServerListCell.listView.setCellFactory((lv) -> ServerListCell.newInstance());
 
         ObservableList<Server> servers = FXCollections.observableArrayList();
@@ -67,6 +84,5 @@ public class Launcher extends Application {
         primaryStage.getIcons().add(GUITools.logo);
         primaryStage.show();
 
-        ((BorderPane) scene.lookup("#serversPane")).setCenter(ServerListCell.listView);
     }
 }

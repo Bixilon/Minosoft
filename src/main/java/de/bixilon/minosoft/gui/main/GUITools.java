@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.main;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 
 import java.io.ByteArrayInputStream;
@@ -24,6 +25,7 @@ import java.util.Base64;
 public class GUITools {
     public final static Image logo = new Image(GUITools.class.getResourceAsStream("/icons/windowIcon.png"));
     public final static ObservableList<Version> versions = FXCollections.observableArrayList();
+    public final static ComboBox<Version> versionList = new ComboBox<>(GUITools.versions);
 
     public static Image getImageFromBase64(String base64) {
         if (base64 == null) {

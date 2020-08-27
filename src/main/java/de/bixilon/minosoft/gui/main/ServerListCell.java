@@ -33,7 +33,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.util.Callback;
 import javafx.util.Pair;
 
 import java.io.IOException;
@@ -41,7 +40,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ServerListCell extends ListCell<Server> implements Initializable {
-        public static ListView<Server> listView = new ListView<>();
+    public static ListView<Server> listView = new ListView<>();
     @FXML
     public ImageView icon;
     @FXML
@@ -147,17 +146,13 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     }
 
     public void edit() {
-        // Create the custom dialog.
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Edit server: " + server.getName());
         dialog.setHeaderText("Edit the details of the server");
 
-
-// Set the button types.
         ButtonType loginButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
 
-// Create the username and password labels and fields.
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -170,25 +165,11 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         serverAddress.setPromptText("Server address");
         serverAddress.setText(server.getAddress());
 
-        ComboBox<Version> versionList = new ComboBox<>(GUITools.versions);
-        versionList.setCellFactory(new Callback<>() {
-            @Override
-            public ListCell<Version> call(ListView<Version> p) {
-                return new ListCell<>() {
-                    @Override
-                    protected void updateItem(Version version, boolean empty) {
-                        super.updateItem(version, empty);
-                        if (!empty && version != null) {
-                            setText(String.format("%s (%d)", version.getVersionName(), version.getProtocolVersion()));
-                        }
-                    }
-                };
-            }
-        });
+
         if (server.getDesiredVersion() == -1) {
-            versionList.getSelectionModel().select(Versions.getLowestVersionSupported());
+            GUITools.versionList.getSelectionModel().select(Versions.getLowestVersionSupported());
         } else {
-            versionList.getSelectionModel().select(Versions.getVersionById(server.getDesiredVersion()));
+            GUITools.versionList.getSelectionModel().select(Versions.getVersionById(server.getDesiredVersion()));
         }
 
         grid.add(new Label("Servername:"), 0, 0);
@@ -196,27 +177,21 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         grid.add(new Label("Server address:"), 0, 1);
         grid.add(serverAddress, 1, 1);
         grid.add(new Label("Version:"), 0, 2);
-        grid.add(versionList, 1, 2);
+        grid.add(GUITools.versionList, 1, 2);
 
-// Enable/Disable login button depending on whether a username was entered.
-        Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+        Node saveButton = dialog.getDialogPane().lookupButton(loginButtonType);
 
-// Do some validation (using the Java 8 lambda syntax).
-        serverAddress.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(newValue.trim().isEmpty());
-        });
+        serverAddress.textProperty().addListener((observable, oldValue, newValue) -> saveButton.setDisable(newValue.trim().isEmpty()));
 
         dialog.getDialogPane().setContent(grid);
 
-// Request focus on the username field by default.
         Platform.runLater(serverName::requestFocus);
 
-// Convert the result to a username-password-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
                 ServerListCell.this.serverName.setText(serverName.getText());
                 ServerListCell.this.server.setName(serverName.getText());
-                ServerListCell.this.server.setDesiredVersion(versionList.getSelectionModel().getSelectedItem().getProtocolVersion());
+                ServerListCell.this.server.setDesiredVersion(GUITools.versionList.getSelectionModel().getSelectedItem().getProtocolVersion());
                 ServerListCell.this.server.setAddress(DNSUtil.correctHostName(serverAddress.getText()));
                 ServerListCell.this.server.saveToConfig();
                 Log.info(String.format("Edited and saved server (serverName=%s, serverAddress=%s, version=%d)", server.getName(), server.getAddress(), server.getDesiredVersion()));
