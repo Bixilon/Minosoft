@@ -83,6 +83,7 @@ public class Launcher extends Application {
         primaryStage.setTitle("Minosoft");
         primaryStage.getIcons().add(GUITools.logo);
         primaryStage.show();
+        primaryStage.setOnCloseRequest(windowEvent -> System.exit(0));
 
     }
 }

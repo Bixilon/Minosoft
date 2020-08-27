@@ -94,4 +94,5 @@ public class MainWindow implements Initializable {
     public void quit() {
         System.exit(0);
     }
+
 }
