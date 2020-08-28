@@ -53,81 +53,44 @@ public class EntityMetaData {
         Object data = null;
 
         switch (type) {
-            case BYTE:
-                data = buffer.readByte();
-                break;
-            case VAR_INT:
-                data = buffer.readVarInt();
-                break;
-            case SHORT:
-                data = buffer.readShort();
-                break;
-            case INT:
-                data = buffer.readInt();
-                break;
-            case FLOAT:
-                data = buffer.readFloat();
-                break;
-            case STRING:
-                data = buffer.readString();
-                break;
-            case CHAT:
-                data = buffer.readTextComponent();
-                break;
-            case BOOLEAN:
-                data = buffer.readBoolean();
-                break;
-            case VECTOR:
-                data = new Vector(buffer.readInt(), buffer.readInt(), buffer.readInt());
-                break;
-            case SLOT:
-                data = buffer.readSlot();
-                break;
-            case ROTATION:
-                data = new EntityRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-                break;
-            case POSITION:
-                data = buffer.readPosition();
-                break;
-            case OPT_CHAT:
+            case BYTE -> data = buffer.readByte();
+            case VAR_INT -> data = buffer.readVarInt();
+            case SHORT -> data = buffer.readShort();
+            case INT -> data = buffer.readInt();
+            case FLOAT -> data = buffer.readFloat();
+            case STRING -> data = buffer.readString();
+            case CHAT -> data = buffer.readTextComponent();
+            case BOOLEAN -> data = buffer.readBoolean();
+            case VECTOR -> data = new Vector(buffer.readInt(), buffer.readInt(), buffer.readInt());
+            case SLOT -> data = buffer.readSlot();
+            case ROTATION -> data = new EntityRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+            case POSITION -> data = buffer.readPosition();
+            case OPT_CHAT -> {
                 if (buffer.readBoolean()) {
                     data = buffer.readTextComponent();
                 }
-                break;
-            case OPT_POSITION:
+            }
+            case OPT_POSITION -> {
                 if (buffer.readBoolean()) {
                     data = buffer.readPosition();
                 }
-                break;
-            case DIRECTION:
-                data = buffer.readDirection();
-                break;
-            case OPT_UUID:
+            }
+            case DIRECTION -> data = buffer.readDirection();
+            case OPT_UUID -> {
                 if (buffer.readBoolean()) {
                     data = buffer.readUUID();
                 }
-                break;
-            case NBT:
-                data = buffer.readNBT();
-                break;
-            case PARTICLE:
-                data = buffer.readParticle();
-                break;
-            case POSE:
-                data = buffer.readPose();
-                break;
-            case BLOCK_ID:
+            }
+            case NBT -> data = buffer.readNBT();
+            case PARTICLE -> data = buffer.readParticle();
+            case POSE -> data = buffer.readPose();
+            case BLOCK_ID -> {
                 int blockId = buffer.readVarInt();
                 data = buffer.getConnection().getMapping().getBlockById(blockId);
-                break;
-            case OPT_VAR_INT:
-                data = buffer.readVarInt() - 1;
-                break;
-            case VILLAGER_DATA:
-                data = new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getProtocolId()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + type);
+            }
+            case OPT_VAR_INT -> data = buffer.readVarInt() - 1;
+            case VILLAGER_DATA -> data = new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getProtocolId()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
+            default -> throw new IllegalStateException("Unexpected value: " + type);
         }
         return data;
     }
