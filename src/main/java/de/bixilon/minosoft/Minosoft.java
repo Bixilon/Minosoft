@@ -84,7 +84,7 @@ public class Minosoft {
         }
 
         serverList = config.getServers();
-        Launcher.main(args);
+        Launcher.main();
     }
 
     /**

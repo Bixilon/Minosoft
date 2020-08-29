@@ -30,14 +30,13 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.Map;
 
 
 public class Launcher extends Application {
 
-    public static void main(String[] args) {
-        launch(args);
+    public static void main() {
+        launch();
     }
 
     @Override
@@ -46,8 +45,7 @@ public class Launcher extends Application {
         for (Map.Entry<Integer, Version> version : Versions.getVersionMap().entrySet()) {
             GUITools.versions.add(version.getValue());
         }
-        Comparator<Version> comparator = Comparator.comparingInt(Version::getProtocolVersion);
-        FXCollections.sort(GUITools.versions, comparator);
+
         GUITools.versions.sort((a, b) -> {
             if (a.getProtocolVersion() == -1) {
                 return -Integer.MAX_VALUE;

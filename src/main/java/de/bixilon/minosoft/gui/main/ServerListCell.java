@@ -110,6 +110,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                     // Offline
                     players.setText("");
                     version.setText("Offline");
+                    motd.setText("Could not connect to server!");
                     optionsConnect.setDisable(true);
                     canConnect = false;
                     return;
