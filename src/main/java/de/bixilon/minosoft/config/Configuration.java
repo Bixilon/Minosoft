@@ -109,7 +109,6 @@ public class Configuration {
         String basePath = String.format("servers.%d.", server.getId());
         putString(basePath + "name", server.getName());
         putString(basePath + "address", server.getAddress());
-        putString(basePath + "account", server.getAccount());
         putInt(basePath + "version", server.getDesiredVersion());
         if (server.getBase64Favicon() != null) {
             putString(basePath + "favicon", server.getBase64Favicon());
@@ -208,7 +207,7 @@ public class Configuration {
             if (entry.containsKey("favicon")) {
                 favicon = (String) entry.get("favicon");
             }
-            servers.add(new Server(Integer.parseInt(set.getKey()), (String) entry.get("name"), (String) entry.get("address"), (String) entry.get("account"), (int) entry.get("version"), favicon));
+            servers.add(new Server(Integer.parseInt(set.getKey()), (String) entry.get("name"), (String) entry.get("address"), (int) entry.get("version"), favicon));
         }
         return servers;
     }

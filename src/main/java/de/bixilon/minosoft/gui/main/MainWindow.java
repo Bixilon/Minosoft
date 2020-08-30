@@ -55,6 +55,7 @@ public class MainWindow implements Initializable {
 
         TextField serverName = new TextField();
         serverName.setPromptText("Servername");
+        serverName.setText("A Minosoft server");
         TextField serverAddress = new TextField();
         serverAddress.setPromptText("Server address");
 
@@ -78,7 +79,7 @@ public class MainWindow implements Initializable {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
-                Server server = new Server(Minosoft.serverList.size() + 1, serverName.getText(), DNSUtil.correctHostName(serverAddress.getText()), null, GUITools.versionList.getSelectionModel().getSelectedItem().getProtocolVersion());
+                Server server = new Server(Minosoft.serverList.size() + 1, serverName.getText(), DNSUtil.correctHostName(serverAddress.getText()), GUITools.versionList.getSelectionModel().getSelectedItem().getProtocolVersion());
                 Minosoft.serverList.add(server);
                 server.saveToConfig();
                 ServerListCell.listView.getItems().add(server);

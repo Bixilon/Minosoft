@@ -18,6 +18,7 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.gui.main.GUITools;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.gui.main.ServerListCell;
+import de.bixilon.minosoft.logging.Log;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,6 +42,7 @@ public class Launcher extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        Log.info("Starting launcher...");
         GUITools.versions.add(Versions.getLowestVersionSupported());
         for (Map.Entry<Integer, Version> version : Versions.getVersionMap().entrySet()) {
             GUITools.versions.add(version.getValue());
@@ -83,5 +85,6 @@ public class Launcher extends Application {
         primaryStage.show();
         primaryStage.setOnCloseRequest(windowEvent -> System.exit(0));
 
+        Log.info("Launcher started!");
     }
 }

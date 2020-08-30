@@ -40,8 +40,13 @@ public final class Util {
         }
     }
 
-    public static UUID formatUUID(String uuid) {
-        return UUID.fromString(UUID_FIX.matcher(uuid.replace("-", "")).replaceAll("$1-$2-$3-$4-$5"));
+    public static UUID uuidFromString(String uuid) {
+        if (uuid.length() == 36) {
+            return UUID.fromString(uuid);
+        } else if (uuid.length() == 32) {
+            return UUID.fromString(UUID_FIX.matcher(uuid.replace("-", "")).replaceAll("$1-$2-$3-$4-$5"));
+        }
+        throw new IllegalArgumentException(String.format("%s is not a valid UUID String", uuid));
     }
 
     public static InByteBuffer decompress(byte[] bytes, Connection connection) {

@@ -65,6 +65,7 @@ public class Minosoft {
         }
         Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
 
+        Log.debug("Refreshing token...");
         checkClientToken();
 
         accountList = config.getMojangAccounts();
@@ -82,6 +83,7 @@ public class Minosoft {
         } else {
             Log.mojang("Could not refresh session, you will not be able to join premium servers!");
         }
+        Log.debug("Refreshed token!");
 
         serverList = config.getServers();
         Launcher.main();

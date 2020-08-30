@@ -64,6 +64,8 @@ public class Network {
                 socket = new Socket();
                 socket.setSoTimeout(ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
                 socket.connect(new InetSocketAddress(address.getHostname(), address.getPort()), ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
+                // connected, use minecraft timeout
+                socket.setSoTimeout(ProtocolDefinition.SOCKET_TIMEOUT);
                 connected = true;
                 connection.setConnectionState(ConnectionStates.HANDSHAKING);
                 socket.setKeepAlive(true);
@@ -120,79 +122,82 @@ public class Network {
                         }
                     }
 
-// everything sent for now, waiting for data
-                    if (inputStream.available() > 0) { // available seems not to work in CipherInputStream
-                        int numRead = 0;
-                        int length = 0;
-                        byte read;
-                        do {
-                            read = cipherInputStream.readNBytes(1)[0];
-                            int value = (read & 0b01111111);
-                            length |= (value << (7 * numRead));
-
-                            numRead++;
-                            if (numRead > 5) {
-                                throw new RuntimeException("VarInt is too big");
-                            }
-                        } while ((read & 0b10000000) != 0);
-
-                        byte[] data = cipherInputStream.readNBytes(length);
-
-                        if (compressionThreshold >= 0) {
-                            // compression is enabled
-                            // check if there is a need to decompress it and if so, do it!
-                            InByteBuffer rawBuffer = new InByteBuffer(data, connection);
-                            int packetSize = rawBuffer.readVarInt();
-                            byte[] left = rawBuffer.readBytesLeft();
-                            if (packetSize == 0) {
-                                // no need
-                                data = left;
-                            } else {
-                                // need to decompress data
-                                data = Util.decompress(left, connection).readBytesLeft();
-                            }
+                    // everything sent for now, waiting for data
+                    int numRead = 0;
+                    int length = 0;
+                    int read;
+                    do {
+                        read = cipherInputStream.read();
+                        if (read == -1) {
+                            break;
                         }
+                        int value = (read & 0b01111111);
+                        length |= (value << (7 * numRead));
 
-                        InPacketBuffer inPacketBuffer = new InPacketBuffer(data, connection);
-                        Packets.Clientbound packet = null;
-                        try {
-                            packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
-                            if (packet == null) {
-                                Log.fatal(String.format("Version packet enum does not contain a packet with id 0x%x. Your version.json is broken!", inPacketBuffer.getCommand()));
-                                System.exit(1);
-                            }
-                            Class<? extends ClientboundPacket> clazz = packet.getClazz();
+                        numRead++;
+                        if (numRead > 5) {
+                            throw new RuntimeException("VarInt is too big");
+                        }
+                    } while ((read & 0b10000000) != 0);
+                    if (length == 0) {
+                        break;
+                    }
 
-                            if (clazz == null) {
-                                Log.warn(String.format("[IN] Received unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), packet, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
-                                continue;
-                            }
-                            try {
-                                ClientboundPacket packetInstance = clazz.getConstructor().newInstance();
-                                boolean success = packetInstance.read(inPacketBuffer);
-                                if (inPacketBuffer.getBytesLeft() > 0 || !success) {
-                                    // warn not all data used
-                                    Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packet, inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
-                                    continue;
-                                }
+                    byte[] data = cipherInputStream.readNBytes(length);
 
-                                //set special settings to avoid miss timing issues
-                                if (packetInstance instanceof PacketLoginSuccess) {
-                                    connection.setConnectionState(ConnectionStates.PLAY);
-                                } else if (packetInstance instanceof PacketCompressionInterface) {
-                                    compressionThreshold = ((PacketCompressionInterface) packetInstance).getThreshold();
-                                }
-                                connection.handle(packetInstance);
-                            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                                // safety first, but will not occur
-                                e.printStackTrace();
-                            }
-                        } catch (Exception e) {
-                            Log.protocol(String.format("An error occurred while parsing an packet (%s): %s", packet, e));
-                            e.printStackTrace();
+                    if (compressionThreshold >= 0) {
+                        // compression is enabled
+                        // check if there is a need to decompress it and if so, do it!
+                        InByteBuffer rawBuffer = new InByteBuffer(data, connection);
+                        int packetSize = rawBuffer.readVarInt();
+                        byte[] left = rawBuffer.readBytesLeft();
+                        if (packetSize == 0) {
+                            // no need
+                            data = left;
+                        } else {
+                            // need to decompress data
+                            data = Util.decompress(left, connection).readBytesLeft();
                         }
                     }
-                    Util.sleep(1);
+
+                    InPacketBuffer inPacketBuffer = new InPacketBuffer(data, connection);
+                    Packets.Clientbound packet = null;
+                    try {
+                        packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
+                        if (packet == null) {
+                            Log.fatal(String.format("Version packet enum does not contain a packet with id 0x%x. Your version.json is broken!", inPacketBuffer.getCommand()));
+                            System.exit(1);
+                        }
+                        Class<? extends ClientboundPacket> clazz = packet.getClazz();
+
+                        if (clazz == null) {
+                            Log.warn(String.format("[IN] Received unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), packet, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
+                            continue;
+                        }
+                        try {
+                            ClientboundPacket packetInstance = clazz.getConstructor().newInstance();
+                            boolean success = packetInstance.read(inPacketBuffer);
+                            if (inPacketBuffer.getBytesLeft() > 0 || !success) {
+                                // warn not all data used
+                                Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packet, inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
+                                continue;
+                            }
+
+                            //set special settings to avoid miss timing issues
+                            if (packetInstance instanceof PacketLoginSuccess) {
+                                connection.setConnectionState(ConnectionStates.PLAY);
+                            } else if (packetInstance instanceof PacketCompressionInterface) {
+                                compressionThreshold = ((PacketCompressionInterface) packetInstance).getThreshold();
+                            }
+                            connection.handle(packetInstance);
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                            // safety first, but will not occur
+                            e.printStackTrace();
+                        }
+                    } catch (Exception e) {
+                        Log.protocol(String.format("An error occurred while parsing an packet (%s): %s", packet, e));
+                        e.printStackTrace();
+                    }
                 }
                 socket.close();
                 connected = false;

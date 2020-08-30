@@ -31,7 +31,7 @@ public class MojangAccount {
     public MojangAccount(JsonObject json) {
         this.accessToken = json.get("accessToken").getAsString();
         JsonObject profile = json.get("selectedProfile").getAsJsonObject();
-        this.uuid = Util.formatUUID(profile.get("id").getAsString());
+        this.uuid = Util.uuidFromString(profile.get("id").getAsString());
         this.playerName = profile.get("name").getAsString();
 
         JsonObject mojang = json.get("user").getAsJsonObject();

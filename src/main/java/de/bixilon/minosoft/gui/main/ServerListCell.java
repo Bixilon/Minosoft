@@ -111,6 +111,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                     players.setText("");
                     version.setText("Offline");
                     motd.setText("Could not connect to server!");
+                    motd.setTextFill(Color.RED);
                     optionsConnect.setDisable(true);
                     canConnect = false;
                     return;
@@ -138,7 +139,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                     icon.setImage(ping.getFavicon());
                 }
             }));
-            connection.resolve(ConnectionReasons.PING); // resolve dns address and ping
+            connection.resolve(ConnectionReasons.PING, server.getDesiredVersion()); // resolve dns address and ping
         }
         setOnMouseClicked(click -> {
             if (click.getClickCount() == 2) {

@@ -71,19 +71,13 @@ public class Connection {
         this.hostname = hostname;
     }
 
-    /**
-     * Sends an server ping to the server (player count, motd, ...)
-     */
-    public void ping() {
-        Log.info(String.format("Pinging server: %s", address));
-        reason = ConnectionReasons.PING;
-        network.connect(address);
-    }
-
     public void resolve(ConnectionReasons reason, int protocolId) {
         this.desiredVersionNumber = protocolId;
 
         Thread resolveThread = new Thread(() -> {
+            if (desiredVersionNumber != -1) {
+                setVersion(Versions.getVersionById(desiredVersionNumber));
+            }
             if (addresses == null) {
                 try {
                     addresses = DNSUtil.getServerAddresses(hostname);
@@ -113,10 +107,7 @@ public class Connection {
         network.connect(address);
     }
 
-    /**
-     * Tries to connect to the server and login
-     */
-    public void connect() {
+    private void connect() {
         Log.info(String.format("Connecting to server: %s", address));
         if (reason == null || reason == ConnectionReasons.DNS) {
             // first get version, then login
@@ -205,7 +196,6 @@ public class Connection {
     public void setVersion(Version version) {
         this.version = version;
         this.customMapping.setVersion(version);
-        if (reason == ConnectionReasons.GET_VERSION) {
             try {
                 Versions.loadVersionMappings(version.getProtocolVersion());
             } catch (Exception e) {
@@ -214,7 +204,6 @@ public class Connection {
                 System.exit(1);
             }
             customMapping.setVersion(version);
-        }
     }
 
     public PacketHandler getHandler() {
