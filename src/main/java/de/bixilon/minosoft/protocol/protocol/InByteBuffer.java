@@ -93,12 +93,11 @@ public class InByteBuffer {
         return buffer.getShort(0);
     }
 
-    public short[] readShorts(int num) {
-        ByteBuffer buffer = ByteBuffer.allocate(Short.BYTES * num);
-        buffer.put(readBytes(Short.BYTES * num));
+    public short[] readLEShorts(int num) {
         short[] ret = new short[num];
-        for (int i = 0; i < num; i++) {
-            ret[i] = buffer.getShort(i);
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = (short) (readByte() & 0xFF);
+            ret[i] |= (readByte() & 0xFF) << 8;
         }
         return ret;
     }

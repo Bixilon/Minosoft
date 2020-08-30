@@ -39,6 +39,8 @@ import de.bixilon.minosoft.util.ServerAddress;
 import org.xbill.DNS.TextParseException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 public class Connection {
     public static int lastConnectionId;
@@ -46,9 +48,9 @@ public class Connection {
     final Network network = new Network(this);
     final PacketHandler handler = new PacketHandler(this);
     final PacketSender sender = new PacketSender(this);
-    final ArrayList<ClientboundPacket> handlingQueue = new ArrayList<>();
+    final LinkedList<ClientboundPacket> handlingQueue = new LinkedList<>();
     final VelocityHandler velocityHandler = new VelocityHandler(this);
-    final ArrayList<PingCallback> pingCallbacks = new ArrayList<>();
+    final HashSet<PingCallback> pingCallbacks = new HashSet<>();
     final int connectionId;
     final Player player;
     int desiredVersionNumber = -1;
@@ -83,6 +85,7 @@ public class Connection {
     }
 
     public void resolve(ConnectionReasons reason, int protocolId) {
+        this.desiredVersionNumber = protocolId;
         address = addresses.get(0);
         this.nextReason = reason;
         Log.info(String.format("Trying to connect to %s", address));
@@ -192,6 +195,7 @@ public class Connection {
 
     public void setVersion(Version version) {
         this.version = version;
+        this.customMapping.setVersion(version);
         if (reason == ConnectionReasons.GET_VERSION) {
             try {
                 Versions.loadVersionMappings(version.getProtocolVersion());
@@ -343,7 +347,7 @@ public class Connection {
         pingCallbacks.add(pingCallback);
     }
 
-    public ArrayList<PingCallback> getPingCallbacks() {
+    public HashSet<PingCallback> getPingCallbacks() {
         return pingCallbacks;
     }
 

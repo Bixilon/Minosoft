@@ -75,7 +75,7 @@ public class Block {
         }
         if (properties.size() > 0) {
             if (out.length() > 0) {
-                out.append(" ,");
+                out.append(", ");
             } else {
                 out.append(" (");
             }
