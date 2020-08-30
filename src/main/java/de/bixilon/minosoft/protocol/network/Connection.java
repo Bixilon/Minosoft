@@ -44,7 +44,6 @@ import java.util.LinkedList;
 
 public class Connection {
     public static int lastConnectionId;
-    final ArrayList<ServerAddress> addresses;
     final Network network = new Network(this);
     final PacketHandler handler = new PacketHandler(this);
     final PacketSender sender = new PacketSender(this);
@@ -53,6 +52,8 @@ public class Connection {
     final HashSet<PingCallback> pingCallbacks = new HashSet<>();
     final int connectionId;
     final Player player;
+    final String hostname;
+    ArrayList<ServerAddress> addresses;
     int desiredVersionNumber = -1;
     ServerAddress address;
     PluginChannelHandler pluginChannelHandler;
@@ -67,12 +68,7 @@ public class Connection {
     public Connection(int connectionId, String hostname, Player player) {
         this.connectionId = connectionId;
         this.player = player;
-        try {
-            addresses = DNSUtil.getServerAddresses(hostname);
-        } catch (TextParseException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        this.hostname = hostname;
     }
 
     /**
@@ -86,13 +82,26 @@ public class Connection {
 
     public void resolve(ConnectionReasons reason, int protocolId) {
         this.desiredVersionNumber = protocolId;
-        address = addresses.get(0);
-        this.nextReason = reason;
-        Log.info(String.format("Trying to connect to %s", address));
-        if (protocolId != -1) {
-            setVersion(Versions.getVersionById(protocolId));
-        }
-        resolve(address);
+
+        Thread resolveThread = new Thread(() -> {
+            if (addresses == null) {
+                try {
+                    addresses = DNSUtil.getServerAddresses(hostname);
+                } catch (TextParseException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            }
+            address = addresses.get(0);
+            this.nextReason = reason;
+            Log.info(String.format("Trying to connect to %s", address));
+            if (protocolId != -1) {
+                setVersion(Versions.getVersionById(protocolId));
+            }
+            resolve(address);
+        });
+        resolveThread.setName(String.format("%d/Resolving", connectionId));
+        resolveThread.start();
     }
 
     public void resolve(ConnectionReasons reason) {
