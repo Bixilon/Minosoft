@@ -40,13 +40,14 @@ import org.xbill.DNS.TextParseException;
 
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Connection {
     public static int lastConnectionId;
     final Network network = new Network(this);
     final PacketHandler handler = new PacketHandler(this);
     final PacketSender sender = new PacketSender(this);
-    final LinkedList<ClientboundPacket> handlingQueue = new LinkedList<>();
+    final LinkedBlockingQueue<ClientboundPacket> handlingQueue = new LinkedBlockingQueue<>();
     final VelocityHandler velocityHandler = new VelocityHandler(this);
     final HashSet<PingCallback> pingCallbacks = new HashSet<>();
     final int connectionId;
@@ -213,8 +214,7 @@ public class Connection {
     }
 
     public void handle(ClientboundPacket p) {
-        handlingQueue.addLast(p);
-        handleThread.interrupt();
+        handlingQueue.add(p);
     }
 
     public ConnectionReasons getReason() {
@@ -241,22 +241,18 @@ public class Connection {
 
     void startHandlingThread() {
         handleThread = new Thread(() -> {
-            while (getConnectionState() != ConnectionStates.DISCONNECTING) {
-                while (handlingQueue.size() > 0) {
-                    ClientboundPacket packet = handlingQueue.getFirst();
-                    try {
-                        packet.log();
-                        packet.handle(getHandler());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    handlingQueue.remove(packet);
+            while (getConnectionState() != ConnectionStates.DISCONNECTING && getConnectionState() != ConnectionStates.DISCONNECTED) {
+                ClientboundPacket packet;
+                try {
+                    packet = handlingQueue.take();
+                } catch (InterruptedException e) {
+                    continue;
                 }
                 try {
-                    // sleep, wait for an interrupt from other thread
-                    //noinspection BusyWait
-                    Thread.sleep(Integer.MAX_VALUE);
-                } catch (InterruptedException ignored) {
+                    packet.log();
+                    packet.handle(getHandler());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });

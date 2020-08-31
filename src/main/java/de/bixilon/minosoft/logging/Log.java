@@ -17,11 +17,11 @@ import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 
 import java.text.SimpleDateFormat;
-import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Log {
     final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    final static LinkedList<String> queue = new LinkedList<>();
+    final static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>();
     static LogLevels level = LogLevels.PROTOCOL;
     static Thread logThread;
 
@@ -45,29 +45,23 @@ public class Log {
         } else {
             builder.append(message);
         }
-        queue.addLast(builder.toString());
-
-        logThread.interrupt();
+        queue.add(builder.toString());
     }
 
     public static void initThread() {
         logThread = new Thread(() -> {
             while (true) {
-                while (queue.size() > 0) {
-                    // something to print
-                    String message = queue.getFirst();
-                    System.out.println(message);
-
-                    // ToDo: log to file
-
-                    queue.remove(message);
-                }
+                // something to print
+                String message;
                 try {
-                    // wait for interrupt
-                    //noinspection BusyWait
-                    Thread.sleep(Integer.MAX_VALUE);
-                } catch (InterruptedException ignored) {
+                    message = queue.take();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    continue;
                 }
+                System.out.println(message);
+
+                // ToDo: log to file
             }
         });
         logThread.setName("Log");
