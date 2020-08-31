@@ -30,20 +30,13 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 
 public final class Util {
-    static final Pattern UUID_FIX = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
-    // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
-
-    public static void sleep(int ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException ignored) {
-        }
-    }
+    public static final Pattern UUID_FIX = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
 
     public static UUID uuidFromString(String uuid) {
         if (uuid.length() == 36) {
             return UUID.fromString(uuid);
-        } else if (uuid.length() == 32) {
+        }
+        if (uuid.length() == 32) {
             return UUID.fromString(UUID_FIX.matcher(uuid.replace("-", "")).replaceAll("$1-$2-$3-$4-$5"));
         }
         throw new IllegalArgumentException(String.format("%s is not a valid UUID String", uuid));

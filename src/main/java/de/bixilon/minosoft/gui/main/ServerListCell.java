@@ -57,12 +57,13 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public MenuItem optionsEdit;
     @FXML
     public MenuItem optionsDelete;
+    boolean canConnect = false;
+    Connection lastPing;
     @FXML
     private Label serverName;
     @FXML
     private AnchorPane root;
     private Server server;
-    boolean canConnect = false;
 
     public static ServerListCell newInstance() {
         FXMLLoader loader = new FXMLLoader(ServerListCell.class.getResource("/layout/cells/server.fxml"));
@@ -104,8 +105,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             optionsEdit.setOnAction(e -> edit());
             optionsDelete.setOnAction(e -> delete());
 
-            Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), null);
-            connection.addPingCallback(ping -> Platform.runLater(() -> {
+            lastPing = new Connection(Connection.lastConnectionId++, server.getAddress(), null);
+            lastPing.addPingCallback(ping -> Platform.runLater(() -> {
                 if (ping == null) {
                     // Offline
                     players.setText("");
@@ -139,7 +140,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                     icon.setImage(ping.getFavicon());
                 }
             }));
-            connection.resolve(ConnectionReasons.PING, server.getDesiredVersion()); // resolve dns address and ping
+            lastPing.resolve(ConnectionReasons.PING, server.getDesiredVersion()); // resolve dns address and ping
         }
         setOnMouseClicked(click -> {
             if (click.getClickCount() == 2) {
@@ -216,11 +217,17 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     }
 
     public void connect() {
-        if (!canConnect) {
+        if (!canConnect || lastPing == null) {
             return;
         }
         Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), new Player(Minosoft.accountList.get(0)));
-        connection.resolve(ConnectionReasons.CONNECT, server.getDesiredVersion());
+        Version version;
+        if (server.getDesiredVersion() == -1) {
+            version = lastPing.getVersion();
+        } else {
+            version = Versions.getVersionById(server.getDesiredVersion());
+        }
+        connection.connect(lastPing.getAddress(), version);
         setStyle("-fx-background-color: darkseagreen;");
     }
 }

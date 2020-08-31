@@ -127,6 +127,7 @@ public class Minosoft {
             FolderUtil.copyFolder(Minosoft.class.getResource("/assets").toURI(), Config.homeDir + "assets/");
         } catch (Exception e) {
             Log.fatal("Error occurred while checking assets: " + e.getLocalizedMessage());
+            e.printStackTrace();
             System.exit(1);
         }
     }

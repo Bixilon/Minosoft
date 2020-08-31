@@ -83,7 +83,7 @@ public class Network {
                     }
 
                     while (queue.size() > 0) {
-                        ServerboundPacket packet = queue.get(0);
+                        ServerboundPacket packet = queue.getFirst();
                         packet.log();
                         queue.remove(packet);
                         byte[] data = packet.write(connection).getOutBytes();
@@ -215,7 +215,7 @@ public class Network {
     }
 
     public void sendPacket(ServerboundPacket p) {
-        queue.add(p);
+        queue.addLast(p);
         socketThread.interrupt();
     }
 

@@ -38,7 +38,6 @@ import de.bixilon.minosoft.util.DNSUtil;
 import de.bixilon.minosoft.util.ServerAddress;
 import org.xbill.DNS.TextParseException;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -53,7 +52,7 @@ public class Connection {
     final int connectionId;
     final Player player;
     final String hostname;
-    ArrayList<ServerAddress> addresses;
+    LinkedList<ServerAddress> addresses;
     int desiredVersionNumber = -1;
     ServerAddress address;
     PluginChannelHandler pluginChannelHandler;
@@ -86,7 +85,7 @@ public class Connection {
                     throw new RuntimeException(e);
                 }
             }
-            address = addresses.get(0);
+            address = addresses.getFirst();
             this.nextReason = reason;
             Log.info(String.format("Trying to connect to %s", address));
             if (protocolId != -1) {
@@ -116,11 +115,19 @@ public class Connection {
         network.connect(address);
     }
 
+    public void connect(ServerAddress address, Version version) {
+        this.address = address;
+        this.reason = ConnectionReasons.CONNECT;
+        setVersion(version);
+        Log.info(String.format("Connecting to server: %s", address));
+        network.connect(address);
+    }
+
     public ServerAddress getAddress() {
         return address;
     }
 
-    public ArrayList<ServerAddress> getAvailableAddresses() {
+    public LinkedList<ServerAddress> getAvailableAddresses() {
         return addresses;
     }
 
@@ -141,12 +148,7 @@ public class Connection {
                 ConnectionStates next = ((reason == ConnectionReasons.CONNECT) ? ConnectionStates.LOGIN : ConnectionStates.STATUS);
                 if (reason == ConnectionReasons.DNS) {
                     // valid hostname found
-                    if (nextReason == ConnectionReasons.CONNECT) {
-                        // connecting, we must get the version first
-                        reason = ConnectionReasons.GET_VERSION;
-                    } else {
-                        reason = nextReason;
-                    }
+                    reason = nextReason;
                     Log.info(String.format("Connection to %s seems to be okay, connecting...", address));
                 }
                 network.sendPacket(new PacketHandshake(address, next, (next == ConnectionStates.STATUS) ? -1 : getVersion().getProtocolVersion()));
@@ -196,14 +198,14 @@ public class Connection {
     public void setVersion(Version version) {
         this.version = version;
         this.customMapping.setVersion(version);
-            try {
-                Versions.loadVersionMappings(version.getProtocolVersion());
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.fatal(String.format("Could not load mapping for %s. Exiting...", version));
-                System.exit(1);
-            }
-            customMapping.setVersion(version);
+        try {
+            Versions.loadVersionMappings(version.getProtocolVersion());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.fatal(String.format("Could not load mapping for %s. Exiting...", version));
+            System.exit(1);
+        }
+        customMapping.setVersion(version);
     }
 
     public PacketHandler getHandler() {
@@ -211,7 +213,7 @@ public class Connection {
     }
 
     public void handle(ClientboundPacket p) {
-        handlingQueue.add(p);
+        handlingQueue.addLast(p);
         handleThread.interrupt();
     }
 
@@ -241,7 +243,7 @@ public class Connection {
         handleThread = new Thread(() -> {
             while (getConnectionState() != ConnectionStates.DISCONNECTING) {
                 while (handlingQueue.size() > 0) {
-                    ClientboundPacket packet = handlingQueue.get(0);
+                    ClientboundPacket packet = handlingQueue.getFirst();
                     try {
                         packet.log();
                         packet.handle(getHandler());
@@ -253,7 +255,7 @@ public class Connection {
                 try {
                     // sleep, wait for an interrupt from other thread
                     //noinspection BusyWait
-                    Thread.sleep(100);
+                    Thread.sleep(Integer.MAX_VALUE);
                 } catch (InterruptedException ignored) {
                 }
             }
