@@ -19,7 +19,6 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.protocol.ConnectionReasons;
 import de.bixilon.minosoft.util.DNSUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -53,10 +52,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public Label players;
     @FXML
     public MenuItem optionsConnect;
-    @FXML
-    public MenuItem optionsEdit;
-    @FXML
-    public MenuItem optionsDelete;
     @FXML
     public MenuButton optionsMenu;
     boolean canConnect = false;
@@ -104,22 +99,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (server.equals(this.server)) {
             return;
         }
-
-        // clear all cells
-        motd.setText("");
-        motd.setStyle(null);
-        version.setText("Connecting...");
-        version.setStyle(null);
-        players.setText("");
-        optionsConnect.setOnAction(e -> connect());
-        optionsConnect.setDisable(true);
-        optionsEdit.setOnAction(e -> edit());
-        optionsDelete.setOnAction(e -> delete());
-        setOnMouseClicked(click -> {
-            if (click.getClickCount() == 2) {
-                connect();
-            }
-        });
+        resetCell();
 
         this.server = server;
         serverName.setText(server.getName());
@@ -130,15 +110,14 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
         icon.setImage(favicon);
         if (server.getLastPing() == null) {
-            Connection lastPing = new Connection(Connection.lastConnectionId++, server.getAddress(), null);
-            server.setLastPing(lastPing);
-            lastPing.resolve(ConnectionReasons.PING, server.getDesiredVersion()); // resolve dns address and ping
+            server.ping();
         }
         server.getLastPing().addPingCallback(ping -> Platform.runLater(() -> {
             if (server != this.server) {
                 // cell does not contains us anymore
                 return;
             }
+            resetCell();
             if (ping == null) {
                 // Offline
                 players.setText("");
@@ -266,5 +245,30 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
         connection.connect(server.getLastPing().getAddress(), version);
         setStyle("-fx-background-color: darkseagreen;");
+    }
+
+    private void resetCell() {
+        // clear all cells
+        setStyle(null);
+        motd.setText("");
+        motd.setStyle(null);
+        version.setText("Connecting...");
+        version.setStyle(null);
+        players.setText("");
+        optionsConnect.setDisable(true);
+        setOnMouseClicked(click -> {
+            if (click.getClickCount() == 2) {
+                connect();
+            }
+        });
+    }
+
+    public void refresh() {
+        Log.info(String.format("Refreshing server status (serverName=\"%s\", address=\"%s\"", server.getName(), server.getAddress()));
+        if (server.getLastPing() == null) {
+            // server was not pinged, don't even try, only costs memory and cpu
+            return;
+        }
+        server.ping();
     }
 }

@@ -247,7 +247,7 @@ public class Connection {
 
     void startHandlingThread() {
         handleThread = new Thread(() -> {
-            while (getConnectionState() != ConnectionStates.DISCONNECTING && getConnectionState() != ConnectionStates.DISCONNECTED && getConnectionState() != ConnectionStates.FAILED) {
+            while (isConnected()) {
                 ClientboundPacket packet;
                 try {
                     packet = handlingQueue.take();
@@ -300,7 +300,7 @@ public class Connection {
     }
 
     public boolean isConnected() {
-        return network.isConnected();
+        return state != ConnectionStates.FAILED && state != ConnectionStates.DISCONNECTING && state != ConnectionStates.DISCONNECTED && state != ConnectionStates.CONNECTING;
     }
 
     public PacketSender getSender() {

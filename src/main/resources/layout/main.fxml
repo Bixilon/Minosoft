@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.*?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1"
       fx:controller="de.bixilon.minosoft.gui.main.MainWindow">
     <MenuBar VBox.vgrow="NEVER">
-        <Menu mnemonicParsing="false" text="File">
-            <MenuItem mnemonicParsing="false" text="New server" onAction="#addServer"/>
-            <SeparatorMenuItem mnemonicParsing="false"/>
+        <Menu mnemonicParsing="false" text="_File">
             <MenuItem mnemonicParsing="false" text="Preferences…"/>
             <SeparatorMenuItem mnemonicParsing="false"/>
             <MenuItem mnemonicParsing="false" text="Quit" onAction="#quit"/>
         </Menu>
-        <Menu mnemonicParsing="false" text="Help">
-            <MenuItem id="menu_help_about" mnemonicParsing="false" text="About"/>
+        <Menu mnemonicParsing="false" text="_Servers">
+            <MenuItem mnemonicParsing="false" text="New" onAction="#addServer"/>
+            <MenuItem mnemonicParsing="false" text="Refresh" onAction="#refreshServers">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="UP"/>
+                </accelerator>
+            </MenuItem>
+        </Menu>
+        <Menu mnemonicParsing="false" text="_Help">
+            <MenuItem mnemonicParsing="false" text="About"/>
         </Menu>
     </MenuBar>
     <AnchorPane VBox.vgrow="ALWAYS">

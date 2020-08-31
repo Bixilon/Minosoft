@@ -55,7 +55,7 @@ public final class DNSUtil {
     public static String correctHostName(String hostname) {
         // replaces invalid chars to avoid copy and paste issues (like spaces, ...)
         hostname = hostname.replaceAll("\\s", "");
-        return hostname;
+        return hostname.toLowerCase();
     }
 
 }

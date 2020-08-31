@@ -46,7 +46,6 @@ public class Network {
     InputStream inputStream;
     boolean encryptionEnabled = false;
     SecretKey secretKey;
-    boolean connected;
     Exception lastException;
 
     public Network(Connection connection) {
@@ -54,6 +53,10 @@ public class Network {
     }
 
     public void connect(ServerAddress address) {
+        // check if we are already connected or try to connect
+        if (connection.isConnected() || connection.getConnectionState() == ConnectionStates.CONNECTING) {
+            return;
+        }
         // wait for data or send until it should disconnect
         // first send, then receive
         // something to send it, send it
@@ -68,7 +71,6 @@ public class Network {
                 socket.connect(new InetSocketAddress(address.getHostname(), address.getPort()), ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
                 // connected, use minecraft timeout
                 socket.setSoTimeout(ProtocolDefinition.SOCKET_TIMEOUT);
-                connected = true;
                 connection.setConnectionState(ConnectionStates.HANDSHAKING);
                 socket.setKeepAlive(true);
                 outputStream = socket.getOutputStream();
@@ -202,7 +204,6 @@ public class Network {
                     }
                 }
                 socket.close();
-                connected = false;
                 connection.setConnectionState(ConnectionStates.DISCONNECTED);
             } catch (IOException e) {
                 // Could not connect
@@ -229,9 +230,6 @@ public class Network {
         Log.debug("Encryption enabled!");
     }
 
-    public boolean isConnected() {
-        return connected;
-    }
 
     public void disconnect() {
         socketThread.interrupt();

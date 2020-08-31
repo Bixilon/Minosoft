@@ -96,4 +96,15 @@ public class MainWindow implements Initializable {
         System.exit(0);
     }
 
+    public void refreshServers() {
+        Log.info("Refreshing server list");
+        for (Server server : ServerListCell.listView.getItems()) {
+            if (server.getLastPing() == null) {
+                // server was not pinged, don't even try, only costs memory and cpu
+                continue;
+            }
+            server.ping();
+            ServerListCell.listView.refresh();
+        }
+    }
 }

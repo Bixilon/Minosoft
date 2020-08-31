@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.main;
 import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.protocol.ConnectionReasons;
 import javafx.scene.image.Image;
 
 import javax.annotation.Nullable;
@@ -42,6 +43,10 @@ public class Server {
     public Server(int id, String name, String address, int desiredVersion, String favicon) {
         this(id, name, address, desiredVersion);
         this.favicon = favicon;
+    }
+
+    public static int getNextServerId() {
+        return ++highestServerId;
     }
 
     public String getName() {
@@ -96,10 +101,6 @@ public class Server {
         Minosoft.getConfig().saveToFile(Config.configFileName);
     }
 
-    public static int getNextServerId() {
-        return ++highestServerId;
-    }
-
     public Connection getLastPing() {
         return lastPing;
     }
@@ -109,12 +110,15 @@ public class Server {
         return getName() + " (" + getAddress() + ")";
     }
 
-    public void setLastPing(Connection lastPing) {
-        this.lastPing = lastPing;
-    }
-
     @Override
     public int hashCode() {
         return id;
+    }
+
+    public void ping() {
+        if (lastPing == null) {
+            lastPing = new Connection(Connection.lastConnectionId++, getAddress(), null);
+        }
+        lastPing.resolve(ConnectionReasons.PING, getDesiredVersion()); // resolve dns address and ping
     }
 }
