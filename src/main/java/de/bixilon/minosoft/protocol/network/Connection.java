@@ -64,6 +64,7 @@ public class Connection {
     ConnectionReasons reason;
     ConnectionReasons nextReason;
     ConnectionPing connectionStatusPing;
+    ServerListPing lastPing;
 
     public Connection(int connectionId, String hostname, Player player) {
         this.connectionId = connectionId;
@@ -141,6 +142,7 @@ public class Connection {
             return;
         }
         Log.verbose("ConnectionStatus changed: " + state);
+        ConnectionStates previousState = this.state;
         this.state = state;
         switch (state) {
             case HANDSHAKING:
@@ -178,6 +180,10 @@ public class Connection {
                 break;
             case FAILED:
                 // connect to next hostname, if available
+                if (previousState == ConnectionStates.PLAY) {
+                    // connection was good, do not reconnect
+                    break;
+                }
                 int nextIndex = addresses.indexOf(address) + 1;
                 if (addresses.size() > nextIndex) {
                     ServerAddress nextAddress = addresses.get(nextIndex);
@@ -241,7 +247,7 @@ public class Connection {
 
     void startHandlingThread() {
         handleThread = new Thread(() -> {
-            while (getConnectionState() != ConnectionStates.DISCONNECTING && getConnectionState() != ConnectionStates.DISCONNECTED) {
+            while (getConnectionState() != ConnectionStates.DISCONNECTING && getConnectionState() != ConnectionStates.DISCONNECTED && getConnectionState() != ConnectionStates.FAILED) {
                 ClientboundPacket packet;
                 try {
                     packet = handlingQueue.take();
@@ -340,6 +346,11 @@ public class Connection {
     }
 
     public void addPingCallback(PingCallback pingCallback) {
+        if (getConnectionState() == ConnectionStates.FAILED || lastPing != null) {
+            // ping done
+            pingCallback.handle(lastPing);
+            return;
+        }
         pingCallbacks.add(pingCallback);
     }
 
@@ -356,9 +367,13 @@ public class Connection {
     }
 
     public void handleCallbacks(ServerListPing ping) {
+        this.lastPing = ping;
         for (PingCallback callback : getPingCallbacks()) {
             callback.handle(ping);
         }
     }
 
+    public Exception getLastConnectionException() {
+        return network.lastException;
+    }
 }

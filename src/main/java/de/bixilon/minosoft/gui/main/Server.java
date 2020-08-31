@@ -15,29 +15,32 @@ package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.protocol.network.Connection;
 import javafx.scene.image.Image;
 
 import javax.annotation.Nullable;
 
 public class Server {
+    static int highestServerId;
     final int id;
     String name;
     String address;
     int desiredVersion;
     String favicon;
+    Connection lastPing;
 
     public Server(int id, String name, String address, int desiredVersion) {
         this.id = id;
+        if (id > highestServerId) {
+            highestServerId = id;
+        }
         this.name = name;
         this.address = address;
         this.desiredVersion = desiredVersion;
     }
 
     public Server(int id, String name, String address, int desiredVersion, String favicon) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-        this.desiredVersion = desiredVersion;
+        this(id, name, address, desiredVersion);
         this.favicon = favicon;
     }
 
@@ -93,8 +96,25 @@ public class Server {
         Minosoft.getConfig().saveToFile(Config.configFileName);
     }
 
+    public static int getNextServerId() {
+        return ++highestServerId;
+    }
+
+    public Connection getLastPing() {
+        return lastPing;
+    }
+
     @Override
     public String toString() {
         return getName() + " (" + getAddress() + ")";
+    }
+
+    public void setLastPing(Connection lastPing) {
+        this.lastPing = lastPing;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

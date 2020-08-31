@@ -58,7 +58,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     @FXML
     public MenuItem optionsDelete;
     boolean canConnect = false;
-    Connection lastPing;
     @FXML
     private Label serverName;
     @FXML
@@ -76,9 +75,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
     }
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         updateSelected(false);
@@ -89,64 +85,92 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         return root;
     }
 
+
     @Override
     protected void updateItem(Server server, boolean empty) {
         super.updateItem(server, empty);
-        getRoot().getChildrenUnmodifiable().forEach(c -> c.setVisible(!empty));
-        if (!empty && server != null && !server.equals(this.server)) {
-            this.server = server;
-            serverName.setText(server.getName());
-            Image favicon = server.getFavicon();
-            if (favicon == null) {
-                favicon = GUITools.logo;
-            }
-            icon.setImage(favicon);
-            optionsConnect.setOnAction(e -> connect());
-            optionsEdit.setOnAction(e -> edit());
-            optionsDelete.setOnAction(e -> delete());
 
-            lastPing = new Connection(Connection.lastConnectionId++, server.getAddress(), null);
-            lastPing.addPingCallback(ping -> Platform.runLater(() -> {
-                if (ping == null) {
-                    // Offline
-                    players.setText("");
-                    version.setText("Offline");
-                    motd.setText("Could not connect to server!");
-                    motd.setTextFill(Color.RED);
-                    optionsConnect.setDisable(true);
-                    canConnect = false;
-                    return;
-                }
-                players.setText(String.format("%d/%d", ping.getPlayerOnline(), ping.getMaxPlayers()));
-                Version serverVersion;
-                if (server.getDesiredVersion() == -1) {
-                    serverVersion = Versions.getVersionById(ping.getProtocolNumber());
-                } else {
-                    serverVersion = Versions.getVersionById(server.getDesiredVersion());
-                }
-                if (serverVersion == null) {
-                    version.setText(ping.getServerVersion());
-                    version.setTextFill(Color.RED);
-                    optionsConnect.setDisable(true);
-                    canConnect = false;
-                } else {
-                    version.setText(serverVersion.getVersionName());
-                    canConnect = true;
-                }
-                motd.setText(ping.getMotd().getRawMessage());
-                if (ping.getFavicon() != null) {
-                    server.setBase64Favicon(ping.getBase64EncodedFavicon());
-                    server.saveToConfig();
-                    icon.setImage(ping.getFavicon());
-                }
-            }));
-            lastPing.resolve(ConnectionReasons.PING, server.getDesiredVersion()); // resolve dns address and ping
+        if (empty) {
+            return;
         }
+        if (server == null) {
+            return;
+        }
+
+        if (server.equals(this.server)) {
+            return;
+        }
+
+        // clear all cells
+        motd.setText("");
+        motd.setTextFill(Color.BLACK);
+        version.setText("Connecting...");
+        version.setTextFill(Color.BLACK);
+        players.setText("");
+        optionsConnect.setOnAction(e -> connect());
+        optionsConnect.setDisable(true);
+        optionsEdit.setOnAction(e -> edit());
+        optionsDelete.setOnAction(e -> delete());
         setOnMouseClicked(click -> {
             if (click.getClickCount() == 2) {
                 connect();
             }
         });
+
+        this.server = server;
+        serverName.setText(server.getName());
+
+        Image favicon = server.getFavicon();
+        if (favicon == null) {
+            favicon = GUITools.logo;
+        }
+        icon.setImage(favicon);
+        if (server.getLastPing() == null) {
+            Connection lastPing = new Connection(Connection.lastConnectionId++, server.getAddress(), null);
+            server.setLastPing(lastPing);
+            lastPing.resolve(ConnectionReasons.PING, server.getDesiredVersion()); // resolve dns address and ping
+        }
+        server.getLastPing().addPingCallback(ping -> Platform.runLater(() -> {
+            if (server != this.server) {
+                // cell does not contains us anymore
+                return;
+            }
+            if (ping == null) {
+                // Offline
+                players.setText("");
+                version.setText("Offline");
+                motd.setText(String.format("%s", server.getLastPing().getLastConnectionException()));
+                motd.setTextFill(Color.RED);
+                optionsConnect.setDisable(true);
+                canConnect = false;
+                return;
+            }
+            players.setText(String.format("%d/%d", ping.getPlayerOnline(), ping.getMaxPlayers()));
+            Version serverVersion;
+            if (server.getDesiredVersion() == -1) {
+                serverVersion = Versions.getVersionById(ping.getProtocolNumber());
+            } else {
+                serverVersion = Versions.getVersionById(server.getDesiredVersion());
+                version.setTextFill(Color.GREEN);
+            }
+            if (serverVersion == null) {
+                version.setText(ping.getServerVersion());
+                version.setTextFill(Color.RED);
+                optionsConnect.setDisable(true);
+                canConnect = false;
+            } else {
+                version.setText(serverVersion.getVersionName());
+                optionsConnect.setDisable(false);
+                canConnect = true;
+            }
+            motd.setText(ping.getMotd().getRawMessage());
+            if (ping.getFavicon() != null) {
+                server.setBase64Favicon(ping.getBase64EncodedFavicon());
+                server.saveToConfig();
+                icon.setImage(ping.getFavicon());
+            }
+        }));
+
     }
 
     @Override
@@ -198,11 +222,15 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
-                ServerListCell.this.serverName.setText(serverName.getText());
-                ServerListCell.this.server.setName(serverName.getText());
-                ServerListCell.this.server.setDesiredVersion(GUITools.versionList.getSelectionModel().getSelectedItem().getProtocolVersion());
-                ServerListCell.this.server.setAddress(DNSUtil.correctHostName(serverAddress.getText()));
-                ServerListCell.this.server.saveToConfig();
+                serverName.setText(serverName.getText());
+                server.setName(serverName.getText());
+                server.setDesiredVersion(GUITools.versionList.getSelectionModel().getSelectedItem().getProtocolVersion());
+                if (server.getDesiredVersion() != -1) {
+                    version.setText(Versions.getVersionById(server.getDesiredVersion()).getVersionName());
+                    version.setTextFill(Color.BLACK);
+                }
+                server.setAddress(DNSUtil.correctHostName(serverAddress.getText()));
+                server.saveToConfig();
                 Log.info(String.format("Edited and saved server (serverName=%s, serverAddress=%s, version=%d)", server.getName(), server.getAddress(), server.getDesiredVersion()));
             }
             return null;
@@ -217,17 +245,17 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     }
 
     public void connect() {
-        if (!canConnect || lastPing == null) {
+        if (!canConnect || server.getLastPing() == null) {
             return;
         }
         Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), new Player(Minosoft.accountList.get(0)));
         Version version;
         if (server.getDesiredVersion() == -1) {
-            version = lastPing.getVersion();
+            version = server.getLastPing().getVersion();
         } else {
             version = Versions.getVersionById(server.getDesiredVersion());
         }
-        connection.connect(lastPing.getAddress(), version);
+        connection.connect(server.getLastPing().getAddress(), version);
         setStyle("-fx-background-color: darkseagreen;");
     }
 }

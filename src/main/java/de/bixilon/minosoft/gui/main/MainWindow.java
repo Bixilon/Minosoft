@@ -79,7 +79,7 @@ public class MainWindow implements Initializable {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
-                Server server = new Server(Minosoft.serverList.size() + 1, serverName.getText(), DNSUtil.correctHostName(serverAddress.getText()), GUITools.versionList.getSelectionModel().getSelectedItem().getProtocolVersion());
+                Server server = new Server(Server.getNextServerId(), serverName.getText(), DNSUtil.correctHostName(serverAddress.getText()), GUITools.versionList.getSelectionModel().getSelectedItem().getProtocolVersion());
                 Minosoft.serverList.add(server);
                 server.saveToConfig();
                 ServerListCell.listView.getItems().add(server);

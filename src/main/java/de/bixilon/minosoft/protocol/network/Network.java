@@ -46,6 +46,7 @@ public class Network {
     boolean encryptionEnabled = false;
     SecretKey secretKey;
     boolean connected;
+    Exception lastException;
 
     public Network(Connection connection) {
         this.connection = connection;
@@ -204,6 +205,7 @@ public class Network {
                 connection.setConnectionState(ConnectionStates.DISCONNECTED);
             } catch (IOException e) {
                 // Could not connect
+                lastException = e;
                 if (e instanceof SocketTimeoutException || e instanceof ConnectException || e instanceof UnknownHostException) {
                     connection.setConnectionState(ConnectionStates.FAILED);
                 }

@@ -17,11 +17,11 @@
             <Font size="17.0"/>
         </font>
     </Label>
-    <Label fx:id="players" layoutX="408.0" layoutY="8.0" text="VERSION" AnchorPane.rightAnchor="40.0"
+    <Label fx:id="players" layoutX="408.0" layoutY="8.0" AnchorPane.rightAnchor="40.0"
            AnchorPane.topAnchor="5.0"/>
     <ImageView fx:id="ping" fitHeight="24.0" fitWidth="23.0" layoutX="463.0" layoutY="18.0" pickOnBounds="true"
                preserveRatio="true" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0"/>
-    <Label fx:id="motd" layoutX="104.0" layoutY="49.0" maxWidth="320.0" text="MOTD" wrapText="true"
+    <Label fx:id="motd" layoutX="104.0" layoutY="49.0" maxWidth="320.0" wrapText="true"
            AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="100.0"
            AnchorPane.topAnchor="40.0"/>
     <Label fx:id="version" layoutX="350.0" layoutY="8.0" text="Connecting..." AnchorPane.rightAnchor="110.0"
