@@ -31,7 +31,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.LinkedList;
 
 public class Network {
@@ -206,9 +207,7 @@ public class Network {
             } catch (IOException e) {
                 // Could not connect
                 lastException = e;
-                if (e instanceof SocketTimeoutException || e instanceof ConnectException || e instanceof UnknownHostException) {
-                    connection.setConnectionState(ConnectionStates.FAILED);
-                }
+                connection.setConnectionState(ConnectionStates.FAILED);
                 e.printStackTrace();
             }
         });

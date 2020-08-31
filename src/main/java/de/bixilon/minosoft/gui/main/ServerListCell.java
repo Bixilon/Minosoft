@@ -107,9 +107,9 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
 
         // clear all cells
         motd.setText("");
-        motd.setTextFill(Color.BLACK);
+        motd.setStyle(null);
         version.setText("Connecting...");
-        version.setTextFill(Color.BLACK);
+        version.setStyle(null);
         players.setText("");
         optionsConnect.setOnAction(e -> connect());
         optionsConnect.setDisable(true);
@@ -143,8 +143,9 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 // Offline
                 players.setText("");
                 version.setText("Offline");
+                version.setStyle("-fx-text-fill: red;");
                 motd.setText(String.format("%s", server.getLastPing().getLastConnectionException()));
-                motd.setTextFill(Color.RED);
+                motd.setStyle("-fx-text-fill: red;");
                 optionsConnect.setDisable(true);
                 canConnect = false;
                 return;
@@ -155,11 +156,11 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 serverVersion = Versions.getVersionById(ping.getProtocolNumber());
             } else {
                 serverVersion = Versions.getVersionById(server.getDesiredVersion());
-                version.setTextFill(Color.GREEN);
+                version.setStyle("-fx-text-fill: green;");
             }
             if (serverVersion == null) {
                 version.setText(ping.getServerVersion());
-                version.setTextFill(Color.RED);
+                version.setStyle("-fx-text-fill: red;");
                 optionsConnect.setDisable(true);
                 canConnect = false;
             } else {
