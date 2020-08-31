@@ -57,6 +57,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public MenuItem optionsEdit;
     @FXML
     public MenuItem optionsDelete;
+    @FXML
+    public MenuButton optionsMenu;
     boolean canConnect = false;
     @FXML
     private Label serverName;
@@ -90,9 +92,11 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     protected void updateItem(Server server, boolean empty) {
         super.updateItem(server, empty);
 
+        root.setVisible(!empty);
         if (empty) {
             return;
         }
+
         if (server == null) {
             return;
         }
@@ -165,9 +169,12 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
             motd.setText(ping.getMotd().getRawMessage());
             if (ping.getFavicon() != null) {
+                icon.setImage(ping.getFavicon());
+                if (ping.getBase64EncodedFavicon().equals(server.getBase64Favicon())) {
+                    return;
+                }
                 server.setBase64Favicon(ping.getBase64EncodedFavicon());
                 server.saveToConfig();
-                icon.setImage(ping.getFavicon());
             }
         }));
 
@@ -242,6 +249,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public void delete() {
         listView.getItems().remove(server);
         server.delete();
+        Log.info(String.format("Deleted server (name=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
     }
 
     public void connect() {

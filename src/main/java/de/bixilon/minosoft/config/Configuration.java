@@ -15,6 +15,7 @@ package de.bixilon.minosoft.config;
 
 import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.gui.main.Server;
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 import org.yaml.snakeyaml.Yaml;
 
@@ -27,7 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Configuration {
-    LinkedHashMap<String, Object> config;
+    final LinkedHashMap<String, Object> config;
 
     public Configuration(String filename) throws IOException {
 
@@ -171,15 +172,23 @@ public class Configuration {
     }
 
     public void saveToFile(String filename) {
-        Yaml yaml = new Yaml();
-        FileWriter writer;
-        try {
-            writer = new FileWriter(Config.homeDir + "config/" + filename);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-        yaml.dump(config, writer);
+
+        Thread thread = new Thread(() -> {
+            Yaml yaml = new Yaml();
+            FileWriter writer;
+            try {
+                writer = new FileWriter(Config.homeDir + "config/" + filename);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+            synchronized (config) {
+                yaml.dump(config, writer);
+            }
+            Log.verbose(String.format("Configuration saved to file %s", filename));
+        });
+        thread.setName("IO-Thread");
+        thread.start();
     }
 
     public ArrayList<MojangAccount> getMojangAccounts() {

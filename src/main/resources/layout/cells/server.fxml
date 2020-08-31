@@ -26,7 +26,7 @@
            AnchorPane.topAnchor="40.0"/>
     <Label fx:id="version" layoutX="350.0" layoutY="8.0" text="Connecting..." AnchorPane.rightAnchor="110.0"
            AnchorPane.topAnchor="5.0"/>
-    <MenuButton id="options" layoutX="389.0" layoutY="81.0" mnemonicParsing="false" text="⋮"
+    <MenuButton fx:id="optionsMenu" layoutX="389.0" layoutY="81.0" mnemonicParsing="false" text="⋮"
                 AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <items>
             <MenuItem fx:id="optionsDelete" mnemonicParsing="false" text="Delete"/>
