@@ -45,8 +45,8 @@ public class MainWindow implements Initializable {
         dialog.setTitle("Add server");
         dialog.setHeaderText("Enter the details of the server");
 
-        ButtonType loginButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+        ButtonType addButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -60,6 +60,7 @@ public class MainWindow implements Initializable {
         serverAddress.setPromptText("Server address");
 
         GUITools.versionList.getSelectionModel().select(Versions.getLowestVersionSupported());
+        GUITools.versionList.setEditable(true);
 
         grid.add(new Label("Servername:"), 0, 0);
         grid.add(serverName, 1, 0);
@@ -68,7 +69,7 @@ public class MainWindow implements Initializable {
         grid.add(new Label("Version:"), 0, 2);
         grid.add(GUITools.versionList, 1, 2);
 
-        Node addButton = dialog.getDialogPane().lookupButton(loginButtonType);
+        Node addButton = dialog.getDialogPane().lookupButton(addButtonType);
 
         serverAddress.textProperty().addListener((observable, oldValue, newValue) -> addButton.setDisable(newValue.trim().isEmpty()));
         addButton.setDisable(true);
@@ -78,7 +79,7 @@ public class MainWindow implements Initializable {
         Platform.runLater(serverName::requestFocus);
 
         dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == loginButtonType) {
+            if (dialogButton == addButtonType) {
                 Server server = new Server(Server.getNextServerId(), serverName.getText(), DNSUtil.correctHostName(serverAddress.getText()), GUITools.versionList.getSelectionModel().getSelectedItem().getProtocolVersion());
                 Minosoft.serverList.add(server);
                 server.saveToConfig();

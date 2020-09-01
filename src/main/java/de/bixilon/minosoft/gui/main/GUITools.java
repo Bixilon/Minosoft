@@ -31,6 +31,11 @@ public class GUITools {
         if (base64 == null) {
             return null;
         }
-        return new Image(new ByteArrayInputStream(Base64.getDecoder().decode(base64)));
+        try {
+            return new Image(new ByteArrayInputStream(Base64.getDecoder().decode(base64)));
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -18,6 +18,8 @@ import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.ping.ForgeModInfo;
+import de.bixilon.minosoft.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.DNSUtil;
 import javafx.application.Platform;
@@ -175,8 +177,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         dialog.setTitle("Edit server: " + server.getName());
         dialog.setHeaderText("Edit the details of the server");
 
-        ButtonType loginButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -196,6 +198,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         } else {
             GUITools.versionList.getSelectionModel().select(Versions.getVersionById(server.getDesiredVersion()));
         }
+        GUITools.versionList.setEditable(true);
 
         grid.add(new Label("Servername:"), 0, 0);
         grid.add(serverName, 1, 0);
@@ -204,7 +207,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         grid.add(new Label("Version:"), 0, 2);
         grid.add(GUITools.versionList, 1, 2);
 
-        Node saveButton = dialog.getDialogPane().lookupButton(loginButtonType);
+        Node saveButton = dialog.getDialogPane().lookupButton(saveButtonType);
 
         serverAddress.textProperty().addListener((observable, oldValue, newValue) -> saveButton.setDisable(newValue.trim().isEmpty()));
 
@@ -213,7 +216,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         Platform.runLater(serverName::requestFocus);
 
         dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == loginButtonType) {
+            if (dialogButton == saveButtonType) {
                 serverName.setText(serverName.getText());
                 server.setName(serverName.getText());
                 server.setDesiredVersion(GUITools.versionList.getSelectionModel().getSelectedItem().getProtocolVersion());
@@ -287,5 +290,83 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 edit();
             }
         }
+    }
+
+    public void showInfo() {
+
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("View server info: " + server.getName());
+
+        ButtonType loginButtonType = ButtonType.CLOSE;
+        dialog.getDialogPane().getButtonTypes().add(loginButtonType);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 300, 10, 10));
+
+        Label serverNameLabel = new Label(server.getName());
+        Label serverAddressLabel = new Label(server.getAddress());
+        Label forcedVersionLabel = new Label();
+
+
+        if (server.getDesiredVersion() == -1) {
+            forcedVersionLabel.setText(Versions.getLowestVersionSupported().getVersionName());
+        } else {
+            forcedVersionLabel.setText(Versions.getVersionById(server.getDesiredVersion()).getVersionName());
+        }
+
+        int column = 0;
+        grid.add(new Label("Servername:"), 0, ++column);
+        grid.add(serverNameLabel, 1, column);
+        grid.add(new Label("Server address:"), 0, ++column);
+        grid.add(serverAddressLabel, 1, column);
+        grid.add(new Label("Forced version:"), 0, ++column);
+        grid.add(forcedVersionLabel, 1, column);
+
+        if (server.getLastPing() != null && server.getLastPing().getLastPing() != null) {
+            ServerListPing lastPing = server.getLastPing().getLastPing();
+            Version serverVersion = Versions.getVersionById(lastPing.getProtocolId());
+            String serverVersionString;
+            if (serverVersion == null) {
+                serverVersionString = String.format("Unknown (%d)", lastPing.getProtocolId());
+            } else {
+                serverVersionString = serverVersion.getVersionName();
+            }
+            Label realServerAddressLabel = new Label(server.getLastPing().getAddress().toString());
+            Label serverVersionLabel = new Label(serverVersionString);
+            Label serverBrandLabel = new Label(lastPing.getServerBrand());
+            Label playersOnlineMaxLabel = new Label(String.format("%d/%d", lastPing.getPlayerOnline(), lastPing.getMaxPlayers()));
+            Label motdLabel = new Label(lastPing.getMotd().getRawMessage());
+            Label moddedBrandLabel = new Label(lastPing.getServerModInfo().getBrand());
+
+
+            grid.add(new Label("Real server address:"), 0, ++column);
+            grid.add(realServerAddressLabel, 1, column);
+            grid.add(new Label("Server version:"), 0, ++column);
+            grid.add(serverVersionLabel, 1, column);
+            grid.add(new Label("Server brand:"), 0, ++column);
+            grid.add(serverBrandLabel, 1, column);
+            grid.add(new Label("Players online:"), 0, ++column);
+            grid.add(playersOnlineMaxLabel, 1, column);
+            grid.add(new Label("MotD:"), 0, ++column);
+            grid.add(motdLabel, 1, column);
+            grid.add(new Label("Modded brand:"), 0, ++column);
+            grid.add(moddedBrandLabel, 1, column);
+
+            if (lastPing.getServerModInfo() instanceof ForgeModInfo) {
+                ForgeModInfo modInfo = (ForgeModInfo) lastPing.getServerModInfo();
+                Label moddedModsLabel = new Label(modInfo.getModList().toString());
+                moddedModsLabel.setWrapText(true);
+
+                grid.add(new Label("Mod list:"), 0, ++column);
+                grid.add(moddedModsLabel, 1, column);
+            }
+        }
+
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.showAndWait();
     }
 }

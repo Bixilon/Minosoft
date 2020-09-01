@@ -13,15 +13,25 @@
 
 package de.bixilon.minosoft.ping;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
 
 public class ForgeModInfo implements ServerModInfo {
     final JsonObject modInfo;
     String info;
+    ArrayList<ServerModItem> modList = new ArrayList<>();
 
     public ForgeModInfo(JsonObject modInfo) {
         this.modInfo = modInfo;
-        info = String.format("Modded server, %d mods present", modInfo.getAsJsonArray("modList").size());
+        JsonArray mods = modInfo.getAsJsonArray("modList");
+        info = String.format("Modded server, %d mods present", mods.size());
+        for (JsonElement mod : mods) {
+            JsonObject mod2 = (JsonObject) mod;
+            modList.add(new ServerModItem(mod2.get("modid").getAsString(), mod2.get("version").getAsString()));
+        }
     }
 
     @Override
@@ -32,6 +42,10 @@ public class ForgeModInfo implements ServerModInfo {
     @Override
     public String getInfo() {
         return info;
+    }
+
+    public ArrayList<ServerModItem> getModList() {
+        return modList;
     }
 
     @Override

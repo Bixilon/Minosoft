@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.network;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.PingCallback;
-import de.bixilon.minosoft.ServerListPing;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.game.datatypes.VelocityHandler;
@@ -24,6 +23,7 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -375,5 +375,9 @@ public class Connection {
 
     public Exception getLastConnectionException() {
         return network.lastException;
+    }
+
+    public ServerListPing getLastPing() {
+        return lastPing;
     }
 }

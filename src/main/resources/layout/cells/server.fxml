@@ -27,10 +27,11 @@
     <MenuButton fx:id="optionsMenu" layoutX="389.0" layoutY="81.0" mnemonicParsing="false" text="⋮"
                 AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <items>
-            <MenuItem mnemonicParsing="false" onAction="#delete" text="Delete"/>
+            <MenuItem fx:id="optionsConnect" disable="true" mnemonicParsing="false" onAction="#connect" text="Connect"/>
+            <MenuItem mnemonicParsing="false" onAction="#showInfo" text="Info"/>
             <MenuItem mnemonicParsing="false" onAction="#edit" text="Edit"/>
             <MenuItem mnemonicParsing="false" onAction="#refresh" text="Refresh"/>
-            <MenuItem fx:id="optionsConnect" disable="true" mnemonicParsing="false" onAction="#connect" text="Connect"/>
+            <MenuItem mnemonicParsing="false" style="-fx-text-fill: red" onAction="#delete" text="Delete"/>
         </items>
     </MenuButton>
     <Label layoutX="464.0" layoutY="59.0" text="Brand" fx:id="serverBrand" AnchorPane.bottomAnchor="30.0"
