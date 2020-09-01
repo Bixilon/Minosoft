@@ -172,12 +172,14 @@ public class Configuration {
     }
 
     public void saveToFile(String filename) {
-
         Thread thread = new Thread(() -> {
+            // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
+            File tempFile = new File(Config.homeDir + "config/" + filename + ".tmp");
+            File file = new File(Config.homeDir + "config/" + filename);
             Yaml yaml = new Yaml();
             FileWriter writer;
             try {
-                writer = new FileWriter(Config.homeDir + "config/" + filename);
+                writer = new FileWriter(tempFile);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
@@ -185,7 +187,11 @@ public class Configuration {
             synchronized (config) {
                 yaml.dump(config, writer);
             }
-            Log.verbose(String.format("Configuration saved to file %s", filename));
+            if (!file.delete() || !tempFile.renameTo(file)) {
+                Log.fatal("An error occurred while saving the config file");
+            } else {
+                Log.verbose(String.format("Configuration saved to file %s", filename));
+            }
         });
         thread.setName("IO-Thread");
         thread.start();
