@@ -5,8 +5,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="500.0"
-            minHeight="-Infinity" minWidth="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.1"
-            fx:controller="de.bixilon.minosoft.gui.main.ServerListCell">
+            minHeight="-Infinity" minWidth="500.0" onMouseClicked="#clicked" prefWidth="500.0"
+            xmlns="http://javafx.com/javafx/11.0.1" fx:controller="de.bixilon.minosoft.gui.main.ServerListCell">
     <ImageView fx:id="icon" fitHeight="100.0" fitWidth="100.0" layoutX="54.0" layoutY="108.0" pickOnBounds="true"
                preserveRatio="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0"
                AnchorPane.topAnchor="5.0">
@@ -17,13 +17,11 @@
             <Font size="17.0"/>
         </font>
     </Label>
-    <Label fx:id="players" layoutX="408.0" layoutY="8.0" AnchorPane.rightAnchor="40.0"
-           AnchorPane.topAnchor="5.0"/>
+    <Label fx:id="players" layoutX="408.0" layoutY="8.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="5.0"/>
     <ImageView fx:id="ping" fitHeight="24.0" fitWidth="23.0" layoutX="463.0" layoutY="18.0" pickOnBounds="true"
                preserveRatio="true" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0"/>
-    <Label fx:id="motd" layoutX="104.0" layoutY="49.0" maxWidth="320.0" wrapText="true"
-           AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="100.0"
-           AnchorPane.topAnchor="40.0"/>
+    <Label fx:id="motd" layoutX="104.0" layoutY="49.0" maxWidth="320.0" wrapText="true" AnchorPane.bottomAnchor="15.0"
+           AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="40.0"/>
     <Label fx:id="version" layoutX="350.0" layoutY="8.0" text="Connecting..." AnchorPane.rightAnchor="110.0"
            AnchorPane.topAnchor="5.0"/>
     <MenuButton fx:id="optionsMenu" layoutX="389.0" layoutY="81.0" mnemonicParsing="false" text="⋮"
@@ -32,7 +30,9 @@
             <MenuItem mnemonicParsing="false" onAction="#delete" text="Delete"/>
             <MenuItem mnemonicParsing="false" onAction="#edit" text="Edit"/>
             <MenuItem mnemonicParsing="false" onAction="#refresh" text="Refresh"/>
-            <MenuItem fx:id="optionsConnect" mnemonicParsing="false" onAction="#connect" disable="true" text="Connect"/>
+            <MenuItem fx:id="optionsConnect" disable="true" mnemonicParsing="false" onAction="#connect" text="Connect"/>
         </items>
     </MenuButton>
+    <Label layoutX="464.0" layoutY="59.0" text="Brand" fx:id="serverBrand" AnchorPane.bottomAnchor="30.0"
+           AnchorPane.rightAnchor="5.0"/>
 </AnchorPane>

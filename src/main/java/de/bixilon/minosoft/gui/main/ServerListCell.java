@@ -29,6 +29,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -54,6 +55,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public MenuItem optionsConnect;
     @FXML
     public MenuButton optionsMenu;
+    @FXML
+    public Label serverBrand;
     boolean canConnect = false;
     @FXML
     private Label serverName;
@@ -132,13 +135,13 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             players.setText(String.format("%d/%d", ping.getPlayerOnline(), ping.getMaxPlayers()));
             Version serverVersion;
             if (server.getDesiredVersion() == -1) {
-                serverVersion = Versions.getVersionById(ping.getProtocolNumber());
+                serverVersion = Versions.getVersionById(ping.getProtocolId());
             } else {
                 serverVersion = Versions.getVersionById(server.getDesiredVersion());
                 version.setStyle("-fx-text-fill: green;");
             }
             if (serverVersion == null) {
-                version.setText(ping.getServerVersion());
+                version.setText(ping.getServerBrand());
                 version.setStyle("-fx-text-fill: red;");
                 optionsConnect.setDisable(true);
                 canConnect = false;
@@ -147,6 +150,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 optionsConnect.setDisable(false);
                 canConnect = true;
             }
+            serverBrand.setText(ping.getServerModInfo().getBrand());
+            serverBrand.setTooltip(new Tooltip(ping.getServerModInfo().getInfo()));
             motd.setText(ping.getMotd().getRawMessage());
             if (ping.getFavicon() != null) {
                 icon.setImage(ping.getFavicon());
@@ -251,16 +256,13 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         // clear all cells
         setStyle(null);
         motd.setText("");
+        serverBrand.setText("");
+        serverBrand.setTooltip(null);
         motd.setStyle(null);
         version.setText("Connecting...");
         version.setStyle(null);
         players.setText("");
         optionsConnect.setDisable(true);
-        setOnMouseClicked(click -> {
-            if (click.getClickCount() == 2) {
-                connect();
-            }
-        });
     }
 
     public void refresh() {
@@ -270,5 +272,20 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             return;
         }
         server.ping();
+    }
+
+    public void clicked(MouseEvent e) {
+        switch (e.getButton()) {
+            case PRIMARY -> {
+                if (e.getClickCount() == 2) {
+                    connect();
+                }
+            }
+            case SECONDARY -> optionsMenu.fire();
+            case MIDDLE -> {
+                listView.getSelectionModel().select(server);
+                edit();
+            }
+        }
     }
 }

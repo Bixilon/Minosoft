@@ -59,11 +59,11 @@ public class PacketHandler {
         Version version;
         int versionId = connection.getDesiredVersionNumber();
         if (versionId == -1) {
-            versionId = pkg.getResponse().getProtocolNumber();
+            versionId = pkg.getResponse().getProtocolId();
         }
         version = Versions.getVersionById(versionId);
         if (version == null) {
-            Log.fatal(String.format("Server is running on unknown version or a invalid version was forced (version=%d, brand=\"%s\")", versionId, pkg.getResponse().getServerVersion()));
+            Log.fatal(String.format("Server is running on unknown version or a invalid version was forced (version=%d, brand=\"%s\")", versionId, pkg.getResponse().getServerBrand()));
         } else {
             connection.setVersion(version);
         }

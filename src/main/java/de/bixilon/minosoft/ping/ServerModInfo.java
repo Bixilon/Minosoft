@@ -11,10 +11,12 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft;
+package de.bixilon.minosoft.ping;
 
-import de.bixilon.minosoft.ping.ServerListPing;
+public interface ServerModInfo {
+    String getBrand();
 
-public interface PingCallback {
-    void handle(ServerListPing ping);
+    String getInfo();
+
+    ServerModTypes getType();
 }

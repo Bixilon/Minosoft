@@ -21,18 +21,21 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 
 public class TextComponent {
-    JsonObject json;
+    final JsonObject json;
+    String rawMessage;
+    String coloredMessage;
 
     public TextComponent(String raw) {
+        JsonObject json;
         if (raw == null) {
             this.json = new JsonObject();
             return;
         }
         try {
-            this.json = JsonParser.parseString(raw).getAsJsonObject();
+            json = JsonParser.parseString(raw).getAsJsonObject();
         } catch (Exception e) {
             // not a text component, is a legacy string
-            this.json = new JsonObject();
+            json = new JsonObject();
             JsonArray extra = new JsonArray();
 
             String[] paragraphSplit = raw.split("§");
@@ -90,8 +93,9 @@ public class TextComponent {
             // save
             extra.add(getExtraByAttributes(message.toString(), color, attributesList));
 
-            this.json.add("extra", extra);
+            json.add("extra", extra);
         }
+        this.json = json;
     }
 
     public TextComponent(JsonObject json) {
@@ -102,7 +106,7 @@ public class TextComponent {
         JsonObject ret = new JsonObject();
         ret.addProperty("text", message);
         if (color != null) {
-            ret.addProperty("color", color.getName());
+            ret.addProperty("color", color.name());
         }
         for (ChatAttributes attribute : formatting) {
             if (attribute == ChatAttributes.BOLD && !ret.has("bold")) {
@@ -121,26 +125,31 @@ public class TextComponent {
     }
 
     public String getRawMessage() {
-        if (json.has("text") && json.get("text").getAsString().length() != 0) {
-            return json.get("text").getAsString();
-        }
-        StringBuilder buffer = new StringBuilder();
-        if (json.has("extra")) {
-            JsonArray arr = json.getAsJsonArray("extra");
-            for (int i = 0; i < arr.size(); i++) {
-                JsonObject object;
-                try {
-                    object = arr.get(i).getAsJsonObject();
-                } catch (JsonParseException e) {
-                    // reset text
-                    buffer.append(arr.get(i).getAsString());
-                    continue;
+        if (rawMessage == null) {
+            if (json.has("text") && json.get("text").getAsString().length() != 0) {
+                rawMessage = json.get("text").getAsString();
+            } else {
+                StringBuilder buffer = new StringBuilder();
+                if (json.has("extra")) {
+                    JsonArray arr = json.getAsJsonArray("extra");
+                    for (int i = 0; i < arr.size(); i++) {
+                        JsonObject object;
+                        try {
+                            object = arr.get(i).getAsJsonObject();
+                        } catch (JsonParseException e) {
+                            // reset text
+                            buffer.append(arr.get(i).getAsString());
+                            continue;
+                        }
+                        buffer.append(object.get("text").getAsString());
+                    }
+                    rawMessage = buffer.toString();
+                } else {
+                    rawMessage = "";
                 }
-                buffer.append(object.get("text").getAsString());
             }
-            return buffer.toString();
         }
-        return "";
+        return rawMessage;
     }
 
     public JsonObject getRaw() {
@@ -148,57 +157,61 @@ public class TextComponent {
     }
 
     public String getColoredMessage() {
-        if (json.has("text") && json.get("text").getAsString().length() != 0) {
-            return json.get("text").getAsString();
-        }
-        StringBuilder buffer = new StringBuilder();
-        if (json.has("extra")) {
-            JsonArray arr = json.getAsJsonArray("extra");
-            for (int i = 0; i < arr.size(); i++) {
-                if (arr.get(i).isJsonPrimitive()) {
+        if (coloredMessage == null) {
+            if (json.has("text") && json.get("text").getAsString().length() != 0) {
+                coloredMessage = json.get("text").getAsString();
+            } else {
+                StringBuilder buffer = new StringBuilder();
+                if (json.has("extra")) {
+                    JsonArray arr = json.getAsJsonArray("extra");
+                    for (int i = 0; i < arr.size(); i++) {
+                        if (arr.get(i).isJsonPrimitive()) {
+                            buffer.append(ChatAttributes.RESET);
+                            buffer.append(" ");
+                            buffer.append(arr.get(i).getAsString());
+                            continue;
+                        }
+                        JsonObject object = arr.get(i).getAsJsonObject();
+                        if (object.has("bold") && object.get("bold").getAsBoolean()) {
+                            buffer.append(ChatAttributes.BOLD);
+                        }
+                        if (object.has("color")) {
+                            buffer.append(ChatAttributes.byName(object.get("color").getAsString()));
+                        }
+                        if (object.has("italic") && object.get("italic").getAsBoolean()) {
+                            buffer.append(ChatAttributes.ITALIC);
+                        }
+                        if (object.has("underlined") && object.get("underlined").getAsBoolean()) {
+                            buffer.append(ChatAttributes.UNDERLINED);
+                        }
+                        if (object.has("strikethrough") && object.get("strikethrough").getAsBoolean()) {
+                            buffer.append(ChatAttributes.STRIKETHROUGH);
+                        }
+                        if (object.has("obfuscated") && object.get("obfuscated").getAsBoolean()) {
+                            buffer.append(ChatAttributes.OBFUSCATED);
+                        }
+                        buffer.append(object.get("text").getAsString());
+                    }
                     buffer.append(ChatAttributes.RESET);
-                    buffer.append(" ");
-                    buffer.append(arr.get(i).getAsString());
-                    continue;
                 }
-                JsonObject object = arr.get(i).getAsJsonObject();
-                if (object.has("bold") && object.get("bold").getAsBoolean()) {
-                    buffer.append(ChatAttributes.BOLD);
-                }
-                if (object.has("color")) {
-                    buffer.append(ChatAttributes.byName(object.get("color").getAsString()));
-                }
-                if (object.has("italic") && object.get("italic").getAsBoolean()) {
-                    buffer.append(ChatAttributes.ITALIC);
-                }
-                if (object.has("underlined") && object.get("underlined").getAsBoolean()) {
-                    buffer.append(ChatAttributes.UNDERLINED);
-                }
-                if (object.has("strikethrough") && object.get("strikethrough").getAsBoolean()) {
-                    buffer.append(ChatAttributes.STRIKETHROUGH);
-                }
-                if (object.has("obfuscated") && object.get("obfuscated").getAsBoolean()) {
-                    buffer.append(ChatAttributes.OBFUSCATED);
-                }
-                buffer.append(object.get("text").getAsString());
-            }
-            buffer.append(ChatAttributes.RESET);
-        }
-        if (json.has("with")) {
-            JsonArray arr = json.getAsJsonArray("with");
-            for (int i = 0; i < arr.size(); i++) {
-                if (arr.get(i).isJsonPrimitive()) {
+                if (json.has("with")) {
+                    JsonArray arr = json.getAsJsonArray("with");
+                    for (int i = 0; i < arr.size(); i++) {
+                        if (arr.get(i).isJsonPrimitive()) {
+                            buffer.append(ChatAttributes.RESET);
+                            buffer.append(" ");
+                            buffer.append(arr.get(i).getAsString());
+                            continue;
+                        }
+                        JsonObject object = arr.get(i).getAsJsonObject();
+                        buffer.append(object.get("text").getAsString());
+                    }
                     buffer.append(ChatAttributes.RESET);
-                    buffer.append(" ");
-                    buffer.append(arr.get(i).getAsString());
-                    continue;
                 }
-                JsonObject object = arr.get(i).getAsJsonObject();
-                buffer.append(object.get("text").getAsString());
+                coloredMessage = buffer.toString();
             }
-            buffer.append(ChatAttributes.RESET);
         }
-        return buffer.toString();
+        return coloredMessage;
     }
 
     @Override
@@ -220,7 +233,7 @@ public class TextComponent {
         GREEN("\033[38;2;85;255;85m", ChatColors.GREEN),
         AQUA("\033[38;2;85;255;255m", ChatColors.AQUA),
         RED("\033[38;2;255;85;85m", ChatColors.RED),
-        PURPLE("\033[38;2;255;85;255m", ChatColors.PURPLE, "light_purple"),
+        LIGHT_PURPLE("\033[38;2;255;85;255m", ChatColors.PURPLE),
         YELLOW("\033[38;2;255;255;85m", ChatColors.YELLOW),
         WHITE("\033[38;2;255;255;255m", ChatColors.WHITE),
 
@@ -234,19 +247,11 @@ public class TextComponent {
         final String consolePrefix;
         final ChatColors color;
         final String prefix;
-        final String name;
 
-        ChatAttributes(String consolePrefix, ChatColors color, String name) {
-            this.consolePrefix = consolePrefix;
-            this.color = color;
-            this.name = name;
-            this.prefix = null;
-        }
 
         ChatAttributes(String consolePrefix, ChatColors color) {
             this.consolePrefix = consolePrefix;
             this.color = color;
-            this.name = null;
             this.prefix = null;
         }
 
@@ -254,23 +259,16 @@ public class TextComponent {
             this.consolePrefix = consolePrefix;
             this.prefix = prefix;
             this.color = null;
-            this.name = name;
         }
 
         ChatAttributes(String consolePrefix, String prefix) {
             this.consolePrefix = consolePrefix;
             this.prefix = prefix;
             this.color = null;
-            this.name = null;
         }
 
         public static ChatAttributes byName(String name) {
-            for (ChatAttributes attribute : values()) {
-                if ((attribute.getName() != null && attribute.getName().toLowerCase().equals(name.toLowerCase())) || attribute.name().toLowerCase().equals(name.toLowerCase())) {
-                    return attribute;
-                }
-            }
-            return null;
+            return valueOf(name.toUpperCase());
         }
 
         public static ChatAttributes byColor(ChatColors color) {
@@ -295,13 +293,6 @@ public class TextComponent {
 
         public ChatColors getColor() {
             return color;
-        }
-
-        public String getName() {
-            if (name == null) {
-                return name();
-            }
-            return name;
         }
 
         @Override

@@ -11,10 +11,31 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft;
+package de.bixilon.minosoft.ping;
 
-import de.bixilon.minosoft.ping.ServerListPing;
+import com.google.gson.JsonObject;
 
-public interface PingCallback {
-    void handle(ServerListPing ping);
+public class ForgeModInfo implements ServerModInfo {
+    final JsonObject modInfo;
+    String info;
+
+    public ForgeModInfo(JsonObject modInfo) {
+        this.modInfo = modInfo;
+        info = String.format("Modded server, %d mods present", modInfo.getAsJsonArray("modList").size());
+    }
+
+    @Override
+    public String getBrand() {
+        return "Forge";
+    }
+
+    @Override
+    public String getInfo() {
+        return info;
+    }
+
+    @Override
+    public ServerModTypes getType() {
+        return ServerModTypes.FORGE;
+    }
 }
