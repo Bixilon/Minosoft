@@ -33,7 +33,7 @@ public class ServerListPing {
         playersOnline = json.getAsJsonObject("players").get("online").getAsInt();
         maxPlayers = json.getAsJsonObject("players").get("max").getAsInt();
         if (json.has("favicon")) {
-            base64Favicon = json.get("favicon").getAsString().replace("data:image/png;base64,", "");
+            base64Favicon = json.get("favicon").getAsString().replace("data:image/png;base64,", "").replace("\n", "");
             favicon = GUITools.getImageFromBase64(base64Favicon);
         }
 

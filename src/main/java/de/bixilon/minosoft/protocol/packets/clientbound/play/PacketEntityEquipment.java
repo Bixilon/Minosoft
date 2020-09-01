@@ -39,7 +39,7 @@ public class PacketEntityEquipment implements ClientboundPacket {
             slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getProtocolId()), buffer.readSlot());
             return true;
         }
-        if (buffer.getProtocolId() < 743) { //ToDo: find out version
+        if (buffer.getProtocolId() < 732) {
             entityId = buffer.readVarInt();
             slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readVarInt(), buffer.getProtocolId()), buffer.readSlot());
             return true;

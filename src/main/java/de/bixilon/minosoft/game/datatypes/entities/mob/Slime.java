@@ -29,6 +29,10 @@ public class Slime extends Mob implements MobInterface {
         this.metaData = new SlimeMetaData(sets, protocolId);
     }
 
+    public Slime(int entityId, UUID uuid, Location location, short yaw, short pitch, int headYaw) {
+        super(entityId, uuid, location, yaw, pitch, headYaw);
+    }
+
     @Override
     public EntityMetaData getMetaData() {
         return metaData;

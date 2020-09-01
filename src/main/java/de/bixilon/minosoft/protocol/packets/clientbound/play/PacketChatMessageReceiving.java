@@ -23,24 +23,24 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import java.util.UUID;
 
 public class PacketChatMessageReceiving implements ClientboundPacket {
-    TextComponent c;
+    TextComponent message;
     ChatTextPositions position;
     UUID sender;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 7) {
-            c = buffer.readTextComponent();
+            message = buffer.readTextComponent();
             position = ChatTextPositions.CHAT_BOX;
             return true;
         }
-        if (buffer.getProtocolId() < 743) { //ToDo: when exactly did this change?
-            c = buffer.readTextComponent();
+        if (buffer.getProtocolId() < 718) {
+            message = buffer.readTextComponent();
             position = ChatTextPositions.byId(buffer.readByte());
             return true;
         }
 
-        c = buffer.readTextComponent();
+        message = buffer.readTextComponent();
         position = ChatTextPositions.byId(buffer.readByte());
         sender = buffer.readUUID();
         return true;
@@ -48,11 +48,11 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.game(String.format("[CHAT] %s", c.getColoredMessage()));
+        Log.game(String.format("[CHAT] %s", message.getColoredMessage()));
     }
 
-    public TextComponent getChatComponent() {
-        return c;
+    public TextComponent getMessage() {
+        return message;
     }
 
     @Override

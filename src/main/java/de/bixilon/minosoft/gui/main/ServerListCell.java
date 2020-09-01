@@ -198,7 +198,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         } else {
             GUITools.versionList.getSelectionModel().select(Versions.getVersionById(server.getDesiredVersion()));
         }
-        GUITools.versionList.setEditable(true);
 
         grid.add(new Label("Servername:"), 0, 0);
         grid.add(serverName, 1, 0);

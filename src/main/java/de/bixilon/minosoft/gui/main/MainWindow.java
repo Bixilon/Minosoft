@@ -60,7 +60,6 @@ public class MainWindow implements Initializable {
         serverAddress.setPromptText("Server address");
 
         GUITools.versionList.getSelectionModel().select(Versions.getLowestVersionSupported());
-        GUITools.versionList.setEditable(true);
 
         grid.add(new Label("Servername:"), 0, 0);
         grid.add(serverName, 1, 0);

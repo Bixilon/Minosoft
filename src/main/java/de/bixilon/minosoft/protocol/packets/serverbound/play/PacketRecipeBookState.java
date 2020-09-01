@@ -13,37 +13,45 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-public class PacketGenerateStructure implements ServerboundPacket {
-    final BlockPosition position;
-    final int levels;
-    final boolean keepJigsaw;
+public class PacketRecipeBookState implements ServerboundPacket {
+    final RecipeBooks book;
+    final boolean bookOpen;
+    final boolean filterActive;
 
-    public PacketGenerateStructure(BlockPosition position, int levels, boolean keepJigsaw) {
-        this.position = position;
-        this.levels = levels;
-        this.keepJigsaw = keepJigsaw;
+    public PacketRecipeBookState(RecipeBooks book, boolean bookOpen, boolean filterActive) {
+        this.book = book;
+        this.bookOpen = bookOpen;
+        this.filterActive = filterActive;
     }
 
     @Override
     public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_GENERATE_STRUCTURE);
-        buffer.writePosition(position);
-        buffer.writeVarInt(levels);
-        if (buffer.getProtocolId() <= 719) {
-            buffer.writeBoolean(keepJigsaw);
-        }
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_SET_RECIPE_BOOK_STATE);
+        buffer.writeVarInt(book.ordinal());
+        buffer.writeBoolean(bookOpen);
+        buffer.writeBoolean(filterActive);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending generate structure packet (position=%s, levels=%d, keepJigsaw=%s)", position, levels, keepJigsaw));
+        Log.protocol(String.format("Sending recipe book state (book=%s, bookOpen=%s, filterActive=%s)", book, bookOpen, filterActive));
+    }
+
+    public enum RecipeBooks {
+        CRAFTING,
+        FURNACE,
+        BLAST_FURNACE,
+        SMOKER;
+
+        public static RecipeBooks byId(int id) {
+            return values()[id];
+        }
     }
 }
