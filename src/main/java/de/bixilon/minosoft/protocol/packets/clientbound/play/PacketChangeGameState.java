@@ -57,7 +57,7 @@ public class PacketChangeGameState implements ClientboundPacket {
 
     public enum Reason {
         INVALID_BED(new MapSet[]{new MapSet<>(0, 0)}),
-        END_RAIN(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(498, 2), new MapSet<>(578, 1)}), // ToDo: when excactly did these 2 switch?
+        END_RAIN(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(498, 2), new MapSet<>(578, 1)}), // ToDo: when exactly did these 2 switch?
         START_RAIN(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(498, 1), new MapSet<>(578, 2)}),
         CHANGE_GAMEMODE(new MapSet[]{new MapSet<>(0, 3)}),
         ENTER_CREDITS(new MapSet[]{new MapSet<>(0, 4)}),

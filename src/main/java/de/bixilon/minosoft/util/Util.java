@@ -17,11 +17,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.zip.DataFormatException;
@@ -107,8 +110,24 @@ public final class Util {
         return null;
     }
 
+    public static HashMap<String, String> readTarGzFile(String fileName) throws IOException {
+        File inputFile = new File(fileName);
+        GZIPInputStream gzipInputStream = new GZIPInputStream(new FileInputStream(inputFile));
+        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(gzipInputStream);
+        HashMap<String, String> ret = new HashMap<>();
+        TarArchiveEntry entry;
+        while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
+            ret.put(entry.getName(), readFile(new BufferedReader(new InputStreamReader(tarArchiveInputStream)), false));
+        }
+
+        return ret;
+    }
+
     public static String readFile(String fileName) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        return readFile(new File(fileName));
+    }
+
+    public static String readFile(BufferedReader reader, boolean closeStream) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         String ls = System.getProperty("line.separator");
         String line;
@@ -117,8 +136,14 @@ public final class Util {
             stringBuilder.append(ls);
         }
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        reader.close();
+        if (closeStream) {
+            reader.close();
+        }
         return stringBuilder.toString();
+    }
+
+    public static String readFile(File file) throws IOException {
+        return readFile(new BufferedReader(new FileReader(file)), true);
     }
 
     public static JsonObject readJsonFromFile(String fileName) throws IOException {

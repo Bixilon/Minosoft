@@ -16,6 +16,7 @@ package de.bixilon.minosoft.game.datatypes.objectLoader.versions;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.game.datatypes.Mappings;
 import de.bixilon.minosoft.logging.Log;
@@ -31,11 +32,11 @@ import java.util.Map;
 
 public class Versions {
 
+    static final HashBiMap<Integer, Version> versionMap = HashBiMap.create();
+    static final HashSet<Version> loadedVersion = new HashSet<>();
     private static final
     HashMap<String, Mappings> mappingsHashMap = new HashMap<>();
     static VersionMapping legacyMapping;
-    static final HashBiMap<Integer, Version> versionMap = HashBiMap.create();
-    static final HashSet<Version> loadedVersion = new HashSet<>();
 
     static {
         mappingsHashMap.put("registries", Mappings.REGISTRIES);
@@ -120,20 +121,21 @@ public class Versions {
     }
 
     public static void loadVersionMappings(int protocolId) throws IOException {
-        Version version;
-        if (protocolId < ProtocolDefinition.FLATTING_VERSION_ID) {
-            version = versionMap.get(ProtocolDefinition.PRE_FLATTENING_VERSION_ID);
-        } else {
-            version = versionMap.get(protocolId);
-        }
+        Version version = versionMap.get(protocolId);
         if (version.getMapping() != null && version.getMapping().isFullyLoaded()) {
             // already loaded
             return;
         }
+        if (protocolId < ProtocolDefinition.FLATTING_VERSION_ID) {
+            version = versionMap.get(ProtocolDefinition.PRE_FLATTENING_VERSION_ID);
+        }
         Log.verbose(String.format("Loading mappings for version %s...", version));
         long startTime = System.currentTimeMillis();
+
+        HashMap<String, String> files = Util.readTarGzFile(Config.homeDir + String.format("assets/mapping/%s.tar.gz", version.getVersionName()));
+
         for (Map.Entry<String, Mappings> mappingSet : mappingsHashMap.entrySet()) {
-            JsonObject data = Util.readJsonFromFile(Config.homeDir + String.format("assets/mapping/%s/%s.json", version.getVersionName(), mappingSet.getKey())).getAsJsonObject("minecraft");
+            JsonObject data = JsonParser.parseString(files.get(mappingSet.getKey() + ".json")).getAsJsonObject().getAsJsonObject("minecraft");
             loadVersionMappings(mappingSet.getValue(), data, protocolId);
         }
 
