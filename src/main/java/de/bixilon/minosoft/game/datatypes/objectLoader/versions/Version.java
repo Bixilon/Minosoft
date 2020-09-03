@@ -25,6 +25,7 @@ public class Version {
     final HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
     final HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
     VersionMapping mapping;
+    boolean isGettingLoaded;
 
     public Version(String versionName, int protocolVersion, HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping, HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping) {
         this.versionName = versionName;
@@ -74,6 +75,15 @@ public class Version {
 
     public void setMapping(VersionMapping mapping) {
         this.mapping = mapping;
+    }
+
+
+    public boolean isGettingLoaded() {
+        return isGettingLoaded;
+    }
+
+    public void setGettingLoaded(boolean gettingLoaded) {
+        isGettingLoaded = gettingLoaded;
     }
 
     @Override

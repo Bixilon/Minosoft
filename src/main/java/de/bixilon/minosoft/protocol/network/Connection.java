@@ -207,11 +207,14 @@ public class Connection {
     }
 
     public void setVersion(Version version) {
+        if (this.version == version) {
+            return;
+        }
+
         this.version = version;
         this.customMapping.setVersion(version);
         try {
             Versions.loadVersionMappings(version.getProtocolVersion());
-            customMapping.setVersion(version);
         } catch (IOException e) {
             e.printStackTrace();
             Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));

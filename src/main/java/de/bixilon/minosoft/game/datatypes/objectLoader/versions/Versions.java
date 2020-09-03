@@ -134,6 +134,10 @@ public class Versions {
         if (protocolId < ProtocolDefinition.FLATTING_VERSION_ID) {
             version = versionMap.get(ProtocolDefinition.PRE_FLATTENING_VERSION_ID);
         }
+        if (version.isGettingLoaded()) {
+            return;
+        }
+        version.setGettingLoaded(true);
         Log.verbose(String.format("Loading mappings for version %s...", version));
         long startTime = System.currentTimeMillis();
 
@@ -161,7 +165,7 @@ public class Versions {
         }
 
         Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", version, (System.currentTimeMillis() - startTime), version.getVersionName()));
-
+        version.setGettingLoaded(false);
     }
 
     public static void unloadUnnecessaryVersions(int necessary) {

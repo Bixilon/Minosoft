@@ -275,7 +275,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     }
 
     public void refresh() {
-        Log.info(String.format("Refreshing server status (serverName=\"%s\", address=\"%s\"", server.getName(), server.getAddress()));
+        Log.info(String.format("Refreshing server status (serverName=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
         if (server.getLastPing() == null) {
             // server was not pinged, don't even try, only costs memory and cpu
             return;
