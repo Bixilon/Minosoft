@@ -33,12 +33,13 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Network {
     final Connection connection;
-    final LinkedList<ServerboundPacket> queue = new LinkedList<>();
-    Thread socketThread;
+    final LinkedBlockingQueue<ServerboundPacket> queue = new LinkedBlockingQueue<>();
+    Thread socketRThread;
+    Thread socketSThread;
     int compressionThreshold = -1;
     Socket socket;
     OutputStream outputStream;
@@ -64,7 +65,7 @@ public class Network {
         // everything sent for now, waiting for data
         // add to queue
         // Could not connect
-        socketThread = new Thread(() -> {
+        socketRThread = new Thread(() -> {
             try {
                 socket = new Socket();
                 socket.setSoTimeout(ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
@@ -77,6 +78,62 @@ public class Network {
                 inputStream = socket.getInputStream();
                 cipherInputStream = inputStream;
 
+                socketRThread.setName(String.format("%d/SocketR", connection.getConnectionId()));
+
+                socketSThread = new Thread(() -> {
+                    try {
+                        while (connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
+                            // wait for data or send until it should disconnect
+
+                            // check if still connected
+                            if (!socket.isConnected() || socket.isClosed()) {
+                                break;
+                            }
+
+                            ServerboundPacket packet = queue.take();
+                            packet.log();
+                            queue.remove(packet);
+                            byte[] data = packet.write(connection).getOutBytes();
+                            if (compressionThreshold >= 0) {
+                                // compression is enabled
+                                // check if there is a need to compress it and if so, do it!
+                                OutByteBuffer outRawBuffer = new OutByteBuffer(connection);
+                                if (data.length >= compressionThreshold) {
+                                    // compress it
+                                    OutByteBuffer compressedBuffer = new OutByteBuffer(connection);
+                                    byte[] compressed = Util.compress(data);
+                                    compressedBuffer.writeVarInt(data.length);
+                                    compressedBuffer.writeBytes(compressed);
+                                    outRawBuffer.writeVarInt(compressedBuffer.getOutBytes().length);
+                                    outRawBuffer.writeBytes(compressedBuffer.getOutBytes());
+                                } else {
+                                    outRawBuffer.writeVarInt(data.length + 1); // 1 for the compressed length (0)
+                                    outRawBuffer.writeVarInt(0);
+                                    outRawBuffer.writeBytes(data);
+                                }
+                                data = outRawBuffer.getOutBytes();
+                            } else {
+                                // append packet length
+                                OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer(connection);
+                                bufferWithLengthPrefix.writeVarInt(data.length);
+                                bufferWithLengthPrefix.writeBytes(data);
+                                data = bufferWithLengthPrefix.getOutBytes();
+                            }
+
+                            outputStream.write(data);
+                            outputStream.flush();
+                            if (packet instanceof PacketEncryptionResponse) {
+                                // enable encryption
+                                secretKey = ((PacketEncryptionResponse) packet).getSecretKey();
+                                enableEncryption(secretKey);
+                            }
+                        }
+                    } catch (IOException | InterruptedException ignored) {
+                    }
+                });
+                socketSThread.setName(String.format("%d/SocketS", connection.getConnectionId()));
+                socketSThread.start();
+
                 while (connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
                     // wait for data or send until it should disconnect
                     // first send, then receive
@@ -86,145 +143,97 @@ public class Network {
                         break;
                     }
 
-                    while (queue.size() > 0) {
-                        ServerboundPacket packet = queue.getFirst();
-                        packet.log();
-                        queue.remove(packet);
-                        byte[] data = packet.write(connection).getOutBytes();
-                        if (compressionThreshold >= 0) {
-                            // compression is enabled
-                            // check if there is a need to compress it and if so, do it!
-                            OutByteBuffer outRawBuffer = new OutByteBuffer(connection);
-                            if (data.length >= compressionThreshold) {
-                                // compress it
-                                OutByteBuffer compressedBuffer = new OutByteBuffer(connection);
-                                byte[] compressed = Util.compress(data);
-                                compressedBuffer.writeVarInt(data.length);
-                                compressedBuffer.writeBytes(compressed);
-                                outRawBuffer.writeVarInt(compressedBuffer.getOutBytes().length);
-                                outRawBuffer.writeBytes(compressedBuffer.getOutBytes());
-                            } else {
-                                outRawBuffer.writeVarInt(data.length + 1); // 1 for the compressed length (0)
-                                outRawBuffer.writeVarInt(0);
-                                outRawBuffer.writeBytes(data);
-                            }
-                            data = outRawBuffer.getOutBytes();
-                        } else {
-                            // append packet length
-                            OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer(connection);
-                            bufferWithLengthPrefix.writeVarInt(data.length);
-                            bufferWithLengthPrefix.writeBytes(data);
-                            data = bufferWithLengthPrefix.getOutBytes();
-                        }
-
-                        outputStream.write(data);
-                        outputStream.flush();
-                        if (packet instanceof PacketEncryptionResponse) {
-                            // enable encryption
-                            secretKey = ((PacketEncryptionResponse) packet).getSecretKey();
-                            enableEncryption(secretKey);
-                        }
-                    }
 
                     // everything sent for now, waiting for data
-                    if (inputStream.available() > 0) {
-                        int numRead = 0;
-                        int length = 0;
-                        int read;
-                        do {
-                            read = cipherInputStream.read();
-                            if (read == -1) {
-                                break;
-                            }
-                            int value = (read & 0b01111111);
-                            length |= (value << (7 * numRead));
-
-                            numRead++;
-                            if (numRead > 5) {
-                                throw new RuntimeException("VarInt is too big");
-                            }
-                        } while ((read & 0b10000000) != 0);
-                        if (length == 0) {
-                            break;
+                    int numRead = 0;
+                    int length = 0;
+                    int read;
+                    do {
+                        read = cipherInputStream.read();
+                        if (read == -1) {
+                            disconnect();
+                            return;
                         }
+                        int value = (read & 0b01111111);
+                        length |= (value << (7 * numRead));
 
-                        byte[] data = cipherInputStream.readNBytes(length);
-
-                        if (compressionThreshold >= 0) {
-                            // compression is enabled
-                            // check if there is a need to decompress it and if so, do it!
-                            InByteBuffer rawBuffer = new InByteBuffer(data, connection);
-                            int packetSize = rawBuffer.readVarInt();
-                            byte[] left = rawBuffer.readBytesLeft();
-                            if (packetSize == 0) {
-                                // no need
-                                data = left;
-                            } else {
-                                // need to decompress data
-                                data = Util.decompress(left, connection).readBytesLeft();
-                            }
+                        numRead++;
+                        if (numRead > 5) {
+                            throw new RuntimeException("VarInt is too big");
                         }
+                    } while ((read & 0b10000000) != 0);
 
-                        InPacketBuffer inPacketBuffer = new InPacketBuffer(data, connection);
-                        Packets.Clientbound packet = null;
+                    byte[] data = cipherInputStream.readNBytes(length);
+
+                    if (compressionThreshold >= 0) {
+                        // compression is enabled
+                        // check if there is a need to decompress it and if so, do it!
+                        InByteBuffer rawBuffer = new InByteBuffer(data, connection);
+                        int packetSize = rawBuffer.readVarInt();
+                        byte[] left = rawBuffer.readBytesLeft();
+                        if (packetSize == 0) {
+                            // no need
+                            data = left;
+                        } else {
+                            // need to decompress data
+                            data = Util.decompress(left, connection).readBytesLeft();
+                        }
+                    }
+
+                    InPacketBuffer inPacketBuffer = new InPacketBuffer(data, connection);
+                    Packets.Clientbound packet = null;
+                    try {
+                        packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
+                        if (packet == null) {
+                            Log.fatal(String.format("Version packet enum does not contain a packet with id 0x%x. Your version.json is broken!", inPacketBuffer.getCommand()));
+                            System.exit(1);
+                        }
+                        Class<? extends ClientboundPacket> clazz = packet.getClazz();
+
+                        if (clazz == null) {
+                            Log.warn(String.format("[IN] Received unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), packet, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
+                            continue;
+                        }
                         try {
-                            packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
-                            if (packet == null) {
-                                Log.fatal(String.format("Version packet enum does not contain a packet with id 0x%x. Your version.json is broken!", inPacketBuffer.getCommand()));
-                                System.exit(1);
-                            }
-                            Class<? extends ClientboundPacket> clazz = packet.getClazz();
-
-                            if (clazz == null) {
-                                Log.warn(String.format("[IN] Received unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), packet, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
+                            ClientboundPacket packetInstance = clazz.getConstructor().newInstance();
+                            boolean success = packetInstance.read(inPacketBuffer);
+                            if (inPacketBuffer.getBytesLeft() > 0 || !success) {
+                                // warn not all data used
+                                Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packet, inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
                                 continue;
                             }
-                            try {
-                                ClientboundPacket packetInstance = clazz.getConstructor().newInstance();
-                                boolean success = packetInstance.read(inPacketBuffer);
-                                if (inPacketBuffer.getBytesLeft() > 0 || !success) {
-                                    // warn not all data used
-                                    Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packet, inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
-                                    continue;
-                                }
 
-                                //set special settings to avoid miss timing issues
-                                if (packetInstance instanceof PacketLoginSuccess) {
-                                    connection.setConnectionState(ConnectionStates.PLAY);
-                                } else if (packetInstance instanceof PacketCompressionInterface) {
-                                    compressionThreshold = ((PacketCompressionInterface) packetInstance).getThreshold();
-                                }
-                                connection.handle(packetInstance);
-                            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                                // safety first, but will not occur
-                                e.printStackTrace();
+                            //set special settings to avoid miss timing issues
+                            if (packetInstance instanceof PacketLoginSuccess) {
+                                connection.setConnectionState(ConnectionStates.PLAY);
+                            } else if (packetInstance instanceof PacketCompressionInterface) {
+                                compressionThreshold = ((PacketCompressionInterface) packetInstance).getThreshold();
                             }
-                        } catch (Exception e) {
-                            Log.protocol(String.format("An error occurred while parsing an packet (%s): %s", packet, e));
+                            connection.handle(packetInstance);
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                            // safety first, but will not occur
                             e.printStackTrace();
                         }
-                    }
-                    try {
-                        Thread.sleep(1); //ToDo
-                    } catch (InterruptedException ignored) {
+                    } catch (Exception e) {
+                        Log.protocol(String.format("An error occurred while parsing an packet (%s): %s", packet, e));
+                        e.printStackTrace();
                     }
                 }
-                socket.close();
-                connection.setConnectionState(ConnectionStates.DISCONNECTED);
+                disconnect();
             } catch (IOException e) {
                 // Could not connect
                 lastException = e;
                 connection.setConnectionState(ConnectionStates.FAILED);
+                socketSThread.interrupt();
                 e.printStackTrace();
             }
         });
-        socketThread.setName(String.format("%d/Socket", connection.getConnectionId()));
-        socketThread.start();
+        socketRThread.setName(String.format("%d/Socket", connection.getConnectionId()));
+        socketRThread.start();
     }
 
     public void sendPacket(ServerboundPacket p) {
-        queue.addLast(p);
-        socketThread.interrupt();
+        queue.add(p);
     }
 
     public void enableEncryption(SecretKey secretKey) {
@@ -238,6 +247,14 @@ public class Network {
 
 
     public void disconnect() {
-        socketThread.interrupt();
+        connection.setConnectionState(ConnectionStates.DISCONNECTING);
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        socketRThread.interrupt();
+        socketSThread.interrupt();
+        connection.setConnectionState(ConnectionStates.DISCONNECTED);
     }
 }

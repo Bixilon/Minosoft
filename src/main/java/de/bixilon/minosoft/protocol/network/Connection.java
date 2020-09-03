@@ -74,6 +74,7 @@ public class Connection {
     }
 
     public void resolve(ConnectionReasons reason, int protocolId) {
+        network.lastException = null;
         this.desiredVersionNumber = protocolId;
 
         Thread resolveThread = new Thread(() -> {
