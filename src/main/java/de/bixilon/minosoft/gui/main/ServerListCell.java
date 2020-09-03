@@ -163,6 +163,14 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 server.setBase64Favicon(ping.getBase64EncodedFavicon());
                 server.saveToConfig();
             }
+            if (server.getLastPing().getLastConnectionException() != null) {
+                // connection failed because of an error in minosoft, but ping was okay
+                version.setStyle("-fx-text-fill: red;");
+                optionsConnect.setDisable(true);
+                canConnect = false;
+                motd.setText(String.format("%s", server.getLastPing().getLastConnectionException().getLocalizedMessage()));
+                motd.setStyle("-fx-text-fill: red;");
+            }
         }));
 
     }
@@ -315,7 +323,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             forcedVersionLabel.setText(Versions.getVersionById(server.getDesiredVersion()).getVersionName());
         }
 
-        int column = 0;
+        int column = -1;
         grid.add(new Label("Servername:"), 0, ++column);
         grid.add(serverNameLabel, 1, column);
         grid.add(new Label("Server address:"), 0, ++column);
@@ -323,43 +331,52 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         grid.add(new Label("Forced version:"), 0, ++column);
         grid.add(forcedVersionLabel, 1, column);
 
-        if (server.getLastPing() != null && server.getLastPing().getLastPing() != null) {
-            ServerListPing lastPing = server.getLastPing().getLastPing();
-            Version serverVersion = Versions.getVersionById(lastPing.getProtocolId());
-            String serverVersionString;
-            if (serverVersion == null) {
-                serverVersionString = String.format("Unknown (%d)", lastPing.getProtocolId());
-            } else {
-                serverVersionString = serverVersion.getVersionName();
+        if (server.getLastPing() != null) {
+            if (server.getLastPing().getLastConnectionException() != null) {
+                Label lastConnectionExceptionLabel = new Label(server.getLastPing().getLastConnectionException().getLocalizedMessage());
+                lastConnectionExceptionLabel.setStyle("-fx-text-fill: red");
+                grid.add(new Label("Last connection exception:"), 0, ++column);
+                grid.add(lastConnectionExceptionLabel, 1, column);
             }
-            Label realServerAddressLabel = new Label(server.getLastPing().getAddress().toString());
-            Label serverVersionLabel = new Label(serverVersionString);
-            Label serverBrandLabel = new Label(lastPing.getServerBrand());
-            Label playersOnlineMaxLabel = new Label(String.format("%d/%d", lastPing.getPlayerOnline(), lastPing.getMaxPlayers()));
-            Label motdLabel = new Label(lastPing.getMotd().getRawMessage());
-            Label moddedBrandLabel = new Label(lastPing.getServerModInfo().getBrand());
+
+            if (server.getLastPing().getLastPing() != null) {
+                ServerListPing lastPing = server.getLastPing().getLastPing();
+                Version serverVersion = Versions.getVersionById(lastPing.getProtocolId());
+                String serverVersionString;
+                if (serverVersion == null) {
+                    serverVersionString = String.format("Unknown (%d)", lastPing.getProtocolId());
+                } else {
+                    serverVersionString = serverVersion.getVersionName();
+                }
+                Label realServerAddressLabel = new Label(server.getLastPing().getAddress().toString());
+                Label serverVersionLabel = new Label(serverVersionString);
+                Label serverBrandLabel = new Label(lastPing.getServerBrand());
+                Label playersOnlineMaxLabel = new Label(String.format("%d/%d", lastPing.getPlayerOnline(), lastPing.getMaxPlayers()));
+                Label motdLabel = new Label(lastPing.getMotd().getRawMessage());
+                Label moddedBrandLabel = new Label(lastPing.getServerModInfo().getBrand());
 
 
-            grid.add(new Label("Real server address:"), 0, ++column);
-            grid.add(realServerAddressLabel, 1, column);
-            grid.add(new Label("Server version:"), 0, ++column);
-            grid.add(serverVersionLabel, 1, column);
-            grid.add(new Label("Server brand:"), 0, ++column);
-            grid.add(serverBrandLabel, 1, column);
-            grid.add(new Label("Players online:"), 0, ++column);
-            grid.add(playersOnlineMaxLabel, 1, column);
-            grid.add(new Label("MotD:"), 0, ++column);
-            grid.add(motdLabel, 1, column);
-            grid.add(new Label("Modded brand:"), 0, ++column);
-            grid.add(moddedBrandLabel, 1, column);
+                grid.add(new Label("Real server address:"), 0, ++column);
+                grid.add(realServerAddressLabel, 1, column);
+                grid.add(new Label("Server version:"), 0, ++column);
+                grid.add(serverVersionLabel, 1, column);
+                grid.add(new Label("Server brand:"), 0, ++column);
+                grid.add(serverBrandLabel, 1, column);
+                grid.add(new Label("Players online:"), 0, ++column);
+                grid.add(playersOnlineMaxLabel, 1, column);
+                grid.add(new Label("MotD:"), 0, ++column);
+                grid.add(motdLabel, 1, column);
+                grid.add(new Label("Modded brand:"), 0, ++column);
+                grid.add(moddedBrandLabel, 1, column);
 
-            if (lastPing.getServerModInfo() instanceof ForgeModInfo) {
-                ForgeModInfo modInfo = (ForgeModInfo) lastPing.getServerModInfo();
-                Label moddedModsLabel = new Label(modInfo.getModList().toString());
-                moddedModsLabel.setWrapText(true);
+                if (lastPing.getServerModInfo() instanceof ForgeModInfo) {
+                    ForgeModInfo modInfo = (ForgeModInfo) lastPing.getServerModInfo();
+                    Label moddedModsLabel = new Label(modInfo.getModList().toString());
+                    moddedModsLabel.setWrapText(true);
 
-                grid.add(new Label("Mod list:"), 0, ++column);
-                grid.add(moddedModsLabel, 1, column);
+                    grid.add(new Label("Mod list:"), 0, ++column);
+                    grid.add(moddedModsLabel, 1, column);
+                }
             }
         }
 

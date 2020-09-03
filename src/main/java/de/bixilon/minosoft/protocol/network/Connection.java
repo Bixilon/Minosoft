@@ -207,12 +207,13 @@ public class Connection {
         this.customMapping.setVersion(version);
         try {
             Versions.loadVersionMappings(version.getProtocolVersion());
+            customMapping.setVersion(version);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.fatal(String.format("Could not load mapping for %s. Exiting...", version));
-            System.exit(1);
+            Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
+            network.lastException = new RuntimeException(String.format("Mappings could not be loaded: %s", e.getLocalizedMessage()));
+            setConnectionState(ConnectionStates.FAILED);
         }
-        customMapping.setVersion(version);
     }
 
     public PacketHandler getHandler() {
