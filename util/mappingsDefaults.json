@@ -1,0 +1,688 @@
+{
+  "dimension_type": {
+    "id": 17,
+    "entries": {
+      "overworld": {
+        "id": 0,
+        "has_skylight": true
+      },
+      "the_nether": {
+        "id": 1,
+        "has_skylight": false
+      },
+      "the_end": {
+        "id": -1,
+        "has_skylight": false
+      }
+    }
+  },
+  "enchantment": {
+    "id": 4,
+    "entries": {
+      "protection": {
+        "id": 0
+      },
+      "fire_protection": {
+        "id": 1
+      },
+      "feather_falling": {
+        "id": 2
+      },
+      "blast_protection": {
+        "id": 3
+      },
+      "projectile_protection": {
+        "id": 4
+      },
+      "respiration": {
+        "id": 5
+      },
+      "aqua_affinity": {
+        "id": 6
+      },
+      "thorns": {
+        "id": 7
+      },
+      "depth_strider": {
+        "id": 8
+      },
+      "frost_walker": {
+        "id": 9
+      },
+      "binding_curse": {
+        "id": 10
+      },
+      "sharpness": {
+        "id": 11
+      },
+      "smite": {
+        "id": 12
+      },
+      "bane_of_arthropods": {
+        "id": 13
+      },
+      "knockback": {
+        "id": 14
+      },
+      "fire_aspect": {
+        "id": 15
+      },
+      "looting": {
+        "id": 16
+      },
+      "sweeping": {
+        "id": 17
+      },
+      "efficiency": {
+        "id": 18
+      },
+      "silk_touch": {
+        "id": 19
+      },
+      "unbreaking": {
+        "id": 20
+      },
+      "fortune": {
+        "id": 21
+      },
+      "power": {
+        "id": 22
+      },
+      "punch": {
+        "id": 23
+      },
+      "flame": {
+        "id": 24
+      },
+      "infinity": {
+        "id": 25
+      },
+      "luck_of_the_sea": {
+        "id": 26
+      },
+      "lure": {
+        "id": 27
+      },
+      "loyalty": {
+        "id": 28
+      },
+      "impaling": {
+        "id": 29
+      },
+      "riptide": {
+        "id": 30
+      },
+      "channeling": {
+        "id": 31
+      },
+      "multishot": {
+        "id": 32
+      },
+      "quick_charge": {
+        "id": 33
+      },
+      "piercing": {
+        "id": 34
+      },
+      "mending": {
+        "id": 35
+      },
+      "vanishing_curse": {
+        "id": 36
+      }
+    }
+  },
+  "motive": {
+    "default": "kebab",
+    "id": 18,
+    "entries": {
+      "kebab": {
+        "id": 0
+      },
+      "aztec": {
+        "id": 1
+      },
+      "alban": {
+        "id": 2
+      },
+      "aztec2": {
+        "id": 3
+      },
+      "bomb": {
+        "id": 4
+      },
+      "plant": {
+        "id": 5
+      },
+      "wasteland": {
+        "id": 6
+      },
+      "pool": {
+        "id": 7
+      },
+      "courbet": {
+        "id": 8
+      },
+      "sea": {
+        "id": 9
+      },
+      "sunset": {
+        "id": 10
+      },
+      "creebet": {
+        "id": 11
+      },
+      "wanderer": {
+        "id": 12
+      },
+      "graham": {
+        "id": 13
+      },
+      "match": {
+        "id": 14
+      },
+      "bust": {
+        "id": 15
+      },
+      "stage": {
+        "id": 16
+      },
+      "void": {
+        "id": 17
+      },
+      "skull_and_roses": {
+        "id": 18
+      },
+      "wither": {
+        "id": 19
+      },
+      "fighters": {
+        "id": 20
+      },
+      "pointer": {
+        "id": 21
+      },
+      "pigscene": {
+        "id": 22
+      },
+      "burning_skull": {
+        "id": 23
+      },
+      "skeleton": {
+        "id": 24
+      },
+      "donkey_kong": {
+        "id": 25
+      }
+    }
+  },
+  "particle_type": {
+    "id": 13,
+    "entries": {
+      "explode": {
+        "id": 0
+      },
+      "largeexplode": {
+        "id": 1
+      },
+      "hugeexplosion": {
+        "id": 2
+      },
+      "fireworksSpark": {
+        "id": 3
+      },
+      "bubble": {
+        "id": 4
+      },
+      "splash": {
+        "id": 5
+      },
+      "wake": {
+        "id": 6
+      },
+      "suspended": {
+        "id": 7
+      },
+      "depthsuspend": {
+        "id": 8
+      },
+      "crit": {
+        "id": 9
+      },
+      "magicCrit": {
+        "id": 10
+      },
+      "smoke": {
+        "id": 11
+      },
+      "largesmoke": {
+        "id": 12
+      },
+      "spell": {
+        "id": 13
+      },
+      "instantSpell": {
+        "id": 14
+      },
+      "mobSpell": {
+        "id": 15
+      },
+      "mobSpellAmbient": {
+        "id": 16
+      },
+      "witchMagic": {
+        "id": 17
+      },
+      "dripWater": {
+        "id": 18
+      },
+      "dripLava": {
+        "id": 19
+      },
+      "angryVillager": {
+        "id": 20
+      },
+      "happyVillager": {
+        "id": 21
+      },
+      "townaura": {
+        "id": 22
+      },
+      "note": {
+        "id": 23
+      },
+      "portal": {
+        "id": 24
+      },
+      "enchantmenttable": {
+        "id": 25
+      },
+      "flame": {
+        "id": 26
+      },
+      "lava": {
+        "id": 27
+      },
+      "footstep": {
+        "id": 28
+      },
+      "cloud": {
+        "id": 29
+      },
+      "reddust": {
+        "id": 30
+      },
+      "snowballpoof": {
+        "id": 31
+      },
+      "snowshovel": {
+        "id": 32
+      },
+      "slime": {
+        "id": 33
+      },
+      "heart": {
+        "id": 34
+      },
+      "barrier": {
+        "id": 35
+      },
+      "iconcrack": {
+        "id": 36
+      },
+      "blockcrack": {
+        "id": 37
+      },
+      "blockdust": {
+        "id": 38
+      },
+      "droplet": {
+        "id": 39
+      },
+      "take": {
+        "id": 40
+      },
+      "mobappearance": {
+        "id": 41
+      },
+      "dragonbreath": {
+        "id": 42
+      },
+      "endrod": {
+        "id": 43
+      },
+      "damageindicator": {
+        "id": 44
+      },
+      "sweepattack": {
+        "id": 45
+      },
+      "fallingdust": {
+        "id": 46
+      },
+      "totem": {
+        "id": 47
+      },
+      "spit": {
+        "id": 48
+      }
+    }
+  },
+  "mob_effect": {
+    "id": 2,
+    "entries": {
+      "speed": {
+        "id": 1
+      },
+      "slowness": {
+        "id": 2
+      },
+      "haste": {
+        "id": 3
+      },
+      "mining_fatigue": {
+        "id": 4
+      },
+      "strength": {
+        "id": 5
+      },
+      "instant_health": {
+        "id": 6
+      },
+      "instant_damage": {
+        "id": 7
+      },
+      "jump_boost": {
+        "id": 8
+      },
+      "nausea": {
+        "id": 9
+      },
+      "regeneration": {
+        "id": 10
+      },
+      "resistance": {
+        "id": 11
+      },
+      "fire_resistance": {
+        "id": 12
+      },
+      "water_breathing": {
+        "id": 13
+      },
+      "invisibility": {
+        "id": 14
+      },
+      "blindness": {
+        "id": 15
+      },
+      "night_vision": {
+        "id": 16
+      },
+      "hunger": {
+        "id": 17
+      },
+      "weakness": {
+        "id": 18
+      },
+      "poison": {
+        "id": 19
+      },
+      "wither": {
+        "id": 20
+      },
+      "health_boost": {
+        "id": 21
+      },
+      "absorption": {
+        "id": 22
+      },
+      "saturation": {
+        "id": 23
+      },
+      "glowing": {
+        "id": 24
+      },
+      "levitation": {
+        "id": 25
+      },
+      "luck": {
+        "id": 26
+      },
+      "unluck": {
+        "id": 27
+      },
+      "slow_falling": {
+        "id": 28
+      },
+      "conduit_power": {
+        "id": 29
+      },
+      "dolphins_grace": {
+        "id": 30
+      },
+      "bad_omen": {
+        "id": 31
+      },
+      "hero_of_the_village": {
+        "id": 32
+      }
+    }
+  },
+  "item": {"default": "air", "id": 6, "entries": {}},
+  "block": {"default": "air", "id": 3, "entries": {}},
+  "biome": {"entries": {}},
+  "entity_type": {"default": "pig", "id": 5, "entries": {}},
+  "custom_stat": {
+    "id": 19,
+    "entries": {
+      "leave_game": {
+        "id": 0
+      },
+      "play_one_minute": {
+        "id": 1
+      },
+      "time_since_death": {
+        "id": 2
+      },
+      "time_since_rest": {
+        "id": 3
+      },
+      "sneak_time": {
+        "id": 4
+      },
+      "walk_one_cm": {
+        "id": 5
+      },
+      "crouch_one_cm": {
+        "id": 6
+      },
+      "sprint_one_cm": {
+        "id": 7
+      },
+      "walk_on_water_one_cm": {
+        "id": 8
+      },
+      "fall_one_cm": {
+        "id": 9
+      },
+      "climb_one_cm": {
+        "id": 10
+      },
+      "fly_one_cm": {
+        "id": 11
+      },
+      "walk_under_water_one_cm": {
+        "id": 12
+      },
+      "minecart_one_cm": {
+        "id": 13
+      },
+      "boat_one_cm": {
+        "id": 14
+      },
+      "pig_one_cm": {
+        "id": 15
+      },
+      "horse_one_cm": {
+        "id": 16
+      },
+      "aviate_one_cm": {
+        "id": 17
+      },
+      "swim_one_cm": {
+        "id": 18
+      },
+      "jump": {
+        "id": 19
+      },
+      "drop": {
+        "id": 20
+      },
+      "damage_dealt": {
+        "id": 21
+      },
+      "damage_dealt_absorbed": {
+        "id": 22
+      },
+      "damage_dealt_resisted": {
+        "id": 23
+      },
+      "damage_taken": {
+        "id": 24
+      },
+      "damage_blocked_by_shield": {
+        "id": 25
+      },
+      "damage_absorbed": {
+        "id": 26
+      },
+      "damage_resisted": {
+        "id": 27
+      },
+      "deaths": {
+        "id": 28
+      },
+      "mob_kills": {
+        "id": 29
+      },
+      "animals_bred": {
+        "id": 30
+      },
+      "player_kills": {
+        "id": 31
+      },
+      "fish_caught": {
+        "id": 32
+      },
+      "talked_to_villager": {
+        "id": 33
+      },
+      "traded_with_villager": {
+        "id": 34
+      },
+      "eat_cake_slice": {
+        "id": 35
+      },
+      "fill_cauldron": {
+        "id": 36
+      },
+      "use_cauldron": {
+        "id": 37
+      },
+      "clean_armor": {
+        "id": 38
+      },
+      "clean_banner": {
+        "id": 39
+      },
+      "clean_shulker_box": {
+        "id": 40
+      },
+      "interact_with_brewingstand": {
+        "id": 41
+      },
+      "interact_with_beacon": {
+        "id": 42
+      },
+      "inspect_dropper": {
+        "id": 43
+      },
+      "inspect_hopper": {
+        "id": 44
+      },
+      "inspect_dispenser": {
+        "id": 45
+      },
+      "play_noteblock": {
+        "id": 46
+      },
+      "tune_noteblock": {
+        "id": 47
+      },
+      "pot_flower": {
+        "id": 48
+      },
+      "trigger_trapped_chest": {
+        "id": 49
+      },
+      "open_enderchest": {
+        "id": 50
+      },
+      "enchant_item": {
+        "id": 51
+      },
+      "play_record": {
+        "id": 52
+      },
+      "interact_with_furnace": {
+        "id": 53
+      },
+      "interact_with_crafting_table": {
+        "id": 54
+      },
+      "open_chest": {
+        "id": 55
+      },
+      "sleep_in_bed": {
+        "id": 56
+      },
+      "open_shulker_box": {
+        "id": 57
+      },
+      "open_barrel": {
+        "id": 58
+      },
+      "interact_with_blast_furnace": {
+        "id": 59
+      },
+      "interact_with_smoker": {
+        "id": 60
+      },
+      "interact_with_lectern": {
+        "id": 61
+      },
+      "interact_with_campfire": {
+        "id": 62
+      },
+      "interact_with_cartography_table": {
+        "id": 63
+      },
+      "interact_with_loom": {
+        "id": 64
+      },
+      "interact_with_stonecutter": {
+        "id": 65
+      },
+      "bell_ring": {
+        "id": 66
+      },
+      "raid_trigger": {
+        "id": 67
+      },
+      "raid_win": {
+        "id": 68
+      }
+    }
+  }
+}

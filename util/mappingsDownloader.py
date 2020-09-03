@@ -15,6 +15,8 @@ import shutil
 import tarfile
 import ujson
 
+import traceback
+
 print("Minecraft mappings downloader (and generator)")
 
 PRE_FLATTENING_UPDATE_VERSION = "17w46a"
@@ -23,15 +25,7 @@ FILES_PER_VERSION = ["blocks.json", "registries.json"]
 DOWNLOAD_BASE_URL = "https://apimon.de/mcdata/"
 manifest = requests.get('https://launchermeta.mojang.com/mc/game/version_manifest.json').json()
 failed = []
-
-
-def retMinified(url):
-    blocks = requests.get(url).json()
-    blocksReformatted = {}
-    for block in blocks:
-        blocksReformatted[block.replace("minecraft:", "")] = blocks[block]
-    return {"minecraft": blocksReformatted}
-
+defaultMappings = ujson.load(open("mappingsDefaults.json"))
 
 if not os.path.isdir(DATA_FOLDER):
     os.mkdir(DATA_FOLDER)
@@ -49,14 +43,52 @@ for version in manifest["versions"]:
         if not os.path.isfile(versionBaseFolder + fileName):
             print("Downloading %s for %s" % (fileName, version["id"]))
             try:
-                reformatted = retMinified(DOWNLOAD_BASE_URL + version["id"] + "/" + fileName)
+                reformatted = requests.get(DOWNLOAD_BASE_URL + version["id"] + "/" + fileName).json()
+                reformatted = {"minecraft": reformatted}
+                if fileName == "registries.json":
+                    # this is wrong in the registries (dimensions)
+                    reformatted["minecraft"]["dimension_type"] = defaultMappings["dimension_type"].copy()
                 with open(versionBaseFolder + fileName, 'w') as file:
                     json = ujson.dumps(reformatted)
-                    json = json.replace("minecraft:", "").replace(",\"default\":true", "")
+                    json = json.replace("minecraft:", "").replace(",\"default\":true", "").replace("protocol_id", "id")
                     file.write(json)
             except Exception:
-                failed.append(version["id"])
-                print("Could not download mappings for %s in %s" % (version["id"], fileName))
+                try:
+                    print("Download of %s failed in %s, using burger" % (fileName, version["id"]))
+                    burger = requests.get("https://pokechu22.github.io/Burger/%s.json" % version["id"]).json()[0]
+                    # data not available
+                    # use burger
+                    registries = defaultMappings.copy()
+
+                    # items
+                    for key in burger["items"]["item"]:
+                        registries["item"]["entries"][key] = {"id": burger["items"]["item"][key]["numeric_id"]}
+
+                    # entities
+                    for key in burger["entities"]["entity"]:
+                        if key.startswith("~abstract_"):
+                            continue
+                        registries["entity_type"]["entries"][key] = {"id": burger["entities"]["entity"][key]["id"]}
+
+                    # biome
+                    for key in burger["biomes"]["biome"]:
+                        registries["biome"]["entries"][key] = {"id": burger["biomes"]["biome"][key]["id"]}
+
+                    for key in burger["blocks"]["block"]:
+                        registries["block"]["entries"][key] = {"id": burger["blocks"]["block"][key]["numeric_id"]}
+
+                    # file write
+                    with open(versionBaseFolder + "registries.json", 'w') as file:
+                        file.write(ujson.dumps({"minecraft": registries}))
+
+                    if fileName == "blocks.json":
+                        # more missing....
+                        raise Exception("blocks.json is missing")
+
+                except Exception:
+                    traceback.print_exc()
+                    failed.append(version["id"])
+                    print("Could not download mappings for %s in %s" % (version["id"], fileName))
         else:
             print("Skipping %s for %s" % (fileName, version["id"]))
     if not version["id"] in failed:
