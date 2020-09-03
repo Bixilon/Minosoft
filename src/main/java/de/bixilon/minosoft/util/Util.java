@@ -21,6 +21,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -148,5 +149,15 @@ public final class Util {
 
     public static JsonObject readJsonFromFile(String fileName) throws IOException {
         return JsonParser.parseString(readFile(fileName)).getAsJsonObject();
+    }
+
+    public static void downloadFile(String url, String destination) throws IOException {
+        BufferedInputStream inputStream = new BufferedInputStream(new URL(url).openStream());
+        FileOutputStream fileOutputStream = new FileOutputStream(destination);
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer, 0, 1024)) != -1) {
+            fileOutputStream.write(buffer, 0, length);
+        }
     }
 }

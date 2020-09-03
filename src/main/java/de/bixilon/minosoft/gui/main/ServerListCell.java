@@ -157,11 +157,10 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             motd.setText(ping.getMotd().getRawMessage());
             if (ping.getFavicon() != null) {
                 icon.setImage(ping.getFavicon());
-                if (ping.getBase64EncodedFavicon().equals(server.getBase64Favicon())) {
-                    return;
+                if (!ping.getBase64EncodedFavicon().equals(server.getBase64Favicon())) {
+                    server.setBase64Favicon(ping.getBase64EncodedFavicon());
+                    server.saveToConfig();
                 }
-                server.setBase64Favicon(ping.getBase64EncodedFavicon());
-                server.saveToConfig();
             }
             if (server.getLastPing().getLastConnectionException() != null) {
                 // connection failed because of an error in minosoft, but ping was okay

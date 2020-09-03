@@ -18,6 +18,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Config;
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Mappings;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
@@ -25,10 +27,13 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.zip.ZipException;
 
 public class Versions {
 
@@ -132,7 +137,23 @@ public class Versions {
         Log.verbose(String.format("Loading mappings for version %s...", version));
         long startTime = System.currentTimeMillis();
 
-        HashMap<String, String> files = Util.readTarGzFile(Config.homeDir + String.format("assets/mapping/%s.tar.gz", version.getVersionName()));
+        String fileName = Config.homeDir + String.format("assets/mapping/%s.tar.gz", version.getVersionName());
+        HashMap<String, String> files;
+        try {
+            files = Util.readTarGzFile(fileName);
+        } catch (FileNotFoundException e) {
+            long downloadStartTime = System.currentTimeMillis();
+            Log.info(String.format("Mappings for %s are not available on disk. Downloading them...", version.getVersionName()));
+            Util.downloadFile(String.format(Minosoft.getConfig().getString(GameConfiguration.MAPPINGS_URL), version.getVersionName()), fileName);
+            try {
+                files = Util.readTarGzFile(fileName);
+            } catch (ZipException e2) {
+                // bullshit downloaded, delete file
+                new File(fileName).delete();
+                throw e2;
+            }
+            Log.info(String.format("Mappings for %s downloaded successfully in %dms!", version.getVersionName(), (System.currentTimeMillis() - downloadStartTime)));
+        }
 
         for (Map.Entry<String, Mappings> mappingSet : mappingsHashMap.entrySet()) {
             JsonObject data = JsonParser.parseString(files.get(mappingSet.getKey() + ".json")).getAsJsonObject().getAsJsonObject("minecraft");

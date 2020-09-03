@@ -38,6 +38,7 @@ import de.bixilon.minosoft.util.DNSUtil;
 import de.bixilon.minosoft.util.ServerAddress;
 import org.xbill.DNS.TextParseException;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -195,6 +196,9 @@ public class Connection {
                     handleCallbacks(null);
                 }
                 break;
+            case FAILED_NO_RETRY:
+                handleCallbacks(null);
+                break;
         }
     }
 
@@ -208,11 +212,11 @@ public class Connection {
         try {
             Versions.loadVersionMappings(version.getProtocolVersion());
             customMapping.setVersion(version);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
             network.lastException = new RuntimeException(String.format("Mappings could not be loaded: %s", e.getLocalizedMessage()));
-            setConnectionState(ConnectionStates.FAILED);
+            setConnectionState(ConnectionStates.FAILED_NO_RETRY);
         }
     }
 
@@ -301,7 +305,7 @@ public class Connection {
     }
 
     public boolean isConnected() {
-        return state != ConnectionStates.FAILED && state != ConnectionStates.DISCONNECTING && state != ConnectionStates.DISCONNECTED && state != ConnectionStates.CONNECTING;
+        return state != ConnectionStates.FAILED && state != ConnectionStates.FAILED_NO_RETRY && state != ConnectionStates.DISCONNECTING && state != ConnectionStates.DISCONNECTED && state != ConnectionStates.CONNECTING;
     }
 
     public PacketSender getSender() {
@@ -347,7 +351,7 @@ public class Connection {
     }
 
     public void addPingCallback(PingCallback pingCallback) {
-        if (getConnectionState() == ConnectionStates.FAILED || lastPing != null) {
+        if (getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || lastPing != null) {
             // ping done
             pingCallback.handle(lastPing);
             return;
