@@ -17,6 +17,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.PacketCompressionInterface;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.*;
@@ -126,6 +127,8 @@ public class Network {
                                 // enable encryption
                                 secretKey = ((PacketEncryptionResponse) packet).getSecretKey();
                                 enableEncryption(secretKey);
+                                // wake up other thread
+                                socketRThread.interrupt();
                             }
                         }
                     } catch (IOException | InterruptedException ignored) {
@@ -208,6 +211,14 @@ public class Network {
                                 connection.setConnectionState(ConnectionStates.PLAY);
                             } else if (packetInstance instanceof PacketCompressionInterface) {
                                 compressionThreshold = ((PacketCompressionInterface) packetInstance).getThreshold();
+                            } else if (packetInstance instanceof PacketEncryptionRequest) {
+                                // wait until response is ready
+                                connection.handle(packetInstance);
+                                try {
+                                    Thread.sleep(Integer.MAX_VALUE);
+                                } catch (InterruptedException ignored) {
+                                }
+                                continue;
                             }
                             connection.handle(packetInstance);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
