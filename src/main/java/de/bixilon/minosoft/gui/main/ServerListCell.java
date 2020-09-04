@@ -180,7 +180,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     }
 
     public void edit() {
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        Dialog<Object> dialog = new Dialog<>();
         dialog.setTitle("Edit server: " + server.getName());
         dialog.setHeaderText("Edit the details of the server");
 
@@ -250,7 +250,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (!canConnect || server.getLastPing() == null) {
             return;
         }
-        Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), new Player(Minosoft.accountList.get(0)));
+        Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), new Player(Minosoft.getSelectedAccount()));
         Version version;
         if (server.getDesiredVersion() == -1) {
             version = server.getLastPing().getVersion();

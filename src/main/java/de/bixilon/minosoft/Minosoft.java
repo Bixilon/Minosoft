@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft;
 
+import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.gui.main.AccountListCell;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
@@ -30,9 +32,10 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class Minosoft {
-    static Configuration config;
-    public static ArrayList<MojangAccount> accountList;
+    public static HashBiMap<String, MojangAccount> accountList;
+    public static MojangAccount selectedAccount;
     public static ArrayList<Server> serverList;
+    static Configuration config;
 
     public static void main(String[] args) {
         // init log thread
@@ -65,25 +68,11 @@ public class Minosoft {
         }
         Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
 
-        Log.debug("Refreshing token...");
+        Log.debug("Refreshing client token...");
         checkClientToken();
-
         accountList = config.getMojangAccounts();
-        if (accountList.size() == 0) {
-            /*
-            MojangAccount account = MojangAuthentication.login("email", "password");
-            account.saveToConfig();
-             */
-            throw new RuntimeException("No accounts in config file!");
-        }
-        MojangAccount account = accountList.get(0);
-        if (account.refreshToken()) {
-            // could not login
-            account.saveToConfig();
-        } else {
-            Log.mojang("Could not refresh session, you will not be able to join premium servers!");
-        }
-        Log.debug("Refreshed token!");
+        selectAccount(accountList.get(config.getString(GameConfiguration.ACCOUNT_SELECTED)));
+
 
         serverList = config.getServers();
         Launcher.main();
@@ -130,5 +119,33 @@ public class Minosoft {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    public static ArrayList<Server> getServerList() {
+        return serverList;
+    }
+
+    public static HashBiMap<String, MojangAccount> getAccountList() {
+        return accountList;
+    }
+
+    public static MojangAccount getSelectedAccount() {
+        return selectedAccount;
+    }
+
+    public static void selectAccount(MojangAccount account) {
+        MojangAccount.RefreshStates refreshState = account.refreshToken();
+        if (refreshState == MojangAccount.RefreshStates.ERROR) {
+            accountList.remove(account.getUserId());
+            account.delete();
+            if (AccountListCell.listView != null) {
+                AccountListCell.listView.getItems().remove(account);
+            }
+            selectedAccount = null;
+            return;
+        }
+        config.putString(GameConfiguration.ACCOUNT_SELECTED, account.getUserId());
+        selectedAccount = account;
+        account.saveToConfig();
     }
 }

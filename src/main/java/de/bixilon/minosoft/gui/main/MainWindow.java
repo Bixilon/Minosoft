@@ -19,29 +19,41 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.DNSUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.util.Pair;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainWindow implements Initializable {
     @FXML
     public BorderPane serversPane;
+    @FXML
+    public Menu accountMenu;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         serversPane.setCenter(ServerListCell.listView);
+        if (Minosoft.getSelectedAccount() == null) {
+            manageAccounts();
+        } else {
+            accountMenu.setText(String.format("Account (%s)", Minosoft.getSelectedAccount().getPlayerName()));
+        }
     }
 
     @FXML
     public void addServer() {
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        Dialog<Object> dialog = new Dialog<>();
         dialog.setTitle("Add server");
         dialog.setHeaderText("Enter the details of the server");
 
@@ -87,7 +99,6 @@ public class MainWindow implements Initializable {
             }
             return null;
         });
-
         dialog.showAndWait();
     }
 
@@ -105,6 +116,31 @@ public class MainWindow implements Initializable {
             }
             server.ping();
             ServerListCell.listView.refresh();
+        }
+    }
+
+    public void manageAccounts() {
+        try {
+            Parent parent = FXMLLoader.load(getClass().getResource("/layout/accounts.fxml"));
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Manage accounts - Minosoft");
+            stage.setScene(new Scene(parent));
+            Platform.setImplicitExit(false);
+            stage.setOnCloseRequest(event -> {
+                if (Minosoft.getSelectedAccount() == null) {
+                    event.consume();
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Please select an account!");
+                    alert.showAndWait();
+                } else {
+                    stage.close();
+                }
+            });
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

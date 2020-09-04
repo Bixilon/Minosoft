@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.config;
 
+import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
@@ -197,15 +198,15 @@ public class Configuration {
         thread.start();
     }
 
-    public ArrayList<MojangAccount> getMojangAccounts() {
-        ArrayList<MojangAccount> accounts = new ArrayList<>();
+    public HashBiMap<String, MojangAccount> getMojangAccounts() {
+        HashBiMap<String, MojangAccount> accounts = HashBiMap.create();
         LinkedHashMap<String, LinkedHashMap<String, Object>> objects = (LinkedHashMap<String, LinkedHashMap<String, Object>>) get("account.accounts");
         if (objects == null) {
             return accounts;
         }
         for (Map.Entry<String, LinkedHashMap<String, Object>> set : objects.entrySet()) {
             LinkedHashMap<String, Object> entry = set.getValue();
-            accounts.add(new MojangAccount((String) entry.get("accessToken"), set.getKey(), UUID.fromString((String) entry.get("uuid")), (String) entry.get("playerName"), (String) entry.get("mojangUserName")));
+            accounts.put(set.getKey(), new MojangAccount((String) entry.get("accessToken"), set.getKey(), UUID.fromString((String) entry.get("uuid")), (String) entry.get("playerName"), (String) entry.get("userName")));
         }
         return accounts;
     }
@@ -227,6 +228,9 @@ public class Configuration {
         return servers;
     }
 
+    public void removeAccount(MojangAccount account) {
+        remove(String.format("account.accounts.%s", account.getUserId()));
+    }
 }
 
 

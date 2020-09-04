@@ -7,20 +7,23 @@
       fx:controller="de.bixilon.minosoft.gui.main.MainWindow">
     <MenuBar VBox.vgrow="NEVER">
         <Menu mnemonicParsing="false" text="_File">
-            <MenuItem mnemonicParsing="false" text="Preferences…"/>
+            <MenuItem mnemonicParsing="false" disable="true" text="Preferences…"/>
             <SeparatorMenuItem mnemonicParsing="false"/>
-            <MenuItem mnemonicParsing="false" text="Quit" onAction="#quit"/>
+            <MenuItem mnemonicParsing="false" onAction="#quit" text="Quit"/>
         </Menu>
         <Menu mnemonicParsing="false" text="_Servers">
-            <MenuItem mnemonicParsing="false" text="New" onAction="#addServer"/>
-            <MenuItem mnemonicParsing="false" text="Refresh" onAction="#refreshServers">
+            <MenuItem mnemonicParsing="false" onAction="#addServer" text="New"/>
+            <MenuItem mnemonicParsing="false" onAction="#refreshServers" text="Refresh">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="UP"/>
                 </accelerator>
             </MenuItem>
         </Menu>
-        <Menu mnemonicParsing="false" text="_Help">
-            <MenuItem mnemonicParsing="false" text="About"/>
+        <Menu mnemonicParsing="false" disable="true" text="_Help">
+            <MenuItem mnemonicParsing="false" disable="true" text="About"/>
+        </Menu>
+        <Menu fx:id="accountMenu" mnemonicParsing="false" text="Account">
+            <MenuItem mnemonicParsing="false" onAction="#manageAccounts" text="Manage"/>
         </Menu>
     </MenuBar>
     <AnchorPane VBox.vgrow="ALWAYS">

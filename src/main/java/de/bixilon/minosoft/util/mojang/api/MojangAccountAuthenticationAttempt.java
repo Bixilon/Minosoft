@@ -11,25 +11,31 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config;
+package de.bixilon.minosoft.util.mojang.api;
 
-public enum GameConfiguration implements ConfigEnum {
-    CONFIG_VERSION("version"),
-    GAME_RENDER_DISTANCE("game.render-distance"),
-    NETWORK_FAKE_CLIENT_BRAND("network.fake-client-brand"),
-    GENERAL_LOG_LEVEL("general.log-level"),
-    CLIENT_TOKEN("account.clientToken"),
-    MAPPINGS_URL("download.mappings"),
-    ACCOUNT_SELECTED("account.selected");
+public class MojangAccountAuthenticationAttempt {
+    final MojangAccount account;
+    final String error;
 
-    final String path;
-
-    GameConfiguration(String path) {
-        this.path = path;
+    public MojangAccountAuthenticationAttempt(MojangAccount account) {
+        this.account = account;
+        this.error = null;
     }
 
-    @Override
-    public String getPath() {
-        return path;
+    public MojangAccountAuthenticationAttempt(String error) {
+        this.account = null;
+        this.error = error;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public MojangAccount getAccount() {
+        return account;
+    }
+
+    public boolean succeeded() {
+        return account != null;
     }
 }
