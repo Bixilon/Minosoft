@@ -235,7 +235,9 @@ public class Network {
                 // Could not connect
                 lastException = e;
                 connection.setConnectionState(ConnectionStates.FAILED);
-                socketSThread.interrupt();
+                if (socketSThread != null) {
+                    socketSThread.interrupt();
+                }
                 e.printStackTrace();
             }
         });

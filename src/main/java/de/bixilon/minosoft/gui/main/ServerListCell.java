@@ -241,9 +241,9 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     }
 
     public void delete() {
-        listView.getItems().remove(server);
         server.delete();
         Log.info(String.format("Deleted server (name=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
+        listView.getItems().remove(server);
     }
 
     public void connect() {
