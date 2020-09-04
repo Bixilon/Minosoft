@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.PacketCompressionInterface;
@@ -227,7 +228,9 @@ public class Network {
                         }
                     } catch (Exception e) {
                         Log.protocol(String.format("An error occurred while parsing an packet (%s): %s", packet, e));
-                        e.printStackTrace();
+                        if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 disconnect();
@@ -238,7 +241,9 @@ public class Network {
                 if (socketSThread != null) {
                     socketSThread.interrupt();
                 }
-                e.printStackTrace();
+                if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
+                    e.printStackTrace();
+                }
             }
         });
         socketRThread.setName(String.format("%d/Socket", connection.getConnectionId()));

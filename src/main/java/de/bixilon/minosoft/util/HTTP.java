@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.util;
 
 import com.google.gson.JsonObject;
+import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.logging.LogLevels;
 
 import java.io.IOException;
 import java.net.URI;
@@ -33,7 +35,9 @@ public final class HTTP {
         try {
             return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
+                e.printStackTrace();
+            }
         }
         return null;
     }

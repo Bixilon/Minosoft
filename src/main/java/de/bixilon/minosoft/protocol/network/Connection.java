@@ -23,6 +23,7 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
@@ -217,7 +218,9 @@ public class Connection {
         try {
             Versions.loadVersionMappings(version.getProtocolVersion());
         } catch (IOException e) {
-            e.printStackTrace();
+            if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
+                e.printStackTrace();
+            }
             Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
             network.lastException = new RuntimeException(String.format("Mappings could not be loaded: %s", e.getLocalizedMessage()));
             setConnectionState(ConnectionStates.FAILED_NO_RETRY);
@@ -267,7 +270,9 @@ public class Connection {
                     packet.log();
                     packet.handle(getHandler());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
