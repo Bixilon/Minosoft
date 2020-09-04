@@ -27,6 +27,7 @@ public class MojangAccount {
     final String playerName;
     final String mojangUserName;
     String accessToken;
+    RefreshStates lastRefreshStatus;
 
     public MojangAccount(String username, JsonObject json) {
         this.accessToken = json.get("accessToken").getAsString();
@@ -52,15 +53,21 @@ public class MojangAccount {
     }
 
     public RefreshStates refreshToken() {
+        if (lastRefreshStatus != null) {
+            return lastRefreshStatus;
+        }
         String accessToken = MojangAuthentication.refresh(this.accessToken);
         if (accessToken == null) {
-            return RefreshStates.FAILED;
+            lastRefreshStatus = RefreshStates.FAILED;
+            return lastRefreshStatus;
         }
         if (accessToken.equals("")) {
-            return RefreshStates.ERROR;
+            lastRefreshStatus = RefreshStates.ERROR;
+            return lastRefreshStatus;
         }
         this.accessToken = accessToken;
-        return RefreshStates.SUCCESSFUL;
+        lastRefreshStatus = RefreshStates.SUCCESSFUL;
+        return lastRefreshStatus;
     }
 
     public UUID getUUID() {
