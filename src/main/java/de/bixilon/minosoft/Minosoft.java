@@ -134,6 +134,12 @@ public class Minosoft {
     }
 
     public static void selectAccount(MojangAccount account) {
+        if (account == null) {
+            selectedAccount = null;
+            config.putString(GameConfiguration.ACCOUNT_SELECTED, null);
+            config.saveToFile(Config.configFileName);
+            return;
+        }
         MojangAccount.RefreshStates refreshState = account.refreshToken();
         if (refreshState == MojangAccount.RefreshStates.ERROR) {
             accountList.remove(account.getUserId());

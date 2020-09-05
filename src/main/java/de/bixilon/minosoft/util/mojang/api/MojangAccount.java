@@ -128,7 +128,7 @@ public class MojangAccount {
 
     public enum RefreshStates {
         SUCCESSFUL,
-        ERROR,
-        FAILED
+        ERROR, // account not valid anymore
+        FAILED // error occurred while checking -> Unknown state
     }
 }

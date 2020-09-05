@@ -16,6 +16,7 @@ package de.bixilon.minosoft;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.gui.main.GUITools;
+import de.bixilon.minosoft.gui.main.MainWindow;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.gui.main.ServerListCell;
 import de.bixilon.minosoft.logging.Log;
@@ -84,7 +85,9 @@ public class Launcher extends Application {
         primaryStage.getIcons().add(GUITools.logo);
         primaryStage.show();
         primaryStage.setOnCloseRequest(windowEvent -> System.exit(0));
-
+        if (Minosoft.getSelectedAccount() == null) {
+            MainWindow.manageAccounts();
+        }
         Log.info("Launcher started!");
     }
 }
