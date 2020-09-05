@@ -332,7 +332,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
 
         if (server.getLastPing() != null) {
             if (server.getLastPing().getLastConnectionException() != null) {
-                Label lastConnectionExceptionLabel = new Label(server.getLastPing().getLastConnectionException().getLocalizedMessage());
+                Label lastConnectionExceptionLabel = new Label(server.getLastPing().getLastConnectionException().toString());
                 lastConnectionExceptionLabel.setStyle("-fx-text-fill: red");
                 grid.add(new Label("Last connection exception:"), 0, ++column);
                 grid.add(lastConnectionExceptionLabel, 1, column);

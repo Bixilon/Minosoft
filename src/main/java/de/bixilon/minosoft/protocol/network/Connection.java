@@ -86,8 +86,10 @@ public class Connection {
                 try {
                     addresses = DNSUtil.getServerAddresses(hostname);
                 } catch (TextParseException e) {
+                    setConnectionState(ConnectionStates.FAILED_NO_RETRY);
+                    network.lastException = e;
                     e.printStackTrace();
-                    throw new RuntimeException(e);
+                    return;
                 }
             }
             address = addresses.getFirst();
