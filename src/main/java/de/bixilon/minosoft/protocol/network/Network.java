@@ -45,7 +45,6 @@ public class Network {
     int compressionThreshold = -1;
     Socket socket;
     OutputStream outputStream;
-    InputStream cipherInputStream;
     InputStream inputStream;
     boolean encryptionEnabled = false;
     SecretKey secretKey;
@@ -78,7 +77,6 @@ public class Network {
                 socket.setKeepAlive(true);
                 outputStream = socket.getOutputStream();
                 inputStream = socket.getInputStream();
-                cipherInputStream = inputStream;
 
                 socketRThread.setName(String.format("%d/SocketR", connection.getConnectionId()));
 
@@ -153,7 +151,7 @@ public class Network {
                     int length = 0;
                     int read;
                     do {
-                        read = cipherInputStream.read();
+                        read = inputStream.read();
                         if (read == -1) {
                             disconnect();
                             return;
@@ -166,8 +164,12 @@ public class Network {
                             throw new RuntimeException("VarInt is too big");
                         }
                     } while ((read & 0b10000000) != 0);
-
-                    byte[] data = cipherInputStream.readNBytes(length);
+                    if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+                        Log.protocol(String.format("Server sent us a to big packet (%d bytes > %d bytes)", length, ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE));
+                        inputStream.skip(length);
+                        continue;
+                    }
+                    byte[] data = inputStream.readNBytes(length);
 
                     if (compressionThreshold >= 0) {
                         // compression is enabled
@@ -257,7 +259,7 @@ public class Network {
     public void enableEncryption(SecretKey secretKey) {
         Cipher cipherEncrypt = CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey);
         Cipher cipherDecrypt = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey);
-        cipherInputStream = new CipherInputStream(inputStream, cipherDecrypt);
+        inputStream = new CipherInputStream(inputStream, cipherDecrypt);
         outputStream = new CipherOutputStream(outputStream, cipherEncrypt);
         encryptionEnabled = true;
         Log.debug("Encryption enabled!");
