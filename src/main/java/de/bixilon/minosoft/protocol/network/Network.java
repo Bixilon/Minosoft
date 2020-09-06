@@ -35,6 +35,7 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Network {
@@ -238,14 +239,17 @@ public class Network {
                 disconnect();
             } catch (IOException e) {
                 // Could not connect
-                lastException = e;
-                connection.setConnectionState(ConnectionStates.FAILED);
-                if (socketSThread != null) {
-                    socketSThread.interrupt();
-                }
                 if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
                     e.printStackTrace();
                 }
+                if (socketSThread != null) {
+                    socketSThread.interrupt();
+                }
+                if (e instanceof SocketException && e.getMessage().equals("Socket closed")) {
+                    return;
+                }
+                lastException = e;
+                connection.setConnectionState(ConnectionStates.FAILED);
             }
         });
         socketRThread.setName(String.format("%d/Socket", connection.getConnectionId()));
