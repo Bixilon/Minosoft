@@ -22,6 +22,7 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.CustomMapping;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.gui.main.ConnectionChangeCallback;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.ping.ServerListPing;
@@ -52,6 +53,7 @@ public class Connection {
     final LinkedBlockingQueue<ClientboundPacket> handlingQueue = new LinkedBlockingQueue<>();
     final VelocityHandler velocityHandler = new VelocityHandler(this);
     final HashSet<PingCallback> pingCallbacks = new HashSet<>();
+    final HashSet<ConnectionChangeCallback> connectionChangeCallbacks = new HashSet<>();
     final int connectionId;
     final Player player;
     final String hostname;
@@ -197,13 +199,15 @@ public class Connection {
                     resolve(address);
                 } else {
                     // no connection and no servers available anymore... sorry, but you can not play today :(
-                    handleCallbacks(null);
+                    handlePingCallbacks(null);
                 }
                 break;
             case FAILED_NO_RETRY:
-                handleCallbacks(null);
+                handlePingCallbacks(null);
                 break;
         }
+        // handle callbacks
+        connectionChangeCallbacks.forEach((callback -> callback.handle(this)));
     }
 
     public Version getVersion() {
@@ -361,13 +365,13 @@ public class Connection {
         return connectionId;
     }
 
-    public void addPingCallback(PingCallback pingCallback) {
+    public void addPingCallback(PingCallback callback) {
         if (getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || lastPing != null) {
             // ping done
-            pingCallback.handle(lastPing);
+            callback.handle(lastPing);
             return;
         }
-        pingCallbacks.add(pingCallback);
+        pingCallbacks.add(callback);
     }
 
     public HashSet<PingCallback> getPingCallbacks() {
@@ -382,15 +386,21 @@ public class Connection {
         this.desiredVersionNumber = desiredVersionNumber;
     }
 
-    public void handleCallbacks(ServerListPing ping) {
+    public void handlePingCallbacks(ServerListPing ping) {
         this.lastPing = ping;
-        for (PingCallback callback : getPingCallbacks()) {
-            callback.handle(ping);
-        }
+        pingCallbacks.forEach((callback -> callback.handle(ping)));
     }
 
     public Exception getLastConnectionException() {
         return network.lastException;
+    }
+
+    public void addConnectionChangeCallback(ConnectionChangeCallback callback) {
+        connectionChangeCallbacks.add(callback);
+    }
+
+    public HashSet<ConnectionChangeCallback> getConnectionChangeCallbacks() {
+        return connectionChangeCallbacks;
     }
 
     public ServerListPing getLastPing() {

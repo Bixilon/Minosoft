@@ -31,6 +31,8 @@
             <MenuItem mnemonicParsing="false" onAction="#showInfo" text="Info"/>
             <MenuItem mnemonicParsing="false" onAction="#edit" text="Edit"/>
             <MenuItem mnemonicParsing="false" onAction="#refresh" text="Refresh"/>
+            <MenuItem fx:id="optionsSessions" mnemonicParsing="false" onAction="#manageSessions" disable="true"
+                      text="Sessions"/>
             <MenuItem mnemonicParsing="false" style="-fx-text-fill: red" onAction="#delete" text="Delete"/>
         </items>
     </MenuButton>

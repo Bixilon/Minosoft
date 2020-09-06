@@ -68,7 +68,7 @@ public class PacketHandler {
                 connection.setVersion(version);
         }
         Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getColoredMessage()));
-        connection.handleCallbacks(pkg.getResponse());
+        connection.handlePingCallbacks(pkg.getResponse());
     }
 
     public void handle(PacketStatusPong pkg) {

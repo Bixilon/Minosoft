@@ -20,6 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.ConnectionReasons;
 import javafx.scene.image.Image;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 public class Server {
     static int highestServerId;
@@ -29,6 +30,7 @@ public class Server {
     int desiredVersion;
     String favicon;
     Connection lastPing;
+    ArrayList<Connection> connections = new ArrayList<>();
 
     public Server(int id, String name, String address, int desiredVersion) {
         this.id = id;
@@ -120,5 +122,22 @@ public class Server {
             lastPing = new Connection(Connection.lastConnectionId++, getAddress(), null);
         }
         lastPing.resolve(ConnectionReasons.PING, getDesiredVersion()); // resolve dns address and ping
+    }
+
+    public ArrayList<Connection> getConnections() {
+        return connections;
+    }
+
+    public void addConnection(Connection connection) {
+        connections.add(connection);
+    }
+
+    public boolean isConnected() {
+        for (Connection connection : connections) {
+            if (connection.isConnected()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

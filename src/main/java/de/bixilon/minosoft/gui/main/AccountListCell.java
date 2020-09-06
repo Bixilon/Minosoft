@@ -112,6 +112,7 @@ public class AccountListCell extends ListCell<MojangAccount> implements Initiali
     public void select() {
         Minosoft.selectAccount(account);
         listView.refresh();
+        ServerListCell.listView.refresh();
     }
 
     private void resetCell() {

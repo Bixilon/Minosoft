@@ -28,6 +28,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -35,6 +37,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.io.IOException;
@@ -59,6 +63,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public MenuButton optionsMenu;
     @FXML
     public Label serverBrand;
+    @FXML
+    public MenuItem optionsSessions;
     boolean canConnect = false;
     @FXML
     private Label serverName;
@@ -114,6 +120,12 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             favicon = GUITools.logo;
         }
         icon.setImage(favicon);
+        if (server.isConnected()) {
+            setStyle("-fx-background-color: darkseagreen;");
+            optionsSessions.setDisable(false);
+        } else {
+            optionsSessions.setDisable(true);
+        }
         if (server.getLastPing() == null) {
             server.ping();
         }
@@ -123,6 +135,10 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 return;
             }
             resetCell();
+
+            if (server.isConnected()) {
+                setStyle("-fx-background-color: darkseagreen;");
+            }
             if (ping == null) {
                 // Offline
                 players.setText("");
@@ -257,9 +273,13 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         } else {
             version = Versions.getVersionById(server.getDesiredVersion());
         }
+        optionsConnect.setDisable(true);
         connection.connect(server.getLastPing().getAddress(), version);
-        setStyle("-fx-background-color: darkseagreen;");
+        connection.addConnectionChangeCallback(this::handleConnectionCallback);
+        server.addConnection(connection);
+
     }
+
 
     private void resetCell() {
         // clear all cells
@@ -383,5 +403,44 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         dialog.getDialogPane().setContent(grid);
 
         dialog.showAndWait();
+    }
+
+    public void manageSessions() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/layout/sessions.fxml"));
+            Parent parent = loader.load();
+            ((SessionsWindow) loader.getController()).setServer(server);
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle(String.format("Sessions - %s - Minosoft", server.getName()));
+            stage.setScene(new Scene(parent));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleConnectionCallback(Connection connection) {
+        if (!server.getConnections().contains(connection)) {
+            // the card got recycled
+            return;
+        }
+        Platform.runLater(() -> {
+            if (!connection.isConnected()) {
+                // maybe we got disconnected
+                if (!server.isConnected()) {
+                    setStyle(null);
+                    optionsSessions.setDisable(true);
+                    optionsConnect.setDisable(false);
+                }
+                return;
+            }
+
+            if (Minosoft.getSelectedAccount() != connection.getPlayer().getAccount()) {
+                optionsConnect.setDisable(false);
+            }
+            setStyle("-fx-background-color: darkseagreen;");
+            optionsSessions.setDisable(false);
+        });
     }
 }
