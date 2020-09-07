@@ -7,7 +7,7 @@
       fx:controller="de.bixilon.minosoft.gui.main.MainWindow">
     <MenuBar VBox.vgrow="NEVER">
         <Menu mnemonicParsing="false" text="_File">
-            <MenuItem mnemonicParsing="false" disable="true" text="Preferences…"/>
+            <MenuItem mnemonicParsing="false" onAction="#openSettings" text="Preferences"/>
             <SeparatorMenuItem mnemonicParsing="false"/>
             <MenuItem mnemonicParsing="false" onAction="#quit" text="Quit"/>
         </Menu>

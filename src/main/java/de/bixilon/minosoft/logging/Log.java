@@ -145,6 +145,7 @@ public class Log {
     }
 
     public static void setLevel(LogLevels level) {
+        Log.info(String.format("Log level changed from %s to %s", Log.level, level));
         Log.level = level;
     }
 }

@@ -147,4 +147,17 @@ public class MainWindow implements Initializable {
     public void manageAccounts(ActionEvent actionEvent) {
         manageAccounts();
     }
+
+    public void openSettings() {
+        try {
+            Parent parent = FXMLLoader.load(MainWindow.class.getResource("/layout/settings.fxml"));
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Settings - Minosoft");
+            stage.setScene(new Scene(parent));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
