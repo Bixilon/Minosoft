@@ -13,11 +13,14 @@
 
 package de.bixilon.minosoft.util;
 
+import de.bixilon.minosoft.logging.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 public final class FolderUtil {
 
@@ -31,7 +34,13 @@ public final class FolderUtil {
             }
             File out = new File(to + File.separator + entry);
             if (out.exists()) {
-                continue;
+                // check
+                if (Files.mismatch(Path.of(entryFile.getPath()), Path.of(out.getPath())) == -1) {
+                    // identically
+                    continue;
+                }
+                // move file to an other location and re extract
+                moveFileToOld(out);
             }
             File outFolder = new File(out.getParent());
             if (!outFolder.exists()) {
@@ -39,5 +48,15 @@ public final class FolderUtil {
             }
             Files.copy(new FileInputStream(entryFile), out.toPath());
         }
+    }
+
+    private static void moveFileToOld(File file) {
+        File newFile = new File(file.getAbsolutePath() + ".old");
+        if (newFile.exists()) {
+            newFile.delete();
+            Log.verbose(String.format("Deleted file: %s", newFile.getAbsoluteFile()));
+        }
+        file.renameTo(newFile);
+        Log.verbose(String.format("Renamed %s to: %s", newFile.getAbsoluteFile(), newFile.getName()));
     }
 }
