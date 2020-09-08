@@ -27,16 +27,17 @@ public class MojangAccount {
     final String playerName;
     final String mojangUserName;
     String accessToken;
+    RefreshStates lastRefreshStatus;
 
-    public MojangAccount(JsonObject json) {
+    public MojangAccount(String username, JsonObject json) {
         this.accessToken = json.get("accessToken").getAsString();
         JsonObject profile = json.get("selectedProfile").getAsJsonObject();
-        this.uuid = Util.formatUUID(profile.get("id").getAsString());
+        this.uuid = Util.uuidFromString(profile.get("id").getAsString());
         this.playerName = profile.get("name").getAsString();
 
         JsonObject mojang = json.get("user").getAsJsonObject();
         this.userId = mojang.get("id").getAsString();
-        this.mojangUserName = mojang.get("username").getAsString();
+        this.mojangUserName = username;
     }
 
     public MojangAccount(String accessToken, String userId, UUID uuid, String playerName, String mojangUserName) {
@@ -51,13 +52,22 @@ public class MojangAccount {
         MojangAuthentication.joinServer(this, serverId);
     }
 
-    public boolean refreshToken() {
+    public RefreshStates refreshToken() {
+        if (lastRefreshStatus != null) {
+            return lastRefreshStatus;
+        }
         String accessToken = MojangAuthentication.refresh(this.accessToken);
         if (accessToken == null) {
-            return false;
+            lastRefreshStatus = RefreshStates.FAILED;
+            return lastRefreshStatus;
+        }
+        if (accessToken.equals("")) {
+            lastRefreshStatus = RefreshStates.ERROR;
+            return lastRefreshStatus;
         }
         this.accessToken = accessToken;
-        return true;
+        lastRefreshStatus = RefreshStates.SUCCESSFUL;
+        return lastRefreshStatus;
     }
 
     public UUID getUUID() {
@@ -83,5 +93,42 @@ public class MojangAccount {
     public void saveToConfig() {
         Minosoft.getConfig().putMojangAccount(this);
         Minosoft.getConfig().saveToFile(Config.configFileName);
+    }
+
+    @Override
+    public String toString() {
+        return getUserId();
+    }
+
+    public void delete() {
+        Minosoft.getAccountList().remove(this.getUserId());
+        Minosoft.getConfig().removeAccount(this);
+        Minosoft.getConfig().saveToFile(Config.configFileName);
+    }
+
+    @Override
+    public int hashCode() {
+        return userId.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (hashCode() != obj.hashCode()) {
+            return false;
+        }
+        MojangAccount account = (MojangAccount) obj;
+        return account.getUserId().equals(getUserId());
+    }
+
+    public enum RefreshStates {
+        SUCCESSFUL,
+        ERROR, // account not valid anymore
+        FAILED // error occurred while checking -> Unknown state
     }
 }

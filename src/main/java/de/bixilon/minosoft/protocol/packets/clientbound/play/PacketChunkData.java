@@ -27,12 +27,12 @@ import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import java.util.HashMap;
 
 public class PacketChunkData implements ClientboundPacket {
+    final HashMap<BlockPosition, CompoundTag> blockEntities = new HashMap<>();
     ChunkLocation location;
     Chunk chunk;
     CompoundTag heightMap;
     int[] biomes;
     boolean ignoreOldData;
-    final HashMap<BlockPosition, CompoundTag> blockEntities = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -72,7 +72,7 @@ public class PacketChunkData implements ClientboundPacket {
         }
         this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
         boolean groundUpContinuous = buffer.readBoolean();
-        if (buffer.getProtocolId() >= 743) { //ToDo: find out exact version
+        if (buffer.getProtocolId() >= 732 && buffer.getProtocolId() < 746) {
             this.ignoreOldData = buffer.readBoolean();
         }
         int sectionBitMask;
@@ -85,7 +85,7 @@ public class PacketChunkData implements ClientboundPacket {
             heightMap = (CompoundTag) buffer.readNBT();
         }
         if (groundUpContinuous) {
-            if (buffer.getProtocolId() >= 743) { //ToDo: find out exact version
+            if (buffer.getProtocolId() >= 740) {
                 biomes = buffer.readVarIntArray(buffer.readVarInt());
             } else if (buffer.getProtocolId() >= 552) {
                 biomes = buffer.readIntArray(1024);

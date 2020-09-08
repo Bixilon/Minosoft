@@ -13,15 +13,14 @@
 
 package de.bixilon.minosoft;
 
+import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
-import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.gui.main.AccountListCell;
+import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.protocol.ConnectionReasons;
-import de.bixilon.minosoft.util.FolderUtil;
 import de.bixilon.minosoft.util.OSUtil;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
@@ -32,8 +31,10 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class Minosoft {
+    public static HashBiMap<String, MojangAccount> accountList;
+    public static MojangAccount selectedAccount;
+    public static ArrayList<Server> serverList;
     static Configuration config;
-    static ArrayList<MojangAccount> accountList;
 
     public static void main(String[] args) {
         // init log thread
@@ -49,42 +50,28 @@ public class Minosoft {
             e.printStackTrace();
             return;
         }
-        Log.info(String.format("Loaded config file (version=%s)", config.getInteger(GameConfiguration.CONFIG_VERSION)));
+        Log.info(String.format("Loaded config file (version=%s)", config.getInt(GameConfiguration.CONFIG_VERSION)));
         // set log level from config
         Log.setLevel(LogLevels.valueOf(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
         Log.info(String.format("Logging info with level: %s", Log.getLevel()));
-        Log.info("Checking assets...");
-        checkAssets();
-        Log.info("Assets checking done");
         Log.info("Loading versions.json...");
         long mappingStartLoadingTime = System.currentTimeMillis();
         try {
-            Versions.load(Util.readJsonFromFile(Config.homeDir + "assets/mapping/versions.json"));
+            Versions.load(Util.readJsonAsset("mapping/versions.json"));
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
         Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
 
+        Log.debug("Refreshing client token...");
         checkClientToken();
-
         accountList = config.getMojangAccounts();
-        if (accountList.size() == 0) {
-            /*
-            MojangAccount account = MojangAuthentication.login("email", "password");
-            account.saveToConfig();
-             */
-            throw new RuntimeException("No accounts in config file!");
-        }
-        MojangAccount account = accountList.get(0);
-        if (account.refreshToken()) {
-            // could not login
-            account.saveToConfig();
-        } else {
-            Log.mojang("Could not refresh session, you will not be able to join premium servers!");
-        }
-        Connection c = new Connection(1, config.getString("debug.host"), new Player(account));
-        c.resolve(ConnectionReasons.CONNECT); // resolve dns address and connect
+        selectAccount(accountList.get(config.getString(GameConfiguration.ACCOUNT_SELECTED)));
+
+
+        serverList = config.getServers();
+        Launcher.start();
     }
 
     /**
@@ -120,12 +107,37 @@ public class Minosoft {
         }
     }
 
-    private static void checkAssets() {
-        try {
-            FolderUtil.copyFolder(Minosoft.class.getResource("/assets").toURI(), Config.homeDir + "assets/");
-        } catch (Exception e) {
-            Log.fatal("Error occurred while checking assets: " + e.getLocalizedMessage());
-            System.exit(1);
+    public static ArrayList<Server> getServerList() {
+        return serverList;
+    }
+
+    public static HashBiMap<String, MojangAccount> getAccountList() {
+        return accountList;
+    }
+
+    public static MojangAccount getSelectedAccount() {
+        return selectedAccount;
+    }
+
+    public static void selectAccount(MojangAccount account) {
+        if (account == null) {
+            selectedAccount = null;
+            config.putString(GameConfiguration.ACCOUNT_SELECTED, null);
+            config.saveToFile(Config.configFileName);
+            return;
         }
+        MojangAccount.RefreshStates refreshState = account.refreshToken();
+        if (refreshState == MojangAccount.RefreshStates.ERROR) {
+            accountList.remove(account.getUserId());
+            account.delete();
+            if (AccountListCell.listView != null) {
+                AccountListCell.listView.getItems().remove(account);
+            }
+            selectedAccount = null;
+            return;
+        }
+        config.putString(GameConfiguration.ACCOUNT_SELECTED, account.getUserId());
+        selectedAccount = account;
+        account.saveToConfig();
     }
 }

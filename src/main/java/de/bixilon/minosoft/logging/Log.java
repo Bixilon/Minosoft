@@ -17,11 +17,11 @@ import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Log {
     final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    final static ArrayList<String> queue = new ArrayList<>();
+    final static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>();
     static LogLevels level = LogLevels.PROTOCOL;
     static Thread logThread;
 
@@ -46,27 +46,22 @@ public class Log {
             builder.append(message);
         }
         queue.add(builder.toString());
-
-        logThread.interrupt();
     }
 
     public static void initThread() {
         logThread = new Thread(() -> {
             while (true) {
-                while (queue.size() > 0) {
-                    // something to print
-                    System.out.println(queue.get(0));
-
-                    // ToDo: log to file
-
-                    queue.remove(0);
-                }
+                // something to print
+                String message;
                 try {
-                    // wait for interrupt
-                    //noinspection BusyWait
-                    Thread.sleep(100);
-                } catch (InterruptedException ignored) {
+                    message = queue.take();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    continue;
                 }
+                System.out.println(message);
+
+                // ToDo: log to file
             }
         });
         logThread.setName("Log");
@@ -150,6 +145,10 @@ public class Log {
     }
 
     public static void setLevel(LogLevels level) {
+        if (Log.level == level) {
+            return;
+        }
+        Log.info(String.format("Log level changed from %s to %s", Log.level, level));
         Log.level = level;
     }
 }

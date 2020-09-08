@@ -25,7 +25,7 @@ import java.net.http.HttpResponse;
 
 public final class MojangAuthentication {
 
-    public static MojangAccount login(String clientToken, String username, String password) {
+    public static MojangAccountAuthenticationAttempt login(String clientToken, String username, String password) {
         JsonObject agent = new JsonObject();
         agent.addProperty("name", "Minecraft");
         agent.addProperty("version", 1);
@@ -40,18 +40,18 @@ public final class MojangAuthentication {
         HttpResponse<String> response = HTTP.postJson(MojangURLs.LOGIN.getUrl(), payload);
         if (response == null) {
             Log.mojang(String.format("Failed to login with username %s", username));
-            return null;
+            return new MojangAccountAuthenticationAttempt("Unknown error, check your Internet connection");
         }
         JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
         if (response.statusCode() != 200) {
             Log.mojang(String.format("Failed to login with error code %d: %s", response.statusCode(), jsonResponse.get("errorMessage").getAsString()));
-            return null;
+            return new MojangAccountAuthenticationAttempt(jsonResponse.get("errorMessage").getAsString());
         }
         // now it is okay
-        return new MojangAccount(jsonResponse);
+        return new MojangAccountAuthenticationAttempt(new MojangAccount(username, jsonResponse));
     }
 
-    public static MojangAccount login(String username, String password) {
+    public static MojangAccountAuthenticationAttempt login(String username, String password) {
         return login(Minosoft.getConfig().getString(GameConfiguration.CLIENT_TOKEN), username, password);
     }
 
@@ -102,9 +102,10 @@ public final class MojangAuthentication {
         JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
         if (response.statusCode() != 200) {
             Log.mojang(String.format("Failed to refresh session with error code %d: %s", response.statusCode(), jsonResponse.get("errorMessage").getAsString()));
-            return null;
+            return "";
         }
         // now it is okay
+        Log.mojang("Refreshed 1 session token");
         return jsonResponse.get("accessToken").getAsString();
     }
 

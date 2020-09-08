@@ -30,7 +30,7 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.PLAYER_INVENTORY_ID;
 
 public class Player {
-    final MojangAccount acc;
+    final MojangAccount account;
     final ScoreboardManager scoreboardManager = new ScoreboardManager();
     public final HashMap<UUID, PlayerListItem> playerList = new HashMap<>();
     float health;
@@ -49,22 +49,22 @@ public class Player {
     TextComponent tabHeader;
     TextComponent tabFooter;
 
-    public Player(MojangAccount acc) {
-        this.acc = acc;
+    public Player(MojangAccount account) {
+        this.account = account;
         // create our own inventory without any properties
         inventories.put(PLAYER_INVENTORY_ID, new Inventory(null));
     }
 
     public String getPlayerName() {
-        return acc.getPlayerName();
+        return account.getPlayerName();
     }
 
     public UUID getPlayerUUID() {
-        return acc.getUUID();
+        return account.getUUID();
     }
 
     public MojangAccount getAccount() {
-        return this.acc;
+        return this.account;
     }
 
     public float getHealth() {

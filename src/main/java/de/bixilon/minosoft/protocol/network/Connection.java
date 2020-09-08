@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network;
 
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.PingCallback;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.game.datatypes.VelocityHandler;
@@ -21,7 +22,10 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.CustomMapping;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.gui.main.ConnectionChangeCallback;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.logging.LogLevels;
+import de.bixilon.minosoft.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -36,52 +40,74 @@ import de.bixilon.minosoft.util.DNSUtil;
 import de.bixilon.minosoft.util.ServerAddress;
 import org.xbill.DNS.TextParseException;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Connection {
-    final ArrayList<ServerAddress> addresses;
+    public static int lastConnectionId;
     final Network network = new Network(this);
     final PacketHandler handler = new PacketHandler(this);
     final PacketSender sender = new PacketSender(this);
-    final ArrayList<ClientboundPacket> handlingQueue = new ArrayList<>();
+    final LinkedBlockingQueue<ClientboundPacket> handlingQueue = new LinkedBlockingQueue<>();
     final VelocityHandler velocityHandler = new VelocityHandler(this);
+    final HashSet<PingCallback> pingCallbacks = new HashSet<>();
+    final HashSet<ConnectionChangeCallback> connectionChangeCallbacks = new HashSet<>();
     final int connectionId;
+    final Player player;
+    final String hostname;
+    LinkedList<ServerAddress> addresses;
+    int desiredVersionNumber = -1;
     ServerAddress address;
     PluginChannelHandler pluginChannelHandler;
     Thread handleThread;
     Version version = Versions.getLowestVersionSupported(); // default
     final CustomMapping customMapping = new CustomMapping(version);
-    final Player player;
     ConnectionStates state = ConnectionStates.DISCONNECTED;
     ConnectionReasons reason;
     ConnectionReasons nextReason;
     ConnectionPing connectionStatusPing;
+    ServerListPing lastPing;
 
     public Connection(int connectionId, String hostname, Player player) {
         this.connectionId = connectionId;
         this.player = player;
-        try {
-            addresses = DNSUtil.getServerAddresses(hostname);
-        } catch (TextParseException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        this.hostname = hostname;
     }
 
-    /**
-     * Sends an server ping to the server (player count, motd, ...)
-     */
-    public void ping() {
-        Log.info(String.format("Pinging server: %s", address));
-        reason = ConnectionReasons.PING;
-        network.connect(address);
+    public void resolve(ConnectionReasons reason, int protocolId) {
+        network.lastException = null;
+        this.desiredVersionNumber = protocolId;
+
+        Thread resolveThread = new Thread(() -> {
+            if (desiredVersionNumber != -1) {
+                setVersion(Versions.getVersionById(desiredVersionNumber));
+            }
+            if (addresses == null) {
+                try {
+                    addresses = DNSUtil.getServerAddresses(hostname);
+                } catch (TextParseException e) {
+                    setConnectionState(ConnectionStates.FAILED_NO_RETRY);
+                    network.lastException = e;
+                    e.printStackTrace();
+                    return;
+                }
+            }
+            address = addresses.getFirst();
+            this.nextReason = reason;
+            Log.info(String.format("Trying to connect to %s", address));
+            if (protocolId != -1) {
+                setVersion(Versions.getVersionById(protocolId));
+            }
+            resolve(address);
+        });
+        resolveThread.setName(String.format("%d/Resolving", connectionId));
+        resolveThread.start();
     }
 
     public void resolve(ConnectionReasons reason) {
-        address = addresses.get(0);
-        this.nextReason = reason;
-        Log.info(String.format("Trying to connect to %s", address));
-        resolve(address);
+        resolve(reason, -1);
     }
 
     public void resolve(ServerAddress address) {
@@ -89,10 +115,7 @@ public class Connection {
         network.connect(address);
     }
 
-    /**
-     * Tries to connect to the server and login
-     */
-    public void connect() {
+    private void connect() {
         Log.info(String.format("Connecting to server: %s", address));
         if (reason == null || reason == ConnectionReasons.DNS) {
             // first get version, then login
@@ -101,11 +124,19 @@ public class Connection {
         network.connect(address);
     }
 
+    public void connect(ServerAddress address, Version version) {
+        this.address = address;
+        this.reason = ConnectionReasons.CONNECT;
+        setVersion(version);
+        Log.info(String.format("Connecting to server: %s", address));
+        network.connect(address);
+    }
+
     public ServerAddress getAddress() {
         return address;
     }
 
-    public ArrayList<ServerAddress> getAvailableAddresses() {
+    public LinkedList<ServerAddress> getAvailableAddresses() {
         return addresses;
     }
 
@@ -118,6 +149,7 @@ public class Connection {
             return;
         }
         Log.verbose("ConnectionStatus changed: " + state);
+        ConnectionStates previousState = this.state;
         this.state = state;
         switch (state) {
             case HANDSHAKING:
@@ -126,12 +158,7 @@ public class Connection {
                 ConnectionStates next = ((reason == ConnectionReasons.CONNECT) ? ConnectionStates.LOGIN : ConnectionStates.STATUS);
                 if (reason == ConnectionReasons.DNS) {
                     // valid hostname found
-                    if (nextReason == ConnectionReasons.CONNECT) {
-                        // connecting, we must get the version first
-                        reason = ConnectionReasons.GET_VERSION;
-                    } else {
-                        reason = nextReason;
-                    }
+                    reason = nextReason;
                     Log.info(String.format("Connection to %s seems to be okay, connecting...", address));
                 }
                 network.sendPacket(new PacketHandshake(address, next, (next == ConnectionStates.STATUS) ? -1 : getVersion().getProtocolVersion()));
@@ -160,16 +187,27 @@ public class Connection {
                 break;
             case FAILED:
                 // connect to next hostname, if available
+                if (previousState == ConnectionStates.PLAY) {
+                    // connection was good, do not reconnect
+                    break;
+                }
                 int nextIndex = addresses.indexOf(address) + 1;
                 if (addresses.size() > nextIndex) {
                     ServerAddress nextAddress = addresses.get(nextIndex);
                     Log.warn(String.format("Could not connect to %s, trying next hostname: %s", address, nextAddress));
                     this.address = nextAddress;
                     resolve(address);
+                } else {
+                    // no connection and no servers available anymore... sorry, but you can not play today :(
+                    handlePingCallbacks(null);
                 }
-                // else: failed
+                break;
+            case FAILED_NO_RETRY:
+                handlePingCallbacks(null);
                 break;
         }
+        // handle callbacks
+        connectionChangeCallbacks.forEach((callback -> callback.handle(this)));
     }
 
     public Version getVersion() {
@@ -177,15 +215,22 @@ public class Connection {
     }
 
     public void setVersion(Version version) {
+        if (this.version == version) {
+            return;
+        }
+
         this.version = version;
+        this.customMapping.setVersion(version);
         try {
             Versions.loadVersionMappings(version.getProtocolVersion());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.fatal(String.format("Could not load mapping for %s. Exiting...", version));
-            System.exit(1);
+        } catch (IOException e) {
+            if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
+                e.printStackTrace();
+            }
+            Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
+            network.lastException = new RuntimeException(String.format("Mappings could not be loaded: %s", e.getLocalizedMessage()));
+            setConnectionState(ConnectionStates.FAILED_NO_RETRY);
         }
-        customMapping.setVersion(version);
     }
 
     public PacketHandler getHandler() {
@@ -194,7 +239,6 @@ public class Connection {
 
     public void handle(ClientboundPacket p) {
         handlingQueue.add(p);
-        handleThread.interrupt();
     }
 
     public ConnectionReasons getReason() {
@@ -221,22 +265,20 @@ public class Connection {
 
     void startHandlingThread() {
         handleThread = new Thread(() -> {
-            while (getConnectionState() != ConnectionStates.DISCONNECTING) {
-                while (handlingQueue.size() > 0) {
-                    ClientboundPacket packet = handlingQueue.get(0);
-                    try {
-                        packet.log();
-                        packet.handle(getHandler());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    handlingQueue.remove(packet);
+            while (isConnected()) {
+                ClientboundPacket packet;
+                try {
+                    packet = handlingQueue.take();
+                } catch (InterruptedException e) {
+                    continue;
                 }
                 try {
-                    // sleep, wait for an interrupt from other thread
-                    //noinspection BusyWait
-                    Thread.sleep(100);
-                } catch (InterruptedException ignored) {
+                    packet.log();
+                    packet.handle(getHandler());
+                } catch (Exception e) {
+                    if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -278,7 +320,7 @@ public class Connection {
     }
 
     public boolean isConnected() {
-        return network.isConnected();
+        return state != ConnectionStates.FAILED && state != ConnectionStates.FAILED_NO_RETRY && state != ConnectionStates.DISCONNECTING && state != ConnectionStates.DISCONNECTED && state != ConnectionStates.CONNECTING;
     }
 
     public PacketSender getSender() {
@@ -295,7 +337,7 @@ public class Connection {
 
     public int getPacketCommand(Packets.Serverbound packet) {
         Integer command = null;
-        if (getReason() != ConnectionReasons.GET_VERSION) {
+        if (getReason() == ConnectionReasons.CONNECT) {
             command = version.getCommandByPacket(packet);
         }
         if (command == null) {
@@ -306,7 +348,7 @@ public class Connection {
 
     public Packets.Clientbound getPacketByCommand(ConnectionStates state, int command) {
         Packets.Clientbound packet = null;
-        if (getReason() != ConnectionReasons.GET_VERSION) {
+        if (getReason() == ConnectionReasons.CONNECT) {
             packet = version.getPacketByCommand(state, command);
         }
         if (packet == null) {
@@ -321,5 +363,47 @@ public class Connection {
 
     public int getConnectionId() {
         return connectionId;
+    }
+
+    public void addPingCallback(PingCallback callback) {
+        if (getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || lastPing != null) {
+            // ping done
+            callback.handle(lastPing);
+            return;
+        }
+        pingCallbacks.add(callback);
+    }
+
+    public HashSet<PingCallback> getPingCallbacks() {
+        return pingCallbacks;
+    }
+
+    public int getDesiredVersionNumber() {
+        return desiredVersionNumber;
+    }
+
+    public void setDesiredVersionNumber(int desiredVersionNumber) {
+        this.desiredVersionNumber = desiredVersionNumber;
+    }
+
+    public void handlePingCallbacks(ServerListPing ping) {
+        this.lastPing = ping;
+        pingCallbacks.forEach((callback -> callback.handle(ping)));
+    }
+
+    public Exception getLastConnectionException() {
+        return network.lastException;
+    }
+
+    public void addConnectionChangeCallback(ConnectionChangeCallback callback) {
+        connectionChangeCallbacks.add(callback);
+    }
+
+    public HashSet<ConnectionChangeCallback> getConnectionChangeCallbacks() {
+        return connectionChangeCallbacks;
+    }
+
+    public ServerListPing getLastPing() {
+        return lastPing;
     }
 }

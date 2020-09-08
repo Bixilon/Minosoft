@@ -73,13 +73,11 @@ public final class ChunkUtil {
                                 } else {
                                     // low 4 bits
                                     singleMeta = (byte) ((meta[arrayPos / 2] >>> 4) & 0xF);
-
                                     if (BitByte.isBitSet(addBitMask, c)) {
                                         singeBlockId = (short) ((singeBlockId << 4) | (addBlockTypes[arrayPos / 2] & 0xF));
                                     }
                                 }
-
-// ToDo light, biome
+                                // ToDo light, biome
                                 Block block = buffer.getConnection().getMapping().getBlockByIdAndMetaData(singeBlockId, singleMeta);
                                 if (block.equals(Blocks.nullBlock)) {
                                     arrayPos++;
@@ -104,7 +102,7 @@ public final class ChunkUtil {
             int totalBlocks = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
             int halfBytes = totalBlocks / 2; // half bytes
 
-            short[] blockData = buffer.readShorts(totalBlocks); // blocks >>> 4, data & 0xF
+            short[] blockData = buffer.readLEShorts(totalBlocks); // blocks >>> 4, data & 0xF
 
             byte[] light = buffer.readBytes(halfBytes);
             byte[] skyLight = null;
@@ -127,7 +125,8 @@ public final class ChunkUtil {
                 for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                     for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                         for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
-                            Block block = buffer.getConnection().getMapping().getBlockById(blockData[arrayPos]);
+                            int blockId = blockData[arrayPos] & 0xFFFF;
+                            Block block = buffer.getConnection().getMapping().getBlockById(blockId);
                             if (block.equals(Blocks.nullBlock)) {
                                 arrayPos++;
                                 continue;

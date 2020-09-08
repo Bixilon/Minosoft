@@ -82,10 +82,14 @@ public class PacketInteractEntity implements ServerboundPacket {
                 if (buffer.getProtocolId() >= 49) {
                     buffer.writeVarInt(hand.getId());
                 }
+
+                if (buffer.getProtocolId() >= 725 && buffer.getProtocolId() < 729) {
+                    buffer.writeBoolean(sneaking);
+                }
             }
-        }
-        if (buffer.getProtocolId() >= 743) { //ToDo
-            buffer.writeBoolean(sneaking);
+            if (buffer.getProtocolId() <= 729) {
+                buffer.writeBoolean(sneaking);
+            }
         }
         return buffer;
     }

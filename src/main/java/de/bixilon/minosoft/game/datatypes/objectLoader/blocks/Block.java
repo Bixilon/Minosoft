@@ -75,18 +75,12 @@ public class Block {
         }
         if (properties.size() > 0) {
             if (out.length() > 0) {
-                out.append(" ,");
+                out.append(", ");
             } else {
                 out.append(" (");
             }
-            out.append("properties={");
-            for (BlockProperties property : properties) {
-                out.append(property);
-                out.append(",");
-            }
-            // remove last ,
-            out.setLength(out.length() - 1);
-            out.append("}");
+            out.append("properties=");
+            out.append(properties);
         }
         if (out.length() > 0) {
             out.append(")");

@@ -54,7 +54,7 @@ public abstract class Protocol {
 
 
     public static int getPacketCommand(Packets.Serverbound packet) {
-        return serverboundPacketMapping.get(packet.getState()).get(packet);
+            return serverboundPacketMapping.get(packet.getState()).get(packet);
     }
 
     public static Packets.Clientbound getPacketByCommand(ConnectionStates state, int command) {

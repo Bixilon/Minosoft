@@ -38,6 +38,9 @@ public enum ChatColors {
     RESET;
 
     public static ChatColors byId(int id) {
+        if (id < 0 || id >= values().length) {
+            return null;
+        }
         return values()[id];
     }
 

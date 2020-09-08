@@ -46,7 +46,7 @@ public class PacketUnlockRecipes implements ClientboundPacket {
             isSmeltingBookOpen = buffer.readBoolean();
             isSmeltingFilteringActive = buffer.readBoolean();
         }
-        if (buffer.getProtocolId() >= 743) { //ToDo
+        if (buffer.getProtocolId() >= 738) {
             isBlastFurnaceBookOpen = buffer.readBoolean();
             isBlastFurnaceFilteringActive = buffer.readBoolean();
             isSmokerBookOpen = buffer.readBoolean();

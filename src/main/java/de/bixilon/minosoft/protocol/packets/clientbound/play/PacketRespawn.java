@@ -34,32 +34,40 @@ public class PacketRespawn implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 743) { //ToDo
+        if (buffer.getProtocolId() < 718) {
             if (buffer.getProtocolId() < 108) {
                 dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
             } else {
                 dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
             }
-            if (buffer.getProtocolId() < 464) {
-                difficulty = Difficulties.byId(buffer.readByte());
-            }
-            if (buffer.getProtocolId() >= 552) {
-                hashedSeed = buffer.readLong();
-            }
-            gameMode = GameModes.byId(buffer.readByte());
-            if (buffer.getProtocolId() >= 1) {
-                levelType = LevelTypes.byType(buffer.readString());
-            }
-            return true;
+        } else {
+            dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(buffer.readString());
         }
-        dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(buffer.readString());
-        buffer.readString(); // world
-        hashedSeed = buffer.readLong();
+        if (buffer.getProtocolId() < 464) {
+            difficulty = Difficulties.byId(buffer.readByte());
+        }
+
+        if (buffer.getProtocolId() >= 719) {
+            buffer.readString(); // world
+        }
+        if (buffer.getProtocolId() >= 552) {
+            hashedSeed = buffer.readLong();
+        }
         gameMode = GameModes.byId(buffer.readByte());
-        buffer.readByte(); // previous game mode
-        isDebug = buffer.readBoolean();
-        isFlat = buffer.readBoolean();
-        copyMetaData = buffer.readBoolean();
+
+        if (buffer.getProtocolId() >= 730) {
+            buffer.readByte(); // previous game mode
+        }
+        if (buffer.getProtocolId() >= 1 && buffer.getProtocolId() < 716) {
+            levelType = LevelTypes.byType(buffer.readString());
+        }
+        if (buffer.getProtocolId() >= 716) {
+            isDebug = buffer.readBoolean();
+            isFlat = buffer.readBoolean();
+        }
+        if (buffer.getProtocolId() >= 714) {
+            copyMetaData = buffer.readBoolean();
+        }
         return true;
     }
 

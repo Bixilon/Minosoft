@@ -13,9 +13,8 @@ network:
 
 account:
   clientToken: "randomGenerated"
+  selected: null
   accounts:
-
-# this will be removed soon, only for debugging (pre alpha stage): some features are not implemented yet -/-
-debug:
-  server: "127.0.0.1"
-  version: -1
+download:
+  mappings: "https://gitlab.com/Bixilon/minosoft/-/raw/master/data/mcdata/%s.tar.gz?inline=false" # url for all mappings. Files must be called version.tar.gz (e.g. 1.12.2.tar.gz). In these files must be the blocks.json and the registries.json
+servers:

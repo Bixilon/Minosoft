@@ -49,7 +49,7 @@ public class PacketUpdateJigsawBlock implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_JIGSAW_BLOCK);
         buffer.writePosition(position);
-        if (buffer.getProtocolId() < 743) { //ToDo
+        if (buffer.getProtocolId() < 708) {
             buffer.writeString(attachmentType);
             buffer.writeString(targetPool);
             buffer.writeString(finalState);

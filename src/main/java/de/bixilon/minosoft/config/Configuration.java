@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.config;
 
+import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.Config;
+import de.bixilon.minosoft.gui.main.Server;
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 import org.yaml.snakeyaml.Yaml;
 
@@ -26,7 +29,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Configuration {
-    LinkedHashMap<String, Object> config;
+    final LinkedHashMap<String, Object> config;
 
     public Configuration(String filename) throws IOException {
 
@@ -56,12 +59,12 @@ public class Configuration {
         return getBoolean(config.getPath());
     }
 
-    public int getInteger(String path) {
+    public int getInt(String path) {
         return (int) get(path);
     }
 
-    public int getInteger(ConfigEnum config) {
-        return getInteger(config.getPath());
+    public int getInt(ConfigEnum config) {
+        return getInt(config.getPath());
     }
 
     public String getString(String path) {
@@ -80,11 +83,11 @@ public class Configuration {
         put(path, value);
     }
 
-    public void putInteger(ConfigEnum config, int value) {
-        putInteger(config.getPath(), value);
+    public void putInt(ConfigEnum config, int value) {
+        putInt(config.getPath(), value);
     }
 
-    public void putInteger(String path, int value) {
+    public void putInt(String path, int value) {
         put(path, value);
     }
 
@@ -102,6 +105,20 @@ public class Configuration {
         putString(basePath + "uuid", account.getUUID().toString());
         putString(basePath + "userName", account.getMojangUserName());
         putString(basePath + "playerName", account.getPlayerName());
+    }
+
+    public void putServer(Server server) {
+        String basePath = String.format("servers.%d.", server.getId());
+        putString(basePath + "name", server.getName());
+        putString(basePath + "address", server.getAddress());
+        putInt(basePath + "version", server.getDesiredVersion());
+        if (server.getBase64Favicon() != null) {
+            putString(basePath + "favicon", server.getBase64Favicon());
+        }
+    }
+
+    public void removeServer(Server server) {
+        remove(String.format("servers.%d", server.getId()));
     }
 
     public Object get(String path) {
@@ -137,29 +154,83 @@ public class Configuration {
         config.put(path, value);
     }
 
-    public void saveToFile(String filename) {
-        Yaml yaml = new Yaml();
-        FileWriter writer;
-        try {
-            writer = new FileWriter(Config.homeDir + "config/" + filename);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void remove(String path) {
+        if (path.contains(".")) {
+            // split
+            String[] spilt = path.split("\\.");
+            LinkedHashMap<String, Object> temp = config;
+            for (int i = 0; i < spilt.length - 1; i++) {
+                // not yet existing, creating it
+                temp = (LinkedHashMap<String, Object>) temp.get(spilt[i]);
+                if (temp == null) {
+                    return;
+                }
+            }
+            temp.remove(spilt[spilt.length - 1]);
             return;
         }
-        yaml.dump(config, writer);
+        config.remove(path);
     }
 
-    public ArrayList<MojangAccount> getMojangAccounts() {
-        ArrayList<MojangAccount> accounts = new ArrayList<>();
-        LinkedHashMap<String, Object> objects = (LinkedHashMap<String, Object>) get("account.accounts");
+    public void saveToFile(String filename) {
+        Thread thread = new Thread(() -> {
+            // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
+            File tempFile = new File(Config.homeDir + "config/" + filename + ".tmp");
+            File file = new File(Config.homeDir + "config/" + filename);
+            Yaml yaml = new Yaml();
+            FileWriter writer;
+            try {
+                writer = new FileWriter(tempFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+            synchronized (config) {
+                yaml.dump(config, writer);
+            }
+            if (!file.delete() || !tempFile.renameTo(file)) {
+                Log.fatal("An error occurred while saving the config file");
+            } else {
+                Log.verbose(String.format("Configuration saved to file %s", filename));
+            }
+        });
+        thread.setName("IO-Thread");
+        thread.start();
+    }
+
+    public HashBiMap<String, MojangAccount> getMojangAccounts() {
+        HashBiMap<String, MojangAccount> accounts = HashBiMap.create();
+        LinkedHashMap<String, LinkedHashMap<String, Object>> objects = (LinkedHashMap<String, LinkedHashMap<String, Object>>) get("account.accounts");
         if (objects == null) {
             return accounts;
         }
-        for (Map.Entry<String, Object> set : objects.entrySet()) {
-            LinkedHashMap<String, Object> entry = (LinkedHashMap<String, Object>) set.getValue();
-            accounts.add(new MojangAccount((String) entry.get("accessToken"), set.getKey(), UUID.fromString((String) entry.get("uuid")), (String) entry.get("playerName"), (String) entry.get("mojangUserName")));
+        for (Map.Entry<String, LinkedHashMap<String, Object>> set : objects.entrySet()) {
+            LinkedHashMap<String, Object> entry = set.getValue();
+            accounts.put(set.getKey(), new MojangAccount((String) entry.get("accessToken"), set.getKey(), UUID.fromString((String) entry.get("uuid")), (String) entry.get("playerName"), (String) entry.get("userName")));
         }
         return accounts;
     }
+
+    public ArrayList<Server> getServers() {
+        ArrayList<Server> servers = new ArrayList<>();
+        LinkedHashMap<String, LinkedHashMap<String, Object>> objects = (LinkedHashMap<String, LinkedHashMap<String, Object>>) get("servers");
+        if (objects == null) {
+            return servers;
+        }
+        for (Map.Entry<String, LinkedHashMap<String, Object>> set : objects.entrySet()) {
+            LinkedHashMap<String, Object> entry = set.getValue();
+            String favicon = null;
+            if (entry.containsKey("favicon")) {
+                favicon = (String) entry.get("favicon");
+            }
+            servers.add(new Server(Integer.parseInt(set.getKey()), (String) entry.get("name"), (String) entry.get("address"), (int) entry.get("version"), favicon));
+        }
+        return servers;
+    }
+
+    public void removeAccount(MojangAccount account) {
+        remove(String.format("account.accounts.%s", account.getUserId()));
+    }
 }
+
 

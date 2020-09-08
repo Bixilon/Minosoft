@@ -54,19 +54,19 @@ public class PacketChunkBulk implements ClientboundPacket {
             return true;
         }
         boolean containsSkyLight = buffer.readBoolean();
-        int chunks = buffer.readVarInt();
-        int[] x = new int[chunks];
-        int[] z = new int[chunks];
-        short[] sectionBitMask = new short[chunks];
+        int chunkCount = buffer.readVarInt();
+        int[] x = new int[chunkCount];
+        int[] z = new int[chunkCount];
+        short[] sectionBitMask = new short[chunkCount];
 
         //ToDo: this was still compressed in 14w28a
 
-        for (int i = 0; i < chunks; i++) {
+        for (int i = 0; i < chunkCount; i++) {
             x[i] = buffer.readInt();
             z[i] = buffer.readInt();
             sectionBitMask[i] = buffer.readShort();
         }
-        for (int i = 0; i < chunks; i++) {
+        for (int i = 0; i < chunkCount; i++) {
             chunkMap.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
         }
         return true;

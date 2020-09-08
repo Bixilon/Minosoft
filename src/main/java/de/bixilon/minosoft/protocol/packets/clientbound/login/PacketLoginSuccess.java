@@ -17,6 +17,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.util.Util;
 
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public class PacketLoginSuccess implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 707) {
-            uuid = UUID.fromString(buffer.readString());
+            uuid = Util.uuidFromString(buffer.readString());
             username = buffer.readString();
             return true;
         }

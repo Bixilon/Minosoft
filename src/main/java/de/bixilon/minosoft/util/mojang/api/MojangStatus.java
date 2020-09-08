@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.util.HTTP;
 
 import java.net.http.HttpResponse;
@@ -52,7 +53,9 @@ public final class MojangStatus {
             return ret;
 
         } catch (NullPointerException | JsonParseException e) {
-            e.printStackTrace();
+            if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
+                e.printStackTrace();
+            }
             return getUnknownStatusMap();
         }
     }

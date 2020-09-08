@@ -54,7 +54,7 @@ public class InByteBuffer {
     public byte readByte() {
         byte ret;
         ret = bytes[pos];
-        pos = pos + 1;
+        pos++;
         return ret;
     }
 
@@ -93,12 +93,11 @@ public class InByteBuffer {
         return buffer.getShort(0);
     }
 
-    public short[] readShorts(int num) {
-        ByteBuffer buffer = ByteBuffer.allocate(Short.BYTES * num);
-        buffer.put(readBytes(Short.BYTES * num));
+    public short[] readLEShorts(int num) {
         short[] ret = new short[num];
-        for (int i = 0; i < num; i++) {
-            ret[i] = buffer.getShort(i);
+        for (int i = 0; i < ret.length; i++) {
+            ret[i] = (short) (readByte() & 0xFF);
+            ret[i] |= (readByte() & 0xFF) << 8;
         }
         return ret;
     }
@@ -385,7 +384,7 @@ public class InByteBuffer {
     public EntityMetaData.MetaDataHashMap readMetaData() {
         EntityMetaData.MetaDataHashMap sets = new EntityMetaData.MetaDataHashMap();
 
-        if (protocolId < 47) {
+        if (protocolId < 48) {
             byte item = readByte();
 
             while (item != 0x7F) {

@@ -21,7 +21,8 @@ public enum ConnectionStates {
     CONNECTING,
     DISCONNECTING,
     DISCONNECTED,
-    FAILED;
+    FAILED,
+    FAILED_NO_RETRY;
 
 
     public static ConnectionStates byId(int id) {

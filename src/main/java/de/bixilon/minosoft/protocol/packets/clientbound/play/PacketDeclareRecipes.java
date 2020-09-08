@@ -47,7 +47,6 @@ public class PacketDeclareRecipes implements ClientboundPacket {
                     Ingredient[] ingredients = buffer.readIngredientArray(buffer.readVarInt());
                     Slot result = buffer.readSlot();
                     recipe = new Recipe(type, group, ingredients, result);
-                    break;
                 }
                 case SHAPED -> {
                     int width = buffer.readVarInt();
@@ -56,7 +55,6 @@ public class PacketDeclareRecipes implements ClientboundPacket {
                     Ingredient[] ingredients = buffer.readIngredientArray(width * height);
                     Slot result = buffer.readSlot();
                     recipe = new Recipe(width, height, type, group, ingredients, result);
-                    break;
                 }
                 case SMELTING, BLASTING, SMOKING, CAMPFIRE -> {
                     String group = buffer.readString();
@@ -65,21 +63,18 @@ public class PacketDeclareRecipes implements ClientboundPacket {
                     float experience = buffer.readFloat();
                     int cookingTime = buffer.readVarInt();
                     recipe = new Recipe(type, group, ingredient, result, experience, cookingTime);
-                    break;
                 }
                 case STONE_CUTTING -> {
                     String group = buffer.readString();
                     Ingredient ingredient = buffer.readIngredient();
                     Slot result = buffer.readSlot();
                     recipe = new Recipe(type, group, ingredient, result);
-                    break;
                 }
                 case SMITHING -> {
                     Ingredient base = buffer.readIngredient();
                     Ingredient addition = buffer.readIngredient();
                     Slot result = buffer.readSlot();
                     recipe = new Recipe(type, base, addition, result);
-                    break;
                 }
                 default -> recipe = new Recipe(type);
             }

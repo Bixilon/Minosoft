@@ -17,13 +17,13 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.*;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public final class DNSUtil {
 
-    public static ArrayList<ServerAddress> getServerAddresses(String hostname) throws TextParseException {
+    public static LinkedList<ServerAddress> getServerAddresses(String hostname) throws TextParseException {
         ServerAddress fallbackAddress = getServerAddress(hostname);
-        ArrayList<ServerAddress> ret = new ArrayList<>();
+        LinkedList<ServerAddress> ret = new LinkedList<>();
         if (hostname.contains(":")) {
             // port provided, skip srv check
             ret.add(fallbackAddress);
@@ -52,10 +52,10 @@ public final class DNSUtil {
 
     }
 
-    public String correctHostName(String hostname) {
+    public static String correctHostName(String hostname) {
         // replaces invalid chars to avoid copy and paste issues (like spaces, ...)
         hostname = hostname.replaceAll("\\s", "");
-        return hostname;
+        return hostname.toLowerCase();
     }
 
 }
