@@ -21,7 +21,6 @@ import de.bixilon.minosoft.gui.main.AccountListCell;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
-import de.bixilon.minosoft.util.FolderUtil;
 import de.bixilon.minosoft.util.OSUtil;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
@@ -55,13 +54,10 @@ public class Minosoft {
         // set log level from config
         Log.setLevel(LogLevels.valueOf(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
         Log.info(String.format("Logging info with level: %s", Log.getLevel()));
-        Log.info("Checking assets...");
-        checkAssets();
-        Log.info("Assets checking done");
         Log.info("Loading versions.json...");
         long mappingStartLoadingTime = System.currentTimeMillis();
         try {
-            Versions.load(Util.readJsonFromFile(Config.homeDir + "assets/mapping/versions.json"));
+            Versions.load(Util.readJsonAsset("mapping/versions.json"));
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -75,7 +71,7 @@ public class Minosoft {
 
 
         serverList = config.getServers();
-        Launcher.main();
+        Launcher.start();
     }
 
     /**
@@ -108,16 +104,6 @@ public class Minosoft {
         if (config.getString(GameConfiguration.CLIENT_TOKEN) == null || config.getString(GameConfiguration.CLIENT_TOKEN).equals("randomGenerated")) {
             config.putString(GameConfiguration.CLIENT_TOKEN, UUID.randomUUID().toString());
             config.saveToFile(Config.configFileName);
-        }
-    }
-
-    private static void checkAssets() {
-        try {
-            FolderUtil.copyFolder(Minosoft.class.getResource("/assets").toURI(), Config.homeDir + "assets/");
-        } catch (Exception e) {
-            Log.fatal("Error occurred while checking assets: " + e.getLocalizedMessage());
-            e.printStackTrace();
-            System.exit(1);
         }
     }
 

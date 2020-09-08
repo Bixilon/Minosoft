@@ -128,6 +128,14 @@ public final class Util {
         return readFile(new File(fileName));
     }
 
+    public static String readAsset(String path) throws IOException {
+        return readFile(new BufferedReader((new InputStreamReader(Util.class.getResourceAsStream("/assets/" + path)))), true);
+    }
+
+    public static JsonObject readJsonAsset(String path) throws IOException {
+        return (JsonObject) JsonParser.parseString(readAsset(path));
+    }
+
     public static String readFile(BufferedReader reader, boolean closeStream) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         String ls = System.getProperty("line.separator");

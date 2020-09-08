@@ -37,7 +37,7 @@ import java.util.Map;
 
 public class Launcher extends Application {
 
-    public static void main() {
+    public static void start() {
         launch();
     }
 
