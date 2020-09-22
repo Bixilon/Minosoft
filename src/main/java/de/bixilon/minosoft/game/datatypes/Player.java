@@ -30,20 +30,20 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.PLAYER_INVENTORY_ID;
 
 public class Player {
+    public final HashMap<UUID, PlayerListItem> playerList = new HashMap<>();
     final MojangAccount account;
     final ScoreboardManager scoreboardManager = new ScoreboardManager();
-    public final HashMap<UUID, PlayerListItem> playerList = new HashMap<>();
+    final World world = new World("world");
+    final HashMap<Integer, Inventory> inventories = new HashMap<>();
     float health;
     int food;
     float saturation;
     BlockPosition spawnLocation;
     GameModes gameMode;
-    final World world = new World("world");
     byte selectedSlot;
     int level;
     int totalExperience;
     OtherPlayer player;
-    final HashMap<Integer, Inventory> inventories = new HashMap<>();
     boolean spawnConfirmed = false;
 
     TextComponent tabHeader;

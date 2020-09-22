@@ -77,7 +77,6 @@ public class Version {
         this.mapping = mapping;
     }
 
-
     public boolean isGettingLoaded() {
         return isGettingLoaded;
     }

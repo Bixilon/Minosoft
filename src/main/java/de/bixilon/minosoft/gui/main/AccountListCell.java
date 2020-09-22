@@ -62,7 +62,6 @@ public class AccountListCell extends ListCell<MojangAccount> implements Initiali
         return root;
     }
 
-
     @Override
     protected void updateItem(MojangAccount account, boolean empty) {
         super.updateItem(account, empty);

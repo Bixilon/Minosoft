@@ -63,7 +63,6 @@ public class PacketCombatEvent implements ClientboundPacket {
         END_COMBAT,
         ENTITY_DEAD;
 
-
         public static CombatEvents byId(int id) {
             return values()[id];
         }

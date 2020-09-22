@@ -34,7 +34,6 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.util.Map;
 
-
 public class Launcher extends Application {
 
     public static void start() {

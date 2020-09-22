@@ -62,7 +62,6 @@ public class AccountWindow implements Initializable {
         PasswordField password = new PasswordField();
         password.setPromptText("Password");
 
-
         grid.add(new Label("Email:"), 0, 0);
         grid.add(email, 1, 0);
         grid.add(new Label("Password:"), 0, 1);
@@ -99,7 +98,6 @@ public class AccountWindow implements Initializable {
 
         Window window = dialog.getDialogPane().getScene().getWindow();
         window.setOnCloseRequest(windowEvent -> window.hide());
-
 
         dialog.showAndWait();
     }

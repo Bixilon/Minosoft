@@ -76,7 +76,6 @@ public class HorseMetaData extends AbstractHorseMetaData {
         GOLD_ARMOR,
         DIAMOND_ARMOR;
 
-
         public static HorseArmors byId(int id) {
             return values()[id];
         }
@@ -95,7 +94,6 @@ public class HorseMetaData extends AbstractHorseMetaData {
         GRAY,
         DARK_BROWN;
 
-
         public static HorseColors byId(int id) {
             return values()[id];
         }
@@ -111,7 +109,6 @@ public class HorseMetaData extends AbstractHorseMetaData {
         WHITEFIELD,
         WHITE_DOTS,
         BLACK_DOTS;
-
 
         public static HorseDots byId(int id) {
             return values()[id];

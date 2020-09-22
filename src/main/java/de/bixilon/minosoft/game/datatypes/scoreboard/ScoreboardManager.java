@@ -19,7 +19,6 @@ public class ScoreboardManager {
     final HashMap<String, Team> teams = new HashMap<>();
     final HashMap<String, ScoreboardObjective> objectives = new HashMap<>();
 
-
     public void addTeam(Team team) {
         teams.put(team.getName(), team);
     }

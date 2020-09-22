@@ -248,7 +248,6 @@ public class TextComponent {
         final ChatColors color;
         final String prefix;
 
-
         ChatAttributes(String consolePrefix, ChatColors color) {
             this.consolePrefix = consolePrefix;
             this.color = color;

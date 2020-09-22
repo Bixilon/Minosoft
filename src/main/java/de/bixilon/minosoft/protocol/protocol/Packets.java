@@ -200,7 +200,6 @@ public class Packets {
         PLAY_SET_COMPRESSION(PacketSetCompression.class),
         PLAY_ADVANCEMENT_PROGRESS(null);
 
-
         final ConnectionStates state;
         final Class<? extends ClientboundPacket> clazz;
 

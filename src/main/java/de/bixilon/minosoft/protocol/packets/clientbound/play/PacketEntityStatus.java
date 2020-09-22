@@ -82,7 +82,6 @@ public class PacketEntityStatus implements ClientboundPacket {
         PORTAL_PARTICLE_CHORUS;
         // ToDo: 1.11+ (for each entity)
 
-
         public static EntityStates byId(int id) {
             return values()[id];
         }

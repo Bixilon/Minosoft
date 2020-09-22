@@ -146,8 +146,7 @@ public class Network {
                         break;
                     }
 
-
-                    // everything sent for now, waiting for data
+// everything sent for now, waiting for data
                     int numRead = 0;
                     int length = 0;
                     int read;
@@ -268,7 +267,6 @@ public class Network {
         encryptionEnabled = true;
         Log.debug("Encryption enabled!");
     }
-
 
     public void disconnect() {
         connection.setConnectionState(ConnectionStates.DISCONNECTING);

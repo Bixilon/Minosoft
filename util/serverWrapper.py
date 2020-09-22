@@ -19,7 +19,6 @@ import sys
 javaPath = "/usr/lib/jvm/java-8-openjdk-amd64/bin/java"
 print("Minecraft server wrapper")
 
-
 def download(manifest, version):
     versionJson = ""
     for key in manifest["versions"]:
@@ -30,7 +29,6 @@ def download(manifest, version):
         print("Snapshot not found!")
         return
     downloadVersion(requests.get(versionJson).json())
-
 
 def downloadVersion(versionJson):
     server = versionJson["downloads"]["server"]["url"]
@@ -47,7 +45,6 @@ def downloadVersion(versionJson):
     with open("./" + versionJson["id"] + '/server.jar', 'wb') as f:
         f.write(server.content)
     print("done")
-
 
 if len(sys.argv) > 1:
     # check args

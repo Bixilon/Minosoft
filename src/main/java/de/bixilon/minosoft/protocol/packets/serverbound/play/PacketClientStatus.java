@@ -48,7 +48,6 @@ public class PacketClientStatus implements ServerboundPacket {
         REQUEST_STATISTICS,
         OPEN_INVENTORY;
 
-
         public static ClientStates byId(int id) {
             return values()[id];
         }

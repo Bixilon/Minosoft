@@ -31,7 +31,6 @@ public enum Colors {
     RED,
     BLACK;
 
-
     public static Colors byId(int id) {
         return values()[id];
     }

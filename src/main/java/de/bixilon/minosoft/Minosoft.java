@@ -69,7 +69,6 @@ public class Minosoft {
         accountList = config.getMojangAccounts();
         selectAccount(accountList.get(config.getString(GameConfiguration.ACCOUNT_SELECTED)));
 
-
         serverList = config.getServers();
         Launcher.start();
     }

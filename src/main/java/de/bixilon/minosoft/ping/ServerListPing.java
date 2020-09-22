@@ -44,7 +44,6 @@ public class ServerListPing {
         }
         serverBrand = json.getAsJsonObject("version").get("name").getAsString();
 
-
         if (json.has("modinfo") && json.getAsJsonObject("modinfo").has("type") && json.getAsJsonObject("modinfo").get("type").getAsString().equals("FML")) {
             serverModInfo = new ForgeModInfo(json.getAsJsonObject("modinfo"));
         } else {

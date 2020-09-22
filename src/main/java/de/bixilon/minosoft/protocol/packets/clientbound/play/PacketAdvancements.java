@@ -29,11 +29,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PacketAdvancements implements ClientboundPacket {
-    boolean reset;
-
     final HashMap<String, Advancement> advancements = new HashMap<>();
-    String[] toRemove;
     final HashMap<String, AdvancementProgress> progresses = new HashMap<>();
+    boolean reset;
+    String[] toRemove;
 
     @Override
     public boolean read(InByteBuffer buffer) {

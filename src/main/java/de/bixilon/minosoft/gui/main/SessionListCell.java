@@ -59,7 +59,6 @@ public class SessionListCell extends ListCell<Connection> implements Initializab
         return root;
     }
 
-
     @Override
     protected void updateItem(Connection connection, boolean empty) {
         super.updateItem(connection, empty);

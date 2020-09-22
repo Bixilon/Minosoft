@@ -32,6 +32,7 @@ import java.util.HashSet;
 
 public class VersionMapping {
     final Version version;
+    final HashSet<Mappings> loaded = new HashSet<>();
     HashBiMap<String, Motive> motiveIdentifierMap;
     HashBiMap<String, Particle> particleIdentifierMap;
     HashBiMap<String, Statistic> statisticIdentifierMap;
@@ -45,7 +46,6 @@ public class VersionMapping {
     HashBiMap<Integer, Enchantment> enchantmentMap;
     HashBiMap<Integer, Particle> particleIdMap;
     HashBiMap<Integer, Statistic> statisticIdMap;
-    final HashSet<Mappings> loaded = new HashSet<>();
 
     public VersionMapping(Version version) {
         this.version = version;

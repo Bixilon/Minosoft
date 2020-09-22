@@ -19,10 +19,10 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 public class IndirectPalette implements Palette {
-    int protocolId;
-    CustomMapping mapping;
     final HashBiMap<Integer, Integer> map = HashBiMap.create();
     final byte bitsPerBlock;
+    int protocolId;
+    CustomMapping mapping;
 
     public IndirectPalette(byte bitsPerBlock) {
         this.bitsPerBlock = bitsPerBlock;

@@ -129,7 +129,6 @@ public class PacketBossBar implements ClientboundPacket {
         UPDATE_STYLE,
         UPDATE_FLAGS;
 
-
         public static BossBarActions byId(int id) {
             return values()[id];
         }
@@ -163,7 +162,6 @@ public class PacketBossBar implements ClientboundPacket {
         NOTCHES_10,
         NOTCHES_12,
         NOTCHES_20;
-
 
         public static BossBarDivisions byId(int id) {
             return values()[id];

@@ -167,7 +167,6 @@ public class PacketMapData implements ClientboundPacket {
         PLAYERS,
         SCALE;
 
-
         public static PacketMapDataDataActions byId(int id) {
             return values()[id];
         }

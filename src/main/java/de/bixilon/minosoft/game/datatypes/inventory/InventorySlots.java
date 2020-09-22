@@ -68,7 +68,6 @@ public class InventorySlots {
         HOTBAR_9,
         OFF_HAND;
 
-
         public static PlayerInventorySlots byId(int id, int protocolId) {
             return values()[id];
         }

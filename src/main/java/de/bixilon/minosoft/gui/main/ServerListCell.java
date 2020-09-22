@@ -93,7 +93,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         return root;
     }
 
-
     @Override
     protected void updateItem(Server server, boolean empty) {
         super.updateItem(server, empty);
@@ -215,7 +214,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         serverAddress.setPromptText("Server address");
         serverAddress.setText(server.getAddress());
 
-
         if (server.getDesiredVersion() == -1) {
             GUITools.versionList.getSelectionModel().select(Versions.getLowestVersionSupported());
         } else {
@@ -281,7 +279,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
 
     }
 
-
     private void resetCell() {
         // clear all cells
         setStyle(null);
@@ -336,7 +333,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         Label serverAddressLabel = new Label(server.getAddress());
         Label forcedVersionLabel = new Label();
 
-
         if (server.getDesiredVersion() == -1) {
             forcedVersionLabel.setText(Versions.getLowestVersionSupported().getVersionName());
         } else {
@@ -375,7 +371,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 Label motdLabel = new Label(lastPing.getMotd().getRawMessage());
                 Label moddedBrandLabel = new Label(lastPing.getServerModInfo().getBrand());
 
-
                 grid.add(new Label("Real server address:"), 0, ++column);
                 grid.add(realServerAddressLabel, 1, column);
                 grid.add(new Label("Server version:"), 0, ++column);
@@ -399,7 +394,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 }
             }
         }
-
 
         dialog.getDialogPane().setContent(grid);
 

@@ -21,7 +21,6 @@ public abstract class Protocol {
     static final HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping = new HashMap<>();
     static final HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping = new HashMap<>();
 
-
     static {
         serverboundPacketMapping.put(ConnectionStates.HANDSHAKING, HashBiMap.create());
         serverboundPacketMapping.put(ConnectionStates.STATUS, HashBiMap.create());
@@ -52,9 +51,8 @@ public abstract class Protocol {
         clientboundPacketMapping.get(ConnectionStates.LOGIN).put(Packets.Clientbound.LOGIN_PLUGIN_REQUEST, 0x04);
     }
 
-
     public static int getPacketCommand(Packets.Serverbound packet) {
-            return serverboundPacketMapping.get(packet.getState()).get(packet);
+        return serverboundPacketMapping.get(packet.getState()).get(packet);
     }
 
     public static Packets.Clientbound getPacketByCommand(ConnectionStates state, int command) {
