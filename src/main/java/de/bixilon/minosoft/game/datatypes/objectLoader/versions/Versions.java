@@ -141,6 +141,17 @@ public class Versions {
         Log.verbose(String.format("Loading mappings for version %s...", version));
         long startTime = System.currentTimeMillis();
 
+        // check if mapping folder exist
+        File mappingFolder = new File(Config.homeDir + "assets/mapping");
+        if (!mappingFolder.exists()) {
+            if (mappingFolder.mkdirs()) {
+                Log.verbose("Created mappings folder.");
+            } else {
+                Log.fatal(String.format("Failed creating mappings folder (%s). Exiting...", mappingFolder.getAbsolutePath()));
+                System.exit(1);
+            }
+        }
+
         String fileName = Config.homeDir + String.format("assets/mapping/%s.tar.gz", version.getVersionName());
         HashMap<String, String> files;
         try {
