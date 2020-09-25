@@ -129,11 +129,19 @@ public final class Util {
     }
 
     public static String readAsset(String path) throws IOException {
-        return readFile(new BufferedReader((new InputStreamReader(Util.class.getResourceAsStream("/assets/" + path)))), true);
+        return readAsset(path, Util.class);
+    }
+
+    public static String readAsset(String path, Class clazz) throws IOException {
+        return readFile(new BufferedReader((new InputStreamReader(clazz.getResourceAsStream("/assets/" + path)))), true);
     }
 
     public static JsonObject readJsonAsset(String path) throws IOException {
-        return (JsonObject) JsonParser.parseString(readAsset(path));
+        return readJsonAsset(path, Util.class);
+    }
+
+    public static JsonObject readJsonAsset(String path, Class clazz) throws IOException {
+        return (JsonObject) JsonParser.parseString(readAsset(path, clazz));
     }
 
     public static String readFile(BufferedReader reader, boolean closeStream) throws IOException {
