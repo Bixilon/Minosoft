@@ -28,10 +28,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
+import java.util.zip.*;
 
 public final class Util {
     public static final Pattern UUID_FIX = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
@@ -157,6 +154,14 @@ public final class Util {
             reader.close();
         }
         return stringBuilder.toString();
+    }
+
+    public static String readFileFromZip(String fileName, ZipFile zipFile) throws IOException {
+        return readFile(new BufferedReader(new InputStreamReader(zipFile.getInputStream(zipFile.getEntry(fileName)))), false);
+    }
+
+    public static JsonObject readJsonFromZip(String fileName, ZipFile zipFile) throws IOException {
+        return JsonParser.parseString(readFileFromZip(fileName, zipFile)).getAsJsonObject();
     }
 
     public static String readFile(File file) throws IOException {

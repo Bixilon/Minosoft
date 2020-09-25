@@ -11,11 +11,23 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding;
+package de.bixilon.minosoft.modding.loading;
 
-interface MinosoftModInterface {
-    boolean start(ModPhases phase);
-}
+public class LoadingInfo {
+    LoadingPriorities loadingPriority;
 
-public abstract class MinosoftMod implements MinosoftModInterface {
+    public LoadingInfo(LoadingPriorities loadingPriority) {
+        this.loadingPriority = loadingPriority;
+    }
+
+    public LoadingInfo() {
+    }
+
+    public LoadingPriorities getLoadingPriority() {
+        return loadingPriority;
+    }
+
+    public void setLoadingPriority(LoadingPriorities loadingPriority) {
+        this.loadingPriority = loadingPriority;
+    }
 }

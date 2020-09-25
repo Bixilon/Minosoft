@@ -45,7 +45,7 @@ In your jar file (the mod) must be a file called `mod.json`.
 - `versionName`, `authors`, `name` is the classic implementation of metadata. Can be anything, will be displayed in the mod list. **Required**
 - `identifier` is the prefix of items (for Minecraft it is `minecraft`). Aka the thing before the `:`.  **Required**
 - `mainClass` the Main class of your mod (self explaining). The main class needs to extent the abstract class `MinosoftMod`. **Required**
- `loading` Loading attributes. **Optional**
+- `loading` Loading attributes. **Optional**
   - `priority` should the mod be loaded at the beginning or at the end. Possible values are `LOWEST`, `LOW`, `NORMAL`, `HIGH`, `HIGHEST` **Optional**
 - `dependencies` Used if you need an other mod to work **Optional**
   - `hard` These mods are **needed** to work. If the loading fails, your mod is not getting loaded and an warning message is being displayed. **Optional**

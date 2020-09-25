@@ -11,12 +11,12 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding;
+package de.bixilon.minosoft.modding.loading;
 
-public enum ModPhases {
-    BOOTING,
-    INITIALIZING,
-    LOADING,
-    STARTING,
-    STARTED
+public enum LoadingPriorities {
+    LOWEST,
+    LOW,
+    NORMAL,
+    HIGH,
+    HIGHEST
 }
