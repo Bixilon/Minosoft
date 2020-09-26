@@ -52,6 +52,9 @@ public class Ingredient {
         if (super.equals(obj)) {
             return true;
         }
+        if (this.hashCode() != obj.hashCode()) {
+            return false;
+        }
         Ingredient their = (Ingredient) obj;
         return slotEquals(getSlot(), their.getSlot());
     }

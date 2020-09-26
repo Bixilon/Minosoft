@@ -28,7 +28,7 @@ public class ModInfo {
     final String[] authors;
     final String identifier;
     final String mainClass;
-    LoadingInfo info;
+    LoadingInfo loadingInfo;
 
     public ModInfo(JsonObject json) {
         this.uuid = Util.uuidFromString(json.get("uuid").getAsString());
@@ -46,9 +46,9 @@ public class ModInfo {
         this.mainClass = json.get("mainClass").getAsString();
         if (json.has("loading")) {
             JsonObject loading = json.getAsJsonObject("loading");
-            this.info = new LoadingInfo();
+            this.loadingInfo = new LoadingInfo();
             if (loading.has("priority")) {
-                this.info.setLoadingPriority(LoadingPriorities.valueOf(loading.get("priority").getAsString()));
+                this.loadingInfo.setLoadingPriority(LoadingPriorities.valueOf(loading.get("priority").getAsString()));
             }
         }
     }
@@ -81,7 +81,32 @@ public class ModInfo {
         return mainClass;
     }
 
-    public LoadingInfo getInfo() {
-        return info;
+    public LoadingInfo getLoadingInfo() {
+        return loadingInfo;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("name=\"%s\", uuid=%s, versionName=\"%s\", versionId=%d", getName(), getUUID(), getVersionName(), getVersionId());
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode() * versionId;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (this.hashCode() != obj.hashCode()) {
+            return false;
+        }
+        if (super.equals(obj)) {
+            return true;
+        }
+        ModInfo their = (ModInfo) obj;
+        return getUUID().equals(their.getUUID()) && getVersionId() == their.getVersionId();
     }
 }

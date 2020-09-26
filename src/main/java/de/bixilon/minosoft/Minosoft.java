@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.main.AccountListCell;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
+import de.bixilon.minosoft.modding.loading.ModLoader;
 import de.bixilon.minosoft.util.OSUtil;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
@@ -70,6 +71,9 @@ public class Minosoft {
         selectAccount(accountList.get(config.getString(GameConfiguration.ACCOUNT_SELECTED)));
 
         serverList = config.getServers();
+        Thread modThread = new Thread(ModLoader::loadMods);
+        modThread.setName("ModLoader");
+        modThread.start();
         Launcher.start();
     }
 

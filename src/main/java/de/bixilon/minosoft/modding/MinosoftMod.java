@@ -13,24 +13,11 @@
 
 package de.bixilon.minosoft.modding;
 
-import de.bixilon.minosoft.Config;
+import de.bixilon.minosoft.modding.loading.ModPhases;
 
-import java.io.File;
+interface MinosoftModInterface {
+    boolean start(ModPhases phase);
+}
 
-public class ModLoader {
-    ModPhases currentPhase;
-
-    public static void loadMods() {
-        // load all jars, parse the mod.json
-        // sort the list and prioritize
-        // load all lists and dependencies async
-        File[] files = new File(Config.homeDir + "mods").listFiles();
-        if (files == null) {
-            // no mods to load
-            return;
-        }
-        for (File modFile : files) {
-
-        }
-    }
+public abstract class MinosoftMod implements MinosoftModInterface {
 }
