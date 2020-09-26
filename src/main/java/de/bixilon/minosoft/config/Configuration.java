@@ -25,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class Configuration {
@@ -204,10 +203,7 @@ public class Configuration {
         if (objects == null) {
             return accounts;
         }
-        for (Map.Entry<String, LinkedHashMap<String, Object>> set : objects.entrySet()) {
-            LinkedHashMap<String, Object> entry = set.getValue();
-            accounts.put(set.getKey(), new MojangAccount((String) entry.get("accessToken"), set.getKey(), UUID.fromString((String) entry.get("uuid")), (String) entry.get("playerName"), (String) entry.get("userName")));
-        }
+        objects.forEach((key, value) -> accounts.put(key, new MojangAccount((String) value.get("accessToken"), key, UUID.fromString((String) value.get("uuid")), (String) value.get("playerName"), (String) value.get("userName"))));
         return accounts;
     }
 
@@ -217,14 +213,13 @@ public class Configuration {
         if (objects == null) {
             return servers;
         }
-        for (Map.Entry<String, LinkedHashMap<String, Object>> set : objects.entrySet()) {
-            LinkedHashMap<String, Object> entry = set.getValue();
+        objects.forEach((key, entry) -> {
             String favicon = null;
             if (entry.containsKey("favicon")) {
                 favicon = (String) entry.get("favicon");
             }
-            servers.add(new Server(Integer.parseInt(set.getKey()), (String) entry.get("name"), (String) entry.get("address"), (int) entry.get("version"), favicon));
-        }
+            servers.add(new Server(Integer.parseInt(key), (String) entry.get("name"), (String) entry.get("address"), (int) entry.get("version"), favicon));
+        });
         return servers;
     }
 

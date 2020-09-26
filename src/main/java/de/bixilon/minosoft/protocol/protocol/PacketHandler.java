@@ -23,7 +23,6 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.game.datatypes.player.PingBars;
 import de.bixilon.minosoft.game.datatypes.player.PlayerListItem;
-import de.bixilon.minosoft.game.datatypes.player.PlayerListItemBulk;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardObjective;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardScore;
 import de.bixilon.minosoft.game.datatypes.scoreboard.Team;
@@ -124,7 +123,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketPlayerListItem pkg) {
-        for (PlayerListItemBulk bulk : pkg.getPlayerList()) {
+        pkg.getPlayerList().forEach((bulk) -> {
             switch (bulk.getAction()) {
                 case ADD -> connection.getPlayer().getPlayerList().put(bulk.getUUID(), new PlayerListItem(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGameMode(), bulk.getDisplayName(), bulk.getProperties()));
                 case UPDATE_LATENCY -> {
@@ -158,7 +157,7 @@ public class PacketHandler {
                 case UPDATE_GAMEMODE -> connection.getPlayer().getPlayerList().get(bulk.getUUID()).setGameMode(bulk.getGameMode());
                 case UPDATE_DISPLAY_NAME -> connection.getPlayer().getPlayerList().get(bulk.getUUID()).setDisplayName(bulk.getDisplayName());
             }
-        }
+        });
     }
 
     public void handle(PacketTimeUpdate pkg) {

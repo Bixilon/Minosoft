@@ -20,7 +20,6 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimension;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Collection of ChunkColumns
@@ -74,9 +73,7 @@ public class World {
     }
 
     public void setChunks(HashMap<ChunkLocation, Chunk> chunkMap) {
-        for (Map.Entry<ChunkLocation, Chunk> set : chunkMap.entrySet()) {
-            chunks.put(set.getKey(), set.getValue());
-        }
+        chunkMap.forEach(chunks::put);
     }
 
     public boolean isHardcore() {
@@ -129,8 +126,6 @@ public class World {
     }
 
     public void setBlockEntityData(HashMap<BlockPosition, CompoundTag> blockEntities) {
-        for (Map.Entry<BlockPosition, CompoundTag> entrySet : blockEntities.entrySet()) {
-            blockEntityMeta.put(entrySet.getKey(), entrySet.getValue());
-        }
+        blockEntities.forEach(blockEntityMeta::put);
     }
 }

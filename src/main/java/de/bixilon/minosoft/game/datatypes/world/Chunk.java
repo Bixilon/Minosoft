@@ -16,7 +16,6 @@ package de.bixilon.minosoft.game.datatypes.world;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Collection of 16 chunks nibbles
@@ -60,8 +59,6 @@ public class Chunk {
     }
 
     public void setBlocks(HashMap<InChunkLocation, Block> blocks) {
-        for (Map.Entry<InChunkLocation, Block> set : blocks.entrySet()) {
-            setBlock(set.getKey(), set.getValue());
-        }
+        blocks.forEach(this::setBlock);
     }
 }

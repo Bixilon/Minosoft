@@ -108,7 +108,7 @@ public class TextComponent {
         if (color != null) {
             ret.addProperty("color", color.name());
         }
-        for (ChatAttributes attribute : formatting) {
+        formatting.forEach((attribute) -> {
             if (attribute == ChatAttributes.BOLD && !ret.has("bold")) {
                 ret.addProperty("bold", true);
             } else if (attribute == ChatAttributes.ITALIC && !ret.has("italic")) {
@@ -120,7 +120,7 @@ public class TextComponent {
             } else if (attribute == ChatAttributes.OBFUSCATED && !ret.has("obfuscated")) {
                 ret.addProperty("obfuscated", true);
             }
-        }
+        });
         return ret;
     }
 

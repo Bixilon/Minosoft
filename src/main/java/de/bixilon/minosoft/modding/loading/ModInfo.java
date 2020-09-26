@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.modding.loading;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.util.Util;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ModInfo {
     final UUID uuid;
@@ -37,11 +37,8 @@ public class ModInfo {
         this.name = json.get("name").getAsString();
         JsonArray authors = json.get("authors").getAsJsonArray();
         this.authors = new String[authors.size()];
-        int i = 0;
-        for (JsonElement authorElement : authors) {
-            this.authors[i] = authorElement.getAsString();
-            i++;
-        }
+        AtomicInteger i = new AtomicInteger();
+        authors.forEach((authorElement) -> this.authors[i.incrementAndGet()] = authorElement.getAsString());
         this.identifier = json.get("identifier").getAsString();
         this.mainClass = json.get("mainClass").getAsString();
         if (json.has("loading")) {

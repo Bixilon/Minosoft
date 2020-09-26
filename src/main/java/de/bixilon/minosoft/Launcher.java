@@ -32,7 +32,6 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class Launcher extends Application {
 
@@ -44,9 +43,7 @@ public class Launcher extends Application {
     public void start(Stage primaryStage) throws IOException {
         Log.info("Starting launcher...");
         GUITools.versions.add(Versions.getLowestVersionSupported());
-        for (Map.Entry<Integer, Version> version : Versions.getVersionMap().entrySet()) {
-            GUITools.versions.add(version.getValue());
-        }
+        Versions.getVersionMap().forEach((key, value) -> GUITools.versions.add(value));
 
         GUITools.versions.sort((a, b) -> {
             if (a.getProtocolVersion() == -1) {

@@ -157,7 +157,7 @@ public class PacketJoinGame implements ClientboundPacket {
             listTag = ((CompoundTag) nbt).getCompoundTag("minecraft:dimension_type").getListTag("value");
         }
 
-        for (NBTTag tag : listTag.getValue()) {
+        listTag.getValue().forEach((tag) -> {
             CompoundTag compoundTag = (CompoundTag) tag;
             String[] name;
             if (protocolId < 725) {
@@ -175,7 +175,7 @@ public class PacketJoinGame implements ClientboundPacket {
                 hasSkylight = compoundTag.getByteTag("has_skylight").getValue() == 0x01;
             }
             dimensionMap.get(name[0]).put(name[1], new Dimension(name[0], name[1], hasSkylight));
-        }
+        });
         return dimensionMap;
     }
 

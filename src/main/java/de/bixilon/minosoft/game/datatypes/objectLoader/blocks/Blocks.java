@@ -460,7 +460,7 @@ public class Blocks {
 
     public static HashBiMap<Integer, Block> load(String mod, JsonObject json, boolean metaData) {
         HashBiMap<Integer, Block> versionMapping = HashBiMap.create();
-        for (String identifierName : json.keySet()) {
+        json.keySet().forEach((identifierName) -> {
             JsonObject identifierJSON = json.getAsJsonObject(identifierName);
             JsonArray statesArray = identifierJSON.getAsJsonArray("states");
             for (int i = 0; i < statesArray.size(); i++) {
@@ -500,7 +500,7 @@ public class Blocks {
                 checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping);
                 versionMapping.put(blockId, block);
             }
-        }
+        });
         return versionMapping;
     }
 

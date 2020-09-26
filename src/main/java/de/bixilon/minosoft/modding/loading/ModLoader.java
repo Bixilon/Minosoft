@@ -72,9 +72,7 @@ public class ModLoader {
 
         for (ModPhases phase : ModPhases.values()) {
             Log.verbose(String.format("Map loading phase changed: %s", phase));
-            modMap.forEach((modInfo, instance) -> {
-                instance.start(phase);
-            });
+            modMap.forEach((modInfo, instance) -> instance.start(phase));
         }
     }
 
