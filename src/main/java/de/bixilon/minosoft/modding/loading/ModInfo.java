@@ -38,7 +38,7 @@ public class ModInfo {
         JsonArray authors = json.get("authors").getAsJsonArray();
         this.authors = new String[authors.size()];
         AtomicInteger i = new AtomicInteger();
-        authors.forEach((authorElement) -> this.authors[i.incrementAndGet()] = authorElement.getAsString());
+        authors.forEach((authorElement) -> this.authors[i.getAndIncrement()] = authorElement.getAsString());
         this.identifier = json.get("identifier").getAsString();
         this.mainClass = json.get("mainClass").getAsString();
         if (json.has("loading")) {
@@ -97,11 +97,11 @@ public class ModInfo {
         if (obj == null) {
             return false;
         }
-        if (this.hashCode() != obj.hashCode()) {
-            return false;
-        }
         if (super.equals(obj)) {
             return true;
+        }
+        if (this.hashCode() != obj.hashCode()) {
+            return false;
         }
         ModInfo their = (ModInfo) obj;
         return getUUID().equals(their.getUUID()) && getVersionId() == their.getVersionId();
