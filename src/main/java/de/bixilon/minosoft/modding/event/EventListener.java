@@ -11,41 +11,12 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util;
+package de.bixilon.minosoft.modding.event;
 
-public class ServerAddress {
-    final String hostname;
-    final int port;
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
 
-    public ServerAddress(String hostname, int port) {
-        this.hostname = hostname;
-        this.port = port;
+public class EventListener {
+    public void onChatMessageReceiving(ChatMessageReceivingEvent event) {
     }
 
-    public String getHostname() {
-        return hostname;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    @Override
-    public String toString() {
-        return getHostname() + ":" + getPort();
-    }
-
-    @Override
-    public int hashCode() {
-        return hostname.hashCode() * port;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        ServerAddress their = (ServerAddress) obj;
-        return hostname.equals(their.getHostname()) && port == their.getPort();
-    }
 }

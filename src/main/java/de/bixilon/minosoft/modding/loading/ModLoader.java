@@ -28,8 +28,6 @@ import java.util.zip.ZipFile;
 public class ModLoader {
     static TreeMap<ModInfo, MinosoftMod> modMap;
 
-    ModPhases currentPhase;
-
     public static void loadMods() {
         modMap = new TreeMap<>((a, b) -> {
             LoadingPriorities priorityA = getLoadingPriorityOrDefault(a);
@@ -61,6 +59,7 @@ public class ModLoader {
                 JclObjectFactory factory = JclObjectFactory.getInstance();
 
                 MinosoftMod instance = (MinosoftMod) factory.create(jcl, modInfo.getMainClass());
+                instance.setInfo(modInfo);
                 Log.verbose(String.format("[MOD] Mod file loaded (%s)", modInfo));
                 modMap.put(modInfo, instance);
                 zipFile.close();

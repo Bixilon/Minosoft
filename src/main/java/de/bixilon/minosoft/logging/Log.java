@@ -25,8 +25,8 @@ public class Log {
     static LogLevels level = LogLevels.PROTOCOL;
     static Thread logThread;
 
-    public static void log(LogLevels l, String message, TextComponent.ChatAttributes color) {
-        if (l.ordinal() > level.ordinal()) {
+    public static void log(LogLevels level, String message, TextComponent.ChatAttributes color) {
+        if (level.ordinal() > Log.level.ordinal()) {
             // log level too low
             return;
         }
@@ -36,7 +36,7 @@ public class Log {
         builder.append("] [");
         builder.append(Thread.currentThread().getName());
         builder.append("] [");
-        builder.append(l.name());
+        builder.append(level.name());
         builder.append("] ");
         if (color != null && Config.colorLog) {
             builder.append(color);

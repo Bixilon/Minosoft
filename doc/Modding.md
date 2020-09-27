@@ -69,3 +69,56 @@ There are different phases (states) for the loading. There are the following pha
 The most important thing is performance. To archive fast loading times, etc, all mods (if they don't on each other) are getting loaded async.
 One phase is completed (= Next phase starts), once all mods have completed the previous phase. Everything is async.
 If your start function needs much time, you can set the loading priority in the `mod.json` to start at the beginning. The `start` method returns a success boolean.
+
+## Getting started
+Add Minosoft to your maven dependencies with  
+Repository:
+```xml
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+```  
+Dependency:  
+```xml
+	<dependency>
+	    <groupId>de.bixilon.gitlab.bixilon</groupId>
+	    <artifactId>minosoft</artifactId>
+	    <version>master-SNAPSHOT</version>
+	</dependency>
+
+```
+Create a Main class, here is an example
+```java
+package de.bixilon.example.mod.main;
+
+import de.bixilon.minosoft.modding.MinosoftMod;
+import de.bixilon.minosoft.modding.loading.ModPhases;
+
+public class TestMod extends MinosoftMod {
+  public boolean start(ModPhases phase) {
+    if (phase == ModPhases.BOOTING) {
+        getLogger().info("Hello world!");
+    }
+    return true;
+  }
+}
+```
+Your `mod.json` can look like this
+```json
+{
+  "uuid": "1f37a8e0-9ec7-45db-ad2f-40afd2eb5a07",
+  "versionId": 1,
+  "versionName": "1.0",
+  "authors": ["Bixilon"],
+  "name": "Example Mod",
+  "identifier": "example",
+  "mainClass": "de.bixilon.example.mod.main.TestMod"
+}
+```
+
+## Events
+There are global events (which works on all connections) and connections events (server specific).
+
