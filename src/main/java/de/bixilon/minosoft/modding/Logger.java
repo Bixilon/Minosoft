@@ -25,7 +25,7 @@ public class Logger {
     }
 
     public void log(LogLevels level, String message, TextComponent.ChatAttributes color) {
-        Log.log(level, String.format("[%s] %s", modName, message), color);
+        Log.log(level, String.format("[%s] ", modName), message, color);
     }
 
     /**

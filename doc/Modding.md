@@ -60,7 +60,7 @@ Your main class must extend the following class: `de.bixilon.minosoft.MinosoftMo
 
 ### Phases
 There are different phases (states) for the loading. There are the following phases:
- 1. `BOOTING` Happens after loading all configuration files and before displaying the server list.
+ 1. `BOOTING` Happens after loading all configuration files and while displaying the server list.
  2. `INITIALIZING` All mods are loaded into the ram and everything before registering anything happens here (like OpenGL stuff, etc).
  3. `LOADING` You have custom items, entities, blocks, etc? Load it here.
  4. `STARTING` All items, etc are loaded. If you want to do anything else, do it here.

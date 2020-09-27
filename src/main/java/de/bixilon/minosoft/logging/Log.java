@@ -26,6 +26,10 @@ public class Log {
     static Thread logThread;
 
     public static void log(LogLevels level, String message, TextComponent.ChatAttributes color) {
+        log(level, "", message, color);
+    }
+
+    public static void log(LogLevels level, String prefix, String message, TextComponent.ChatAttributes color) {
         if (level.ordinal() > Log.level.ordinal()) {
             // log level too low
             return;
@@ -38,6 +42,7 @@ public class Log {
         builder.append("] [");
         builder.append(level.name());
         builder.append("] ");
+        builder.append(prefix);
         if (color != null && Config.colorLog) {
             builder.append(color);
             builder.append(message);

@@ -22,18 +22,14 @@ import org.xeustechnologies.jcl.JclObjectFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.TreeMap;
+import java.util.LinkedList;
 import java.util.zip.ZipFile;
 
 public class ModLoader {
-    static TreeMap<ModInfo, MinosoftMod> modMap;
+    static LinkedList<MinosoftMod> mods;
 
     public static void loadMods() {
-        modMap = new TreeMap<>((a, b) -> {
-            LoadingPriorities priorityA = getLoadingPriorityOrDefault(a);
-            LoadingPriorities priorityB = getLoadingPriorityOrDefault(b);
-            return -(priorityA.ordinal() - priorityB.ordinal());
-        });
+        mods = new LinkedList<>();
         // load all jars, parse the mod.json
         // sort the list and prioritize
         // load all lists and dependencies async
@@ -50,7 +46,7 @@ public class ModLoader {
                 Log.verbose(String.format("[MOD] Loading file %s", modFile.getAbsolutePath()));
                 ZipFile zipFile = new ZipFile(modFile);
                 ModInfo modInfo = new ModInfo(Util.readJsonFromZip("mod.json", zipFile));
-                if (modMap.containsKey(modInfo)) {
+                if (isModLoaded(modInfo)) {
                     Log.warn(String.format("Mod %s:%d (uuid=%s) is loaded multiple times! Skipping", modInfo.getName(), modInfo.getVersionId(), modInfo.getUUID()));
                     continue;
                 }
@@ -61,7 +57,7 @@ public class ModLoader {
                 MinosoftMod instance = (MinosoftMod) factory.create(jcl, modInfo.getMainClass());
                 instance.setInfo(modInfo);
                 Log.verbose(String.format("[MOD] Mod file loaded (%s)", modInfo));
-                modMap.put(modInfo, instance);
+                mods.add(instance);
                 zipFile.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -69,9 +65,14 @@ public class ModLoader {
             }
         }
 
+        mods.sort((a, b) -> {
+            LoadingPriorities priorityA = getLoadingPriorityOrDefault(a.getInfo());
+            LoadingPriorities priorityB = getLoadingPriorityOrDefault(b.getInfo());
+            return -(priorityA.ordinal() - priorityB.ordinal());
+        });
         for (ModPhases phase : ModPhases.values()) {
             Log.verbose(String.format("Map loading phase changed: %s", phase));
-            modMap.forEach((modInfo, instance) -> instance.start(phase));
+            mods.forEach((instance) -> instance.start(phase));
         }
     }
 
@@ -80,5 +81,14 @@ public class ModLoader {
             return info.getLoadingInfo().getLoadingPriority();
         }
         return LoadingPriorities.NORMAL;
+    }
+
+    static boolean isModLoaded(ModInfo info) {
+        for (MinosoftMod instance : mods) {
+            if (instance.getInfo().equals(info)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
