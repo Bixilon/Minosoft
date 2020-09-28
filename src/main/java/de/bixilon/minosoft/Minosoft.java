@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.main.AccountListCell;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
+import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.loading.ModLoader;
 import de.bixilon.minosoft.util.OSUtil;
 import de.bixilon.minosoft.util.Util;
@@ -29,12 +30,14 @@ import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
 
 public class Minosoft {
     public static HashBiMap<String, MojangAccount> accountList;
     public static MojangAccount selectedAccount;
     public static ArrayList<Server> serverList;
+    public static HashSet<EventManager> globalEventManagers = new HashSet<>();
     static Configuration config;
 
     public static void main(String[] args) {

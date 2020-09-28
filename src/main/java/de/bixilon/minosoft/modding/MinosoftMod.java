@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.modding;
 
+import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.loading.ModInfo;
 import de.bixilon.minosoft.modding.loading.ModPhases;
 
@@ -25,6 +26,7 @@ interface MinosoftModInterface {
 }
 
 public abstract class MinosoftMod implements MinosoftModInterface {
+    private final EventManager eventManager = new EventManager();
     protected boolean enabled = false;
     private ModInfo info;
     private Logger logger;
@@ -47,6 +49,10 @@ public abstract class MinosoftMod implements MinosoftModInterface {
         }
         this.info = info;
         this.logger = new Logger(info.getName());
+    }
+
+    public EventManager getEventManager() {
+        return eventManager;
     }
 
     public Logger getLogger() {

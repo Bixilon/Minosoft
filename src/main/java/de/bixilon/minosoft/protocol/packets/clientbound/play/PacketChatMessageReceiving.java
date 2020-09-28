@@ -50,6 +50,14 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
         return message;
     }
 
+    public ChatTextPositions getPosition() {
+        return position;
+    }
+
+    public UUID getSender() {
+        return sender;
+    }
+
     @Override
     public void handle(PacketHandler h) {
         h.handle(this);

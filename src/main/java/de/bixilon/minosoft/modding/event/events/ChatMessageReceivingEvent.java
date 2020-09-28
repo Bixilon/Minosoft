@@ -15,6 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.game.datatypes.ChatTextPositions;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChatMessageReceiving;
 
 import java.util.UUID;
 
@@ -27,6 +28,12 @@ public class ChatMessageReceivingEvent extends Event {
         this.message = message;
         this.position = position;
         this.sender = sender;
+    }
+
+    public ChatMessageReceivingEvent(PacketChatMessageReceiving pkg) {
+        this.message = pkg.getMessage();
+        this.position = pkg.getPosition();
+        this.sender = pkg.getSender();
     }
 
     public TextComponent getMessage() {

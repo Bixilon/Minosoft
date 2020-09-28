@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.game.datatypes.GameModes;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
@@ -29,6 +30,7 @@ import de.bixilon.minosoft.game.datatypes.scoreboard.Team;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
@@ -190,6 +192,12 @@ public class PacketHandler {
     }
 
     public void handle(PacketChatMessageReceiving pkg) {
+        ChatMessageReceivingEvent event = new ChatMessageReceivingEvent(pkg);
+        Minosoft.globalEventManagers.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach(listener -> listener.onChatMessageReceiving(event))));
+        if (event.isCancelled()) {
+            return;
+        }
+        Log.game("[CHAT]" + event.getMessage());
     }
 
     public void handle(PacketDisconnect pkg) {

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.modding.loading;
 
 import de.bixilon.minosoft.Config;
+import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.MinosoftMod;
 import de.bixilon.minosoft.util.Util;
@@ -53,17 +54,27 @@ public class ModLoader {
         mods.sort((a, b) -> {
             LoadingPriorities priorityA = getLoadingPriorityOrDefault(a.getInfo());
             LoadingPriorities priorityB = getLoadingPriorityOrDefault(b.getInfo());
-            return -(priorityA.ordinal() - priorityB.ordinal());
+            return -(priorityB.ordinal() - priorityA.ordinal());
         });
         for (ModPhases phase : ModPhases.values()) {
             Log.verbose(String.format("Map loading phase changed: %s", phase));
             HashSet<Callable<MinosoftMod>> phaseLoaderCallables = new HashSet<>();
             mods.forEach((instance) -> phaseLoaderCallables.add(() -> {
-                instance.start(phase);
+                if (!instance.isEnabled()) {
+                    return instance;
+                }
+                if (!instance.start(phase)) {
+                    instance.setEnabled(false);
+                }
                 return instance;
             }));
             Util.executeInThreadPool("ModLoader", phaseLoaderCallables);
         }
+        mods.forEach((instance) -> {
+            if (instance.isEnabled()) {
+                Minosoft.globalEventManagers.add(instance.getEventManager());
+            }
+        });
     }
 
     private static LoadingPriorities getLoadingPriorityOrDefault(ModInfo info) {
