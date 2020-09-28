@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -26,7 +27,12 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 import java.util.zip.*;
 
@@ -180,5 +186,14 @@ public final class Util {
         while ((length = inputStream.read(buffer, 0, 1024)) != -1) {
             fileOutputStream.write(buffer, 0, length);
         }
+    }
+
+    public static ThreadFactory getThreadFactory(String threadName) {
+        return new ThreadFactoryBuilder().setNameFormat("%d/" + threadName).build();
+    }
+
+    public static <T> void executeInThreadPool(String name, HashSet<Callable<T>> callables) throws InterruptedException {
+        ExecutorService phaseLoader = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), getThreadFactory(name));
+        phaseLoader.invokeAll(callables);
     }
 }

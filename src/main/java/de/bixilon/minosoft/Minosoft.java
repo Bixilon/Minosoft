@@ -71,7 +71,13 @@ public class Minosoft {
         selectAccount(accountList.get(config.getString(GameConfiguration.ACCOUNT_SELECTED)));
 
         serverList = config.getServers();
-        Thread modThread = new Thread(ModLoader::loadMods);
+        Thread modThread = new Thread(() -> {
+            try {
+                ModLoader.loadMods();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
         modThread.setName("ModLoader");
         modThread.start();
         Launcher.start();

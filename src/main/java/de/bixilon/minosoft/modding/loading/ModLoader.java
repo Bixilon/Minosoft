@@ -22,17 +22,20 @@ import org.xeustechnologies.jcl.JclObjectFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.concurrent.Callable;
 import java.util.zip.ZipFile;
 
 public class ModLoader {
-    static LinkedList<MinosoftMod> mods;
+    static LinkedList<MinosoftMod> mods = new LinkedList<>();
 
-    public static void loadMods() {
-        mods = new LinkedList<>();
+    public static void loadMods() throws Exception {
         // load all jars, parse the mod.json
         // sort the list and prioritize
         // load all lists and dependencies async
+
+        HashSet<Callable<MinosoftMod>> callables = new HashSet<>();
         File[] files = new File(Config.homeDir + "mods").listFiles();
         if (files == null) {
             // no mods to load
@@ -42,28 +45,10 @@ public class ModLoader {
             if (modFile.isDirectory()) {
                 continue;
             }
-            try {
-                Log.verbose(String.format("[MOD] Loading file %s", modFile.getAbsolutePath()));
-                ZipFile zipFile = new ZipFile(modFile);
-                ModInfo modInfo = new ModInfo(Util.readJsonFromZip("mod.json", zipFile));
-                if (isModLoaded(modInfo)) {
-                    Log.warn(String.format("Mod %s:%d (uuid=%s) is loaded multiple times! Skipping", modInfo.getName(), modInfo.getVersionId(), modInfo.getUUID()));
-                    continue;
-                }
-                JarClassLoader jcl = new JarClassLoader();
-                jcl.add(modFile.getAbsolutePath());
-                JclObjectFactory factory = JclObjectFactory.getInstance();
-
-                MinosoftMod instance = (MinosoftMod) factory.create(jcl, modInfo.getMainClass());
-                instance.setInfo(modInfo);
-                Log.verbose(String.format("[MOD] Mod file loaded (%s)", modInfo));
-                mods.add(instance);
-                zipFile.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.warn(String.format("Could not load mod: %s", modFile.getAbsolutePath()));
-            }
+            callables.add(() -> loadMod(modFile));
         }
+
+        Util.executeInThreadPool("ModLoader", callables);
 
         mods.sort((a, b) -> {
             LoadingPriorities priorityA = getLoadingPriorityOrDefault(a.getInfo());
@@ -72,7 +57,12 @@ public class ModLoader {
         });
         for (ModPhases phase : ModPhases.values()) {
             Log.verbose(String.format("Map loading phase changed: %s", phase));
-            mods.forEach((instance) -> instance.start(phase));
+            HashSet<Callable<MinosoftMod>> phaseLoaderCallables = new HashSet<>();
+            mods.forEach((instance) -> phaseLoaderCallables.add(() -> {
+                instance.start(phase);
+                return instance;
+            }));
+            Util.executeInThreadPool("ModLoader", phaseLoaderCallables);
         }
     }
 
@@ -85,10 +75,36 @@ public class ModLoader {
 
     static boolean isModLoaded(ModInfo info) {
         for (MinosoftMod instance : mods) {
-            if (instance.getInfo().equals(info)) {
+            if (instance.getInfo().getUUID().equals(info.getUUID())) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static MinosoftMod loadMod(File file) {
+        try {
+            Log.verbose(String.format("[MOD] Loading file %s", file.getAbsolutePath()));
+            ZipFile zipFile = new ZipFile(file);
+            ModInfo modInfo = new ModInfo(Util.readJsonFromZip("mod.json", zipFile));
+            if (isModLoaded(modInfo)) {
+                Log.warn(String.format("Mod %s:%d (uuid=%s) is loaded multiple times! Skipping", modInfo.getName(), modInfo.getVersionId(), modInfo.getUUID()));
+                return null;
+            }
+            JarClassLoader jcl = new JarClassLoader();
+            jcl.add(file.getAbsolutePath());
+            JclObjectFactory factory = JclObjectFactory.getInstance();
+
+            MinosoftMod instance = (MinosoftMod) factory.create(jcl, modInfo.getMainClass());
+            instance.setInfo(modInfo);
+            Log.verbose(String.format("[MOD] Mod file loaded (%s)", modInfo));
+            mods.add(instance);
+            zipFile.close();
+            return instance;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.warn(String.format("Could not load mod: %s", file.getAbsolutePath()));
+        }
+        return null;
     }
 }
