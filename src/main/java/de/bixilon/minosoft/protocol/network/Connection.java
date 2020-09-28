@@ -25,6 +25,8 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.gui.main.ConnectionChangeCallback;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
+import de.bixilon.minosoft.modding.event.EventListener;
+import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
@@ -41,6 +43,7 @@ import de.bixilon.minosoft.util.ServerAddress;
 import org.xbill.DNS.TextParseException;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -54,6 +57,7 @@ public class Connection {
     final VelocityHandler velocityHandler = new VelocityHandler(this);
     final HashSet<PingCallback> pingCallbacks = new HashSet<>();
     final HashSet<ConnectionChangeCallback> connectionChangeCallbacks = new HashSet<>();
+    final HashSet<EventManager> eventManagers = new HashSet<>();
     final int connectionId;
     final Player player;
     final String hostname;
@@ -405,5 +409,21 @@ public class Connection {
 
     public ServerListPing getLastPing() {
         return lastPing;
+    }
+
+    public HashSet<EventManager> getAllEventManagers() {
+        return eventManagers;
+    }
+
+    public void registerEvents(EventManager... eventManagers) {
+        this.eventManagers.addAll(Arrays.asList(eventManagers));
+    }
+
+    public void unregisterEvents(EventManager... eventManagers) {
+        this.eventManagers.removeAll(Arrays.asList(eventManagers));
+    }
+
+    public HashSet<EventListener> getAllEvents() {
+        return eventManagers;
     }
 }

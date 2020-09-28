@@ -64,6 +64,7 @@ public class ModLoader {
                     return instance;
                 }
                 if (!instance.start(phase)) {
+                    Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));
                     instance.setEnabled(false);
                 }
                 return instance;
@@ -73,6 +74,9 @@ public class ModLoader {
         mods.forEach((instance) -> {
             if (instance.isEnabled()) {
                 Minosoft.globalEventManagers.add(instance.getEventManager());
+            } else {
+                mods.remove(instance);
+                Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));
             }
         });
     }

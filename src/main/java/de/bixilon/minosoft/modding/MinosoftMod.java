@@ -27,7 +27,7 @@ interface MinosoftModInterface {
 
 public abstract class MinosoftMod implements MinosoftModInterface {
     private final EventManager eventManager = new EventManager();
-    protected boolean enabled = false;
+    protected boolean enabled = true;
     private ModInfo info;
     private Logger logger;
 

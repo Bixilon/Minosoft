@@ -11,16 +11,16 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.event;
+package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
-import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
+public class ChatMessageSendingEvent extends Event {
+    private final String message;
 
-public class EventListener {
-    public void onChatMessageReceiving(ChatMessageReceivingEvent event) {
+    public ChatMessageSendingEvent(String message) {
+        this.message = message;
     }
 
-    public void onChatMessageSending(ChatMessageSendingEvent event) {
+    public String getMessage() {
+        return message;
     }
-
 }

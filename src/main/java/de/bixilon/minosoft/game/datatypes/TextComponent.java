@@ -144,9 +144,22 @@ public class TextComponent {
                         buffer.append(object.get("text").getAsString());
                     }
                     rawMessage = buffer.toString();
+                } else if (json.has("with")) {
+                    JsonArray arr = json.getAsJsonArray("with");
+                    for (int i = 0; i < arr.size(); i++) {
+                        if (arr.get(i).isJsonPrimitive()) {
+                            buffer.append(" ");
+                            buffer.append(arr.get(i).getAsString());
+                            continue;
+                        }
+                        JsonObject object = arr.get(i).getAsJsonObject();
+                        buffer.append(object.get("text").getAsString());
+                        buffer.append(" ");
+                    }
                 } else {
                     rawMessage = "";
                 }
+                rawMessage = buffer.toString();
             }
         }
         return rawMessage;
@@ -205,6 +218,7 @@ public class TextComponent {
                         }
                         JsonObject object = arr.get(i).getAsJsonObject();
                         buffer.append(object.get("text").getAsString());
+                        buffer.append(" ");
                     }
                     buffer.append(ChatAttributes.RESET);
                 }

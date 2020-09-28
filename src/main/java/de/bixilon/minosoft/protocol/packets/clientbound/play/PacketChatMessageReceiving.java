@@ -43,7 +43,7 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.game(String.format("[CHAT] %s", message.getColoredMessage()));
+        Log.protocol(String.format("Received chat message (message=\"%s\")", message.getRawMessage()));
     }
 
     public TextComponent getMessage() {

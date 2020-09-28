@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.game.datatypes.GameModes;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
@@ -193,11 +192,11 @@ public class PacketHandler {
 
     public void handle(PacketChatMessageReceiving pkg) {
         ChatMessageReceivingEvent event = new ChatMessageReceivingEvent(pkg);
-        Minosoft.globalEventManagers.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach(listener -> listener.onChatMessageReceiving(event))));
+        connection.getAllEventManagers().forEach((eventManager -> eventManager.getGlobalEventListeners().forEach(listener -> listener.onChatMessageReceiving(event))));
         if (event.isCancelled()) {
             return;
         }
-        Log.game("[CHAT]" + event.getMessage());
+        Log.game("[CHAT] " + event.getMessage());
     }
 
     public void handle(PacketDisconnect pkg) {
