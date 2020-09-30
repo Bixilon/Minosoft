@@ -189,7 +189,7 @@ public final class Util {
     }
 
     public static ThreadFactory getThreadFactory(String threadName) {
-        return new ThreadFactoryBuilder().setNameFormat("%d/" + threadName).build();
+        return new ThreadFactoryBuilder().setNameFormat(threadName + "#%d").build();
     }
 
     public static <T> void executeInThreadPool(String name, HashSet<Callable<T>> callables) throws InterruptedException {

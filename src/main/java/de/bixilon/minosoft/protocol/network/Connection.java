@@ -25,7 +25,6 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.gui.main.ConnectionChangeCallback;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
@@ -50,7 +49,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Connection {
     public static int lastConnectionId;
-    final Network network = new Network(this);
+    final Network network = Network.getNetworkInstance(this);
     final PacketHandler handler = new PacketHandler(this);
     final PacketSender sender = new PacketSender(this);
     final LinkedBlockingQueue<ClientboundPacket> handlingQueue = new LinkedBlockingQueue<>();
@@ -73,6 +72,7 @@ public class Connection {
     ConnectionReasons nextReason;
     ConnectionPing connectionStatusPing;
     ServerListPing lastPing;
+    Exception lastException;
 
     public Connection(int connectionId, String hostname, Player player) {
         this.connectionId = connectionId;
@@ -81,7 +81,7 @@ public class Connection {
     }
 
     public void resolve(ConnectionReasons reason, int protocolId) {
-        network.lastException = null;
+        lastException = null;
         this.desiredVersionNumber = protocolId;
 
         Thread resolveThread = new Thread(() -> {
@@ -93,7 +93,7 @@ public class Connection {
                     addresses = DNSUtil.getServerAddresses(hostname);
                 } catch (TextParseException e) {
                     setConnectionState(ConnectionStates.FAILED_NO_RETRY);
-                    network.lastException = e;
+                    lastException = e;
                     e.printStackTrace();
                     return;
                 }
@@ -232,7 +232,7 @@ public class Connection {
                 e.printStackTrace();
             }
             Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
-            network.lastException = new RuntimeException(String.format("Mappings could not be loaded: %s", e.getLocalizedMessage()));
+            lastException = new RuntimeException(String.format("Mappings could not be loaded: %s", e.getLocalizedMessage()));
             setConnectionState(ConnectionStates.FAILED_NO_RETRY);
         }
     }
@@ -396,7 +396,7 @@ public class Connection {
     }
 
     public Exception getLastConnectionException() {
-        return network.lastException;
+        return (lastException != null) ? lastException : network.getLastException();
     }
 
     public void addConnectionChangeCallback(ConnectionChangeCallback callback) {
@@ -421,9 +421,5 @@ public class Connection {
 
     public void unregisterEvents(EventManager... eventManagers) {
         this.eventManagers.removeAll(Arrays.asList(eventManagers));
-    }
-
-    public HashSet<EventListener> getAllEvents() {
-        return eventManagers;
     }
 }

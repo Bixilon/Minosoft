@@ -17,15 +17,7 @@ import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.loading.ModInfo;
 import de.bixilon.minosoft.modding.loading.ModPhases;
 
-interface MinosoftModInterface {
-    /**
-     * @param phase The current loading phase
-     * @return If the loading was successful. If not, the mod is getting disabled.
-     */
-    boolean start(ModPhases phase);
-}
-
-public abstract class MinosoftMod implements MinosoftModInterface {
+public abstract class MinosoftMod {
     private final EventManager eventManager = new EventManager();
     protected boolean enabled = true;
     private ModInfo info;
@@ -58,4 +50,10 @@ public abstract class MinosoftMod implements MinosoftModInterface {
     public Logger getLogger() {
         return logger;
     }
+
+    /**
+     * @param phase The current loading phase
+     * @return If the loading was successful. If not, the mod is getting disabled.
+     */
+    public abstract boolean start(ModPhases phase);
 }
