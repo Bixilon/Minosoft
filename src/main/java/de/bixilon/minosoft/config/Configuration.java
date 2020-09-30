@@ -29,6 +29,7 @@ import java.util.UUID;
 
 public class Configuration {
     final LinkedHashMap<String, Object> config;
+    final Thread thread;
 
     public Configuration(String filename) throws IOException {
 
@@ -47,7 +48,48 @@ public class Configuration {
             file = new File(Config.homeDir + "config/" + filename);
         }
         Yaml yml = new Yaml();
-        config = yml.load(new FileInputStream(file));
+        FileInputStream inputStream = new FileInputStream(file);
+        config = yml.load(inputStream);
+        inputStream.close();
+
+        final File finalFile = file;
+        thread = new Thread(() -> {
+            while (true) {
+                // wait for interrupt
+                try {
+                    Thread.sleep(Integer.MAX_VALUE);
+                } catch (InterruptedException ignored) {
+                }
+                // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
+                File tempFile = new File(Config.homeDir + "config/" + filename + ".tmp");
+                Yaml yaml = new Yaml();
+                FileWriter writer;
+                try {
+                    writer = new FileWriter(tempFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                synchronized (config) {
+                    yaml.dump(config, writer);
+                }
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (finalFile.exists()) {
+                    finalFile.delete();
+                }
+                if (!tempFile.renameTo(finalFile)) {
+                    Log.fatal("An error occurred while saving the config file");
+                } else {
+                    Log.verbose(String.format("Configuration saved to file %s", filename));
+                }
+            }
+        });
+        thread.setName("IO-Thread");
+        thread.start();
     }
 
     public boolean getBoolean(String path) {
@@ -171,30 +213,8 @@ public class Configuration {
         config.remove(path);
     }
 
-    public void saveToFile(String filename) {
-        Thread thread = new Thread(() -> {
-            // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
-            File tempFile = new File(Config.homeDir + "config/" + filename + ".tmp");
-            File file = new File(Config.homeDir + "config/" + filename);
-            Yaml yaml = new Yaml();
-            FileWriter writer;
-            try {
-                writer = new FileWriter(tempFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
-            synchronized (config) {
-                yaml.dump(config, writer);
-            }
-            if (!file.delete() || !tempFile.renameTo(file)) {
-                Log.fatal("An error occurred while saving the config file");
-            } else {
-                Log.verbose(String.format("Configuration saved to file %s", filename));
-            }
-        });
-        thread.setName("IO-Thread");
-        thread.start();
+    public void saveToFile() {
+        thread.interrupt();
     }
 
     public HashBiMap<String, MojangAccount> getMojangAccounts() {

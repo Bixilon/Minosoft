@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.main;
 
-import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.ConnectionReasons;
@@ -95,12 +94,12 @@ public class Server {
 
     public void saveToConfig() {
         Minosoft.getConfig().putServer(this);
-        Minosoft.getConfig().saveToFile(Config.configFileName);
+        Minosoft.getConfig().saveToFile();
     }
 
     public void delete() {
         Minosoft.getConfig().removeServer(this);
-        Minosoft.getConfig().saveToFile(Config.configFileName);
+        Minosoft.getConfig().saveToFile();
     }
 
     public Connection getLastPing() {

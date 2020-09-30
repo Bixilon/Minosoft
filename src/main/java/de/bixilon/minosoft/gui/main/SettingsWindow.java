@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.main;
 
-import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.logging.Log;
@@ -43,7 +42,7 @@ public class SettingsWindow implements Initializable {
             }
             Log.setLevel(newLevel);
             Minosoft.getConfig().putString(GameConfiguration.GENERAL_LOG_LEVEL, newLevel.name());
-            Minosoft.getConfig().saveToFile(Config.configFileName);
+            Minosoft.getConfig().saveToFile();
         }));
     }
 }

@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.util.mojang.api;
 
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.util.Util;
 
@@ -92,7 +91,7 @@ public class MojangAccount {
 
     public void saveToConfig() {
         Minosoft.getConfig().putMojangAccount(this);
-        Minosoft.getConfig().saveToFile(Config.configFileName);
+        Minosoft.getConfig().saveToFile();
     }
 
     @Override
@@ -103,7 +102,7 @@ public class MojangAccount {
     public void delete() {
         Minosoft.getAccountList().remove(this.getUserId());
         Minosoft.getConfig().removeAccount(this);
-        Minosoft.getConfig().saveToFile(Config.configFileName);
+        Minosoft.getConfig().saveToFile();
     }
 
     @Override
