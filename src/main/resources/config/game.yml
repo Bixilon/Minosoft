@@ -2,7 +2,7 @@
 version: 1 # do not edit this, used for migration between versions of config
 
 general:
-  log-level: DEBUG # possible values: GAME, FATAL, INFO, WARNING, DEBUG, VERBOSE, PROTOCOL
+  log-level: WARNING # possible values: GAME, FATAL, INFO, WARNING, DEBUG, VERBOSE, PROTOCOL
 
 # game
 game:

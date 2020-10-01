@@ -41,28 +41,20 @@ public class Pufferfish extends Mob implements MobInterface {
 
     @Override
     public float getWidth() {
-        switch (metaData.getPufferState()) {
-            case UN_PUFFED:
-                return 0.35F;
-            case SEMI_PUFFED:
-                return 0.5F;
-            case FULLY_PUFFED:
-                return 0.7F;
-        }
-        return 0.35F;
+        return switch (metaData.getPufferState()) {
+            case UN_PUFFED -> 0.35F;
+            case SEMI_PUFFED -> 0.5F;
+            case FULLY_PUFFED -> 0.7F;
+        };
     }
 
     @Override
     public float getHeight() {
-        switch (metaData.getPufferState()) {
-            case UN_PUFFED:
-                return 0.35F;
-            case SEMI_PUFFED:
-                return 0.5F;
-            case FULLY_PUFFED:
-                return 0.7F;
-        }
-        return 0.35F;
+        return switch (metaData.getPufferState()) {
+            case UN_PUFFED -> 0.35F;
+            case SEMI_PUFFED -> 0.5F;
+            case FULLY_PUFFED -> 0.7F;
+        };
     }
 
     @Override

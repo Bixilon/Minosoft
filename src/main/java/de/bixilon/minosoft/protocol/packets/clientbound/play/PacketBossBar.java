@@ -38,28 +38,20 @@ public class PacketBossBar implements ClientboundPacket {
         uuid = buffer.readUUID();
         action = BossBarActions.byId(buffer.readVarInt());
         switch (action) {
-            case ADD:
+            case ADD -> {
                 title = buffer.readTextComponent();
                 health = buffer.readFloat();
                 color = BossBarColors.byId(buffer.readVarInt());
                 divisions = BossBarDivisions.byId(buffer.readVarInt());
                 flags = buffer.readByte();
-                break;
-            case REMOVE:
-                break;
-            case UPDATE_HEALTH:
-                health = buffer.readFloat();
-                break;
-            case UPDATE_TITLE:
-                title = buffer.readTextComponent();
-                break;
-            case UPDATE_STYLE:
+            }
+            case UPDATE_HEALTH -> health = buffer.readFloat();
+            case UPDATE_TITLE -> title = buffer.readTextComponent();
+            case UPDATE_STYLE -> {
                 color = BossBarColors.byId(buffer.readVarInt());
                 divisions = BossBarDivisions.byId(buffer.readVarInt());
-                break;
-            case UPDATE_FLAGS:
-                flags = buffer.readByte();
-                break;
+            }
+            case UPDATE_FLAGS -> flags = buffer.readByte();
         }
         return true;
     }

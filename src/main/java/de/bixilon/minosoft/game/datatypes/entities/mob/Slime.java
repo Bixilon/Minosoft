@@ -55,15 +55,12 @@ public class Slime extends Mob implements MobInterface {
 
     @Override
     public int getMaxHealth() {
-        switch (metaData.getSize()) {
-            case 1:
-                return 1;
-            case 2:
-                return 4;
-            case 4:
-                return 16;
-        }
-        return 0;
+        return switch (metaData.getSize()) {
+            case 1 -> 1;
+            case 2 -> 4;
+            case 4 -> 16;
+            default -> 0;
+        };
     }
 
     @Override

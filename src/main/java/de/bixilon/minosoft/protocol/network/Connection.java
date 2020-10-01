@@ -156,7 +156,7 @@ public class Connection {
         ConnectionStates previousState = this.state;
         this.state = state;
         switch (state) {
-            case HANDSHAKING:
+            case HANDSHAKING -> {
                 // connection established, starting threads and logging in
                 startHandlingThread();
                 ConnectionStates next = ((reason == ConnectionReasons.CONNECT) ? ConnectionStates.LOGIN : ConnectionStates.STATUS);
@@ -168,19 +168,19 @@ public class Connection {
                 network.sendPacket(new PacketHandshake(address, next, (next == ConnectionStates.STATUS) ? -1 : getVersion().getProtocolVersion()));
                 // after sending it, switch to next state
                 setConnectionState(next);
-                break;
-            case STATUS:
+            }
+            case STATUS -> {
                 // send status request and ping
                 network.sendPacket(new PacketStatusRequest());
                 connectionStatusPing = new ConnectionPing();
                 network.sendPacket(new PacketStatusPing(connectionStatusPing));
-                break;
-            case LOGIN:
+            }
+            case LOGIN -> {
                 network.sendPacket(new PacketLoginStart(player));
                 pluginChannelHandler = new PluginChannelHandler(this);
                 registerDefaultChannels();
-                break;
-            case DISCONNECTED:
+            }
+            case DISCONNECTED -> {
                 if (reason == ConnectionReasons.GET_VERSION) {
                     setReason(ConnectionReasons.CONNECT);
                     connect();
@@ -188,8 +188,8 @@ public class Connection {
                     // unregister all custom recipes
                     Recipes.removeCustomRecipes();
                 }
-                break;
-            case FAILED:
+            }
+            case FAILED -> {
                 // connect to next hostname, if available
                 if (previousState == ConnectionStates.PLAY) {
                     // connection was good, do not reconnect
@@ -205,10 +205,8 @@ public class Connection {
                     // no connection and no servers available anymore... sorry, but you can not play today :(
                     handlePingCallbacks(null);
                 }
-                break;
-            case FAILED_NO_RETRY:
-                handlePingCallbacks(null);
-                break;
+            }
+            case FAILED_NO_RETRY -> handlePingCallbacks(null);
         }
         // handle callbacks
         connectionChangeCallbacks.forEach((callback -> callback.handle(this)));

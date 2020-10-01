@@ -80,18 +80,12 @@ public class PacketHandler {
         long pingDifference = System.currentTimeMillis() - ping.getSendingTime();
         Log.debug(String.format("Pong received (ping=%dms, pingBars=%s)", pingDifference, PingBars.byPing(pingDifference)));
         switch (connection.getReason()) {
-            case PING:
-                // pong arrived, closing connection
-                connection.disconnect();
-                break;
-            case GET_VERSION:
+            case PING -> connection.disconnect();// pong arrived, closing connection
+            case GET_VERSION -> {
                 // reconnect...
                 connection.disconnect();
                 Log.info(String.format("Server is running on version %s (%d), reconnecting...", connection.getVersion().getVersionName(), connection.getVersion().getProtocolVersion()));
-                break;
-            case CONNECT:
-                // do nothing
-                break;
+            }
         }
     }
 
