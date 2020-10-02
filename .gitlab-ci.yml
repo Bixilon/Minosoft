@@ -1,0 +1,16 @@
+variables:
+  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
+
+image: maven:3-openjdk-14
+
+cache:
+  paths:
+    - .m2/repository
+
+.verify: &verify
+  stage: test
+  script:
+    - 'mvn $MAVEN_CLI_OPTS verify'
+
+verify:jdk14:
+  <<: *verify
