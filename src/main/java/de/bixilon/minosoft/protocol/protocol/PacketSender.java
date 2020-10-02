@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.game.datatypes.player.Hands;
+import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.*;
 
@@ -31,7 +32,11 @@ public class PacketSender {
     }
 
     public void sendChatMessage(String message) {
-        connection.sendPacket(new PacketChatMessageSending(message));
+        ChatMessageSendingEvent event = new ChatMessageSendingEvent(connection, message);
+        if (connection.fireEvent(event)) {
+            return;
+        }
+        connection.sendPacket(new PacketChatMessageSending(event.getMessage()));
     }
 
     public void spectateEntity(UUID entityUUID) {

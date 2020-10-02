@@ -13,27 +13,30 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
+import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketDisconnect;
 
-public class ChatMessageSendingEvent extends CancelableEvent {
-    private String message;
+public class LoginDisconnectEvent extends Event {
+    private final TextComponent reason;
 
-    public ChatMessageSendingEvent(Connection connection, String message) {
+    public LoginDisconnectEvent(Connection connection, TextComponent reason) {
         super(connection);
-        this.message = message;
+        this.reason = reason;
     }
 
-    public String getMessage() {
-        return message;
+    public LoginDisconnectEvent(Connection connection, PacketDisconnect pkg) {
+        super(connection);
+        this.reason = pkg.getReason();
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public TextComponent getReason() {
+        return reason;
     }
 
     @Override
     public void handle(EventListener listener) {
-        listener.onChatMessageSending(this);
+        listener.onLoginDisconnect(this);
     }
 }

@@ -15,25 +15,45 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketResourcePackSend;
 
-public class ChatMessageSendingEvent extends CancelableEvent {
-    private String message;
+@MinimumProtocolVersion(protocolId = 32)
+public class ResourcePackChangeEvent extends CancelableEvent {
+    private String url;
+    private String hash;
 
-    public ChatMessageSendingEvent(Connection connection, String message) {
+    public ResourcePackChangeEvent(Connection connection, String url, String hash) {
         super(connection);
-        this.message = message;
+        this.url = url;
+        this.hash = hash;
     }
 
-    public String getMessage() {
-        return message;
+    public ResourcePackChangeEvent(Connection connection, PacketResourcePackSend pkg) {
+        super(connection);
+        this.url = pkg.getUrl();
+        this.hash = pkg.getHash();
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    @MaximumProtocolVersion(protocolId = 204)
+    public String getHash() {
+        return hash;
+    }
+
+    @MaximumProtocolVersion(protocolId = 204)
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 
     @Override
     public void handle(EventListener listener) {
-        listener.onChatMessageSending(this);
+        listener.onResourcePackChange(this);
     }
 }

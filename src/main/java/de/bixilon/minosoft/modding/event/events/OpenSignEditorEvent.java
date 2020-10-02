@@ -13,27 +13,30 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketOpenSignEditor;
 
-public class ChatMessageSendingEvent extends CancelableEvent {
-    private String message;
+public class OpenSignEditorEvent extends CancelableEvent {
+    private final BlockPosition position;
 
-    public ChatMessageSendingEvent(Connection connection, String message) {
+    public OpenSignEditorEvent(Connection connection, BlockPosition position) {
         super(connection);
-        this.message = message;
+        this.position = position;
     }
 
-    public String getMessage() {
-        return message;
+    public OpenSignEditorEvent(Connection connection, PacketOpenSignEditor pkg) {
+        super(connection);
+        this.position = pkg.getPosition();
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public BlockPosition getPosition() {
+        return position;
     }
 
     @Override
     public void handle(EventListener listener) {
-        listener.onChatMessageSending(this);
+        listener.onOpenSignEditor(this);
     }
 }

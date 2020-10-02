@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChatMessageRe
 
 import java.util.UUID;
 
-public class ChatMessageReceivingEvent extends Event {
+public class ChatMessageReceivingEvent extends CancelableEvent {
     private final TextComponent message;
     private final ChatTextPositions position;
     private final UUID sender;

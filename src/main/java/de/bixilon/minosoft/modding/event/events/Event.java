@@ -20,7 +20,6 @@ import javax.annotation.Nullable;
 
 public abstract class Event {
     private final Connection connection;
-    private boolean cancelled = false;
 
     protected Event(Connection connection) {
         this.connection = connection;
@@ -29,14 +28,6 @@ public abstract class Event {
     @Nullable
     public Connection getConnection() {
         return connection;
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
     }
 
     public abstract void handle(EventListener listener);

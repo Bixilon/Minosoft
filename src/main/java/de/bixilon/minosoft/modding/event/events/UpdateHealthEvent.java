@@ -15,25 +15,41 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketUpdateHealth;
 
-public class ChatMessageSendingEvent extends CancelableEvent {
-    private String message;
+public class UpdateHealthEvent extends Event {
+    private final float health;
+    private final int food;
+    private final float saturation;
 
-    public ChatMessageSendingEvent(Connection connection, String message) {
+    public UpdateHealthEvent(Connection connection, float health, int food, float saturation) {
         super(connection);
-        this.message = message;
+        this.health = health;
+        this.food = food;
+        this.saturation = saturation;
     }
 
-    public String getMessage() {
-        return message;
+    public UpdateHealthEvent(Connection connection, PacketUpdateHealth pkg) {
+        super(connection);
+        this.health = pkg.getHealth();
+        this.food = pkg.getFood();
+        this.saturation = pkg.getSaturation();
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public float getHealth() {
+        return health;
+    }
+
+    public int getFood() {
+        return food;
+    }
+
+    public float getSaturation() {
+        return saturation;
     }
 
     @Override
     public void handle(EventListener listener) {
-        listener.onChatMessageSending(this);
+        listener.onHealthChange(this);
     }
 }

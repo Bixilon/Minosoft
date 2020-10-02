@@ -29,7 +29,7 @@ import de.bixilon.minosoft.game.datatypes.scoreboard.Team;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
+import de.bixilon.minosoft.modding.event.events.*;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
@@ -37,7 +37,6 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
-import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketResourcePackStatus;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.util.nbt.tag.StringTag;
 
@@ -113,6 +112,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketLoginDisconnect pkg) {
+        connection.fireEvent(new LoginDisconnectEvent(connection, pkg.getReason()));
         Log.info(String.format("Disconnecting from server (reason=%s)", pkg.getReason().getColoredMessage()));
         connection.disconnect();
     }
@@ -167,6 +167,8 @@ public class PacketHandler {
     }
 
     public void handle(PacketUpdateHealth pkg) {
+        connection.fireEvent(new UpdateHealthEvent(connection, pkg));
+
         connection.getPlayer().setFood(pkg.getFood());
         connection.getPlayer().setHealth(pkg.getHealth());
         connection.getPlayer().setSaturation(pkg.getSaturation());
@@ -193,6 +195,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketDisconnect pkg) {
+        connection.fireEvent(new LoginDisconnectEvent(connection, pkg));
         // got kicked
         connection.disconnect();
     }
@@ -306,7 +309,10 @@ public class PacketHandler {
     }
 
     public void handle(PacketOpenSignEditor pkg) {
-        // ToDo
+        OpenSignEditorEvent event = new OpenSignEditorEvent(connection, pkg);
+        if (connection.fireEvent(event)) {
+            return;
+        }
     }
 
     public void handle(PacketSpawnObject pkg) {
@@ -381,7 +387,6 @@ public class PacketHandler {
     }
 
     public void handle(PacketUseBed pkg) {
-        // ToDo
     }
 
     public void handle(PacketBlockEntityMetadata pkg) {
@@ -389,11 +394,13 @@ public class PacketHandler {
     }
 
     public void handle(PacketBlockBreakAnimation pkg) {
-        // ToDo
+        BlockBreakAnimationEvent event = new BlockBreakAnimationEvent(connection, pkg);
+        if (connection.fireEvent(event)) {
+            return;
+        }
     }
 
     public void handle(PacketBlockAction pkg) {
-        // ToDo
     }
 
     public void handle(PacketExplosion pkg) {
@@ -509,9 +516,12 @@ public class PacketHandler {
         connection.getPlayer().setTabFooter(pkg.getFooter());
     }
 
-    public void handle(PackerResourcePackSend pkg) {
+    public void handle(PacketResourcePackSend pkg) {
+        ResourcePackChangeEvent event = new ResourcePackChangeEvent(connection, pkg);
+        if (connection.fireEvent(event)) {
+            return;
+        }
         // ToDo ask user, download pack. for now just send an okay
-        connection.sendPacket(new PacketResourcePackStatus(pkg.getHash(), PacketResourcePackStatus.ResourcePackStates.SUCCESSFULLY));
     }
 
     public void handle(PacketEntityProperties pkg) {

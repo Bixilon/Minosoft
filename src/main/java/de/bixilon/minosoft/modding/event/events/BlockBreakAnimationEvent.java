@@ -13,27 +13,46 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockBreakAnimation;
 
-public class ChatMessageSendingEvent extends CancelableEvent {
-    private String message;
+@MinimumProtocolVersion(protocolId = 32)
+public class BlockBreakAnimationEvent extends CancelableEvent {
+    private final int entityId;
+    private final BlockPosition position;
+    private final byte stage;
 
-    public ChatMessageSendingEvent(Connection connection, String message) {
+
+    public BlockBreakAnimationEvent(Connection connection, int entityId, BlockPosition position, byte stage) {
         super(connection);
-        this.message = message;
+        this.entityId = entityId;
+        this.position = position;
+        this.stage = stage;
     }
 
-    public String getMessage() {
-        return message;
+    public BlockBreakAnimationEvent(Connection connection, PacketBlockBreakAnimation pkg) {
+        super(connection);
+        this.entityId = pkg.getEntityId();
+        this.position = pkg.getPosition();
+        this.stage = pkg.getStage();
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public int getEntityId() {
+        return entityId;
+    }
+
+    public BlockPosition getPosition() {
+        return position;
+    }
+
+    public byte getStage() {
+        return stage;
     }
 
     @Override
     public void handle(EventListener listener) {
-        listener.onChatMessageSending(this);
+        listener.onBlockBreakAnimation(this);
     }
 }

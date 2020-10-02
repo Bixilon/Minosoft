@@ -13,8 +13,7 @@
 
 package de.bixilon.minosoft.modding.event;
 
-import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
-import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
+import de.bixilon.minosoft.modding.event.events.*;
 
 public class EventListener {
     public void onChatMessageReceiving(ChatMessageReceivingEvent event) {
@@ -23,4 +22,21 @@ public class EventListener {
     public void onChatMessageSending(ChatMessageSendingEvent event) {
     }
 
+    public void onLoginDisconnect(LoginDisconnectEvent event) {
+    }
+
+    public void onDisconnect(DisconnectEvent event) {
+    }
+
+    public void onResourcePackChange(ResourcePackChangeEvent event) {
+    }
+
+    public void onBlockBreakAnimation(BlockBreakAnimationEvent event) {
+    }
+
+    public void onHealthChange(UpdateHealthEvent event) {
+    }
+
+    public void onOpenSignEditor(OpenSignEditorEvent event) {
+    }
 }

@@ -156,7 +156,7 @@ public class Packets {
         PLAY_UNLOCK_RECIPES(PacketUnlockRecipes.class),
         PLAY_DESTROY_ENTITIES(PacketDestroyEntity.class),
         PLAY_REMOVE_ENTITY_EFFECT(PacketRemoveEntityEffect.class),
-        PLAY_RESOURCE_PACK_SEND(PackerResourcePackSend.class),
+        PLAY_RESOURCE_PACK_SEND(PacketResourcePackSend.class),
         PLAY_RESPAWN(PacketRespawn.class),
         PLAY_ENTITY_HEAD_ROTATION(PacketEntityHeadRotation.class),
         PLAY_SELECT_ADVANCEMENT_TAB(PacketSelectAdvancementTab.class),

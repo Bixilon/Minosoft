@@ -13,27 +13,20 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 
-public class ChatMessageSendingEvent extends CancelableEvent {
-    private String message;
+public abstract class CancelableEvent extends Event {
+    private boolean cancelled = false;
 
-    public ChatMessageSendingEvent(Connection connection, String message) {
+    protected CancelableEvent(Connection connection) {
         super(connection);
-        this.message = message;
     }
 
-    public String getMessage() {
-        return message;
+    public boolean isCancelled() {
+        return cancelled;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onChatMessageSending(this);
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 }

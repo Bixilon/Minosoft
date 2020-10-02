@@ -27,6 +27,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.modding.event.EventManager;
+import de.bixilon.minosoft.modding.event.events.CancelableEvent;
 import de.bixilon.minosoft.modding.event.events.Event;
 import de.bixilon.minosoft.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
@@ -433,6 +434,9 @@ public class Connection {
     public boolean fireEvent(Event event) {
         Minosoft.eventManagers.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach(event::handle)));
         eventListeners.forEach(event::handle);
-        return event.isCancelled();
+        if (event instanceof CancelableEvent) {
+            return ((CancelableEvent) event).isCancelled();
+        }
+        return false;
     }
 }
