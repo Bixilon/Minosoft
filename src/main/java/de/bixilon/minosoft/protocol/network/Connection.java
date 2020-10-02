@@ -432,7 +432,7 @@ public class Connection {
      */
     public boolean fireEvent(Event event) {
         Minosoft.eventManagers.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach(event::handle)));
-        //eventManagers.forEach((eventManager -> eventManager.getEventListeners().forEach(event::handle)));
+        eventListeners.forEach(event::handle);
         return event.isCancelled();
     }
 }
