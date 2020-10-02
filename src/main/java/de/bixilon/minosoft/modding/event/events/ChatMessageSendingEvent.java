@@ -13,14 +13,23 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
+import de.bixilon.minosoft.modding.event.EventListener;
+import de.bixilon.minosoft.protocol.network.Connection;
+
 public class ChatMessageSendingEvent extends Event {
     private final String message;
 
-    public ChatMessageSendingEvent(String message) {
+    public ChatMessageSendingEvent(Connection connection, String message) {
+        super(connection);
         this.message = message;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    @Override
+    public void handle(EventListener listener) {
+        listener.onChatMessageSending(this);
     }
 }

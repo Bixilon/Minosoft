@@ -37,7 +37,7 @@ public class Minosoft {
     public static HashBiMap<String, MojangAccount> accountList;
     public static MojangAccount selectedAccount;
     public static ArrayList<Server> serverList;
-    public static HashSet<EventManager> globalEventManagers = new HashSet<>();
+    public static HashSet<EventManager> eventManagers = new HashSet<>();
     static Configuration config;
 
     public static void main(String[] args) {

@@ -185,9 +185,8 @@ public class PacketHandler {
     }
 
     public void handle(PacketChatMessageReceiving pkg) {
-        ChatMessageReceivingEvent event = new ChatMessageReceivingEvent(pkg);
-        connection.getAllEventManagers().forEach((eventManager -> eventManager.getGlobalEventListeners().forEach(listener -> listener.onChatMessageReceiving(event))));
-        if (event.isCancelled()) {
+        ChatMessageReceivingEvent event = new ChatMessageReceivingEvent(connection, pkg);
+        if (connection.fireEvent(event)) {
             return;
         }
         Log.game("[CHAT] " + event.getMessage());

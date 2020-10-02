@@ -15,10 +15,13 @@ package de.bixilon.minosoft.modding.event;
 
 import de.bixilon.minosoft.util.ServerAddress;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class EventManager {
     private final HashSet<EventListener> globalEventListeners = new HashSet<>();
+    private final HashMap<HashSet<ServerAddress>, EventListener> specificEventListeners = new HashMap<>();
 
     public void registerGlobalListener(EventListener listener) {
         globalEventListeners.add(listener);
@@ -36,7 +39,11 @@ public class EventManager {
         if (addresses.length == 0) {
             throw new RuntimeException("You must provide at least one server address or use global events!");
         }
+        HashSet<ServerAddress> serverAddresses = new HashSet<>(Arrays.asList(addresses));
+        specificEventListeners.put(serverAddresses, listener);
+    }
 
-        //ToDo
+    public HashMap<HashSet<ServerAddress>, EventListener> getSpecificEventListeners() {
+        return specificEventListeners;
     }
 }

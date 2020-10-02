@@ -73,7 +73,7 @@ public class ModLoader {
         }
         mods.forEach((instance) -> {
             if (instance.isEnabled()) {
-                Minosoft.globalEventManagers.add(instance.getEventManager());
+                Minosoft.eventManagers.add(instance.getEventManager());
             } else {
                 mods.remove(instance);
                 Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));

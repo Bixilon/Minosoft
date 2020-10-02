@@ -13,10 +13,22 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-public class Event {
-    boolean cancelled = false;
+import de.bixilon.minosoft.modding.event.EventListener;
+import de.bixilon.minosoft.protocol.network.Connection;
 
-    protected Event() {
+import javax.annotation.Nullable;
+
+public abstract class Event {
+    private final Connection connection;
+    private boolean cancelled = false;
+
+    protected Event(Connection connection) {
+        this.connection = connection;
+    }
+
+    @Nullable
+    public Connection getConnection() {
+        return connection;
     }
 
     public boolean isCancelled() {
@@ -26,4 +38,6 @@ public class Event {
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
+
+    public abstract void handle(EventListener listener);
 }

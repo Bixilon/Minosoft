@@ -15,6 +15,8 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.game.datatypes.ChatTextPositions;
 import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.modding.event.EventListener;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChatMessageReceiving;
 
 import java.util.UUID;
@@ -24,13 +26,15 @@ public class ChatMessageReceivingEvent extends Event {
     private final ChatTextPositions position;
     private final UUID sender;
 
-    public ChatMessageReceivingEvent(TextComponent message, ChatTextPositions position, UUID sender) {
+    public ChatMessageReceivingEvent(Connection connection, TextComponent message, ChatTextPositions position, UUID sender) {
+        super(connection);
         this.message = message;
         this.position = position;
         this.sender = sender;
     }
 
-    public ChatMessageReceivingEvent(PacketChatMessageReceiving pkg) {
+    public ChatMessageReceivingEvent(Connection connection, PacketChatMessageReceiving pkg) {
+        super(connection);
         this.message = pkg.getMessage();
         this.position = pkg.getPosition();
         this.sender = pkg.getSender();
@@ -50,5 +54,10 @@ public class ChatMessageReceivingEvent extends Event {
     @MinimumProtocolVersion(protocolId = 718)
     public UUID getSender() {
         return this.sender;
+    }
+
+    @Override
+    public void handle(EventListener listener) {
+        listener.onChatMessageReceiving(this);
     }
 }

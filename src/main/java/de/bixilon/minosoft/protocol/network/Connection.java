@@ -25,7 +25,9 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.gui.main.ConnectionChangeCallback;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
+import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.modding.event.EventManager;
+import de.bixilon.minosoft.modding.event.events.Event;
 import de.bixilon.minosoft.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
@@ -57,6 +59,7 @@ public class Connection {
     final HashSet<PingCallback> pingCallbacks = new HashSet<>();
     final HashSet<ConnectionChangeCallback> connectionChangeCallbacks = new HashSet<>();
     final HashSet<EventManager> eventManagers = new HashSet<>();
+    final HashSet<EventListener> eventListeners = new HashSet<>();
     final int connectionId;
     final Player player;
     final String hostname;
@@ -157,6 +160,12 @@ public class Connection {
         this.state = state;
         switch (state) {
             case HANDSHAKING -> {
+                // get and add all events, that are connection specific
+                Minosoft.eventManagers.forEach((eventManagers -> eventManagers.getSpecificEventListeners().forEach((serverAddresses, listener) -> {
+                    if (serverAddresses.contains(address)) {
+                        eventListeners.add(listener);
+                    }
+                })));
                 // connection established, starting threads and logging in
                 startHandlingThread();
                 ConnectionStates next = ((reason == ConnectionReasons.CONNECT) ? ConnectionStates.LOGIN : ConnectionStates.STATUS);
@@ -409,15 +418,21 @@ public class Connection {
         return lastPing;
     }
 
-    public HashSet<EventManager> getAllEventManagers() {
-        return eventManagers;
-    }
-
     public void registerEvents(EventManager... eventManagers) {
         this.eventManagers.addAll(Arrays.asList(eventManagers));
     }
 
     public void unregisterEvents(EventManager... eventManagers) {
         this.eventManagers.removeAll(Arrays.asList(eventManagers));
+    }
+
+    /**
+     * @param event The event to fire
+     * @return if the event has been cancelled or not
+     */
+    public boolean fireEvent(Event event) {
+        Minosoft.eventManagers.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach(event::handle)));
+        //eventManagers.forEach((eventManager -> eventManager.getEventListeners().forEach(event::handle)));
+        return event.isCancelled();
     }
 }
