@@ -39,7 +39,7 @@ Sadly, we cannot support all versions. We will add support for all major version
  - April fools: I will not add any support for them, there are only a few things known. They might work, untested
  
 ## Modding
-Minosoft is modding friendly. I am working hard on an reasonable API. See !17 for more details. See [Modding.md](https://gitlab.bixilon.de/bixilon/minosoft/-/blob/modding/doc/Modding.md) for more details. The code is pretty dynamic (all blocks, items, entities, etc are stored in json files). It is pretty easy to load custom entities, etc.
+Minosoft is modding friendly. I am working hard on an reasonable API. See !17 for more details. See [Modding.md](doc/Modding.md) for more details. The code is pretty dynamic (all blocks, items, entities, etc are stored in json files). It is pretty easy to load custom entities, etc.
 We will add a real modding API once Rendering is complete. Spoiler: Forge mods are NOT compatible. Feel free to write a compatibility layer (This is a really hard thing, we do things completely different).
 
 ## Contribution

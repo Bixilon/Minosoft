@@ -61,7 +61,7 @@ Your main class must extend the following class: `de.bixilon.minosoft.MinosoftMo
 ### Phases
 There are different phases (states) for the loading. There are the following phases:
  1. `BOOTING` Happens after loading all configuration files and while displaying the server list.
- 2. `INITIALIZING` All mods are loaded into the ram and everything before registering anything happens here (like OpenGL stuff, etc).
+ 2. `INITIALIZING` All mods are loaded into the ram and everything before registering anything happens here (like OpenGL stuff, etc). You should also register Events here.
  3. `LOADING` You have custom items, entities, blocks, etc? Load it here.
  4. `STARTING` All items, etc are loaded. If you want to do anything else, do it here.
  5. `STARTED` The loading is complete
@@ -122,3 +122,32 @@ Your `mod.json` can look like this
 ## Events
 There are global events (which works on all connections) and connections events (server specific).
 
+To register a global event you need to use (in the `INITIALIZING` phase) `getEventManager().registerGlobalListener(new XYEventListener());`.
+If you want to register an event depending on an IP (like server specific support, you can use the following):
+`getEventManager().registerConnectionListener(new XYEventListener(), new ServerAddress("127.0.0.1", 25565));`
+
+Your XYListener class needs to implement `de.bixilon.minosoft.modding.event.EventListener`;
+```java
+import de.bixilon.minosoft.modding.event.EventListener;
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
+
+public class ChatEvent extends EventListener {
+    @Override
+    public void onChatMessageReceiving(ChatMessageReceivingEvent event) {
+        if (event.getMessage().getRawMessage().contains("Bixilon")) {
+            MinosoftExampleMod.getInstance().getLogger().game("Bixilon is awful, suppressing this bad chat message!");
+            event.setCancelled(true);
+        }
+    }
+
+    @Override
+    public void onChatMessageSending(ChatMessageSendingEvent event) {
+        if(event.getMessage().contains("jeb_")){
+            event.setCancelled(true);
+            event.getConnection().getSender().sendChatMessage("_jeb is awesome!");
+        }
+    }
+}
+```
+The following code would suppress messages containing the word "Bixilon" and if you write "jeb_" into the chat, the message's text will be "jeb_ is awesome".
+To see a list of all events look into `de.bixilon.minosoft.modding.event.events`. There is also a javadoc.
