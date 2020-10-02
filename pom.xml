@@ -119,6 +119,5 @@
             <artifactId>netty-all</artifactId>
             <version>4.1.52.Final</version>
         </dependency>
-
     </dependencies>
 </project>

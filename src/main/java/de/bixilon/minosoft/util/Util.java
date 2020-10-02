@@ -88,7 +88,7 @@ public final class Util {
 
     public static byte[] decompressGzip(byte[] raw) throws IOException {
         GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(raw));
-        ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         int res = 0;
         byte[] buf = new byte[1024];
@@ -98,7 +98,10 @@ public final class Util {
                 outputStream.write(buf, 0, res);
             }
         }
-        return outputStream.toByteArray();
+        gzipInputStream.close();
+        byte[] ret = outputStream.toByteArray();
+        outputStream.close();
+        return ret;
     }
 
     public static String sha1(String string) {
@@ -115,13 +118,26 @@ public final class Util {
 
     public static HashMap<String, String> readTarGzFile(String fileName) throws IOException {
         File inputFile = new File(fileName);
-        GZIPInputStream gzipInputStream = new GZIPInputStream(new FileInputStream(inputFile));
-        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(gzipInputStream);
+        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(inputFile)));
         HashMap<String, String> ret = new HashMap<>();
         TarArchiveEntry entry;
         while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
             ret.put(entry.getName(), readFile(new BufferedReader(new InputStreamReader(tarArchiveInputStream)), false));
         }
+        tarArchiveInputStream.close();
+
+        return ret;
+    }
+
+    public static HashMap<String, JsonObject> readJsonTarGzFile(String fileName) throws IOException {
+        File inputFile = new File(fileName);
+        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(inputFile)));
+        HashMap<String, JsonObject> ret = new HashMap<>();
+        TarArchiveEntry entry;
+        while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
+            ret.put(entry.getName(), JsonParser.parseReader(new InputStreamReader(tarArchiveInputStream)).getAsJsonObject());
+        }
+        tarArchiveInputStream.close();
 
         return ret;
     }

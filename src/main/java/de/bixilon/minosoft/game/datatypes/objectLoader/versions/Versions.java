@@ -16,7 +16,6 @@ package de.bixilon.minosoft.game.datatypes.objectLoader.versions;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.GameConfiguration;
@@ -153,15 +152,15 @@ public class Versions {
         }
 
         String fileName = Config.homeDir + String.format("assets/mapping/%s.tar.gz", version.getVersionName());
-        HashMap<String, String> files;
+        HashMap<String, JsonObject> files;
         try {
-            files = Util.readTarGzFile(fileName);
+            files = Util.readJsonTarGzFile(fileName);
         } catch (FileNotFoundException e) {
             long downloadStartTime = System.currentTimeMillis();
             Log.info(String.format("Mappings for %s are not available on disk. Downloading them...", version.getVersionName()));
             Util.downloadFile(String.format(Minosoft.getConfig().getString(GameConfiguration.MAPPINGS_URL), version.getVersionName()), fileName);
             try {
-                files = Util.readTarGzFile(fileName);
+                files = Util.readJsonTarGzFile(fileName);
             } catch (ZipException e2) {
                 // bullshit downloaded, delete file
                 new File(fileName).delete();
@@ -171,7 +170,7 @@ public class Versions {
         }
 
         for (Map.Entry<String, Mappings> mappingSet : mappingsHashMap.entrySet()) {
-            JsonObject data = JsonParser.parseString(files.get(mappingSet.getKey() + ".json")).getAsJsonObject().getAsJsonObject("minecraft");
+            JsonObject data = files.get(mappingSet.getKey() + ".json").getAsJsonObject("minecraft");
             loadVersionMappings(mappingSet.getValue(), data, protocolId);
         }
 
