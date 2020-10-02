@@ -36,7 +36,6 @@ public class PacketParticle implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 569) {
-
             if (buffer.getProtocolId() < 17) {
                 particleType = buffer.getConnection().getMapping().getParticleByIdentifier(buffer.readString());
             } else {

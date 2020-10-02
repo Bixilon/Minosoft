@@ -54,13 +54,11 @@ public final class ChunkUtil {
             HashMap<Byte, ChunkNibble> nibbleMap = new HashMap<>();
             for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
                 if (BitByte.isBitSet(sectionBitMask, c)) {
-
                     HashMap<ChunkNibbleLocation, Block> blockMap = new HashMap<>();
 
                     for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                         for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                             for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
-
                                 short singeBlockId = (short) (blockTypes[arrayPos] & 0xFF);
                                 byte singleMeta;
                                 // get block meta and shift and add (merge) id if needed
@@ -159,7 +157,6 @@ public final class ChunkUtil {
             for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                 for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                     for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
-
                         int blockNumber = (((nibbleY * 16) + nibbleZ) * 16) + nibbleX;
                         int startLong = (blockNumber * palette.getBitsPerBlock()) / 64;
                         int startOffset = (blockNumber * palette.getBitsPerBlock()) % 64;

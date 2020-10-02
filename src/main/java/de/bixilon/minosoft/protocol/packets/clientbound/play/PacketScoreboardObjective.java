@@ -33,13 +33,10 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         }
         action = ScoreboardObjectiveActions.byId(buffer.readByte());
         if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
-
             if (buffer.getProtocolId() >= 7) { // ToDo
                 value = buffer.readTextComponent();
-
             }
             if (buffer.getProtocolId() >= 12) {
-
                 if (buffer.getProtocolId() >= 346 && buffer.getProtocolId() < 349) {
                     // got removed in these 3 versions
                     return true;

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.network.netty;
 
-
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;

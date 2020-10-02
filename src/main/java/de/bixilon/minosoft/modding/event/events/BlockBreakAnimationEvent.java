@@ -24,7 +24,6 @@ public class BlockBreakAnimationEvent extends CancelableEvent {
     private final BlockPosition position;
     private final byte stage;
 
-
     public BlockBreakAnimationEvent(Connection connection, int entityId, BlockPosition position, byte stage) {
         super(connection);
         this.entityId = entityId;

@@ -45,7 +45,6 @@ public class NettyNetwork implements Network {
                 .channel(NioSocketChannel.class)
                 .handler(new TCPClientChannelInitializer(connection, this));
 
-
         try {
             ChannelFuture channelFuture = clientBootstrap.connect(address.getHostname(), address.getPort()).sync();
             if (channelFuture.isSuccess()) {

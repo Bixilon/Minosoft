@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.network.netty;
 
-
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.protocol.network.Connection;

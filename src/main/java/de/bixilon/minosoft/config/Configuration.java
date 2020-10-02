@@ -151,7 +151,6 @@ public class Configuration {
         config.getAsJsonObject("servers").getAsJsonObject("entries").remove(String.valueOf(server.getId()));
     }
 
-
     public void saveToFile() {
         thread.interrupt();
     }

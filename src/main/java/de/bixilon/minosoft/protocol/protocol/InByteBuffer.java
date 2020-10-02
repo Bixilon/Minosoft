@@ -309,7 +309,6 @@ public class InByteBuffer {
 
     public Slot readSlot() {
         if (protocolId < 402) {
-
             short id = readShort();
             if (id == -1) {
                 return null;
