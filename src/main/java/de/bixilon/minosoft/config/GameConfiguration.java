@@ -13,23 +13,12 @@
 
 package de.bixilon.minosoft.config;
 
-public enum GameConfiguration implements ConfigEnum {
-    CONFIG_VERSION("version"),
-    GAME_RENDER_DISTANCE("game.render-distance"),
-    NETWORK_FAKE_CLIENT_BRAND("network.fake-client-brand"),
-    GENERAL_LOG_LEVEL("general.log-level"),
-    CLIENT_TOKEN("account.clientToken"),
-    MAPPINGS_URL("download.mappings"),
-    ACCOUNT_SELECTED("account.selected");
-
-    final String path;
-
-    GameConfiguration(String path) {
-        this.path = path;
-    }
-
-    @Override
-    public String getPath() {
-        return path;
-    }
+public enum GameConfiguration {
+    CONFIG_VERSION,
+    GAME_RENDER_DISTANCE,
+    NETWORK_FAKE_CLIENT_BRAND,
+    GENERAL_LOG_LEVEL,
+    CLIENT_TOKEN,
+    MAPPINGS_URL,
+    ACCOUNT_SELECTED
 }

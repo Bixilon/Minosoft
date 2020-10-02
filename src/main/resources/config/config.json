@@ -1,0 +1,26 @@
+{
+  "general": {
+    "version": 1,
+    "log-level": "WARNING"
+  },
+  "game": {
+    "render-distance": 12
+  },
+  "network": {
+    "fake-network-brand": false
+  },
+  "accounts": {
+    "selected": "",
+    "client-token": "randomGenerated",
+    "entries": {}
+  },
+  "servers": {
+    "selected": "",
+    "entries": {}
+  },
+  "download": {
+    "url": {
+      "mappings": "https://gitlab.com/Bixilon/minosoft/-/raw/master/data/mcdata/%s.tar.gz?inline=false"
+    }
+  }
+}

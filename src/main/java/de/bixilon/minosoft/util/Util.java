@@ -87,7 +87,6 @@ public final class Util {
     }
 
     public static byte[] decompressGzip(byte[] raw) throws IOException {
-
         GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(raw));
         ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
 
@@ -127,24 +126,19 @@ public final class Util {
         return ret;
     }
 
-    public static String readFile(String fileName) throws IOException {
-        return readFile(new File(fileName));
-    }
-
-    public static String readAsset(String path) throws IOException {
-        return readAsset(path, Util.class);
-    }
-
-    public static String readAsset(String path, Class clazz) throws IOException {
-        return readFile(new BufferedReader((new InputStreamReader(clazz.getResourceAsStream("/assets/" + path)))), true);
+    public static InputStreamReader readAsset(String path, Class<?> clazz) {
+        return new InputStreamReader(clazz.getResourceAsStream("/assets/" + path));
     }
 
     public static JsonObject readJsonAsset(String path) throws IOException {
         return readJsonAsset(path, Util.class);
     }
 
-    public static JsonObject readJsonAsset(String path, Class clazz) throws IOException {
-        return (JsonObject) JsonParser.parseString(readAsset(path, clazz));
+    public static JsonObject readJsonAsset(String path, Class<?> clazz) throws IOException {
+        InputStreamReader reader = readAsset(path, clazz);
+        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+        reader.close();
+        return json;
     }
 
     public static String readFile(BufferedReader reader, boolean closeStream) throws IOException {
@@ -162,20 +156,22 @@ public final class Util {
         return stringBuilder.toString();
     }
 
-    public static String readFileFromZip(String fileName, ZipFile zipFile) throws IOException {
-        return readFile(new BufferedReader(new InputStreamReader(zipFile.getInputStream(zipFile.getEntry(fileName)))), false);
+    public static InputStreamReader getInputSteamFromZip(String fileName, ZipFile zipFile) throws IOException {
+        return new InputStreamReader(zipFile.getInputStream(zipFile.getEntry(fileName)));
     }
 
     public static JsonObject readJsonFromZip(String fileName, ZipFile zipFile) throws IOException {
-        return JsonParser.parseString(readFileFromZip(fileName, zipFile)).getAsJsonObject();
-    }
-
-    public static String readFile(File file) throws IOException {
-        return readFile(new BufferedReader(new FileReader(file)), true);
+        InputStreamReader reader = getInputSteamFromZip(fileName, zipFile);
+        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+        reader.close();
+        return json;
     }
 
     public static JsonObject readJsonFromFile(String fileName) throws IOException {
-        return JsonParser.parseString(readFile(fileName)).getAsJsonObject();
+        FileReader reader = new FileReader(fileName);
+        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+        reader.close();
+        return json;
     }
 
     public static void downloadFile(String url, String destination) throws IOException {
@@ -186,6 +182,8 @@ public final class Util {
         while ((length = inputStream.read(buffer, 0, 1024)) != -1) {
             fileOutputStream.write(buffer, 0, length);
         }
+        inputStream.close();
+        fileOutputStream.close();
     }
 
     public static ThreadFactory getThreadFactory(String threadName) {

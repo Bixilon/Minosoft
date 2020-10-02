@@ -14,25 +14,25 @@
 package de.bixilon.minosoft.config;
 
 import com.google.common.collect.HashBiMap;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.UUID;
 
 public class Configuration {
-    final LinkedHashMap<String, Object> config;
+    final JsonObject config;
     final Thread thread;
 
     public Configuration(String filename) throws IOException {
-
         File file = new File(Config.homeDir + "config/" + filename);
         if (!file.exists()) {
             // no configuration file
@@ -47,10 +47,7 @@ public class Configuration {
             Files.copy(input, Paths.get(file.getAbsolutePath()));
             file = new File(Config.homeDir + "config/" + filename);
         }
-        Yaml yml = new Yaml();
-        FileInputStream inputStream = new FileInputStream(file);
-        config = yml.load(inputStream);
-        inputStream.close();
+        config = Util.readJsonFromFile(file.getAbsolutePath());
 
         final File finalFile = file;
         thread = new Thread(() -> {
@@ -62,7 +59,7 @@ public class Configuration {
                 }
                 // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
                 File tempFile = new File(Config.homeDir + "config/" + filename + ".tmp");
-                Yaml yaml = new Yaml();
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 FileWriter writer;
                 try {
                     writer = new FileWriter(tempFile);
@@ -71,7 +68,7 @@ public class Configuration {
                     return;
                 }
                 synchronized (config) {
-                    yaml.dump(config, writer);
+                    gson.toJson(config, writer);
                 }
                 try {
                     writer.close();
@@ -92,126 +89,68 @@ public class Configuration {
         thread.start();
     }
 
-    public boolean getBoolean(String path) {
-        return (boolean) get(path);
+    public boolean getBoolean(GameConfiguration path) {
+        return switch (path) {
+            case NETWORK_FAKE_CLIENT_BRAND -> config.getAsJsonObject("network").get("fake-network-brand").getAsBoolean();
+            default -> throw new RuntimeException(String.format("Illegal boolean value: %s", path));
+        };
     }
 
-    public boolean getBoolean(ConfigEnum config) {
-        return getBoolean(config.getPath());
+    public void putBoolean(GameConfiguration path, boolean value) {
+        switch (path) {
+            case NETWORK_FAKE_CLIENT_BRAND -> config.getAsJsonObject("network").addProperty("fake-network-brand", value);
+            default -> throw new RuntimeException(String.format("Illegal boolean value: %s", path));
+        }
     }
 
-    public int getInt(String path) {
-        return (int) get(path);
+    public int getInt(GameConfiguration path) {
+        return switch (path) {
+            case CONFIG_VERSION -> config.getAsJsonObject("general").get("version").getAsInt();
+            case GAME_RENDER_DISTANCE -> config.getAsJsonObject("game").get("render-distance").getAsInt();
+            default -> throw new RuntimeException(String.format("Illegal int value: %s", path));
+        };
     }
 
-    public int getInt(ConfigEnum config) {
-        return getInt(config.getPath());
+    public void putInt(GameConfiguration path, int value) {
+        switch (path) {
+            case CONFIG_VERSION -> config.getAsJsonObject("general").addProperty("version", value);
+            case GAME_RENDER_DISTANCE -> config.getAsJsonObject("game").addProperty("render-distance", value);
+            default -> throw new RuntimeException(String.format("Illegal int value: %s", path));
+        }
     }
 
-    public String getString(String path) {
-        return (String) get(path);
+    public String getString(GameConfiguration path) {
+        return switch (path) {
+            case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").get("selected").getAsString();
+            case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").get("log-level").getAsString();
+            case MAPPINGS_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").get("mappings").getAsString();
+            case CLIENT_TOKEN -> config.getAsJsonObject("accounts").get("client-token").getAsString();
+            default -> throw new RuntimeException(String.format("Illegal String value: %s", path));
+        };
     }
 
-    public String getString(ConfigEnum config) {
-        return getString(config.getPath());
-    }
-
-    public void putBoolean(ConfigEnum config, boolean value) {
-        putBoolean(config.getPath(), value);
-    }
-
-    public void putBoolean(String path, boolean value) {
-        put(path, value);
-    }
-
-    public void putInt(ConfigEnum config, int value) {
-        putInt(config.getPath(), value);
-    }
-
-    public void putInt(String path, int value) {
-        put(path, value);
-    }
-
-    public void putString(ConfigEnum config, String value) {
-        putString(config.getPath(), value);
-    }
-
-    public void putString(String path, String value) {
-        put(path, value);
+    public void putString(GameConfiguration path, String value) {
+        switch (path) {
+            case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").addProperty("selected", value);
+            case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").addProperty("log-level", value);
+            case MAPPINGS_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").addProperty("mappings", value);
+            case CLIENT_TOKEN -> config.getAsJsonObject("accounts").addProperty("client-token", value);
+            default -> throw new RuntimeException(String.format("Illegal String value: %s", path));
+        }
     }
 
     public void putMojangAccount(MojangAccount account) {
-        String basePath = String.format("account.accounts.%s.", account.getUserId());
-        putString(basePath + "accessToken", account.getAccessToken());
-        putString(basePath + "uuid", account.getUUID().toString());
-        putString(basePath + "userName", account.getMojangUserName());
-        putString(basePath + "playerName", account.getPlayerName());
+        config.getAsJsonObject("accounts").getAsJsonObject("entries").add(account.getUserId(), account.serialize());
     }
 
     public void putServer(Server server) {
-        String basePath = String.format("servers.%d.", server.getId());
-        putString(basePath + "name", server.getName());
-        putString(basePath + "address", server.getAddress());
-        putInt(basePath + "version", server.getDesiredVersion());
-        if (server.getBase64Favicon() != null) {
-            putString(basePath + "favicon", server.getBase64Favicon());
-        }
+        config.getAsJsonObject("servers").getAsJsonObject("entries").add(String.valueOf(server.getId()), server.serialize());
     }
 
     public void removeServer(Server server) {
-        remove(String.format("servers.%d", server.getId()));
+        config.getAsJsonObject("servers").getAsJsonObject("entries").remove(String.valueOf(server.getId()));
     }
 
-    public Object get(String path) {
-        if (path.contains(".")) {
-            // split
-            String[] spilt = path.split("\\.");
-            LinkedHashMap<String, Object> temp = config;
-            for (int i = 0; i < spilt.length - 1; i++) {
-                //noinspection unchecked
-                temp = (LinkedHashMap<String, Object>) temp.get(spilt[i]);
-            }
-            if (temp == null) {
-                return null;
-            }
-            return temp.get(spilt[spilt.length - 1]);
-        }
-        return config.get(path);
-    }
-
-    public void put(String path, Serializable value) {
-        if (path.contains(".")) {
-            // split
-            String[] spilt = path.split("\\.");
-            LinkedHashMap<String, Object> temp = config;
-            for (int i = 0; i < spilt.length - 1; i++) {
-                // not yet existing, creating it
-                temp.computeIfAbsent(spilt[i], k -> new LinkedHashMap<String, Object>());
-                temp = (LinkedHashMap<String, Object>) temp.get(spilt[i]);
-            }
-            temp.put(spilt[spilt.length - 1], value);
-            return;
-        }
-        config.put(path, value);
-    }
-
-    public void remove(String path) {
-        if (path.contains(".")) {
-            // split
-            String[] spilt = path.split("\\.");
-            LinkedHashMap<String, Object> temp = config;
-            for (int i = 0; i < spilt.length - 1; i++) {
-                // not yet existing, creating it
-                temp = (LinkedHashMap<String, Object>) temp.get(spilt[i]);
-                if (temp == null) {
-                    return;
-                }
-            }
-            temp.remove(spilt[spilt.length - 1]);
-            return;
-        }
-        config.remove(path);
-    }
 
     public void saveToFile() {
         thread.interrupt();
@@ -219,32 +158,27 @@ public class Configuration {
 
     public HashBiMap<String, MojangAccount> getMojangAccounts() {
         HashBiMap<String, MojangAccount> accounts = HashBiMap.create();
-        LinkedHashMap<String, LinkedHashMap<String, Object>> objects = (LinkedHashMap<String, LinkedHashMap<String, Object>>) get("account.accounts");
-        if (objects == null) {
-            return accounts;
-        }
-        objects.forEach((key, value) -> accounts.put(key, new MojangAccount((String) value.get("accessToken"), key, UUID.fromString((String) value.get("uuid")), (String) value.get("playerName"), (String) value.get("userName"))));
+        JsonObject entries = config.getAsJsonObject("accounts").getAsJsonObject("entries");
+        entries.keySet().forEach((entry) -> {
+            MojangAccount account = MojangAccount.deserialize(entries.get(entry).getAsJsonObject());
+            accounts.put(account.getUserId(), account);
+        });
         return accounts;
     }
 
     public ArrayList<Server> getServers() {
         ArrayList<Server> servers = new ArrayList<>();
-        LinkedHashMap<String, LinkedHashMap<String, Object>> objects = (LinkedHashMap<String, LinkedHashMap<String, Object>>) get("servers");
-        if (objects == null) {
-            return servers;
-        }
-        objects.forEach((key, entry) -> {
-            String favicon = null;
-            if (entry.containsKey("favicon")) {
-                favicon = (String) entry.get("favicon");
-            }
-            servers.add(new Server(Integer.parseInt(key), (String) entry.get("name"), (String) entry.get("address"), (int) entry.get("version"), favicon));
-        });
+        JsonObject entries = config.getAsJsonObject("servers").getAsJsonObject("entries");
+        entries.keySet().forEach((entry) -> servers.add(Server.deserialize(entries.get(entry).getAsJsonObject())));
         return servers;
     }
 
     public void removeAccount(MojangAccount account) {
-        remove(String.format("account.accounts.%s", account.getUserId()));
+        config.getAsJsonObject("accounts").getAsJsonObject("entries").remove(account.getUserId());
+    }
+
+    public JsonObject getConfig() {
+        return config;
     }
 }
 

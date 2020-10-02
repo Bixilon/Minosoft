@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.main;
 
+import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.ConnectionReasons;
@@ -20,6 +21,7 @@ import javafx.scene.image.Image;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class Server {
     static int highestServerId;
@@ -27,7 +29,7 @@ public class Server {
     String name;
     String address;
     int desiredVersion;
-    String favicon;
+    byte[] favicon;
     Connection lastPing;
     ArrayList<Connection> connections = new ArrayList<>();
 
@@ -41,13 +43,21 @@ public class Server {
         this.desiredVersion = desiredVersion;
     }
 
-    public Server(int id, String name, String address, int desiredVersion, String favicon) {
+    public Server(int id, String name, String address, int desiredVersion, byte[] favicon) {
         this(id, name, address, desiredVersion);
         this.favicon = favicon;
     }
 
     public static int getNextServerId() {
         return ++highestServerId;
+    }
+
+    public static Server deserialize(JsonObject json) {
+        Server server = new Server(json.get("id").getAsInt(), json.get("name").getAsString(), json.get("address").getAsString(), json.get("version").getAsInt());
+        if (json.has("favicon")) {
+            server.setBase64Favicon(json.get("favicon").getAsString());
+        }
+        return server;
     }
 
     public String getName() {
@@ -76,16 +86,28 @@ public class Server {
 
     @Nullable
     public String getBase64Favicon() {
-        return favicon;
+        if (favicon == null) {
+            return null;
+        }
+        return Base64.getEncoder().encodeToString(favicon);
     }
 
     public void setBase64Favicon(String favicon) {
-        this.favicon = favicon;
+        this.favicon = Base64.getDecoder().decode(favicon);
+    }
+
+    @Nullable
+    public byte[] getIcon() {
+        return favicon;
     }
 
     @Nullable
     public Image getFavicon() {
-        return GUITools.getImageFromBase64(getBase64Favicon());
+        return GUITools.getImage(getIcon());
+    }
+
+    public void setFavicon(byte[] favicon) {
+        this.favicon = favicon;
     }
 
     public int getId() {
@@ -138,5 +160,17 @@ public class Server {
             }
         }
         return false;
+    }
+
+    public JsonObject serialize() {
+        JsonObject json = new JsonObject();
+        json.addProperty("id", id);
+        json.addProperty("name", name);
+        json.addProperty("address", address);
+        json.addProperty("version", desiredVersion);
+        if (favicon != null) {
+            json.addProperty("favicon", getBase64Favicon());
+        }
+        return json;
     }
 }

@@ -41,4 +41,16 @@ public class GUITools {
             return null;
         }
     }
+
+    public static Image getImage(byte[] favicon) {
+        if (favicon == null) {
+            return null;
+        }
+        try {
+            return new Image(new ByteArrayInputStream(favicon));
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

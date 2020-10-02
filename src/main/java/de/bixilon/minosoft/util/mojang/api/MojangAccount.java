@@ -47,6 +47,20 @@ public class MojangAccount {
         this.mojangUserName = mojangUserName;
     }
 
+    public static MojangAccount deserialize(JsonObject json) {
+        return new MojangAccount(json.get("accessToken").getAsString(), json.get("userId").getAsString(), Util.uuidFromString(json.get("uuid").getAsString()), json.get("playerName").getAsString(), json.get("userName").getAsString());
+    }
+
+    public JsonObject serialize() {
+        JsonObject json = new JsonObject();
+        json.addProperty("accessToken", accessToken);
+        json.addProperty("userId", userId);
+        json.addProperty("uuid", uuid.toString());
+        json.addProperty("playerName", playerName);
+        json.addProperty("userName", mojangUserName);
+        return json;
+    }
+
     public void join(String serverId) {
         MojangAuthentication.joinServer(this, serverId);
     }
