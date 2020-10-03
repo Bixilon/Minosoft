@@ -3,21 +3,26 @@ variables:
 
 image: maven:3-openjdk-14
 
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
 cache:
   paths:
     - .m2/repository
 
-.verify: &verify
-  stage: test
+stages:
+  - verify
+  - code_quality
+
+verify:
+  stage: verify
   script:
     - 'mvn $MAVEN_CLI_OPTS verify'
 
-verify:jdk14:
-  <<: *verify
-format:
-  stage: test
-  image: tarampampam/node:8-alpine
-  before_script:
-    - npm install -g eclint
-  script:
-    - eclint check $(git ls-files)
+
+code_quality:
+  stage: code_quality
+  artifacts:
+    expose_as: 'Code Quality Report'
+    paths: [ gl-code-quality-report.json ]
+

@@ -1,0 +1,4 @@
+version: "2"         # required to adjust maintainability checks
+plugins:
+  sonar-java:
+    enabled: true
