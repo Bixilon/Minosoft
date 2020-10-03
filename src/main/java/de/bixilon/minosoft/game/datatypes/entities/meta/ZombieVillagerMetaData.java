@@ -46,16 +46,16 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
         return super.getLastDataIndex() + 2;
     }
 
-    public VillagerData.VillagerTypes getType() {
-        return getVillageData().getType();
-    }
-
     public VillagerData getVillageData() {
         final VillagerData defaultValue = new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE);
         if (protocolId < 451) {
             return defaultValue;
         }
         return sets.getVillagerData(super.getLastDataIndex() + 2, defaultValue);
+    }
+
+    public VillagerData.VillagerTypes getType() {
+        return getVillageData().getType();
     }
 
     public VillagerData.VillagerLevels getLevel() {

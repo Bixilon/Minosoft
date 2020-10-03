@@ -52,10 +52,30 @@ public class OutByteBuffer {
         }
     }
 
+    public void writeInt(int i) {
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+        buffer.putInt(i);
+        for (byte b : buffer.array()) {
+            bytes.add(b);
+        }
+    }
+
     public void writeBytes(byte[] b) {
         for (byte value : b) {
             bytes.add(value);
         }
+    }
+
+    public void writeLong(Long l) {
+        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+        buffer.putLong(l);
+        for (byte b : buffer.array()) {
+            bytes.add(b);
+        }
+    }
+
+    public void writeJSON(JsonObject j) {
+        writeString(j.toString());
     }
 
     public void writeVarLong(long value) {
@@ -73,14 +93,6 @@ public class OutByteBuffer {
 
     public void writeByte(byte b) {
         bytes.add(b);
-    }
-
-    public void writeInt(int i) {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.putInt(i);
-        for (byte b : buffer.array()) {
-            bytes.add(b);
-        }
     }
 
     public void writeFloat(Float f) {
@@ -106,18 +118,6 @@ public class OutByteBuffer {
         for (byte b : buffer.array()) {
             bytes.add(b);
         }
-    }
-
-    public void writeLong(Long l) {
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.putLong(l);
-        for (byte b : buffer.array()) {
-            bytes.add(b);
-        }
-    }
-
-    public void writeJSON(JsonObject j) {
-        writeString(j.toString());
     }
 
     public void writeFixedPointNumberInteger(double d) {

@@ -48,21 +48,16 @@ public class Version {
         return null;
     }
 
-    public String getVersionName() {
-        return versionName;
-    }
-
     public HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> getClientboundPacketMapping() {
         return clientboundPacketMapping;
     }
 
-    public HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> getServerboundPacketMapping() {
-        return serverboundPacketMapping;
+    public String getVersionName() {
+        return versionName;
     }
 
-    @Override
-    public int hashCode() {
-        return getProtocolVersion();
+    public HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> getServerboundPacketMapping() {
+        return serverboundPacketMapping;
     }
 
     public VersionMapping getMapping() {
@@ -73,6 +68,11 @@ public class Version {
         this.mapping = mapping;
     }
 
+    @Override
+    public int hashCode() {
+        return getProtocolVersion();
+    }
+
     public boolean isGettingLoaded() {
         return isGettingLoaded;
     }
@@ -80,6 +80,7 @@ public class Version {
     public void setGettingLoaded(boolean gettingLoaded) {
         isGettingLoaded = gettingLoaded;
     }
+
 
     public int getProtocolVersion() {
         return protocolVersion;

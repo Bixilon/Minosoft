@@ -50,49 +50,46 @@ public class EntityMetaData {
     }
 
     public static Object getData(EntityMetaDataValueTypes type, InByteBuffer buffer) {
-        Object data = null;
-
-        switch (type) {
-            case BYTE -> data = buffer.readByte();
-            case VAR_INT -> data = buffer.readVarInt();
-            case SHORT -> data = buffer.readShort();
-            case INT -> data = buffer.readInt();
-            case FLOAT -> data = buffer.readFloat();
-            case STRING -> data = buffer.readString();
-            case CHAT -> data = buffer.readTextComponent();
-            case BOOLEAN -> data = buffer.readBoolean();
-            case VECTOR -> data = new Vector(buffer.readInt(), buffer.readInt(), buffer.readInt());
-            case SLOT -> data = buffer.readSlot();
-            case ROTATION -> data = new EntityRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-            case POSITION -> data = buffer.readPosition();
+        return switch (type) {
+            case BYTE -> buffer.readByte();
+            case VAR_INT -> buffer.readVarInt();
+            case SHORT -> buffer.readShort();
+            case INT -> buffer.readInt();
+            case FLOAT -> buffer.readFloat();
+            case STRING -> buffer.readString();
+            case CHAT -> buffer.readTextComponent();
+            case BOOLEAN -> buffer.readBoolean();
+            case VECTOR -> new Vector(buffer.readInt(), buffer.readInt(), buffer.readInt());
+            case SLOT -> buffer.readSlot();
+            case ROTATION -> new EntityRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+            case POSITION -> buffer.readPosition();
             case OPT_CHAT -> {
                 if (buffer.readBoolean()) {
-                    data = buffer.readTextComponent();
+                    yield buffer.readTextComponent();
                 }
+                yield null;
             }
             case OPT_POSITION -> {
                 if (buffer.readBoolean()) {
-                    data = buffer.readPosition();
+                    yield buffer.readPosition();
                 }
+                yield null;
             }
-            case DIRECTION -> data = buffer.readDirection();
+            case DIRECTION -> buffer.readDirection();
             case OPT_UUID -> {
                 if (buffer.readBoolean()) {
-                    data = buffer.readUUID();
+                    yield buffer.readUUID();
                 }
+                yield null;
             }
-            case NBT -> data = buffer.readNBT();
-            case PARTICLE -> data = buffer.readParticle();
-            case POSE -> data = buffer.readPose();
-            case BLOCK_ID -> {
-                int blockId = buffer.readVarInt();
-                data = buffer.getConnection().getMapping().getBlockById(blockId);
-            }
-            case OPT_VAR_INT -> data = buffer.readVarInt() - 1;
-            case VILLAGER_DATA -> data = new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getProtocolId()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
+            case NBT -> buffer.readNBT();
+            case PARTICLE -> buffer.readParticle();
+            case POSE -> buffer.readPose();
+            case BLOCK_ID -> buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
+            case OPT_VAR_INT -> buffer.readVarInt() - 1;
+            case VILLAGER_DATA -> new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getProtocolId()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
             default -> throw new IllegalStateException("Unexpected value: " + type);
-        }
-        return data;
+        };
     }
 
     public MetaDataHashMap getSets() {

@@ -43,7 +43,7 @@ public class InByteBuffer {
     final Connection connection;
     final int protocolId;
     final byte[] bytes;
-    int pos;
+    int position;
 
     public InByteBuffer(byte[] bytes, Connection connection) {
         this.bytes = bytes;
@@ -67,17 +67,21 @@ public class InByteBuffer {
         return buffer.getShort(0);
     }
 
-    public byte[] readBytes(int count) {
-        byte[] ret = new byte[count];
-        System.arraycopy(bytes, pos, ret, 0, count);
-        pos = pos + count;
-        return ret;
-    }
-
     public Long readLong() {
         ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
         buffer.put(readBytes(Long.BYTES));
         return buffer.getLong(0);
+    }
+
+    public byte[] readBytes(int count) {
+        byte[] ret = new byte[count];
+        System.arraycopy(bytes, position, ret, 0, count);
+        position = position + count;
+        return ret;
+    }
+
+    public double readFixedPointNumberInteger() {
+        return readInt() / 32.0D;
     }
 
     public long readVarLong() {
@@ -136,34 +140,9 @@ public class InByteBuffer {
         return new UUID(readLong(), readLong());
     }
 
-    public byte readByte() {
-        byte ret;
-        ret = bytes[pos];
-        pos++;
-        return ret;
-    }
-
-    public int readInt() {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.put(readBytes(Integer.BYTES));
-        return buffer.getInt(0);
-    }
-
-    public double readFixedPointNumberInteger() {
-        return readInt() / 32.0D;
-    }
-
     public String readString() {
         int length = readVarInt();
         return new String(readBytes(length), StandardCharsets.UTF_8);
-    }
-
-    public double readFixedPointNumberByte() {
-        return readByte() / 32.0D;
-    }
-
-    public JsonObject readJSON() {
-        return JsonParser.parseString(readString()).getAsJsonObject();
     }
 
     public int readVarInt() {
@@ -184,6 +163,24 @@ public class InByteBuffer {
         } while ((read & 0b10000000) != 0);
 
         return result;
+    }
+
+    public int readInt() {
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+        buffer.put(readBytes(Integer.BYTES));
+        return buffer.getInt(0);
+    }
+
+    public double readFixedPointNumberByte() {
+        return readByte() / 32.0D;
+    }
+
+    public JsonObject readJSON() {
+        return JsonParser.parseString(readString()).getAsJsonObject();
+    }
+
+    public byte readByte() {
+        return bytes[position++];
     }
 
     public BlockPosition readPosition() {
@@ -315,15 +312,15 @@ public class InByteBuffer {
     }
 
     public int getPosition() {
-        return this.pos;
+        return this.position;
     }
 
     public void setPosition(int pos) {
-        this.pos = pos;
+        this.position = pos;
     }
 
     public int getBytesLeft() {
-        return bytes.length - pos;
+        return bytes.length - position;
     }
 
     byte[] readBytes(int pos, int count) {
@@ -414,7 +411,7 @@ public class InByteBuffer {
 
     @Override
     public String toString() {
-        return "dataLen: " + bytes.length + "; pos: " + pos;
+        return "dataLen: " + bytes.length + "; position: " + position;
     }
 
     public byte[] getBytes() {

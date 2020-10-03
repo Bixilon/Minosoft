@@ -25,4 +25,3 @@ code_quality:
   artifacts:
     expose_as: 'Code Quality Report'
     paths: [ gl-code-quality-report.json ]
-

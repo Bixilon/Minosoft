@@ -42,16 +42,16 @@ public class InChunkLocation {
         return getX() == that.getX() && getY() == that.getY() && getZ() == that.getZ();
     }
 
-    public ChunkNibbleLocation getChunkNibbleLocation() {
-        return new ChunkNibbleLocation(getX(), getY() % 16, getZ());
-    }
-
     public int getX() {
         return x;
     }
 
     public int getY() {
         return y;
+    }
+
+    public ChunkNibbleLocation getChunkNibbleLocation() {
+        return new ChunkNibbleLocation(getX(), getY() % 16, getZ());
     }
 
     @Override
