@@ -46,6 +46,11 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Received player location: %s (yaw=%s, pitch=%s)", location, yaw, pitch));
     }
@@ -68,10 +73,5 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
 
     public int getTeleportId() {
         return teleportId;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

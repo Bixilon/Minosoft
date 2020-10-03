@@ -44,12 +44,12 @@ public class ForgeModInfo implements ServerModInfo {
         return info;
     }
 
-    public ArrayList<ServerModItem> getModList() {
-        return modList;
-    }
-
     @Override
     public ServerModTypes getType() {
         return ServerModTypes.FORGE;
+    }
+
+    public ArrayList<ServerModItem> getModList() {
+        return modList;
     }
 }

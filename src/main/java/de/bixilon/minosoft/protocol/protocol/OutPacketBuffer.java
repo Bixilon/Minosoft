@@ -25,10 +25,6 @@ public class OutPacketBuffer extends OutByteBuffer {
         this.command = connection.getPacketCommand(command);
     }
 
-    public int getCommand() {
-        return command;
-    }
-
     @Override
     public byte[] getOutBytes() {
         ArrayList<Byte> before = getBytes();
@@ -41,5 +37,9 @@ public class OutPacketBuffer extends OutByteBuffer {
             ret[i] = after.get(i);
         }
         return ret;
+    }
+
+    public int getCommand() {
+        return command;
     }
 }

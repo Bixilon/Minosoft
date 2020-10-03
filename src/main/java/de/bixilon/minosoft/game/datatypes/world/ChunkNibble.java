@@ -32,12 +32,12 @@ public class ChunkNibble {
         this.blocks = new HashMap<>();
     }
 
-    public Block getBlock(ChunkNibbleLocation loc) {
-        return blocks.get(loc);
-    }
-
     public Block getBlock(int x, int y, int z) {
         return getBlock(new ChunkNibbleLocation(x, y, z));
+    }
+
+    public Block getBlock(ChunkNibbleLocation loc) {
+        return blocks.get(loc);
     }
 
     public void setBlock(int x, int y, int z, Block block) {

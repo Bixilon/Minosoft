@@ -99,12 +99,14 @@ public class MojangAccount {
         return mojangUserName;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
     public void saveToConfig() {
         Minosoft.getConfig().putMojangAccount(this);
+        Minosoft.getConfig().saveToFile();
+    }
+
+    public void delete() {
+        Minosoft.getAccountList().remove(this.getUserId());
+        Minosoft.getConfig().removeAccount(this);
         Minosoft.getConfig().saveToFile();
     }
 
@@ -113,11 +115,16 @@ public class MojangAccount {
         return getUserId();
     }
 
-    public void delete() {
-        Minosoft.getAccountList().remove(this.getUserId());
-        Minosoft.getConfig().removeAccount(this);
-        Minosoft.getConfig().saveToFile();
+    public String getUserId() {
+        return userId;
     }
+
+    public enum RefreshStates {
+        SUCCESSFUL,
+        ERROR, // account not valid anymore
+        FAILED // error occurred while checking -> Unknown state
+    }
+
 
     @Override
     public int hashCode() {
@@ -139,9 +146,4 @@ public class MojangAccount {
         return account.getUserId().equals(getUserId());
     }
 
-    public enum RefreshStates {
-        SUCCESSFUL,
-        ERROR, // account not valid anymore
-        FAILED // error occurred while checking -> Unknown state
-    }
 }

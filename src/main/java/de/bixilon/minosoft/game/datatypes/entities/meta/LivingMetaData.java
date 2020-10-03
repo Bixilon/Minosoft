@@ -92,13 +92,6 @@ public class LivingMetaData extends EntityMetaData {
         return super.isCustomNameVisible();
     }
 
-    public boolean hasAI() {
-        if (protocolId == 47) { //ToDo
-            return sets.getBoolean(15, false);
-        }
-        return false;
-    }
-
     @Override
     protected int getLastDataIndex() {
         //ToDo
@@ -111,6 +104,13 @@ public class LivingMetaData extends EntityMetaData {
         }
          */
         return super.getLastDataIndex() + 7; // 5 + absorption hearts + unknown
+    }
+
+    public boolean hasAI() {
+        if (protocolId == 47) { //ToDo
+            return sets.getBoolean(15, false);
+        }
+        return false;
     }
 
 }

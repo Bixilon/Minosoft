@@ -50,22 +50,6 @@ public class ModInfo {
         }
     }
 
-    public UUID getUUID() {
-        return uuid;
-    }
-
-    public int getVersionId() {
-        return versionId;
-    }
-
-    public String getVersionName() {
-        return versionName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public String[] getAuthors() {
         return authors;
     }
@@ -81,6 +65,26 @@ public class ModInfo {
     public LoadingInfo getLoadingInfo() {
         return loadingInfo;
     }
+
+    public UUID getUUID() {
+        return uuid;
+    }
+
+
+    public int getVersionId() {
+        return versionId;
+    }
+
+
+    public String getVersionName() {
+        return versionName;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
 
     @Override
     public String toString() {

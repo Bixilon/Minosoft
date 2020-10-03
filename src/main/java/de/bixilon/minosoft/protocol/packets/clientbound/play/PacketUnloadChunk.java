@@ -29,13 +29,13 @@ public class PacketUnloadChunk implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received unload chunk packet (location=%s)", location));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received unload chunk packet (location=%s)", location));
     }
 
     public ChunkLocation getLocation() {

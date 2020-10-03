@@ -66,6 +66,11 @@ public class PacketWorldBorder implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         switch (action) {
             case SET_SIZE -> Log.protocol(String.format("Receiving world border packet (action=%s, radius=%s)", action, radius));
@@ -75,11 +80,6 @@ public class PacketWorldBorder implements ClientboundPacket {
             case SET_WARNING_TIME -> Log.protocol(String.format("Receiving world border packet (action=%s, warningTime=%s)", action, warningTime));
             case SET_WARNING_BLOCKS -> Log.protocol(String.format("Receiving world border packet (action=%s, warningBlocks=%s)", action, warningBlocks));
         }
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     public double getRadius() {

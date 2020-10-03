@@ -44,7 +44,8 @@ public class PacketDecoder extends ByteToMessageDecoder {
         int numRead = 0;
         int length = 0;
         byte read;
-        do {
+        do
+        {
             if (!byteBuf.isReadable()) {
                 byteBuf.resetReaderIndex();
                 return;

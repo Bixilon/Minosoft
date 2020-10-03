@@ -22,19 +22,6 @@ public class ServerAddress {
         this.port = port;
     }
 
-    public String getHostname() {
-        return hostname;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    @Override
-    public String toString() {
-        return getHostname() + ":" + getPort();
-    }
-
     @Override
     public int hashCode() {
         return hostname.hashCode() * port;
@@ -47,5 +34,18 @@ public class ServerAddress {
         }
         ServerAddress their = (ServerAddress) obj;
         return hostname.equals(their.getHostname()) && port == their.getPort();
+    }
+
+    @Override
+    public String toString() {
+        return getHostname() + ":" + getPort();
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public int getPort() {
+        return port;
     }
 }

@@ -18,20 +18,20 @@ public class AgeableMetaData extends CreatureMetaData {
         super(sets, protocolId);
     }
 
-    public int getAge() {
-        final int defaultValue = 0;
-        if (protocolId < 57) {
-            return sets.getInt(12, defaultValue);
-        }
-        return defaultValue;
-    }
-
     public boolean isAdult() {
         final boolean defaultValue = false;
         if (protocolId < 57) {
             return getAge() >= 0;
         }
         return !sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    public int getAge() {
+        final int defaultValue = 0;
+        if (protocolId < 57) {
+            return sets.getInt(12, defaultValue);
+        }
+        return defaultValue;
     }
 
     @Override

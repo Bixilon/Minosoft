@@ -24,6 +24,15 @@ public class Location {
         this.z = z;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        Location that = (Location) obj;
+        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
+    }
+
     public double getX() {
         return x;
     }
@@ -34,15 +43,6 @@ public class Location {
 
     public double getZ() {
         return z;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        Location that = (Location) obj;
-        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
     }
 
     @Override

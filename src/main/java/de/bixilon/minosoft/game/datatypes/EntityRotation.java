@@ -24,6 +24,11 @@ public class EntityRotation {
         this.roll = roll;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s %s %s", getYaw(), getPitch(), getRoll());
+    }
+
     public float getYaw() {
         return yaw;
     }
@@ -34,10 +39,5 @@ public class EntityRotation {
 
     public float getRoll() {
         return roll;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", getYaw(), getPitch(), getRoll());
     }
 }

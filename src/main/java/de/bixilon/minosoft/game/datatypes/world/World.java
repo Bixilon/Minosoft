@@ -41,10 +41,6 @@ public class World {
         return name;
     }
 
-    public Chunk getChunk(ChunkLocation loc) {
-        return chunks.get(loc);
-    }
-
     public HashMap<ChunkLocation, Chunk> getAllChunks() {
         return chunks;
     }
@@ -55,6 +51,10 @@ public class World {
             return getChunk(loc).getBlock(pos.getInChunkLocation());
         }
         return Blocks.nullBlock;
+    }
+
+    public Chunk getChunk(ChunkLocation loc) {
+        return chunks.get(loc);
     }
 
     public void setBlock(BlockPosition pos, Block block) {

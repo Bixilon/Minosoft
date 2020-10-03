@@ -33,13 +33,13 @@ public class PacketServerDifficulty implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received server difficulty (difficulty=%s)", difficulty));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received server difficulty (difficulty=%s)", difficulty));
     }
 
     public Difficulties getDifficulty() {

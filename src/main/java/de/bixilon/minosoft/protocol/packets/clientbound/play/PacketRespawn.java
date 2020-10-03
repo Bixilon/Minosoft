@@ -72,6 +72,11 @@ public class PacketRespawn implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Respawn packet received (dimension=%s, difficulty=%s, gamemode=%s, levelType=%s)", dimension, difficulty, gameMode, levelType));
     }
@@ -90,10 +95,5 @@ public class PacketRespawn implements ClientboundPacket {
 
     public LevelTypes getLevelType() {
         return levelType;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

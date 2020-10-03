@@ -33,13 +33,13 @@ public class PacketVehicleMovement implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received vehicle movement (location=%s, yaw=%s, pitch=%s)", location, yaw, pitch));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received vehicle movement (location=%s, yaw=%s, pitch=%s)", location, yaw, pitch));
     }
 
     public Location getLocation() {

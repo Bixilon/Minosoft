@@ -41,9 +41,7 @@ public class NettyNetwork implements Network {
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
 
         Bootstrap clientBootstrap = new Bootstrap();
-        clientBootstrap.group(eventLoopGroup)
-                .channel(NioSocketChannel.class)
-                .handler(new TCPClientChannelInitializer(connection, this));
+        clientBootstrap.group(eventLoopGroup).channel(NioSocketChannel.class).handler(new TCPClientChannelInitializer(connection, this));
 
         try {
             ChannelFuture channelFuture = clientBootstrap.connect(address.getHostname(), address.getPort()).sync();

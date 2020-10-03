@@ -44,11 +44,11 @@ public enum ChatColors {
         return values()[id];
     }
 
-    public int getColor() {
-        return ordinal();
-    }
-
     public String getPrefix() {
         return String.format("%x", getColor());
+    }
+
+    public int getColor() {
+        return ordinal();
     }
 }

@@ -47,6 +47,11 @@ public class PacketTitle implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         switch (action) {
             case SET_TITLE -> Log.protocol(String.format("Received title (action=%s, text=%s)", action, text.getColoredMessage()));
@@ -54,11 +59,6 @@ public class PacketTitle implements ClientboundPacket {
             case SET_TIMES_AND_DISPLAY -> Log.protocol(String.format("Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", action, fadeInTime, stayTime, fadeOutTime));
             case HIDE, RESET -> Log.protocol(String.format("Received title (action=%s)", action));
         }
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     public int getFadeInTime() {

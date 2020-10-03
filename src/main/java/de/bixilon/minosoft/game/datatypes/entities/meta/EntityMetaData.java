@@ -103,12 +103,12 @@ public class EntityMetaData {
         return sets.getBitMask(0, 0x01, false);
     }
 
-    private boolean isSneaking() {
-        return sets.getBitMask(0, 0x02, false);
-    }
-
     public boolean isSprinting() {
         return sets.getBitMask(0, 0x08, false);
+    }
+
+    public boolean isDrinking() {
+        return isEating();
     }
 
     public boolean isEating() {
@@ -116,17 +116,6 @@ public class EntityMetaData {
             return false;
         }
         return sets.getBitMask(0, 0x10, false);
-    }
-
-    private boolean isSwimming() {
-        if (protocolId < 358) {
-            return false;
-        }
-        return sets.getBitMask(0, 0x10, false);
-    }
-
-    public boolean isDrinking() {
-        return isEating();
     }
 
     public boolean isBlocking() {
@@ -189,6 +178,17 @@ public class EntityMetaData {
             }
         }
         return sets.getPose(6, Poses.STANDING);
+    }
+
+    private boolean isSneaking() {
+        return sets.getBitMask(0, 0x02, false);
+    }
+
+    private boolean isSwimming() {
+        if (protocolId < 358) {
+            return false;
+        }
+        return sets.getBitMask(0, 0x10, false);
     }
 
     protected int getLastDataIndex() {
@@ -262,6 +262,10 @@ public class EntityMetaData {
             return (Poses) get(index, defaultValue);
         }
 
+        public byte getByte(int index, int defaultValue) {
+            return (byte) get(index, defaultValue);
+        }
+
         public VillagerData getVillagerData(int index, VillagerData defaultValue) {
             return (VillagerData) get(index, defaultValue);
         }
@@ -310,6 +314,13 @@ public class EntityMetaData {
             return BitByte.isBitMask(getByte(index, (defaultValue ? 1 : 0)), bitMask);
         }
 
+        public Object get(int index, Object defaultValue) {
+            if (containsKey(index)) {
+                return super.get(index);
+            }
+            return defaultValue;
+        }
+
         public Slot getSlot(int index, Slot defaultValue) {
             return (Slot) get(index, defaultValue);
         }
@@ -332,17 +343,6 @@ public class EntityMetaData {
 
         public short getShort(int index, int defaultValue) {
             return (short) get(index, defaultValue);
-        }
-
-        public byte getByte(int index, int defaultValue) {
-            return (byte) get(index, defaultValue);
-        }
-
-        public Object get(int index, Object defaultValue) {
-            if (containsKey(index)) {
-                return super.get(index);
-            }
-            return defaultValue;
         }
     }
 

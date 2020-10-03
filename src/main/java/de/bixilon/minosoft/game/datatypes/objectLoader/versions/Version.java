@@ -34,14 +34,6 @@ public class Version {
         this.clientboundPacketMapping = clientboundPacketMapping;
     }
 
-    public String getVersionName() {
-        return versionName;
-    }
-
-    public int getProtocolVersion() {
-        return protocolVersion;
-    }
-
     public Packets.Clientbound getPacketByCommand(ConnectionStates state, int command) {
         if (clientboundPacketMapping.containsKey(state) && clientboundPacketMapping.get(state).containsValue(command)) {
             return clientboundPacketMapping.get(state).inverse().get(command);
@@ -54,6 +46,10 @@ public class Version {
             return serverboundPacketMapping.get(packet.getState()).get(packet);
         }
         return null;
+    }
+
+    public String getVersionName() {
+        return versionName;
     }
 
     public HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> getClientboundPacketMapping() {
@@ -84,6 +80,11 @@ public class Version {
     public void setGettingLoaded(boolean gettingLoaded) {
         isGettingLoaded = gettingLoaded;
     }
+
+    public int getProtocolVersion() {
+        return protocolVersion;
+    }
+
 
     @Override
     public boolean equals(Object obj) {

@@ -24,6 +24,20 @@ public class RelativeLocation {
         this.z = z;
     }
 
+    @Override
+    public int hashCode() {
+        return (int) (x * y * z);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        RelativeLocation that = (RelativeLocation) obj;
+        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
+    }
+
     public double getX() {
         return x;
     }
@@ -37,21 +51,7 @@ public class RelativeLocation {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        RelativeLocation that = (RelativeLocation) obj;
-        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
-    }
-
-    @Override
     public String toString() {
         return String.format("%s %s %s", getX(), getY(), getZ());
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (x * y * z);
     }
 }

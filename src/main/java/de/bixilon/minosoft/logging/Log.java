@@ -25,34 +25,6 @@ public class Log {
     static LogLevels level = LogLevels.PROTOCOL;
     static Thread logThread;
 
-    public static void log(LogLevels level, String message, TextComponent.ChatAttributes color) {
-        log(level, "", message, color);
-    }
-
-    public static void log(LogLevels level, String prefix, String message, TextComponent.ChatAttributes color) {
-        if (level.ordinal() > Log.level.ordinal()) {
-            // log level too low
-            return;
-        }
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        builder.append(timeFormat.format(System.currentTimeMillis()));
-        builder.append("] [");
-        builder.append(Thread.currentThread().getName());
-        builder.append("] [");
-        builder.append(level.name());
-        builder.append("] ");
-        builder.append(prefix);
-        if (color != null && Config.colorLog) {
-            builder.append(color);
-            builder.append(message);
-            builder.append(TextComponent.ChatAttributes.RESET);
-        } else {
-            builder.append(message);
-        }
-        queue.add(builder.toString());
-    }
-
     public static void initThread() {
         logThread = new Thread(() -> {
             while (true) {
@@ -82,6 +54,34 @@ public class Log {
         log(LogLevels.GAME, message, TextComponent.ChatAttributes.GREEN);
     }
 
+    public static void log(LogLevels level, String message, TextComponent.ChatAttributes color) {
+        log(level, "", message, color);
+    }
+
+    public static void log(LogLevels level, String prefix, String message, TextComponent.ChatAttributes color) {
+        if (level.ordinal() > Log.level.ordinal()) {
+            // log level too low
+            return;
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        builder.append(timeFormat.format(System.currentTimeMillis()));
+        builder.append("] [");
+        builder.append(Thread.currentThread().getName());
+        builder.append("] [");
+        builder.append(level.name());
+        builder.append("] ");
+        builder.append(prefix);
+        if (color != null && Config.colorLog) {
+            builder.append(color);
+            builder.append(message);
+            builder.append(TextComponent.ChatAttributes.RESET);
+        } else {
+            builder.append(message);
+        }
+        queue.add(builder.toString());
+    }
+
     /**
      * Logs all fatal errors (critical exceptions, etc)
      *
@@ -89,15 +89,6 @@ public class Log {
      */
     public static void fatal(String message) {
         log(LogLevels.FATAL, message, TextComponent.ChatAttributes.DARK_RED);
-    }
-
-    /**
-     * Logs all general infos (connecting to server, ...)
-     *
-     * @param message Raw message to log
-     */
-    public static void info(String message) {
-        log(LogLevels.INFO, message, TextComponent.ChatAttributes.WHITE);
     }
 
     /**
@@ -155,5 +146,14 @@ public class Log {
         }
         Log.info(String.format("Log level changed from %s to %s", Log.level, level));
         Log.level = level;
+    }
+
+    /**
+     * Logs all general infos (connecting to server, ...)
+     *
+     * @param message Raw message to log
+     */
+    public static void info(String message) {
+        log(LogLevels.INFO, message, TextComponent.ChatAttributes.WHITE);
     }
 }

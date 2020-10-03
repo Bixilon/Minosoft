@@ -29,13 +29,13 @@ public class PacketOpenBook implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received open book packet (hand=%s)", hand));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received open book packet (hand=%s)", hand));
     }
 
     public Hands getHand() {

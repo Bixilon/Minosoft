@@ -87,12 +87,12 @@ public class VersionMapping {
         return dimensionMap.get(protocolId);
     }
 
-    public Block getBlockById(int protocolId) {
-        return blockMap.get(protocolId);
-    }
-
     public Block getBlockByIdAndMetaData(int protocolId, int metaData) {
         return getBlockById((protocolId << 4) | metaData);
+    }
+
+    public Block getBlockById(int protocolId) {
+        return blockMap.get(protocolId);
     }
 
     public BlockId getBlockIdById(int protocolId) {

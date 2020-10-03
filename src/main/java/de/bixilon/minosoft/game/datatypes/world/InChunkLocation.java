@@ -33,18 +33,6 @@ public class InChunkLocation {
         this.z = z;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getZ() {
-        return z;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) {
@@ -58,8 +46,20 @@ public class InChunkLocation {
         return new ChunkNibbleLocation(getX(), getY() % 16, getZ());
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     @Override
     public String toString() {
         return String.format("%d %d %d", getX(), getY(), getZ());
+    }
+
+    public int getZ() {
+        return z;
     }
 }

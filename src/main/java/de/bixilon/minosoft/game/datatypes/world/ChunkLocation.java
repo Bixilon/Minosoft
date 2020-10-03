@@ -25,12 +25,9 @@ public class ChunkLocation {
         this.z = z;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getZ() {
-        return z;
+    @Override
+    public int hashCode() {
+        return x * z;
     }
 
     @Override
@@ -42,13 +39,16 @@ public class ChunkLocation {
         return getX() == that.getX() && getZ() == that.getZ();
     }
 
-    @Override
-    public String toString() {
-        return String.format("%d %d", getX(), getZ());
+    public int getX() {
+        return x;
+    }
+
+    public int getZ() {
+        return z;
     }
 
     @Override
-    public int hashCode() {
-        return x * z;
+    public String toString() {
+        return String.format("%d %d", getX(), getZ());
     }
 }

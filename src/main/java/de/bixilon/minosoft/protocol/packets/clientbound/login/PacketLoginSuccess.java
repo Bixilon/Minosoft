@@ -39,13 +39,13 @@ public class PacketLoginSuccess implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Receiving login success packet (username=%s, UUID=%s)", username, uuid));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Receiving login success packet (username=%s, UUID=%s)", username, uuid));
     }
 
     public UUID getUUID() {

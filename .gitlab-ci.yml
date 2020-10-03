@@ -14,3 +14,10 @@ cache:
 
 verify:jdk14:
   <<: *verify
+format:
+  stage: test
+  image: tarampampam/node:8-alpine
+  before_script:
+    - npm install -g eclint
+  script:
+    - eclint check $(git ls-files)

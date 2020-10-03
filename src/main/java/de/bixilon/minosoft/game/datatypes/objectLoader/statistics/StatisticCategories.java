@@ -43,6 +43,10 @@ public enum StatisticCategories {
         return null;
     }
 
+    public ChangeableIdentifier getChangeableIdentifier() {
+        return changeableIdentifier;
+    }
+
     public static StatisticCategories byId(int id) {
         for (StatisticCategories category : values()) {
             if (category.getId() == id) {
@@ -50,10 +54,6 @@ public enum StatisticCategories {
             }
         }
         return null;
-    }
-
-    public ChangeableIdentifier getChangeableIdentifier() {
-        return changeableIdentifier;
     }
 
     public int getId() {

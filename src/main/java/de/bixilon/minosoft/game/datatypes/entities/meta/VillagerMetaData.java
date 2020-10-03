@@ -31,20 +31,20 @@ public class VillagerMetaData extends AbstractMerchantMetaData {
         return getVillageData().getProfession();
     }
 
-    public VillagerData.VillagerTypes getType() {
-        return getVillageData().getType();
-    }
-
-    public VillagerData.VillagerLevels getLevel() {
-        return getVillageData().getLevel();
-    }
-
     public VillagerData getVillageData() {
         final VillagerData defaultValue = new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE);
         if (protocolId < 451) {
             return defaultValue;
         }
         return sets.getVillagerData(super.getLastDataIndex() + 1, defaultValue);
+    }
+
+    public VillagerData.VillagerTypes getType() {
+        return getVillageData().getType();
+    }
+
+    public VillagerData.VillagerLevels getLevel() {
+        return getVillageData().getLevel();
     }
 
     @Override

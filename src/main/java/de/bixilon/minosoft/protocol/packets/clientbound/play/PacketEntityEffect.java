@@ -51,13 +51,13 @@ public class PacketEntityEffect implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.game(String.format("Entity effect added: %d %s", entityId, effect.toString()));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.game(String.format("Entity effect added: %d %s", entityId, effect.toString()));
     }
 
     public int getEntityId() {

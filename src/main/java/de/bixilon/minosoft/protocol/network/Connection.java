@@ -148,80 +148,6 @@ public class Connection {
         return addresses;
     }
 
-    public ConnectionStates getConnectionState() {
-        return state;
-    }
-
-    public void setConnectionState(ConnectionStates state) {
-        if (this.state == state) {
-            return;
-        }
-        Log.verbose("ConnectionStatus changed: " + state);
-        ConnectionStates previousState = this.state;
-        this.state = state;
-        switch (state) {
-            case HANDSHAKING -> {
-                // get and add all events, that are connection specific
-                Minosoft.eventManagers.forEach((eventManagers -> eventManagers.getSpecificEventListeners().forEach((serverAddresses, listener) -> {
-                    if (serverAddresses.contains(address)) {
-                        eventListeners.add(listener);
-                    }
-                })));
-                // connection established, starting threads and logging in
-                startHandlingThread();
-                ConnectionStates next = ((reason == ConnectionReasons.CONNECT) ? ConnectionStates.LOGIN : ConnectionStates.STATUS);
-                if (reason == ConnectionReasons.DNS) {
-                    // valid hostname found
-                    reason = nextReason;
-                    Log.info(String.format("Connection to %s seems to be okay, connecting...", address));
-                }
-                network.sendPacket(new PacketHandshake(address, next, (next == ConnectionStates.STATUS) ? -1 : getVersion().getProtocolVersion()));
-                // after sending it, switch to next state
-                setConnectionState(next);
-            }
-            case STATUS -> {
-                // send status request and ping
-                network.sendPacket(new PacketStatusRequest());
-                connectionStatusPing = new ConnectionPing();
-                network.sendPacket(new PacketStatusPing(connectionStatusPing));
-            }
-            case LOGIN -> {
-                network.sendPacket(new PacketLoginStart(player));
-                pluginChannelHandler = new PluginChannelHandler(this);
-                registerDefaultChannels();
-            }
-            case DISCONNECTED -> {
-                if (reason == ConnectionReasons.GET_VERSION) {
-                    setReason(ConnectionReasons.CONNECT);
-                    connect();
-                } else {
-                    // unregister all custom recipes
-                    Recipes.removeCustomRecipes();
-                }
-            }
-            case FAILED -> {
-                // connect to next hostname, if available
-                if (previousState == ConnectionStates.PLAY) {
-                    // connection was good, do not reconnect
-                    break;
-                }
-                int nextIndex = addresses.indexOf(address) + 1;
-                if (addresses.size() > nextIndex) {
-                    ServerAddress nextAddress = addresses.get(nextIndex);
-                    Log.warn(String.format("Could not connect to %s, trying next hostname: %s", address, nextAddress));
-                    this.address = nextAddress;
-                    resolve(address);
-                } else {
-                    // no connection and no servers available anymore... sorry, but you can not play today :(
-                    handlePingCallbacks(null);
-                }
-            }
-            case FAILED_NO_RETRY -> handlePingCallbacks(null);
-        }
-        // handle callbacks
-        connectionChangeCallbacks.forEach((callback -> callback.handle(this)));
-    }
-
     public Version getVersion() {
         return version;
     }
@@ -251,14 +177,6 @@ public class Connection {
 
     public void handle(ClientboundPacket p) {
         handlingQueue.add(p);
-    }
-
-    public ConnectionReasons getReason() {
-        return reason;
-    }
-
-    public void setReason(ConnectionReasons reason) {
-        this.reason = reason;
     }
 
     public void disconnect() {
@@ -358,6 +276,14 @@ public class Connection {
         return command;
     }
 
+    public ConnectionReasons getReason() {
+        return reason;
+    }
+
+    public void setReason(ConnectionReasons reason) {
+        this.reason = reason;
+    }
+
     public Packets.Clientbound getPacketByCommand(ConnectionStates state, int command) {
         Packets.Clientbound packet = null;
         if (getReason() == ConnectionReasons.CONNECT) {
@@ -384,6 +310,80 @@ public class Connection {
             return;
         }
         pingCallbacks.add(callback);
+    }
+
+    public ConnectionStates getConnectionState() {
+        return state;
+    }
+
+    public void setConnectionState(ConnectionStates state) {
+        if (this.state == state) {
+            return;
+        }
+        Log.verbose("ConnectionStatus changed: " + state);
+        ConnectionStates previousState = this.state;
+        this.state = state;
+        switch (state) {
+            case HANDSHAKING -> {
+                // get and add all events, that are connection specific
+                Minosoft.eventManagers.forEach((eventManagers -> eventManagers.getSpecificEventListeners().forEach((serverAddresses, listener) -> {
+                    if (serverAddresses.contains(address)) {
+                        eventListeners.add(listener);
+                    }
+                })));
+                // connection established, starting threads and logging in
+                startHandlingThread();
+                ConnectionStates next = ((reason == ConnectionReasons.CONNECT) ? ConnectionStates.LOGIN : ConnectionStates.STATUS);
+                if (reason == ConnectionReasons.DNS) {
+                    // valid hostname found
+                    reason = nextReason;
+                    Log.info(String.format("Connection to %s seems to be okay, connecting...", address));
+                }
+                network.sendPacket(new PacketHandshake(address, next, (next == ConnectionStates.STATUS) ? -1 : getVersion().getProtocolVersion()));
+                // after sending it, switch to next state
+                setConnectionState(next);
+            }
+            case STATUS -> {
+                // send status request and ping
+                network.sendPacket(new PacketStatusRequest());
+                connectionStatusPing = new ConnectionPing();
+                network.sendPacket(new PacketStatusPing(connectionStatusPing));
+            }
+            case LOGIN -> {
+                network.sendPacket(new PacketLoginStart(player));
+                pluginChannelHandler = new PluginChannelHandler(this);
+                registerDefaultChannels();
+            }
+            case DISCONNECTED -> {
+                if (reason == ConnectionReasons.GET_VERSION) {
+                    setReason(ConnectionReasons.CONNECT);
+                    connect();
+                } else {
+                    // unregister all custom recipes
+                    Recipes.removeCustomRecipes();
+                }
+            }
+            case FAILED -> {
+                // connect to next hostname, if available
+                if (previousState == ConnectionStates.PLAY) {
+                    // connection was good, do not reconnect
+                    break;
+                }
+                int nextIndex = addresses.indexOf(address) + 1;
+                if (addresses.size() > nextIndex) {
+                    ServerAddress nextAddress = addresses.get(nextIndex);
+                    Log.warn(String.format("Could not connect to %s, trying next hostname: %s", address, nextAddress));
+                    this.address = nextAddress;
+                    resolve(address);
+                } else {
+                    // no connection and no servers available anymore... sorry, but you can not play today :(
+                    handlePingCallbacks(null);
+                }
+            }
+            case FAILED_NO_RETRY -> handlePingCallbacks(null);
+        }
+        // handle callbacks
+        connectionChangeCallbacks.forEach((callback -> callback.handle(this)));
     }
 
     public HashSet<PingCallback> getPingCallbacks() {

@@ -74,13 +74,13 @@ public class PacketMultiBlockChange implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Multi block change received at %s (size=%d)", location, blocks.size()));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Multi block change received at %s (size=%d)", location, blocks.size()));
     }
 
     public ChunkLocation getLocation() {

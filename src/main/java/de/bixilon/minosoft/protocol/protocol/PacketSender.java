@@ -79,11 +79,11 @@ public class PacketSender {
         connection.sendPacket(new PacketCloseWindowSending(windowId));
     }
 
-    public void sendClientStatus(PacketClientStatus.ClientStates status) {
-        connection.sendPacket(new PacketClientStatus(status));
-    }
-
     public void respawn() {
         sendClientStatus(PacketClientStatus.ClientStates.PERFORM_RESPAWN);
+    }
+
+    public void sendClientStatus(PacketClientStatus.ClientStates status) {
+        connection.sendPacket(new PacketClientStatus(status));
     }
 }

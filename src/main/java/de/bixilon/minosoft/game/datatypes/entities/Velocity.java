@@ -24,6 +24,15 @@ public class Velocity {
         this.z = z;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        Velocity that = (Velocity) obj;
+        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
+    }
+
     public short getX() {
         return x;
     }
@@ -34,15 +43,6 @@ public class Velocity {
 
     public short getZ() {
         return z;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        Velocity that = (Velocity) obj;
-        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
     }
 
     @Override

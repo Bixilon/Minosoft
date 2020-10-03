@@ -98,10 +98,6 @@ public class TextComponent {
         this.json = json;
     }
 
-    public TextComponent(JsonObject json) {
-        this.json = json;
-    }
-
     static JsonObject getExtraByAttributes(String message, ChatAttributes color, ArrayList<ChatAttributes> formatting) {
         JsonObject ret = new JsonObject();
         ret.addProperty("text", message);
@@ -122,6 +118,10 @@ public class TextComponent {
             }
         });
         return ret;
+    }
+
+    public TextComponent(JsonObject json) {
+        this.json = json;
     }
 
     public String getRawMessage() {
@@ -167,6 +167,11 @@ public class TextComponent {
 
     public JsonObject getRaw() {
         return this.json;
+    }
+
+    @Override
+    public String toString() {
+        return getColoredMessage();
     }
 
     public String getColoredMessage() {
@@ -226,11 +231,6 @@ public class TextComponent {
             }
         }
         return coloredMessage;
-    }
-
-    @Override
-    public String toString() {
-        return getColoredMessage();
     }
 
     public enum ChatAttributes {
@@ -293,8 +293,8 @@ public class TextComponent {
             return null;
         }
 
-        public String getConsolePrefix() {
-            return consolePrefix;
+        public ChatColors getColor() {
+            return color;
         }
 
         public String getPrefix() {
@@ -304,13 +304,13 @@ public class TextComponent {
             return prefix;
         }
 
-        public ChatColors getColor() {
-            return color;
-        }
-
         @Override
         public String toString() {
             return getConsolePrefix();
+        }
+
+        public String getConsolePrefix() {
+            return consolePrefix;
         }
     }
 }

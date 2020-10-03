@@ -28,13 +28,13 @@ public class PacketLoginSetCompression implements PacketCompressionInterface {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received set compression packet (threshold=%d)", threshold));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received set compression packet (threshold=%d)", threshold));
     }
 
     @Override

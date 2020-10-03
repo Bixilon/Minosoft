@@ -378,8 +378,7 @@ public enum BlockProperties {
     EGGS_1,
     EGGS_2,
     EGGS_3,
-    EGGS_4,
-    // turtle eggs
+    EGGS_4, // turtle eggs
     HATCH_0,
     HATCH_1,
     HATCH_2,

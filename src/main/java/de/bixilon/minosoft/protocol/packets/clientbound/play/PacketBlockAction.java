@@ -59,12 +59,12 @@ public class PacketBlockAction implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Block action received %s at %s", data, position));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Block action received %s at %s", data, position));
     }
 }

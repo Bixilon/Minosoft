@@ -81,22 +81,6 @@ public class ModLoader {
         });
     }
 
-    private static LoadingPriorities getLoadingPriorityOrDefault(ModInfo info) {
-        if (info.getLoadingInfo() != null && info.getLoadingInfo().getLoadingPriority() != null) {
-            return info.getLoadingInfo().getLoadingPriority();
-        }
-        return LoadingPriorities.NORMAL;
-    }
-
-    static boolean isModLoaded(ModInfo info) {
-        for (MinosoftMod instance : mods) {
-            if (instance.getInfo().getUUID().equals(info.getUUID())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static MinosoftMod loadMod(File file) {
         try {
             Log.verbose(String.format("[MOD] Loading file %s", file.getAbsolutePath()));
@@ -121,5 +105,21 @@ public class ModLoader {
             Log.warn(String.format("Could not load mod: %s", file.getAbsolutePath()));
         }
         return null;
+    }
+
+    private static LoadingPriorities getLoadingPriorityOrDefault(ModInfo info) {
+        if (info.getLoadingInfo() != null && info.getLoadingInfo().getLoadingPriority() != null) {
+            return info.getLoadingInfo().getLoadingPriority();
+        }
+        return LoadingPriorities.NORMAL;
+    }
+
+    static boolean isModLoaded(ModInfo info) {
+        for (MinosoftMod instance : mods) {
+            if (instance.getInfo().getUUID().equals(info.getUUID())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

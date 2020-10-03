@@ -87,11 +87,6 @@ public class SessionListCell extends ListCell<Connection> implements Initializab
         super.updateSelected(selected);
     }
 
-    public void disconnect() {
-        setStyle("-fx-background-color: indianred");
-        connection.disconnect();
-    }
-
     private void handleConnectionCallback(Connection connection) {
         if (this.connection != connection) {
             // the card got recycled
@@ -106,5 +101,10 @@ public class SessionListCell extends ListCell<Connection> implements Initializab
                 }
             });
         }
+    }
+
+    public void disconnect() {
+        setStyle("-fx-background-color: indianred");
+        connection.disconnect();
     }
 }

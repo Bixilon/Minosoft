@@ -84,13 +84,13 @@ public class PacketDeclareRecipes implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received declare recipe packet (recipeLength=%d)", recipes.size()));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received declare recipe packet (recipeLength=%d)", recipes.size()));
     }
 
     public HashBiMap<String, Recipe> getRecipes() {

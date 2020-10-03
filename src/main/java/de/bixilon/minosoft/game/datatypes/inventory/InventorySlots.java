@@ -26,8 +26,7 @@ public class InventorySlots {
         ARMOR_HELMET,
         ARMOR_CHESTPLATE,
         ARMOR_LEGGINGS,
-        ARMOR_BOOTS,
-        // inventory up to down, left to right
+        ARMOR_BOOTS, // inventory up to down, left to right
         INVENTORY_1_1,
         INVENTORY_1_2,
         INVENTORY_1_3,

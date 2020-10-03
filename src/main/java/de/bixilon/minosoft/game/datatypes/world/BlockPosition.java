@@ -25,16 +25,21 @@ public class BlockPosition {
         this.z = z;
     }
 
+    public ChunkLocation getChunkLocation() {
+        return new ChunkLocation(getX() / 16, getZ() / 16);
+    }
+
     public int getX() {
         return x;
     }
 
-    public int getY() {
-        return y;
-    }
-
     public int getZ() {
         return z;
+    }
+
+    @Override
+    public int hashCode() {
+        return x * y * z;
     }
 
     @Override
@@ -46,18 +51,13 @@ public class BlockPosition {
         return pos.getX() == getX() && pos.getY() == getY() && pos.getZ() == getZ();
     }
 
-    public ChunkLocation getChunkLocation() {
-        return new ChunkLocation(getX() / 16, getZ() / 16);
+    public int getY() {
+        return y;
     }
 
     @Override
     public String toString() {
         return String.format("%d %d %d", getX(), getY(), getZ());
-    }
-
-    @Override
-    public int hashCode() {
-        return x * y * z;
     }
 
     public InChunkLocation getInChunkLocation() {

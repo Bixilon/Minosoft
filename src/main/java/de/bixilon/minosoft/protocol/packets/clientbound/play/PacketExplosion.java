@@ -49,13 +49,13 @@ public class PacketExplosion implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Explosion packet received at %s (recordCount=%d, radius=%s)", location, records.length, radius));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Explosion packet received at %s (recordCount=%d, radius=%s)", location, records.length, radius));
     }
 
     public Location getLocation() {

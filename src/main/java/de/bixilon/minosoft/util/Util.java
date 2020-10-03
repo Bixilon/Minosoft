@@ -129,34 +129,6 @@ public final class Util {
         return ret;
     }
 
-    public static HashMap<String, JsonObject> readJsonTarGzFile(String fileName) throws IOException {
-        File inputFile = new File(fileName);
-        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(inputFile)));
-        HashMap<String, JsonObject> ret = new HashMap<>();
-        TarArchiveEntry entry;
-        while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
-            ret.put(entry.getName(), JsonParser.parseReader(new InputStreamReader(tarArchiveInputStream)).getAsJsonObject());
-        }
-        tarArchiveInputStream.close();
-
-        return ret;
-    }
-
-    public static InputStreamReader readAsset(String path, Class<?> clazz) {
-        return new InputStreamReader(clazz.getResourceAsStream("/assets/" + path));
-    }
-
-    public static JsonObject readJsonAsset(String path) throws IOException {
-        return readJsonAsset(path, Util.class);
-    }
-
-    public static JsonObject readJsonAsset(String path, Class<?> clazz) throws IOException {
-        InputStreamReader reader = readAsset(path, clazz);
-        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-        reader.close();
-        return json;
-    }
-
     public static String readFile(BufferedReader reader, boolean closeStream) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         String ls = System.getProperty("line.separator");
@@ -172,8 +144,32 @@ public final class Util {
         return stringBuilder.toString();
     }
 
-    public static InputStreamReader getInputSteamFromZip(String fileName, ZipFile zipFile) throws IOException {
-        return new InputStreamReader(zipFile.getInputStream(zipFile.getEntry(fileName)));
+    public static HashMap<String, JsonObject> readJsonTarGzFile(String fileName) throws IOException {
+        File inputFile = new File(fileName);
+        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(inputFile)));
+        HashMap<String, JsonObject> ret = new HashMap<>();
+        TarArchiveEntry entry;
+        while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
+            ret.put(entry.getName(), JsonParser.parseReader(new InputStreamReader(tarArchiveInputStream)).getAsJsonObject());
+        }
+        tarArchiveInputStream.close();
+
+        return ret;
+    }
+
+    public static JsonObject readJsonAsset(String path) throws IOException {
+        return readJsonAsset(path, Util.class);
+    }
+
+    public static JsonObject readJsonAsset(String path, Class<?> clazz) throws IOException {
+        InputStreamReader reader = readAsset(path, clazz);
+        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+        reader.close();
+        return json;
+    }
+
+    public static InputStreamReader readAsset(String path, Class<?> clazz) {
+        return new InputStreamReader(clazz.getResourceAsStream("/assets/" + path));
     }
 
     public static JsonObject readJsonFromZip(String fileName, ZipFile zipFile) throws IOException {
@@ -181,6 +177,10 @@ public final class Util {
         JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
         reader.close();
         return json;
+    }
+
+    public static InputStreamReader getInputSteamFromZip(String fileName, ZipFile zipFile) throws IOException {
+        return new InputStreamReader(zipFile.getInputStream(zipFile.getEntry(fileName)));
     }
 
     public static JsonObject readJsonFromFile(String fileName) throws IOException {
@@ -202,12 +202,12 @@ public final class Util {
         fileOutputStream.close();
     }
 
-    public static ThreadFactory getThreadFactory(String threadName) {
-        return new ThreadFactoryBuilder().setNameFormat(threadName + "#%d").build();
-    }
-
     public static <T> void executeInThreadPool(String name, HashSet<Callable<T>> callables) throws InterruptedException {
         ExecutorService phaseLoader = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), getThreadFactory(name));
         phaseLoader.invokeAll(callables);
+    }
+
+    public static ThreadFactory getThreadFactory(String threadName) {
+        return new ThreadFactoryBuilder().setNameFormat(threadName + "#%d").build();
     }
 }

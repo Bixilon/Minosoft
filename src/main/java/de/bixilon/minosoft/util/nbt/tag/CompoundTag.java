@@ -29,6 +29,10 @@ public class CompoundTag implements NBTTag {
         this.data = data;
     }
 
+    public CompoundTag(InByteBuffer buffer) {
+        this(false, buffer);
+    }
+
     public CompoundTag(boolean subTag, InByteBuffer buffer) {
         if (subTag) {
             this.name = null;
@@ -47,10 +51,6 @@ public class CompoundTag implements NBTTag {
             String tagName = buffer.readString(buffer.readShort()); // length
             data.put(tagName, buffer.readNBT(tagType));
         }
-    }
-
-    public CompoundTag(InByteBuffer buffer) {
-        this(false, buffer);
     }
 
     public CompoundTag() {

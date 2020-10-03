@@ -18,11 +18,6 @@ public class InsentientMetaData extends LivingMetaData {
         super(sets, protocolId);
     }
 
-    @Override
-    public boolean hasAI() {
-        return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, super.hasAI());
-    }
-
     public boolean isLeftHanded() {
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, false);
     }
@@ -30,6 +25,11 @@ public class InsentientMetaData extends LivingMetaData {
     @Override
     protected int getLastDataIndex() {
         return super.getLastDataIndex() + 1;
+    }
+
+    @Override
+    public boolean hasAI() {
+        return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, super.hasAI());
     }
 
 }

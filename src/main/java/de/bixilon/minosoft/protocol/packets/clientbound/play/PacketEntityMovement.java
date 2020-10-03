@@ -39,6 +39,11 @@ public class PacketEntityMovement implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Entity %d moved relative %s", entityId, location));
     }
@@ -49,10 +54,5 @@ public class PacketEntityMovement implements ClientboundPacket {
 
     public RelativeLocation getRelativeLocation() {
         return location;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

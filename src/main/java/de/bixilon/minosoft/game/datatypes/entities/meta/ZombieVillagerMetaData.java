@@ -21,6 +21,15 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
     }
 
     @Override
+    public VillagerData.VillagerProfessions getProfession() {
+        final int defaultValue = super.getProfession().getId(protocolId);
+        if (protocolId < 451) {
+            return VillagerData.VillagerProfessions.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue), protocolId);
+        }
+        return getVillageData().getProfession();
+    }
+
+    @Override
     public boolean isConverting() {
         final boolean defaultValue = super.isConverting();
         if (protocolId < 315) { // ToDo
@@ -30,20 +39,15 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
     }
 
     @Override
-    public VillagerData.VillagerProfessions getProfession() {
-        final int defaultValue = super.getProfession().getId(protocolId);
-        if (protocolId < 451) {
-            return VillagerData.VillagerProfessions.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue), protocolId);
+    protected int getLastDataIndex() {
+        if (protocolId < 315) { // ToDo
+            return super.getLastDataIndex();
         }
-        return getVillageData().getProfession();
+        return super.getLastDataIndex() + 2;
     }
 
     public VillagerData.VillagerTypes getType() {
         return getVillageData().getType();
-    }
-
-    public VillagerData.VillagerLevels getLevel() {
-        return getVillageData().getLevel();
     }
 
     public VillagerData getVillageData() {
@@ -54,11 +58,7 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
         return sets.getVillagerData(super.getLastDataIndex() + 2, defaultValue);
     }
 
-    @Override
-    protected int getLastDataIndex() {
-        if (protocolId < 315) { // ToDo
-            return super.getLastDataIndex();
-        }
-        return super.getLastDataIndex() + 2;
+    public VillagerData.VillagerLevels getLevel() {
+        return getVillageData().getLevel();
     }
 }

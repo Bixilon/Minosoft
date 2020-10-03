@@ -30,13 +30,13 @@ public class PacketEntityStatus implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Entity status: (entityId=%d, animation=%s)", entityId, status));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Entity status: (entityId=%d, animation=%s)", entityId, status));
     }
 
     public enum EntityStates {

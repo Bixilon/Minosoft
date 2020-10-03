@@ -35,33 +35,6 @@ public class OutByteBuffer {
         this.protocolId = connection.getVersion().getProtocolVersion();
     }
 
-    public static void writeByte(byte b, ArrayList<Byte> write) {
-        write.add(b);
-    }
-
-    public static void writeVarInt(int value, ArrayList<Byte> write) {
-        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
-        do {
-            byte temp = (byte) (value & 0b01111111);
-            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
-            value >>>= 7;
-            if (value != 0) {
-                temp |= 0b10000000;
-            }
-            writeByte(temp, write);
-        } while (value != 0);
-    }
-
-    public void writeByte(byte b) {
-        bytes.add(b);
-    }
-
-    public void writeBytes(byte[] b) {
-        for (byte value : b) {
-            bytes.add(value);
-        }
-    }
-
     public void writeByteArray(byte[] data) {
         if (protocolId < 19) {
             writeShort((short) data.length);
@@ -69,10 +42,6 @@ public class OutByteBuffer {
             writeVarInt(data.length);
         }
         writeBytes(data);
-    }
-
-    public void writeBoolean(boolean b) {
-        bytes.add((byte) ((b) ? 0x01 : 0x00));
     }
 
     public void writeShort(short s) {
@@ -83,9 +52,32 @@ public class OutByteBuffer {
         }
     }
 
-    public void writeLong(Long l) {
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.putLong(l);
+    public void writeBytes(byte[] b) {
+        for (byte value : b) {
+            bytes.add(value);
+        }
+    }
+
+    public void writeVarLong(long value) {
+        do
+        {
+            byte temp = (byte) (value & 0b01111111);
+            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
+            value >>>= 7;
+            if (value != 0) {
+                temp |= 0b10000000;
+            }
+            writeByte(temp);
+        } while (value != 0);
+    }
+
+    public void writeByte(byte b) {
+        bytes.add(b);
+    }
+
+    public void writeInt(int i) {
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+        buffer.putInt(i);
         for (byte b : buffer.array()) {
             bytes.add(b);
         }
@@ -107,13 +99,6 @@ public class OutByteBuffer {
         }
     }
 
-    public void writeString(String s) {
-        writeVarInt(s.length());
-        for (byte b : s.getBytes(StandardCharsets.UTF_8)) {
-            bytes.add(b);
-        }
-    }
-
     public void writeUUID(UUID u) {
         ByteBuffer buffer = ByteBuffer.allocate(16); // UUID.BYTES
         buffer.putLong(u.getMostSignificantBits());
@@ -123,40 +108,31 @@ public class OutByteBuffer {
         }
     }
 
-    public void writeInt(int i) {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.putInt(i);
+    public void writeLong(Long l) {
+        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+        buffer.putLong(l);
         for (byte b : buffer.array()) {
             bytes.add(b);
         }
     }
 
-    public void writeVarInt(int value) {
-        writeVarInt(value, bytes);
-    }
-
-    public void writeVarLong(long value) {
-        do {
-            byte temp = (byte) (value & 0b01111111);
-            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
-            value >>>= 7;
-            if (value != 0) {
-                temp |= 0b10000000;
-            }
-            writeByte(temp);
-        } while (value != 0);
+    public void writeJSON(JsonObject j) {
+        writeString(j.toString());
     }
 
     public void writeFixedPointNumberInteger(double d) {
         writeInt((int) (d * 32.0D));
     }
 
-    public ArrayList<Byte> getBytes() {
-        return bytes;
+    public void writeString(String s) {
+        writeVarInt(s.length());
+        for (byte b : s.getBytes(StandardCharsets.UTF_8)) {
+            bytes.add(b);
+        }
     }
 
-    public void writeJSON(JsonObject j) {
-        writeString(j.toString());
+    public ArrayList<Byte> getBytes() {
+        return bytes;
     }
 
     public void writePosition(BlockPosition position) {
@@ -171,8 +147,30 @@ public class OutByteBuffer {
         writeLong((((long) (position.getX() & 0x3FFFFFF) << 38) | ((long) (position.getZ() & 0x3FFFFFF) << 12) | (long) (position.getY() & 0xFFF)));
     }
 
+    public void writeVarInt(int value) {
+        writeVarInt(value, bytes);
+    }
+
     public void writeTextComponent(TextComponent component) {
         writeJSON(component.getRaw());
+    }
+
+    public static void writeVarInt(int value, ArrayList<Byte> write) {
+        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
+        do
+        {
+            byte temp = (byte) (value & 0b01111111);
+            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
+            value >>>= 7;
+            if (value != 0) {
+                temp |= 0b10000000;
+            }
+            writeByte(temp, write);
+        } while (value != 0);
+    }
+
+    public static void writeByte(byte b, ArrayList<Byte> write) {
+        write.add(b);
     }
 
     public void writeSlot(Slot slot) {
@@ -198,6 +196,10 @@ public class OutByteBuffer {
     void writeNBT(CompoundTag nbt) {
         // ToDo: test
         nbt.writeBytes(this);
+    }
+
+    public void writeBoolean(boolean b) {
+        bytes.add((byte) ((b) ? 0x01 : 0x00));
     }
 
     public void writeStringNoLength(String s) {

@@ -28,13 +28,13 @@ public class PacketStatusPong implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Receiving pong packet (%s)", id));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Receiving pong packet (%s)", id));
     }
 
     public long getID() {

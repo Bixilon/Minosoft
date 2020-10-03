@@ -42,13 +42,13 @@ public class PacketTabCompleteReceiving implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received tab complete for message(count=%d)", count));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received tab complete for message(count=%d)", count));
     }
 
     public int getCount() {

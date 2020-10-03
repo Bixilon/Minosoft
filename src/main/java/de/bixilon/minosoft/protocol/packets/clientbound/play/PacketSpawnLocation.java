@@ -33,16 +33,16 @@ public class PacketSpawnLocation implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Received spawn location %s", location));
     }
 
     public BlockPosition getSpawnLocation() {
         return location;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

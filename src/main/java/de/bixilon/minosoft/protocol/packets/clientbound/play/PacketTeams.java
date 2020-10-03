@@ -83,13 +83,25 @@ public class PacketTeams implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, seeFriendlyInvisibiles=%s, playerCount=%s)", name, action, displayName, prefix, suffix, friendlyFire, seeFriendlyInvisibles, ((playerNames == null) ? null : playerNames.length)));
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    private void setFriendlyFireByLegacy(byte raw) {
+        switch (raw) {
+            case 0 -> friendlyFire = false;
+            case 1 -> friendlyFire = true;
+            case 2 -> {
+                friendlyFire = false;
+                seeFriendlyInvisibles = true;
+            }
+        }
+        // ToDo: seeFriendlyInvisibles for case 0 and 1
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, seeFriendlyInvisibiles=%s, playerCount=%s)", name, action, displayName, prefix, suffix, friendlyFire, seeFriendlyInvisibles, ((playerNames == null) ? null : playerNames.length)));
     }
 
     public String getName() {
@@ -134,18 +146,6 @@ public class PacketTeams implements ClientboundPacket {
 
     public String[] getPlayerNames() {
         return playerNames;
-    }
-
-    private void setFriendlyFireByLegacy(byte raw) {
-        switch (raw) {
-            case 0 -> friendlyFire = false;
-            case 1 -> friendlyFire = true;
-            case 2 -> {
-                friendlyFire = false;
-                seeFriendlyInvisibles = true;
-            }
-        }
-        // ToDo: seeFriendlyInvisibles for case 0 and 1
     }
 
     public enum TeamActions {

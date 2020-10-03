@@ -45,6 +45,11 @@ public class PacketEntityTeleport implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Entity %d moved to %s (yaw=%s, pitch=%s)", entityId, location, yaw, pitch));
     }
@@ -63,10 +68,5 @@ public class PacketEntityTeleport implements ClientboundPacket {
 
     public short getPitch() {
         return pitch;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

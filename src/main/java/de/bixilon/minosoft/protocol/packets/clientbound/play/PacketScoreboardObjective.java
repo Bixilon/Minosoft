@@ -52,17 +52,17 @@ public class PacketScoreboardObjective implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
             Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\", type=%s)", action, name, value.getColoredMessage(), type));
         } else {
             Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\")", action, name));
         }
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     public String getName() {
@@ -112,6 +112,10 @@ public class PacketScoreboardObjective implements ClientboundPacket {
             return null;
         }
 
+        public String getName() {
+            return name;
+        }
+
         public static ScoreboardObjectiveTypes byId(int id) {
             for (ScoreboardObjectiveTypes type : values()) {
                 if (type.getId() == id) {
@@ -119,10 +123,6 @@ public class PacketScoreboardObjective implements ClientboundPacket {
                 }
             }
             return null;
-        }
-
-        public String getName() {
-            return name;
         }
 
         public int getId() {

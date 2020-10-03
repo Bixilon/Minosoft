@@ -43,16 +43,16 @@ public abstract class Entity implements EntityInterface {
         this.headYaw = headYaw;
     }
 
-    public Entity(int entityId, UUID uuid, Location location, short yaw, short pitch) {
-        this(entityId, uuid, location, yaw, (int) pitch);
-    }
-
     public Entity(int entityId, UUID uuid, Location location, int yaw, int pitch) {
         this.entityId = entityId;
         this.uuid = uuid;
         this.location = location;
         this.yaw = yaw;
         this.pitch = pitch;
+    }
+
+    public Entity(int entityId, UUID uuid, Location location, short yaw, short pitch) {
+        this(entityId, uuid, location, yaw, (int) pitch);
     }
 
     public int getEntityId() {

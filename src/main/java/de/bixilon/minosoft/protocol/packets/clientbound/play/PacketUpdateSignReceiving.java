@@ -38,13 +38,13 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.game(String.format("Sign data received at: %s", position));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.game(String.format("Sign data received at: %s", position));
     }
 
     public BlockPosition getPosition() {

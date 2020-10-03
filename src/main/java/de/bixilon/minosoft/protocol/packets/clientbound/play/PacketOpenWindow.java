@@ -55,21 +55,17 @@ public class PacketOpenWindow implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received inventory open packet (windowId=%d, type=%s, title=%s, entityId=%d, slotCount=%d)", windowId, type, title, entityId, slotCount));
-    }
-
-    @Override
     public void handle(PacketHandler h) {
         h.handle(this);
     }
 
-    public byte getSlotCount() {
-        return slotCount;
+    @Override
+    public void log() {
+        Log.protocol(String.format("Received inventory open packet (windowId=%d, type=%s, title=%s, entityId=%d, slotCount=%d)", windowId, type, title, entityId, slotCount));
     }
 
-    public byte getWindowId() {
-        return windowId;
+    public byte getSlotCount() {
+        return slotCount;
     }
 
     public int getEntityId() {
@@ -80,11 +76,15 @@ public class PacketOpenWindow implements ClientboundPacket {
         return title;
     }
 
-    public InventoryTypes getType() {
-        return type;
-    }
-
     public InventoryProperties getInventoryProperties() {
         return new InventoryProperties(getWindowId(), getType(), title, slotCount);
+    }
+
+    public byte getWindowId() {
+        return windowId;
+    }
+
+    public InventoryTypes getType() {
+        return type;
     }
 }

@@ -129,13 +129,13 @@ public class PacketMapData implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received map meta data (mapId=%d)", mapId));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received map meta data (mapId=%d)", mapId));
     }
 
     public PacketMapDataDataActions getDataData() {

@@ -33,6 +33,11 @@ public class Server {
     Connection lastPing;
     ArrayList<Connection> connections = new ArrayList<>();
 
+    public Server(int id, String name, String address, int desiredVersion, byte[] favicon) {
+        this(id, name, address, desiredVersion);
+        this.favicon = favicon;
+    }
+
     public Server(int id, String name, String address, int desiredVersion) {
         this.id = id;
         if (id > highestServerId) {
@@ -41,11 +46,6 @@ public class Server {
         this.name = name;
         this.address = address;
         this.desiredVersion = desiredVersion;
-    }
-
-    public Server(int id, String name, String address, int desiredVersion, byte[] favicon) {
-        this(id, name, address, desiredVersion);
-        this.favicon = favicon;
     }
 
     public static int getNextServerId() {
@@ -60,50 +60,14 @@ public class Server {
         return server;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public int getDesiredVersion() {
-        return desiredVersion;
-    }
-
-    public void setDesiredVersion(int desiredVersion) {
-        this.desiredVersion = desiredVersion;
-    }
-
     @Nullable
-    public String getBase64Favicon() {
-        if (favicon == null) {
-            return null;
-        }
-        return Base64.getEncoder().encodeToString(favicon);
-    }
-
-    public void setBase64Favicon(String favicon) {
-        this.favicon = Base64.getDecoder().decode(favicon);
+    public Image getFavicon() {
+        return GUITools.getImage(getIcon());
     }
 
     @Nullable
     public byte[] getIcon() {
         return favicon;
-    }
-
-    @Nullable
-    public Image getFavicon() {
-        return GUITools.getImage(getIcon());
     }
 
     public void setFavicon(byte[] favicon) {
@@ -129,13 +93,29 @@ public class Server {
     }
 
     @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
     public String toString() {
         return getName() + " (" + getAddress() + ")";
     }
 
-    @Override
-    public int hashCode() {
-        return id;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public void ping() {
@@ -143,6 +123,14 @@ public class Server {
             lastPing = new Connection(Connection.lastConnectionId++, getAddress(), null);
         }
         lastPing.resolve(ConnectionReasons.PING, getDesiredVersion()); // resolve dns address and ping
+    }
+
+    public int getDesiredVersion() {
+        return desiredVersion;
+    }
+
+    public void setDesiredVersion(int desiredVersion) {
+        this.desiredVersion = desiredVersion;
     }
 
     public ArrayList<Connection> getConnections() {
@@ -172,5 +160,17 @@ public class Server {
             json.addProperty("favicon", getBase64Favicon());
         }
         return json;
+    }
+
+    @Nullable
+    public String getBase64Favicon() {
+        if (favicon == null) {
+            return null;
+        }
+        return Base64.getEncoder().encodeToString(favicon);
+    }
+
+    public void setBase64Favicon(String favicon) {
+        this.favicon = Base64.getDecoder().decode(favicon);
     }
 }

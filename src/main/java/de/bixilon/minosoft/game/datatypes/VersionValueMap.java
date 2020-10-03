@@ -42,10 +42,6 @@ public class VersionValueMap<V> {
         return value.getValue();
     }
 
-    public TreeMap<Integer, V> getAll() {
-        return values;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) {
@@ -53,5 +49,9 @@ public class VersionValueMap<V> {
         }
         VersionValueMap<V> their = (VersionValueMap<V>) obj;
         return getAll().equals(their.getAll());
+    }
+
+    public TreeMap<Integer, V> getAll() {
+        return values;
     }
 }

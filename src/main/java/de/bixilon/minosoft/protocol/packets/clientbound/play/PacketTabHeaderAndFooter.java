@@ -31,14 +31,14 @@ public class PacketTabHeaderAndFooter implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received tab list header: %s", header.getColoredMessage()));
-        Log.protocol(String.format("Received tab list footer: %s", footer.getColoredMessage()));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received tab list header: %s", header.getColoredMessage()));
+        Log.protocol(String.format("Received tab list footer: %s", footer.getColoredMessage()));
     }
 
     public TextComponent getHeader() {

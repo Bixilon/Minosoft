@@ -24,10 +24,6 @@ public class Logger {
         this.modName = modName;
     }
 
-    public void log(LogLevels level, String message, TextComponent.ChatAttributes color) {
-        Log.log(level, String.format("[%s] ", modName), message, color);
-    }
-
     /**
      * Logs all game related things (chunk loading, rendering, ...)
      *
@@ -35,6 +31,10 @@ public class Logger {
      */
     public void game(String message) {
         log(LogLevels.GAME, message, TextComponent.ChatAttributes.GREEN);
+    }
+
+    public void log(LogLevels level, String message, TextComponent.ChatAttributes color) {
+        Log.log(level, String.format("[%s] ", modName), message, color);
     }
 
     /**

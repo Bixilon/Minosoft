@@ -24,6 +24,15 @@ public class Vector {
         this.z = z;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        Vector pos = (Vector) obj;
+        return pos.getX() == getX() && pos.getY() == getY() && pos.getZ() == getZ();
+    }
+
     public int getX() {
         return x;
     }
@@ -34,15 +43,6 @@ public class Vector {
 
     public int getZ() {
         return z;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        Vector pos = (Vector) obj;
-        return pos.getX() == getX() && pos.getY() == getY() && pos.getZ() == getZ();
     }
 
     @Override

@@ -29,6 +29,14 @@ public class WolfMetaData extends TameableMetaData {
     }
 
     @Override
+    protected int getLastDataIndex() {
+        if (protocolId < 743) { //ToDo
+            return super.getLastDataIndex() + 2;
+        }
+        return super.getLastDataIndex() + 3;
+    }
+
+    @Override
     public float getHealth() {
         if (protocolId < 57) {
             return sets.getFloat(18, super.getHealth());
@@ -70,13 +78,5 @@ public class WolfMetaData extends TameableMetaData {
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 3, defaultValue);
-    }
-
-    @Override
-    protected int getLastDataIndex() {
-        if (protocolId < 743) { //ToDo
-            return super.getLastDataIndex() + 2;
-        }
-        return super.getLastDataIndex() + 3;
     }
 }

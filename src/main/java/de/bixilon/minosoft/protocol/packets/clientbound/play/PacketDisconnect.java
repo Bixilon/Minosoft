@@ -29,16 +29,16 @@ public class PacketDisconnect implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.game(String.format("Disconnected: %s", reason.getColoredMessage()));
     }
 
     public TextComponent getReason() {
         return reason;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

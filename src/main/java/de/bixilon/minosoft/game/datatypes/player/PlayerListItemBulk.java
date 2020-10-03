@@ -71,12 +71,12 @@ public class PlayerListItemBulk {
         return gameMode;
     }
 
-    public boolean hasDisplayName() {
-        return displayName != null;
-    }
-
     public TextComponent getDisplayName() {
         return (hasDisplayName() ? displayName : new TextComponent(name));
+    }
+
+    public boolean hasDisplayName() {
+        return displayName != null;
     }
 
     public HashMap<PlayerProperties, PlayerProperty> getProperties() {

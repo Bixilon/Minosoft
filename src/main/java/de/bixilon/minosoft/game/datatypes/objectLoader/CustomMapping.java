@@ -90,13 +90,6 @@ public class CustomMapping {
         return null;
     }
 
-    public Item getItemById(int protocolId) {
-        if (itemMap.containsKey(protocolId)) {
-            return itemMap.get(protocolId);
-        }
-        return version.getMapping().getItemById(protocolId);
-    }
-
     public int getItemId(Item item) {
         if (itemMap.inverse().containsKey(item)) {
             return itemMap.inverse().get(item);
@@ -115,6 +108,13 @@ public class CustomMapping {
             return getItemById(itemId << 16);
         }
         return item;
+    }
+
+    public Item getItemById(int protocolId) {
+        if (itemMap.containsKey(protocolId)) {
+            return itemMap.get(protocolId);
+        }
+        return version.getMapping().getItemById(protocolId);
     }
 
     public String getEntityIdentifierById(int protocolId) {
@@ -153,15 +153,15 @@ public class CustomMapping {
         return null;
     }
 
+    public Block getBlockByIdAndMetaData(int protocolId, int metaData) {
+        return getBlockById((protocolId << 4) | metaData);
+    }
+
     public Block getBlockById(int protocolId) {
         if (blockMap.containsKey(protocolId)) {
             return blockMap.get(protocolId);
         }
         return version.getMapping().getBlockById(protocolId);
-    }
-
-    public Block getBlockByIdAndMetaData(int protocolId, int metaData) {
-        return getBlockById((protocolId << 4) | metaData);
     }
 
     public BlockId getBlockIdById(int protocolId) {

@@ -33,13 +33,13 @@ public class PacketSetSlot implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received slot data (windowId=%d, slotId=%d, item=%s)", windowId, slotId, ((slot == null) ? "AIR" : slot.getDisplayName())));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received slot data (windowId=%d, slotId=%d, item=%s)", windowId, slotId, ((slot == null) ? "AIR" : slot.getDisplayName())));
     }
 
     public byte getWindowId() {

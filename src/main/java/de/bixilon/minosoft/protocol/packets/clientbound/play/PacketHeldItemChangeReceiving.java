@@ -28,13 +28,13 @@ public class PacketHeldItemChangeReceiving implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Slot change received. Now on slot %s", slot));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Slot change received. Now on slot %s", slot));
     }
 
     public byte getSlot() {

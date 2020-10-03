@@ -119,10 +119,6 @@ public class PluginChannelHandler {
         }
     }
 
-    public void sendRawData(String channel, byte[] data) {
-        connection.sendPacket(new PacketPluginMessageSending(channel, data));
-    }
-
     public void sendRawData(String channel, OutByteBuffer buffer) {
         connection.sendPacket(new PacketPluginMessageSending(channel, buffer.getOutBytes()));
     }
@@ -142,6 +138,10 @@ public class PluginChannelHandler {
         }
         sendRawData(DefaultPluginChannels.REGISTER.getChangeableIdentifier().get(connection.getVersion().getProtocolVersion()), name.getBytes());
         registeredServerChannels.add(name);
+    }
+
+    public void sendRawData(String channel, byte[] data) {
+        connection.sendPacket(new PacketPluginMessageSending(channel, data));
     }
 
     public void unregisterServerChannel(String name) {

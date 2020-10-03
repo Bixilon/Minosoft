@@ -194,6 +194,68 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         super.updateSelected(selected);
     }
 
+    private void resetCell() {
+        // clear all cells
+        setStyle(null);
+        motd.setText("");
+        serverBrand.setText("");
+        serverBrand.setTooltip(null);
+        motd.setStyle(null);
+        version.setText("Connecting...");
+        version.setStyle(null);
+        players.setText("");
+        optionsConnect.setDisable(true);
+    }
+
+    public void delete() {
+        server.getConnections().forEach(Connection::disconnect);
+        server.delete();
+        Log.info(String.format("Deleted server (name=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
+        listView.getItems().remove(server);
+    }
+
+    public void refresh() {
+        Log.info(String.format("Refreshing server status (serverName=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
+        if (server.getLastPing() == null) {
+            // server was not pinged, don't even try, only costs memory and cpu
+            return;
+        }
+        server.ping();
+    }
+
+    public void clicked(MouseEvent e) {
+        switch (e.getButton()) {
+            case PRIMARY -> {
+                if (e.getClickCount() == 2) {
+                    connect();
+                }
+            }
+            case SECONDARY -> optionsMenu.fire();
+            case MIDDLE -> {
+                listView.getSelectionModel().select(server);
+                edit();
+            }
+        }
+    }
+
+    public void connect() {
+        if (!canConnect || server.getLastPing() == null) {
+            return;
+        }
+        Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), new Player(Minosoft.getSelectedAccount()));
+        Version version;
+        if (server.getDesiredVersion() == -1) {
+            version = server.getLastPing().getVersion();
+        } else {
+            version = Versions.getVersionById(server.getDesiredVersion());
+        }
+        optionsConnect.setDisable(true);
+        connection.connect(server.getLastPing().getAddress(), version);
+        connection.addConnectionChangeCallback(this::handleConnectionCallback);
+        server.addConnection(connection);
+
+    }
+
     public void edit() {
         Dialog<Object> dialog = new Dialog<>();
         dialog.setTitle("Edit server: " + server.getName());
@@ -254,66 +316,28 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         dialog.showAndWait();
     }
 
-    public void delete() {
-        server.getConnections().forEach(Connection::disconnect);
-        server.delete();
-        Log.info(String.format("Deleted server (name=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
-        listView.getItems().remove(server);
-    }
-
-    public void connect() {
-        if (!canConnect || server.getLastPing() == null) {
+    private void handleConnectionCallback(Connection connection) {
+        if (!server.getConnections().contains(connection)) {
+            // the card got recycled
             return;
         }
-        Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), new Player(Minosoft.getSelectedAccount()));
-        Version version;
-        if (server.getDesiredVersion() == -1) {
-            version = server.getLastPing().getVersion();
-        } else {
-            version = Versions.getVersionById(server.getDesiredVersion());
-        }
-        optionsConnect.setDisable(true);
-        connection.connect(server.getLastPing().getAddress(), version);
-        connection.addConnectionChangeCallback(this::handleConnectionCallback);
-        server.addConnection(connection);
-
-    }
-
-    private void resetCell() {
-        // clear all cells
-        setStyle(null);
-        motd.setText("");
-        serverBrand.setText("");
-        serverBrand.setTooltip(null);
-        motd.setStyle(null);
-        version.setText("Connecting...");
-        version.setStyle(null);
-        players.setText("");
-        optionsConnect.setDisable(true);
-    }
-
-    public void refresh() {
-        Log.info(String.format("Refreshing server status (serverName=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
-        if (server.getLastPing() == null) {
-            // server was not pinged, don't even try, only costs memory and cpu
-            return;
-        }
-        server.ping();
-    }
-
-    public void clicked(MouseEvent e) {
-        switch (e.getButton()) {
-            case PRIMARY -> {
-                if (e.getClickCount() == 2) {
-                    connect();
+        Platform.runLater(() -> {
+            if (!connection.isConnected()) {
+                // maybe we got disconnected
+                if (!server.isConnected()) {
+                    setStyle(null);
+                    optionsSessions.setDisable(true);
+                    optionsConnect.setDisable(false);
                 }
+                return;
             }
-            case SECONDARY -> optionsMenu.fire();
-            case MIDDLE -> {
-                listView.getSelectionModel().select(server);
-                edit();
+
+            if (Minosoft.getSelectedAccount() != connection.getPlayer().getAccount()) {
+                optionsConnect.setDisable(false);
             }
-        }
+            setStyle("-fx-background-color: darkseagreen;");
+            optionsSessions.setDisable(false);
+        });
     }
 
     public void showInfo() {
@@ -413,29 +437,5 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void handleConnectionCallback(Connection connection) {
-        if (!server.getConnections().contains(connection)) {
-            // the card got recycled
-            return;
-        }
-        Platform.runLater(() -> {
-            if (!connection.isConnected()) {
-                // maybe we got disconnected
-                if (!server.isConnected()) {
-                    setStyle(null);
-                    optionsSessions.setDisable(true);
-                    optionsConnect.setDisable(false);
-                }
-                return;
-            }
-
-            if (Minosoft.getSelectedAccount() != connection.getPlayer().getAccount()) {
-                optionsConnect.setDisable(false);
-            }
-            setStyle("-fx-background-color: darkseagreen;");
-            optionsSessions.setDisable(false);
-        });
     }
 }

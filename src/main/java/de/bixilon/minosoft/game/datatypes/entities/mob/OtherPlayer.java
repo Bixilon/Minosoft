@@ -39,6 +39,16 @@ public class OtherPlayer extends Mob implements MobInterface {
     }
 
     @Override
+    public EntityMetaData getMetaData() {
+        return metaData;
+    }
+
+    @Override
+    public void setMetaData(EntityMetaData data) {
+        this.metaData = (HumanMetaData) data;
+    }
+
+    @Override
     public float getWidth() {
         if (status == Poses.SLEEPING) {
             return 0.2F;
@@ -54,16 +64,6 @@ public class OtherPlayer extends Mob implements MobInterface {
             case FLYING, SWIMMING -> 0.6F;
             case SLEEPING -> 0.2F;
         };
-    }
-
-    @Override
-    public EntityMetaData getMetaData() {
-        return metaData;
-    }
-
-    @Override
-    public void setMetaData(EntityMetaData data) {
-        this.metaData = (HumanMetaData) data;
     }
 
     @Override

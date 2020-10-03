@@ -108,27 +108,11 @@ public class Minosoft {
         Config.homeDir = path;
     }
 
-    public static Configuration getConfig() {
-        return config;
-    }
-
     public static void checkClientToken() {
         if (config.getString(GameConfiguration.CLIENT_TOKEN).equals("randomGenerated")) {
             config.putString(GameConfiguration.CLIENT_TOKEN, UUID.randomUUID().toString());
             config.saveToFile();
         }
-    }
-
-    public static ArrayList<Server> getServerList() {
-        return serverList;
-    }
-
-    public static HashBiMap<String, MojangAccount> getAccountList() {
-        return accountList;
-    }
-
-    public static MojangAccount getSelectedAccount() {
-        return selectedAccount;
     }
 
     public static void selectAccount(MojangAccount account) {
@@ -151,5 +135,21 @@ public class Minosoft {
         config.putString(GameConfiguration.ACCOUNT_SELECTED, account.getUserId());
         selectedAccount = account;
         account.saveToConfig();
+    }
+
+    public static Configuration getConfig() {
+        return config;
+    }
+
+    public static ArrayList<Server> getServerList() {
+        return serverList;
+    }
+
+    public static HashBiMap<String, MojangAccount> getAccountList() {
+        return accountList;
+    }
+
+    public static MojangAccount getSelectedAccount() {
+        return selectedAccount;
     }
 }

@@ -33,6 +33,11 @@ public class PacketChangeGameState implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         switch (getReason()) {
             case START_RAIN -> Log.game("Received weather packet: Starting rain...");
@@ -40,11 +45,6 @@ public class PacketChangeGameState implements ClientboundPacket {
             case CHANGE_GAMEMODE -> Log.game(String.format("Received game mode change: Now in %s", GameModes.byId(getValue().intValue())));
             default -> Log.protocol(String.format("Received game status change (%s)", getReason()));
         }
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     public Reason getReason() {

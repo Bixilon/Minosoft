@@ -45,27 +45,8 @@ public class Slot {
         this.itemCount = itemCount;
     }
 
-    public Item getItem() {
-        return item;
-    }
-
-    public int getItemCount() {
-        return itemCount;
-    }
-
-    public short getItemMetadata() {
-        return itemMetadata;
-    }
-
     public CompoundTag getNbt() {
         return nbt;
-    }
-
-    public String getDisplayName() {
-        if (nbt != null && nbt.containsKey("display") && nbt.getCompoundTag("display").containsKey("Name")) { // check if object has nbt data, and a custom display name
-            return String.format("%s (%s)", new TextComponent(nbt.getCompoundTag("display").getStringTag("Name").getValue()).getColoredMessage(), item);
-        }
-        return (item == null ? "AIR" : item.toString()); // ToDo display name per Item (from language file)
     }
 
     @Override
@@ -80,8 +61,27 @@ public class Slot {
         return their.getItem().equals(getItem()) && their.getItemCount() == getItemCount() && their.getItemMetadata() == getItemMetadata();
     }
 
+    public Item getItem() {
+        return item;
+    }
+
+    public int getItemCount() {
+        return itemCount;
+    }
+
+    public short getItemMetadata() {
+        return itemMetadata;
+    }
+
     @Override
     public String toString() {
         return getDisplayName();
+    }
+
+    public String getDisplayName() {
+        if (nbt != null && nbt.containsKey("display") && nbt.getCompoundTag("display").containsKey("Name")) { // check if object has nbt data, and a custom display name
+            return String.format("%s (%s)", new TextComponent(nbt.getCompoundTag("display").getStringTag("Name").getValue()).getColoredMessage(), item);
+        }
+        return (item == null ? "AIR" : item.toString()); // ToDo display name per Item (from language file)
     }
 }

@@ -110,6 +110,11 @@ public class PacketChunkData implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Chunk packet received (chunk: %s)", location));
     }
@@ -128,10 +133,5 @@ public class PacketChunkData implements ClientboundPacket {
 
     public CompoundTag getHeightMap() {
         return heightMap;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

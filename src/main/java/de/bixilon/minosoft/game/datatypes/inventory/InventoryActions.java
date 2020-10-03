@@ -52,18 +52,18 @@ public enum InventoryActions {
     final byte button;
     final boolean hasSlot;
 
-    InventoryActions(byte mode, byte button, boolean hasSlot) {
-        this.mode = mode;
-        this.button = button;
-        this.hasSlot = hasSlot;
+    InventoryActions(int mode, int button) {
+        this(mode, button, true);
     }
 
     InventoryActions(int mode, int button, boolean hasSlot) {
         this((byte) mode, (byte) button, hasSlot);
     }
 
-    InventoryActions(int mode, int button) {
-        this(mode, button, true);
+    InventoryActions(byte mode, byte button, boolean hasSlot) {
+        this.mode = mode;
+        this.button = button;
+        this.hasSlot = hasSlot;
     }
 
     public byte getButton() {

@@ -43,13 +43,13 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Receiving blockEntityMeta (position=%s, action=%s)", position, action));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Receiving blockEntityMeta (position=%s, action=%s)", position, action));
     }
 
     public BlockPosition getPosition() {

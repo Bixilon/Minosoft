@@ -38,13 +38,13 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Thunderbolt spawned at %s (entityId=%d)", entity.getLocation(), entity.getEntityId()));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Thunderbolt spawned at %s (entityId=%d)", entity.getLocation(), entity.getEntityId()));
     }
 
     public LightningBolt getEntity() {

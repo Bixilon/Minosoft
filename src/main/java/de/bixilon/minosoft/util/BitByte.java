@@ -27,13 +27,6 @@ public final class BitByte {
         return bitSet;
     }
 
-    public static boolean isBitSetShort(short in, int pos) {
-        boolean bitSet;
-        int mask = 1 << pos;
-        bitSet = ((in & mask) == mask);
-        return bitSet;
-    }
-
     public static byte getBitCount(short input) {
         byte ret = 0;
         for (int i = 0; i < Short.BYTES * 8; i++) { // bytes to bits
@@ -42,6 +35,13 @@ public final class BitByte {
             }
         }
         return ret;
+    }
+
+    public static boolean isBitSetShort(short in, int pos) {
+        boolean bitSet;
+        int mask = 1 << pos;
+        bitSet = ((in & mask) == mask);
+        return bitSet;
     }
 
     public static short byteToUShort(byte b) {

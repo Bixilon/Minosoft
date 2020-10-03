@@ -76,6 +76,11 @@ public class PacketPlayerListItem implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         for (PlayerListItemBulk property : playerList) {
             if (property.isLegacy()) {
@@ -84,11 +89,6 @@ public class PacketPlayerListItem implements ClientboundPacket {
                 Log.game(String.format("[TAB] Player list item bulk (uuid=%s, action=%s, name=%s, gameMode=%s, ping=%d, displayName=%s)", property.getUUID(), property.getAction(), property.getName(), property.getGameMode(), property.getPing(), property.getDisplayName()));
             }
         }
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     public ArrayList<PlayerListItemBulk> getPlayerList() {

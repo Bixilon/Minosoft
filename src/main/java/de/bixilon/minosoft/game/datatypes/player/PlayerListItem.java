@@ -78,12 +78,12 @@ public class PlayerListItem {
         this.gameMode = gameMode;
     }
 
-    public boolean hasDisplayName() {
-        return displayName != null;
-    }
-
     public TextComponent getDisplayName() {
         return (hasDisplayName() ? displayName : new TextComponent(name));
+    }
+
+    public boolean hasDisplayName() {
+        return displayName != null;
     }
 
     public void setDisplayName(TextComponent displayName) {

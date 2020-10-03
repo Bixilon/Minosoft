@@ -29,13 +29,13 @@ public class PacketLoginDisconnect implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Receiving login disconnect packet (%s)", reason.getColoredMessage()));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Receiving login disconnect packet (%s)", reason.getColoredMessage()));
     }
 
     public TextComponent getReason() {

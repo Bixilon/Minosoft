@@ -42,6 +42,11 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Received chat message (message=\"%s\")", message.getRawMessage()));
     }
@@ -56,10 +61,5 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
 
     public UUID getSender() {
         return sender;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

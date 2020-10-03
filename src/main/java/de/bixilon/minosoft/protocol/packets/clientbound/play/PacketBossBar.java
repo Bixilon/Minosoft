@@ -57,6 +57,11 @@ public class PacketBossBar implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         switch (action) {
             case ADD -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\", health=%s, color=%s, divisions=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), title.getColoredMessage(), health, color, divisions, isDragonBar(), shouldDarkenSky()));
@@ -68,9 +73,12 @@ public class PacketBossBar implements ClientboundPacket {
         }
     }
 
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public boolean isDragonBar() {
+        return BitByte.isBitMask(flags, 0x02);
+    }
+
+    public boolean shouldDarkenSky() {
+        return BitByte.isBitMask(flags, 0x01);
     }
 
     public UUID getUUID() {
@@ -99,14 +107,6 @@ public class PacketBossBar implements ClientboundPacket {
 
     public byte getFlags() {
         return flags;
-    }
-
-    public boolean shouldDarkenSky() {
-        return BitByte.isBitMask(flags, 0x01);
-    }
-
-    public boolean isDragonBar() {
-        return BitByte.isBitMask(flags, 0x02);
     }
 
     public boolean createFog() {

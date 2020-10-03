@@ -35,13 +35,13 @@ public class PacketUseBed implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Entity used bed at %s (entityId=%d)", position, entityId));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Entity used bed at %s (entityId=%d)", position, entityId));
     }
 
     public int getEntityId() {

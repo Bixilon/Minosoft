@@ -27,6 +27,10 @@ public class Chunk {
         this.nibbles = chunks;
     }
 
+    public Block getBlock(InChunkLocation location) {
+        return getBlock(location.getX(), location.getY(), location.getZ());
+    }
+
     public Block getBlock(int x, int y, int z) {
         if (x > 15 || y > 255 || z > 15 || x < 0 || y < 0 || z < 0) {
             throw new IllegalArgumentException(String.format("Invalid chunk location %s %s %s", x, y, z));
@@ -35,20 +39,10 @@ public class Chunk {
         return nibbles.get(section).getBlock(x, y % 16, z);
     }
 
-    public Block getBlock(InChunkLocation location) {
-        return getBlock(location.getX(), location.getY(), location.getZ());
-    }
-
     public void setBlock(int x, int y, int z, Block block) {
         byte section = (byte) (y / 16);
         createSection(section);
         nibbles.get(section).setBlock(x, y % 16, z, block);
-    }
-
-    public void setBlock(InChunkLocation location, Block block) {
-        byte section = (byte) (location.getY() / 16);
-        createSection(section);
-        nibbles.get(section).setBlock(location.getChunkNibbleLocation(), block);
     }
 
     void createSection(byte section) {
@@ -60,5 +54,11 @@ public class Chunk {
 
     public void setBlocks(HashMap<InChunkLocation, Block> blocks) {
         blocks.forEach(this::setBlock);
+    }
+
+    public void setBlock(InChunkLocation location, Block block) {
+        byte section = (byte) (location.getY() / 16);
+        createSection(section);
+        nibbles.get(section).setBlock(location.getChunkNibbleLocation(), block);
     }
 }

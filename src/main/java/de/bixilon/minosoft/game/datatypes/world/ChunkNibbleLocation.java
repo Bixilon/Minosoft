@@ -27,6 +27,20 @@ public class ChunkNibbleLocation {
         this.z = z;
     }
 
+    @Override
+    public int hashCode() {
+        return x * y * z;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        ChunkNibbleLocation that = (ChunkNibbleLocation) obj;
+        return getX() == that.getX() && getY() == that.getY() && getZ() == that.getZ();
+    }
+
     public int getX() {
         return x;
     }
@@ -40,21 +54,7 @@ public class ChunkNibbleLocation {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        ChunkNibbleLocation that = (ChunkNibbleLocation) obj;
-        return getX() == that.getX() && getY() == that.getY() && getZ() == that.getZ();
-    }
-
-    @Override
     public String toString() {
         return String.format("%d %d %d", getX(), getY(), getZ());
-    }
-
-    @Override
-    public int hashCode() {
-        return x * y * z;
     }
 }

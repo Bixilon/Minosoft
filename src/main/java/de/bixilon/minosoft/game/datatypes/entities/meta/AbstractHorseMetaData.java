@@ -21,6 +21,10 @@ public class AbstractHorseMetaData extends AnimalMetaData {
         super(sets, protocolId);
     }
 
+    public boolean isTame() {
+        return isOptionBitMask(0x02, false);
+    }
+
     private boolean isOptionBitMask(int bitMask, boolean defaultValue) {
         if (protocolId < 335) { //ToDo
             bitMask *= 2;
@@ -29,10 +33,6 @@ public class AbstractHorseMetaData extends AnimalMetaData {
             return sets.getBitMask(16, bitMask, defaultValue);
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, bitMask, defaultValue);
-    }
-
-    public boolean isTame() {
-        return isOptionBitMask(0x02, false);
     }
 
     public boolean hasSaddle() {

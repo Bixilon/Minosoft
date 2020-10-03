@@ -36,13 +36,13 @@ public class PacketPluginMessageReceiving implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Plugin message received in channel \"%s\" with %s bytes of data", channel, data.length));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Plugin message received in channel \"%s\" with %s bytes of data", channel, data.length));
     }
 
     public String getChannel() {

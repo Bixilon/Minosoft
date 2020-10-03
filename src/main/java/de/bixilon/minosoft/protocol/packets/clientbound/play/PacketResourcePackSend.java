@@ -30,13 +30,13 @@ public class PacketResourcePackSend implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received resource pack send (url=\"%s\", hash=%s", url, hash));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received resource pack send (url=\"%s\", hash=%s", url, hash));
     }
 
     public String getUrl() {

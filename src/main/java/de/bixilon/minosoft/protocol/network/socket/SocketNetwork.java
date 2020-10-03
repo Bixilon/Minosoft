@@ -149,11 +149,12 @@ public class SocketNetwork implements Network {
                         break;
                     }
 
-// everything sent for now, waiting for data
+                    // everything sent for now, waiting for data
                     int numRead = 0;
                     int length = 0;
                     int read;
-                    do {
+                    do
+                    {
                         read = inputStream.read();
                         if (read == -1) {
                             disconnect();
@@ -263,15 +264,6 @@ public class SocketNetwork implements Network {
         queue.add(p);
     }
 
-    private void enableEncryption(SecretKey secretKey) {
-        Cipher cipherEncrypt = CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey);
-        Cipher cipherDecrypt = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey);
-        inputStream = new CipherInputStream(inputStream, cipherDecrypt);
-        outputStream = new CipherOutputStream(outputStream, cipherEncrypt);
-        encryptionEnabled = true;
-        Log.debug("Encryption enabled!");
-    }
-
     @Override
     public void disconnect() {
         connection.setConnectionState(ConnectionStates.DISCONNECTING);
@@ -288,5 +280,14 @@ public class SocketNetwork implements Network {
     @Override
     public Exception getLastException() {
         return lastException;
+    }
+
+    private void enableEncryption(SecretKey secretKey) {
+        Cipher cipherEncrypt = CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey);
+        Cipher cipherDecrypt = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey);
+        inputStream = new CipherInputStream(inputStream, cipherDecrypt);
+        outputStream = new CipherOutputStream(outputStream, cipherEncrypt);
+        encryptionEnabled = true;
+        Log.debug("Encryption enabled!");
     }
 }

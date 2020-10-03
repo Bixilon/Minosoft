@@ -31,6 +31,11 @@ public class PacketEntityHeadRotation implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Entity %d moved head (yaw=%s)", entityId, headYaw));
     }
@@ -41,10 +46,5 @@ public class PacketEntityHeadRotation implements ClientboundPacket {
 
     public short getHeadYaw() {
         return headYaw;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

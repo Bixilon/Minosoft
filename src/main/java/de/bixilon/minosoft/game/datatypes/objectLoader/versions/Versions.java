@@ -38,8 +38,7 @@ public class Versions {
 
     static final HashBiMap<Integer, Version> versionMap = HashBiMap.create();
     static final HashSet<Version> loadedVersion = new HashSet<>();
-    private static final
-    HashMap<String, Mappings> mappingsHashMap = new HashMap<>();
+    private static final HashMap<String, Mappings> mappingsHashMap = new HashMap<>();
     static VersionMapping legacyMapping;
 
     static {
@@ -102,28 +101,6 @@ public class Versions {
         versionMap.put(version.getProtocolVersion(), version);
     }
 
-    public static void loadVersionMappings(Mappings type, JsonObject data, int protocolId) {
-        Version version = versionMap.get(protocolId);
-        VersionMapping mapping;
-        if (protocolId < ProtocolDefinition.FLATTING_VERSION_ID) {
-            if (legacyMapping == null) {
-                legacyMapping = new VersionMapping(version);
-            }
-            if (!legacyMapping.isFullyLoaded()) {
-                legacyMapping.load(type, data);
-            }
-            mapping = legacyMapping;
-        } else {
-            mapping = version.getMapping();
-            if (mapping == null) {
-                mapping = new VersionMapping(version);
-            }
-            mapping.load(type, data);
-        }
-        version.setMapping(mapping);
-        loadedVersion.add(version);
-    }
-
     public static void loadVersionMappings(int protocolId) throws IOException {
         Version version = versionMap.get(protocolId);
         if (version.getMapping() != null && version.getMapping().isFullyLoaded()) {
@@ -176,6 +153,28 @@ public class Versions {
 
         Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", version, (System.currentTimeMillis() - startTime), version.getVersionName()));
         version.setGettingLoaded(false);
+    }
+
+    public static void loadVersionMappings(Mappings type, JsonObject data, int protocolId) {
+        Version version = versionMap.get(protocolId);
+        VersionMapping mapping;
+        if (protocolId < ProtocolDefinition.FLATTING_VERSION_ID) {
+            if (legacyMapping == null) {
+                legacyMapping = new VersionMapping(version);
+            }
+            if (!legacyMapping.isFullyLoaded()) {
+                legacyMapping.load(type, data);
+            }
+            mapping = legacyMapping;
+        } else {
+            mapping = version.getMapping();
+            if (mapping == null) {
+                mapping = new VersionMapping(version);
+            }
+            mapping.load(type, data);
+        }
+        version.setMapping(mapping);
+        loadedVersion.add(version);
     }
 
     public static void unloadUnnecessaryVersions(int necessary) {

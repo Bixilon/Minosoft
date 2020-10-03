@@ -31,13 +31,13 @@ public class PacketNBTQueryResponse implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received nbt response (transactionId=%d, nbt=%s)", transactionId, tag.toString()));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received nbt response (transactionId=%d, nbt=%s)", transactionId, tag.toString()));
     }
 
     public int getTransactionId() {

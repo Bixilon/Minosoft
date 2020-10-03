@@ -22,6 +22,18 @@ public class Ingredient {
         this.slot = slot;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        if (this.hashCode() != obj.hashCode()) {
+            return false;
+        }
+        Ingredient their = (Ingredient) obj;
+        return slotEquals(getSlot(), their.getSlot());
+    }
+
     public static boolean slotEquals(Slot[] one, Slot[] two) {
         if (one.length != two.length) {
             return false;
@@ -34,6 +46,10 @@ public class Ingredient {
         return true;
     }
 
+    public Slot[] getSlot() {
+        return slot;
+    }
+
     public static boolean containsElement(Slot[] arr, Slot value) {
         for (Slot slot : arr) {
             if (slot.equals(value)) {
@@ -41,21 +57,5 @@ public class Ingredient {
             }
         }
         return false;
-    }
-
-    public Slot[] getSlot() {
-        return slot;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        if (this.hashCode() != obj.hashCode()) {
-            return false;
-        }
-        Ingredient their = (Ingredient) obj;
-        return slotEquals(getSlot(), their.getSlot());
     }
 }

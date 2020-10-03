@@ -42,13 +42,13 @@ public class PacketCollectItem implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Item %d was collected by %d (count=%s)", itemId, collectorId, ((count == 0) ? "?" : count)));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Item %d was collected by %d (count=%s)", itemId, collectorId, ((count == 0) ? "?" : count)));
     }
 
     public int getCollectorId() {
