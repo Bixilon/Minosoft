@@ -51,7 +51,10 @@ You're welcome. Because this is pretty much incomplete, contact us before workin
 ## Tools
 We wrote some tools to help out, see [Utility](util/ReadMe.md).
 
-# Releases and beta
+## Credits
+Many thanks to [Credits](Credits.md).
+
+## Releases and beta
 We are almost ready to release a beta once !8 is merged.
 
 This readme is work in progress, things may change over time.
