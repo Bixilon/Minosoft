@@ -16,17 +16,17 @@ package de.bixilon.minosoft.game.datatypes.entities.mob;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Mob;
 import de.bixilon.minosoft.game.datatypes.entities.MobInterface;
-import de.bixilon.minosoft.game.datatypes.entities.meta.AbstractFishMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.TropicalFishMetaData;
 
 import java.util.UUID;
 
 public class TropicalFish extends Mob implements MobInterface {
-    AbstractFishMetaData metaData;
+    TropicalFishMetaData metaData;
 
     public TropicalFish(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new AbstractFishMetaData(sets, protocolId);
+        this.metaData = new TropicalFishMetaData(sets, protocolId);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class TropicalFish extends Mob implements MobInterface {
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (AbstractFishMetaData) metaData;
+        this.metaData = (TropicalFishMetaData) metaData;
     }
 
     @Override
@@ -56,6 +56,6 @@ public class TropicalFish extends Mob implements MobInterface {
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return AbstractFishMetaData.class;
+        return TropicalFishMetaData.class;
     }
 }

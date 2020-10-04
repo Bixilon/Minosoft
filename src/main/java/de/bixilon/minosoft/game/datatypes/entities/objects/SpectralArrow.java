@@ -16,14 +16,14 @@ package de.bixilon.minosoft.game.datatypes.entities.objects;
 import de.bixilon.minosoft.game.datatypes.entities.EntityObject;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.ObjectInterface;
-import de.bixilon.minosoft.game.datatypes.entities.meta.AbstractArrowMetaData;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.game.datatypes.entities.meta.SpectralArrowMetaData;
 
 import java.util.UUID;
 
 public class SpectralArrow extends EntityObject implements ObjectInterface {
     final int shooter;
-    AbstractArrowMetaData metaData;
+    SpectralArrowMetaData metaData;
 
     public SpectralArrow(int entityId, UUID uuid, Location location, short yaw, short pitch, int additionalInt) {
         super(entityId, uuid, location, yaw, pitch);
@@ -32,7 +32,7 @@ public class SpectralArrow extends EntityObject implements ObjectInterface {
 
     public SpectralArrow(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new AbstractArrowMetaData(sets, protocolId);
+        this.metaData = new SpectralArrowMetaData(sets, protocolId);
         this.shooter = 0; // ToDo
     }
 
@@ -43,7 +43,7 @@ public class SpectralArrow extends EntityObject implements ObjectInterface {
 
     @Override
     public void setMetaData(EntityMetaData metaData) {
-        this.metaData = (AbstractArrowMetaData) metaData;
+        this.metaData = (SpectralArrowMetaData) metaData;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class SpectralArrow extends EntityObject implements ObjectInterface {
 
     @Override
     public Class<? extends EntityMetaData> getMetaDataClass() {
-        return AbstractArrowMetaData.class;
+        return SpectralArrowMetaData.class;
     }
 
     public int getShooter() {
