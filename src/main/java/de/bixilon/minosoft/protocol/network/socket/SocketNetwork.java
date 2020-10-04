@@ -195,8 +195,10 @@ public class SocketNetwork implements Network {
                     try {
                         packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
                         if (packet == null) {
-                            Log.fatal(String.format("Version packet enum does not contain a packet with id 0x%x. Your version.json is broken!", inPacketBuffer.getCommand()));
-                            System.exit(1);
+                            Log.fatal(String.format("Version packet enum does not contain a packet with id 0x%x. The server sent bullshit or your version.json is broken!", inPacketBuffer.getCommand()));
+                            disconnect();
+                            lastException = new RuntimeException("Invalid packet 0x%x" + inPacketBuffer.getCommand());
+                            throw lastException;
                         }
                         Class<? extends ClientboundPacket> clazz = packet.getClazz();
 

@@ -99,7 +99,8 @@ public class PacketDecoder extends ByteToMessageDecoder {
             packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
             if (packet == null) {
                 Log.fatal(String.format("Version packet enum does not contain a packet with id 0x%x. Your version.json is broken!", inPacketBuffer.getCommand()));
-                System.exit(1);
+                nettyNetwork.disconnect();
+                throw new RuntimeException("Invalid packet 0x%x" + inPacketBuffer.getCommand());
             }
             Class<? extends ClientboundPacket> clazz = packet.getClazz();
 
