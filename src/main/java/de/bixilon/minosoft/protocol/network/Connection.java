@@ -29,6 +29,8 @@ import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.event.events.CancelableEvent;
 import de.bixilon.minosoft.modding.event.events.Event;
+import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent;
+import de.bixilon.minosoft.modding.event.events.PacketSendEvent;
 import de.bixilon.minosoft.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
@@ -189,8 +191,25 @@ public class Connection {
         return player;
     }
 
-    public void sendPacket(ServerboundPacket p) {
-        network.sendPacket(p);
+    public void sendPacket(ServerboundPacket packet) {
+        PacketSendEvent event = new PacketSendEvent(this, packet);
+        if (fireEvent(event)) {
+            return;
+        }
+        network.sendPacket(packet);
+    }
+
+    /**
+     * @param event The event to fire
+     * @return if the event has been cancelled or not
+     */
+    public boolean fireEvent(Event event) {
+        Minosoft.eventManagers.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach(event::handle)));
+        eventListeners.forEach(event::handle);
+        if (event instanceof CancelableEvent) {
+            return ((CancelableEvent) event).isCancelled();
+        }
+        return false;
     }
 
     void startHandlingThread() {
@@ -204,6 +223,10 @@ public class Connection {
                 }
                 try {
                     packet.log();
+                    PacketReceiveEvent event = new PacketReceiveEvent(this, packet);
+                    if (fireEvent(event)) {
+                        continue;
+                    }
                     packet.handle(getHandler());
                 } catch (Exception e) {
                     if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
@@ -425,18 +448,5 @@ public class Connection {
 
     public void unregisterEvents(EventManager... eventManagers) {
         this.eventManagers.removeAll(Arrays.asList(eventManagers));
-    }
-
-    /**
-     * @param event The event to fire
-     * @return if the event has been cancelled or not
-     */
-    public boolean fireEvent(Event event) {
-        Minosoft.eventManagers.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach(event::handle)));
-        eventListeners.forEach(event::handle);
-        if (event instanceof CancelableEvent) {
-            return ((CancelableEvent) event).isCancelled();
-        }
-        return false;
     }
 }

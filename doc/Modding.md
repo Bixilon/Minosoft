@@ -47,8 +47,8 @@ In your jar file (the mod) must be a file called `mod.json`.
 - `mainClass` the Main class of your mod (self explaining). The main class needs to extent the abstract class `MinosoftMod`. **Required**
 - `loading` Loading attributes. **Optional**
   - `priority` should the mod be loaded at the beginning or at the end. Possible values are `LOWEST`, `LOW`, `NORMAL`, `HIGH`, `HIGHEST` **Optional**
-- `dependencies` Used if you need an other mod to work **Optional**
-  - `hard` These mods are **needed** to work. If the loading fails, your mod is not getting loaded and an warning message is being displayed. **Optional**
+- `dependencies` Used if you need another mod to work **Optional**
+  - `hard` These mods are **needed** to work. If the loading fails, your mod is not getting loaded, and a warning message is being displayed. **Optional**
   - `soft` These mods are **optional** to work. Both use the following format: **Optional**
     - `uuid` the uuid of the mod to load. **Required**
     - `version` Specifies the version you need to load. **Optional**
@@ -74,20 +74,20 @@ If your start function needs much time, you can set the loading priority in the 
 Add Minosoft to your maven dependencies with  
 Repository:
 ```xml
-	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
+<repositories>
+	<repository>
+    	<id>jitpack.io</id>
+    	<url>https://jitpack.io</url>
+	</repository>
+</repositories>
 ```  
 Dependency:  
 ```xml
-	<dependency>
-	    <groupId>de.bixilon.gitlab.bixilon</groupId>
-	    <artifactId>minosoft</artifactId>
-	    <version>master-SNAPSHOT</version>
-	</dependency>
+<dependency>
+    <groupId>de.bixilon.gitlab.bixilon</groupId>
+    <artifactId>minosoft</artifactId>
+    <version>master-SNAPSHOT</version>
+</dependency>
 
 ```
 Create a Main class, here is an example

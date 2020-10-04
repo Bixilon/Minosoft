@@ -39,4 +39,12 @@ public class EventListener {
 
     public void onOpenSignEditor(OpenSignEditorEvent event) {
     }
+
+    @Unsafe
+    public void onPacketSend(PacketSendEvent event) {
+    }
+
+    @Unsafe
+    public void onPacketReceive(PacketReceiveEvent event) {
+    }
 }
