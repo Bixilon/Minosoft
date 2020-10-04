@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-public class AbstractMerchantMetaData extends AgeableMetaData {
+public abstract class AbstractMerchantMetaData extends AgeableMetaData {
 
     public AbstractMerchantMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

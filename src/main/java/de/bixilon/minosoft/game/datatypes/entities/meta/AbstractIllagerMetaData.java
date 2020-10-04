@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-public class AbstractIllagerMetaData extends RaidParticipantMetaData {
+public abstract class AbstractIllagerMetaData extends RaidParticipantMetaData {
 
     public AbstractIllagerMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

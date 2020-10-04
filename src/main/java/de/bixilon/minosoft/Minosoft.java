@@ -109,7 +109,7 @@ public class Minosoft {
     }
 
     public static void checkClientToken() {
-        if (config.getString(GameConfiguration.CLIENT_TOKEN).equals("randomGenerated")) {
+        if (config.getString(GameConfiguration.CLIENT_TOKEN).isBlank()) {
             config.putString(GameConfiguration.CLIENT_TOKEN, UUID.randomUUID().toString());
             config.saveToFile();
         }

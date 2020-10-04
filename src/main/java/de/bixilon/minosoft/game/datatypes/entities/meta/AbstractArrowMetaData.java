@@ -15,7 +15,7 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class AbstractArrowMetaData extends EntityMetaData {
+public abstract class AbstractArrowMetaData extends EntityMetaData {
 
     public AbstractArrowMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-public class AbstractFishMetaData extends WaterMobMetaData {
+public abstract class AbstractFishMetaData extends WaterMobMetaData {
 
     public AbstractFishMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

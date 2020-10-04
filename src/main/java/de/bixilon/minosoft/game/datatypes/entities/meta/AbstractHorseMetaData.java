@@ -15,7 +15,7 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class AbstractHorseMetaData extends AnimalMetaData {
+public abstract class AbstractHorseMetaData extends AnimalMetaData {
 
     public AbstractHorseMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);
