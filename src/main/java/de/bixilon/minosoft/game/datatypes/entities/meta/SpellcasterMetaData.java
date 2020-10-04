@@ -19,7 +19,7 @@ public class SpellcasterMetaData extends LivingMetaData {
     }
 
     public SpellTypes getSpell() {
-        final int defaultValue = SpellTypes.NONE.getId();
+        final int defaultValue = SpellTypes.NONE.ordinal();
         if (protocolId < 315) { // ToDo
             return SpellTypes.byId(defaultValue);
         }
@@ -32,30 +32,15 @@ public class SpellcasterMetaData extends LivingMetaData {
     }
 
     public enum SpellTypes {
-        NONE(0),
-        SUMMON_VEX(1),
-        ATTACK(2),
-        WOLOLO(3),
-        DISAPPEAR(3),
-        BLINDNESS(3);
-
-        final int id;
-
-        SpellTypes(int id) {
-            this.id = id;
-        }
+        NONE,
+        SUMMON_VEX,
+        ATTACK,
+        WOLOLO,
+        DISAPPEAR,
+        BLINDNESS;
 
         public static SpellTypes byId(int id) {
-            for (SpellTypes type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

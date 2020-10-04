@@ -90,27 +90,12 @@ public class AdvancementDisplay {
     }
 
     public enum AdvancementFrameTypes {
-        TASK(0),
-        CHALLENGE(1),
-        GOAL(2);
-
-        final int id;
-
-        AdvancementFrameTypes(int id) {
-            this.id = id;
-        }
+        TASK,
+        CHALLENGE,
+        GOAL;
 
         public static AdvancementFrameTypes byId(int id) {
-            for (AdvancementFrameTypes type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

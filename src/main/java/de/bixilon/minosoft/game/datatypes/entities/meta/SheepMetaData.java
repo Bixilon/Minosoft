@@ -21,7 +21,7 @@ public class SheepMetaData extends AnimalMetaData {
     }
 
     public Colors getColor() {
-        final int defaultValue = Colors.WHITE.getId();
+        final int defaultValue = Colors.WHITE.ordinal();
         if (protocolId < 57) {
             return Colors.byId(sets.getInt(16, defaultValue) & 0xF);
         }

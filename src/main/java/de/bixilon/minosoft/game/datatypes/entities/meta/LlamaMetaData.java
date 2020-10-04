@@ -40,7 +40,7 @@ public class LlamaMetaData extends ChestedHorseMetaData {
     }
 
     public LlamaVariants getVariant() {
-        final int defaultValue = LlamaVariants.CREAMY.getId();
+        final int defaultValue = LlamaVariants.CREAMY.ordinal();
         if (protocolId < 315) { // ToDo
             return LlamaVariants.byId(defaultValue);
         }
@@ -56,28 +56,13 @@ public class LlamaMetaData extends ChestedHorseMetaData {
     }
 
     public enum LlamaVariants {
-        CREAMY(0),
-        WHITE(1),
-        BROWN(2),
-        GRAY(3);
-
-        final int id;
-
-        LlamaVariants(int id) {
-            this.id = id;
-        }
+        CREAMY,
+        WHITE,
+        BROWN,
+        GRAY;
 
         public static LlamaVariants byId(int id) {
-            for (LlamaVariants variant : values()) {
-                if (variant.getId() == id) {
-                    return variant;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

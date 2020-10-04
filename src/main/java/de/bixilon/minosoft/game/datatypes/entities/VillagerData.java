@@ -76,31 +76,16 @@ public class VillagerData {
     }
 
     public enum VillagerTypes {
-        DESSERT(0),
-        JUNGLE(1),
-        PLAINS(2),
-        SAVANNA(3),
-        SNOW(4),
-        SWAMP(5),
-        TAIGA(6);
-
-        final int id;
-
-        VillagerTypes(int id) {
-            this.id = id;
-        }
+        DESSERT,
+        JUNGLE,
+        PLAINS,
+        SAVANNA,
+        SNOW,
+        SWAMP,
+        TAIGA;
 
         public static VillagerTypes byId(int id) {
-            for (VillagerTypes type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 
@@ -110,29 +95,14 @@ public class VillagerData {
     }
 
     public enum VillagerLevels {
-        NOVICE(0),
-        APPRENTICE(1),
-        JOURNEYMAN(2),
-        EXPERT(4),
-        MASTER(5);
-
-        final int id;
-
-        VillagerLevels(int id) {
-            this.id = id;
-        }
+        NOVICE,
+        APPRENTICE,
+        JOURNEYMAN,
+        EXPERT,
+        MASTER;
 
         public static VillagerLevels byId(int id) {
-            for (VillagerLevels level : values()) {
-                if (level.getId() == id) {
-                    return level;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 

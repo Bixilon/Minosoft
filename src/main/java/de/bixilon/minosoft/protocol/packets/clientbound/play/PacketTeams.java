@@ -149,29 +149,14 @@ public class PacketTeams implements ClientboundPacket {
     }
 
     public enum TeamActions {
-        CREATE(0),
-        REMOVE(1),
-        INFORMATION_UPDATE(2),
-        PLAYER_ADD(3),
-        PLAYER_REMOVE(4);
-
-        final int id;
-
-        TeamActions(int id) {
-            this.id = id;
-        }
+        CREATE,
+        REMOVE,
+        INFORMATION_UPDATE,
+        PLAYER_ADD,
+        PLAYER_REMOVE;
 
         public static TeamActions byId(int id) {
-            for (TeamActions action : values()) {
-                if (action.getId() == id) {
-                    return action;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 

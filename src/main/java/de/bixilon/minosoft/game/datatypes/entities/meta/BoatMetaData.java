@@ -43,7 +43,7 @@ public class BoatMetaData extends EntityMetaData {
     }
 
     public BoatMaterials getMaterial() {
-        final int defaultValue = BoatMaterials.OAK.getId();
+        final int defaultValue = BoatMaterials.OAK.ordinal();
         if (protocolId < 57) {
             return BoatMaterials.byId(defaultValue);
         }
@@ -86,30 +86,15 @@ public class BoatMetaData extends EntityMetaData {
     }
 
     public enum BoatMaterials {
-        OAK(0),
-        SPRUCE(1),
-        BIRCH(2),
-        JUNGLE(3),
-        ACACIA(4),
-        DARK_OAK(5);
-
-        final int id;
-
-        BoatMaterials(int id) {
-            this.id = id;
-        }
+        OAK,
+        SPRUCE,
+        BIRCH,
+        JUNGLE,
+        ACACIA,
+        DARK_OAK;
 
         public static BoatMaterials byId(int id) {
-            for (BoatMaterials material : values()) {
-                if (material.getId() == id) {
-                    return material;
-                }
-            }
-            return OAK;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

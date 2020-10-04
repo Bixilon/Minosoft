@@ -28,29 +28,14 @@ public class NoteBlockAction implements BlockAction {
     }
 
     public enum Instruments {
-        HARP(0),
-        DOUBLE_BASS(1),
-        SNARE_DRUM(2),
-        CLICKS_STICKS(3),
-        BASS_DRUM(4);
-
-        final byte id;
-
-        Instruments(int id) {
-            this.id = (byte) id;
-        }
+        HARP,
+        DOUBLE_BASS,
+        SNARE_DRUM,
+        CLICKS_STICKS,
+        BASS_DRUM;
 
         public static Instruments byId(int id) {
-            for (Instruments instrument : values()) {
-                if (instrument.getId() == id) {
-                    return instrument;
-                }
-            }
-            return null;
-        }
-
-        public byte getId() {
-            return id;
+            return values()[id];
         }
     }
 }

@@ -19,7 +19,7 @@ public class FoxMetaData extends AnimalMetaData {
     }
 
     public FoxTypes getType() {
-        final int defaultValue = FoxTypes.RED.getId();
+        final int defaultValue = FoxTypes.RED.ordinal();
         if (protocolId < 477) { // ToDo
             return FoxTypes.byId(defaultValue);
         }
@@ -60,26 +60,11 @@ public class FoxMetaData extends AnimalMetaData {
     }
 
     public enum FoxTypes {
-        RED(0),
-        SNOW(1);
-
-        final int id;
-
-        FoxTypes(int id) {
-            this.id = id;
-        }
+        RED,
+        SNOW;
 
         public static FoxTypes byId(int id) {
-            for (FoxTypes type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

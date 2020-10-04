@@ -34,8 +34,4 @@ public enum Colors {
     public static Colors byId(int id) {
         return values()[id];
     }
-
-    public int getId() {
-        return ordinal();
-    }
 }

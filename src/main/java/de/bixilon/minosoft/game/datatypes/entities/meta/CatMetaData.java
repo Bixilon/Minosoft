@@ -21,7 +21,7 @@ public class CatMetaData extends AnimalMetaData {
     }
 
     public CatTypes getType() {
-        final int defaultValue = CatTypes.BLACK.getId();
+        final int defaultValue = CatTypes.BLACK.ordinal();
         if (protocolId < 477) { // ToDo
             return CatTypes.byId(defaultValue);
         }
@@ -29,7 +29,7 @@ public class CatMetaData extends AnimalMetaData {
     }
 
     public Colors getCollarColor() {
-        final int defaultValue = Colors.RED.getId();
+        final int defaultValue = Colors.RED.ordinal();
         if (protocolId < 477) { // ToDo
             return Colors.byId(defaultValue);
         }
@@ -45,34 +45,19 @@ public class CatMetaData extends AnimalMetaData {
     }
 
     public enum CatTypes {
-        TABBY(0),
-        BLACK(1),
-        RED(2),
-        SIAMESE(3),
-        BRITISH_SHORT_HAIR(4),
-        CALICO(5),
-        PERSIAN(6),
-        RAG_DOLL(7),
-        WHITE(8),
-        ALL_BLACK(9);
-
-        final int id;
-
-        CatTypes(int id) {
-            this.id = id;
-        }
+        TABBY,
+        BLACK,
+        RED,
+        SIAMESE,
+        BRITISH_SHORT_HAIR,
+        CALICO,
+        PERSIAN,
+        RAG_DOLL,
+        WHITE,
+        ALL_BLACK;
 
         public static CatTypes byId(int id) {
-            for (CatTypes type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

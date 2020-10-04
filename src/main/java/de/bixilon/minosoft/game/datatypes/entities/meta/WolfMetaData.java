@@ -65,7 +65,7 @@ public class WolfMetaData extends TameableMetaData {
     }
 
     public Colors getColor() {
-        final int defaultValue = Colors.RED.getId();
+        final int defaultValue = Colors.RED.ordinal();
         if (protocolId < 57) {
             return Colors.byId(sets.getByte(20, defaultValue));
         }

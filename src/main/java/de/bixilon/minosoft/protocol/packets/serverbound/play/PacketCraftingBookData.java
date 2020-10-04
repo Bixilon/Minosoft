@@ -58,9 +58,9 @@ public class PacketCraftingBookData implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_RECIPE_BOOK_DATA);
         if (buffer.getProtocolId() < 333) {
-            buffer.writeInt(action.getId());
+            buffer.writeInt(action.ordinal());
         } else {
-            buffer.writeVarInt(action.getId());
+            buffer.writeVarInt(action.ordinal());
         }
 
         switch (action) {
@@ -88,26 +88,11 @@ public class PacketCraftingBookData implements ServerboundPacket {
     }
 
     public enum BookDataStatus {
-        DISPLAY_RECIPE(0),
-        CRAFTING_BOOK_STATUS(1);
-
-        final int id;
-
-        BookDataStatus(int id) {
-            this.id = id;
-        }
+        DISPLAY_RECIPE,
+        CRAFTING_BOOK_STATUS;
 
         public static BookDataStatus byId(int id) {
-            for (BookDataStatus action : values()) {
-                if (action.getId() == id) {
-                    return action;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

@@ -19,7 +19,7 @@ public class SkeletonMetaData extends MonsterMetaData {
     }
 
     public SkeletonTypes getSkeletonType() {
-        final int defaultValue = SkeletonTypes.NORMAL.getId();
+        final int defaultValue = SkeletonTypes.NORMAL.ordinal();
         if (protocolId < 57) {
             return SkeletonTypes.byId(sets.getInt(13, defaultValue));
         }
@@ -52,27 +52,12 @@ public class SkeletonMetaData extends MonsterMetaData {
     }
 
     public enum SkeletonTypes {
-        NORMAL(0),
-        WITHER(1),
-        STRAY(2);
-
-        final int id;
-
-        SkeletonTypes(int id) {
-            this.id = id;
-        }
+        NORMAL,
+        WITHER,
+        STRAY;
 
         public static SkeletonTypes byId(int id) {
-            for (SkeletonTypes type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

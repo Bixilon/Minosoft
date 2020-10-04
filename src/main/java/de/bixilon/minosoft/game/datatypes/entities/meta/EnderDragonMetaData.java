@@ -19,7 +19,7 @@ public class EnderDragonMetaData extends InsentientMetaData {
     }
 
     public DragonPhases getDragonPhase() {
-        final int defaultValue = DragonPhases.HOVERING.getId();
+        final int defaultValue = DragonPhases.HOVERING.ordinal();
         if (protocolId < 110) { //ToDo
             return DragonPhases.byId(defaultValue);
         }
@@ -35,34 +35,19 @@ public class EnderDragonMetaData extends InsentientMetaData {
     }
 
     public enum DragonPhases {
-        CIRCLING(0),
-        STRAFING(1),
-        FLYING_TO_PORTAL_TO_LAND(2),
-        LANDING_ON_PORTAL(3),
-        TAKING_OFF_THE_PORTAL(4),
-        LANDED_BREATH_ATTACK(5),
-        LANDED_ROAR(6),
-        CHARGING_PLAYER(7),
-        FLYING_TO_DIE(8),
-        HOVERING(10);
-
-        final int id;
-
-        DragonPhases(int id) {
-            this.id = id;
-        }
+        CIRCLING,
+        STRAFING,
+        FLYING_TO_PORTAL_TO_LAND,
+        LANDING_ON_PORTAL,
+        TAKING_OFF_THE_PORTAL,
+        LANDED_BREATH_ATTACK,
+        LANDED_ROAR,
+        CHARGING_PLAYER,
+        FLYING_TO_DIE,
+        HOVERING;
 
         public static DragonPhases byId(int id) {
-            for (DragonPhases phase : values()) {
-                if (phase.getId() == id) {
-                    return phase;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

@@ -92,14 +92,12 @@ public class PacketScoreboardObjective implements ClientboundPacket {
     }
 
     public enum ScoreboardObjectiveTypes {
-        INTEGER(0, "integer"),
-        HEARTS(1, "hearts");
+        INTEGER("integer"),
+        HEARTS("hearts");
 
-        final int id;
         final String name;
 
-        ScoreboardObjectiveTypes(int id, String name) {
-            this.id = id;
+        ScoreboardObjectiveTypes(String name) {
             this.name = name;
         }
 
@@ -117,16 +115,7 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         }
 
         public static ScoreboardObjectiveTypes byId(int id) {
-            for (ScoreboardObjectiveTypes type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

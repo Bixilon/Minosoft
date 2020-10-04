@@ -19,7 +19,7 @@ public class ParrotMetaData extends TameableMetaData {
     }
 
     public ParrotVariants getVariant() {
-        final int defaultValue = ParrotVariants.RED_BLUE.getId();
+        final int defaultValue = ParrotVariants.RED_BLUE.ordinal();
         if (protocolId < 335) { //ToDo
             return ParrotVariants.byId(defaultValue);
         }
@@ -35,29 +35,14 @@ public class ParrotMetaData extends TameableMetaData {
     }
 
     public enum ParrotVariants {
-        RED_BLUE(0),
-        BLUE(1),
-        GREEN(2),
-        YELLOW_BLUE(3),
-        SILVER(4);
-
-        final int id;
-
-        ParrotVariants(int id) {
-            this.id = id;
-        }
+        RED_BLUE,
+        BLUE,
+        GREEN,
+        YELLOW_BLUE,
+        SILVER;
 
         public static ParrotVariants byId(int id) {
-            for (ParrotVariants variant : values()) {
-                if (variant.getId() == id) {
-                    return variant;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

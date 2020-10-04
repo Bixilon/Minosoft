@@ -128,27 +128,13 @@ public class PacketUnlockRecipes implements ClientboundPacket {
     }
 
     public enum UnlockRecipeActions {
-        INITIALIZE(0),
-        ADD(1),
-        REMOVE(2);
+        INITIALIZE,
+        ADD,
+        REMOVE;
 
-        final int id;
-
-        UnlockRecipeActions(int id) {
-            this.id = id;
-        }
 
         public static UnlockRecipeActions byId(int id) {
-            for (UnlockRecipeActions action : values()) {
-                if (action.getId() == id) {
-                    return action;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

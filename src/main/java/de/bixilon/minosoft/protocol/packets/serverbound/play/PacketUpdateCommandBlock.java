@@ -43,7 +43,7 @@ public class PacketUpdateCommandBlock implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_COMMAND_BLOCK);
         buffer.writePosition(position);
         buffer.writeString(command);
-        buffer.writeVarInt(type.getId());
+        buffer.writeVarInt(type.ordinal());
 
         byte flags = 0x00;
         if (trackOutput) {
@@ -66,27 +66,12 @@ public class PacketUpdateCommandBlock implements ServerboundPacket {
     }
 
     public enum CommandBlockType {
-        SEQUENCE(0),
-        AUTO(1),
-        REDSTONE(2);
-
-        final int id;
-
-        CommandBlockType(int id) {
-            this.id = id;
-        }
+        SEQUENCE,
+        AUTO,
+        REDSTONE;
 
         public static CommandBlockType byId(int id) {
-            for (CommandBlockType type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

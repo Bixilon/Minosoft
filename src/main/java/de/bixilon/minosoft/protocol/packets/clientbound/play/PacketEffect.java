@@ -176,33 +176,18 @@ public class PacketEffect implements ClientboundPacket {
     }
 
     public enum SmokeDirections {
-        SOUTH_EAST(0),
-        SOUTH(1),
-        SOUTH_WEST(2),
-        EAST(3),
-        UP(4),
-        WEST(5),
-        NORTH_EAST(6),
-        NORTH(7),
-        NORTH_WEST(8);
-
-        final int id;
-
-        SmokeDirections(int id) {
-            this.id = id;
-        }
+        SOUTH_EAST,
+        SOUTH,
+        SOUTH_WEST,
+        EAST,
+        UP,
+        WEST,
+        NORTH_EAST,
+        NORTH,
+        NORTH_WEST;
 
         public static SmokeDirections byId(int id) {
-            for (SmokeDirections direction : values()) {
-                if (direction.getId() == id) {
-                    return direction;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

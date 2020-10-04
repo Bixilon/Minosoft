@@ -50,7 +50,7 @@ public class ShulkerMetaData extends GolemMetaData {
     }
 
     public Colors getColor() {
-        final int defaultValue = Colors.PURPLE.getId();
+        final int defaultValue = Colors.PURPLE.ordinal();
         if (protocolId < 110) { //ToDo
             return Colors.byId(defaultValue);
         }

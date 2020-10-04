@@ -64,8 +64,8 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_STRUCTURE_BLOCK);
         buffer.writePosition(position);
-        buffer.writeVarInt(action.getId());
-        buffer.writeVarInt(mode.getId());
+        buffer.writeVarInt(action.ordinal());
+        buffer.writeVarInt(mode.ordinal());
         buffer.writeString(name);
         buffer.writeByte(offsetX);
         buffer.writeByte(offsetY);
@@ -73,8 +73,8 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
         buffer.writeByte(sizeX);
         buffer.writeByte(sizeY);
         buffer.writeByte(sizeZ);
-        buffer.writeVarInt(mirror.getId());
-        buffer.writeVarInt(rotation.getId());
+        buffer.writeVarInt(mirror.ordinal());
+        buffer.writeVarInt(rotation.ordinal());
         buffer.writeString(metaData);
         buffer.writeFloat(integrity);
         buffer.writeVarLong(seed);
@@ -88,105 +88,45 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
     }
 
     public enum StructureBlockActions {
-        UPDATE(0),
-        SAVE(1),
-        LOAD(2),
-        DETECT_SIZE(3);
-
-        final int id;
-
-        StructureBlockActions(int id) {
-            this.id = id;
-        }
+        UPDATE,
+        SAVE,
+        LOAD,
+        DETECT_SIZE;
 
         public static StructureBlockActions byId(int id) {
-            for (StructureBlockActions action : values()) {
-                if (action.getId() == id) {
-                    return action;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 
     public enum StructureBlockModes {
-        SAVE(0),
-        LOAD(1),
-        CORNER(2),
-        DATA(3);
-
-        final int id;
-
-        StructureBlockModes(int id) {
-            this.id = id;
-        }
+        SAVE,
+        LOAD,
+        CORNER,
+        DATA;
 
         public static StructureBlockModes byId(int id) {
-            for (StructureBlockModes mode : values()) {
-                if (mode.getId() == id) {
-                    return mode;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 
     public enum StructureBlockMirrors {
-        NONE(0),
-        LEFT_RIGHT(1),
-        FRONT_BACK(2);
-
-        final int id;
-
-        StructureBlockMirrors(int id) {
-            this.id = id;
-        }
+        NONE,
+        LEFT_RIGHT,
+        FRONT_BACK;
 
         public static StructureBlockMirrors byId(int id) {
-            for (StructureBlockMirrors mirror : values()) {
-                if (mirror.getId() == id) {
-                    return mirror;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 
     public enum StructureBlockRotations {
-        NONE(0),
-        CLOCKWISE_90(1),
-        CLOCKWISE_180(2),
-        COUNTERCLOCKWISE_90(3);
-
-        final int id;
-
-        StructureBlockRotations(int id) {
-            this.id = id;
-        }
+        NONE,
+        CLOCKWISE_90,
+        CLOCKWISE_180,
+        COUNTERCLOCKWISE_90;
 
         public static StructureBlockRotations byId(int id) {
-            for (StructureBlockRotations rotation : values()) {
-                if (rotation.getId() == id) {
-                    return rotation;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 
