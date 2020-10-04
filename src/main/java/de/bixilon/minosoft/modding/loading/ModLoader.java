@@ -35,7 +35,6 @@ public class ModLoader {
         // load all jars, parse the mod.json
         // sort the list and prioritize
         // load all lists and dependencies async
-
         HashSet<Callable<MinosoftMod>> callables = new HashSet<>();
         File[] files = new File(Config.homeDir + "mods").listFiles();
         if (files == null) {
@@ -46,15 +45,22 @@ public class ModLoader {
             if (modFile.isDirectory()) {
                 continue;
             }
-            callables.add(() -> loadMod(modFile));
+            callables.add(() -> {
+                MinosoftMod mod = loadMod(modFile);
+                if (mod != null) {
+                    mods.add(mod);
+                }
+                return mod;
+            });
         }
 
         Util.executeInThreadPool("ModLoader", callables);
 
         mods.sort((a, b) -> {
-            LoadingPriorities priorityA = getLoadingPriorityOrDefault(a.getInfo());
-            LoadingPriorities priorityB = getLoadingPriorityOrDefault(b.getInfo());
-            return -(priorityB.ordinal() - priorityA.ordinal());
+            if (a == null || b == null) {
+                return 0;
+            }
+            return -(getLoadingPriorityOrDefault(b.getInfo()).ordinal() - getLoadingPriorityOrDefault(a.getInfo()).ordinal());
         });
         for (ModPhases phase : ModPhases.values()) {
             Log.verbose(String.format("Map loading phase changed: %s", phase));
@@ -96,8 +102,7 @@ public class ModLoader {
 
             MinosoftMod instance = (MinosoftMod) factory.create(jcl, modInfo.getMainClass());
             instance.setInfo(modInfo);
-            Log.verbose(String.format("[MOD] Mod file loaded (%s)", modInfo));
-            mods.add(instance);
+            Log.verbose(String.format("[MOD] Mod file loaded and added to classpath (%s)", modInfo));
             zipFile.close();
             return instance;
         } catch (IOException e) {

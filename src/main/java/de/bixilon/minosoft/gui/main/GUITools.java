@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
+import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.logging.LogLevels;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,6 +31,18 @@ public class GUITools {
     public final static ComboBox<Version> versionList = new ComboBox<>(GUITools.versions);
     public final static ObservableList<LogLevels> logLevels = FXCollections.observableList(Arrays.asList(LogLevels.values().clone()));
 
+    static {
+        GUITools.versions.add(Versions.getLowestVersionSupported());
+        Versions.getVersionMap().forEach((key, value) -> GUITools.versions.add(value));
+
+        GUITools.versions.sort((a, b) -> {
+            if (a.getProtocolVersion() == -1) {
+                return -Integer.MAX_VALUE;
+            }
+            return (b.getProtocolVersion() - a.getProtocolVersion());
+        });
+    }
+
     public static Image getImageFromBase64(String base64) {
         if (base64 == null) {
             return null;
@@ -42,12 +55,12 @@ public class GUITools {
         }
     }
 
-    public static Image getImage(byte[] favicon) {
-        if (favicon == null) {
+    public static Image getImage(byte[] raw) {
+        if (raw == null) {
             return null;
         }
         try {
-            return new Image(new ByteArrayInputStream(favicon));
+            return new Image(new ByteArrayInputStream(raw));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return null;

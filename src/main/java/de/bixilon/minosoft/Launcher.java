@@ -14,7 +14,6 @@
 package de.bixilon.minosoft;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.gui.main.GUITools;
 import de.bixilon.minosoft.gui.main.MainWindow;
 import de.bixilon.minosoft.gui.main.Server;
@@ -42,15 +41,6 @@ public class Launcher extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         Log.info("Starting launcher...");
-        GUITools.versions.add(Versions.getLowestVersionSupported());
-        Versions.getVersionMap().forEach((key, value) -> GUITools.versions.add(value));
-
-        GUITools.versions.sort((a, b) -> {
-            if (a.getProtocolVersion() == -1) {
-                return -Integer.MAX_VALUE;
-            }
-            return (b.getProtocolVersion() - a.getProtocolVersion());
-        });
 
         GUITools.versionList.setCellFactory(new Callback<>() {
             @Override
@@ -72,7 +62,7 @@ public class Launcher extends Application {
         servers.addAll(Minosoft.serverList);
         ServerListCell.listView.setItems(servers);
 
-        VBox root = FXMLLoader.load(getClass().getResource("/layout/main.fxml"));
+        VBox root = new FXMLLoader(getClass().getResource("/layout/main.fxml")).load();
 
         Scene scene = new Scene(root, 600, 800);
         primaryStage.setScene(scene);
