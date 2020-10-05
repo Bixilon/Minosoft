@@ -149,7 +149,7 @@ public class ChatEvent extends EventListener {
         if(event.isCancelled()) {
             return;
         }
-        if(event.getMessage().contains("jeb_ is stupid")){
+        if(event.getMessage().contains("jeb_ is stupid")) {
             event.setCancelled(true);
             event.getConnection().getSender().sendChatMessage("jeb_ is awesome!");
         }

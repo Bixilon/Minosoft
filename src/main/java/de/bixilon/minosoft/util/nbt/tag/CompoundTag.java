@@ -19,6 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CompoundTag implements NBTTag {
     final String name;
@@ -148,17 +149,21 @@ public class CompoundTag implements NBTTag {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(name);
-        builder.append("{");
-
-        for (Map.Entry<String, NBTTag> set : data.entrySet()) {
-            builder.append(set.getKey());
-            builder.append(": ");
-            builder.append(set.getValue());
-            builder.append(", ");
+        if (name != null) {
+            builder.append(name);
         }
-        builder.delete(builder.length() - 2, builder.length()); // delete last comma
-
+        builder.append('{');
+        AtomicInteger i = new AtomicInteger();
+        data.forEach((key, value) -> {
+            builder.append(key);
+            builder.append(": ");
+            builder.append(value);
+            if (i.get() == data.size() - 1) {
+                return;
+            }
+            builder.append(", ");
+            i.getAndIncrement();
+        });
         builder.append("}");
         return builder.toString();
     }

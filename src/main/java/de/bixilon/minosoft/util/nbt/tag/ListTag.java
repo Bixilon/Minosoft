@@ -63,20 +63,12 @@ public class ListTag implements NBTTag {
         }
     }
 
-    public ArrayList<NBTTag> getValue() {
-        return list;
+    public <K> ArrayList<K> getValue() {
+        return (ArrayList<K>) list;
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        for (NBTTag NBTTag : list) {
-            builder.append(NBTTag);
-        }
-        builder.delete(builder.length() - 1, builder.length()); // delete last comma
-        builder.append("]");
-
-        return builder.toString();
+        return list.toString();
     }
 }

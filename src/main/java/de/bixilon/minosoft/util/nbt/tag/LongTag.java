@@ -43,6 +43,6 @@ public class LongTag implements NBTTag {
 
     @Override
     public String toString() {
-        return value + "L";
+        return value + "l";
     }
 }
