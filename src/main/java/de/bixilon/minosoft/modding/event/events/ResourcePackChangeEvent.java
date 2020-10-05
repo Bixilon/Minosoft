@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.modding.event.EventListener;
+import de.bixilon.minosoft.modding.event.events.annotations.MaximumProtocolVersion;
+import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketResourcePackSend;
 

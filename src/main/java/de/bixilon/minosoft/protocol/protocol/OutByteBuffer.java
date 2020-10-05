@@ -182,7 +182,7 @@ public class OutByteBuffer {
             writeShort((short) connection.getMapping().getItemId(slot.getItem()));
             writeByte((byte) slot.getItemCount());
             writeShort(slot.getItemMetadata());
-            writeNBT(slot.getNbt());
+            writeNBT(slot.getNbt(connection.getMapping()));
         }
         if (slot == null) {
             writeBoolean(false);
@@ -190,7 +190,7 @@ public class OutByteBuffer {
         }
         writeVarInt(connection.getMapping().getItemId(slot.getItem()));
         writeByte((byte) slot.getItemCount());
-        writeNBT(slot.getNbt());
+        writeNBT(slot.getNbt(connection.getMapping()));
     }
 
     void writeNBT(CompoundTag nbt) {

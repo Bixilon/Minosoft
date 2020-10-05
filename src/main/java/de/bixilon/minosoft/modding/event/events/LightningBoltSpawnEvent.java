@@ -13,26 +13,30 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
+import de.bixilon.minosoft.game.datatypes.entities.objects.LightningBolt;
 import de.bixilon.minosoft.modding.event.EventListener;
-import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSpawnWeatherEntity;
 
-@Unsafe
-public class PacketReceiveEvent extends Event {
-    private final ClientboundPacket packet;
+public class LightningBoltSpawnEvent extends Event {
+    private final LightningBolt entity;
 
-    public PacketReceiveEvent(Connection connection, ClientboundPacket packet) {
+    public LightningBoltSpawnEvent(Connection connection, LightningBolt entity) {
         super(connection);
-        this.packet = packet;
+        this.entity = entity;
     }
 
-    public ClientboundPacket getPacket() {
-        return packet;
+    public LightningBoltSpawnEvent(Connection connection, PacketSpawnWeatherEntity pkg) {
+        super(connection);
+        this.entity = pkg.getEntity();
+    }
+
+    public LightningBolt getEntity() {
+        return entity;
     }
 
     @Override
     public void handle(EventListener listener) {
-        listener.onPacketReceive(this);
+        listener.onLightningBoltSpawn(this);
     }
 }

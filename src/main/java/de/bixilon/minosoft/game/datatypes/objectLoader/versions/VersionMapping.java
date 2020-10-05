@@ -111,6 +111,10 @@ public class VersionMapping {
         return statisticIdMap.get(protocolId);
     }
 
+    public int getIdByEnchantment(Enchantment enchantment) {
+        return enchantmentMap.inverse().get(enchantment);
+    }
+
     public void load(Mappings type, JsonObject data) {
         switch (type) {
             case REGISTRIES -> {

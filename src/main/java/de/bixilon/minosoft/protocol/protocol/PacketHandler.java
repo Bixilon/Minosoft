@@ -339,7 +339,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketSpawnWeatherEntity pkg) {
-        // ToDo
+        connection.fireEvent(new LightningBoltSpawnEvent(connection, pkg));
     }
 
     public void handle(PacketChunkData pkg) {

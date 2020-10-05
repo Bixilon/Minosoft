@@ -16,6 +16,7 @@ package de.bixilon.minosoft.game.datatypes.objectLoader.versions;
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.HashMap;
 
@@ -52,10 +53,6 @@ public class Version {
         return clientboundPacketMapping;
     }
 
-    public String getVersionName() {
-        return versionName;
-    }
-
     public HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> getServerboundPacketMapping() {
         return serverboundPacketMapping;
     }
@@ -68,11 +65,6 @@ public class Version {
         this.mapping = mapping;
     }
 
-    @Override
-    public int hashCode() {
-        return getProtocolVersion();
-    }
-
     public boolean isGettingLoaded() {
         return isGettingLoaded;
     }
@@ -81,6 +73,18 @@ public class Version {
         isGettingLoaded = gettingLoaded;
     }
 
+    public boolean isFlattened() {
+        return protocolVersion > ProtocolDefinition.FLATTING_VERSION_ID;
+    }
+
+    public String getVersionName() {
+        return versionName;
+    }
+
+    @Override
+    public int hashCode() {
+        return getProtocolVersion();
+    }
 
     public int getProtocolVersion() {
         return protocolVersion;

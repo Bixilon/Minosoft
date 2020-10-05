@@ -138,6 +138,10 @@ public class CompoundTag implements NBTTag {
         data.put(name, tag);
     }
 
+    public int size() {
+        return data.size();
+    }
+
     // abstract functions
 
     public void writeBlockPosition(BlockPosition position) {

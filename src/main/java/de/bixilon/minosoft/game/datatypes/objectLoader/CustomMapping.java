@@ -192,6 +192,13 @@ public class CustomMapping {
         return version.getMapping().getStatisticById(protocolId);
     }
 
+    public int getIdByEnchantment(Enchantment enchantment) {
+        if (enchantmentMap.containsValue(enchantment)) {
+            return enchantmentMap.inverse().get(enchantment);
+        }
+        return version.getMapping().getIdByEnchantment(enchantment);
+    }
+
     public void unload() {
         motiveIdentifierMap.clear();
         particleIdentifierMap.clear();

@@ -135,7 +135,7 @@ import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
 public class ChatEvent extends EventListener {
     @Override
     public void onChatMessageReceiving(ChatMessageReceivingEvent event) {
-        if(event.isCancelled()) {
+        if (event.isCancelled()) {
             return;
         }
         if (event.getMessage().getRawMessage().contains("Bixilon")) {
@@ -146,10 +146,10 @@ public class ChatEvent extends EventListener {
 
     @Override
     public void onChatMessageSending(ChatMessageSendingEvent event) {
-        if(event.isCancelled()) {
+        if (event.isCancelled()) {
             return;
         }
-        if(event.getMessage().contains("jeb_ is stupid")) {
+        if (event.getMessage().contains("jeb_ is stupid")) {
             event.setCancelled(true);
             event.getConnection().getSender().sendChatMessage("jeb_ is awesome!");
         }

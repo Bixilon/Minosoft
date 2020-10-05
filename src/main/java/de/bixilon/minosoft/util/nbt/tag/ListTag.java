@@ -17,6 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ListTag implements NBTTag {
     final TagTypes type;
@@ -25,6 +26,11 @@ public class ListTag implements NBTTag {
     public ListTag(TagTypes type, ArrayList<NBTTag> list) {
         this.type = type;
         this.list = list;
+    }
+
+    public ListTag(TagTypes type, NBTTag[] list) {
+        this.type = type;
+        this.list = (ArrayList<NBTTag>) Arrays.asList(list);
     }
 
     public ListTag(InByteBuffer buffer) {
@@ -63,7 +69,7 @@ public class ListTag implements NBTTag {
         }
     }
 
-    public <K> ArrayList<K> getValue() {
+    public <K extends NBTTag> ArrayList<K> getValue() {
         return (ArrayList<K>) list;
     }
 

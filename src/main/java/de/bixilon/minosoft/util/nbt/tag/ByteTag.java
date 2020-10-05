@@ -23,6 +23,10 @@ public class ByteTag implements NBTTag {
         this.value = value;
     }
 
+    public ByteTag(boolean value) {
+        this.value = (byte) (value ? 0x01 : 0x00);
+    }
+
     public ByteTag(InByteBuffer buffer) {
         this.value = buffer.readByte();
     }

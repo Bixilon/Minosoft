@@ -233,6 +233,11 @@ public class TextComponent {
         return coloredMessage;
     }
 
+    public String getLegacyText() {
+        //ToDo
+        return null;
+    }
+
     public enum ChatAttributes {
         BLACK("\033[38;2;0;0;0m", ChatColors.BLACK),
         DARK_BLUE("\033[38;2;0;0;170m", ChatColors.DARK_BLUE),

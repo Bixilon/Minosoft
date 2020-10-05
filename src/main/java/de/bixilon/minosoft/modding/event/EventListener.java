@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.modding.event;
 
 import de.bixilon.minosoft.modding.event.events.*;
+import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 
 public class EventListener {
     public void onChatMessageReceiving(ChatMessageReceivingEvent event) {
@@ -79,5 +80,8 @@ public class EventListener {
     }
 
     public void onEntityEquipmentChange(EntityEquipmentChangeEvent event) {
+    }
+
+    public void onLightningBoltSpawn(LightningBoltSpawnEvent event) {
     }
 }

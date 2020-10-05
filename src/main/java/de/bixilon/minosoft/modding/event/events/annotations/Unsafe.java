@@ -11,8 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.event.events;
+package de.bixilon.minosoft.modding.event.events.annotations;
 
-public @interface MinimumProtocolVersion {
-    int protocolId() default 0;
+public @interface Unsafe {
 }

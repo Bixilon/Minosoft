@@ -295,10 +295,10 @@ public class InByteBuffer {
                 metaData = readShort();
             }
             CompoundTag nbt = (CompoundTag) readNBT(protocolId < 28);
-            return new Slot(connection.getMapping().getItemByLegacy(id, metaData), count, metaData, nbt);
+            return new Slot(connection.getMapping(), connection.getMapping().getItemByLegacy(id, metaData), count, metaData, nbt);
         }
         if (readBoolean()) {
-            return new Slot(connection.getMapping().getItemById(readVarInt()), readByte(), (CompoundTag) readNBT());
+            return new Slot(connection.getMapping(), connection.getMapping().getItemById(readVarInt()), readByte(), (CompoundTag) readNBT());
         }
         return null;
     }
