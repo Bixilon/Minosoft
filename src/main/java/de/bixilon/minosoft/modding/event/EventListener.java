@@ -47,4 +47,37 @@ public class EventListener {
     @Unsafe
     public void onPacketReceive(PacketReceiveEvent event) {
     }
+
+    public void onPongEvent(StatusPongEvent event) {
+    }
+
+    public void onStatusResponse(StatusResponseEvent event) {
+    }
+
+    public void onBlockAction(BlockActionEvent event) {
+    }
+
+    public void onBlockChange(BlockChangeEvent event) {
+    }
+
+    public void onBossBarChange(BossBarChangeEvent event) {
+    }
+
+    public void onEntitySpectate(EntitySpectateEvent event) {
+    }
+
+    public void onChangeGameState(ChangeGameStateEvent event) {
+    }
+
+    public void onWindowClose(CloseWindowEvent event) {
+    }
+
+    public void onItemCollectAnimation(CollectItemAnimationEvent event) {
+    }
+
+    public void onEntityDespawn(EntityDespawnEvent event) {
+    }
+
+    public void onEntityEquipmentChange(EntityEquipmentChangeEvent event) {
+    }
 }

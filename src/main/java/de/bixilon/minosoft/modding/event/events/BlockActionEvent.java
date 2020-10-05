@@ -13,25 +13,41 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.actions.BlockAction;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockAction;
 
-@Unsafe
-public class PacketSendEvent extends Event {
-    private final ServerboundPacket packet;
+/**
+ * Fired when a block actions happens (like opening a chest, changing instrument/note/etc on a note block, etc)
+ */
+public class BlockActionEvent extends CancelableEvent {
+    private final BlockPosition position;
+    private final BlockAction data;
 
-    public PacketSendEvent(Connection connection, ServerboundPacket packet) {
+    public BlockActionEvent(Connection connection, BlockPosition position, BlockAction data) {
         super(connection);
-        this.packet = packet;
+        this.position = position;
+        this.data = data;
     }
 
-    public ServerboundPacket getPacket() {
-        return packet;
+    public BlockActionEvent(Connection connection, PacketBlockAction pkg) {
+        super(connection);
+        this.position = pkg.getPosition();
+        this.data = pkg.getData();
+    }
+
+    public BlockPosition getPosition() {
+        return position;
+    }
+
+    public BlockAction getData() {
+        return data;
     }
 
     @Override
     public void handle(EventListener listener) {
-        listener.onPacketSend(this);
+        listener.onBlockAction(this);
     }
 }

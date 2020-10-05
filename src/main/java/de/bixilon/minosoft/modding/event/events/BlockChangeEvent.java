@@ -13,25 +13,41 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
+import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockChange;
 
-@Unsafe
-public class PacketSendEvent extends Event {
-    private final ServerboundPacket packet;
+/**
+ * Fired when one block is changed
+ */
+public class BlockChangeEvent extends Event {
+    private final BlockPosition position;
+    private final Block block;
 
-    public PacketSendEvent(Connection connection, ServerboundPacket packet) {
+    public BlockChangeEvent(Connection connection, BlockPosition position, Block block) {
         super(connection);
-        this.packet = packet;
+        this.position = position;
+        this.block = block;
     }
 
-    public ServerboundPacket getPacket() {
-        return packet;
+    public BlockChangeEvent(Connection connection, PacketBlockChange pkg) {
+        super(connection);
+        this.position = pkg.getPosition();
+        this.block = pkg.getBlock();
+    }
+
+    public BlockPosition getPosition() {
+        return position;
+    }
+
+    public Block getBlock() {
+        return block;
     }
 
     @Override
     public void handle(EventListener listener) {
-        listener.onPacketSend(this);
+        listener.onBlockChange(this);
     }
 }

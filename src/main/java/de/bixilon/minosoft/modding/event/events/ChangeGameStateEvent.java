@@ -15,23 +15,37 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChangeGameState;
 
-@Unsafe
-public class PacketSendEvent extends Event {
-    private final ServerboundPacket packet;
+/**
+ * Fired when the player should spectate an entity
+ */
+public class ChangeGameStateEvent extends CancelableEvent {
+    private final PacketChangeGameState.Reason reason;
+    private final float value;
 
-    public PacketSendEvent(Connection connection, ServerboundPacket packet) {
+    public ChangeGameStateEvent(Connection connection, PacketChangeGameState.Reason reason, float value) {
         super(connection);
-        this.packet = packet;
+        this.reason = reason;
+        this.value = value;
     }
 
-    public ServerboundPacket getPacket() {
-        return packet;
+    public ChangeGameStateEvent(Connection connection, PacketChangeGameState pkg) {
+        super(connection);
+        this.reason = pkg.getReason();
+        this.value = pkg.getValue();
+    }
+
+    public PacketChangeGameState.Reason getReason() {
+        return reason;
+    }
+
+    public float getValue() {
+        return value;
     }
 
     @Override
     public void handle(EventListener listener) {
-        listener.onPacketSend(this);
+        listener.onChangeGameState(this);
     }
 }

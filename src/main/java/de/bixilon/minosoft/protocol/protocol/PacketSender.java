@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.game.datatypes.player.Hands;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
+import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.*;
 
@@ -76,6 +77,10 @@ public class PacketSender {
     }
 
     public void closeWindow(byte windowId) {
+        CloseWindowEvent event = new CloseWindowEvent(connection, windowId, CloseWindowEvent.Initiators.CLIENT);
+        if (connection.fireEvent(event)) {
+            return;
+        }
         connection.sendPacket(new PacketCloseWindowSending(windowId));
     }
 

@@ -15,23 +15,30 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 
-@Unsafe
-public class PacketSendEvent extends Event {
-    private final ServerboundPacket packet;
+/**
+ * Fired when the connection status is "STATUS" and the ping gets pack (pong)
+ */
+public class StatusPongEvent extends Event {
+    private final long pongId;
 
-    public PacketSendEvent(Connection connection, ServerboundPacket packet) {
+    public StatusPongEvent(Connection connection, long pongId) {
         super(connection);
-        this.packet = packet;
+        this.pongId = pongId;
     }
 
-    public ServerboundPacket getPacket() {
-        return packet;
+    public StatusPongEvent(Connection connection, PacketStatusPong pkg) {
+        super(connection);
+        this.pongId = pkg.getID();
+    }
+
+    public long getPongId() {
+        return pongId;
     }
 
     @Override
     public void handle(EventListener listener) {
-        listener.onPacketSend(this);
+        listener.onPongEvent(this);
     }
 }

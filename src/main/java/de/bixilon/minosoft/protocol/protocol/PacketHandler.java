@@ -54,6 +54,8 @@ public class PacketHandler {
     }
 
     public void handle(PacketStatusResponse pkg) {
+        connection.fireEvent(new StatusResponseEvent(connection, pkg));
+
         // now we know the version, set it, if the config allows it
         Version version;
         int versionId = connection.getDesiredVersionNumber();
@@ -71,6 +73,8 @@ public class PacketHandler {
     }
 
     public void handle(PacketStatusPong pkg) {
+        connection.fireEvent(new StatusPongEvent(connection, pkg));
+
         ConnectionPing ping = connection.getConnectionStatusPing();
         if (ping.getPingId() != pkg.getID()) {
             Log.warn(String.format("Server sent unknown ping answer (pingId=%d, expected=%d)", pkg.getID(), ping.getPingId()));
@@ -210,7 +214,11 @@ public class PacketHandler {
     }
 
     public void handle(PacketChangeGameState pkg) {
-        // ToDo: handle all updates
+        ChangeGameStateEvent event = new ChangeGameStateEvent(connection, pkg);
+        if (connection.fireEvent(event)) {
+            return;
+        }
+
         switch (pkg.getReason()) {
             case START_RAIN -> connection.getPlayer().getWorld().setRaining(true);
             case END_RAIN -> connection.getPlayer().getWorld().setRaining(false);
@@ -239,6 +247,8 @@ public class PacketHandler {
     }
 
     public void handle(PacketDestroyEntity pkg) {
+        connection.fireEvent(new EntityDespawnEvent(connection, pkg));
+
         for (int entityId : pkg.getEntityIds()) {
             connection.getPlayer().getWorld().removeEntity(entityId);
         }
@@ -284,10 +294,14 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityEquipment pkg) {
+        connection.fireEvent(new EntityEquipmentChangeEvent(connection, pkg));
+
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setEquipment(pkg.getSlots());
     }
 
     public void handle(PacketBlockChange pkg) {
+        connection.fireEvent(new BlockChangeEvent(connection, pkg));
+
         connection.getPlayer().getWorld().setBlock(pkg.getPosition(), pkg.getBlock());
     }
 
@@ -401,6 +415,10 @@ public class PacketHandler {
     }
 
     public void handle(PacketBlockAction pkg) {
+        BlockActionEvent event = new BlockActionEvent(connection, pkg);
+        if (connection.fireEvent(event)) {
+            return;
+        }
     }
 
     public void handle(PacketExplosion pkg) {
@@ -416,6 +434,9 @@ public class PacketHandler {
     }
 
     public void handle(PacketCollectItem pkg) {
+        if (connection.fireEvent(new CollectItemAnimationEvent(connection, pkg))) {
+            return;
+        }
         // ToDo
     }
 
@@ -424,6 +445,11 @@ public class PacketHandler {
     }
 
     public void handle(PacketCloseWindowReceiving pkg) {
+        CloseWindowEvent event = new CloseWindowEvent(connection, pkg);
+        if (connection.fireEvent(event)) {
+            return;
+        }
+
         connection.getPlayer().deleteInventory(pkg.getWindowId());
     }
 
@@ -553,7 +579,10 @@ public class PacketHandler {
     }
 
     public void handle(PacketBossBar pkg) {
-        // ToDo
+        BossBarChangeEvent event = new BossBarChangeEvent(connection, pkg);
+        if (connection.fireEvent(event)) {
+            return;
+        }
     }
 
     public void handle(PacketSetPassenger pkg) {

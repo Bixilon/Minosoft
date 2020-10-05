@@ -34,6 +34,10 @@ public class PacketCloseWindowSending implements ServerboundPacket {
         return buffer;
     }
 
+    public byte getWindowId() {
+        return windowId;
+    }
+
     @Override
     public void log() {
         Log.protocol(String.format("Sending Close window packet (windowId=%d)", windowId));

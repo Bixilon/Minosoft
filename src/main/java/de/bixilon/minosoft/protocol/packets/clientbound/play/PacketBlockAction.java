@@ -58,6 +58,14 @@ public class PacketBlockAction implements ClientboundPacket {
         return true;
     }
 
+    public BlockPosition getPosition() {
+        return position;
+    }
+
+    public BlockAction getData() {
+        return data;
+    }
+
     @Override
     public void handle(PacketHandler h) {
         h.handle(this);

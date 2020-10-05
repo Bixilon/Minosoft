@@ -13,25 +13,45 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
+import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketCollectItem;
 
-@Unsafe
-public class PacketSendEvent extends Event {
-    private final ServerboundPacket packet;
+public class CollectItemAnimationEvent extends CancelableEvent {
+    private final Item item;
+    private final int collectorEntityId;
+    private final int count;
 
-    public PacketSendEvent(Connection connection, ServerboundPacket packet) {
+    public CollectItemAnimationEvent(Connection connection, Item item, int collectorEntityId, int count) {
         super(connection);
-        this.packet = packet;
+        this.item = item;
+        this.collectorEntityId = collectorEntityId;
+        this.count = count;
     }
 
-    public ServerboundPacket getPacket() {
-        return packet;
+    public CollectItemAnimationEvent(Connection connection, PacketCollectItem pkg) {
+        super(connection);
+        this.item = pkg.getItem();
+        this.collectorEntityId = pkg.getCollectorId();
+        this.count = pkg.getCount();
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public int getCollectorEntityId() {
+        return collectorEntityId;
+    }
+
+    @MinimumProtocolVersion(protocolId = 301)
+    public int getCount() {
+        return count;
     }
 
     @Override
     public void handle(EventListener listener) {
-        listener.onPacketSend(this);
+        listener.onItemCollectAnimation(this);
     }
 }

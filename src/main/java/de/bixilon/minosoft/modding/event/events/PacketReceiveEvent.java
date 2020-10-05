@@ -17,6 +17,7 @@ import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 
+@Unsafe
 public class PacketReceiveEvent extends Event {
     private final ClientboundPacket packet;
 

@@ -130,21 +130,28 @@ Your XYListener class needs to implement `de.bixilon.minosoft.modding.event.Even
 ```java
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
+import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
 
 public class ChatEvent extends EventListener {
     @Override
     public void onChatMessageReceiving(ChatMessageReceivingEvent event) {
+        if(event.isCancelled()) {
+            return;
+        }
         if (event.getMessage().getRawMessage().contains("Bixilon")) {
-            MinosoftExampleMod.getInstance().getLogger().game("Bixilon is awful, suppressing this bad chat message!");
+            MinosoftExampleMod.getInstance().getLogger().game("Bixilon is awful, suppressing this potential bad chat message!");
             event.setCancelled(true);
         }
     }
 
     @Override
     public void onChatMessageSending(ChatMessageSendingEvent event) {
-        if(event.getMessage().contains("jeb_")){
+        if(event.isCancelled()) {
+            return;
+        }
+        if(event.getMessage().contains("jeb_ is stupid")){
             event.setCancelled(true);
-            event.getConnection().getSender().sendChatMessage("_jeb is awesome!");
+            event.getConnection().getSender().sendChatMessage("jeb_ is awesome!");
         }
     }
 }
