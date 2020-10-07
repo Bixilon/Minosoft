@@ -68,7 +68,7 @@ public class PacketHandler {
         } else {
             connection.setVersion(version);
         }
-        Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getColoredMessage()));
+        Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getANSIColoredMessage()));
         connection.handlePingCallbacks(pkg.getResponse());
     }
 
@@ -117,7 +117,7 @@ public class PacketHandler {
 
     public void handle(PacketLoginDisconnect pkg) {
         connection.fireEvent(new LoginDisconnectEvent(connection, pkg.getReason()));
-        Log.info(String.format("Disconnecting from server (reason=%s)", pkg.getReason().getColoredMessage()));
+        Log.info(String.format("Disconnecting from server (reason=%s)", pkg.getReason().getANSIColoredMessage()));
         connection.disconnect();
     }
 
@@ -370,7 +370,7 @@ public class PacketHandler {
         nbt.writeBlockPosition(pkg.getPosition());
         nbt.writeTag("id", new StringTag("minecraft:sign"));
         for (int i = 0; i < 4; i++) {
-            nbt.writeTag(String.format("Text%d", (i + 1)), new StringTag(pkg.getLines()[i].getRaw().toString()));
+            nbt.writeTag(String.format("Text%d", (i + 1)), new StringTag(pkg.getLines()[i].getLegacyText()));
         }
     }
 

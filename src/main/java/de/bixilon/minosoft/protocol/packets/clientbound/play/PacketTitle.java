@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.MapSet;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.VersionValueMap;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -25,8 +25,8 @@ public class PacketTitle implements ClientboundPacket {
     TitleActions action;
 
     //fields depend on action
-    TextComponent text;
-    TextComponent subText;
+    BaseComponent text;
+    BaseComponent subText;
     int fadeInTime;
     int stayTime;
     int fadeOutTime;
@@ -54,8 +54,8 @@ public class PacketTitle implements ClientboundPacket {
     @Override
     public void log() {
         switch (action) {
-            case SET_TITLE -> Log.protocol(String.format("Received title (action=%s, text=%s)", action, text.getColoredMessage()));
-            case SET_SUBTITLE -> Log.protocol(String.format("Received title (action=%s, subText=%s)", action, subText.getColoredMessage()));
+            case SET_TITLE -> Log.protocol(String.format("Received title (action=%s, text=%s)", action, text.getANSIColoredMessage()));
+            case SET_SUBTITLE -> Log.protocol(String.format("Received title (action=%s, subText=%s)", action, subText.getANSIColoredMessage()));
             case SET_TIMES_AND_DISPLAY -> Log.protocol(String.format("Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", action, fadeInTime, stayTime, fadeOutTime));
             case HIDE, RESET -> Log.protocol(String.format("Received title (action=%s)", action));
         }
@@ -73,11 +73,11 @@ public class PacketTitle implements ClientboundPacket {
         return stayTime;
     }
 
-    public TextComponent getSubText() {
+    public BaseComponent getSubText() {
         return subText;
     }
 
-    public TextComponent getText() {
+    public BaseComponent getText() {
         return text;
     }
 

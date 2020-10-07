@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketScoreboardObjective implements ClientboundPacket {
     String name;
-    TextComponent value;
+    BaseComponent value;
     ScoreboardObjectiveActions action;
     ScoreboardObjectiveTypes type;
 
@@ -59,7 +59,7 @@ public class PacketScoreboardObjective implements ClientboundPacket {
     @Override
     public void log() {
         if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
-            Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\", type=%s)", action, name, value.getColoredMessage(), type));
+            Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\", type=%s)", action, name, value.getANSIColoredMessage(), type));
         } else {
             Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\")", action, name));
         }
@@ -69,7 +69,7 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         return name;
     }
 
-    public TextComponent getValue() {
+    public BaseComponent getValue() {
         return value;
     }
 

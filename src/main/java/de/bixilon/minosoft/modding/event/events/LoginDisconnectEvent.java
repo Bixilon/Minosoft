@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketDisconnect;
 
 public class LoginDisconnectEvent extends Event {
-    private final TextComponent reason;
+    private final BaseComponent reason;
 
-    public LoginDisconnectEvent(Connection connection, TextComponent reason) {
+    public LoginDisconnectEvent(Connection connection, BaseComponent reason) {
         super(connection);
         this.reason = reason;
     }
@@ -31,7 +31,7 @@ public class LoginDisconnectEvent extends Event {
         this.reason = pkg.getReason();
     }
 
-    public TextComponent getReason() {
+    public BaseComponent getReason() {
         return reason;
     }
 

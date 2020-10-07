@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -110,7 +110,7 @@ public class PacketMapData implements ClientboundPacket {
             byte x = buffer.readByte();
             byte z = buffer.readByte();
             byte direction = buffer.readByte();
-            TextComponent displayName = null;
+            BaseComponent displayName = null;
             if (buffer.readBoolean()) {
                 displayName = buffer.readTextComponent();
             }
@@ -220,7 +220,7 @@ public class PacketMapData implements ClientboundPacket {
         final byte direction;
         final byte x;
         final byte z;
-        final TextComponent displayName;
+        final BaseComponent displayName;
 
         public MapPinSet(MapPinTypes type, int direction, byte x, byte z) {
             this.type = type;
@@ -230,7 +230,7 @@ public class PacketMapData implements ClientboundPacket {
             displayName = null;
         }
 
-        public MapPinSet(MapPinTypes type, int direction, byte x, byte z, TextComponent displayName) {
+        public MapPinSet(MapPinTypes type, int direction, byte x, byte z, BaseComponent displayName) {
             this.type = type;
             this.direction = (byte) direction;
             this.x = x;

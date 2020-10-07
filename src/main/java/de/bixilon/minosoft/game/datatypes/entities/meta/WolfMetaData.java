@@ -12,7 +12,9 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.Colors;
+
+import de.bixilon.minosoft.game.datatypes.text.ChatColors;
+import de.bixilon.minosoft.game.datatypes.text.RGBColor;
 
 public class WolfMetaData extends TameableMetaData {
 
@@ -64,12 +66,12 @@ public class WolfMetaData extends TameableMetaData {
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
     }
 
-    public Colors getColor() {
-        final int defaultValue = Colors.RED.ordinal();
+    public RGBColor getColor() {
+        final int defaultValue = ChatColors.getColorId(ChatColors.getColorByName("red"));
         if (protocolId < 57) {
-            return Colors.byId(sets.getByte(20, defaultValue));
+            return ChatColors.getColorById(sets.getByte(20, defaultValue));
         }
-        return Colors.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue));
+        return ChatColors.getColorById(sets.getByte(super.getLastDataIndex() + 2, defaultValue));
     }
 
     public int getAngerTime() {

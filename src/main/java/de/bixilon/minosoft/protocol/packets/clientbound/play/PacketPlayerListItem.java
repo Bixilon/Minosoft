@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.GameModes;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.player.PlayerListItemBulk;
 import de.bixilon.minosoft.game.datatypes.player.PlayerProperties;
 import de.bixilon.minosoft.game.datatypes.player.PlayerProperty;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -61,7 +61,7 @@ public class PacketPlayerListItem implements ClientboundPacket {
                     }
                     GameModes gameMode = GameModes.byId(buffer.readVarInt());
                     int ping = buffer.readVarInt();
-                    TextComponent displayName = (buffer.readBoolean() ? buffer.readTextComponent() : null);
+                    BaseComponent displayName = (buffer.readBoolean() ? buffer.readTextComponent() : null);
                     listItemBulk = new PlayerListItemBulk(uuid, name, ping, gameMode, displayName, playerProperties, action);
                 }
                 case UPDATE_GAMEMODE -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, GameModes.byId(buffer.readVarInt()), null, null, action);

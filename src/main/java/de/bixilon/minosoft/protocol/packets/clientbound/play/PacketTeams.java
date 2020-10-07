@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.ChatColors;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatColors;
+import de.bixilon.minosoft.game.datatypes.text.RGBColor;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -24,14 +25,14 @@ import de.bixilon.minosoft.util.BitByte;
 public class PacketTeams implements ClientboundPacket {
     String name;
     TeamActions action;
-    TextComponent displayName;
-    TextComponent prefix;
-    TextComponent suffix;
+    BaseComponent displayName;
+    BaseComponent prefix;
+    BaseComponent suffix;
     boolean friendlyFire;
     boolean seeFriendlyInvisibles;
     TeamCollisionRules collisionRule = TeamCollisionRules.NEVER;
     TeamNameTagVisibilities nameTagVisibility = TeamNameTagVisibilities.ALWAYS;
-    TextComponent.ChatAttributes color = TextComponent.ChatAttributes.WHITE;
+    RGBColor color;
     String[] playerNames;
 
     @Override
@@ -57,9 +58,9 @@ public class PacketTeams implements ClientboundPacket {
                     collisionRule = TeamCollisionRules.byName(buffer.readString());
                 }
                 if (buffer.getProtocolId() < 352) {
-                    color = TextComponent.ChatAttributes.byColor(ChatColors.byId(buffer.readByte()));
+                    color = ChatColors.getColorById(buffer.readByte());
                 } else {
-                    color = TextComponent.ChatAttributes.byColor(ChatColors.byId(buffer.readVarInt()));
+                    color = ChatColors.getColorById(buffer.readVarInt());
                 }
             }
             if (buffer.getProtocolId() >= 375) {
@@ -112,15 +113,15 @@ public class PacketTeams implements ClientboundPacket {
         return action;
     }
 
-    public TextComponent getDisplayName() {
+    public BaseComponent getDisplayName() {
         return displayName;
     }
 
-    public TextComponent getPrefix() {
+    public BaseComponent getPrefix() {
         return prefix;
     }
 
-    public TextComponent getSuffix() {
+    public BaseComponent getSuffix() {
         return suffix;
     }
 
@@ -132,7 +133,7 @@ public class PacketTeams implements ClientboundPacket {
         return seeFriendlyInvisibles;
     }
 
-    public TextComponent.ChatAttributes getColor() {
+    public RGBColor getColor() {
         return color;
     }
 

@@ -138,7 +138,7 @@ public class ChatEvent extends EventListener {
         if (event.isCancelled()) {
             return;
         }
-        if (event.getMessage().getRawMessage().contains("Bixilon")) {
+        if (event.getMessage().getMessage().contains("Bixilon")) {
             MinosoftExampleMod.getInstance().getLogger().game("Bixilon is awful, suppressing this potential bad chat message!");
             event.setCancelled(true);
         }

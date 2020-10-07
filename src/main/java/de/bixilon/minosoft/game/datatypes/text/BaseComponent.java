@@ -11,44 +11,28 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes;
+package de.bixilon.minosoft.game.datatypes.text;
 
-public enum ChatColors {
-    BLACK,
-    DARK_BLUE,
-    DARK_GREEN,
-    DARK_AQUA,
-    DARK_RED,
-    DARK_PURPLE,
-    GOLD,
-    GRAY,
-    DARK_GRAY,
-    BLUE,
-    GREEN,
-    AQUA,
-    RED,
-    PURPLE,
-    YELLOW,
-    WHITE,
-    OBFUSCATED,
-    BOLD,
-    STRIKETHROUGH,
-    UNDERLINED,
-    ITALIC,
-    RESET;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 
-    public static ChatColors byId(int id) {
-        if (id < 0 || id >= values().length) {
-            return null;
+public interface BaseComponent {
+    static BaseComponent fromString(String raw) {
+        if (raw == null) {
+            return new TextComponent();
         }
-        return values()[id];
+        try {
+            return new TextComponent(JsonParser.parseString(raw).getAsJsonObject());
+        } catch (JsonParseException | IllegalStateException ignored) {
+        }
+        return new TextComponent(raw);
     }
 
-    public String getPrefix() {
-        return String.format("%x", getColor());
-    }
+    String toString();
 
-    public int getColor() {
-        return ordinal();
-    }
+    String getANSIColoredMessage();
+
+    String getLegacyText();
+
+    String getMessage();
 }

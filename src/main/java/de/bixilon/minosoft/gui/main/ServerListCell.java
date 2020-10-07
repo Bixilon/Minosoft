@@ -169,7 +169,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
             serverBrand.setText(ping.getServerModInfo().getBrand());
             serverBrand.setTooltip(new Tooltip(ping.getServerModInfo().getInfo()));
-            motd.setText(ping.getMotd().getRawMessage());
+            motd.setText(ping.getMotd().getMessage());
             if (ping.getFavicon() != null) {
                 icon.setImage(ping.getFavicon());
                 if (!ping.getBase64EncodedFavicon().equals(server.getBase64Favicon())) {
@@ -392,7 +392,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 Label serverVersionLabel = new Label(serverVersionString);
                 Label serverBrandLabel = new Label(lastPing.getServerBrand());
                 Label playersOnlineMaxLabel = new Label(String.format("%d/%d", lastPing.getPlayerOnline(), lastPing.getMaxPlayers()));
-                Label motdLabel = new Label(lastPing.getMotd().getRawMessage());
+                Label motdLabel = new Label(lastPing.getMotd().getMessage());
                 Label moddedBrandLabel = new Label(lastPing.getServerModInfo().getBrand());
 
                 grid.add(new Label("Real server address:"), 0, ++column);

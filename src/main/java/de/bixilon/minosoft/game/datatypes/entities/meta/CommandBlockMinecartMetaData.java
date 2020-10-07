@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 
 import javax.annotation.Nullable;
 
@@ -32,8 +32,8 @@ public class CommandBlockMinecartMetaData extends EntityMetaData {
     }
 
     @Nullable
-    public TextComponent getLastOutput() {
-        final TextComponent defaultValue = null;
+    public BaseComponent getLastOutput() {
+        final BaseComponent defaultValue = null;
         if (protocolId < 110) { //ToDo
             return defaultValue;
         }

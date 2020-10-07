@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.game.datatypes.scoreboard;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,13 +22,13 @@ import java.util.List;
 public class Team {
     final String name;
     final ArrayList<String> players;
-    TextComponent displayName;
-    TextComponent prefix;
-    TextComponent suffix;
+    BaseComponent displayName;
+    BaseComponent prefix;
+    BaseComponent suffix;
     boolean friendlyFire;
     boolean seeFriendlyInvisibles;
 
-    public Team(String name, TextComponent displayName, TextComponent prefix, TextComponent suffix, boolean friendlyFire, boolean seeFriendlyInvisibles, String[] players) {
+    public Team(String name, BaseComponent displayName, BaseComponent prefix, BaseComponent suffix, boolean friendlyFire, boolean seeFriendlyInvisibles, String[] players) {
         this.name = name;
         this.displayName = displayName;
         this.prefix = prefix;
@@ -38,7 +38,7 @@ public class Team {
         this.players = new ArrayList<>(Arrays.asList(players));
     }
 
-    public void updateInformation(TextComponent displayName, TextComponent prefix, TextComponent suffix, boolean friendlyFire, boolean seeFriendlyInvisibles) {
+    public void updateInformation(BaseComponent displayName, BaseComponent prefix, BaseComponent suffix, boolean friendlyFire, boolean seeFriendlyInvisibles) {
         this.displayName = displayName;
         this.prefix = prefix;
         this.suffix = suffix;
@@ -50,15 +50,15 @@ public class Team {
         return name;
     }
 
-    public TextComponent getDisplayName() {
+    public BaseComponent getDisplayName() {
         return displayName;
     }
 
-    public TextComponent getPrefix() {
+    public BaseComponent getPrefix() {
         return prefix;
     }
 
-    public TextComponent getSuffix() {
+    public BaseComponent getSuffix() {
         return suffix;
     }
 

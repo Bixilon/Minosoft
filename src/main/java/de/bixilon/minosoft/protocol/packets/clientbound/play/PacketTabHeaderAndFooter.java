@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketTabHeaderAndFooter implements ClientboundPacket {
-    TextComponent header;
-    TextComponent footer;
+    BaseComponent header;
+    BaseComponent footer;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -37,15 +37,15 @@ public class PacketTabHeaderAndFooter implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received tab list header: %s", header.getColoredMessage()));
-        Log.protocol(String.format("Received tab list footer: %s", footer.getColoredMessage()));
+        Log.protocol(String.format("Received tab list header: %s", header.getANSIColoredMessage()));
+        Log.protocol(String.format("Received tab list footer: %s", footer.getANSIColoredMessage()));
     }
 
-    public TextComponent getHeader() {
+    public BaseComponent getHeader() {
         return header;
     }
 
-    public TextComponent getFooter() {
+    public BaseComponent getFooter() {
         return footer;
     }
 }

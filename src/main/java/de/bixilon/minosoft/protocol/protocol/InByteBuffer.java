@@ -16,7 +16,6 @@ package de.bixilon.minosoft.protocol.protocol;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.game.datatypes.Directions;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.entities.Poses;
 import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.DustParticl
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ItemParticleData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Ingredient;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.BitByte;
@@ -199,8 +199,8 @@ public class InByteBuffer {
         return new BlockPosition(x, y, z);
     }
 
-    public TextComponent readTextComponent() {
-        return new TextComponent(readString());
+    public BaseComponent readTextComponent() {
+        return BaseComponent.fromString(readString());
     }
 
     public int getLength() {

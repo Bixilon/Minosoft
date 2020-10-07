@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.ChatTextPositions;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import java.util.UUID;
 
 public class PacketChatMessageReceiving implements ClientboundPacket {
-    TextComponent message;
+    BaseComponent message;
     ChatTextPositions position;
     UUID sender;
 
@@ -48,10 +48,10 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received chat message (message=\"%s\")", message.getRawMessage()));
+        Log.protocol(String.format("Received chat message (message=\"%s\")", message.getMessage()));
     }
 
-    public TextComponent getMessage() {
+    public BaseComponent getMessage() {
         return message;
     }
 

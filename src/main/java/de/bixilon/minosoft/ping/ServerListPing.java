@@ -14,7 +14,8 @@
 package de.bixilon.minosoft.ping;
 
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.TextComponent;
 import de.bixilon.minosoft.gui.main.GUITools;
 import javafx.scene.image.Image;
 
@@ -25,7 +26,7 @@ public class ServerListPing {
     int maxPlayers;
     String base64Favicon;
     Image favicon;
-    TextComponent motd;
+    BaseComponent motd;
     String serverBrand;
 
     public ServerListPing(JsonObject json) {
@@ -37,10 +38,10 @@ public class ServerListPing {
             favicon = GUITools.getImageFromBase64(base64Favicon);
         }
 
-        try {
+        if (json.get("description").isJsonPrimitive()) {
+            motd = BaseComponent.fromString(json.get("description").getAsString());
+        } else {
             motd = new TextComponent(json.getAsJsonObject("description"));
-        } catch (Exception ignored) {
-            motd = new TextComponent(json.get("description").getAsString());
         }
         serverBrand = json.getAsJsonObject("version").get("name").getAsString();
 
@@ -71,7 +72,7 @@ public class ServerListPing {
         return favicon;
     }
 
-    public TextComponent getMotd() {
+    public BaseComponent getMotd() {
         return motd;
     }
 

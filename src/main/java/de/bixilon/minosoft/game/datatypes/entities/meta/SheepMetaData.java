@@ -12,7 +12,9 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.Colors;
+
+import de.bixilon.minosoft.game.datatypes.text.ChatColors;
+import de.bixilon.minosoft.game.datatypes.text.RGBColor;
 
 public class SheepMetaData extends AnimalMetaData {
 
@@ -20,12 +22,12 @@ public class SheepMetaData extends AnimalMetaData {
         super(sets, protocolId);
     }
 
-    public Colors getColor() {
-        final int defaultValue = Colors.WHITE.ordinal();
+    public RGBColor getColor() {
+        final int defaultValue = ChatColors.getColorId(ChatColors.getColorByName("white"));
         if (protocolId < 57) {
-            return Colors.byId(sets.getInt(16, defaultValue) & 0xF);
+            return ChatColors.getColorById(sets.getInt(16, defaultValue) & 0xF);
         }
-        return Colors.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue) & 0xF);
+        return ChatColors.getColorById(sets.getInt(super.getLastDataIndex() + 1, defaultValue) & 0xF);
     }
 
     public boolean isSheared() {

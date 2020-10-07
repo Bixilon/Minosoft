@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.player.Hands;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 
 import javax.annotation.Nullable;
 
@@ -70,12 +70,12 @@ public class LivingMetaData extends EntityMetaData {
 
     @Nullable
     @Override
-    public TextComponent getNameTag() {
+    public BaseComponent getNameTag() {
         if (protocolId < 7) { //ToDo
-            return new TextComponent(sets.getString(10, null));
+            return BaseComponent.fromString(sets.getString(10, null));
         }
         if (protocolId < 57) { //ToDo
-            return new TextComponent(sets.getString(2, null));
+            return BaseComponent.fromString(sets.getString(2, null));
         }
         return super.getNameTag();
     }

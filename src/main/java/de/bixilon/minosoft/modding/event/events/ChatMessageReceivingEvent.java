@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.game.datatypes.ChatTextPositions;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -23,11 +23,11 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChatMessageRe
 import java.util.UUID;
 
 public class ChatMessageReceivingEvent extends CancelableEvent {
-    private final TextComponent message;
+    private final BaseComponent message;
     private final ChatTextPositions position;
     private final UUID sender;
 
-    public ChatMessageReceivingEvent(Connection connection, TextComponent message, ChatTextPositions position, UUID sender) {
+    public ChatMessageReceivingEvent(Connection connection, BaseComponent message, ChatTextPositions position, UUID sender) {
         super(connection);
         this.message = message;
         this.position = position;
@@ -41,7 +41,7 @@ public class ChatMessageReceivingEvent extends CancelableEvent {
         this.sender = pkg.getSender();
     }
 
-    public TextComponent getMessage() {
+    public BaseComponent getMessage() {
         return message;
     }
 

@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
@@ -74,8 +74,19 @@ public class OutByteBuffer {
         }
     }
 
+    public void writeTextComponent(BaseComponent component) {
+        writeString(component.getMessage()); //ToDo: test if this should not be json
+    }
+
     public void writeJSON(JsonObject j) {
         writeString(j.toString());
+    }
+
+    public void writeString(String s) {
+        writeVarInt(s.length());
+        for (byte b : s.getBytes(StandardCharsets.UTF_8)) {
+            bytes.add(b);
+        }
     }
 
     public void writeVarLong(long value) {
@@ -124,11 +135,8 @@ public class OutByteBuffer {
         writeInt((int) (d * 32.0D));
     }
 
-    public void writeString(String s) {
-        writeVarInt(s.length());
-        for (byte b : s.getBytes(StandardCharsets.UTF_8)) {
-            bytes.add(b);
-        }
+    public void writeVarInt(int value) {
+        writeVarInt(value, bytes);
     }
 
     public ArrayList<Byte> getBytes() {
@@ -145,14 +153,6 @@ public class OutByteBuffer {
             return;
         }
         writeLong((((long) (position.getX() & 0x3FFFFFF) << 38) | ((long) (position.getZ() & 0x3FFFFFF) << 12) | (long) (position.getY() & 0xFFF)));
-    }
-
-    public void writeVarInt(int value) {
-        writeVarInt(value, bytes);
-    }
-
-    public void writeTextComponent(TextComponent component) {
-        writeJSON(component.getRaw());
     }
 
     public static void writeVarInt(int value, ArrayList<Byte> write) {

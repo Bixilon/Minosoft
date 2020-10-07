@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.ChatColors;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -41,43 +40,28 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
     }
 
     public enum ScoreboardAnimations {
-        LIST(0),
-        SIDEBAR(1),
-        BELOW_NAME(2),
-        TEAM_BLACK(ChatColors.BLACK.getColor() + 3),
-        TEAM_DARK_BLUE(ChatColors.DARK_BLUE.getColor() + 3),
-        TEAM_DARK_GREEN(ChatColors.DARK_GREEN.getColor() + 3),
-        TEAM_DARK_AQUA(ChatColors.DARK_AQUA.getColor() + 3),
-        TEAM_DARK_RED(ChatColors.DARK_RED.getColor() + 3),
-        TEAM_DARK_PURPLE(ChatColors.DARK_PURPLE.getColor() + 3),
-        TEAM_GOLD(ChatColors.GOLD.getColor() + 3),
-        TEAM_GRAY(ChatColors.GRAY.getColor() + 3),
-        TEAM_DARK_GRAY(ChatColors.DARK_GRAY.getColor() + 3),
-        TEAM_BLUE(ChatColors.BLUE.getColor() + 3),
-        TEAM_GREEN(ChatColors.GREEN.getColor() + 3),
-        TEAM_AQUA(ChatColors.AQUA.getColor() + 3),
-        TEAM_RED(ChatColors.RED.getColor() + 3),
-        TEAM_PURPLE(ChatColors.PURPLE.getColor() + 3),
-        TEAM_YELLOW(ChatColors.YELLOW.getColor() + 3),
-        TEAM_WHITE(ChatColors.WHITE.getColor() + 3);
-
-        final int id;
-
-        ScoreboardAnimations(int id) {
-            this.id = id;
-        }
+        LIST,
+        SIDEBAR,
+        BELOW_NAME,
+        TEAM_BLACK,
+        TEAM_DARK_BLUE,
+        TEAM_DARK_GREEN,
+        TEAM_DARK_AQUA,
+        TEAM_DARK_RED,
+        TEAM_DARK_PURPLE,
+        TEAM_GOLD,
+        TEAM_GRAY,
+        TEAM_DARK_GRAY,
+        TEAM_BLUE,
+        TEAM_GREEN,
+        TEAM_AQUA,
+        TEAM_RED,
+        TEAM_PURPLE,
+        TEAM_YELLOW,
+        TEAM_WHITE;
 
         public static ScoreboardAnimations byId(int id) {
-            for (ScoreboardAnimations animation : values()) {
-                if (animation.getId() == id) {
-                    return animation;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

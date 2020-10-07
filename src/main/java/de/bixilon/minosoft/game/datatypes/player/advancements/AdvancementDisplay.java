@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.game.datatypes.player.advancements;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.util.BitByte;
 
 public class AdvancementDisplay {
-    final TextComponent title;
-    final TextComponent description;
+    final BaseComponent title;
+    final BaseComponent description;
     final Slot icon;
     final AdvancementFrameTypes frameType;
     final int flags;
@@ -27,7 +27,7 @@ public class AdvancementDisplay {
     final float x;
     final float y;
 
-    public AdvancementDisplay(TextComponent title, TextComponent description, Slot icon, AdvancementFrameTypes frameType, int flags, String backgroundTexture, float x, float y) {
+    public AdvancementDisplay(BaseComponent title, BaseComponent description, Slot icon, AdvancementFrameTypes frameType, int flags, String backgroundTexture, float x, float y) {
         this.title = title;
         this.description = description;
         this.icon = icon;
@@ -38,7 +38,7 @@ public class AdvancementDisplay {
         this.y = y;
     }
 
-    public AdvancementDisplay(TextComponent title, TextComponent description, Slot icon, AdvancementFrameTypes frameType, int flags, float x, float y) {
+    public AdvancementDisplay(BaseComponent title, BaseComponent description, Slot icon, AdvancementFrameTypes frameType, int flags, float x, float y) {
         this.title = title;
         this.description = description;
         this.icon = icon;
@@ -49,11 +49,11 @@ public class AdvancementDisplay {
         this.y = y;
     }
 
-    public TextComponent getTitle() {
+    public BaseComponent getTitle() {
         return title;
     }
 
-    public TextComponent getDescription() {
+    public BaseComponent getDescription() {
         return description;
     }
 

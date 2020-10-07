@@ -12,7 +12,9 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.Colors;
+
+import de.bixilon.minosoft.game.datatypes.text.ChatColors;
+import de.bixilon.minosoft.game.datatypes.text.RGBColor;
 
 import javax.annotation.Nullable;
 
@@ -31,12 +33,15 @@ public class LlamaMetaData extends ChestedHorseMetaData {
     }
 
     @Nullable
-    public Colors getCarpetColor() {
-        final int defaultValue = -1;
+    public RGBColor getCarpetColor() {
+        final RGBColor defaultValue = null;
         if (protocolId < 315) { // ToDo
-            return Colors.byId(defaultValue);
+            return defaultValue;
         }
-        return Colors.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue));
+        if (!sets.containsKey(super.getLastDataIndex() + 2)) {
+            return defaultValue;
+        }
+        return ChatColors.getColorById(sets.getInt(super.getLastDataIndex() + 2, 0));
     }
 
     public LlamaVariants getVariant() {

@@ -12,8 +12,9 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-import de.bixilon.minosoft.game.datatypes.Colors;
 import de.bixilon.minosoft.game.datatypes.Directions;
+import de.bixilon.minosoft.game.datatypes.text.ChatColors;
+import de.bixilon.minosoft.game.datatypes.text.RGBColor;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 
 import javax.annotation.Nullable;
@@ -49,12 +50,12 @@ public class ShulkerMetaData extends GolemMetaData {
         return sets.getByte(super.getLastDataIndex(), defaultValue);
     }
 
-    public Colors getColor() {
-        final int defaultValue = Colors.PURPLE.ordinal();
+    public RGBColor getColor() {
+        final int defaultValue = ChatColors.getColorId(ChatColors.getColorByName("purple"));
         if (protocolId < 110) { //ToDo
-            return Colors.byId(defaultValue);
+            return ChatColors.getColorById(defaultValue);
         }
-        return Colors.byId(sets.getByte(super.getLastDataIndex(), defaultValue));
+        return ChatColors.getColorById(sets.getByte(super.getLastDataIndex(), defaultValue));
     }
 
     @Override

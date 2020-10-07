@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.modding;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatColors;
+import de.bixilon.minosoft.game.datatypes.text.RGBColor;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 
@@ -30,10 +31,10 @@ public class Logger {
      * @param message Raw message to log
      */
     public void game(String message) {
-        log(LogLevels.GAME, message, TextComponent.ChatAttributes.GREEN);
+        log(LogLevels.GAME, message, ChatColors.getColorByName("green"));
     }
 
-    public void log(LogLevels level, String message, TextComponent.ChatAttributes color) {
+    public void log(LogLevels level, String message, RGBColor color) {
         Log.log(level, String.format("[%s] ", modName), message, color);
     }
 
@@ -43,7 +44,7 @@ public class Logger {
      * @param message Raw message to log
      */
     public void fatal(String message) {
-        log(LogLevels.FATAL, message, TextComponent.ChatAttributes.DARK_RED);
+        log(LogLevels.FATAL, message, ChatColors.getColorByName("dark_red"));
     }
 
     /**
@@ -52,7 +53,7 @@ public class Logger {
      * @param message Raw message to log
      */
     public void info(String message) {
-        log(LogLevels.INFO, message, TextComponent.ChatAttributes.WHITE);
+        log(LogLevels.INFO, message, ChatColors.getColorByName("white"));
     }
 
     /**
@@ -61,7 +62,7 @@ public class Logger {
      * @param message Raw message to log
      */
     public void warn(String message) {
-        log(LogLevels.WARNING, message, TextComponent.ChatAttributes.RED);
+        log(LogLevels.WARNING, message, ChatColors.getColorByName("red"));
     }
 
     /**
@@ -70,7 +71,7 @@ public class Logger {
      * @param message Raw message to log
      */
     public void debug(String message) {
-        log(LogLevels.DEBUG, message, TextComponent.ChatAttributes.GRAY);
+        log(LogLevels.DEBUG, message, ChatColors.getColorByName("gray"));
     }
 
     /**
@@ -79,7 +80,7 @@ public class Logger {
      * @param message Raw message to log
      */
     public void verbose(String message) {
-        log(LogLevels.VERBOSE, message, TextComponent.ChatAttributes.YELLOW);
+        log(LogLevels.VERBOSE, message, ChatColors.getColorByName("yellow"));
     }
 
     /**
@@ -88,6 +89,6 @@ public class Logger {
      * @param message Raw message to log
      */
     public void protocol(String message) {
-        log(LogLevels.PROTOCOL, message, TextComponent.ChatAttributes.BLUE);
+        log(LogLevels.PROTOCOL, message, ChatColors.getColorByName("blue"));
     }
 }

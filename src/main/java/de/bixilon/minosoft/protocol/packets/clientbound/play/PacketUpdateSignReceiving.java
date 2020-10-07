@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketUpdateSignReceiving implements ClientboundPacket {
-    final TextComponent[] lines = new TextComponent[4];
+    final BaseComponent[] lines = new BaseComponent[4];
     BlockPosition position;
 
     @Override
@@ -51,7 +51,7 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
         return position;
     }
 
-    public TextComponent[] getLines() {
+    public BaseComponent[] getLines() {
         return lines;
     }
 }

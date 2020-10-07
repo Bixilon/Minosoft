@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -27,7 +27,7 @@ public class PacketBossBar implements ClientboundPacket {
     BossBarActions action;
 
     //fields depend on action
-    TextComponent title;
+    BaseComponent title;
     float health;
     BossBarColors color;
     BossBarDivisions divisions;
@@ -64,10 +64,10 @@ public class PacketBossBar implements ClientboundPacket {
     @Override
     public void log() {
         switch (action) {
-            case ADD -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\", health=%s, color=%s, divisions=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), title.getColoredMessage(), health, color, divisions, isDragonBar(), shouldDarkenSky()));
+            case ADD -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\", health=%s, color=%s, divisions=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), title.getANSIColoredMessage(), health, color, divisions, isDragonBar(), shouldDarkenSky()));
             case REMOVE -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s)", action, uuid.toString()));
             case UPDATE_HEALTH -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, health=%s)", action, uuid.toString(), health));
-            case UPDATE_TITLE -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\")", action, uuid.toString(), title.getColoredMessage()));
+            case UPDATE_TITLE -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\")", action, uuid.toString(), title.getANSIColoredMessage()));
             case UPDATE_STYLE -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, color=%s, divisions=%s)", action, uuid.toString(), color, divisions));
             case UPDATE_FLAGS -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), isDragonBar(), shouldDarkenSky()));
         }
@@ -101,7 +101,7 @@ public class PacketBossBar implements ClientboundPacket {
         return health;
     }
 
-    public TextComponent getTitle() {
+    public BaseComponent getTitle() {
         return title;
     }
 

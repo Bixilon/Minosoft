@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -25,7 +25,7 @@ public class PacketCombatEvent implements ClientboundPacket {
     int duration;
     int playerId;
     int entityId;
-    TextComponent message;
+    BaseComponent message;
 
     @Override
     public boolean read(InByteBuffer buffer) {
