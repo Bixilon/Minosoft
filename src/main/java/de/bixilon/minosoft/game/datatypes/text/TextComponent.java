@@ -156,7 +156,15 @@ public class TextComponent implements ChatComponent {
 
     @Override
     public String getLegacyText() {
-        return getMessage(); //ToDo
+        StringBuilder output = new StringBuilder();
+        Integer colorChar = ChatColors.getColorId(color);
+        if (colorChar != null) {
+            output.append('§').append(Integer.toHexString(colorChar));
+        }
+        formatting.forEach((chatFormattingCode -> output.append('§').append(chatFormattingCode.getChar())));
+        output.append(text);
+        output.append('§').append(ChatFormattingCodes.RESET.getChar());
+        return output.toString();
     }
 
     @Override

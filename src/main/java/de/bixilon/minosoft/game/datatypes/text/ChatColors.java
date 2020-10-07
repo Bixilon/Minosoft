@@ -53,7 +53,7 @@ public final class ChatColors {
         return colors.get(id);
     }
 
-    public static int getColorId(RGBColor color) {
+    public static Integer getColorId(RGBColor color) {
         return colors.inverse().get(color);
     }
 

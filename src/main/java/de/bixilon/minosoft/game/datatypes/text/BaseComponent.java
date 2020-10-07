@@ -174,12 +174,13 @@ public class BaseComponent implements ChatComponent {
     public String getANSIColoredMessage() {
         StringBuilder builder = new StringBuilder();
         parts.forEach((chatPart -> builder.append(chatPart.getANSIColoredMessage())));
-        builder.append(ChatFormattingCodes.RESET);
         return builder.toString();
     }
 
     public String getLegacyText() {
-        return getMessage(); // ToDo
+        StringBuilder builder = new StringBuilder();
+        parts.forEach((chatPart -> builder.append(chatPart.getLegacyText())));
+        return builder.toString();
     }
 
     public String getMessage() {
