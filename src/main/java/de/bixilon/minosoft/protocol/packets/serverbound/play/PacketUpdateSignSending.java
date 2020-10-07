@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -23,9 +23,9 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketUpdateSignSending implements ServerboundPacket {
     final BlockPosition position;
-    final BaseComponent[] lines;
+    final ChatComponent[] lines;
 
-    public PacketUpdateSignSending(BlockPosition position, BaseComponent[] lines) {
+    public PacketUpdateSignSending(BlockPosition position, ChatComponent[] lines) {
         this.position = position;
         this.lines = lines;
     }

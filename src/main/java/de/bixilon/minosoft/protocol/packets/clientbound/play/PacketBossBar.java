@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -27,7 +27,7 @@ public class PacketBossBar implements ClientboundPacket {
     BossBarActions action;
 
     //fields depend on action
-    BaseComponent title;
+    ChatComponent title;
     float health;
     BossBarColors color;
     BossBarDivisions divisions;
@@ -101,7 +101,7 @@ public class PacketBossBar implements ClientboundPacket {
         return health;
     }
 
-    public BaseComponent getTitle() {
+    public ChatComponent getTitle() {
         return title;
     }
 

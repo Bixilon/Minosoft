@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
@@ -74,8 +74,8 @@ public class OutByteBuffer {
         }
     }
 
-    public void writeTextComponent(BaseComponent component) {
-        writeString(component.getMessage()); //ToDo: test if this should not be json
+    public void writeTextComponent(ChatComponent chatComponent) {
+        writeString(chatComponent.getMessage()); //ToDo: test if this should not be json
     }
 
     public void writeJSON(JsonObject j) {

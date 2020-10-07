@@ -11,36 +11,28 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.game.datatypes.inventory;
+package de.bixilon.minosoft.game.datatypes.text;
 
-import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 
-public class InventoryProperties {
-    final int windowId;
-    final InventoryTypes type;
-    final ChatComponent title;
-    final byte slotCount;
-
-    public InventoryProperties(int windowId, InventoryTypes type, ChatComponent title, byte slotCount) {
-        this.windowId = windowId;
-        this.type = type;
-        this.title = title;
-        this.slotCount = slotCount;
+public interface ChatComponent {
+    static ChatComponent fromString(String raw) {
+        if (raw == null) {
+            return new BaseComponent();
+        }
+        try {
+            return new BaseComponent(JsonParser.parseString(raw).getAsJsonObject());
+        } catch (JsonParseException | IllegalStateException ignored) {
+        }
+        return new BaseComponent(raw);
     }
 
-    public int getWindowId() {
-        return windowId;
-    }
+    String toString();
 
-    public InventoryTypes getType() {
-        return type;
-    }
+    String getANSIColoredMessage();
 
-    public ChatComponent getTitle() {
-        return title;
-    }
+    String getLegacyText();
 
-    public byte getSlotCount() {
-        return slotCount;
-    }
+    String getMessage();
 }

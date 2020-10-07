@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketScoreboardObjective implements ClientboundPacket {
     String name;
-    BaseComponent value;
+    ChatComponent value;
     ScoreboardObjectiveActions action;
     ScoreboardObjectiveTypes type;
 
@@ -69,7 +69,7 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         return name;
     }
 
-    public BaseComponent getValue() {
+    public ChatComponent getValue() {
         return value;
     }
 

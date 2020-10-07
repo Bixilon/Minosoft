@@ -18,7 +18,7 @@ import de.bixilon.minosoft.game.datatypes.player.advancements.Advancement;
 import de.bixilon.minosoft.game.datatypes.player.advancements.AdvancementDisplay;
 import de.bixilon.minosoft.game.datatypes.player.advancements.AdvancementProgress;
 import de.bixilon.minosoft.game.datatypes.player.advancements.CriterionProgress;
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -47,8 +47,8 @@ public class PacketAdvancements implements ClientboundPacket {
             }
             AdvancementDisplay display = null;
             if (buffer.readBoolean()) {
-                BaseComponent title = buffer.readTextComponent();
-                BaseComponent description = buffer.readTextComponent();
+                ChatComponent title = buffer.readTextComponent();
+                ChatComponent description = buffer.readTextComponent();
                 Slot icon = buffer.readSlot();
                 AdvancementDisplay.AdvancementFrameTypes frameType = AdvancementDisplay.AdvancementFrameTypes.byId(buffer.readVarInt());
                 int flags = buffer.readInt();

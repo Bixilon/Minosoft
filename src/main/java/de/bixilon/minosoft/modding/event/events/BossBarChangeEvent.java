@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBossBar;
@@ -26,7 +26,7 @@ import java.util.UUID;
 public class BossBarChangeEvent extends CancelableEvent {
     private UUID uuid;
     private PacketBossBar.BossBarActions action;
-    private BaseComponent title;
+    private ChatComponent title;
     private float health;
     private PacketBossBar.BossBarColors color;
     private PacketBossBar.BossBarDivisions divisions;
@@ -35,7 +35,7 @@ public class BossBarChangeEvent extends CancelableEvent {
     private boolean createFog;
 
 
-    public BossBarChangeEvent(Connection connection, UUID uuid, PacketBossBar.BossBarActions action, BaseComponent title, float health, PacketBossBar.BossBarColors color, PacketBossBar.BossBarDivisions divisions, boolean isDragonBar, boolean shouldDarkenSky, boolean createFog) {
+    public BossBarChangeEvent(Connection connection, UUID uuid, PacketBossBar.BossBarActions action, ChatComponent title, float health, PacketBossBar.BossBarColors color, PacketBossBar.BossBarDivisions divisions, boolean isDragonBar, boolean shouldDarkenSky, boolean createFog) {
         super(connection);
         this.uuid = uuid;
         this.action = action;
@@ -77,11 +77,11 @@ public class BossBarChangeEvent extends CancelableEvent {
         this.action = action;
     }
 
-    public BaseComponent getTitle() {
+    public ChatComponent getTitle() {
         return title;
     }
 
-    public void setTitle(BaseComponent title) {
+    public void setTitle(ChatComponent title) {
         this.title = title;
     }
 

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.MapSet;
 import de.bixilon.minosoft.game.datatypes.VersionValueMap;
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -25,8 +25,8 @@ public class PacketTitle implements ClientboundPacket {
     TitleActions action;
 
     //fields depend on action
-    BaseComponent text;
-    BaseComponent subText;
+    ChatComponent text;
+    ChatComponent subText;
     int fadeInTime;
     int stayTime;
     int fadeOutTime;
@@ -73,11 +73,11 @@ public class PacketTitle implements ClientboundPacket {
         return stayTime;
     }
 
-    public BaseComponent getSubText() {
+    public ChatComponent getSubText() {
         return subText;
     }
 
-    public BaseComponent getText() {
+    public ChatComponent getText() {
         return text;
     }
 

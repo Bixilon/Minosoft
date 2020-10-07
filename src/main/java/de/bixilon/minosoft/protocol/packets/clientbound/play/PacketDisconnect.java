@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketDisconnect implements ClientboundPacket {
-    BaseComponent reason;
+    ChatComponent reason;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -38,7 +38,7 @@ public class PacketDisconnect implements ClientboundPacket {
         Log.game(String.format("Disconnected: %s", reason.getANSIColoredMessage()));
     }
 
-    public BaseComponent getReason() {
+    public ChatComponent getReason() {
         return reason;
     }
 }

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.game.datatypes.player;
 
 import de.bixilon.minosoft.game.datatypes.GameModes;
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerListItem;
 
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public class PlayerListItemBulk {
     final int ping;
     //optional fields
     final GameModes gameMode;
-    final BaseComponent displayName;
+    final ChatComponent displayName;
     final HashMap<PlayerProperties, PlayerProperty> properties;
     final PacketPlayerListItem.PlayerListItemActions action;
 
@@ -44,7 +44,7 @@ public class PlayerListItemBulk {
         this.legacy = true;
     }
 
-    public PlayerListItemBulk(UUID uuid, String name, int ping, GameModes gameMode, BaseComponent displayName, HashMap<PlayerProperties, PlayerProperty> properties, PacketPlayerListItem.PlayerListItemActions action) {
+    public PlayerListItemBulk(UUID uuid, String name, int ping, GameModes gameMode, ChatComponent displayName, HashMap<PlayerProperties, PlayerProperty> properties, PacketPlayerListItem.PlayerListItemActions action) {
         this.uuid = uuid;
         this.name = name;
         this.ping = ping;
@@ -71,8 +71,8 @@ public class PlayerListItemBulk {
         return gameMode;
     }
 
-    public BaseComponent getDisplayName() {
-        return (hasDisplayName() ? displayName : BaseComponent.fromString(name));
+    public ChatComponent getDisplayName() {
+        return (hasDisplayName() ? displayName : ChatComponent.fromString(name));
     }
 
     public boolean hasDisplayName() {

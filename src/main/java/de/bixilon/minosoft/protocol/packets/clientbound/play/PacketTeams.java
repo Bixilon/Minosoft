@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.game.datatypes.text.ChatColors;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.game.datatypes.text.RGBColor;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -25,9 +25,9 @@ import de.bixilon.minosoft.util.BitByte;
 public class PacketTeams implements ClientboundPacket {
     String name;
     TeamActions action;
-    BaseComponent displayName;
-    BaseComponent prefix;
-    BaseComponent suffix;
+    ChatComponent displayName;
+    ChatComponent prefix;
+    ChatComponent suffix;
     boolean friendlyFire;
     boolean seeFriendlyInvisibles;
     TeamCollisionRules collisionRule = TeamCollisionRules.NEVER;
@@ -113,15 +113,15 @@ public class PacketTeams implements ClientboundPacket {
         return action;
     }
 
-    public BaseComponent getDisplayName() {
+    public ChatComponent getDisplayName() {
         return displayName;
     }
 
-    public BaseComponent getPrefix() {
+    public ChatComponent getPrefix() {
         return prefix;
     }
 
-    public BaseComponent getSuffix() {
+    public ChatComponent getSuffix() {
         return suffix;
     }
 

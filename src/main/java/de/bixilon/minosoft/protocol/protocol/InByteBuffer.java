@@ -26,7 +26,7 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.DustParticl
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ItemParticleData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Ingredient;
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.BitByte;
@@ -199,8 +199,8 @@ public class InByteBuffer {
         return new BlockPosition(x, y, z);
     }
 
-    public BaseComponent readTextComponent() {
-        return BaseComponent.fromString(readString());
+    public ChatComponent readTextComponent() {
+        return ChatComponent.fromString(readString());
     }
 
     public int getLength() {

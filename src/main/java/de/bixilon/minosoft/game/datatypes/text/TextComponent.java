@@ -13,178 +13,159 @@
 
 package de.bixilon.minosoft.game.datatypes.text;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
-import javax.annotation.Nullable;
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Objects;
 
-public class TextComponent implements BaseComponent {
-    private final ArrayList<BaseComponent> parts = new ArrayList<>();
+public class TextComponent implements ChatComponent {
+    private final String text;
+    private RGBColor color;
+    private HashSet<ChatFormattingCodes> formatting;
 
-    public TextComponent() {
+    public TextComponent(String text, RGBColor color, HashSet<ChatFormattingCodes> formatting) {
+        this.text = text;
+        this.color = color;
+        this.formatting = formatting;
+    }
+
+    public TextComponent(String text, RGBColor color) {
+        this.text = text;
+        this.color = color;
     }
 
     public TextComponent(String text) {
-        // legacy String
-        StringBuilder currentText = new StringBuilder();
-        RGBColor color = null;
-        HashSet<ChatFormattingCodes> formattingCodes = new HashSet<>();
-        StringCharacterIterator iterator = new StringCharacterIterator(text);
-        while (iterator.current() != CharacterIterator.DONE) {
-            char c = iterator.current();
-            iterator.next();
-            if (c != '§') {
-                currentText.append(c);
-                continue;
-            }
-            // check next char
-            char nextFormattingChar = iterator.current();
-            iterator.next();
-            RGBColor nextColor = ChatColors.getColorByFormattingChar(nextFormattingChar);
-            if (nextColor != null && nextColor != color) {
-                // color change, add text part
-                if (currentText.length() > 0) {
-                    parts.add(new ChatPart(currentText.toString(), color, formattingCodes));
-                    currentText = new StringBuilder();
-                }
-                color = nextColor;
-                formattingCodes = new HashSet<>();
-                continue;
-            }
-            ChatFormattingCodes nextFormattingCode = ChatFormattingCodes.getChatFormattingCodeByChar(nextFormattingChar);
-            if (nextFormattingCode != null) {
-                if (currentText.length() > 0) {
-                    parts.add(new ChatPart(currentText.toString(), color, formattingCodes));
-                    currentText = new StringBuilder();
-                    color = null;
-                    formattingCodes = new HashSet<>();
-                }
-                formattingCodes.add(nextFormattingCode);
-                if (nextFormattingCode == ChatFormattingCodes.RESET) {
-                    // special rule here
-                    if (currentText.length() > 0) {
-                        // color change, add text part
-                        parts.add(new ChatPart(currentText.toString(), color, formattingCodes));
-                        currentText = new StringBuilder();
-                    }
-                    color = null;
-                    formattingCodes = new HashSet<>();
-                }
-            }
+        this.text = text;
+    }
+
+    public TextComponent setObfuscated(boolean obfuscated) {
+        if (obfuscated) {
+            formatting.add(ChatFormattingCodes.OBFUSCATED);
+        } else {
+            formatting.remove(ChatFormattingCodes.OBFUSCATED);
         }
-        if (currentText.length() > 0) {
-            parts.add(new ChatPart(currentText.toString(), color, formattingCodes));
+        return this;
+    }
+
+    public TextComponent setBold(boolean bold) {
+        if (bold) {
+            formatting.add(ChatFormattingCodes.BOLD);
+        } else {
+            formatting.remove(ChatFormattingCodes.BOLD);
         }
+        return this;
+    }
+
+    public TextComponent setStrikethrough(boolean strikethrough) {
+        if (strikethrough) {
+            formatting.add(ChatFormattingCodes.STRIKETHROUGH);
+        } else {
+            formatting.remove(ChatFormattingCodes.STRIKETHROUGH);
+        }
+        return this;
+    }
+
+    public TextComponent setUnderlined(boolean underlined) {
+        if (underlined) {
+            formatting.add(ChatFormattingCodes.UNDERLINED);
+        } else {
+            formatting.remove(ChatFormattingCodes.UNDERLINED);
+        }
+        return this;
+    }
+
+    public TextComponent setItalic(boolean italic) {
+        if (italic) {
+            formatting.add(ChatFormattingCodes.ITALIC);
+        } else {
+            formatting.remove(ChatFormattingCodes.ITALIC);
+        }
+        return this;
+    }
+
+    public TextComponent setReset(boolean reset) {
+        if (reset) {
+            formatting.add(ChatFormattingCodes.RESET);
+        } else {
+            formatting.remove(ChatFormattingCodes.RESET);
+        }
+        return this;
+    }
+
+    public RGBColor getColor() {
+        return color;
     }
 
 
-    public TextComponent(JsonObject json) {
-        this(null, json);
+    public TextComponent setColor(RGBColor color) {
+        this.color = color;
+        return this;
     }
 
-    public TextComponent(@Nullable ChatPart parent, JsonObject json) {
-        ChatPart thisChatPart = null;
-        if (json.has("text")) {
-            String text = json.get("text").getAsString();
-            if (text.contains("§")) {
-                // legacy text component
-                parts.add(new TextComponent(text));
-                return;
-            }
-            RGBColor color;
-            if (parent != null && parent.getColor() != null) {
-                color = parent.getColor();
-            } else {
-                color = null;
-            }
-            if (json.has("color")) {
-                String colorString = json.get("color").getAsString();
-                if (colorString.startsWith("#")) {
-                    // RGB
-                    color = new RGBColor(colorString);
-                } else {
-                    color = ChatColors.getColorByName(colorString);
-                }
-            }
-            HashSet<ChatFormattingCodes> formattingCodes;
-            if (parent != null && parent.getFormatting() != null) {
-                formattingCodes = (HashSet<ChatFormattingCodes>) parent.getFormatting().clone();
-            } else {
-                formattingCodes = new HashSet<>();
-            }
-            if (json.has("bold")) {
-                if (json.get("bold").getAsBoolean()) {
-                    formattingCodes.add(ChatFormattingCodes.BOLD);
-                } else {
-                    formattingCodes.remove(ChatFormattingCodes.BOLD);
-                }
-            }
-            if (json.has("italic")) {
-                if (json.get("italic").getAsBoolean()) {
-                    formattingCodes.add(ChatFormattingCodes.ITALIC);
-                } else {
-                    formattingCodes.remove(ChatFormattingCodes.ITALIC);
-                }
-            }
-            if (json.has("underlined")) {
-                if (json.get("underlined").getAsBoolean()) {
-                    formattingCodes.add(ChatFormattingCodes.UNDERLINED);
-                } else {
-                    formattingCodes.remove(ChatFormattingCodes.UNDERLINED);
 
-                }
-            }
-            if (json.has("strikethrough")) {
-                if (json.get("strikethrough").getAsBoolean()) {
-                    formattingCodes.add(ChatFormattingCodes.STRIKETHROUGH);
-                } else {
-                    formattingCodes.remove(ChatFormattingCodes.STRIKETHROUGH);
-                }
-            }
-            if (json.has("obfuscated")) {
-                if (json.get("obfuscated").getAsBoolean()) {
-                    formattingCodes.add(ChatFormattingCodes.OBFUSCATED);
-                } else {
-                    formattingCodes.remove(ChatFormattingCodes.OBFUSCATED);
-                }
-            }
-            thisChatPart = new ChatPart(text, color, formattingCodes);
-        }
+    public HashSet<ChatFormattingCodes> getFormatting() {
+        return formatting;
+    }
 
 
-        if (json.has("extra")) {
-            JsonArray extras = json.getAsJsonArray("extra");
-            ChatPart finalThisChatPart = thisChatPart;
-            extras.forEach((extra -> parts.add(new TextComponent(finalThisChatPart, extra.getAsJsonObject()))));
+    public TextComponent setFormatting(HashSet<ChatFormattingCodes> formatting) {
+        this.formatting = formatting;
+        return this;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
         }
-        if (thisChatPart != null) {
-            parts.add(thisChatPart);
+        if (hashCode() != obj.hashCode()) {
+            return false;
         }
+        TextComponent their = (TextComponent) obj;
+        return text.equals(their.getMessage()) && color.equals(their.getColor()) && formatting.equals(their.getFormatting());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(text, color, formatting);
+    }
+
+    @Override
+    public String getANSIColoredMessage() {
+        StringBuilder builder = new StringBuilder();
+        if (color != null) {
+            builder.append(ChatColors.getANSIColorByRGBColor(color));
+        }
+        if (formatting != null) {
+            formatting.forEach((chatFormattingCodes -> {
+                if (chatFormattingCodes.getPosition() == ChatFormattingCodes.ChatFormattingCodePosition.PRE) {
+                    builder.append(chatFormattingCodes.getANSI());
+                }
+            }));
+        }
+        builder.append(text);
+        if (formatting != null) {
+            formatting.forEach((chatFormattingCodes -> {
+                if (chatFormattingCodes.getPosition() == ChatFormattingCodes.ChatFormattingCodePosition.POST) {
+                    builder.append(chatFormattingCodes.getANSI());
+                }
+            }));
+        }
+        builder.append(ChatFormattingCodes.RESET);
+        return builder.toString();
+    }
+
+    @Override
+    public String getLegacyText() {
+        return getMessage(); //ToDo
+    }
+
+    @Override
+    public String getMessage() {
+        return text;
     }
 
     @Override
     public String toString() {
         return getANSIColoredMessage();
-    }
-
-    public String getANSIColoredMessage() {
-        StringBuilder builder = new StringBuilder();
-        parts.forEach((chatPart -> builder.append(chatPart.getANSIColoredMessage())));
-        builder.append(ChatFormattingCodes.RESET);
-        return builder.toString();
-    }
-
-    public String getLegacyText() {
-        return getMessage();      //ToDo
-    }
-
-    public String getMessage() {
-        StringBuilder builder = new StringBuilder();
-        parts.forEach((chatPart -> builder.append(chatPart.getMessage())));
-        return builder.toString();
     }
 }

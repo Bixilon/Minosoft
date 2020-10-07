@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.inventory.InventoryProperties;
 import de.bixilon.minosoft.game.datatypes.inventory.InventoryTypes;
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketOpenWindow implements ClientboundPacket {
     byte windowId;
     InventoryTypes type;
-    BaseComponent title;
+    ChatComponent title;
     byte slotCount;
     int entityId;
 
@@ -72,7 +72,7 @@ public class PacketOpenWindow implements ClientboundPacket {
         return entityId;
     }
 
-    public BaseComponent getTitle() {
+    public ChatComponent getTitle() {
         return title;
     }
 

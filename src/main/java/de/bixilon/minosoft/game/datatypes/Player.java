@@ -20,7 +20,7 @@ import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.player.PlayerListItem;
 import de.bixilon.minosoft.game.datatypes.scoreboard.ScoreboardManager;
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.World;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
@@ -47,8 +47,8 @@ public class Player {
     OtherPlayer player;
     boolean spawnConfirmed = false;
 
-    BaseComponent tabHeader;
-    BaseComponent tabFooter;
+    ChatComponent tabHeader;
+    ChatComponent tabFooter;
 
     public Player(MojangAccount account) {
         this.account = account;
@@ -204,19 +204,19 @@ public class Player {
         return null;
     }
 
-    public BaseComponent getTabHeader() {
+    public ChatComponent getTabHeader() {
         return tabHeader;
     }
 
-    public void setTabHeader(BaseComponent tabHeader) {
+    public void setTabHeader(ChatComponent tabHeader) {
         this.tabHeader = tabHeader;
     }
 
-    public BaseComponent getTabFooter() {
+    public ChatComponent getTabFooter() {
         return tabFooter;
     }
 
-    public void setTabFooter(BaseComponent tabFooter) {
+    public void setTabFooter(ChatComponent tabFooter) {
         this.tabFooter = tabFooter;
     }
 

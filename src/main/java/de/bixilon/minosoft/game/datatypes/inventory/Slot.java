@@ -16,7 +16,7 @@ package de.bixilon.minosoft.game.datatypes.inventory;
 import de.bixilon.minosoft.game.datatypes.objectLoader.CustomMapping;
 import de.bixilon.minosoft.game.datatypes.objectLoader.enchantments.Enchantment;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.nbt.tag.*;
 
@@ -31,11 +31,11 @@ public class Slot {
     short itemMetadata;
     int repairCost;
     int durability;
-    BaseComponent customDisplayName;
+    ChatComponent customDisplayName;
     boolean unbreakable;
     String skullOwner;
     byte hideFlags;
-    ArrayList<BaseComponent> lore = new ArrayList<>();
+    ArrayList<ChatComponent> lore = new ArrayList<>();
 
     public Slot(CustomMapping mapping, Item item, int itemCount, CompoundTag nbt) {
         this.item = item;
@@ -53,11 +53,11 @@ public class Slot {
         if (nbt.containsKey("display")) {
             CompoundTag display = nbt.getCompoundTag("display");
             if (display.containsKey("Name")) {
-                this.customDisplayName = BaseComponent.fromString(display.getStringTag("Name").getValue());
+                this.customDisplayName = ChatComponent.fromString(display.getStringTag("Name").getValue());
             }
             if (display.containsKey("Lore")) {
                 for (StringTag lore : display.getListTag("Lore").<StringTag>getValue()) {
-                    this.lore.add(BaseComponent.fromString(lore.getValue()));
+                    this.lore.add(ChatComponent.fromString(lore.getValue()));
                 }
             }
         }
@@ -109,7 +109,7 @@ public class Slot {
             display.writeTag("Name", new StringTag(customDisplayName.getLegacyText()));
         }
         if (lore.size() > 0) {
-            display.writeTag("Lore", new ListTag(TagTypes.STRING, lore.stream().map(BaseComponent::getLegacyText).map(StringTag::new).toArray(StringTag[]::new)));
+            display.writeTag("Lore", new ListTag(TagTypes.STRING, lore.stream().map(ChatComponent::getLegacyText).map(StringTag::new).toArray(StringTag[]::new)));
         }
         if (display.size() > 0) {
             nbt.writeTag("display", display);
@@ -185,7 +185,7 @@ public class Slot {
     }
 
     public String getDisplayName() {
-        BaseComponent customName = getCustomDisplayName();
+        ChatComponent customName = getCustomDisplayName();
         if (customName != null) {
             return customName.getANSIColoredMessage();
         }
@@ -193,11 +193,11 @@ public class Slot {
     }
 
     @Nullable
-    public BaseComponent getCustomDisplayName() {
+    public ChatComponent getCustomDisplayName() {
         return customDisplayName;
     }
 
-    public void setCustomDisplayName(BaseComponent customDisplayName) {
+    public void setCustomDisplayName(ChatComponent customDisplayName) {
         this.customDisplayName = customDisplayName;
     }
 
@@ -271,7 +271,7 @@ public class Slot {
         this.skullOwner = skullOwner;
     }
 
-    public ArrayList<BaseComponent> getLore() {
+    public ArrayList<ChatComponent> getLore() {
         return lore;
     }
 

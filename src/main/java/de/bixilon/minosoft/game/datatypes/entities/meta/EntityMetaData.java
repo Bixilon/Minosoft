@@ -18,7 +18,7 @@ import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
-import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
@@ -133,12 +133,12 @@ public class EntityMetaData {
     }
 
     @Nullable
-    public BaseComponent getNameTag() {
+    public ChatComponent getNameTag() {
         if (protocolId <= 110) { //ToDo
             return null;
         }
         if (protocolId <= 335) { //ToDo
-            return BaseComponent.fromString(sets.getString(2, null));
+            return ChatComponent.fromString(sets.getString(2, null));
         }
         return sets.getTextComponent(2, null);
     }
@@ -323,8 +323,8 @@ public class EntityMetaData {
             return (Slot) get(index, defaultValue);
         }
 
-        public BaseComponent getTextComponent(int index, BaseComponent defaultValue) {
-            return (BaseComponent) get(index, defaultValue);
+        public ChatComponent getTextComponent(int index, ChatComponent defaultValue) {
+            return (ChatComponent) get(index, defaultValue);
         }
 
         public String getString(int index, String defaultValue) {
