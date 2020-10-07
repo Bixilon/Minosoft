@@ -4,25 +4,14 @@ variables:
 
 image: maven:3-openjdk-14
 
-include:
-  - template: Code-Quality.gitlab-ci.yml
-
 cache:
   paths:
     - .m2/repository
 
 stages:
   - verify
-  - code_quality
 
 verify:
   stage: verify
   script:
     - 'mvn $MAVEN_CLI_OPTS verify'
-
-
-code_quality:
-  stage: code_quality
-  artifacts:
-    expose_as: 'Code Quality Report'
-    paths: [ gl-code-quality-report.json ]
