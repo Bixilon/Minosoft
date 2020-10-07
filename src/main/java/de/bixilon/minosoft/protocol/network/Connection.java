@@ -111,8 +111,7 @@ public class Connection {
                 setVersion(Versions.getVersionById(protocolId));
             }
             resolve(address);
-        });
-        resolveThread.setName(String.format("%d/Resolving", connectionId));
+        }, String.format("%d/Resolving", connectionId));
         resolveThread.start();
     }
 
@@ -234,8 +233,7 @@ public class Connection {
                     }
                 }
             }
-        });
-        handleThread.setName(String.format("%d/Handling", connectionId));
+        }, String.format("%d/Handling", connectionId));
         handleThread.start();
     }
 

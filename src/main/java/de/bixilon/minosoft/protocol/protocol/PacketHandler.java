@@ -426,7 +426,7 @@ public class PacketHandler {
         for (byte[] record : pkg.getRecords()) {
             int x = ((int) pkg.getLocation().getX()) + record[0];
             int y = ((int) pkg.getLocation().getY()) + record[1];
-            int z = ((int) pkg.getLocation().getY()) + record[2];
+            int z = ((int) pkg.getLocation().getZ()) + record[2];
             BlockPosition blockPosition = new BlockPosition(x, (short) y, z);
             connection.getPlayer().getWorld().setBlock(blockPosition, Blocks.nullBlock);
         }

@@ -20,14 +20,14 @@ import de.bixilon.minosoft.gui.main.GUITools;
 import javafx.scene.image.Image;
 
 public class ServerListPing {
-    ServerModInfo serverModInfo;
-    int protocolId;
-    int playersOnline;
-    int maxPlayers;
+    final ServerModInfo serverModInfo;
+    final int protocolId;
+    final int playersOnline;
+    final int maxPlayers;
     String base64Favicon;
     Image favicon;
-    ChatComponent motd;
-    String serverBrand;
+    final ChatComponent motd;
+    final String serverBrand;
 
     public ServerListPing(JsonObject json) {
         protocolId = json.getAsJsonObject("version").get("protocol").getAsInt();

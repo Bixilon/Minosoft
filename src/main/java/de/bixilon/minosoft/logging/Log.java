@@ -25,10 +25,9 @@ public class Log {
     final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     final static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>();
     static LogLevels level = LogLevels.PROTOCOL;
-    static Thread logThread;
 
     public static void initThread() {
-        logThread = new Thread(() -> {
+        new Thread(() -> {
             while (true) {
                 // something to print
                 String message;
@@ -42,9 +41,7 @@ public class Log {
 
                 // ToDo: log to file
             }
-        });
-        logThread.setName("Log");
-        logThread.start();
+        }, "Log").start();
     }
 
     /**

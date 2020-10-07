@@ -37,7 +37,7 @@ public class Minosoft {
     public static HashBiMap<String, MojangAccount> accountList;
     public static MojangAccount selectedAccount;
     public static ArrayList<Server> serverList;
-    public static HashSet<EventManager> eventManagers = new HashSet<>();
+    public static final HashSet<EventManager> eventManagers = new HashSet<>();
     static Configuration config;
 
     public static void main(String[] args) {
@@ -74,15 +74,13 @@ public class Minosoft {
         selectAccount(accountList.get(config.getString(GameConfiguration.ACCOUNT_SELECTED)));
 
         serverList = config.getServers();
-        Thread modThread = new Thread(() -> {
+        new Thread(() -> {
             try {
                 ModLoader.loadMods();
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
-        });
-        modThread.setName("ModLoader");
-        modThread.start();
+        }, "ModLoader").start();
         Launcher.start();
     }
 

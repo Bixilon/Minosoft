@@ -35,7 +35,7 @@ public class Slot {
     boolean unbreakable;
     String skullOwner;
     byte hideFlags;
-    ArrayList<ChatComponent> lore = new ArrayList<>();
+    final ArrayList<ChatComponent> lore = new ArrayList<>();
 
     public Slot(CustomMapping mapping, Item item, int itemCount, CompoundTag nbt) {
         this.item = item;

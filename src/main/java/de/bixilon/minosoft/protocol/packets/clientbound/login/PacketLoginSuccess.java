@@ -32,7 +32,6 @@ public class PacketLoginSuccess implements ClientboundPacket {
             username = buffer.readString();
             return true;
         }
-        // ToDo: test, this should be an int array in 20w12a ???
         uuid = buffer.readUUID();
         username = buffer.readString();
         return true;

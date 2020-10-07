@@ -84,8 +84,7 @@ public class Configuration {
                     Log.verbose(String.format("Configuration saved to file %s", filename));
                 }
             }
-        });
-        thread.setName("IO-Thread");
+        }, "IO");
         thread.start();
     }
 

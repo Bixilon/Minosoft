@@ -46,7 +46,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ServerListCell extends ListCell<Server> implements Initializable {
-    public static ListView<Server> listView = new ListView<>();
+    public static final ListView<Server> listView = new ListView<>();
     @FXML
     public ImageView icon;
     @FXML

@@ -31,7 +31,7 @@ public class Server {
     int desiredVersion;
     byte[] favicon;
     Connection lastPing;
-    ArrayList<Connection> connections = new ArrayList<>();
+    final ArrayList<Connection> connections = new ArrayList<>();
 
     public Server(int id, String name, String address, int desiredVersion, byte[] favicon) {
         this(id, name, address, desiredVersion);

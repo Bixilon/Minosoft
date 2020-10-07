@@ -21,8 +21,8 @@ import java.util.ArrayList;
 
 public class ForgeModInfo implements ServerModInfo {
     final JsonObject modInfo;
-    String info;
-    ArrayList<ServerModItem> modList = new ArrayList<>();
+    final String info;
+    final ArrayList<ServerModItem> modList = new ArrayList<>();
 
     public ForgeModInfo(JsonObject modInfo) {
         this.modInfo = modInfo;

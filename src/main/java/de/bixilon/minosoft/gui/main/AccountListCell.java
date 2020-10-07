@@ -28,7 +28,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AccountListCell extends ListCell<MojangAccount> implements Initializable {
-    public static ListView<MojangAccount> listView = new ListView<>();
+    public static final ListView<MojangAccount> listView = new ListView<>();
     @FXML
     public MenuButton optionsMenu;
     @FXML

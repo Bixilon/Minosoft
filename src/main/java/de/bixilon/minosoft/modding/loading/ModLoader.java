@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import java.util.zip.ZipFile;
 
 public class ModLoader {
-    static LinkedList<MinosoftMod> mods = new LinkedList<>();
+    static final LinkedList<MinosoftMod> mods = new LinkedList<>();
 
     public static void loadMods() throws Exception {
         // load all jars, parse the mod.json

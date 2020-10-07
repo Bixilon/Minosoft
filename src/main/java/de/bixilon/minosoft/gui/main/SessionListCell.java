@@ -29,7 +29,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SessionListCell extends ListCell<Connection> implements Initializable {
-    public static ListView<Connection> listView = new ListView<>();
+    public static final ListView<Connection> listView = new ListView<>();
     @FXML
     public Label account;
     @FXML

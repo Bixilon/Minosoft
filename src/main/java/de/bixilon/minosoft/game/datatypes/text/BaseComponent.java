@@ -15,6 +15,7 @@ package de.bixilon.minosoft.game.datatypes.text;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 
 import javax.annotation.Nullable;
 import java.text.CharacterIterator;
@@ -187,5 +188,20 @@ public class BaseComponent implements ChatComponent {
         StringBuilder builder = new StringBuilder();
         parts.forEach((chatPart -> builder.append(chatPart.getMessage())));
         return builder.toString();
+    }
+
+    @Unsafe
+    public ArrayList<ChatComponent> getParts() {
+        return parts;
+    }
+
+    public BaseComponent append(ChatComponent component) {
+        parts.add(component);
+        return this;
+    }
+
+    public BaseComponent append(String message) {
+        parts.add(new BaseComponent(message));
+        return this;
     }
 }

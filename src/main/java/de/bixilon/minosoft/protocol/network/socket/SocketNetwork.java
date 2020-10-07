@@ -136,8 +136,7 @@ public class SocketNetwork implements Network {
                         }
                     } catch (IOException | InterruptedException ignored) {
                     }
-                });
-                socketSThread.setName(String.format("%d/SocketS", connection.getConnectionId()));
+                }, String.format("%d/SocketS", connection.getConnectionId()));
                 socketSThread.start();
 
                 while (connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
@@ -256,8 +255,7 @@ public class SocketNetwork implements Network {
                 lastException = e;
                 connection.setConnectionState(ConnectionStates.FAILED);
             }
-        });
-        socketRThread.setName(String.format("%d/Socket", connection.getConnectionId()));
+        }, String.format("%d/Socket", connection.getConnectionId()));
         socketRThread.start();
     }
 
