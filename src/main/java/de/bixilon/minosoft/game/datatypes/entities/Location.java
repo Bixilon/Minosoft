@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
+import java.util.Objects;
+
 public class Location {
     final double x;
     final double y;
@@ -31,6 +33,11 @@ public class Location {
         }
         Location that = (Location) obj;
         return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, z);
     }
 
     public double getX() {

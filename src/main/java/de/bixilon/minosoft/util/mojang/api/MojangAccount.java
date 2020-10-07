@@ -31,7 +31,7 @@ public class MojangAccount {
     public MojangAccount(String username, JsonObject json) {
         this.accessToken = json.get("accessToken").getAsString();
         JsonObject profile = json.get("selectedProfile").getAsJsonObject();
-        this.uuid = Util.uuidFromString(profile.get("id").getAsString());
+        this.uuid = Util.getUUIDFromString(profile.get("id").getAsString());
         this.playerName = profile.get("name").getAsString();
 
         JsonObject mojang = json.get("user").getAsJsonObject();
@@ -48,7 +48,7 @@ public class MojangAccount {
     }
 
     public static MojangAccount deserialize(JsonObject json) {
-        return new MojangAccount(json.get("accessToken").getAsString(), json.get("userId").getAsString(), Util.uuidFromString(json.get("uuid").getAsString()), json.get("playerName").getAsString(), json.get("userName").getAsString());
+        return new MojangAccount(json.get("accessToken").getAsString(), json.get("userId").getAsString(), Util.getUUIDFromString(json.get("uuid").getAsString()), json.get("playerName").getAsString(), json.get("userName").getAsString());
     }
 
     public JsonObject serialize() {

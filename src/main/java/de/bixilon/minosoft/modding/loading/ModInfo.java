@@ -31,7 +31,7 @@ public class ModInfo {
     LoadingInfo loadingInfo;
 
     public ModInfo(JsonObject json) {
-        this.uuid = Util.uuidFromString(json.get("uuid").getAsString());
+        this.uuid = Util.getUUIDFromString(json.get("uuid").getAsString());
         this.versionId = json.get("versionId").getAsInt();
         this.versionName = json.get("versionName").getAsString();
         this.name = json.get("name").getAsString();

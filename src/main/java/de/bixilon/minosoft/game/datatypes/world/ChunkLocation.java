@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.game.datatypes.world;
 
+import java.util.Objects;
+
 /**
  * Chunk X and Z location (block position / 16, rounded down)
  */
@@ -27,7 +29,7 @@ public class ChunkLocation {
 
     @Override
     public int hashCode() {
-        return x * z;
+        return Objects.hash(x, z);
     }
 
     @Override

@@ -31,10 +31,6 @@ public final class RGBColor {
         color = Integer.parseInt(colorString, 16);
     }
 
-    public int getColor() {
-        return color;
-    }
-
     public int getRed() {
         return (color >> 16) & 0xFF;
     }
@@ -48,15 +44,20 @@ public final class RGBColor {
     }
 
     @Override
+    public int hashCode() {
+        return color;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) {
             return true;
         }
-        return hashCode() == obj.hashCode();
+        RGBColor their = (RGBColor) obj;
+        return getColor() == their.getColor();
     }
 
-    @Override
-    public int hashCode() {
+    public int getColor() {
         return color;
     }
 

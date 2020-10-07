@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.game.datatypes.entities;
 
+import java.util.Objects;
+
 public class RelativeLocation {
     final double x;
     final double y;
@@ -26,7 +28,7 @@ public class RelativeLocation {
 
     @Override
     public int hashCode() {
-        return (int) (x * y * z);
+        return Objects.hash(x, y, z);
     }
 
     @Override

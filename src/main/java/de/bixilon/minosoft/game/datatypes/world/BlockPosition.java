@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.game.datatypes.world;
 
+import java.util.Objects;
+
 public class BlockPosition {
     final int x;
     final int y;
@@ -39,7 +41,7 @@ public class BlockPosition {
 
     @Override
     public int hashCode() {
-        return x * y * z;
+        return Objects.hash(x, y, z);
     }
 
     @Override

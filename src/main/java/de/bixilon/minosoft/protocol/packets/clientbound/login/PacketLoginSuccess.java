@@ -28,7 +28,7 @@ public class PacketLoginSuccess implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 707) {
-            uuid = Util.uuidFromString(buffer.readString());
+            uuid = Util.getUUIDFromString(buffer.readString());
             username = buffer.readString();
             return true;
         }

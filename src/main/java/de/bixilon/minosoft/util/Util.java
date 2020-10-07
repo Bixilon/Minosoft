@@ -39,7 +39,7 @@ import java.util.zip.*;
 public final class Util {
     public static final Pattern UUID_FIX = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
 
-    public static UUID uuidFromString(String uuid) {
+    public static UUID getUUIDFromString(String uuid) {
         if (uuid.length() == 36) {
             return UUID.fromString(uuid);
         }

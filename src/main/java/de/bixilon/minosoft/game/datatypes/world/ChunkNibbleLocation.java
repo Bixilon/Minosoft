@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.game.datatypes.world;
 
+import java.util.Objects;
+
 /**
  * Chunk X, Y and Z location (max 16x16x16)
  */
@@ -29,7 +31,7 @@ public class ChunkNibbleLocation {
 
     @Override
     public int hashCode() {
-        return x * y * z;
+        return Objects.hash(x, y, z);
     }
 
     @Override
