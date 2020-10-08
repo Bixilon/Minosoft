@@ -124,9 +124,7 @@ public class Minosoft {
         if (refreshState == MojangAccount.RefreshStates.ERROR) {
             accountList.remove(account.getUserId());
             account.delete();
-            if (AccountListCell.listView != null) {
-                AccountListCell.listView.getItems().remove(account);
-            }
+            AccountListCell.listView.getItems().remove(account);
             selectedAccount = null;
             return;
         }

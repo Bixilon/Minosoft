@@ -37,6 +37,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -50,7 +52,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     @FXML
     public ImageView icon;
     @FXML
-    public Label motd;
+    public TextFlow motd;
     @FXML
     public Label version;
     @FXML
@@ -143,8 +145,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 players.setText("");
                 version.setText("Offline");
                 version.setStyle("-fx-text-fill: red;");
-                motd.setText(String.format("%s", server.getLastPing().getLastConnectionException()));
-                motd.setStyle("-fx-text-fill: red;");
+                setErrorMotd(String.format("%s", server.getLastPing().getLastConnectionException()));
                 optionsConnect.setDisable(true);
                 canConnect = false;
                 return;
@@ -169,7 +170,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
             serverBrand.setText(ping.getServerModInfo().getBrand());
             serverBrand.setTooltip(new Tooltip(ping.getServerModInfo().getInfo()));
-            motd.setText(ping.getMotd().getMessage());
+            setMotd(ping.getMotd().getMessage());
             if (ping.getFavicon() != null) {
                 icon.setImage(ping.getFavicon());
                 if (!ping.getBase64EncodedFavicon().equals(server.getBase64Favicon())) {
@@ -182,8 +183,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 version.setStyle("-fx-text-fill: red;");
                 optionsConnect.setDisable(true);
                 canConnect = false;
-                motd.setText(String.format("%s", server.getLastPing().getLastConnectionException().getLocalizedMessage()));
-                motd.setStyle("-fx-text-fill: red;");
+                setErrorMotd(String.format("%s", server.getLastPing().getLastConnectionException().getLocalizedMessage()));
             }
         }));
 
@@ -197,7 +197,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     private void resetCell() {
         // clear all cells
         setStyle(null);
-        motd.setText("");
+        motd.getChildren().clear();
         serverBrand.setText("");
         serverBrand.setTooltip(null);
         motd.setStyle(null);
@@ -205,6 +205,18 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         version.setStyle(null);
         players.setText("");
         optionsConnect.setDisable(true);
+    }
+
+    private void setErrorMotd(String message) {
+        motd.getChildren().clear();
+        Text text = new Text(message);
+        text.setFill(Color.RED);
+        motd.getChildren().add(text);
+    }
+
+    private void setMotd(String message) {
+        motd.getChildren().clear();
+        motd.getChildren().add(new Text(message));
     }
 
     public void delete() {
