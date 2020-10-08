@@ -30,13 +30,23 @@ public interface ChatComponent {
         return new BaseComponent(raw);
     }
 
-    String toString();
-
+    /**
+     * @return Returns the message formatted with ANSI Formatting codes
+     */
     String getANSIColoredMessage();
 
+    /**
+     * @return Returns the message formatted with minecraft formatting codes (§)
+     */
     String getLegacyText();
 
+    /**
+     * @return Returns the unformatted message
+     */
     String getMessage();
 
+    /**
+     * @return Returns the a list of Nodes, drawable in JavaFX (TextFlow)
+     */
     ObservableList<Node> getJavaFXText();
 }

@@ -133,11 +133,16 @@ public class MainWindow implements Initializable {
             stage.setOnCloseRequest(event -> {
                 if (Minosoft.getSelectedAccount() == null) {
                     event.consume();
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Please select an account!");
-                    alert.setContentText("You did not select an account. Minosoft does not know which account you want to use to connect to a server!");
-                    alert.showAndWait();
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Error", ButtonType.CANCEL, ButtonType.OK);
+                    alert.setHeaderText("Are you sure?");
+                    alert.setContentText("No account selected, Minosoft will exit.");
+                    alert.showAndWait().ifPresent((type) -> {
+                        if (type == ButtonType.OK) {
+                            System.exit(0);
+                            return;
+                        }
+                        alert.close();
+                    });
                 } else {
                     stage.close();
                 }
