@@ -15,6 +15,8 @@ package de.bixilon.minosoft.game.datatypes.text;
 
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 
 public interface ChatComponent {
     static ChatComponent fromString(String raw) {
@@ -35,4 +37,6 @@ public interface ChatComponent {
     String getLegacyText();
 
     String getMessage();
+
+    ObservableList<Node> getJavaFXText();
 }

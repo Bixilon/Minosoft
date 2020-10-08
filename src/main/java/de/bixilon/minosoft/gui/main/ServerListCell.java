@@ -170,7 +170,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
             serverBrand.setText(ping.getServerModInfo().getBrand());
             serverBrand.setTooltip(new Tooltip(ping.getServerModInfo().getInfo()));
-            setMotd(ping.getMotd().getMessage());
+            motd.getChildren().addAll(ping.getMotd().getJavaFXText());
             if (ping.getFavicon() != null) {
                 icon.setImage(ping.getFavicon());
                 if (!ping.getBase64EncodedFavicon().equals(server.getBase64Favicon())) {
@@ -212,11 +212,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         Text text = new Text(message);
         text.setFill(Color.RED);
         motd.getChildren().add(text);
-    }
-
-    private void setMotd(String message) {
-        motd.getChildren().clear();
-        motd.getChildren().add(new Text(message));
     }
 
     public void delete() {
@@ -404,7 +399,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 Label serverVersionLabel = new Label(serverVersionString);
                 Label serverBrandLabel = new Label(lastPing.getServerBrand());
                 Label playersOnlineMaxLabel = new Label(String.format("%d/%d", lastPing.getPlayerOnline(), lastPing.getMaxPlayers()));
-                Label motdLabel = new Label(lastPing.getMotd().getMessage());
+                TextFlow motdLabel = new TextFlow();
+                motdLabel.getChildren().addAll(lastPing.getMotd().getJavaFXText());
                 Label moddedBrandLabel = new Label(lastPing.getServerModInfo().getBrand());
 
                 grid.add(new Label("Real server address:"), 0, ++column);

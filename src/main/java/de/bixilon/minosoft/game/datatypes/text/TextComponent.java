@@ -13,6 +13,15 @@
 
 package de.bixilon.minosoft.game.datatypes.text;
 
+import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
+
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -170,6 +179,30 @@ public class TextComponent implements ChatComponent {
     @Override
     public String getMessage() {
         return text;
+    }
+
+    @Override
+    public ObservableList<Node> getJavaFXText() {
+        Text text = new Text(this.text);
+        if (color != null) {
+            text.setFill(Color.web(color.toString()));
+        }
+        formatting.forEach((chatFormattingCode -> {
+            switch (chatFormattingCode) {
+                case OBFUSCATED -> {
+                    FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), text);
+                    fadeTransition.setFromValue(1.0);
+                    fadeTransition.setToValue(0.0);
+                    fadeTransition.setCycleCount(Animation.INDEFINITE);
+                    fadeTransition.play();
+                }
+                case BOLD -> text.setStyle("-fx-font-weight: bold;");
+                case STRIKETHROUGH -> text.setStyle("-fx-strikethrough: true;");
+                case UNDERLINED -> text.setStyle("-fx-underline: true;");
+                case ITALIC -> text.setStyle("-fx-font-weight: italic;");
+            }
+        }));
+        return FXCollections.observableArrayList(text);
     }
 
     @Override
