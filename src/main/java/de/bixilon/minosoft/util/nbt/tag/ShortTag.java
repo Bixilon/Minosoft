@@ -16,7 +16,7 @@ package de.bixilon.minosoft.util.nbt.tag;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-public class ShortTag implements NBTTag {
+public class ShortTag extends NBTTag {
     final short value;
 
     public ShortTag(short value) {

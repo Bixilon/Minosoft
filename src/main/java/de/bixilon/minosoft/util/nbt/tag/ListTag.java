@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ListTag implements NBTTag {
+public class ListTag extends NBTTag {
     final TagTypes type;
     final ArrayList<NBTTag> list;
 

@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 import java.util.Arrays;
 
-public class IntArrayTag implements NBTTag {
+public class IntArrayTag extends NBTTag {
     final int[] value;
 
     public IntArrayTag(int[] value) {

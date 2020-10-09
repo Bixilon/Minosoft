@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CompoundTag implements NBTTag {
+public class CompoundTag extends NBTTag {
     final String name;
     final HashMap<String, NBTTag> data;
 
@@ -135,6 +135,9 @@ public class CompoundTag implements NBTTag {
     }
 
     public void writeTag(String name, NBTTag tag) {
+        if (isFinal) {
+            throw new IllegalArgumentException("This tag is marked as final!");
+        }
         data.put(name, tag);
     }
 
@@ -145,6 +148,9 @@ public class CompoundTag implements NBTTag {
     // abstract functions
 
     public void writeBlockPosition(BlockPosition position) {
+        if (isFinal) {
+            throw new IllegalArgumentException("This tag is marked as final!");
+        }
         data.put("x", new IntTag(position.getX()));
         data.put("y", new IntTag(position.getY()));
         data.put("z", new IntTag(position.getZ()));

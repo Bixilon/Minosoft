@@ -16,7 +16,7 @@ package de.bixilon.minosoft.util.nbt.tag;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-public class DoubleTag implements NBTTag {
+public class DoubleTag extends NBTTag {
     final double value;
 
     public DoubleTag(double value) {
