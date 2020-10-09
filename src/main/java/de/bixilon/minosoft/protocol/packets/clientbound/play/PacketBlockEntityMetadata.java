@@ -29,7 +29,6 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-
         if (buffer.getProtocolId() < 6) {
             position = buffer.readBlockPositionShort();
             action = BlockEntityActions.byId(buffer.readByte(), buffer.getProtocolId());
@@ -54,6 +53,10 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
 
     public BlockPosition getPosition() {
         return position;
+    }
+
+    public BlockEntityActions getAction() {
+        return action;
     }
 
     public CompoundTag getNbt() {

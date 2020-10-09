@@ -22,11 +22,10 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketEffect implements ClientboundPacket {
-    // is this class used??? What about PacketParticle or PacketSoundEffect?
     EffectEffects effect;
     BlockPosition position;
     int data;
-    boolean disableRelativeVolume; // normally only at MOB_ENDERDRAGON_END and MOB_WITHER_SPAWN, but we allow this everywhere
+    boolean disableRelativeVolume;
 
     @Override
     public boolean read(InByteBuffer buffer) {

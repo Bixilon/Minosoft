@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.Util;
 import java.util.HashMap;
 
 public class PacketChunkBulk implements ClientboundPacket {
-    final HashMap<ChunkLocation, Chunk> chunkMap = new HashMap<>();
+    final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -49,7 +49,7 @@ public class PacketChunkBulk implements ClientboundPacket {
                 short sectionBitMask = buffer.readShort();
                 short addBitMask = buffer.readShort();
 
-                chunkMap.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
+                chunks.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
             }
             return true;
         }
@@ -67,7 +67,7 @@ public class PacketChunkBulk implements ClientboundPacket {
             sectionBitMask[i] = buffer.readShort();
         }
         for (int i = 0; i < chunkCount; i++) {
-            chunkMap.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
+            chunks.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
         }
         return true;
     }
@@ -79,10 +79,10 @@ public class PacketChunkBulk implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Chunk bulk packet received (chunks=%s)", chunkMap.size()));
+        Log.protocol(String.format("Chunk bulk packet received (chunks=%s)", chunks.size()));
     }
 
-    public HashMap<ChunkLocation, Chunk> getChunkMap() {
-        return chunkMap;
+    public HashMap<ChunkLocation, Chunk> getChunks() {
+        return chunks;
     }
 }

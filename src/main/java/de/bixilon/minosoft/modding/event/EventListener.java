@@ -84,4 +84,16 @@ public class EventListener {
 
     public void onLightningBoltSpawn(LightningBoltSpawnEvent event) {
     }
+
+    public void onMultiBlockChange(MultiBlockChangeEvent event) {
+    }
+
+    public void onBlockEntityMetaDataChange(BlockEntityMetaDataChangeEvent event) {
+    }
+
+    public void onChunkDataChange(ChunkDataChangeEvent event) {
+    }
+
+    public void onEffect(EffectEvent event) {
+    }
 }

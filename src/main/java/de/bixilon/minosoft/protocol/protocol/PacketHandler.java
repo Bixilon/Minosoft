@@ -167,7 +167,9 @@ public class PacketHandler {
     }
 
     public void handle(PacketChunkBulk pkg) {
-        connection.getPlayer().getWorld().setChunks(pkg.getChunkMap());
+        pkg.getChunks().forEach(((location, chunk) -> connection.fireEvent(new ChunkDataChangeEvent(connection, location, chunk))));
+
+        connection.getPlayer().getWorld().setChunks(pkg.getChunks());
     }
 
     public void handle(PacketUpdateHealth pkg) {
@@ -311,6 +313,7 @@ public class PacketHandler {
             Log.warn(String.format("Server tried to change blocks in unloaded chunks! (location=%s)", pkg.getLocation()));
             return;
         }
+        connection.fireEvent(new MultiBlockChangeEvent(connection, pkg));
         chunk.setBlocks(pkg.getBlocks());
     }
 
@@ -343,6 +346,9 @@ public class PacketHandler {
     }
 
     public void handle(PacketChunkData pkg) {
+        pkg.getBlockEntities().forEach(((position, compoundTag) -> connection.fireEvent(new BlockEntityMetaDataChangeEvent(connection, position, null, compoundTag))));
+        connection.fireEvent(new ChunkDataChangeEvent(connection, pkg));
+
         connection.getPlayer().getWorld().setChunk(pkg.getLocation(), pkg.getChunk());
         connection.getPlayer().getWorld().setBlockEntityData(pkg.getBlockEntities());
     }
@@ -404,6 +410,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketBlockEntityMetadata pkg) {
+        connection.fireEvent(new BlockEntityMetaDataChangeEvent(connection, pkg));
         connection.getPlayer().getWorld().setBlockEntityData(pkg.getPosition(), pkg.getNbt());
     }
 
@@ -487,7 +494,9 @@ public class PacketHandler {
     }
 
     public void handle(PacketEffect pkg) {
-        // ToDo
+        if (connection.fireEvent(new EffectEvent(connection, pkg))) {
+            return;
+        }
     }
 
     public void handle(PacketScoreboardObjective pkg) {
@@ -499,7 +508,6 @@ public class PacketHandler {
     }
 
     public void handle(PacketScoreboardUpdateScore pkg) {
-        // ToDo handle correctly
         switch (pkg.getAction()) {
             case CREATE_UPDATE -> connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName()).addScore(new ScoreboardScore(pkg.getItemName(), pkg.getScoreName(), pkg.getScoreValue()));
             case REMOVE -> {
@@ -547,7 +555,6 @@ public class PacketHandler {
         if (connection.fireEvent(event)) {
             return;
         }
-        // ToDo ask user, download pack. for now just send an okay
     }
 
     public void handle(PacketEntityProperties pkg) {
