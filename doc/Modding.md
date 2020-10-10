@@ -127,7 +127,7 @@ If you want to register an event depending on an IP (like server specific suppor
 `getEventManager().registerConnectionListener(new XYEventListener(), new ServerAddress("127.0.0.1", 25565));`
 Your event methods need to be annotated by `EventHandler`. `EventHandler` **can** take these arguments:
  - `priority`: Pretty much self explaining. `HIGH` means, that it gets executed at "the beginning", `LOW` means the opposite. Defaults to `NORMAL`.
- - `onlyIfNotCancelled`: If it is a cancellable event, your method only gets executed, when all prior listeners (potentially with a higher priority) did not cancel the event. Defaults to `true`.
+ - `ignoreCancelled`: If it is a cancellable event, your method only gets executed, when all prior listeners (potentially with a higher priority) did not cancel the event. Defaults to `false`.
 
 Your XYEventListener class needs to extend `de.bixilon.minosoft.modding.event.EventListener`;
 ```java
@@ -146,7 +146,7 @@ public class ChatEvent extends EventListener {
         }
     }
 
-    @EventHandler(onlyIfNotCancelled = false)
+    @EventHandler(ignoreCancelled = true)
     public void onChatMessageSending(ChatMessageSendingEvent event) {
         if (event.getMessage().contains("jeb_ is stupid")) {
             event.setCancelled(true);
