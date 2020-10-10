@@ -14,15 +14,14 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEffect;
 
 public class EffectEvent extends CancelableEvent {
-    final PacketEffect.EffectEffects effect;
-    final BlockPosition position;
-    final int data;
-    final boolean disableRelativeVolume;
+    private final PacketEffect.EffectEffects effect;
+    private final BlockPosition position;
+    private final int data;
+    private final boolean disableRelativeVolume;
 
     public EffectEvent(Connection connection, PacketEffect.EffectEffects effect, BlockPosition position, int data, boolean disableRelativeVolume) {
         super(connection);
@@ -54,10 +53,5 @@ public class EffectEvent extends CancelableEvent {
 
     public boolean isDisableRelativeVolume() {
         return disableRelativeVolume;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onEffect(this);
     }
 }

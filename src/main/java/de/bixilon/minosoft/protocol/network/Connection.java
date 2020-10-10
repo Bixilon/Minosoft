@@ -25,8 +25,8 @@ import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.gui.main.ConnectionChangeCallback;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.modding.event.EventManager;
+import de.bixilon.minosoft.modding.event.EventMethod;
 import de.bixilon.minosoft.modding.event.events.CancelableEvent;
 import de.bixilon.minosoft.modding.event.events.Event;
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent;
@@ -62,7 +62,7 @@ public class Connection {
     final HashSet<PingCallback> pingCallbacks = new HashSet<>();
     final HashSet<ConnectionChangeCallback> connectionChangeCallbacks = new HashSet<>();
     final HashSet<EventManager> eventManagers = new HashSet<>();
-    final HashSet<EventListener> eventListeners = new HashSet<>();
+    final LinkedList<EventMethod> eventListeners = new LinkedList<>();
     final int connectionId;
     final Player player;
     final String hostname;
@@ -203,8 +203,8 @@ public class Connection {
      * @return if the event has been cancelled or not
      */
     public boolean fireEvent(Event event) {
-        Minosoft.eventManagers.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach(event::handle)));
-        eventListeners.forEach(event::handle);
+        Minosoft.eventManagers.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach((method) -> method.invoke(event))));
+        eventListeners.forEach((method -> method.invoke(event)));
         if (event instanceof CancelableEvent) {
             return ((CancelableEvent) event).isCancelled();
         }
@@ -349,9 +349,15 @@ public class Connection {
                 // get and add all events, that are connection specific
                 Minosoft.eventManagers.forEach((eventManagers -> eventManagers.getSpecificEventListeners().forEach((serverAddresses, listener) -> {
                     if (serverAddresses.contains(address)) {
-                        eventListeners.add(listener);
+                        eventListeners.addAll(listener);
                     }
                 })));
+                eventListeners.sort((a, b) -> {
+                    if (a == null || b == null) {
+                        return 0;
+                    }
+                    return -(b.getAnnotation().priority().ordinal() - a.getAnnotation().priority().ordinal());
+                });
                 // connection established, starting threads and logging in
                 startHandlingThread();
                 ConnectionStates next = ((reason == ConnectionReasons.CONNECT) ? ConnectionStates.LOGIN : ConnectionStates.STATUS);

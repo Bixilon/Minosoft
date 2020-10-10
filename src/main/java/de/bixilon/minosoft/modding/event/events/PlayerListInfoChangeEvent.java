@@ -13,20 +13,31 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
+import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTabHeaderAndFooter;
 
-@Unsafe
-public class PacketSendEvent extends Event {
-    private final ServerboundPacket packet;
+public class PlayerListInfoChangeEvent extends CancelableEvent {
+    private final ChatComponent header;
+    private final ChatComponent footer;
 
-    public PacketSendEvent(Connection connection, ServerboundPacket packet) {
+    public PlayerListInfoChangeEvent(Connection connection, ChatComponent header, ChatComponent footer) {
         super(connection);
-        this.packet = packet;
+        this.header = header;
+        this.footer = footer;
     }
 
-    public ServerboundPacket getPacket() {
-        return packet;
+    public PlayerListInfoChangeEvent(Connection connection, PacketTabHeaderAndFooter pkg) {
+        super(connection);
+        this.header = pkg.getHeader();
+        this.footer = pkg.getFooter();
+    }
+
+    public ChatComponent getHeader() {
+        return header;
+    }
+
+    public ChatComponent getFooter() {
+        return footer;
     }
 }

@@ -13,20 +13,30 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTimeUpdate;
 
-@Unsafe
-public class PacketSendEvent extends Event {
-    private final ServerboundPacket packet;
+public class TimeChangeEvent extends CancelableEvent {
+    private final long worldAge;
+    private final long timeOfDay;
 
-    public PacketSendEvent(Connection connection, ServerboundPacket packet) {
+    public TimeChangeEvent(Connection connection, long worldAge, long timeOfDay) {
         super(connection);
-        this.packet = packet;
+        this.worldAge = worldAge;
+        this.timeOfDay = timeOfDay;
     }
 
-    public ServerboundPacket getPacket() {
-        return packet;
+    public TimeChangeEvent(Connection connection, PacketTimeUpdate pkg) {
+        super(connection);
+        this.worldAge = pkg.getWorldAge();
+        this.timeOfDay = pkg.getTimeOfDay();
+    }
+
+    public long getWorldAge() {
+        return worldAge;
+    }
+
+    public long getTimeOfDay() {
+        return timeOfDay;
     }
 }

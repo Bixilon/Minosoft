@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.game.datatypes.entities.objects.LightningBolt;
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSpawnWeatherEntity;
 
@@ -33,10 +32,5 @@ public class LightningBoltSpawnEvent extends Event {
 
     public LightningBolt getEntity() {
         return entity;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onLightningBoltSpawn(this);
     }
 }

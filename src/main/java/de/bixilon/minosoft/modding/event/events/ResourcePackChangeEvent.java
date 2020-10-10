@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.modding.event.events.annotations.MaximumProtocolVersion;
 import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -52,10 +51,5 @@ public class ResourcePackChangeEvent extends CancelableEvent {
     @MaximumProtocolVersion(protocolId = 204)
     public void setHash(String hash) {
         this.hash = hash;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onResourcePackChange(this);
     }
 }

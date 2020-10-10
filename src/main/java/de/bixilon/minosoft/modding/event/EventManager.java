@@ -13,25 +13,43 @@
 
 package de.bixilon.minosoft.modding.event;
 
+import de.bixilon.minosoft.modding.event.events.Event;
+import de.bixilon.minosoft.modding.event.events.annotations.EventHandler;
 import de.bixilon.minosoft.util.ServerAddress;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
 public class EventManager {
-    private final HashSet<EventListener> globalEventListeners = new HashSet<>();
-    private final HashMap<HashSet<ServerAddress>, EventListener> specificEventListeners = new HashMap<>();
+    private final HashSet<EventMethod> globalEventListeners = new HashSet<>();
+    private final HashMap<HashSet<ServerAddress>, HashSet<EventMethod>> specificEventListeners = new HashMap<>();
 
     public void registerGlobalListener(EventListener listener) {
-        globalEventListeners.add(listener);
+        globalEventListeners.addAll(getEventMethods(listener));
     }
 
-    public void unregisterGlobalListener(EventListener listener) {
-        globalEventListeners.remove(listener);
+    private HashSet<EventMethod> getEventMethods(EventListener listener) {
+        Class<? extends EventListener> clazz = listener.getClass();
+        HashSet<EventMethod> eventMethods = new HashSet<>();
+        for (Method method : clazz.getMethods()) {
+            EventHandler annotation = method.getAnnotation(EventHandler.class);
+            if (annotation == null) {
+                continue;
+            }
+            if (method.getParameterCount() != 1) {
+                continue;
+            }
+            if (!Event.class.isAssignableFrom(method.getParameters()[0].getType())) {
+                continue;
+            }
+            eventMethods.add(new EventMethod(annotation, listener, method));
+        }
+        return eventMethods;
     }
 
-    public HashSet<EventListener> getGlobalEventListeners() {
+    public HashSet<EventMethod> getGlobalEventListeners() {
         return globalEventListeners;
     }
 
@@ -40,10 +58,10 @@ public class EventManager {
             throw new RuntimeException("You must provide at least one server address or use global events!");
         }
         HashSet<ServerAddress> serverAddresses = new HashSet<>(Arrays.asList(addresses));
-        specificEventListeners.put(serverAddresses, listener);
+        specificEventListeners.put(serverAddresses, getEventMethods(listener));
     }
 
-    public HashMap<HashSet<ServerAddress>, EventListener> getSpecificEventListeners() {
+    public HashMap<HashSet<ServerAddress>, HashSet<EventMethod>> getSpecificEventListeners() {
         return specificEventListeners;
     }
 }

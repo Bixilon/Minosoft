@@ -214,4 +214,16 @@ public class PacketJoinGame implements ClientboundPacket {
     public HashMap<String, HashBiMap<String, Dimension>> getDimensions() {
         return dimensions;
     }
+
+    public boolean isReducedDebugScreen() {
+        return reducedDebugScreen;
+    }
+
+    public boolean isEnableRespawnScreen() {
+        return enableRespawnScreen;
+    }
+
+    public long getHashedSeed() {
+        return hashedSeed;
+    }
 }

@@ -38,4 +38,12 @@ public class PacketTimeUpdate implements ClientboundPacket {
     public void log() {
         Log.protocol(String.format("Time Update packet received. Time is now %st (total %st, moving=%s)", Math.abs(timeOfDay), worldAge, timeOfDay > 0));
     }
+
+    public long getWorldAge() {
+        return worldAge;
+    }
+
+    public long getTimeOfDay() {
+        return timeOfDay;
+    }
 }

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketUpdateHealth;
 
@@ -46,10 +45,5 @@ public class UpdateHealthEvent extends Event {
 
     public float getSaturation() {
         return saturation;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onHealthChange(this);
     }
 }

@@ -65,10 +65,10 @@ public class Slot {
             this.unbreakable = nbt.getByteTag("unbreakable").getValue() == 0x01;
         }
         if (nbt.containsKey("SkullOwner")) {
-            this.skullOwner = nbt.getStringTag("SkullOwner").getValue();
+            //this.skullOwner = nbt.getStringTag("SkullOwner").getValue(); // ToDo
         }
         if (nbt.containsKey("HideFlags")) {
-            this.hideFlags = nbt.getByteTag("HideFlags").getValue();
+            this.hideFlags = (byte) nbt.getIntTag("HideFlags").getValue();
         }
         if (nbt.containsKey("Enchantments")) {
             for (CompoundTag enchantment : nbt.getListTag("Enchantments").<CompoundTag>getValue()) {
@@ -118,10 +118,10 @@ public class Slot {
             nbt.writeTag("unbreakable", new ByteTag(true));
         }
         if (skullOwner != null) {
-            nbt.writeTag("SkullOwner", new StringTag(skullOwner));
+            //nbt.writeTag("SkullOwner", new StringTag(skullOwner)); // ToDo
         }
         if (hideFlags != 0) {
-            nbt.writeTag("HideFlags", new ByteTag(hideFlags));
+            nbt.writeTag("HideFlags", new IntTag(hideFlags));
         }
         if (enchantments.size() > 0) {
             if (mapping.getVersion().isFlattened()) {

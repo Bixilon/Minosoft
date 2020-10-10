@@ -13,20 +13,26 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
+import de.bixilon.minosoft.game.datatypes.player.PlayerListItemBulk;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerListItem;
 
-@Unsafe
-public class PacketSendEvent extends Event {
-    private final ServerboundPacket packet;
+import java.util.ArrayList;
 
-    public PacketSendEvent(Connection connection, ServerboundPacket packet) {
+public class PlayerListItemChangeEvent extends CancelableEvent {
+    private final ArrayList<PlayerListItemBulk> playerList;
+
+    public PlayerListItemChangeEvent(Connection connection, ArrayList<PlayerListItemBulk> playerList) {
         super(connection);
-        this.packet = packet;
+        this.playerList = playerList;
     }
 
-    public ServerboundPacket getPacket() {
-        return packet;
+    public PlayerListItemChangeEvent(Connection connection, PacketPlayerListItem pkg) {
+        super(connection);
+        this.playerList = pkg.getPlayerList();
+    }
+
+    public ArrayList<PlayerListItemBulk> getPlayerList() {
+        return playerList;
     }
 }

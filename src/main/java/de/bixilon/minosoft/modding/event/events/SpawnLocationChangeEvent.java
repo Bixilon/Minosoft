@@ -13,20 +13,24 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
+import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSpawnLocation;
 
-@Unsafe
-public class PacketSendEvent extends Event {
-    private final ServerboundPacket packet;
+public class SpawnLocationChangeEvent extends Event {
+    private final BlockPosition location;
 
-    public PacketSendEvent(Connection connection, ServerboundPacket packet) {
+    public SpawnLocationChangeEvent(Connection connection, BlockPosition location) {
         super(connection);
-        this.packet = packet;
+        this.location = location;
     }
 
-    public ServerboundPacket getPacket() {
-        return packet;
+    public SpawnLocationChangeEvent(Connection connection, PacketSpawnLocation pkg) {
+        super(connection);
+        this.location = pkg.getSpawnLocation();
+    }
+
+    public BlockPosition getSpawnLocation() {
+        return location;
     }
 }

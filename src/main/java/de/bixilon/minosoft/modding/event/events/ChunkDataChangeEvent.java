@@ -15,7 +15,6 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChunkData;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
@@ -59,10 +58,5 @@ public class ChunkDataChangeEvent extends Event {
 
     public CompoundTag getHeightMap() {
         return heightMap;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onChunkDataChange(this);
     }
 }

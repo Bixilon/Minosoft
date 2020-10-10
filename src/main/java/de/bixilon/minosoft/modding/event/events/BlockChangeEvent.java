@@ -15,7 +15,6 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockChange;
 
@@ -44,10 +43,5 @@ public class BlockChangeEvent extends Event {
 
     public Block getBlock() {
         return block;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onBlockChange(this);
     }
 }

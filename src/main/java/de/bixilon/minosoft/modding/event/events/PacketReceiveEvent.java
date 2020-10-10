@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -29,10 +28,5 @@ public class PacketReceiveEvent extends Event {
 
     public ClientboundPacket getPacket() {
         return packet;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onPacketReceive(this);
     }
 }

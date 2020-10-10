@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBossBar;
 
@@ -131,10 +130,5 @@ public class BossBarChangeEvent extends CancelableEvent {
 
     public void setCreateFog(boolean createFog) {
         this.createFog = createFog;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onBossBarChange(this);
     }
 }

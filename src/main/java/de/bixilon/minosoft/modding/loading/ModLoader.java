@@ -112,11 +112,11 @@ public class ModLoader {
         return null;
     }
 
-    private static LoadingPriorities getLoadingPriorityOrDefault(ModInfo info) {
+    private static Priorities getLoadingPriorityOrDefault(ModInfo info) {
         if (info.getLoadingInfo() != null && info.getLoadingInfo().getLoadingPriority() != null) {
             return info.getLoadingInfo().getLoadingPriority();
         }
-        return LoadingPriorities.NORMAL;
+        return Priorities.NORMAL;
     }
 
     static boolean isModLoaded(ModInfo info) {

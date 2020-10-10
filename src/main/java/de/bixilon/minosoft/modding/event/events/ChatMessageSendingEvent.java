@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 public class ChatMessageSendingEvent extends CancelableEvent {
@@ -30,10 +29,5 @@ public class ChatMessageSendingEvent extends CancelableEvent {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onChatMessageSending(this);
     }
 }

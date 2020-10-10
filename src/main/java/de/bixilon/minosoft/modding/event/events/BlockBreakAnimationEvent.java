@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockBreakAnimation;
@@ -49,10 +48,5 @@ public class BlockBreakAnimationEvent extends CancelableEvent {
 
     public byte getStage() {
         return stage;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onBlockBreakAnimation(this);
     }
 }

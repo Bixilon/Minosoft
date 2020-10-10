@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketOpenSignEditor;
 
@@ -33,10 +32,5 @@ public class OpenSignEditorEvent extends CancelableEvent {
 
     public BlockPosition getPosition() {
         return position;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onOpenSignEditor(this);
     }
 }

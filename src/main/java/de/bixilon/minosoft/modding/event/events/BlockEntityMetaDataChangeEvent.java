@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockEntityMetadata;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
@@ -22,9 +21,9 @@ import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import javax.annotation.Nullable;
 
 public class BlockEntityMetaDataChangeEvent extends Event {
-    final BlockPosition position;
-    final PacketBlockEntityMetadata.BlockEntityActions action;
-    final CompoundTag nbt;
+    private final BlockPosition position;
+    private final PacketBlockEntityMetadata.BlockEntityActions action;
+    private final CompoundTag nbt;
 
     public BlockEntityMetaDataChangeEvent(Connection connection, BlockPosition position, PacketBlockEntityMetadata.BlockEntityActions action, CompoundTag nbt) {
         super(connection);
@@ -53,10 +52,5 @@ public class BlockEntityMetaDataChangeEvent extends Event {
 
     public CompoundTag getNbt() {
         return nbt;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onBlockEntityMetaDataChange(this);
     }
 }

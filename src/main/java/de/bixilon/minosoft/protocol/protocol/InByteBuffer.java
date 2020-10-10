@@ -67,10 +67,10 @@ public class InByteBuffer {
         return buffer.getShort(0);
     }
 
-    public Long readLong() {
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.put(readBytes(Long.BYTES));
-        return buffer.getLong(0);
+    public int readInt() {
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+        buffer.put(readBytes(Integer.BYTES));
+        return buffer.getInt(0);
     }
 
     public byte[] readBytes(int count) {
@@ -80,8 +80,19 @@ public class InByteBuffer {
         return ret;
     }
 
+    public Long readLong() {
+        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+        buffer.put(readBytes(Long.BYTES));
+        return buffer.getLong(0);
+    }
+
     public double readFixedPointNumberInteger() {
         return readInt() / 32.0D;
+    }
+
+    public String readString() {
+        int length = readVarInt();
+        return new String(readBytes(length), StandardCharsets.UTF_8);
     }
 
     public long readVarLong() {
@@ -118,12 +129,6 @@ public class InByteBuffer {
         return ret;
     }
 
-    public Float readFloat() {
-        ByteBuffer buffer = ByteBuffer.allocate(Float.BYTES);
-        buffer.put(readBytes(Float.BYTES));
-        return buffer.getFloat(0);
-    }
-
     public String[] readStringArray(int length) {
         String[] ret = new String[length];
         for (int i = 0; i < length; i++) {
@@ -138,11 +143,6 @@ public class InByteBuffer {
 
     public UUID readUUID() {
         return new UUID(readLong(), readLong());
-    }
-
-    public String readString() {
-        int length = readVarInt();
-        return new String(readBytes(length), StandardCharsets.UTF_8);
     }
 
     public int readVarInt() {
@@ -163,12 +163,6 @@ public class InByteBuffer {
         } while ((read & 0b10000000) != 0);
 
         return result;
-    }
-
-    public int readInt() {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.put(readBytes(Integer.BYTES));
-        return buffer.getInt(0);
     }
 
     public double readFixedPointNumberByte() {
@@ -341,6 +335,16 @@ public class InByteBuffer {
         ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
         buffer.put(readBytes(Double.BYTES));
         return buffer.getDouble(0);
+    }
+
+    public Location readSmallLocation() {
+        return new Location(readFloat(), readFloat(), readFloat());
+    }
+
+    public Float readFloat() {
+        ByteBuffer buffer = ByteBuffer.allocate(Float.BYTES);
+        buffer.put(readBytes(Float.BYTES));
+        return buffer.getFloat(0);
     }
 
     public BlockPosition readBlockPosition() {

@@ -11,12 +11,16 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.loading;
+package de.bixilon.minosoft.modding.event.events.annotations;
 
-public enum LoadingPriorities {
-    LOWEST,
-    LOW,
-    NORMAL,
-    HIGH,
-    HIGHEST
+import de.bixilon.minosoft.modding.loading.Priorities;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.RUNTIME)
+public @interface EventHandler {
+    boolean onlyIfNotCancelled() default true;
+
+    Priorities priority() default Priorities.NORMAL;
 }

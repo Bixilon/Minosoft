@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.entities.Location;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
 import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
 import de.bixilon.minosoft.logging.Log;
@@ -24,9 +25,7 @@ public class PacketParticle implements ClientboundPacket {
     Particle particleType;
     ParticleData particleData;
     boolean longDistance = false;
-    double x;
-    double y;
-    double z;
+    Location location;
     float offsetX;
     float offsetY;
     float offsetZ;
@@ -44,9 +43,7 @@ public class PacketParticle implements ClientboundPacket {
             if (buffer.getProtocolId() >= 29) {
                 longDistance = buffer.readBoolean();
             }
-            x = buffer.readFloat();
-            y = buffer.readFloat();
-            z = buffer.readFloat();
+            location = buffer.readSmallLocation();
 
             // offset
             offsetX = buffer.readFloat();
@@ -60,9 +57,7 @@ public class PacketParticle implements ClientboundPacket {
         }
         particleType = buffer.getConnection().getMapping().getParticleById(buffer.readInt());
         longDistance = buffer.readBoolean();
-        x = buffer.readDouble();
-        y = buffer.readDouble();
-        z = buffer.readDouble();
+        location = buffer.readLocation();
 
         // offset
         offsetX = buffer.readFloat();
@@ -82,19 +77,23 @@ public class PacketParticle implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received particle spawn at %s %s %s (offsetX=%s, offsetY=%s, offsetZ=%s, particleType=%s, dataFloat=%s, count=%d, particleData=%s)", x, y, z, offsetX, offsetY, offsetZ, particleType, particleDataFloat, count, particleData));
+        Log.protocol(String.format("Received particle spawn packet (location=%s, offsetX=%s, offsetY=%s, offsetZ=%s, particleType=%s, dataFloat=%s, count=%d, particleData=%s)", location, offsetX, offsetY, offsetZ, particleType, particleDataFloat, count, particleData));
     }
 
-    public double getX() {
-        return x;
+    public Location getLocation() {
+        return location;
     }
 
-    public double getY() {
-        return y;
+    public float getOffsetX() {
+        return offsetX;
     }
 
-    public double getZ() {
-        return z;
+    public float getOffsetY() {
+        return offsetY;
+    }
+
+    public float getOffsetZ() {
+        return offsetZ;
     }
 
     public int getCount() {

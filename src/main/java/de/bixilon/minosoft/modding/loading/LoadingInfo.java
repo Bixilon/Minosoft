@@ -14,20 +14,20 @@
 package de.bixilon.minosoft.modding.loading;
 
 public class LoadingInfo {
-    LoadingPriorities loadingPriority;
+    Priorities loadingPriority;
 
-    public LoadingInfo(LoadingPriorities loadingPriority) {
+    public LoadingInfo(Priorities loadingPriority) {
         this.loadingPriority = loadingPriority;
     }
 
     public LoadingInfo() {
     }
 
-    public LoadingPriorities getLoadingPriority() {
+    public Priorities getLoadingPriority() {
         return loadingPriority;
     }
 
-    public void setLoadingPriority(LoadingPriorities loadingPriority) {
+    public void setLoadingPriority(Priorities loadingPriority) {
         this.loadingPriority = loadingPriority;
     }
 }

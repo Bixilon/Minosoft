@@ -101,12 +101,13 @@ public class PacketHandler {
     }
 
     public void handle(PacketLoginSuccess pkg) {
-        // now we are playing
-        // already done in packet thread
-        // connection.setConnectionState(ConnectionState.PLAY);
     }
 
     public void handle(PacketJoinGame pkg) {
+        if (connection.fireEvent(new JoinGameEvent(connection, pkg))) {
+            return;
+        }
+
         connection.getPlayer().setGameMode(pkg.getGameMode());
         connection.getPlayer().setPlayer(new OtherPlayer(pkg.getEntityId(), connection.getPlayer().getPlayerName(), connection.getPlayer().getPlayerUUID(), null, null, 0, 0, 0, (short) 0, null));
         connection.getPlayer().getWorld().setHardcore(pkg.isHardcore());
@@ -122,6 +123,9 @@ public class PacketHandler {
     }
 
     public void handle(PacketPlayerListItem pkg) {
+        if (connection.fireEvent(new PlayerListItemChangeEvent(connection, pkg))) {
+            return;
+        }
         pkg.getPlayerList().forEach((bulk) -> {
             switch (bulk.getAction()) {
                 case ADD -> connection.getPlayer().getPlayerList().put(bulk.getUUID(), new PlayerListItem(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGameMode(), bulk.getDisplayName(), bulk.getProperties()));
@@ -160,6 +164,10 @@ public class PacketHandler {
     }
 
     public void handle(PacketTimeUpdate pkg) {
+        if (connection.fireEvent(new TimeChangeEvent(connection, pkg))) {
+            return;
+        }
+
     }
 
     public void handle(PacketKeepAlive pkg) {
@@ -189,6 +197,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketSpawnLocation pkg) {
+        connection.fireEvent(new SpawnLocationChangeEvent(connection, pkg));
         connection.getPlayer().setSpawnLocation(pkg.getSpawnLocation());
     }
 
@@ -211,6 +220,10 @@ public class PacketHandler {
     }
 
     public void handle(PacketSetExperience pkg) {
+        if (connection.fireEvent(new ExperienceChangeEvent(connection, pkg))) {
+            return;
+        }
+
         connection.getPlayer().setLevel(pkg.getLevel());
         connection.getPlayer().setTotalExperience(pkg.getTotal());
     }
@@ -229,6 +242,8 @@ public class PacketHandler {
     }
 
     public void handle(PacketSpawnMob pkg) {
+        connection.fireEvent(new EntitySpawnEvent(connection, pkg));
+
         connection.getPlayer().getWorld().addEntity(pkg.getEntity());
         connection.getVelocityHandler().handleVelocity(pkg.getEntity(), pkg.getVelocity());
     }
@@ -268,6 +283,8 @@ public class PacketHandler {
     }
 
     public void handle(PacketSpawnPlayer pkg) {
+        connection.fireEvent(new EntitySpawnEvent(connection, pkg));
+
         connection.getPlayer().getWorld().addEntity(pkg.getEntity());
         connection.getVelocityHandler().handleVelocity(pkg.getEntity(), pkg.getVelocity());
     }
@@ -318,6 +335,10 @@ public class PacketHandler {
     }
 
     public void handle(PacketRespawn pkg) {
+        if (connection.fireEvent(new RespawnEvent(connection, pkg))) {
+            return;
+        }
+
         // clear all chunks
         connection.getPlayer().getWorld().getAllChunks().clear();
         connection.getPlayer().getWorld().setDimension(pkg.getDimension());
@@ -333,15 +354,20 @@ public class PacketHandler {
     }
 
     public void handle(PacketSpawnObject pkg) {
+        connection.fireEvent(new EntitySpawnEvent(connection, pkg));
+
         connection.getPlayer().getWorld().addEntity(pkg.getEntity());
         connection.getVelocityHandler().handleVelocity(pkg.getEntity(), pkg.getVelocity());
     }
 
     public void handle(PacketSpawnExperienceOrb pkg) {
+        connection.fireEvent(new EntitySpawnEvent(connection, pkg));
+
         connection.getPlayer().getWorld().addEntity(pkg.getEntity());
     }
 
     public void handle(PacketSpawnWeatherEntity pkg) {
+        connection.fireEvent(new EntitySpawnEvent(connection, pkg));
         connection.fireEvent(new LightningBoltSpawnEvent(connection, pkg));
     }
 
@@ -461,6 +487,8 @@ public class PacketHandler {
     }
 
     public void handle(PacketSetSlot pkg) {
+        connection.fireEvent(new SlotChangeEvent(connection, pkg));
+
         if (pkg.getWindowId() == -1) {
             // invalid window Id
             // ToDo: what is windowId -1
@@ -486,11 +514,15 @@ public class PacketHandler {
     }
 
     public void handle(PacketSpawnPainting pkg) {
+        connection.fireEvent(new EntitySpawnEvent(connection, pkg));
+
         connection.getPlayer().getWorld().addEntity(pkg.getEntity());
     }
 
     public void handle(PacketParticle pkg) {
-        // ToDo
+        if (connection.fireEvent(new ParticleSpawnEvent(connection, pkg))) {
+            return;
+        }
     }
 
     public void handle(PacketEffect pkg) {
@@ -546,6 +578,10 @@ public class PacketHandler {
     }
 
     public void handle(PacketTabHeaderAndFooter pkg) {
+        if (connection.fireEvent(new PlayerListInfoChangeEvent(connection, pkg))) {
+            return;
+        }
+
         connection.getPlayer().setTabHeader(pkg.getHeader());
         connection.getPlayer().setTabFooter(pkg.getFooter());
     }
@@ -566,7 +602,10 @@ public class PacketHandler {
     }
 
     public void handle(PacketTitle pkg) {
-        // ToDo
+        if (connection.fireEvent(new TitleChangeEvent(connection, pkg))) {
+            return;
+        }
+
     }
 
     public void handle(PacketCombatEvent pkg) {

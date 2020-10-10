@@ -15,7 +15,6 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.game.datatypes.ChatTextPositions;
 import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChatMessageReceiving;
@@ -55,10 +54,5 @@ public class ChatMessageReceivingEvent extends CancelableEvent {
     @MinimumProtocolVersion(protocolId = 718)
     public UUID getSender() {
         return this.sender;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onChatMessageReceiving(this);
     }
 }

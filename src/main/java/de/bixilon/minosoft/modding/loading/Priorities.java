@@ -11,22 +11,12 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.event.events;
+package de.bixilon.minosoft.modding.loading;
 
-import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-
-@Unsafe
-public class PacketSendEvent extends Event {
-    private final ServerboundPacket packet;
-
-    public PacketSendEvent(Connection connection, ServerboundPacket packet) {
-        super(connection);
-        this.packet = packet;
-    }
-
-    public ServerboundPacket getPacket() {
-        return packet;
-    }
+public enum Priorities {
+    LOWEST,
+    LOW,
+    NORMAL,
+    HIGH,
+    HIGHEST
 }

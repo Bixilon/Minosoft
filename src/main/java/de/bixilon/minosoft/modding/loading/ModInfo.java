@@ -45,7 +45,7 @@ public class ModInfo {
             JsonObject loading = json.getAsJsonObject("loading");
             this.loadingInfo = new LoadingInfo();
             if (loading.has("priority")) {
-                this.loadingInfo.setLoadingPriority(LoadingPriorities.valueOf(loading.get("priority").getAsString()));
+                this.loadingInfo.setLoadingPriority(Priorities.valueOf(loading.get("priority").getAsString()));
             }
         }
     }

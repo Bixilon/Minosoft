@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
 
@@ -33,10 +32,5 @@ public class DisconnectEvent extends Event {
 
     public ChatComponent getReason() {
         return reason;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onDisconnect(this);
     }
 }

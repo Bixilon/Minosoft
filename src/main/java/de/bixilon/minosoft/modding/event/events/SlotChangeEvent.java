@@ -13,39 +13,40 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.game.datatypes.entities.Entity;
-import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEntityEquipment;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSetSlot;
 
-import java.util.HashMap;
+public class SlotChangeEvent extends Event {
+    private final byte windowId;
+    private final short slotId;
+    private final Slot slot;
 
-public class EntityEquipmentChangeEvent extends Event {
-    private final int entityId;
-    private final HashMap<InventorySlots.EntityInventorySlots, Slot> slots;
 
-    public EntityEquipmentChangeEvent(Connection connection, int entityId, HashMap<InventorySlots.EntityInventorySlots, Slot> slots) {
+    public SlotChangeEvent(Connection connection, byte windowId, short slotId, Slot slot) {
         super(connection);
-        this.entityId = entityId;
-        this.slots = slots;
+        this.windowId = windowId;
+        this.slotId = slotId;
+        this.slot = slot;
     }
 
-    public EntityEquipmentChangeEvent(Connection connection, PacketEntityEquipment pkg) {
+    public SlotChangeEvent(Connection connection, PacketSetSlot pkg) {
         super(connection);
-        this.entityId = pkg.getEntityId();
-        this.slots = pkg.getSlots();
+        this.windowId = pkg.getWindowId();
+        this.slotId = pkg.getSlotId();
+        this.slot = pkg.getSlot();
     }
 
-    public Entity getEntity() {
-        return getConnection().getPlayer().getWorld().getEntity(entityId);
+
+    public byte getWindowId() {
+        return windowId;
     }
 
-    public int getEntityId() {
-        return entityId;
+    public short getSlotId() {
+        return slotId;
     }
 
-    public HashMap<InventorySlots.EntityInventorySlots, Slot> getSlots() {
-        return slots;
+    public Slot getSlot() {
+        return slot;
     }
 }

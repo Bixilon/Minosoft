@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 
@@ -35,10 +34,5 @@ public class StatusPongEvent extends Event {
 
     public long getPongId() {
         return pongId;
-    }
-
-    @Override
-    public void handle(EventListener listener) {
-        listener.onPongEvent(this);
     }
 }

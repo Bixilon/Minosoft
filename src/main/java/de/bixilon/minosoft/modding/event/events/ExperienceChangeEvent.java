@@ -13,20 +13,37 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSetExperience;
 
-@Unsafe
-public class PacketSendEvent extends Event {
-    private final ServerboundPacket packet;
+public class ExperienceChangeEvent extends CancelableEvent {
+    private final float bar;
+    private final int level;
+    private final int total;
 
-    public PacketSendEvent(Connection connection, ServerboundPacket packet) {
+    public ExperienceChangeEvent(Connection connection, float bar, int level, int total) {
         super(connection);
-        this.packet = packet;
+        this.bar = bar;
+        this.level = level;
+        this.total = total;
     }
 
-    public ServerboundPacket getPacket() {
-        return packet;
+    public ExperienceChangeEvent(Connection connection, PacketSetExperience pkg) {
+        super(connection);
+        this.bar = pkg.getBar();
+        this.level = pkg.getLevel();
+        this.total = pkg.getTotal();
+    }
+
+    public float getBar() {
+        return bar;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getTotal() {
+        return total;
     }
 }

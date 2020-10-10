@@ -125,30 +125,29 @@ There are global events (which works on all connections) and connections events 
 To register a global event you need to use (in the `INITIALIZING` phase) `getEventManager().registerGlobalListener(new XYEventListener());`.
 If you want to register an event depending on an IP (like server specific support, you can use the following):
 `getEventManager().registerConnectionListener(new XYEventListener(), new ServerAddress("127.0.0.1", 25565));`
+Your event methods need to be annotated by `EventHandler`. `EventHandler` **can** take these arguments:
+ - `priority`: Pretty much self explaining. `HIGH` means, that it gets executed at "the beginning", `LOW` means the opposite. Defaults to `NORMAL`.
+ - `onlyIfNotCancelled`: If it is a cancellable event, your method only gets executed, when all prior listeners (potentially with a higher priority) did not cancel the event. Defaults to `true`.
 
-Your XYListener class needs to implement `de.bixilon.minosoft.modding.event.EventListener`;
+Your XYEventListener class needs to extend `de.bixilon.minosoft.modding.event.EventListener`;
 ```java
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
+import de.bixilon.minosoft.modding.event.events.annotations.EventHandler;
+import de.bixilon.minosoft.modding.loading.Priorities;
 
 public class ChatEvent extends EventListener {
-    @Override
+    @EventHandler(priority = Priorities.HIGHEST)
     public void onChatMessageReceiving(ChatMessageReceivingEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
         if (event.getMessage().getMessage().contains("Bixilon")) {
             MinosoftExampleMod.getInstance().getLogger().game("Bixilon is awful, suppressing this potential bad chat message!");
             event.setCancelled(true);
         }
     }
 
-    @Override
+    @EventHandler(onlyIfNotCancelled = false)
     public void onChatMessageSending(ChatMessageSendingEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
         if (event.getMessage().contains("jeb_ is stupid")) {
             event.setCancelled(true);
             event.getConnection().getSender().sendChatMessage("jeb_ is awesome!");
