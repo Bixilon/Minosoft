@@ -14,7 +14,8 @@
 package de.bixilon.minosoft.game.datatypes.text;
 
 import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -190,11 +191,9 @@ public class TextComponent implements ChatComponent {
         formatting.forEach((chatFormattingCode -> {
             switch (chatFormattingCode) {
                 case OBFUSCATED -> {
-                    FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), text);
-                    fadeTransition.setFromValue(1.0);
-                    fadeTransition.setToValue(0.0);
-                    fadeTransition.setCycleCount(Animation.INDEFINITE);
-                    fadeTransition.play();
+                    Timeline flasher = new Timeline(new KeyFrame(Duration.seconds(1), e -> text.setVisible(false)), new KeyFrame(Duration.seconds(2), e -> text.setVisible(true)));
+                    flasher.setCycleCount(Animation.INDEFINITE);
+                    flasher.play();
                 }
                 case BOLD -> text.setStyle("-fx-font-weight: bold;");
                 case STRIKETHROUGH -> text.setStyle("-fx-strikethrough: true;");
