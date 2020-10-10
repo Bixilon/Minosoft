@@ -55,7 +55,7 @@ public class EventManager {
 
     public void registerConnectionListener(EventListener listener, ServerAddressValidator... addresses) {
         if (addresses.length == 0) {
-            throw new RuntimeException("You must provide at least one server address or use global events!");
+            throw new RuntimeException("You must provide at least one address validator or use global events!");
         }
         HashSet<ServerAddressValidator> serverAddresses = new HashSet<>(Arrays.asList(addresses));
         specificEventListeners.put(serverAddresses, getEventMethods(listener));

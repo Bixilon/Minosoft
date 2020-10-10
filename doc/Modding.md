@@ -149,7 +149,7 @@ public class ChatEvent extends EventListener {
     @EventHandler(priority = Priorities.HIGHEST)
     public void onChatMessageReceiving(ChatMessageReceivingEvent event) {
         if (event.getMessage().getMessage().contains("Bixilon")) {
-            MinosoftExampleMod.getInstance().getLogger().game("Bixilon is awful, suppressing this potential bad chat message!");
+            MinosoftExampleMod.getInstance().getLogger().info("Bixilon wrote a potential bad chat message. Suppressing it!");
             event.setCancelled(true);
         }
     }
@@ -163,5 +163,5 @@ public class ChatEvent extends EventListener {
     }
 }
 ```
-The following code would suppress messages containing the word "Bixilon" and if you write "jeb_" into the chat, the message's text will be "jeb_ is awesome".
+The following code would suppress messages containing the word "Bixilon" and if you write "jeb_ is stupid" into the chat, the message's text will be "jeb_ is awesome".
 To see a list of all events look into `de.bixilon.minosoft.modding.event.events`. There is also a javadoc.

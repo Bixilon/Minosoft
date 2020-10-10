@@ -15,29 +15,37 @@ package de.bixilon.minosoft.modding.event.address;
 
 import de.bixilon.minosoft.util.ServerAddress;
 
-public class HostnameValidator implements ServerAddressValidator {
-    private final String hostname;
+import java.util.Arrays;
+import java.util.HashSet;
 
-    public HostnameValidator(String hostname) {
-        this.hostname = hostname;
+public class HostnameValidator implements ServerAddressValidator {
+    private final HashSet<String> hostnames;
+
+    public HostnameValidator(String... hostnames) {
+        this(new HashSet<>(Arrays.asList(hostnames)));
+    }
+
+    public HostnameValidator(HashSet<String> hostnames) {
+        this.hostnames = new HashSet<>();
+        hostnames.forEach((hostname) -> this.hostnames.add(hostname.toLowerCase()));
     }
 
     @Override
     public boolean check(ServerAddress address) {
-        return this.hostname.equalsIgnoreCase(address.getHostname());
+        return this.hostnames.contains(address.getHostname().toLowerCase());
     }
 
-    public String getHostname() {
-        return hostname;
+    public HashSet<String> getHostnames() {
+        return hostnames;
     }
 
     @Override
     public int hashCode() {
-        return hostname.hashCode();
+        return hostnames.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return hostname.equals(obj);
+        return hostnames.equals(obj);
     }
 }
