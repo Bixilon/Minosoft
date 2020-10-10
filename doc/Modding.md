@@ -123,8 +123,16 @@ Your `mod.json` can look like this
 There are global events (which works on all connections) and connections events (server specific).
 
 To register a global event you need to use (in the `INITIALIZING` phase) `getEventManager().registerGlobalListener(new XYEventListener());`.
-If you want to register an event depending on an IP (like server specific support, you can use the following):
-`getEventManager().registerConnectionListener(new XYEventListener(), new ServerAddress("127.0.0.1", 25565));`
+If you want to register an event depending on an server address (like server specific support, you can use the following), you can use `EventManager::registerConnectionListener` method.
+It takes 2 arguments: The first one is your listener, the second one is a `ServerAddressValidator`.
+There are several validators, choose one or write your own:
+ - `HostnameValidator`: Simply check the hostname. For example: `bixilon.de`.
+ - `PortValidator`: Get all connections with a specific port. For example: `25565`
+ - `SimpleAddressValidator`: Check for server address and port. e.g.: `bixilon.de:25565`
+ - `RegexValidator`: Check for a regular expression like: `*.de`
+ 
+ Use the following: `getEventManager().registerConnectionListener(new XYEventListener(), new HostnameValidator("127.0.0.1"));`
+
 Your event methods need to be annotated by `EventHandler`. `EventHandler` **can** take these arguments:
  - `priority`: Pretty much self explaining. `HIGH` means, that it gets executed at "the beginning", `LOW` means the opposite. Defaults to `NORMAL`.
  - `ignoreCancelled`: If it is a cancellable event, your method only gets executed, when all prior listeners (potentially with a higher priority) did not cancel the event. Defaults to `false`.

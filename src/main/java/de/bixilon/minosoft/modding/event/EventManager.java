@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.modding.event;
 
+import de.bixilon.minosoft.modding.event.address.ServerAddressValidator;
 import de.bixilon.minosoft.modding.event.events.Event;
 import de.bixilon.minosoft.modding.event.events.annotations.EventHandler;
-import de.bixilon.minosoft.util.ServerAddress;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -24,7 +24,7 @@ import java.util.HashSet;
 
 public class EventManager {
     private final HashSet<EventMethod> globalEventListeners = new HashSet<>();
-    private final HashMap<HashSet<ServerAddress>, HashSet<EventMethod>> specificEventListeners = new HashMap<>();
+    private final HashMap<HashSet<ServerAddressValidator>, HashSet<EventMethod>> specificEventListeners = new HashMap<>();
 
     public void registerGlobalListener(EventListener listener) {
         globalEventListeners.addAll(getEventMethods(listener));
@@ -53,15 +53,15 @@ public class EventManager {
         return globalEventListeners;
     }
 
-    public void registerConnectionListener(EventListener listener, ServerAddress... addresses) {
+    public void registerConnectionListener(EventListener listener, ServerAddressValidator... addresses) {
         if (addresses.length == 0) {
             throw new RuntimeException("You must provide at least one server address or use global events!");
         }
-        HashSet<ServerAddress> serverAddresses = new HashSet<>(Arrays.asList(addresses));
+        HashSet<ServerAddressValidator> serverAddresses = new HashSet<>(Arrays.asList(addresses));
         specificEventListeners.put(serverAddresses, getEventMethods(listener));
     }
 
-    public HashMap<HashSet<ServerAddress>, HashSet<EventMethod>> getSpecificEventListeners() {
+    public HashMap<HashSet<ServerAddressValidator>, HashSet<EventMethod>> getSpecificEventListeners() {
         return specificEventListeners;
     }
 }

@@ -51,6 +51,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Connection {
     public static int lastConnectionId;
@@ -348,7 +349,13 @@ public class Connection {
             case HANDSHAKING -> {
                 // get and add all events, that are connection specific
                 Minosoft.eventManagers.forEach((eventManagers -> eventManagers.getSpecificEventListeners().forEach((serverAddresses, listener) -> {
-                    if (serverAddresses.contains(address)) {
+                    AtomicBoolean isValid = new AtomicBoolean(false);
+                    serverAddresses.forEach((validator) -> {
+                        if (validator.check(address)) {
+                            isValid.set(true);
+                        }
+                    });
+                    if (isValid.get()) {
                         eventListeners.addAll(listener);
                     }
                 })));
