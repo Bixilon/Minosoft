@@ -80,18 +80,24 @@
         <dependency>
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
-            <version>3.2.2</version>
+            <version>
+                3.3.0
+            </version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>14.0.1</version>
+            <version>
+                15
+            </version>
             <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>14.0.1</version>
+            <version>
+                15
+            </version>
             <type>pom</type>
         </dependency>
         <dependency>
