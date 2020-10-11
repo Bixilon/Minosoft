@@ -17,6 +17,7 @@ import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 import de.bixilon.minosoft.gui.main.GUITools;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import javafx.scene.image.Image;
 
 public class ServerListPing {
@@ -24,13 +25,19 @@ public class ServerListPing {
     final int protocolId;
     final int playersOnline;
     final int maxPlayers;
-    String base64Favicon;
-    Image favicon;
     final ChatComponent motd;
     final String serverBrand;
+    String base64Favicon;
+    Image favicon;
 
     public ServerListPing(JsonObject json) {
-        protocolId = json.getAsJsonObject("version").get("protocol").getAsInt();
+        int protocolId = json.getAsJsonObject("version").get("protocol").getAsInt();
+        if (protocolId == -1) {
+            // Server did not send us a version, trying 1.8
+            this.protocolId = ProtocolDefinition.FALLBACK_VERSION_ID;
+        } else {
+            this.protocolId = protocolId;
+        }
         playersOnline = json.getAsJsonObject("players").get("online").getAsInt();
         maxPlayers = json.getAsJsonObject("players").get("max").getAsInt();
         if (json.has("favicon")) {
