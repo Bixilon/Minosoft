@@ -354,3 +354,23 @@ ij_yaml_keep_line_breaks = true
 ij_yaml_space_before_colon = true
 ij_yaml_spaces_within_braces = true
 ij_yaml_spaces_within_brackets = true
+
+
+[{*.ant, *.fxml, *.jhm, *.jnlp, *.jrxml, *.pom, *.qrc, *.rng, *.tld, *.wadl, *.wsdd, *.wsdl, *.xjb, *.xml, *.xsd, *.xsl, *.xslt, *.xul}]
+ij_xml_align_attributes = true
+ij_xml_align_text = false
+ij_xml_attribute_wrap = off
+ij_xml_block_comment_at_first_column = true
+ij_xml_keep_blank_lines = 0
+ij_xml_keep_indents_on_empty_lines = false
+ij_xml_keep_line_breaks = false
+ij_xml_keep_line_breaks_in_text = true
+ij_xml_keep_whitespaces = false
+ij_xml_keep_whitespaces_around_cdata = none
+ij_xml_keep_whitespaces_inside_cdata = false
+ij_xml_line_comment_at_first_column = true
+ij_xml_space_after_tag_name = false
+ij_xml_space_around_equals_in_attribute = false
+ij_xml_space_inside_empty_tag = true
+ij_xml_text_wrap = normal
+ij_xml_use_custom_settings = false

@@ -1,61 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1"
-      prefHeight="400.0"
-      prefWidth="640.0"
-      xmlns="http://javafx.com/javafx/11.0.1"
-      fx:controller="de.bixilon.minosoft.gui.main.SettingsWindow">
-    <TabPane
-            prefHeight="200.0"
-            prefWidth="200.0"
-            tabClosingPolicy="UNAVAILABLE">
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="640.0" fx:controller="de.bixilon.minosoft.gui.main.SettingsWindow">
+    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
         <Tab text="General">
-            <GridPane
-                    fx:id="tabGeneral"
-                    hgap="10"
-                    minHeight="0.0"
-                    minWidth="0.0"
-                    prefHeight="429.0"
-                    prefWidth="640.0"
-                    vgap="10">
+            <GridPane fx:id="tabGeneral" hgap="10" minHeight="0.0" minWidth="0.0" prefHeight="429.0" prefWidth="640.0" vgap="10">
                 <padding>
-                    <Insets bottom="10"
-                            left="10"
-                            right="300"
-                            top="10"/>
+                    <Insets bottom="10" left="10" right="300" top="10" />
                 </padding>
                 <columnConstraints>
-                    <ColumnConstraints/>
-                    <ColumnConstraints/>
+                    <ColumnConstraints />
+                    <ColumnConstraints />
                 </columnConstraints>
                 <rowConstraints>
-                    <RowConstraints/>
-                    <RowConstraints/>
+                    <RowConstraints />
+                    <RowConstraints />
                 </rowConstraints>
-                <Label text="Log level"/>
-                <ComboBox
-                        fx:id="generalLogLevel"
-                        prefWidth="150.0"
-                        GridPane.columnIndex="1"/>
+                <Label text="Log level" />
+                <ComboBox fx:id="generalLogLevel" prefWidth="150.0" GridPane.columnIndex="1" />
             </GridPane>
         </Tab>
-        <Tab disable="true"
-             text="Download">
-            <GridPane
-                    hgap="10"
-                    minHeight="0.0"
-                    minWidth="0.0"
-                    prefHeight="429.0"
-                    prefWidth="640.0"
-                    vgap="10">
+        <Tab disable="true" text="Download">
+            <GridPane hgap="10" minHeight="0.0" minWidth="0.0" prefHeight="429.0" prefWidth="640.0" vgap="10">
                 <padding>
-                    <Insets bottom="10"
-                            left="10"
-                            right="300"
-                            top="10"/>
+                    <Insets bottom="10" left="10" right="300" top="10" />
                 </padding>
             </GridPane>
         </Tab>

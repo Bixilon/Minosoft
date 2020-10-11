@@ -1,120 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
-<AnchorPane
-        xmlns:fx="http://javafx.com/fxml/1"
-        fx:id="root"
-        maxHeight="-Infinity"
-        maxWidth="500.0"
-        minHeight="-Infinity"
-        minWidth="500.0"
-        onMouseClicked="#clicked"
-        prefWidth="500.0"
-        xmlns="http://javafx.com/javafx/11.0.1"
-        fx:controller="de.bixilon.minosoft.gui.main.ServerListCell">
-    <ImageView
-            fx:id="icon"
-            fitHeight="100.0"
-            fitWidth="100.0"
-            layoutX="54.0"
-            layoutY="108.0"
-            pickOnBounds="true"
-            preserveRatio="true"
-            AnchorPane.bottomAnchor="5.0"
-            AnchorPane.leftAnchor="5.0"
-            AnchorPane.topAnchor="5.0">
-    </ImageView>
-    <Label fx:id="serverName"
-           layoutX="111.0"
-           layoutY="14.0"
-           maxWidth="200.0"
-           minWidth="10.0"
-           text="Servername"
-           underline="true"
-           AnchorPane.leftAnchor="110.0"
-           AnchorPane.topAnchor="5.0">
+
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="500.0" minHeight="-Infinity" minWidth="500.0" onMouseClicked="#clicked" prefWidth="500.0" fx:controller="de.bixilon.minosoft.gui.main.ServerListCell">
+    <ImageView fx:id="icon" fitHeight="100.0" fitWidth="100.0" layoutX="54.0" layoutY="108.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
+    <Label fx:id="serverName" layoutX="111.0" layoutY="14.0" maxWidth="200.0" minWidth="10.0" text="Servername" underline="true" AnchorPane.leftAnchor="110.0" AnchorPane.topAnchor="5.0">
         <font>
-            <Font size="17.0"/>
+            <Font size="17.0" />
         </font>
     </Label>
-    <Label fx:id="players"
-           layoutX="408.0"
-           layoutY="8.0"
-           AnchorPane.rightAnchor="40.0"
-           AnchorPane.topAnchor="5.0"/>
-    <ImageView
-            fx:id="ping"
-            fitHeight="24.0"
-            fitWidth="23.0"
-            layoutX="463.0"
-            layoutY="18.0"
-            pickOnBounds="true"
-            preserveRatio="true"
-            AnchorPane.rightAnchor="5.0"
-            AnchorPane.topAnchor="5.0"/>
-    <TextFlow
-            fx:id="motd"
-            layoutX="104.0"
-            layoutY="49.0"
-            maxWidth="320.0"
-            AnchorPane.bottomAnchor="15.0"
-            AnchorPane.leftAnchor="105.0"
-            AnchorPane.rightAnchor="100.0"
-            AnchorPane.topAnchor="40.0"/>
-    <Label fx:id="version"
-           layoutX="350.0"
-           layoutY="8.0"
-           text="Connecting..."
-           AnchorPane.rightAnchor="110.0"
-           AnchorPane.topAnchor="5.0"/>
-    <MenuButton
-            fx:id="optionsMenu"
-            layoutX="389.0"
-            layoutY="81.0"
-            mnemonicParsing="false"
-            text="⋮"
-            AnchorPane.bottomAnchor="0.0"
-            AnchorPane.rightAnchor="0.0">
+    <Label fx:id="players" layoutX="408.0" layoutY="8.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="5.0" />
+    <ImageView fx:id="ping" fitHeight="24.0" fitWidth="23.0" layoutX="463.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+    <TextFlow fx:id="motd" layoutX="104.0" layoutY="49.0" maxWidth="320.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="40.0" />
+    <Label fx:id="version" layoutX="350.0" layoutY="8.0" text="Connecting..." AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="5.0" />
+    <MenuButton fx:id="optionsMenu" layoutX="389.0" layoutY="81.0" mnemonicParsing="false" text="⋮" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <items>
-            <MenuItem
-                    fx:id="optionsConnect"
-                    disable="true"
-                    mnemonicParsing="false"
-                    onAction="#connect"
-                    text="Connect"/>
-            <MenuItem
-                    mnemonicParsing="false"
-                    onAction="#showInfo"
-                    text="Info"/>
-            <MenuItem
-                    mnemonicParsing="false"
-                    onAction="#edit"
-                    text="Edit"/>
-            <MenuItem
-                    mnemonicParsing="false"
-                    onAction="#refresh"
-                    text="Refresh"/>
-            <MenuItem
-                    fx:id="optionsSessions"
-                    mnemonicParsing="false"
-                    onAction="#manageSessions"
-                    disable="true"
-                    text="Sessions"/>
-            <MenuItem
-                    mnemonicParsing="false"
-                    style="-fx-text-fill: red"
-                    onAction="#delete"
-                    text="Delete"/>
+            <MenuItem fx:id="optionsConnect" disable="true" mnemonicParsing="false" onAction="#connect" text="Connect" />
+            <MenuItem mnemonicParsing="false" onAction="#showInfo" text="Info" />
+            <MenuItem mnemonicParsing="false" onAction="#edit" text="Edit" />
+            <MenuItem mnemonicParsing="false" onAction="#refresh" text="Refresh" />
+            <MenuItem fx:id="optionsSessions" mnemonicParsing="false" onAction="#manageSessions" disable="true" text="Sessions" />
+            <MenuItem mnemonicParsing="false" style="-fx-text-fill: red" onAction="#delete" text="Delete" />
         </items>
     </MenuButton>
-    <Label layoutX="464.0"
-           layoutY="59.0"
-           text="Brand"
-           fx:id="serverBrand"
-           AnchorPane.bottomAnchor="30.0"
-           AnchorPane.rightAnchor="5.0"/>
+    <Label layoutX="464.0" layoutY="59.0" text="Brand" fx:id="serverBrand" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="5.0" />
 </AnchorPane>
