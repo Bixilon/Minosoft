@@ -44,6 +44,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class ServerListCell extends ListCell<Server> implements Initializable {
@@ -115,7 +116,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         this.server = server;
         serverName.setText(server.getName());
 
-        Image favicon = server.getFavicon();
+        Image favicon = GUITools.getImage(server.getFavicon());
         if (favicon == null) {
             favicon = GUITools.logo;
         }
@@ -171,9 +172,9 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             serverBrand.setTooltip(new Tooltip(ping.getServerModInfo().getInfo()));
             motd.getChildren().addAll(ping.getMotd().getJavaFXText());
             if (ping.getFavicon() != null) {
-                icon.setImage(ping.getFavicon());
-                if (!ping.getBase64EncodedFavicon().equals(server.getBase64Favicon())) {
-                    server.setBase64Favicon(ping.getBase64EncodedFavicon());
+                icon.setImage(GUITools.getImage(ping.getFavicon()));
+                if (!Arrays.equals(ping.getFavicon(), server.getFavicon())) {
+                    server.setFavicon(ping.getFavicon());
                     server.saveToConfig();
                 }
             }

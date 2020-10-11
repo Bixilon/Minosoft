@@ -17,7 +17,6 @@ import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.ConnectionReasons;
-import javafx.scene.image.Image;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -26,12 +25,12 @@ import java.util.Base64;
 public class Server {
     static int highestServerId;
     final int id;
+    final ArrayList<Connection> connections = new ArrayList<>();
     String name;
     String address;
     int desiredVersion;
     byte[] favicon;
     Connection lastPing;
-    final ArrayList<Connection> connections = new ArrayList<>();
 
     public Server(int id, String name, String address, int desiredVersion, byte[] favicon) {
         this(id, name, address, desiredVersion);
@@ -55,18 +54,14 @@ public class Server {
     public static Server deserialize(JsonObject json) {
         Server server = new Server(json.get("id").getAsInt(), json.get("name").getAsString(), json.get("address").getAsString(), json.get("version").getAsInt());
         if (json.has("favicon")) {
-            server.setBase64Favicon(json.get("favicon").getAsString());
+            server.setFavicon(Base64.getDecoder().decode(json.get("favicon").getAsString()));
         }
         return server;
     }
 
-    @Nullable
-    public Image getFavicon() {
-        return GUITools.getImage(getIcon());
-    }
 
     @Nullable
-    public byte[] getIcon() {
+    public byte[] getFavicon() {
         return favicon;
     }
 
@@ -168,9 +163,5 @@ public class Server {
             return null;
         }
         return Base64.getEncoder().encodeToString(favicon);
-    }
-
-    public void setBase64Favicon(String favicon) {
-        this.favicon = Base64.getDecoder().decode(favicon);
     }
 }

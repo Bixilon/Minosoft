@@ -16,9 +16,9 @@ package de.bixilon.minosoft.ping;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
-import de.bixilon.minosoft.gui.main.GUITools;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
-import javafx.scene.image.Image;
+
+import java.util.Base64;
 
 public class ServerListPing {
     final ServerModInfo serverModInfo;
@@ -27,8 +27,7 @@ public class ServerListPing {
     final int maxPlayers;
     final ChatComponent motd;
     final String serverBrand;
-    String base64Favicon;
-    Image favicon;
+    byte[] favicon;
 
     public ServerListPing(JsonObject json) {
         int protocolId = json.getAsJsonObject("version").get("protocol").getAsInt();
@@ -41,8 +40,7 @@ public class ServerListPing {
         playersOnline = json.getAsJsonObject("players").get("online").getAsInt();
         maxPlayers = json.getAsJsonObject("players").get("max").getAsInt();
         if (json.has("favicon")) {
-            base64Favicon = json.get("favicon").getAsString().replace("data:image/png;base64,", "").replace("\n", "");
-            favicon = GUITools.getImageFromBase64(base64Favicon);
+            favicon = Base64.getDecoder().decode(json.get("favicon").getAsString().replace("data:image/png;base64,", "").replace("\n", ""));
         }
 
         if (json.get("description").isJsonPrimitive()) {
@@ -71,11 +69,7 @@ public class ServerListPing {
         return maxPlayers;
     }
 
-    public String getBase64EncodedFavicon() {
-        return base64Favicon;
-    }
-
-    public Image getFavicon() {
+    public byte[] getFavicon() {
         return favicon;
     }
 
