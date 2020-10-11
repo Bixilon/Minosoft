@@ -18,34 +18,35 @@ import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
 import de.bixilon.minosoft.gui.main.AccountListCell;
+import de.bixilon.minosoft.gui.main.MainWindow;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.loading.ModLoader;
-import de.bixilon.minosoft.util.OSUtil;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 
 public class Minosoft {
+    public static final HashSet<EventManager> eventManagers = new HashSet<>();
+    private static final CountDownLatch startStatus = new CountDownLatch(2); // number of critical components (wait for them before other "big" actions)
     public static HashBiMap<String, MojangAccount> accountList;
     public static MojangAccount selectedAccount;
     public static ArrayList<Server> serverList;
-    public static final HashSet<EventManager> eventManagers = new HashSet<>();
-    static Configuration config;
+    public static Configuration config;
 
     public static void main(String[] args) {
         // init log thread
         Log.initThread();
 
         Log.info("Starting...");
-        setConfigFolder();
         Log.info("Reading config file...");
         try {
             config = new Configuration(Config.configFileName);
@@ -58,52 +59,49 @@ public class Minosoft {
         // set log level from config
         Log.setLevel(LogLevels.valueOf(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
         Log.info(String.format("Logging info with level: %s", Log.getLevel()));
-        Log.info("Loading versions.json...");
-        long mappingStartLoadingTime = System.currentTimeMillis();
-        try {
-            Versions.load(Util.readJsonAsset("mapping/versions.json"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-        Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
-
-        Log.debug("Refreshing client token...");
-        checkClientToken();
-        accountList = config.getMojangAccounts();
-        selectAccount(accountList.get(config.getString(GameConfiguration.ACCOUNT_SELECTED)));
 
         serverList = config.getServers();
-        new Thread(() -> {
+        ArrayList<Callable<Boolean>> startCallables = new ArrayList<>();
+        startCallables.add(() -> {
+            Log.info("Loading versions.json...");
+            long mappingStartLoadingTime = System.currentTimeMillis();
             try {
-                ModLoader.loadMods();
-            } catch (Exception exception) {
-                exception.printStackTrace();
+                Versions.load(Util.readJsonAsset("mapping/versions.json"));
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(1);
             }
-        }, "ModLoader").start();
-        Launcher.start();
+            Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
+            countDownStart(); // (another) critical component was loaded
+            return true;
+        });
+        startCallables.add(() -> {
+            Log.debug("Refreshing client token...");
+            checkClientToken();
+            accountList = config.getMojangAccounts();
+            selectAccount(accountList.get(config.getString(GameConfiguration.ACCOUNT_SELECTED)));
+            return true;
+        });
+        startCallables.add(() -> {
+            ModLoader.loadMods();
+            countDownStart(); // (another) critical component was loaded
+            return true;
+        });
+
+        startCallables.add(() -> {
+            Launcher.start();
+            return true;
+        });
+        try {
+            Util.executeInThreadPool("Start", startCallables);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Sets Config.homeDir to the correct folder per OS
-     */
-    public static void setConfigFolder() {
-        String path = System.getProperty("user.home");
-        if (!path.endsWith(File.separator)) {
-            path += "/";
-        }
-        path += switch (OSUtil.getOS()) {
-            case LINUX -> ".local/share/minosoft/";
-            case WINDOWS -> "AppData/Roaming/Minosoft/";
-            case MAC -> "Library/Application Support/Minosoft/";
-            case OTHER -> ".minosoft/";
-        };
-        File folder = new File(path);
-        if (!folder.exists() && !folder.mkdirs()) {
-            // failed creating folder
-            throw new RuntimeException(String.format("Could not create home folder (%s)!", path));
-        }
-        Config.homeDir = path;
+    private static void countDownStart() {
+        startStatus.countDown();
+        Launcher.setProgressBar((int) startStatus.getCount());
     }
 
     public static void checkClientToken() {
@@ -130,6 +128,9 @@ public class Minosoft {
         }
         config.putString(GameConfiguration.ACCOUNT_SELECTED, account.getUserId());
         selectedAccount = account;
+        if (MainWindow.accountMenu2 != null) {
+            MainWindow.accountMenu2.setText(String.format("Account (%s)", account.getPlayerName()));
+        }
         account.saveToConfig();
     }
 
@@ -147,5 +148,20 @@ public class Minosoft {
 
     public static MojangAccount getSelectedAccount() {
         return selectedAccount;
+    }
+
+    /**
+     * Waits until all critical components are started
+     */
+    public static void waitForStartup() {
+        try {
+            startStatus.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int getStartUpJobsLeft() {
+        return (int) startStatus.getCount();
     }
 }

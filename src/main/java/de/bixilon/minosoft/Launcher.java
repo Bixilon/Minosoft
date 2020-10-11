@@ -20,12 +20,16 @@ import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.gui.main.ServerListCell;
 import de.bixilon.minosoft.logging.Log;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -33,14 +37,32 @@ import javafx.util.Callback;
 import java.io.IOException;
 
 public class Launcher extends Application {
+    private static ProgressBar progressBar;
+    private static Dialog<Boolean> progressDialog;
 
     public static void start() {
+        Log.info("Starting launcher...");
         launch();
+        Log.info("Launcher started!");
+    }
+
+    protected static void setProgressBar(int jobsLeft) {
+        Platform.runLater(() -> {
+            if (progressBar == null || progressDialog == null) {
+                return;
+            }
+            if (jobsLeft == 0) {
+                progressDialog.setResult(Boolean.TRUE);
+                progressDialog.close();
+                return;
+            }
+            progressBar.setProgress(1.0F / jobsLeft);
+        });
     }
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Log.info("Starting launcher...");
+        Log.info("Preparing main window...");
 
         GUITools.versionList.setCellFactory(new Callback<>() {
             @Override
@@ -74,6 +96,18 @@ public class Launcher extends Application {
         if (Minosoft.getSelectedAccount() == null) {
             MainWindow.manageAccounts();
         }
-        Log.info("Launcher started!");
+        Log.info("Main window prepared!");
+        if (Minosoft.getStartUpJobsLeft() == 0) {
+            return;
+        }
+        progressDialog = new Dialog<>();
+        progressDialog.setHeaderText("Minosoft is still starting up...");
+        progressDialog.setTitle("Starting up");
+        GridPane grid = new GridPane();
+        progressBar = new ProgressBar();
+        progressBar.setProgress(1.0D / 5);
+        grid.add(progressBar, 0, 0);
+        progressDialog.getDialogPane().setContent(grid);
+        progressDialog.show();
     }
 }

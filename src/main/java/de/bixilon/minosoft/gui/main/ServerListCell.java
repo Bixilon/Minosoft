@@ -41,7 +41,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.URL;
@@ -349,7 +348,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
 
     public void showInfo() {
 
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        Dialog<?> dialog = new Dialog<>();
         dialog.setTitle("View server info: " + server.getName());
 
         ButtonType loginButtonType = ButtonType.CLOSE;

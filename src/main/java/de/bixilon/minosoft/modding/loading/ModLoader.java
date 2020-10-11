@@ -32,6 +32,7 @@ public class ModLoader {
     static final LinkedList<MinosoftMod> mods = new LinkedList<>();
 
     public static void loadMods() throws Exception {
+        Log.verbose("Start loading mods...");
         // load all jars, parse the mod.json
         // sort the list and prioritize
         // load all lists and dependencies async
@@ -85,6 +86,7 @@ public class ModLoader {
                 Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));
             }
         });
+        Log.verbose("Loading all mods finished!");
     }
 
     public static MinosoftMod loadMod(File file) {

@@ -26,8 +26,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -202,7 +202,7 @@ public final class Util {
         fileOutputStream.close();
     }
 
-    public static <T> void executeInThreadPool(String name, HashSet<Callable<T>> callables) throws InterruptedException {
+    public static <T> void executeInThreadPool(String name, Collection<Callable<T>> callables) throws InterruptedException {
         ExecutorService phaseLoader = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), getThreadFactory(name));
         phaseLoader.invokeAll(callables);
     }

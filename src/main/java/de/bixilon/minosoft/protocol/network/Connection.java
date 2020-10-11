@@ -92,6 +92,7 @@ public class Connection {
         this.desiredVersionNumber = protocolId;
 
         Thread resolveThread = new Thread(() -> {
+            Minosoft.waitForStartup(); // wait until mappings are loaded
             if (desiredVersionNumber != -1) {
                 setVersion(Versions.getVersionById(desiredVersionNumber));
             }
@@ -212,7 +213,7 @@ public class Connection {
         return false;
     }
 
-    void startHandlingThread() {
+    private void startHandlingThread() {
         handleThread = new Thread(() -> {
             while (isConnected()) {
                 ClientboundPacket packet;
@@ -242,7 +243,7 @@ public class Connection {
         return pluginChannelHandler;
     }
 
-    public void registerDefaultChannels() {
+    private void registerDefaultChannels() {
         // MC|Brand
         getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version.getProtocolVersion()), (handler, buffer) -> {
             String serverVersion;

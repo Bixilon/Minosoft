@@ -1,7 +1,7 @@
 # Modding
 
 ## mod.json
-In your jar file (the mod) must be a file called `mod.json`. 
+In the root folder of your jar file (the mod) must be a file called `mod.json`. It contains metadata for the mod loader.
 ### Example
 ```json
 {

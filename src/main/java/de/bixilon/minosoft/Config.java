@@ -13,9 +13,34 @@
 
 package de.bixilon.minosoft;
 
+import de.bixilon.minosoft.util.OSUtil;
+
+import java.io.File;
+
 public class Config {
-    public static final String configFileName = "config.json";
-    public static final boolean skipAuthentication = false; // only for offline development
-    public static final boolean colorLog = true;
+    public static final String configFileName = "config.json"; // Path of the minosoft base configuration (located in AppData/Minosoft/config)
+    public static final boolean skipAuthentication = false; // disables all connections to mojang
+    public static final boolean colorLog = true; // the log should be colored with ANSI (does not affect chat components)
+    public static final boolean logRelativeTime = false; // prefix all log messages with the relative start time in milliseconds instead of the formatted time
+
     public static String homeDir;
+
+    static {
+        // Sets Config.homeDir to the correct folder per OS
+        homeDir = System.getProperty("user.home");
+        if (!homeDir.endsWith(File.separator)) {
+            homeDir += "/";
+        }
+        homeDir += switch (OSUtil.getOS()) {
+            case LINUX -> ".local/share/minosoft/";
+            case WINDOWS -> "AppData/Roaming/Minosoft/";
+            case MAC -> "Library/Application Support/Minosoft/";
+            case OTHER -> ".minosoft/";
+        };
+        File folder = new File(homeDir);
+        if (!folder.exists() && !folder.mkdirs()) {
+            // failed creating folder
+            throw new RuntimeException(String.format("Could not create home folder (%s)!", homeDir));
+        }
+    }
 }

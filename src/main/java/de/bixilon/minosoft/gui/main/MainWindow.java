@@ -42,9 +42,12 @@ public class MainWindow implements Initializable {
     @FXML
     public Menu accountMenu;
 
+    public static Menu accountMenu2;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         serversPane.setCenter(ServerListCell.listView);
+        accountMenu2 = accountMenu;
         if (Minosoft.getSelectedAccount() != null) {
             accountMenu.setText(String.format("Account (%s)", Minosoft.getSelectedAccount().getPlayerName()));
         }
