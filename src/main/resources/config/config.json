@@ -19,7 +19,7 @@
     "entries": {}
   },
   "download": {
-    "url": {
+    "urls": {
       "mappings": "https://gitlab.com/Bixilon/minosoft/-/raw/master/data/mcdata/%s.tar.gz?inline=false"
     }
   }
