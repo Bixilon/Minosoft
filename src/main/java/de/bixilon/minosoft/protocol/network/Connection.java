@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.network;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.PingCallback;
-import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.Player;
 import de.bixilon.minosoft.game.datatypes.VelocityHandler;
 import de.bixilon.minosoft.game.datatypes.objectLoader.CustomMapping;
@@ -32,11 +31,8 @@ import de.bixilon.minosoft.modding.event.events.Event;
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent;
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent;
 import de.bixilon.minosoft.ping.ServerListPing;
-import de.bixilon.minosoft.protocol.modding.channels.DefaultPluginChannels;
-import de.bixilon.minosoft.protocol.modding.channels.PluginChannelHandler;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketStopSound;
 import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
@@ -70,7 +66,6 @@ public class Connection {
     LinkedList<ServerAddress> addresses;
     int desiredVersionNumber = -1;
     ServerAddress address;
-    PluginChannelHandler pluginChannelHandler;
     Thread handleThread;
     Version version = Versions.getLowestVersionSupported(); // default
     final CustomMapping customMapping = new CustomMapping(version);
@@ -239,38 +234,6 @@ public class Connection {
         handleThread.start();
     }
 
-    public PluginChannelHandler getPluginChannelHandler() {
-        return pluginChannelHandler;
-    }
-
-    private void registerDefaultChannels() {
-        // MC|Brand
-        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version.getProtocolVersion()), (handler, buffer) -> {
-            String serverVersion;
-            String clientVersion = (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
-            OutByteBuffer toSend = new OutByteBuffer(this);
-            if (getVersion().getProtocolVersion() < 29) {
-                // no length prefix
-                serverVersion = new String(buffer.readBytes(buffer.getBytesLeft()));
-                toSend.writeBytes(clientVersion.getBytes());
-            } else {
-                // length prefix
-                serverVersion = buffer.readString();
-                toSend.writeString(clientVersion);
-            }
-            Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getVersionName()));
-
-            getPluginChannelHandler().sendRawData(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(version.getProtocolVersion()), toSend);
-        });
-
-        // MC|StopSound
-        getPluginChannelHandler().registerClientHandler(DefaultPluginChannels.STOP_SOUND.getChangeableIdentifier().get(version.getProtocolVersion()), (handler, buffer) -> {
-            // it is basically a packet, handle it like a packet:
-            PacketStopSound packet = new PacketStopSound();
-            packet.read(buffer);
-            handle(packet);
-        });
-    }
 
     public boolean isConnected() {
         return state != ConnectionStates.FAILED && state != ConnectionStates.FAILED_NO_RETRY && state != ConnectionStates.DISCONNECTING && state != ConnectionStates.DISCONNECTED && state != ConnectionStates.CONNECTING;
@@ -384,11 +347,7 @@ public class Connection {
                 connectionStatusPing = new ConnectionPing();
                 network.sendPacket(new PacketStatusPing(connectionStatusPing));
             }
-            case LOGIN -> {
-                network.sendPacket(new PacketLoginStart(player));
-                pluginChannelHandler = new PluginChannelHandler(this);
-                registerDefaultChannels();
-            }
+            case LOGIN -> network.sendPacket(new PacketLoginStart(player));
             case DISCONNECTED -> {
                 if (reason == ConnectionReasons.GET_VERSION) {
                     setReason(ConnectionReasons.CONNECT);

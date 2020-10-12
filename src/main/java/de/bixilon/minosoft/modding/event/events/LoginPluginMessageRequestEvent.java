@@ -11,37 +11,29 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.packets.clientbound.login;
+package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginPluginRequest;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketLoginPluginRequest implements ClientboundPacket {
-    int messageId;
-    String channel;
-    byte[] data;
-    Connection connection;
+public class LoginPluginMessageRequestEvent extends CancelableEvent {
+    private final int messageId;
+    private final String channel;
+    private final InByteBuffer data;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
-        this.connection = buffer.getConnection();
-        messageId = buffer.readVarInt();
-        channel = buffer.readString();
-        data = buffer.readBytesLeft();
-        return true;
+    public LoginPluginMessageRequestEvent(Connection connection, int messageId, String channel, InByteBuffer data) {
+        super(connection);
+        this.messageId = messageId;
+        this.channel = channel;
+        this.data = data;
     }
 
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
-    public void log() {
-        Log.protocol(String.format("Received login plugin request in channel \"%s\" with %s bytes of data (messageId=%d)", channel, data.length, messageId));
+    public LoginPluginMessageRequestEvent(Connection connection, PacketLoginPluginRequest pkg) {
+        super(connection);
+        this.messageId = pkg.getMessageId();
+        this.channel = pkg.getChannel();
+        this.data = pkg.getDataAsBuffer();
     }
 
     public int getMessageId() {
@@ -52,11 +44,7 @@ public class PacketLoginPluginRequest implements ClientboundPacket {
         return channel;
     }
 
-    public byte[] getData() {
+    public InByteBuffer getData() {
         return data;
-    }
-
-    public InByteBuffer getDataAsBuffer() {
-        return new InByteBuffer(data, connection);
     }
 }

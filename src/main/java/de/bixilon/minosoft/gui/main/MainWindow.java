@@ -127,7 +127,7 @@ public class MainWindow implements Initializable {
 
     public static void manageAccounts() {
         try {
-            Parent parent = FXMLLoader.load(MainWindow.class.getResource("/layout/accounts.fxml"));
+            Parent parent = new FXMLLoader(MainWindow.class.getResource("/layout/accounts.fxml")).load();
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Manage accounts - Minosoft");
@@ -158,7 +158,7 @@ public class MainWindow implements Initializable {
 
     public void openSettings() {
         try {
-            Parent parent = FXMLLoader.load(MainWindow.class.getResource("/layout/settings.fxml"));
+            Parent parent = new FXMLLoader(MainWindow.class.getResource("/layout/settings.fxml")).load();
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Settings - Minosoft");

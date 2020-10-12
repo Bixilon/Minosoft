@@ -11,7 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.modding.channels;
+package de.bixilon.minosoft.modding.channels;
 
 import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
 import de.bixilon.minosoft.game.datatypes.IdentifierSet;

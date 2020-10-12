@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.config.GameConfiguration;
 import de.bixilon.minosoft.game.datatypes.GameModes;
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
 import de.bixilon.minosoft.game.datatypes.entities.meta.HumanMetaData;
@@ -29,6 +31,7 @@ import de.bixilon.minosoft.game.datatypes.scoreboard.Team;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.modding.event.events.*;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.*;
@@ -193,7 +196,36 @@ public class PacketHandler {
     }
 
     public void handle(PacketPluginMessageReceiving pkg) {
-        connection.getPluginChannelHandler().handle(pkg.getChannel(), pkg.getData());
+        if (pkg.getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getProtocolVersion()))) {
+            InByteBuffer data = pkg.getDataAsBuffer();
+            String serverVersion;
+            String clientVersion = (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
+            OutByteBuffer toSend = new OutByteBuffer(connection);
+            if (connection.getVersion().getProtocolVersion() < 29) {
+                // no length prefix
+                serverVersion = new String(data.getBytes());
+                toSend.writeBytes(clientVersion.getBytes());
+            } else {
+                // length prefix
+                serverVersion = data.readString();
+                toSend.writeString(clientVersion);
+            }
+            Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, connection.getVersion().getVersionName()));
+
+            connection.getSender().sendPluginMessageData(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getProtocolVersion()), toSend);
+            return;
+        }
+
+        // MC|StopSound
+        if (pkg.getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getProtocolVersion()))) {
+            // it is basically a packet, handle it like a packet:
+            PacketStopSound packet = new PacketStopSound();
+            packet.read(pkg.getDataAsBuffer());
+            handle(packet);
+            return;
+        }
+
+        connection.fireEvent(new PluginMessageReceiveEvent(connection, pkg));
     }
 
     public void handle(PacketSpawnLocation pkg) {
@@ -689,7 +721,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketLoginPluginRequest pkg) {
-        connection.getPluginChannelHandler().handle(pkg.getMessageId(), pkg.getChannel(), pkg.getData());
+        connection.fireEvent(new LoginPluginMessageRequestEvent(connection, pkg));
     }
 
     public void handle(PacketEntitySoundEffect pkg) {

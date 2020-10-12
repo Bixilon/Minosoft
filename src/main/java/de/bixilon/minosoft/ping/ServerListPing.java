@@ -16,6 +16,7 @@ package de.bixilon.minosoft.ping;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.game.datatypes.text.BaseComponent;
 import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.Base64;
@@ -34,6 +35,7 @@ public class ServerListPing {
         if (protocolId == -1) {
             // Server did not send us a version, trying 1.8
             this.protocolId = ProtocolDefinition.FALLBACK_VERSION_ID;
+            Log.warn(String.format("Server sent us a illegal version id (%d). Using 1.8.9.", protocolId));
         } else {
             this.protocolId = protocolId;
         }
