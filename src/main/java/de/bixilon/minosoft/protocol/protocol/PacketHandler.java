@@ -469,7 +469,7 @@ public class PacketHandler {
 
     public void handle(PacketBlockEntityMetadata pkg) {
         connection.fireEvent(new BlockEntityMetaDataChangeEvent(connection, pkg));
-        connection.getPlayer().getWorld().setBlockEntityData(pkg.getPosition(), pkg.getNbt());
+        connection.getPlayer().getWorld().setBlockEntityData(pkg.getPosition(), pkg.getData());
     }
 
     public void handle(PacketBlockBreakAnimation pkg) {

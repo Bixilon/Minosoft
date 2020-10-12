@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.game.datatypes.world;
 
 import de.bixilon.minosoft.game.datatypes.entities.Entity;
+import de.bixilon.minosoft.game.datatypes.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
 import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Blocks;
 import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimension;
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import java.util.HashMap;
 
@@ -28,7 +28,7 @@ public class World {
     final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
     final HashMap<Integer, Entity> entities = new HashMap<>();
     final String name;
-    final HashMap<BlockPosition, CompoundTag> blockEntityMeta = new HashMap<>();
+    final HashMap<BlockPosition, BlockEntityMetaData> blockEntityMeta = new HashMap<>();
     boolean hardcore;
     boolean raining;
     Dimension dimension; // used for sky color, etc
@@ -116,16 +116,16 @@ public class World {
         this.dimension = dimension;
     }
 
-    public void setBlockEntityData(BlockPosition position, CompoundTag nbt) {
+    public void setBlockEntityData(BlockPosition position, BlockEntityMetaData data) {
         // ToDo check if block is really a block entity (command block, spawner, skull, flower pot)
-        blockEntityMeta.put(position, nbt);
+        blockEntityMeta.put(position, data);
     }
 
-    public CompoundTag getBlockEntityData(BlockPosition position) {
+    public BlockEntityMetaData getBlockEntityData(BlockPosition position) {
         return blockEntityMeta.get(position);
     }
 
-    public void setBlockEntityData(HashMap<BlockPosition, CompoundTag> blockEntities) {
+    public void setBlockEntityData(HashMap<BlockPosition, BlockEntityMetaData> blockEntities) {
         blockEntities.forEach(blockEntityMeta::put);
     }
 }

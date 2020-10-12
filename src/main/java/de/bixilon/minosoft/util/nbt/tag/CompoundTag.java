@@ -134,6 +134,10 @@ public class CompoundTag extends NBTTag {
         return (CompoundTag) data.get(key);
     }
 
+    public NBTTag getTag(String key) {
+        return data.get(key);
+    }
+
     public void writeTag(String name, NBTTag tag) {
         if (isFinal) {
             throw new IllegalArgumentException("This tag is marked as final!");

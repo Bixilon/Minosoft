@@ -17,6 +17,12 @@ public class Item {
     final String mod;
     final String identifier;
 
+    public Item(String fullIdentifier) {
+        String[] split = fullIdentifier.split(":");
+        this.mod = split[0];
+        this.identifier = split[1];
+    }
+
     public Item(String mod, String identifier) {
         this.mod = mod;
         this.identifier = identifier;

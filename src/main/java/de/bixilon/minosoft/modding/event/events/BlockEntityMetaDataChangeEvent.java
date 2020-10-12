@@ -13,32 +13,30 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
+import de.bixilon.minosoft.game.datatypes.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockEntityMetadata;
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import javax.annotation.Nullable;
 
 public class BlockEntityMetaDataChangeEvent extends Event {
     private final BlockPosition position;
     private final PacketBlockEntityMetadata.BlockEntityActions action;
-    private final CompoundTag nbt;
+    private final BlockEntityMetaData data;
 
-    public BlockEntityMetaDataChangeEvent(Connection connection, BlockPosition position, PacketBlockEntityMetadata.BlockEntityActions action, CompoundTag nbt) {
+    public BlockEntityMetaDataChangeEvent(Connection connection, BlockPosition position, PacketBlockEntityMetadata.BlockEntityActions action, BlockEntityMetaData data) {
         super(connection);
         this.position = position;
         this.action = action;
-        this.nbt = nbt;
-        this.nbt.setFinal();
+        this.data = data;
     }
 
     public BlockEntityMetaDataChangeEvent(Connection connection, PacketBlockEntityMetadata pkg) {
         super(connection);
         this.position = pkg.getPosition();
         this.action = pkg.getAction();
-        this.nbt = pkg.getNbt();
-        this.nbt.setFinal();
+        this.data = pkg.getData();
     }
 
     public BlockPosition getPosition() {
@@ -50,7 +48,7 @@ public class BlockEntityMetaDataChangeEvent extends Event {
         return action;
     }
 
-    public CompoundTag getNbt() {
-        return nbt;
+    public BlockEntityMetaData getData() {
+        return data;
     }
 }

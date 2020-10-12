@@ -42,8 +42,8 @@ import de.bixilon.minosoft.util.DNSUtil;
 import de.bixilon.minosoft.util.ServerAddress;
 import org.xbill.DNS.TextParseException;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -392,7 +392,7 @@ public class Connection {
         this.desiredVersionNumber = desiredVersionNumber;
     }
 
-    public void handlePingCallbacks(ServerListPing ping) {
+    public void handlePingCallbacks(@Nullable ServerListPing ping) {
         this.lastPing = ping;
         pingCallbacks.forEach((callback -> callback.handle(ping)));
     }
@@ -411,13 +411,5 @@ public class Connection {
 
     public ServerListPing getLastPing() {
         return lastPing;
-    }
-
-    public void registerEvents(EventManager... eventManagers) {
-        this.eventManagers.addAll(Arrays.asList(eventManagers));
-    }
-
-    public void unregisterEvents(EventManager... eventManagers) {
-        this.eventManagers.removeAll(Arrays.asList(eventManagers));
     }
 }

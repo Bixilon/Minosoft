@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.game.datatypes.MapSet;
 import de.bixilon.minosoft.game.datatypes.VersionValueMap;
+import de.bixilon.minosoft.game.datatypes.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -25,21 +26,22 @@ import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 public class PacketBlockEntityMetadata implements ClientboundPacket {
     BlockPosition position;
     BlockEntityActions action;
-    CompoundTag nbt;
+    BlockEntityMetaData data;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 6) {
             position = buffer.readBlockPositionShort();
             action = BlockEntityActions.byId(buffer.readByte(), buffer.getProtocolId());
-            nbt = (CompoundTag) buffer.readNBT(true);
+            data = BlockEntityMetaData.getData(action, (CompoundTag) buffer.readNBT(true));
             return true;
         }
         position = buffer.readPosition();
         action = BlockEntityActions.byId(buffer.readByte(), buffer.getProtocolId());
-        nbt = (CompoundTag) buffer.readNBT();
+        data = BlockEntityMetaData.getData(action, (CompoundTag) buffer.readNBT());
         return true;
     }
+
 
     @Override
     public void handle(PacketHandler h) {
@@ -59,8 +61,8 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         return action;
     }
 
-    public CompoundTag getNbt() {
-        return nbt;
+    public BlockEntityMetaData getData() {
+        return data;
     }
 
     public enum BlockEntityActions {
@@ -81,6 +83,7 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         BEE_HIVE(new MapSet[]{new MapSet<>(550, 14)});
 
         final VersionValueMap<Integer> valueMap;
+
 
         BlockEntityActions(MapSet<Integer, Integer>[] values) {
             valueMap = new VersionValueMap<>(values, true);

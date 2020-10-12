@@ -44,7 +44,7 @@ public class PacketBlockAction implements ClientboundPacket {
         clazz = switch (blockId.getIdentifier()) {
             case "noteblock" -> NoteBlockAction.class; // ToDo: was replaced in 17w47a (346) with the block id
             case "sticky_piston", "piston" -> PistonAction.class;
-            case "chest", "ender_chest", "trapped_chest", "white_shulker_box", "orange_shulker_box", "magenta_shulker_box", "light_blue_shulker_box", "yellow_shulker_box", "lime_shulker_box", "pink_shulker_box", "gray_shulker_box", "silver_shulker_box", "cyan_shulker_box", "purple_shulker_box", "blue_shulker_box", "brown_shulker_box", "green_shulker_box", "red_shulker_box", "black_shulker_box" -> ChestAction.class;
+            case "chest", "ender_chest", "trapped_chest", "white_shulker_box", "shulker_box", "orange_shulker_box", "magenta_shulker_box", "light_blue_shulker_box", "yellow_shulker_box", "lime_shulker_box", "pink_shulker_box", "gray_shulker_box", "silver_shulker_box", "cyan_shulker_box", "purple_shulker_box", "blue_shulker_box", "brown_shulker_box", "green_shulker_box", "red_shulker_box", "black_shulker_box" -> ChestAction.class;
             case "beacon" -> BeaconAction.class;
             case "mob_spawner" -> MobSpawnerAction.class;
             case "end_gateway" -> EndGatewayAction.class;

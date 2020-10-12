@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.game.datatypes.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
 import de.bixilon.minosoft.game.datatypes.world.Chunk;
 import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
@@ -27,7 +28,7 @@ import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import java.util.HashMap;
 
 public class PacketChunkData implements ClientboundPacket {
-    final HashMap<BlockPosition, CompoundTag> blockEntities = new HashMap<>();
+    final HashMap<BlockPosition, BlockEntityMetaData> blockEntities = new HashMap<>();
     ChunkLocation location;
     Chunk chunk;
     CompoundTag heightMap;
@@ -103,7 +104,11 @@ public class PacketChunkData implements ClientboundPacket {
             int blockEntitiesCount = buffer.readVarInt();
             for (int i = 0; i < blockEntitiesCount; i++) {
                 CompoundTag tag = (CompoundTag) buffer.readNBT();
-                blockEntities.put(new BlockPosition(tag.getIntTag("x").getValue(), (short) tag.getIntTag("y").getValue(), tag.getIntTag("z").getValue()), tag);
+                BlockEntityMetaData data = BlockEntityMetaData.getData(null, tag);
+                if (data == null) {
+                    continue;
+                }
+                blockEntities.put(new BlockPosition(tag.getIntTag("x").getValue(), (short) tag.getIntTag("y").getValue(), tag.getIntTag("z").getValue()), data);
             }
         }
         return true;
@@ -127,7 +132,7 @@ public class PacketChunkData implements ClientboundPacket {
         return chunk;
     }
 
-    public HashMap<BlockPosition, CompoundTag> getBlockEntities() {
+    public HashMap<BlockPosition, BlockEntityMetaData> getBlockEntities() {
         return blockEntities;
     }
 
