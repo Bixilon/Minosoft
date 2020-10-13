@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-public class CreatureMetaData extends InsentientMetaData {
+public abstract class CreatureMetaData extends InsentientMetaData {
 
     public CreatureMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

@@ -17,7 +17,7 @@ import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
 
 import javax.annotation.Nullable;
 
-public class LivingMetaData extends EntityMetaData {
+public abstract class LivingMetaData extends EntityMetaData {
 
     public LivingMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

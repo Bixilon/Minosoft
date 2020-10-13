@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-public class ThrowableMetaData extends EntityMetaData {
+public abstract class ThrowableMetaData extends EntityMetaData {
 
     public ThrowableMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

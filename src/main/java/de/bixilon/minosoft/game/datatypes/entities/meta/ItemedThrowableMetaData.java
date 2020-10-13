@@ -16,7 +16,7 @@ import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 
 import javax.annotation.Nullable;
 
-public class ItemedThrowableMetaData extends ThrowableMetaData {
+public abstract class ItemedThrowableMetaData extends ThrowableMetaData {
 
     public ItemedThrowableMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

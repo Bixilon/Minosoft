@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-public class ChestedHorseMetaData extends AbstractHorseMetaData {
+public abstract class ChestedHorseMetaData extends AbstractHorseMetaData {
 
     public ChestedHorseMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

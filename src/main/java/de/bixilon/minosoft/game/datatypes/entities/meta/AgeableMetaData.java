@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-public class AgeableMetaData extends CreatureMetaData {
+public abstract class AgeableMetaData extends CreatureMetaData {
 
     public AgeableMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-public class RaidParticipantMetaData extends MonsterMetaData {
+public abstract class RaidParticipantMetaData extends MonsterMetaData {
 
     public RaidParticipantMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

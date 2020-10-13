@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-public class AmbientMetaData extends InsentientMetaData {
+public abstract class AmbientMetaData extends InsentientMetaData {
 
     public AmbientMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

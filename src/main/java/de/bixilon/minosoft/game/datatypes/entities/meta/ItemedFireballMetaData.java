@@ -15,7 +15,7 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import de.bixilon.minosoft.game.datatypes.inventory.Slot;
 import de.bixilon.minosoft.game.datatypes.objectLoader.items.Item;
 
-public class ItemedFireballMetaData extends AbstractFireballMetaData {
+public abstract class ItemedFireballMetaData extends AbstractFireballMetaData {
 
     public ItemedFireballMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

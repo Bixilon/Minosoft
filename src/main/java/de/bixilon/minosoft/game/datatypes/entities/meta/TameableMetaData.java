@@ -15,7 +15,7 @@ package de.bixilon.minosoft.game.datatypes.entities.meta;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class TameableMetaData extends AnimalMetaData {
+public abstract class TameableMetaData extends AnimalMetaData {
 
     public TameableMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);

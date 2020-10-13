@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.game.datatypes.entities.meta;
 
-public class BasePiglinMetaData extends MonsterMetaData {
+public abstract class BasePiglinMetaData extends MonsterMetaData {
 
     public BasePiglinMetaData(MetaDataHashMap sets, int protocolId) {
         super(sets, protocolId);
