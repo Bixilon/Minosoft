@@ -77,9 +77,5 @@ public class Minecart extends EntityObject implements ObjectInterface {
         public static MinecartTypes byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 }

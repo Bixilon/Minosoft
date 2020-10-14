@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.GameConfiguration;
+import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import javafx.fxml.FXML;
@@ -41,7 +41,7 @@ public class SettingsWindow implements Initializable {
                 return;
             }
             Log.setLevel(newLevel);
-            Minosoft.getConfig().putString(GameConfiguration.GENERAL_LOG_LEVEL, newLevel.name());
+            Minosoft.getConfig().putString(ConfigurationPaths.GENERAL_LOG_LEVEL, newLevel.name());
             Minosoft.getConfig().saveToFile();
         }));
     }

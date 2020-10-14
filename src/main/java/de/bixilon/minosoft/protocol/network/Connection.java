@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.network;
 
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.PingCallback;
 import de.bixilon.minosoft.data.Player;
 import de.bixilon.minosoft.data.VelocityHandler;
 import de.bixilon.minosoft.data.mappings.CustomMapping;
@@ -30,13 +29,14 @@ import de.bixilon.minosoft.modding.event.events.CancelableEvent;
 import de.bixilon.minosoft.modding.event.events.Event;
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent;
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent;
-import de.bixilon.minosoft.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest;
+import de.bixilon.minosoft.protocol.ping.PingCallback;
+import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.DNSUtil;
 import de.bixilon.minosoft.util.ServerAddress;

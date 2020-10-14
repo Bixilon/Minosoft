@@ -124,10 +124,6 @@ public class PacketBossBar implements ClientboundPacket {
         public static BossBarActions byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 
     public enum BossBarColors {
@@ -142,10 +138,6 @@ public class PacketBossBar implements ClientboundPacket {
         public static BossBarColors byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 
     public enum BossBarDivisions {
@@ -157,10 +149,6 @@ public class PacketBossBar implements ClientboundPacket {
 
         public static BossBarDivisions byId(int id) {
             return values()[id];
-        }
-
-        public int getId() {
-            return ordinal();
         }
     }
 }

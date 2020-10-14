@@ -11,27 +11,8 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.ping;
+package de.bixilon.minosoft.protocol.ping;
 
-public class ServerModItem {
-    final String modId;
-    final String modVersion;
-
-    public ServerModItem(String modId, String modVersion) {
-        this.modId = modId;
-        this.modVersion = modVersion;
-    }
-
-    public String getModId() {
-        return modId;
-    }
-
-    public String getModVersion() {
-        return modVersion;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s (%s)", modId, modVersion);
-    }
+public interface PingCallback {
+    void handle(ServerListPing ping);
 }

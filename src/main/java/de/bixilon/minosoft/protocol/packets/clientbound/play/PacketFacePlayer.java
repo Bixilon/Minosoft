@@ -64,26 +64,11 @@ public class PacketFacePlayer implements ClientboundPacket {
     }
 
     public enum PlayerFaces {
-        FEET(0),
-        EYES(1);
-
-        final int id;
-
-        PlayerFaces(int id) {
-            this.id = id;
-        }
+        FEET,
+        EYES;
 
         public static PlayerFaces byId(int id) {
-            for (PlayerFaces face : values()) {
-                if (face.getId() == id) {
-                    return face;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

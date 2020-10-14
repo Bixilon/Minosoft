@@ -45,12 +45,10 @@ public class PacketEncoder extends MessageToByteEncoder<ServerboundPacket> {
                 byte[] compressed = Util.compress(data);
                 compressedBuffer.writeVarInt(data.length);
                 compressedBuffer.writeBytes(compressed);
-                outRawBuffer.writeVarInt(compressedBuffer.getOutBytes().length);
-                outRawBuffer.writeBytes(compressedBuffer.getOutBytes());
+                outRawBuffer.prefixVarInt(compressedBuffer.getOutBytes().length);
             } else {
+                outRawBuffer.prefixVarInt(0);
                 outRawBuffer.writeVarInt(data.length + 1); // 1 for the compressed length (0)
-                outRawBuffer.writeVarInt(0);
-                outRawBuffer.writeBytes(data);
             }
             data = outRawBuffer.getOutBytes();
         } else {

@@ -84,9 +84,5 @@ public class PacketEntityProperties implements ClientboundPacket {
         public static ModifierActions byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 }

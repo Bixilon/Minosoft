@@ -105,9 +105,5 @@ public class PacketPlayerListItem implements ClientboundPacket {
         public static PlayerListItemActions byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 }

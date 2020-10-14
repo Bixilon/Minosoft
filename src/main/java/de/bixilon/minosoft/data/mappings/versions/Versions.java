@@ -18,7 +18,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.GameConfiguration;
+import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.data.Mappings;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
@@ -135,7 +135,7 @@ public class Versions {
         } catch (FileNotFoundException e) {
             long downloadStartTime = System.currentTimeMillis();
             Log.info(String.format("Mappings for %s are not available on disk. Downloading them...", version.getVersionName()));
-            Util.downloadFile(String.format(Minosoft.getConfig().getString(GameConfiguration.MAPPINGS_URL), version.getVersionName()), fileName);
+            Util.downloadFile(String.format(Minosoft.getConfig().getString(ConfigurationPaths.MAPPINGS_URL), version.getVersionName()), fileName);
             try {
                 files = Util.readJsonTarGzFile(fileName);
             } catch (ZipException e2) {

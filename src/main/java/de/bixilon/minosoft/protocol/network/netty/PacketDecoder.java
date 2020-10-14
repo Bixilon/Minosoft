@@ -98,7 +98,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
         try {
             packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
             if (packet == null) {
-                Log.fatal(String.format("Version packet enum does not contain a packet with id 0x%x. Your version.json is broken!", inPacketBuffer.getCommand()));
+                Log.fatal(String.format("Packet mapping does not contain a packet with id 0x%x. The server sends bullshit or your versions.json broken!", inPacketBuffer.getCommand()));
                 nettyNetwork.disconnect();
                 throw new RuntimeException("Invalid packet 0x%x" + inPacketBuffer.getCommand());
             }

@@ -31,9 +31,9 @@ public class PacketClientStatus implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CLIENT_STATUS);
         if (buffer.getProtocolId() < 7) {
-            buffer.writeByte((byte) status.getId());
+            buffer.writeByte((byte) status.ordinal());
         } else {
-            buffer.writeVarInt(status.getId());
+            buffer.writeVarInt(status.ordinal());
         }
         return buffer;
     }
@@ -50,10 +50,6 @@ public class PacketClientStatus implements ServerboundPacket {
 
         public static ClientStates byId(int id) {
             return values()[id];
-        }
-
-        public int getId() {
-            return ordinal();
         }
     }
 }

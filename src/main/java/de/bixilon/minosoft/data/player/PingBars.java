@@ -32,8 +32,7 @@ public enum PingBars {
             return BARS_3;
         } else if (ping < 1000) {
             return BARS_2;
-        } else {
-            return BRAS_1;
         }
+        return BRAS_1;
     }
 }

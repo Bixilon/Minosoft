@@ -80,7 +80,7 @@ public class PacketInteractEntity implements ServerboundPacket {
 
             if (click == EntityInteractionClicks.INTERACT_AT || click == EntityInteractionClicks.INTERACT) {
                 if (buffer.getProtocolId() >= 49) {
-                    buffer.writeVarInt(hand.getId());
+                    buffer.writeVarInt(hand.ordinal());
                 }
 
                 if (buffer.getProtocolId() >= 725 && buffer.getProtocolId() < 729) {

@@ -32,7 +32,7 @@ public abstract class LivingMetaData extends EntityMetaData {
     }
 
     public Hands getActiveHand() {
-        final int defaultValue = Hands.LEFT.getId();
+        final int defaultValue = Hands.LEFT.ordinal();
         if (protocolId < 110) { //ToDo
             return Hands.byId(defaultValue);
         }

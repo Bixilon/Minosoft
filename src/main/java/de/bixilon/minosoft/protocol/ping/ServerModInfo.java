@@ -11,9 +11,12 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.ping;
+package de.bixilon.minosoft.protocol.ping;
 
-public enum ServerModTypes {
-    VANILLA,
-    FORGE
+public interface ServerModInfo {
+    String getBrand();
+
+    String getInfo();
+
+    ServerModTypes getType();
 }

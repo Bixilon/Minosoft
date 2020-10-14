@@ -11,14 +11,9 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config;
+package de.bixilon.minosoft.protocol.ping;
 
-public enum GameConfiguration {
-    CONFIG_VERSION,
-    GAME_RENDER_DISTANCE,
-    NETWORK_FAKE_CLIENT_BRAND,
-    GENERAL_LOG_LEVEL,
-    CLIENT_TOKEN,
-    MAPPINGS_URL,
-    ACCOUNT_SELECTED
+public enum ServerModTypes {
+    VANILLA,
+    FORGE
 }

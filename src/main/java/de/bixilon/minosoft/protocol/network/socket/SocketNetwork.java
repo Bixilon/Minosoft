@@ -108,12 +108,10 @@ public class SocketNetwork implements Network {
                                     byte[] compressed = Util.compress(data);
                                     compressedBuffer.writeVarInt(data.length);
                                     compressedBuffer.writeBytes(compressed);
-                                    outRawBuffer.writeVarInt(compressedBuffer.getOutBytes().length);
-                                    outRawBuffer.writeBytes(compressedBuffer.getOutBytes());
+                                    outRawBuffer.prefixVarInt(compressedBuffer.getOutBytes().length);
                                 } else {
+                                    outRawBuffer.prefixVarInt(0);
                                     outRawBuffer.writeVarInt(data.length + 1); // 1 for the compressed length (0)
-                                    outRawBuffer.writeVarInt(0);
-                                    outRawBuffer.writeBytes(data);
                                 }
                                 data = outRawBuffer.getOutBytes();
                             } else {
@@ -194,7 +192,7 @@ public class SocketNetwork implements Network {
                     try {
                         packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
                         if (packet == null) {
-                            Log.fatal(String.format("Version packet enum does not contain a packet with id 0x%x. The server sent bullshit or your version.json is broken!", inPacketBuffer.getCommand()));
+                            Log.fatal(String.format("Packet mapping does not contain a packet with id 0x%x. The server sends bullshit or your versions.json broken!", inPacketBuffer.getCommand()));
                             disconnect();
                             lastException = new RuntimeException("Invalid packet 0x" + inPacketBuffer.getCommand());
                             throw lastException;

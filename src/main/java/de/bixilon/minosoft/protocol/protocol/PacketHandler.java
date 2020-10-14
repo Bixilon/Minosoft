@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.GameConfiguration;
+import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.data.GameModes;
 import de.bixilon.minosoft.data.entities.Entity;
 import de.bixilon.minosoft.data.entities.meta.HumanMetaData;
@@ -199,7 +199,7 @@ public class PacketHandler {
         if (pkg.getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getProtocolVersion()))) {
             InByteBuffer data = pkg.getDataAsBuffer();
             String serverVersion;
-            String clientVersion = (Minosoft.getConfig().getBoolean(GameConfiguration.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
+            String clientVersion = (Minosoft.getConfig().getBoolean(ConfigurationPaths.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
             OutByteBuffer toSend = new OutByteBuffer(connection);
             if (connection.getVersion().getProtocolVersion() < 29) {
                 // no length prefix
@@ -332,6 +332,8 @@ public class PacketHandler {
     }
 
     public void handle(PacketWindowItems pkg) {
+        connection.fireEvent(new MultiSlotChangeEvent(connection, pkg));
+
         connection.getPlayer().setInventory(pkg.getWindowId(), pkg.getData());
     }
 
@@ -519,7 +521,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketSetSlot pkg) {
-        connection.fireEvent(new SlotChangeEvent(connection, pkg));
+        connection.fireEvent(new SingleSlotChangeEvent(connection, pkg));
 
         if (pkg.getWindowId() == -1) {
             // invalid window Id

@@ -24,8 +24,4 @@ public enum Hands {
     public static Hands byBoolean(boolean id) {
         return id ? LEFT : RIGHT;
     }
-
-    public int getId() {
-        return ordinal();
-    }
 }

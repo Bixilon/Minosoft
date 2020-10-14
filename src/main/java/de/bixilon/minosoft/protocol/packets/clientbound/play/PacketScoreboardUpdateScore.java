@@ -80,9 +80,5 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
         public static ScoreboardUpdateScoreActions byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 }

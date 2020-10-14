@@ -30,26 +30,11 @@ public class PistonAction implements BlockAction {
     }
 
     public enum PistonStates {
-        PUSH(0),
-        PULL(1);
-
-        final byte id;
-
-        PistonStates(int id) {
-            this.id = (byte) id;
-        }
+        PUSH,
+        PULL;
 
         public static PistonStates byId(int id) {
-            for (PistonStates state : values()) {
-                if (state.getId() == id) {
-                    return state;
-                }
-            }
-            return null;
-        }
-
-        public byte getId() {
-            return id;
+            return values()[id];
         }
     }
 }

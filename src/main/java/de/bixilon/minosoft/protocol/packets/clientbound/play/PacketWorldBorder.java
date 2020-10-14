@@ -125,9 +125,5 @@ public class PacketWorldBorder implements ClientboundPacket {
         public static WorldBorderActions byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 }

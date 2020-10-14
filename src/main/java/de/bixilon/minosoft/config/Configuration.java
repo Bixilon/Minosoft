@@ -88,21 +88,21 @@ public class Configuration {
         thread.start();
     }
 
-    public boolean getBoolean(GameConfiguration path) {
+    public boolean getBoolean(ConfigurationPaths path) {
         return switch (path) {
             case NETWORK_FAKE_CLIENT_BRAND -> config.getAsJsonObject("network").get("fake-network-brand").getAsBoolean();
             default -> throw new RuntimeException(String.format("Illegal boolean value: %s", path));
         };
     }
 
-    public void putBoolean(GameConfiguration path, boolean value) {
+    public void putBoolean(ConfigurationPaths path, boolean value) {
         switch (path) {
             case NETWORK_FAKE_CLIENT_BRAND -> config.getAsJsonObject("network").addProperty("fake-network-brand", value);
             default -> throw new RuntimeException(String.format("Illegal boolean value: %s", path));
         }
     }
 
-    public int getInt(GameConfiguration path) {
+    public int getInt(ConfigurationPaths path) {
         return switch (path) {
             case CONFIG_VERSION -> config.getAsJsonObject("general").get("version").getAsInt();
             case GAME_RENDER_DISTANCE -> config.getAsJsonObject("game").get("render-distance").getAsInt();
@@ -110,7 +110,7 @@ public class Configuration {
         };
     }
 
-    public void putInt(GameConfiguration path, int value) {
+    public void putInt(ConfigurationPaths path, int value) {
         switch (path) {
             case CONFIG_VERSION -> config.getAsJsonObject("general").addProperty("version", value);
             case GAME_RENDER_DISTANCE -> config.getAsJsonObject("game").addProperty("render-distance", value);
@@ -118,7 +118,7 @@ public class Configuration {
         }
     }
 
-    public String getString(GameConfiguration path) {
+    public String getString(ConfigurationPaths path) {
         return switch (path) {
             case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").get("selected").getAsString();
             case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").get("log-level").getAsString();
@@ -128,7 +128,7 @@ public class Configuration {
         };
     }
 
-    public void putString(GameConfiguration path, String value) {
+    public void putString(ConfigurationPaths path, String value) {
         switch (path) {
             case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").addProperty("selected", value);
             case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").addProperty("log-level", value);

@@ -77,10 +77,6 @@ public class InventorySlots {
 
         @Override
         public int getId(int protocolId) {
-            return getId();
-        }
-
-        public int getId() {
             return ordinal();
         }
     }

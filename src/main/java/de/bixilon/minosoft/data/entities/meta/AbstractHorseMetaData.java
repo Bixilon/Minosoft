@@ -56,7 +56,7 @@ public abstract class AbstractHorseMetaData extends AnimalMetaData {
     }
 
     public HorseTypes getType() {
-        final int defaultValue = HorseTypes.HORSE.getId();
+        final int defaultValue = HorseTypes.HORSE.ordinal();
         if (protocolId < 57) {
             return HorseTypes.byId(sets.getInt(19, defaultValue));
         }
@@ -103,10 +103,6 @@ public abstract class AbstractHorseMetaData extends AnimalMetaData {
 
         public static HorseTypes byId(int id) {
             return values()[id];
-        }
-
-        public int getId() {
-            return ordinal();
         }
     }
 }

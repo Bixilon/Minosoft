@@ -170,10 +170,6 @@ public class PacketMapData implements ClientboundPacket {
         public static PacketMapDataDataActions byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 
     public enum MapPinTypes {
@@ -208,10 +204,6 @@ public class PacketMapData implements ClientboundPacket {
 
         public static MapPinTypes byId(int id) {
             return values()[id];
-        }
-
-        public int getId() {
-            return ordinal();
         }
     }
 

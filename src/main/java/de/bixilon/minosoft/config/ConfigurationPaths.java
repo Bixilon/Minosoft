@@ -11,10 +11,14 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft;
+package de.bixilon.minosoft.config;
 
-import de.bixilon.minosoft.ping.ServerListPing;
-
-public interface PingCallback {
-    void handle(ServerListPing ping);
+public enum ConfigurationPaths {
+    CONFIG_VERSION,
+    GAME_RENDER_DISTANCE,
+    NETWORK_FAKE_CLIENT_BRAND,
+    GENERAL_LOG_LEVEL,
+    CLIENT_TOKEN,
+    MAPPINGS_URL,
+    ACCOUNT_SELECTED
 }

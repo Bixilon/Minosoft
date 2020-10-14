@@ -51,6 +51,13 @@ public class InByteBuffer {
         this.protocolId = connection.getVersion().getProtocolVersion();
     }
 
+    public InByteBuffer(InByteBuffer buffer) {
+        this.bytes = buffer.getBytes();
+        this.position = buffer.getPosition();
+        this.connection = buffer.getConnection();
+        this.protocolId = connection.getVersion().getProtocolVersion();
+    }
+
     public byte[] readByteArray() {
         int count;
         if (protocolId < 19) {

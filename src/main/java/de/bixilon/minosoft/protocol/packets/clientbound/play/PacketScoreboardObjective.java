@@ -85,10 +85,6 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         public static ScoreboardObjectiveActions byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 
     public enum ScoreboardObjectiveTypes {

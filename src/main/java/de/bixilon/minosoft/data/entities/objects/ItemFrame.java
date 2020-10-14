@@ -74,9 +74,5 @@ public class ItemFrame extends EntityObject implements ObjectInterface {
         public static FrameDirections byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 }

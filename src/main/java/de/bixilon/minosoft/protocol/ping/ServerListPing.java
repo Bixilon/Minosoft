@@ -11,7 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.ping;
+package de.bixilon.minosoft.protocol.ping;
 
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.data.text.BaseComponent;

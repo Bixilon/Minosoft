@@ -19,7 +19,7 @@ public class HorseMetaData extends AbstractHorseMetaData {
     }
 
     public HorseColors getColor() {
-        final int defaultValue = HorseColors.WHITE.getId();
+        final int defaultValue = HorseColors.WHITE.ordinal();
         if (protocolId < 57) {
             return HorseColors.byId(sets.getInt(20, defaultValue) & 0xFF);
         }
@@ -33,7 +33,7 @@ public class HorseMetaData extends AbstractHorseMetaData {
     }
 
     public HorseDots getDots() {
-        final int defaultValue = HorseDots.NONE.getId() << 8;
+        final int defaultValue = HorseDots.NONE.ordinal() << 8;
         if (protocolId < 57) {
             return HorseDots.byId(sets.getInt(20, defaultValue) >> 8);
         }
@@ -47,7 +47,7 @@ public class HorseMetaData extends AbstractHorseMetaData {
     }
 
     public HorseArmors getArmor() {
-        final int defaultValue = HorseArmors.NO_ARMOR.getId();
+        final int defaultValue = HorseArmors.NO_ARMOR.ordinal();
         if (protocolId < 57) {
             return HorseArmors.byId(sets.getInt(21, defaultValue));
         }
@@ -79,10 +79,6 @@ public class HorseMetaData extends AbstractHorseMetaData {
         public static HorseArmors byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 
     public enum HorseColors {
@@ -97,10 +93,6 @@ public class HorseMetaData extends AbstractHorseMetaData {
         public static HorseColors byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 
     public enum HorseDots {
@@ -112,10 +104,6 @@ public class HorseMetaData extends AbstractHorseMetaData {
 
         public static HorseDots byId(int id) {
             return values()[id];
-        }
-
-        public int getId() {
-            return ordinal();
         }
     }
 }

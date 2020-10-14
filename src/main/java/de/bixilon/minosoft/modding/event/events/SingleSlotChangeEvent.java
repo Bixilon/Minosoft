@@ -13,27 +13,40 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
+import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
-import de.bixilon.minosoft.protocol.ping.ServerListPing;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSetSlot;
 
-/**
- * Fired when the connection status is "STATUS" and the server send general information such as players online, motd, etc
- */
-public class StatusResponseEvent extends Event {
-    private final ServerListPing response;
+public class SingleSlotChangeEvent extends Event {
+    private final byte windowId;
+    private final short slotId;
+    private final Slot slot;
 
-    public StatusResponseEvent(Connection connection, ServerListPing response) {
+
+    public SingleSlotChangeEvent(Connection connection, byte windowId, short slotId, Slot slot) {
         super(connection);
-        this.response = response;
+        this.windowId = windowId;
+        this.slotId = slotId;
+        this.slot = slot;
     }
 
-    public StatusResponseEvent(Connection connection, PacketStatusResponse pkg) {
+    public SingleSlotChangeEvent(Connection connection, PacketSetSlot pkg) {
         super(connection);
-        this.response = pkg.getResponse();
+        this.windowId = pkg.getWindowId();
+        this.slotId = pkg.getSlotId();
+        this.slot = pkg.getSlot();
     }
 
-    public ServerListPing getResponse() {
-        return response;
+
+    public byte getWindowId() {
+        return windowId;
+    }
+
+    public short getSlotId() {
+        return slotId;
+    }
+
+    public Slot getSlot() {
+        return slot;
     }
 }

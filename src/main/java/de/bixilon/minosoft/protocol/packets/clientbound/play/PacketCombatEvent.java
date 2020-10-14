@@ -66,9 +66,5 @@ public class PacketCombatEvent implements ClientboundPacket {
         public static CombatEvents byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 }

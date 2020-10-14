@@ -15,26 +15,23 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSetSlot;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketWindowItems;
 
-public class SlotChangeEvent extends Event {
+public class MultiSlotChangeEvent extends Event {
     private final byte windowId;
-    private final short slotId;
-    private final Slot slot;
+    private final Slot[] data;
 
 
-    public SlotChangeEvent(Connection connection, byte windowId, short slotId, Slot slot) {
+    public MultiSlotChangeEvent(Connection connection, byte windowId, Slot[] data) {
         super(connection);
         this.windowId = windowId;
-        this.slotId = slotId;
-        this.slot = slot;
+        this.data = data;
     }
 
-    public SlotChangeEvent(Connection connection, PacketSetSlot pkg) {
+    public MultiSlotChangeEvent(Connection connection, PacketWindowItems pkg) {
         super(connection);
         this.windowId = pkg.getWindowId();
-        this.slotId = pkg.getSlotId();
-        this.slot = pkg.getSlot();
+        this.data = pkg.getData();
     }
 
 
@@ -42,11 +39,10 @@ public class SlotChangeEvent extends Event {
         return windowId;
     }
 
-    public short getSlotId() {
-        return slotId;
-    }
-
-    public Slot getSlot() {
-        return slot;
+    /**
+     * @return Data array. Array position equals the slot id
+     */
+    public Slot[] getData() {
+        return data;
     }
 }

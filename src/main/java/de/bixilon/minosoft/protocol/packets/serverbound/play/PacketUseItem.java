@@ -30,7 +30,7 @@ public class PacketUseItem implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_USE_ITEM);
-        buffer.writeVarInt(hand.getId());
+        buffer.writeVarInt(hand.ordinal());
         return buffer;
     }
 

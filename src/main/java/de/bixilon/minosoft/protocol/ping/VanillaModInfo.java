@@ -11,12 +11,21 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.ping;
+package de.bixilon.minosoft.protocol.ping;
 
-public interface ServerModInfo {
-    String getBrand();
+public class VanillaModInfo implements ServerModInfo {
+    @Override
+    public String getBrand() {
+        return "Vanilla";
+    }
 
-    String getInfo();
+    @Override
+    public String getInfo() {
+        return "Not modded Vanilla server";
+    }
 
-    ServerModTypes getType();
+    @Override
+    public ServerModTypes getType() {
+        return ServerModTypes.VANILLA;
+    }
 }

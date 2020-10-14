@@ -26,13 +26,20 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class OutByteBuffer {
-    final ArrayList<Byte> bytes = new ArrayList<>();
+    final ArrayList<Byte> bytes;
     final Connection connection;
     final int protocolId;
 
     public OutByteBuffer(Connection connection) {
+        this.bytes = new ArrayList<>();
         this.connection = connection;
         this.protocolId = connection.getVersion().getProtocolVersion();
+    }
+
+    public OutByteBuffer(OutByteBuffer buffer) {
+        this.bytes = (ArrayList<Byte>) buffer.getBytes().clone();
+        this.connection = buffer.getConnection();
+        this.protocolId = buffer.getProtocolId();
     }
 
     public void writeByteArray(byte[] data) {
@@ -135,10 +142,6 @@ public class OutByteBuffer {
         writeInt((int) (d * 32.0D));
     }
 
-    public void writeVarInt(int value) {
-        writeVarInt(value, bytes);
-    }
-
     public ArrayList<Byte> getBytes() {
         return bytes;
     }
@@ -155,7 +158,7 @@ public class OutByteBuffer {
         writeLong((((long) (position.getX() & 0x3FFFFFF) << 38) | ((long) (position.getZ() & 0x3FFFFFF) << 12) | (long) (position.getY() & 0xFFF)));
     }
 
-    public static void writeVarInt(int value, ArrayList<Byte> write) {
+    public void writeVarInt(int value) {
         // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
         do
         {
@@ -165,12 +168,23 @@ public class OutByteBuffer {
             if (value != 0) {
                 temp |= 0b10000000;
             }
-            writeByte(temp, write);
+            writeByte(temp);
         } while (value != 0);
     }
 
-    public static void writeByte(byte b, ArrayList<Byte> write) {
-        write.add(b);
+    public void prefixVarInt(int value) {
+        int count = 0;
+        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
+        do
+        {
+            byte temp = (byte) (value & 0b01111111);
+            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
+            value >>>= 7;
+            if (value != 0) {
+                temp |= 0b10000000;
+            }
+            bytes.add(count++, temp);
+        } while (value != 0);
     }
 
     public void writeSlot(Slot slot) {
@@ -244,5 +258,9 @@ public class OutByteBuffer {
         } else {
             writeVarInt(entityId);
         }
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 }

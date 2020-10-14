@@ -85,9 +85,5 @@ public class PacketEntityStatus implements ClientboundPacket {
         public static EntityStates byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 }

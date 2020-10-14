@@ -19,7 +19,7 @@ public class OcelotMetaData extends AnimalMetaData {
     }
 
     public OcelotTypes getType() {
-        final int defaultValue = OcelotTypes.UNTAMED.getId();
+        final int defaultValue = OcelotTypes.UNTAMED.ordinal();
         if (protocolId < 57) {
             return OcelotTypes.byId(sets.getInt(18, defaultValue));
         }
@@ -46,28 +46,13 @@ public class OcelotMetaData extends AnimalMetaData {
     }
 
     public enum OcelotTypes {
-        UNTAMED(0),
-        TUXEDO(1),
-        TABBY(2),
-        SIAMESE(3);
-
-        final int id;
-
-        OcelotTypes(int id) {
-            this.id = id;
-        }
+        UNTAMED,
+        TUXEDO,
+        TABBY,
+        SIAMESE;
 
         public static OcelotTypes byId(int id) {
-            for (OcelotTypes type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

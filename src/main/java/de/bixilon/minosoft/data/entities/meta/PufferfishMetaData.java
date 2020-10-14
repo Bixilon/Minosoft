@@ -19,7 +19,7 @@ public class PufferfishMetaData extends AbstractFishMetaData {
     }
 
     public PufferStates getPufferState() {
-        final int defaultValue = PufferStates.UN_PUFFED.getId();
+        final int defaultValue = PufferStates.UN_PUFFED.ordinal();
         if (protocolId < 401) { // ToDo
             return PufferStates.byId(defaultValue);
         }
@@ -32,27 +32,12 @@ public class PufferfishMetaData extends AbstractFishMetaData {
     }
 
     public enum PufferStates {
-        UN_PUFFED(0),
-        SEMI_PUFFED(1),
-        FULLY_PUFFED(2);
-
-        final int id;
-
-        PufferStates(int id) {
-            this.id = id;
-        }
+        UN_PUFFED,
+        SEMI_PUFFED,
+        FULLY_PUFFED;
 
         public static PufferStates byId(int id) {
-            for (PufferStates state : values()) {
-                if (state.getId() == id) {
-                    return state;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

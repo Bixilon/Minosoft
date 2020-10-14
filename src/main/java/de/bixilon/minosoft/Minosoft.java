@@ -15,7 +15,7 @@ package de.bixilon.minosoft;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.config.Configuration;
-import de.bixilon.minosoft.config.GameConfiguration;
+import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.gui.main.AccountListCell;
 import de.bixilon.minosoft.gui.main.MainWindow;
@@ -34,7 +34,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
-public class Minosoft {
+public final class Minosoft {
     public static final HashSet<EventManager> eventManagers = new HashSet<>();
     private static final CountDownLatch startStatus = new CountDownLatch(2); // number of critical components (wait for them before other "big" actions)
     public static HashBiMap<String, MojangAccount> accountList;
@@ -55,9 +55,9 @@ public class Minosoft {
             e.printStackTrace();
             return;
         }
-        Log.info(String.format("Loaded config file (version=%s)", config.getInt(GameConfiguration.CONFIG_VERSION)));
+        Log.info(String.format("Loaded config file (version=%s)", config.getInt(ConfigurationPaths.CONFIG_VERSION)));
         // set log level from config
-        Log.setLevel(LogLevels.valueOf(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
+        Log.setLevel(LogLevels.valueOf(config.getString(ConfigurationPaths.GENERAL_LOG_LEVEL)));
         Log.info(String.format("Logging info with level: %s", Log.getLevel()));
 
         serverList = config.getServers();
@@ -79,7 +79,7 @@ public class Minosoft {
             Log.debug("Refreshing client token...");
             checkClientToken();
             accountList = config.getMojangAccounts();
-            selectAccount(accountList.get(config.getString(GameConfiguration.ACCOUNT_SELECTED)));
+            selectAccount(accountList.get(config.getString(ConfigurationPaths.ACCOUNT_SELECTED)));
             return true;
         });
         startCallables.add(() -> {
@@ -92,6 +92,7 @@ public class Minosoft {
             Launcher.start();
             return true;
         });
+        // If you add another "critical" component (wait for them at startup): You MUST adjust increment the number of the counter in `startStatus` (See in the first lines of this file)
         try {
             Util.executeInThreadPool("Start", startCallables);
         } catch (Exception e) {
@@ -105,8 +106,8 @@ public class Minosoft {
     }
 
     public static void checkClientToken() {
-        if (config.getString(GameConfiguration.CLIENT_TOKEN).isBlank()) {
-            config.putString(GameConfiguration.CLIENT_TOKEN, UUID.randomUUID().toString());
+        if (config.getString(ConfigurationPaths.CLIENT_TOKEN).isBlank()) {
+            config.putString(ConfigurationPaths.CLIENT_TOKEN, UUID.randomUUID().toString());
             config.saveToFile();
         }
     }
@@ -114,7 +115,7 @@ public class Minosoft {
     public static void selectAccount(MojangAccount account) {
         if (account == null) {
             selectedAccount = null;
-            config.putString(GameConfiguration.ACCOUNT_SELECTED, "");
+            config.putString(ConfigurationPaths.ACCOUNT_SELECTED, "");
             config.saveToFile();
             return;
         }
@@ -126,7 +127,7 @@ public class Minosoft {
             selectedAccount = null;
             return;
         }
-        config.putString(GameConfiguration.ACCOUNT_SELECTED, account.getUserId());
+        config.putString(ConfigurationPaths.ACCOUNT_SELECTED, account.getUserId());
         selectedAccount = account;
         if (MainWindow.accountMenu2 != null) {
             MainWindow.accountMenu2.setText(String.format("Account (%s)", account.getPlayerName()));

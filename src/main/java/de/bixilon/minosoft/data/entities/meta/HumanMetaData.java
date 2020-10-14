@@ -40,7 +40,7 @@ public class HumanMetaData extends LivingMetaData {
     }
 
     public Hands getMainHand() {
-        final int defaultValue = Hands.LEFT.getId();
+        final int defaultValue = Hands.LEFT.ordinal();
         if (protocolId < 110) { //ToDo
             return Hands.byId(defaultValue);
         }
