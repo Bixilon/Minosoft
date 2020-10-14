@@ -47,7 +47,7 @@ public class PacketSpawnObject implements ClientboundPacket {
         }
         Class<? extends Entity> typeClass;
         if (buffer.getProtocolId() < 458) {
-            typeClass = Objects.byType(type).getClazz();
+            typeClass = Objects.byId(type).getClazz();
         } else {
             typeClass = Entities.getClassByIdentifier(buffer.getConnection().getMapping().getEntityIdentifierById(type));
         }

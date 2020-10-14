@@ -69,7 +69,7 @@ public class PacketInteractEntity implements ServerboundPacket {
                 click = EntityInteractionClicks.INTERACT;
             }
         }
-        buffer.writeByte((byte) click.getId());
+        buffer.writeByte((byte) click.ordinal());
         if (buffer.getProtocolId() >= 33) {
             if (click == EntityInteractionClicks.INTERACT_AT) {
                 // position
@@ -100,18 +100,8 @@ public class PacketInteractEntity implements ServerboundPacket {
     }
 
     public enum EntityInteractionClicks {
-        INTERACT(0),
-        ATTACK(1),
-        INTERACT_AT(2);
-
-        final int id;
-
-        EntityInteractionClicks(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
+        INTERACT,
+        ATTACK,
+        INTERACT_AT
     }
 }

@@ -34,7 +34,7 @@ public class PacketResourcePackStatus implements ServerboundPacket {
         if (buffer.getProtocolId() < 204) {
             buffer.writeString(hash);
         }
-        buffer.writeVarInt(status.getId());
+        buffer.writeVarInt(status.ordinal());
         return buffer;
     }
 
@@ -44,19 +44,9 @@ public class PacketResourcePackStatus implements ServerboundPacket {
     }
 
     public enum ResourcePackStates {
-        SUCCESSFULLY(0),
-        DECLINED(1),
-        FAILED_DOWNLOAD(2),
-        ACCEPTED(3);
-
-        final int id;
-
-        ResourcePackStates(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
+        SUCCESSFULLY,
+        DECLINED,
+        FAILED_DOWNLOAD,
+        ACCEPTED
     }
 }

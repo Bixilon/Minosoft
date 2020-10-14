@@ -13,9 +13,10 @@
 
 package de.bixilon.minosoft.data.entities;
 
+import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.entities.objects.*;
 
-public enum Objects implements EntityEnumInterface {
+public enum Objects {
     BOAT(1, Boat.class),
     ITEM_STACK(2, ItemStack.class),
     AREA_EFFECT_CLOUD(3, AreaEffectCloud.class),
@@ -46,31 +47,30 @@ public enum Objects implements EntityEnumInterface {
     DRAGON_FIREBALL(93, DragonFireball.class),
     TRIDENT(94, Trident.class);
 
-    // ToDo: size changed between versions, fix it!
+    final static HashBiMap<Integer, Objects> objects = HashBiMap.create();
 
-    final int type;
+    static {
+        for (Objects object : values()) {
+            objects.put(object.getId(), object);
+        }
+    }
+
+    final int id;
     final Class<? extends EntityObject> clazz;
 
-    Objects(int type, Class<? extends EntityObject> clazz) {
-        this.type = type;
+    Objects(int id, Class<? extends EntityObject> clazz) {
+        this.id = id;
         this.clazz = clazz;
     }
 
-    public static Objects byType(int type) {
-        for (Objects object : values()) {
-            if (object.getType() == type) {
-                return object;
-            }
-        }
-        return null;
+    public static Objects byId(int id) {
+        return objects.get(id);
     }
 
-    @Override
-    public int getType() {
-        return type;
+    public int getId() {
+        return id;
     }
 
-    @Override
     public Class<? extends EntityObject> getClazz() {
         return clazz;
     }

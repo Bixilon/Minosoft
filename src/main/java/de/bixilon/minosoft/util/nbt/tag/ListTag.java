@@ -60,7 +60,7 @@ public class ListTag extends NBTTag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        new ByteTag((byte) type.getId()).writeBytes(buffer);
+        new ByteTag((byte) type.ordinal()).writeBytes(buffer);
 
         new IntTag(list.size()).writeBytes(buffer);
 

@@ -33,7 +33,7 @@ public class PacketEntityProperties implements ClientboundPacket {
         if (buffer.getProtocolId() < 7) {
             int count = buffer.readInt();
             for (int i = 0; i < count; i++) {
-                EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString(), buffer.getProtocolId());
+                EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString());
                 double value = buffer.readDouble();
                 short listLength = buffer.readShort();
                 for (int ii = 0; ii < listLength; ii++) {
@@ -48,7 +48,7 @@ public class PacketEntityProperties implements ClientboundPacket {
         }
         int count = buffer.readInt();
         for (int i = 0; i < count; i++) {
-            EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString(), buffer.getProtocolId());
+            EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString());
             double value = buffer.readDouble();
             int listLength = buffer.readVarInt();
             for (int ii = 0; ii < listLength; ii++) {

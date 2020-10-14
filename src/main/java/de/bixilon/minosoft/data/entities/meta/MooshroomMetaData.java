@@ -19,7 +19,7 @@ public class MooshroomMetaData extends AnimalMetaData {
     }
 
     public MooshroomTypes getType() {
-        final String defaultValue = MooshroomTypes.RED.getTypeName();
+        final String defaultValue = MooshroomTypes.RED.name();
         if (protocolId < 461) {
             return MooshroomTypes.byTypeName(defaultValue);
         }
@@ -35,26 +35,12 @@ public class MooshroomMetaData extends AnimalMetaData {
     }
 
     public enum MooshroomTypes {
-        RED("red"),
-        BROWN("brown");
-
-        final String typeName;
-
-        MooshroomTypes(String typeName) {
-            this.typeName = typeName;
-        }
+        RED,
+        BROWN;
 
         public static MooshroomTypes byTypeName(String typeName) {
-            for (MooshroomTypes type : values()) {
-                if (type.getTypeName().equals(typeName)) {
-                    return type;
-                }
-            }
-            return null;
+            return valueOf(typeName.toUpperCase());
         }
 
-        public String getTypeName() {
-            return typeName;
-        }
     }
 }

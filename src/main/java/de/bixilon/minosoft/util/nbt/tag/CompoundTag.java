@@ -66,7 +66,7 @@ public class CompoundTag extends NBTTag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeByte((byte) TagTypes.COMPOUND.getId());
+        buffer.writeByte((byte) TagTypes.COMPOUND.ordinal());
         buffer.writeShort((short) name.length());
         buffer.writeStringNoLength(name);
         // now with prefixed name, etc it is technically the same as a subtag
@@ -75,7 +75,7 @@ public class CompoundTag extends NBTTag {
 
     public void writeBytesSubTag(OutByteBuffer buffer) {
         for (Map.Entry<String, NBTTag> set : data.entrySet()) {
-            buffer.writeByte((byte) set.getValue().getType().getId());
+            buffer.writeByte((byte) set.getValue().getType().ordinal());
             buffer.writeShort((short) set.getKey().length());
             buffer.writeStringNoLength(set.getKey());
 

@@ -46,7 +46,7 @@ public class Log {
     }
 
     /**
-     * Logs all game related things (chunk loading, rendering, ...)
+     * Logs all game related things (mostly visible stuff to the user)
      *
      * @param message Raw message to log
      */
@@ -97,7 +97,7 @@ public class Log {
     }
 
     /**
-     * Logs all warnings (connection to server failed, ...)
+     * Logs all warnings (error occurrence, ...)
      *
      * @param message Raw message to log
      */
@@ -106,7 +106,7 @@ public class Log {
     }
 
     /**
-     * Logs all debug relevant infos (...)
+     * Logs way more data (data that might be important for resolving issues)
      *
      * @param message Raw message to log
      */
@@ -115,7 +115,7 @@ public class Log {
     }
 
     /**
-     * Logs all debug relevant infos (even higher level!) (connection status, ...)
+     * Logs all debug relevant infos (even higher level!) (connection status, ...). Basically everything that happens
      *
      * @param message Raw message to log
      */
@@ -124,7 +124,7 @@ public class Log {
     }
 
     /**
-     * Logs all protocol data (received protocol with length and command x,...)
+     * Logs all protocol data (received packet x with data, etc). Should only be used in packets
      *
      * @param message Raw message to log
      */
@@ -154,7 +154,7 @@ public class Log {
     }
 
     /**
-     * Logs all general infos (connecting to server, ...)
+     * Logs all general infos, that are more or less important to the user (connecting to server, ...)
      *
      * @param message Raw message to log
      */

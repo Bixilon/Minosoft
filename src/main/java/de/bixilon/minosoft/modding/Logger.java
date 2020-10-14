@@ -25,11 +25,6 @@ public class Logger {
         this.modName = modName;
     }
 
-    /**
-     * Logs all game related things (chunk loading, rendering, ...)
-     *
-     * @param message Raw message to log
-     */
     public void game(String message) {
         log(LogLevels.GAME, message, ChatColors.getColorByName("green"));
     }
@@ -38,57 +33,23 @@ public class Logger {
         Log.log(level, String.format("[%s] ", modName), message, color);
     }
 
-    /**
-     * Logs all fatal errors (critical exceptions, etc)
-     *
-     * @param message Raw message to log
-     */
     public void fatal(String message) {
         log(LogLevels.FATAL, message, ChatColors.getColorByName("dark_red"));
     }
 
-    /**
-     * Logs all general infos (connecting to server, ...)
-     *
-     * @param message Raw message to log
-     */
     public void info(String message) {
         log(LogLevels.INFO, message, ChatColors.getColorByName("white"));
     }
 
-    /**
-     * Logs all warnings (connection to server failed, ...)
-     *
-     * @param message Raw message to log
-     */
     public void warn(String message) {
         log(LogLevels.WARNING, message, ChatColors.getColorByName("red"));
     }
 
-    /**
-     * Logs all debug relevant infos (...)
-     *
-     * @param message Raw message to log
-     */
     public void debug(String message) {
         log(LogLevels.DEBUG, message, ChatColors.getColorByName("gray"));
     }
 
-    /**
-     * Logs all debug relevant infos (even higher level!) (connection status, ...)
-     *
-     * @param message Raw message to log
-     */
     public void verbose(String message) {
         log(LogLevels.VERBOSE, message, ChatColors.getColorByName("yellow"));
-    }
-
-    /**
-     * Logs all protocol data (received protocol with length and command x,...)
-     *
-     * @param message Raw message to log
-     */
-    public void protocol(String message) {
-        log(LogLevels.PROTOCOL, message, ChatColors.getColorByName("blue"));
     }
 }

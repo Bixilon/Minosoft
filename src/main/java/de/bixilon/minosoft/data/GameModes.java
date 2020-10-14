@@ -14,22 +14,12 @@
 package de.bixilon.minosoft.data;
 
 public enum GameModes {
-    SURVIVAL(0),
-    CREATIVE(1),
-    ADVENTURE(2),
-    SPECTATOR(3);
-
-    final int id;
-
-    GameModes(int id) {
-        this.id = id;
-    }
+    SURVIVAL,
+    CREATIVE,
+    ADVENTURE,
+    SPECTATOR;
 
     public static GameModes byId(int id) {
         return values()[id];
-    }
-
-    public int getId() {
-        return id;
     }
 }

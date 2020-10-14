@@ -14,36 +14,22 @@
 package de.bixilon.minosoft.util.nbt.tag;
 
 public enum TagTypes {
-    END(0),
-    BYTE(1),
-    SHORT(2),
-    INT(3),
-    LONG(4),
-    FLOAT(5),
-    DOUBLE(6),
-    BYTE_ARRAY(7),
-    STRING(8),
-    LIST(9),
-    COMPOUND(10),
-    INT_ARRAY(11),
-    LONG_ARRAY(12);
+    END,
+    BYTE,
+    SHORT,
+    INT,
+    LONG,
+    FLOAT,
+    DOUBLE,
+    BYTE_ARRAY,
+    STRING,
+    LIST,
+    COMPOUND,
+    INT_ARRAY,
+    LONG_ARRAY;
 
-    final int id;
-
-    TagTypes(int id) {
-        this.id = id;
-    }
 
     public static TagTypes getById(int id) {
-        for (TagTypes state : values()) {
-            if (state.getId() == id) {
-                return state;
-            }
-        }
-        return null;
-    }
-
-    public int getId() {
-        return this.id;
+        return values()[id];
     }
 }

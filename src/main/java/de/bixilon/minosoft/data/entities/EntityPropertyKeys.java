@@ -13,33 +13,37 @@
 
 package de.bixilon.minosoft.data.entities;
 
-import de.bixilon.minosoft.data.ChangeableIdentifier;
+import com.google.common.collect.HashBiMap;
 
 public enum EntityPropertyKeys {
-    MAX_HEALTH(new ChangeableIdentifier("generic.maxHealth")),
-    FOLLOW_RANGE(new ChangeableIdentifier("generic.followRange")),
-    KNOCKBACK_RESISTANCE(new ChangeableIdentifier("generic.knockbackResistance")),
-    MOVEMENT_SPEED(new ChangeableIdentifier("generic.movementSpeed")),
-    ATTACK_DAMAGE(new ChangeableIdentifier("generic.attackDamage")),
-    HORSE_JUMP_STRENGTH(new ChangeableIdentifier("horse.jumpStrength")),
-    ZOMBIE_SPAWN_REINFORCEMENT(new ChangeableIdentifier("zombie.spawnReinforcements"));
+    MAX_HEALTH("generic.maxHealth"),
+    FOLLOW_RANGE("generic.followRange"),
+    KNOCKBACK_RESISTANCE("generic.knockbackResistance"),
+    MOVEMENT_SPEED("generic.movementSpeed"),
+    ATTACK_DAMAGE("generic.attackDamage"),
+    HORSE_JUMP_STRENGTH("horse.jumpStrength"),
+    ZOMBIE_SPAWN_REINFORCEMENT("zombie.spawnReinforcements");
 
-    final ChangeableIdentifier changeableIdentifier;
+    final static HashBiMap<String, EntityPropertyKeys> keys = HashBiMap.create();
 
-    EntityPropertyKeys(ChangeableIdentifier changeableIdentifier) {
-        this.changeableIdentifier = changeableIdentifier;
-    }
-
-    public static EntityPropertyKeys byName(String name, int protocolId) {
-        for (EntityPropertyKeys propertyKey : values()) {
-            if (propertyKey.getChangeableIdentifier().isValidName(name, protocolId)) {
-                return propertyKey;
-            }
+    static {
+        for (EntityPropertyKeys key : values()) {
+            keys.put(key.getIdentifier(), key);
         }
-        return null;
     }
 
-    public ChangeableIdentifier getChangeableIdentifier() {
-        return changeableIdentifier;
+    final String identifier;
+
+
+    EntityPropertyKeys(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public static EntityPropertyKeys byName(String name) {
+        return keys.get(name);
+    }
+
+    public String getIdentifier() {
+        return identifier;
     }
 }
