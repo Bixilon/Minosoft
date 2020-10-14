@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.game.datatypes.Difficulties;
-import de.bixilon.minosoft.game.datatypes.GameModes;
-import de.bixilon.minosoft.game.datatypes.LevelTypes;
-import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimension;
+import de.bixilon.minosoft.data.Difficulties;
+import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.LevelTypes;
+import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketJoinGame;
 

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
-import de.bixilon.minosoft.game.datatypes.world.InChunkLocation;
+import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.world.ChunkLocation;
+import de.bixilon.minosoft.data.world.InChunkLocation;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;

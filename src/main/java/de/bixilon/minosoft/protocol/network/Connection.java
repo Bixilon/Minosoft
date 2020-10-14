@@ -15,12 +15,12 @@ package de.bixilon.minosoft.protocol.network;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.PingCallback;
-import de.bixilon.minosoft.game.datatypes.Player;
-import de.bixilon.minosoft.game.datatypes.VelocityHandler;
-import de.bixilon.minosoft.game.datatypes.objectLoader.CustomMapping;
-import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.data.Player;
+import de.bixilon.minosoft.data.VelocityHandler;
+import de.bixilon.minosoft.data.mappings.CustomMapping;
+import de.bixilon.minosoft.data.mappings.recipes.Recipes;
+import de.bixilon.minosoft.data.mappings.versions.Version;
+import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.gui.main.ConnectionChangeCallback;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;

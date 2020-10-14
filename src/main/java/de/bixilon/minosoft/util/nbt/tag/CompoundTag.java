@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util.nbt.tag;
 
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 

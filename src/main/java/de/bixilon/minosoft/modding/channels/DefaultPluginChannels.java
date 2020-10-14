@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.modding.channels;
 
-import de.bixilon.minosoft.game.datatypes.ChangeableIdentifier;
-import de.bixilon.minosoft.game.datatypes.IdentifierSet;
+import de.bixilon.minosoft.data.ChangeableIdentifier;
+import de.bixilon.minosoft.data.IdentifierSet;
 
 public enum DefaultPluginChannels {
     MC_BRAND(new ChangeableIdentifier(new IdentifierSet(0, "MC|Brand"), new IdentifierSet(385, "minecraft:brand"))),

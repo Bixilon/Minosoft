@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.actions.BlockAction;
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.data.mappings.blocks.actions.BlockAction;
+import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockAction;
 

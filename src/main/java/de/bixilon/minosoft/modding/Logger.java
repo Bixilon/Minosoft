@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.modding;
 
-import de.bixilon.minosoft.game.datatypes.text.ChatColors;
-import de.bixilon.minosoft.game.datatypes.text.RGBColor;
+import de.bixilon.minosoft.data.text.ChatColors;
+import de.bixilon.minosoft.data.text.RGBColor;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 

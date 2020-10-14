@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.Entity;
-import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.entities.Objects;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
+import de.bixilon.minosoft.data.entities.Entity;
+import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Objects;
+import de.bixilon.minosoft.data.entities.Velocity;
+import de.bixilon.minosoft.data.mappings.Entities;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;

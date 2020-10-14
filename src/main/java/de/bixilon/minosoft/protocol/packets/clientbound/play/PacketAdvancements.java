@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.player.advancements.Advancement;
-import de.bixilon.minosoft.game.datatypes.player.advancements.AdvancementDisplay;
-import de.bixilon.minosoft.game.datatypes.player.advancements.AdvancementProgress;
-import de.bixilon.minosoft.game.datatypes.player.advancements.CriterionProgress;
-import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
+import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.player.advancements.Advancement;
+import de.bixilon.minosoft.data.player.advancements.AdvancementDisplay;
+import de.bixilon.minosoft.data.player.advancements.AdvancementProgress;
+import de.bixilon.minosoft.data.player.advancements.CriterionProgress;
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.main;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.data.mappings.versions.Version;
+import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.logging.LogLevels;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

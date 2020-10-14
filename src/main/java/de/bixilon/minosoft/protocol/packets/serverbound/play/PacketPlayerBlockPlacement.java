@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.player.Hands;
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.player.Hands;
+import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;

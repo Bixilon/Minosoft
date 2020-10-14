@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.game.datatypes.Player;
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.data.Player;
+import de.bixilon.minosoft.data.mappings.versions.Version;
+import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.ping.ForgeModInfo;
 import de.bixilon.minosoft.ping.ServerListPing;

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.Block;
-import de.bixilon.minosoft.game.datatypes.world.ChunkLocation;
-import de.bixilon.minosoft.game.datatypes.world.InChunkLocation;
+import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.world.ChunkLocation;
+import de.bixilon.minosoft.data.world.InChunkLocation;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketMultiBlockChange;
 

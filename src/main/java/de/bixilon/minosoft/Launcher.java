@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
+import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.gui.main.GUITools;
 import de.bixilon.minosoft.gui.main.MainWindow;
 import de.bixilon.minosoft.gui.main.Server;

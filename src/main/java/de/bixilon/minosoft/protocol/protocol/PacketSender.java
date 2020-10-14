@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.game.datatypes.player.Hands;
+import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
 import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
 import de.bixilon.minosoft.protocol.network.Connection;

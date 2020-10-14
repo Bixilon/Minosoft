@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.EntityProperty;
-import de.bixilon.minosoft.game.datatypes.entities.EntityPropertyKeys;
+import de.bixilon.minosoft.data.entities.EntityProperty;
+import de.bixilon.minosoft.data.entities.EntityPropertyKeys;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;

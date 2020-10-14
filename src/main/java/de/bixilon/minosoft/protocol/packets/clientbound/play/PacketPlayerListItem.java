@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.GameModes;
-import de.bixilon.minosoft.game.datatypes.player.PlayerListItemBulk;
-import de.bixilon.minosoft.game.datatypes.player.PlayerProperties;
-import de.bixilon.minosoft.game.datatypes.player.PlayerProperty;
-import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
+import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.player.PlayerListItemBulk;
+import de.bixilon.minosoft.data.player.PlayerProperties;
+import de.bixilon.minosoft.data.player.PlayerProperty;
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;

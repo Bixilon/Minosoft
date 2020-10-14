@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
-import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.InventorySlots;
+import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;

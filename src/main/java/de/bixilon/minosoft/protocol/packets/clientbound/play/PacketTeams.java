@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.text.ChatColors;
-import de.bixilon.minosoft.game.datatypes.text.ChatComponent;
-import de.bixilon.minosoft.game.datatypes.text.RGBColor;
+import de.bixilon.minosoft.data.text.ChatColors;
+import de.bixilon.minosoft.data.text.ChatComponent;
+import de.bixilon.minosoft.data.text.RGBColor;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;

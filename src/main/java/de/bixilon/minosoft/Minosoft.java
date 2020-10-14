@@ -16,7 +16,7 @@ package de.bixilon.minosoft;
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.GameConfiguration;
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.gui.main.AccountListCell;
 import de.bixilon.minosoft.gui.main.MainWindow;
 import de.bixilon.minosoft.gui.main.Server;
