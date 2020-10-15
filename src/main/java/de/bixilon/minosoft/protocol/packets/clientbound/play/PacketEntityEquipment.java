@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.inventory.InventorySlots;
-import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.InventorySlots;
+import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -58,6 +58,11 @@ public class PacketEntityEquipment implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         if (slots.size() == 1) {
             Map.Entry<InventorySlots.EntityInventorySlots, Slot> set = slots.entrySet().iterator().next();
@@ -69,11 +74,6 @@ public class PacketEntityEquipment implements ClientboundPacket {
         } else {
             Log.protocol(String.format("Entity equipment changed (entityId=%d, slotCount=%d)", entityId, slots.size()));
         }
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     public int getEntityId() {

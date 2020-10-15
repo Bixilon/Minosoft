@@ -16,7 +16,7 @@ package de.bixilon.minosoft.util.nbt.tag;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-public class ByteArrayTag implements NBTTag {
+public class ByteArrayTag extends NBTTag {
     final byte[] value;
 
     public ByteArrayTag(byte[] value) {
@@ -45,14 +45,16 @@ public class ByteArrayTag implements NBTTag {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        for (byte b : value) {
-            builder.append(b);
-            builder.append("b, ");
+        builder.append('[');
+        for (int i = 0; i < value.length; i++) {
+            builder.append(value[i]);
+            builder.append("b");
+            if (i == value.length - 1) {
+                break;
+            }
+            builder.append(", ");
         }
-        builder.delete(builder.length() - 2, builder.length()); // delete last comma
         builder.append("]");
-
         return builder.toString();
     }
 }

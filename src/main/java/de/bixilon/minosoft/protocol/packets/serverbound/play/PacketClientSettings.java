@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Difficulties;
-import de.bixilon.minosoft.game.datatypes.player.Hands;
+import de.bixilon.minosoft.data.Difficulties;
+import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -53,7 +53,7 @@ public class PacketClientSettings implements ServerboundPacket {
             buffer.writeByte((byte) 0b01111111); // ToDo: skin parts
         }
         if (buffer.getProtocolId() >= 49) {
-            buffer.writeVarInt(mainHand.getId());
+            buffer.writeVarInt(mainHand.ordinal());
         }
         return buffer;
     }

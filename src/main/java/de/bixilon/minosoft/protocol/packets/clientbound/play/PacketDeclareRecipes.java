@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Ingredient;
-import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipe;
-import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.RecipeTypes;
+import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.mappings.recipes.Ingredient;
+import de.bixilon.minosoft.data.mappings.recipes.Recipe;
+import de.bixilon.minosoft.data.mappings.recipes.RecipeTypes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -84,13 +84,13 @@ public class PacketDeclareRecipes implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received declare recipe packet (recipeLength=%d)", recipes.size()));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received declare recipe packet (recipeLength=%d)", recipes.size()));
     }
 
     public HashBiMap<String, Recipe> getRecipes() {

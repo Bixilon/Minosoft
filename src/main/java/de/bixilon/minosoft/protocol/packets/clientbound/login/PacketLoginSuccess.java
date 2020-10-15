@@ -28,24 +28,23 @@ public class PacketLoginSuccess implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 707) {
-            uuid = Util.uuidFromString(buffer.readString());
+            uuid = Util.getUUIDFromString(buffer.readString());
             username = buffer.readString();
             return true;
         }
-        // ToDo: test, this should be an int array in 20w12a ???
         uuid = buffer.readUUID();
         username = buffer.readString();
         return true;
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Receiving login success packet (username=%s, UUID=%s)", username, uuid));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Receiving login success packet (username=%s, UUID=%s)", username, uuid));
     }
 
     public UUID getUUID() {

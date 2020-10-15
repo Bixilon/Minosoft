@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.player.advancements.Advancement;
-import de.bixilon.minosoft.game.datatypes.player.advancements.AdvancementDisplay;
-import de.bixilon.minosoft.game.datatypes.player.advancements.AdvancementProgress;
-import de.bixilon.minosoft.game.datatypes.player.advancements.CriterionProgress;
+import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.player.advancements.Advancement;
+import de.bixilon.minosoft.data.player.advancements.AdvancementDisplay;
+import de.bixilon.minosoft.data.player.advancements.AdvancementProgress;
+import de.bixilon.minosoft.data.player.advancements.CriterionProgress;
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -47,8 +47,8 @@ public class PacketAdvancements implements ClientboundPacket {
             }
             AdvancementDisplay display = null;
             if (buffer.readBoolean()) {
-                TextComponent title = buffer.readTextComponent();
-                TextComponent description = buffer.readTextComponent();
+                ChatComponent title = buffer.readTextComponent();
+                ChatComponent description = buffer.readTextComponent();
                 Slot icon = buffer.readSlot();
                 AdvancementDisplay.AdvancementFrameTypes frameType = AdvancementDisplay.AdvancementFrameTypes.byId(buffer.readVarInt());
                 int flags = buffer.readInt();
@@ -102,13 +102,13 @@ public class PacketAdvancements implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Receiving advancements (reset=%s, advancements=%s, progresses=%s)", reset, advancements.size(), progresses.size()));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Receiving advancements (reset=%s, advancements=%s, progresses=%s)", reset, advancements.size(), progresses.size()));
     }
 
     public boolean isReset() {

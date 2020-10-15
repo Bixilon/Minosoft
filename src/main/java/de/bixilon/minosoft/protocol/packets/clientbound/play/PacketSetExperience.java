@@ -37,13 +37,13 @@ public class PacketSetExperience implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Level update received. Now at %d levels, totally %d exp", level, total));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Level update received. Now at %d levels, totally %d exp", level, total));
     }
 
     public float getBar() {

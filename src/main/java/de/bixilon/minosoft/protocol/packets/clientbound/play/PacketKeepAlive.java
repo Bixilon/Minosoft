@@ -36,13 +36,13 @@ public class PacketKeepAlive implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Keep alive packet received (%d)", id));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Keep alive packet received (%d)", id));
     }
 
     public long getId() {

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -35,13 +35,13 @@ public class PacketUseBed implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Entity used bed at %s (entityId=%d)", position, entityId));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Entity used bed at %s (entityId=%d)", position, entityId));
     }
 
     public int getEntityId() {

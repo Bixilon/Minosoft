@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.DNSUtil;
 import javafx.application.Platform;
@@ -42,35 +42,12 @@ public class MainWindow implements Initializable {
     @FXML
     public Menu accountMenu;
 
-    public static void manageAccounts() {
-        try {
-            Parent parent = FXMLLoader.load(MainWindow.class.getResource("/layout/accounts.fxml"));
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Manage accounts - Minosoft");
-            stage.setScene(new Scene(parent));
-            Platform.setImplicitExit(false);
-            stage.setOnCloseRequest(event -> {
-                if (Minosoft.getSelectedAccount() == null) {
-                    event.consume();
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Please select an account!");
-                    alert.setContentText("You did not select an account. Minosoft does not know which account you want to use to connect to a server!");
-                    alert.showAndWait();
-                } else {
-                    stage.close();
-                }
-            });
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    public static Menu accountMenu2;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         serversPane.setCenter(ServerListCell.listView);
+        accountMenu2 = accountMenu;
         if (Minosoft.getSelectedAccount() != null) {
             accountMenu.setText(String.format("Account (%s)", Minosoft.getSelectedAccount().getPlayerName()));
         }
@@ -148,9 +125,40 @@ public class MainWindow implements Initializable {
         manageAccounts();
     }
 
+    public static void manageAccounts() {
+        try {
+            Parent parent = new FXMLLoader(MainWindow.class.getResource("/layout/accounts.fxml")).load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Manage accounts - Minosoft");
+            stage.setScene(new Scene(parent));
+            Platform.setImplicitExit(false);
+            stage.setOnCloseRequest(event -> {
+                if (Minosoft.getSelectedAccount() == null) {
+                    event.consume();
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Error", ButtonType.CANCEL, ButtonType.OK);
+                    alert.setHeaderText("Are you sure?");
+                    alert.setContentText("No account selected, Minosoft will exit.");
+                    alert.showAndWait().ifPresent((type) -> {
+                        if (type == ButtonType.OK) {
+                            System.exit(0);
+                            return;
+                        }
+                        alert.close();
+                    });
+                } else {
+                    stage.close();
+                }
+            });
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void openSettings() {
         try {
-            Parent parent = FXMLLoader.load(MainWindow.class.getResource("/layout/settings.fxml"));
+            Parent parent = new FXMLLoader(MainWindow.class.getResource("/layout/settings.fxml")).load();
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Settings - Minosoft");

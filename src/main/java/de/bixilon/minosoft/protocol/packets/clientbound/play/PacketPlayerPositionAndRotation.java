@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.Location;
+import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -46,6 +46,11 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Received player location: %s (yaw=%s, pitch=%s)", location, yaw, pitch));
     }
@@ -68,10 +73,5 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
 
     public int getTeleportId() {
         return teleportId;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -35,9 +35,9 @@ public class PacketPlayerDigging implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_DIGGING);
         if (buffer.getProtocolId() < 49) { //ToDo
-            buffer.writeByte((byte) status.getId());
+            buffer.writeByte((byte) status.ordinal());
         } else {
-            buffer.writeVarInt(status.getId());
+            buffer.writeVarInt(status.ordinal());
         }
 
         if (buffer.getProtocolId() < 7) {
@@ -62,31 +62,16 @@ public class PacketPlayerDigging implements ServerboundPacket {
     }
 
     public enum DiggingStatus {
-        START_DIGGING(0),
-        CANCELLED_DIGGING(1),
-        FINISHED_DIGGING(2),
-        DROP_ITEM_STACK(3),
-        DROP_ITEM(4),
-        SHOOT_ARROW__FINISH_EATING(5),
-        SWAP_ITEMS_IN_HAND(6);
-
-        final int id;
-
-        DiggingStatus(int id) {
-            this.id = id;
-        }
+        START_DIGGING,
+        CANCELLED_DIGGING,
+        FINISHED_DIGGING,
+        DROP_ITEM_STACK,
+        DROP_ITEM,
+        SHOOT_ARROW__FINISH_EATING,
+        SWAP_ITEMS_IN_HAND;
 
         public static DiggingStatus byId(int id) {
-            for (DiggingStatus status : values()) {
-                if (status.getId() == id) {
-                    return status;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 

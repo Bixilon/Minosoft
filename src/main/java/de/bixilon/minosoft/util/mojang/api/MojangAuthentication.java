@@ -17,13 +17,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.GameConfiguration;
+import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.HTTP;
 
 import java.net.http.HttpResponse;
 
 public final class MojangAuthentication {
+
+    public static MojangAccountAuthenticationAttempt login(String username, String password) {
+        return login(Minosoft.getConfig().getString(ConfigurationPaths.CLIENT_TOKEN), username, password);
+    }
 
     public static MojangAccountAuthenticationAttempt login(String clientToken, String username, String password) {
         JsonObject agent = new JsonObject();
@@ -51,10 +55,6 @@ public final class MojangAuthentication {
         return new MojangAccountAuthenticationAttempt(new MojangAccount(username, jsonResponse));
     }
 
-    public static MojangAccountAuthenticationAttempt login(String username, String password) {
-        return login(Minosoft.getConfig().getString(GameConfiguration.CLIENT_TOKEN), username, password);
-    }
-
     public static void joinServer(MojangAccount account, String serverId) {
         if (Config.skipAuthentication) {
             return;
@@ -78,6 +78,10 @@ public final class MojangAuthentication {
         }
         // joined
         Log.mojang("Joined server successfully");
+    }
+
+    public static String refresh(String accessToken) {
+        return refresh(Minosoft.getConfig().getString(ConfigurationPaths.CLIENT_TOKEN), accessToken);
     }
 
     public static String refresh(String clientToken, String accessToken) {
@@ -107,9 +111,5 @@ public final class MojangAuthentication {
         // now it is okay
         Log.mojang("Refreshed 1 session token");
         return jsonResponse.get("accessToken").getAsString();
-    }
-
-    public static String refresh(String accessToken) {
-        return refresh(Minosoft.getConfig().getString(GameConfiguration.CLIENT_TOKEN), accessToken);
     }
 }

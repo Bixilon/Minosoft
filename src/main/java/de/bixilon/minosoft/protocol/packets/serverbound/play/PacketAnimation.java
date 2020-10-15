@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.player.Hands;
+import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -31,7 +31,7 @@ public class PacketAnimation implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ANIMATION);
         if (buffer.getProtocolId() >= 49) {
-            buffer.writeVarInt(hand.getId());
+            buffer.writeVarInt(hand.ordinal());
         }
         return buffer;
     }

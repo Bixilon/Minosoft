@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Difficulties;
-import de.bixilon.minosoft.game.datatypes.GameModes;
-import de.bixilon.minosoft.game.datatypes.LevelTypes;
-import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimension;
+import de.bixilon.minosoft.data.Difficulties;
+import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.LevelTypes;
+import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -72,6 +72,11 @@ public class PacketRespawn implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Respawn packet received (dimension=%s, difficulty=%s, gamemode=%s, levelType=%s)", dimension, difficulty, gameMode, levelType));
     }
@@ -90,10 +95,5 @@ public class PacketRespawn implements ClientboundPacket {
 
     public LevelTypes getLevelType() {
         return levelType;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

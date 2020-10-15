@@ -48,13 +48,13 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received scoreboard score update (itemName=\"%s\", action=%s, scoreName=\"%s\", scoreValue=%d", itemName, action, scoreName, scoreValue));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received scoreboard score update (itemName=\"%s\", action=%s, scoreName=\"%s\", scoreValue=%d", itemName, action, scoreName, scoreValue));
     }
 
     public String getItemName() {
@@ -79,10 +79,6 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
 
         public static ScoreboardUpdateScoreActions byId(int id) {
             return values()[id];
-        }
-
-        public int getId() {
-            return ordinal();
         }
     }
 }

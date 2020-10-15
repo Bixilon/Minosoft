@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.Entity;
-import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
-import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.objectLoader.entities.Entities;
+import de.bixilon.minosoft.data.entities.Entity;
+import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Velocity;
+import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.data.mappings.Entities;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -70,6 +70,11 @@ public class PacketSpawnMob implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Mob spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity.getIdentifier()));
     }
@@ -80,11 +85,6 @@ public class PacketSpawnMob implements ClientboundPacket {
 
     public Velocity getVelocity() {
         return velocity;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
 }

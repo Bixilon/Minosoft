@@ -15,33 +15,38 @@ package de.bixilon.minosoft;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.config.Configuration;
-import de.bixilon.minosoft.config.GameConfiguration;
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.config.ConfigurationPaths;
+import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.gui.main.AccountListCell;
+import de.bixilon.minosoft.gui.main.MainWindow;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
-import de.bixilon.minosoft.util.OSUtil;
+import de.bixilon.minosoft.modding.event.EventManager;
+import de.bixilon.minosoft.modding.loading.ModLoader;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 
-public class Minosoft {
+public final class Minosoft {
+    public static final HashSet<EventManager> eventManagers = new HashSet<>();
+    private static final CountDownLatch startStatus = new CountDownLatch(2); // number of critical components (wait for them before other "big" actions)
     public static HashBiMap<String, MojangAccount> accountList;
     public static MojangAccount selectedAccount;
     public static ArrayList<Server> serverList;
-    static Configuration config;
+    public static Configuration config;
 
     public static void main(String[] args) {
         // init log thread
         Log.initThread();
 
         Log.info("Starting...");
-        setConfigFolder();
         Log.info("Reading config file...");
         try {
             config = new Configuration(Config.configFileName);
@@ -50,60 +55,88 @@ public class Minosoft {
             e.printStackTrace();
             return;
         }
-        Log.info(String.format("Loaded config file (version=%s)", config.getInt(GameConfiguration.CONFIG_VERSION)));
+        Log.info(String.format("Loaded config file (version=%s)", config.getInt(ConfigurationPaths.CONFIG_VERSION)));
         // set log level from config
-        Log.setLevel(LogLevels.valueOf(config.getString(GameConfiguration.GENERAL_LOG_LEVEL)));
+        Log.setLevel(LogLevels.valueOf(config.getString(ConfigurationPaths.GENERAL_LOG_LEVEL)));
         Log.info(String.format("Logging info with level: %s", Log.getLevel()));
-        Log.info("Loading versions.json...");
-        long mappingStartLoadingTime = System.currentTimeMillis();
-        try {
-            Versions.load(Util.readJsonAsset("mapping/versions.json"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-        Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
-
-        Log.debug("Refreshing client token...");
-        checkClientToken();
-        accountList = config.getMojangAccounts();
-        selectAccount(accountList.get(config.getString(GameConfiguration.ACCOUNT_SELECTED)));
 
         serverList = config.getServers();
-        Launcher.start();
+        ArrayList<Callable<Boolean>> startCallables = new ArrayList<>();
+        startCallables.add(() -> {
+            Log.info("Loading versions.json...");
+            long mappingStartLoadingTime = System.currentTimeMillis();
+            try {
+                Versions.load(Util.readJsonAsset("mapping/versions.json"));
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+            Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
+            countDownStart(); // (another) critical component was loaded
+            return true;
+        });
+        startCallables.add(() -> {
+            Log.debug("Refreshing client token...");
+            checkClientToken();
+            accountList = config.getMojangAccounts();
+            selectAccount(accountList.get(config.getString(ConfigurationPaths.ACCOUNT_SELECTED)));
+            return true;
+        });
+        startCallables.add(() -> {
+            ModLoader.loadMods();
+            countDownStart(); // (another) critical component was loaded
+            return true;
+        });
+
+        startCallables.add(() -> {
+            Launcher.start();
+            return true;
+        });
+        // If you add another "critical" component (wait for them at startup): You MUST adjust increment the number of the counter in `startStatus` (See in the first lines of this file)
+        try {
+            Util.executeInThreadPool("Start", startCallables);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Sets Config.homeDir to the correct folder per OS
-     */
-    public static void setConfigFolder() {
-        String path = System.getProperty("user.home");
-        if (!path.endsWith(File.separator)) {
-            path += "/";
+    private static void countDownStart() {
+        startStatus.countDown();
+        Launcher.setProgressBar((int) startStatus.getCount());
+    }
+
+    public static void checkClientToken() {
+        if (config.getString(ConfigurationPaths.CLIENT_TOKEN).isBlank()) {
+            config.putString(ConfigurationPaths.CLIENT_TOKEN, UUID.randomUUID().toString());
+            config.saveToFile();
         }
-        switch (OSUtil.getOS()) {
-            case LINUX -> path += ".local/share/minosoft/";
-            case WINDOWS -> path += "AppData/Roaming/Minosoft/";
-            case MAC -> path += "Library/Application Support/Minosoft/";
-            case OTHER -> path += ".minosoft/";
+    }
+
+    public static void selectAccount(MojangAccount account) {
+        if (account == null) {
+            selectedAccount = null;
+            config.putString(ConfigurationPaths.ACCOUNT_SELECTED, "");
+            config.saveToFile();
+            return;
         }
-        File folder = new File(path);
-        if (!folder.exists() && !folder.mkdirs()) {
-            // failed creating folder
-            throw new RuntimeException(String.format("Could not create home folder (%s)!", path));
+        MojangAccount.RefreshStates refreshState = account.refreshToken();
+        if (refreshState == MojangAccount.RefreshStates.ERROR) {
+            accountList.remove(account.getUserId());
+            account.delete();
+            AccountListCell.listView.getItems().remove(account);
+            selectedAccount = null;
+            return;
         }
-        Config.homeDir = path;
+        config.putString(ConfigurationPaths.ACCOUNT_SELECTED, account.getUserId());
+        selectedAccount = account;
+        if (MainWindow.accountMenu2 != null) {
+            MainWindow.accountMenu2.setText(String.format("Account (%s)", account.getPlayerName()));
+        }
+        account.saveToConfig();
     }
 
     public static Configuration getConfig() {
         return config;
-    }
-
-    public static void checkClientToken() {
-        if (config.getString(GameConfiguration.CLIENT_TOKEN) == null || config.getString(GameConfiguration.CLIENT_TOKEN).equals("randomGenerated")) {
-            config.putString(GameConfiguration.CLIENT_TOKEN, UUID.randomUUID().toString());
-            config.saveToFile(Config.configFileName);
-        }
     }
 
     public static ArrayList<Server> getServerList() {
@@ -118,25 +151,18 @@ public class Minosoft {
         return selectedAccount;
     }
 
-    public static void selectAccount(MojangAccount account) {
-        if (account == null) {
-            selectedAccount = null;
-            config.putString(GameConfiguration.ACCOUNT_SELECTED, null);
-            config.saveToFile(Config.configFileName);
-            return;
+    /**
+     * Waits until all critical components are started
+     */
+    public static void waitForStartup() {
+        try {
+            startStatus.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        MojangAccount.RefreshStates refreshState = account.refreshToken();
-        if (refreshState == MojangAccount.RefreshStates.ERROR) {
-            accountList.remove(account.getUserId());
-            account.delete();
-            if (AccountListCell.listView != null) {
-                AccountListCell.listView.getItems().remove(account);
-            }
-            selectedAccount = null;
-            return;
-        }
-        config.putString(GameConfiguration.ACCOUNT_SELECTED, account.getUserId());
-        selectedAccount = account;
-        account.saveToConfig();
+    }
+
+    public static int getStartUpJobsLeft() {
+        return (int) startStatus.getCount();
     }
 }

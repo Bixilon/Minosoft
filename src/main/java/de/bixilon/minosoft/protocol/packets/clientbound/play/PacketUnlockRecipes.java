@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipe;
-import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Recipes;
+import de.bixilon.minosoft.data.mappings.recipes.Recipe;
+import de.bixilon.minosoft.data.mappings.recipes.Recipes;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -74,13 +74,13 @@ public class PacketUnlockRecipes implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received unlock crafting recipe packet (action=%s, isCraftingBookOpen=%s, isFilteringActive=%s, isSmeltingBookOpen=%s, isSmeltingFilteringActive=%s listedLength=%d, taggedLength=%s)", action, isCraftingBookOpen, isCraftingFilteringActive, isSmeltingBookOpen, isSmeltingFilteringActive, listed.length, ((tagged == null) ? 0 : tagged.length)));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received unlock crafting recipe packet (action=%s, isCraftingBookOpen=%s, isFilteringActive=%s, isSmeltingBookOpen=%s, isSmeltingFilteringActive=%s listedLength=%d, taggedLength=%s)", action, isCraftingBookOpen, isCraftingFilteringActive, isSmeltingBookOpen, isSmeltingFilteringActive, listed.length, ((tagged == null) ? 0 : tagged.length)));
     }
 
     public boolean isCraftingBookOpen() {
@@ -128,27 +128,13 @@ public class PacketUnlockRecipes implements ClientboundPacket {
     }
 
     public enum UnlockRecipeActions {
-        INITIALIZE(0),
-        ADD(1),
-        REMOVE(2);
+        INITIALIZE,
+        ADD,
+        REMOVE;
 
-        final int id;
-
-        UnlockRecipeActions(int id) {
-            this.id = id;
-        }
 
         public static UnlockRecipeActions byId(int id) {
-            for (UnlockRecipeActions action : values()) {
-                if (action.getId() == id) {
-                    return action;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

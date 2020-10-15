@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.status;
 
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
@@ -29,13 +29,13 @@ public class PacketStatusResponse implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Receiving status response packet (online=%d, maxPlayers=%d, protocolNumber=%d)", response.getPlayerOnline(), response.getMaxPlayers(), response.getProtocolId()));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Receiving status response packet (online=%d, maxPlayers=%d, protocolNumber=%d)", response.getPlayerOnline(), response.getMaxPlayers(), response.getProtocolId()));
     }
 
     public ServerListPing getResponse() {

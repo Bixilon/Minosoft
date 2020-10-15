@@ -22,16 +22,30 @@ public class ServerAddress {
         this.port = port;
     }
 
+    @Override
+    public int hashCode() {
+        return hostname.hashCode() * port;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        ServerAddress their = (ServerAddress) obj;
+        return hostname.equals(their.getHostname()) && port == their.getPort();
+    }
+
+    @Override
+    public String toString() {
+        return getHostname() + ":" + getPort();
+    }
+
     public String getHostname() {
         return hostname;
     }
 
     public int getPort() {
         return port;
-    }
-
-    @Override
-    public String toString() {
-        return getHostname() + ":" + getPort();
     }
 }

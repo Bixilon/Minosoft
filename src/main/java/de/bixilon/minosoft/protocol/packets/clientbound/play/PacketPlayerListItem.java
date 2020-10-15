@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.GameModes;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.game.datatypes.player.PlayerListItemBulk;
-import de.bixilon.minosoft.game.datatypes.player.PlayerProperties;
-import de.bixilon.minosoft.game.datatypes.player.PlayerProperty;
+import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.player.PlayerListItemBulk;
+import de.bixilon.minosoft.data.player.PlayerProperties;
+import de.bixilon.minosoft.data.player.PlayerProperty;
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -61,7 +61,7 @@ public class PacketPlayerListItem implements ClientboundPacket {
                     }
                     GameModes gameMode = GameModes.byId(buffer.readVarInt());
                     int ping = buffer.readVarInt();
-                    TextComponent displayName = (buffer.readBoolean() ? buffer.readTextComponent() : null);
+                    ChatComponent displayName = (buffer.readBoolean() ? buffer.readTextComponent() : null);
                     listItemBulk = new PlayerListItemBulk(uuid, name, ping, gameMode, displayName, playerProperties, action);
                 }
                 case UPDATE_GAMEMODE -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, GameModes.byId(buffer.readVarInt()), null, null, action);
@@ -76,6 +76,11 @@ public class PacketPlayerListItem implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         for (PlayerListItemBulk property : playerList) {
             if (property.isLegacy()) {
@@ -84,11 +89,6 @@ public class PacketPlayerListItem implements ClientboundPacket {
                 Log.game(String.format("[TAB] Player list item bulk (uuid=%s, action=%s, name=%s, gameMode=%s, ping=%d, displayName=%s)", property.getUUID(), property.getAction(), property.getName(), property.getGameMode(), property.getPing(), property.getDisplayName()));
             }
         }
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     public ArrayList<PlayerListItemBulk> getPlayerList() {
@@ -104,10 +104,6 @@ public class PacketPlayerListItem implements ClientboundPacket {
 
         public static PlayerListItemActions byId(int id) {
             return values()[id];
-        }
-
-        public int getId() {
-            return ordinal();
         }
     }
 }

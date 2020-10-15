@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.RelativeLocation;
+import de.bixilon.minosoft.data.entities.RelativeLocation;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -39,6 +39,11 @@ public class PacketEntityMovement implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Entity %d moved relative %s", entityId, location));
     }
@@ -49,10 +54,5 @@ public class PacketEntityMovement implements ClientboundPacket {
 
     public RelativeLocation getRelativeLocation() {
         return location;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

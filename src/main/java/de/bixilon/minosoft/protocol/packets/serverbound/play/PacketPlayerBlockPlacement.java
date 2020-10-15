@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.player.Hands;
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.player.Hands;
+import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -65,7 +65,7 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_BLOCK_PLACEMENT);
         if (buffer.getProtocolId() >= 453) {
-            buffer.writeVarInt(hand.getId());
+            buffer.writeVarInt(hand.ordinal());
         }
         if (buffer.getProtocolId() < 7) {
             buffer.writeBlockPositionByte(position);
@@ -78,7 +78,7 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
         } else {
             buffer.writeVarInt(direction);
             if (buffer.getProtocolId() < 453) {
-                buffer.writeVarInt(hand.getId());
+                buffer.writeVarInt(hand.ordinal());
             }
         }
 

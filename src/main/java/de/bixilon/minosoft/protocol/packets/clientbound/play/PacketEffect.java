@@ -13,20 +13,19 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.MapSet;
-import de.bixilon.minosoft.game.datatypes.VersionValueMap;
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.data.MapSet;
+import de.bixilon.minosoft.data.VersionValueMap;
+import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketEffect implements ClientboundPacket {
-    // is this class used??? What about PacketParticle or PacketSoundEffect?
     EffectEffects effect;
     BlockPosition position;
     int data;
-    boolean disableRelativeVolume; // normally only at MOB_ENDERDRAGON_END and MOB_WITHER_SPAWN, but we allow this everywhere
+    boolean disableRelativeVolume;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -45,13 +44,13 @@ public class PacketEffect implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received effect packet at %s (effect=%s, data=%d, disableRelativeVolume=%s)", position, effect, data, disableRelativeVolume));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received effect packet at %s (effect=%s, data=%d, disableRelativeVolume=%s)", position, effect, data, disableRelativeVolume));
     }
 
     public BlockPosition getPosition() {
@@ -176,33 +175,18 @@ public class PacketEffect implements ClientboundPacket {
     }
 
     public enum SmokeDirections {
-        SOUTH_EAST(0),
-        SOUTH(1),
-        SOUTH_WEST(2),
-        EAST(3),
-        UP(4),
-        WEST(5),
-        NORTH_EAST(6),
-        NORTH(7),
-        NORTH_WEST(8);
-
-        final int id;
-
-        SmokeDirections(int id) {
-            this.id = id;
-        }
+        SOUTH_EAST,
+        SOUTH,
+        SOUTH_WEST,
+        EAST,
+        UP,
+        WEST,
+        NORTH_EAST,
+        NORTH,
+        NORTH_WEST;
 
         public static SmokeDirections byId(int id) {
-            for (SmokeDirections direction : values()) {
-                if (direction.getId() == id) {
-                    return direction;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 }

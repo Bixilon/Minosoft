@@ -28,13 +28,13 @@ public class PacketEntityInitialisation implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Initialising entity (entityId=%d)", entityId));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Initialising entity (entityId=%d)", entityId));
     }
 
     public int getEntityId() {

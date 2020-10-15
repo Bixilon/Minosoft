@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.EntityProperty;
-import de.bixilon.minosoft.game.datatypes.entities.EntityPropertyKeys;
+import de.bixilon.minosoft.data.entities.EntityProperty;
+import de.bixilon.minosoft.data.entities.EntityPropertyKeys;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -33,7 +33,7 @@ public class PacketEntityProperties implements ClientboundPacket {
         if (buffer.getProtocolId() < 7) {
             int count = buffer.readInt();
             for (int i = 0; i < count; i++) {
-                EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString(), buffer.getProtocolId());
+                EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString());
                 double value = buffer.readDouble();
                 short listLength = buffer.readShort();
                 for (int ii = 0; ii < listLength; ii++) {
@@ -48,7 +48,7 @@ public class PacketEntityProperties implements ClientboundPacket {
         }
         int count = buffer.readInt();
         for (int i = 0; i < count; i++) {
-            EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString(), buffer.getProtocolId());
+            EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString());
             double value = buffer.readDouble();
             int listLength = buffer.readVarInt();
             for (int ii = 0; ii < listLength; ii++) {
@@ -63,13 +63,13 @@ public class PacketEntityProperties implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received entity properties (entityId=%d)", entityId));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received entity properties (entityId=%d)", entityId));
     }
 
     public int getEntityId() {
@@ -83,10 +83,6 @@ public class PacketEntityProperties implements ClientboundPacket {
 
         public static ModifierActions byId(int id) {
             return values()[id];
-        }
-
-        public int getId() {
-            return ordinal();
         }
     }
 }

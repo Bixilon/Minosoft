@@ -32,13 +32,13 @@ public class PacketConfirmTransactionReceiving implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Closing inventory (windowId=%d)", windowId));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Closing inventory (windowId=%d)", windowId));
     }
 
     public byte getWindowId() {

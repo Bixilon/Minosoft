@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.StatusEffect;
+import de.bixilon.minosoft.data.entities.StatusEffect;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -51,13 +51,13 @@ public class PacketEntityEffect implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.game(String.format("Entity effect added: %d %s", entityId, effect.toString()));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.game(String.format("Entity effect added: %d %s", entityId, effect.toString()));
     }
 
     public int getEntityId() {

@@ -13,9 +13,47 @@
 
 package de.bixilon.minosoft.modding;
 
-interface MinosoftModInterface {
-    boolean start(ModPhases phase);
-}
+import de.bixilon.minosoft.modding.event.EventManager;
+import de.bixilon.minosoft.modding.loading.ModInfo;
+import de.bixilon.minosoft.modding.loading.ModPhases;
 
-public abstract class MinosoftMod implements MinosoftModInterface {
+public abstract class MinosoftMod {
+    private final EventManager eventManager = new EventManager();
+    protected boolean enabled = true;
+    private ModInfo info;
+    private Logger logger;
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public ModInfo getInfo() {
+        return info;
+    }
+
+    public void setInfo(ModInfo info) {
+        if (this.info != null) {
+            throw new RuntimeException(String.format("Mod info already set %s vs %s", this.info, info));
+        }
+        this.info = info;
+        this.logger = new Logger(info.getName());
+    }
+
+    public EventManager getEventManager() {
+        return eventManager;
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    /**
+     * @param phase The current loading phase
+     * @return If the loading was successful. If not, the mod is getting disabled.
+     */
+    public abstract boolean start(ModPhases phase);
 }

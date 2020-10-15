@@ -36,13 +36,13 @@ public class PacketCraftRecipeResponse implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received Crafting recipe response (windowId=%d, recipeId=%d)", windowId, recipeId));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received Crafting recipe response (windowId=%d, recipeId=%d)", windowId, recipeId));
     }
 
     public byte getWindowId() {

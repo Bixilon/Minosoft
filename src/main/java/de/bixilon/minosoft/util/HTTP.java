@@ -27,11 +27,7 @@ public final class HTTP {
 
     public static HttpResponse<String> postJson(String url, JsonObject json) {
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
-                .header("Content-Type", "application/json")
-                .build();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).POST(HttpRequest.BodyPublishers.ofString(json.toString())).header("Content-Type", "application/json").build();
         try {
             return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
@@ -44,9 +40,7 @@ public final class HTTP {
 
     public static HttpResponse<String> get(String url) {
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .build();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
         try {
             return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {

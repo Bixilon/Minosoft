@@ -38,16 +38,16 @@ public class PacketDestroyEntity implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Despawning the following entities: %s", Arrays.toString(entityIds)));
     }
 
     public int[] getEntityIds() {
         return entityIds;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

@@ -33,13 +33,13 @@ public class PacketSetPassenger implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Attaching %d entities (vehicleId=%d)", entityIds.length, vehicleId));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Attaching %d entities (vehicleId=%d)", entityIds.length, vehicleId));
     }
 
     public int getVehicleId() {

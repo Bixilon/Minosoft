@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
-import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
+import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.mappings.particle.Particle;
+import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -24,9 +25,7 @@ public class PacketParticle implements ClientboundPacket {
     Particle particleType;
     ParticleData particleData;
     boolean longDistance = false;
-    double x;
-    double y;
-    double z;
+    Location location;
     float offsetX;
     float offsetY;
     float offsetZ;
@@ -36,7 +35,6 @@ public class PacketParticle implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getProtocolId() < 569) {
-
             if (buffer.getProtocolId() < 17) {
                 particleType = buffer.getConnection().getMapping().getParticleByIdentifier(buffer.readString());
             } else {
@@ -45,9 +43,7 @@ public class PacketParticle implements ClientboundPacket {
             if (buffer.getProtocolId() >= 29) {
                 longDistance = buffer.readBoolean();
             }
-            x = buffer.readFloat();
-            y = buffer.readFloat();
-            z = buffer.readFloat();
+            location = buffer.readSmallLocation();
 
             // offset
             offsetX = buffer.readFloat();
@@ -61,9 +57,7 @@ public class PacketParticle implements ClientboundPacket {
         }
         particleType = buffer.getConnection().getMapping().getParticleById(buffer.readInt());
         longDistance = buffer.readBoolean();
-        x = buffer.readDouble();
-        y = buffer.readDouble();
-        z = buffer.readDouble();
+        location = buffer.readLocation();
 
         // offset
         offsetX = buffer.readFloat();
@@ -77,25 +71,29 @@ public class PacketParticle implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received particle spawn at %s %s %s (offsetX=%s, offsetY=%s, offsetZ=%s, particleType=%s, dataFloat=%s, count=%d, particleData=%s)", x, y, z, offsetX, offsetY, offsetZ, particleType, particleDataFloat, count, particleData));
-    }
-
-    @Override
     public void handle(PacketHandler h) {
         h.handle(this);
     }
 
-    public double getX() {
-        return x;
+    @Override
+    public void log() {
+        Log.protocol(String.format("Received particle spawn packet (location=%s, offsetX=%s, offsetY=%s, offsetZ=%s, particleType=%s, dataFloat=%s, count=%d, particleData=%s)", location, offsetX, offsetY, offsetZ, particleType, particleDataFloat, count, particleData));
     }
 
-    public double getY() {
-        return y;
+    public Location getLocation() {
+        return location;
     }
 
-    public double getZ() {
-        return z;
+    public float getOffsetX() {
+        return offsetX;
+    }
+
+    public float getOffsetY() {
+        return offsetY;
+    }
+
+    public float getOffsetZ() {
+        return offsetZ;
     }
 
     public int getCount() {

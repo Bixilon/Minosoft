@@ -15,19 +15,19 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.bixilon.minosoft.game.datatypes.Directions;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.entities.Poses;
-import de.bixilon.minosoft.game.datatypes.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.objectLoader.particle.Particle;
-import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.BlockParticleData;
-import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.DustParticleData;
-import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ItemParticleData;
-import de.bixilon.minosoft.game.datatypes.objectLoader.particle.data.ParticleData;
-import de.bixilon.minosoft.game.datatypes.objectLoader.recipes.Ingredient;
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.data.Directions;
+import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Poses;
+import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.mappings.particle.Particle;
+import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData;
+import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData;
+import de.bixilon.minosoft.data.mappings.particle.data.ItemParticleData;
+import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
+import de.bixilon.minosoft.data.mappings.recipes.Ingredient;
+import de.bixilon.minosoft.data.text.ChatComponent;
+import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.Util;
@@ -43,7 +43,7 @@ public class InByteBuffer {
     final Connection connection;
     final int protocolId;
     final byte[] bytes;
-    int pos;
+    int position;
 
     public InByteBuffer(byte[] bytes, Connection connection) {
         this.bytes = bytes;
@@ -51,18 +51,11 @@ public class InByteBuffer {
         this.protocolId = connection.getVersion().getProtocolVersion();
     }
 
-    public byte readByte() {
-        byte ret;
-        ret = bytes[pos];
-        pos++;
-        return ret;
-    }
-
-    public byte[] readBytes(int count) {
-        byte[] ret = new byte[count];
-        System.arraycopy(bytes, pos, ret, 0, count);
-        pos = pos + count;
-        return ret;
+    public InByteBuffer(InByteBuffer buffer) {
+        this.bytes = buffer.getBytes();
+        this.position = buffer.getPosition();
+        this.connection = buffer.getConnection();
+        this.protocolId = connection.getVersion().getProtocolVersion();
     }
 
     public byte[] readByteArray() {
@@ -75,22 +68,63 @@ public class InByteBuffer {
         return readBytes(count);
     }
 
-    byte[] readBytes(int pos, int count) {
+    public short readShort() {
+        ByteBuffer buffer = ByteBuffer.allocate(Short.BYTES);
+        buffer.put(readBytes(Short.BYTES));
+        return buffer.getShort(0);
+    }
+
+    public int readInt() {
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+        buffer.put(readBytes(Integer.BYTES));
+        return buffer.getInt(0);
+    }
+
+    public byte[] readBytes(int count) {
         byte[] ret = new byte[count];
-        System.arraycopy(bytes, pos, ret, 0, count);
+        System.arraycopy(bytes, position, ret, 0, count);
+        position = position + count;
         return ret;
+    }
+
+    public Long readLong() {
+        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+        buffer.put(readBytes(Long.BYTES));
+        return buffer.getLong(0);
+    }
+
+    public double readFixedPointNumberInteger() {
+        return readInt() / 32.0D;
+    }
+
+    public String readString() {
+        int length = readVarInt();
+        return new String(readBytes(length), StandardCharsets.UTF_8);
+    }
+
+    public long readVarLong() {
+        int numRead = 0;
+        long result = 0;
+        byte read;
+        do
+        {
+            read = readByte();
+            int value = (read & 0b01111111);
+            result |= (value << (7 * numRead));
+
+            numRead++;
+            if (numRead > 10) {
+                throw new RuntimeException("VarLong is too big");
+            }
+        } while ((read & 0b10000000) != 0);
+
+        return result;
     }
 
     public boolean readBoolean() {
         boolean ret;
         ret = readByte() == 1;
         return ret;
-    }
-
-    public short readShort() {
-        ByteBuffer buffer = ByteBuffer.allocate(Short.BYTES);
-        buffer.put(readBytes(Short.BYTES));
-        return buffer.getShort(0);
     }
 
     public short[] readLEShorts(int num) {
@@ -100,35 +134,6 @@ public class InByteBuffer {
             ret[i] |= (readByte() & 0xFF) << 8;
         }
         return ret;
-    }
-
-    public int readInt() {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.put(readBytes(Integer.BYTES));
-        return buffer.getInt(0);
-    }
-
-    public Long readLong() {
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.put(readBytes(Long.BYTES));
-        return buffer.getLong(0);
-    }
-
-    public Float readFloat() {
-        ByteBuffer buffer = ByteBuffer.allocate(Float.BYTES);
-        buffer.put(readBytes(Float.BYTES));
-        return buffer.getFloat(0);
-    }
-
-    public Double readDouble() {
-        ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
-        buffer.put(readBytes(Double.BYTES));
-        return buffer.getDouble(0);
-    }
-
-    public String readString() {
-        int length = readVarInt();
-        return new String(readBytes(length), StandardCharsets.UTF_8);
     }
 
     public String[] readStringArray(int length) {
@@ -152,7 +157,8 @@ public class InByteBuffer {
         int numRead = 0;
         int result = 0;
         byte read;
-        do {
+        do
+        {
             read = readByte();
             int value = (read & 0b01111111);
             result |= (value << (7 * numRead));
@@ -166,34 +172,16 @@ public class InByteBuffer {
         return result;
     }
 
-    public long readVarLong() {
-        int numRead = 0;
-        long result = 0;
-        byte read;
-        do {
-            read = readByte();
-            int value = (read & 0b01111111);
-            result |= (value << (7 * numRead));
-
-            numRead++;
-            if (numRead > 10) {
-                throw new RuntimeException("VarLong is too big");
-            }
-        } while ((read & 0b10000000) != 0);
-
-        return result;
-    }
-
-    public double readFixedPointNumberInteger() {
-        return readInt() / 32.0D;
-    }
-
     public double readFixedPointNumberByte() {
         return readByte() / 32.0D;
     }
 
     public JsonObject readJSON() {
         return JsonParser.parseString(readString()).getAsJsonObject();
+    }
+
+    public byte readByte() {
+        return bytes[position++];
     }
 
     public BlockPosition readPosition() {
@@ -212,24 +200,12 @@ public class InByteBuffer {
         return new BlockPosition(x, y, z);
     }
 
-    public TextComponent readTextComponent() {
-        return new TextComponent(readString());
-    }
-
-    public int getPosition() {
-        return this.pos;
-    }
-
-    public void setPosition(int pos) {
-        this.pos = pos;
+    public ChatComponent readTextComponent() {
+        return ChatComponent.fromString(readString());
     }
 
     public int getLength() {
         return bytes.length;
-    }
-
-    public int getBytesLeft() {
-        return bytes.length - pos;
     }
 
     public Directions readDirection() {
@@ -309,7 +285,6 @@ public class InByteBuffer {
 
     public Slot readSlot() {
         if (protocolId < 402) {
-
             short id = readShort();
             if (id == -1) {
                 return null;
@@ -321,20 +296,38 @@ public class InByteBuffer {
                 metaData = readShort();
             }
             CompoundTag nbt = (CompoundTag) readNBT(protocolId < 28);
-            return new Slot(connection.getMapping().getItemByLegacy(id, metaData), count, metaData, nbt);
+            return new Slot(connection.getMapping(), connection.getMapping().getItemByLegacy(id, metaData), count, metaData, nbt);
         }
         if (readBoolean()) {
-            return new Slot(connection.getMapping().getItemById(readVarInt()), readByte(), (CompoundTag) readNBT());
+            return new Slot(connection.getMapping(), connection.getMapping().getItemById(readVarInt()), readByte(), (CompoundTag) readNBT());
         }
         return null;
+    }
+
+    public String getBase64() {
+        return getBase64(getPosition(), getBytesLeft());
     }
 
     public String getBase64(int pos, int length) {
         return new String(Base64.getEncoder().encode(readBytes(pos, length)));
     }
 
-    public String getBase64() {
-        return getBase64(getPosition(), getBytesLeft());
+    public int getPosition() {
+        return this.position;
+    }
+
+    public void setPosition(int pos) {
+        this.position = pos;
+    }
+
+    public int getBytesLeft() {
+        return bytes.length - position;
+    }
+
+    byte[] readBytes(int pos, int count) {
+        byte[] ret = new byte[count];
+        System.arraycopy(bytes, pos, ret, 0, count);
+        return ret;
     }
 
     public short readAngle() {
@@ -343,6 +336,22 @@ public class InByteBuffer {
 
     public Location readLocation() {
         return new Location(readDouble(), readDouble(), readDouble());
+    }
+
+    public Double readDouble() {
+        ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
+        buffer.put(readBytes(Double.BYTES));
+        return buffer.getDouble(0);
+    }
+
+    public Location readSmallLocation() {
+        return new Location(readFloat(), readFloat(), readFloat());
+    }
+
+    public Float readFloat() {
+        ByteBuffer buffer = ByteBuffer.allocate(Float.BYTES);
+        buffer.put(readBytes(Float.BYTES));
+        return buffer.getFloat(0);
     }
 
     public BlockPosition readBlockPosition() {
@@ -413,7 +422,7 @@ public class InByteBuffer {
 
     @Override
     public String toString() {
-        return "dataLen: " + bytes.length + "; pos: " + pos;
+        return "dataLen: " + bytes.length + "; position: " + position;
     }
 
     public byte[] getBytes() {

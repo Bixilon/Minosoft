@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.ChatColors;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.data.text.ChatColors;
+import de.bixilon.minosoft.data.text.ChatComponent;
+import de.bixilon.minosoft.data.text.RGBColor;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -24,14 +25,14 @@ import de.bixilon.minosoft.util.BitByte;
 public class PacketTeams implements ClientboundPacket {
     String name;
     TeamActions action;
-    TextComponent displayName;
-    TextComponent prefix;
-    TextComponent suffix;
+    ChatComponent displayName;
+    ChatComponent prefix;
+    ChatComponent suffix;
     boolean friendlyFire;
     boolean seeFriendlyInvisibles;
     TeamCollisionRules collisionRule = TeamCollisionRules.NEVER;
     TeamNameTagVisibilities nameTagVisibility = TeamNameTagVisibilities.ALWAYS;
-    TextComponent.ChatAttributes color = TextComponent.ChatAttributes.WHITE;
+    RGBColor color;
     String[] playerNames;
 
     @Override
@@ -57,9 +58,9 @@ public class PacketTeams implements ClientboundPacket {
                     collisionRule = TeamCollisionRules.byName(buffer.readString());
                 }
                 if (buffer.getProtocolId() < 352) {
-                    color = TextComponent.ChatAttributes.byColor(ChatColors.byId(buffer.readByte()));
+                    color = ChatColors.getColorById(buffer.readByte());
                 } else {
-                    color = TextComponent.ChatAttributes.byColor(ChatColors.byId(buffer.readVarInt()));
+                    color = ChatColors.getColorById(buffer.readVarInt());
                 }
             }
             if (buffer.getProtocolId() >= 375) {
@@ -83,13 +84,25 @@ public class PacketTeams implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, seeFriendlyInvisibiles=%s, playerCount=%s)", name, action, displayName, prefix, suffix, friendlyFire, seeFriendlyInvisibles, ((playerNames == null) ? null : playerNames.length)));
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    private void setFriendlyFireByLegacy(byte raw) {
+        switch (raw) {
+            case 0 -> friendlyFire = false;
+            case 1 -> friendlyFire = true;
+            case 2 -> {
+                friendlyFire = false;
+                seeFriendlyInvisibles = true;
+            }
+        }
+        // ToDo: seeFriendlyInvisibles for case 0 and 1
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, seeFriendlyInvisibiles=%s, playerCount=%s)", name, action, displayName, prefix, suffix, friendlyFire, seeFriendlyInvisibles, ((playerNames == null) ? null : playerNames.length)));
     }
 
     public String getName() {
@@ -100,15 +113,15 @@ public class PacketTeams implements ClientboundPacket {
         return action;
     }
 
-    public TextComponent getDisplayName() {
+    public ChatComponent getDisplayName() {
         return displayName;
     }
 
-    public TextComponent getPrefix() {
+    public ChatComponent getPrefix() {
         return prefix;
     }
 
-    public TextComponent getSuffix() {
+    public ChatComponent getSuffix() {
         return suffix;
     }
 
@@ -120,7 +133,7 @@ public class PacketTeams implements ClientboundPacket {
         return seeFriendlyInvisibles;
     }
 
-    public TextComponent.ChatAttributes getColor() {
+    public RGBColor getColor() {
         return color;
     }
 
@@ -136,42 +149,15 @@ public class PacketTeams implements ClientboundPacket {
         return playerNames;
     }
 
-    private void setFriendlyFireByLegacy(byte raw) {
-        switch (raw) {
-            case 0 -> friendlyFire = false;
-            case 1 -> friendlyFire = true;
-            case 2 -> {
-                friendlyFire = false;
-                seeFriendlyInvisibles = true;
-            }
-        }
-        // ToDo: seeFriendlyInvisibles for case 0 and 1
-    }
-
     public enum TeamActions {
-        CREATE(0),
-        REMOVE(1),
-        INFORMATION_UPDATE(2),
-        PLAYER_ADD(3),
-        PLAYER_REMOVE(4);
-
-        final int id;
-
-        TeamActions(int id) {
-            this.id = id;
-        }
+        CREATE,
+        REMOVE,
+        INFORMATION_UPDATE,
+        PLAYER_ADD,
+        PLAYER_REMOVE;
 
         public static TeamActions byId(int id) {
-            for (TeamActions action : values()) {
-                if (action.getId() == id) {
-                    return action;
-                }
-            }
-            return null;
-        }
-
-        public int getId() {
-            return id;
+            return values()[id];
         }
     }
 

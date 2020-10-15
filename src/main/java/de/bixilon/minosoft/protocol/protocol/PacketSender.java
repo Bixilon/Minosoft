@@ -13,8 +13,11 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.game.datatypes.player.Hands;
+import de.bixilon.minosoft.data.player.Hands;
+import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
+import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginPluginResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.*;
 
 import java.util.UUID;
@@ -31,7 +34,11 @@ public class PacketSender {
     }
 
     public void sendChatMessage(String message) {
-        connection.sendPacket(new PacketChatMessageSending(message));
+        ChatMessageSendingEvent event = new ChatMessageSendingEvent(connection, message);
+        if (connection.fireEvent(event)) {
+            return;
+        }
+        connection.sendPacket(new PacketChatMessageSending(event.getMessage()));
     }
 
     public void spectateEntity(UUID entityUUID) {
@@ -71,14 +78,26 @@ public class PacketSender {
     }
 
     public void closeWindow(byte windowId) {
+        CloseWindowEvent event = new CloseWindowEvent(connection, windowId, CloseWindowEvent.Initiators.CLIENT);
+        if (connection.fireEvent(event)) {
+            return;
+        }
         connection.sendPacket(new PacketCloseWindowSending(windowId));
+    }
+
+    public void respawn() {
+        sendClientStatus(PacketClientStatus.ClientStates.PERFORM_RESPAWN);
     }
 
     public void sendClientStatus(PacketClientStatus.ClientStates status) {
         connection.sendPacket(new PacketClientStatus(status));
     }
 
-    public void respawn() {
-        sendClientStatus(PacketClientStatus.ClientStates.PERFORM_RESPAWN);
+    public void sendPluginMessageData(String channel, OutByteBuffer toSend) {
+        connection.sendPacket(new PacketPluginMessageSending(channel, toSend.getOutBytes()));
+    }
+
+    public void sendLoginPluginMessageResponse(int messageId, OutByteBuffer toSend) {
+        connection.sendPacket(new PacketLoginPluginResponse(messageId, toSend.getOutBytes()));
     }
 }

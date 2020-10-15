@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -25,18 +26,20 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
+import java.util.zip.*;
 
 public final class Util {
     public static final Pattern UUID_FIX = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
 
-    public static UUID uuidFromString(String uuid) {
+    public static UUID getUUIDFromString(String uuid) {
         if (uuid.length() == 36) {
             return UUID.fromString(uuid);
         }
@@ -84,9 +87,8 @@ public final class Util {
     }
 
     public static byte[] decompressGzip(byte[] raw) throws IOException {
-
         GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(raw));
-        ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         int res = 0;
         byte[] buf = new byte[1024];
@@ -96,7 +98,10 @@ public final class Util {
                 outputStream.write(buf, 0, res);
             }
         }
-        return outputStream.toByteArray();
+        gzipInputStream.close();
+        byte[] ret = outputStream.toByteArray();
+        outputStream.close();
+        return ret;
     }
 
     public static String sha1(String string) {
@@ -113,35 +118,15 @@ public final class Util {
 
     public static HashMap<String, String> readTarGzFile(String fileName) throws IOException {
         File inputFile = new File(fileName);
-        GZIPInputStream gzipInputStream = new GZIPInputStream(new FileInputStream(inputFile));
-        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(gzipInputStream);
+        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(inputFile)));
         HashMap<String, String> ret = new HashMap<>();
         TarArchiveEntry entry;
         while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
             ret.put(entry.getName(), readFile(new BufferedReader(new InputStreamReader(tarArchiveInputStream)), false));
         }
+        tarArchiveInputStream.close();
 
         return ret;
-    }
-
-    public static String readFile(String fileName) throws IOException {
-        return readFile(new File(fileName));
-    }
-
-    public static String readAsset(String path) throws IOException {
-        return readAsset(path, Util.class);
-    }
-
-    public static String readAsset(String path, Class clazz) throws IOException {
-        return readFile(new BufferedReader((new InputStreamReader(clazz.getResourceAsStream("/assets/" + path)))), true);
-    }
-
-    public static JsonObject readJsonAsset(String path) throws IOException {
-        return readJsonAsset(path, Util.class);
-    }
-
-    public static JsonObject readJsonAsset(String path, Class clazz) throws IOException {
-        return (JsonObject) JsonParser.parseString(readAsset(path, clazz));
     }
 
     public static String readFile(BufferedReader reader, boolean closeStream) throws IOException {
@@ -159,12 +144,50 @@ public final class Util {
         return stringBuilder.toString();
     }
 
-    public static String readFile(File file) throws IOException {
-        return readFile(new BufferedReader(new FileReader(file)), true);
+    public static HashMap<String, JsonObject> readJsonTarGzFile(String fileName) throws IOException {
+        File inputFile = new File(fileName);
+        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(inputFile)));
+        HashMap<String, JsonObject> ret = new HashMap<>();
+        TarArchiveEntry entry;
+        while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
+            ret.put(entry.getName(), JsonParser.parseReader(new InputStreamReader(tarArchiveInputStream)).getAsJsonObject());
+        }
+        tarArchiveInputStream.close();
+
+        return ret;
+    }
+
+    public static JsonObject readJsonAsset(String path) throws IOException {
+        return readJsonAsset(path, Util.class);
+    }
+
+    public static JsonObject readJsonAsset(String path, Class<?> clazz) throws IOException {
+        InputStreamReader reader = readAsset(path, clazz);
+        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+        reader.close();
+        return json;
+    }
+
+    public static InputStreamReader readAsset(String path, Class<?> clazz) {
+        return new InputStreamReader(clazz.getResourceAsStream("/assets/" + path));
+    }
+
+    public static JsonObject readJsonFromZip(String fileName, ZipFile zipFile) throws IOException {
+        InputStreamReader reader = getInputSteamFromZip(fileName, zipFile);
+        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+        reader.close();
+        return json;
+    }
+
+    public static InputStreamReader getInputSteamFromZip(String fileName, ZipFile zipFile) throws IOException {
+        return new InputStreamReader(zipFile.getInputStream(zipFile.getEntry(fileName)));
     }
 
     public static JsonObject readJsonFromFile(String fileName) throws IOException {
-        return JsonParser.parseString(readFile(fileName)).getAsJsonObject();
+        FileReader reader = new FileReader(fileName);
+        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+        reader.close();
+        return json;
     }
 
     public static void downloadFile(String url, String destination) throws IOException {
@@ -175,5 +198,16 @@ public final class Util {
         while ((length = inputStream.read(buffer, 0, 1024)) != -1) {
             fileOutputStream.write(buffer, 0, length);
         }
+        inputStream.close();
+        fileOutputStream.close();
+    }
+
+    public static <T> void executeInThreadPool(String name, Collection<Callable<T>> callables) throws InterruptedException {
+        ExecutorService phaseLoader = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), getThreadFactory(name));
+        phaseLoader.invokeAll(callables);
+    }
+
+    public static ThreadFactory getThreadFactory(String threadName) {
+        return new ThreadFactoryBuilder().setNameFormat(threadName + "#%d").build();
     }
 }

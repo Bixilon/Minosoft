@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusRespo
 
 public class Packets {
 
-    public enum Serverbound implements PacketBoundary {
+    public enum Serverbound {
         HANDSHAKING_HANDSHAKE,
         STATUS_PING,
         STATUS_REQUEST,
@@ -92,7 +92,7 @@ public class Packets {
         }
     }
 
-    public enum Clientbound implements PacketBoundary {
+    public enum Clientbound {
         STATUS_RESPONSE(PacketStatusResponse.class),
         STATUS_PONG(PacketStatusPong.class),
         LOGIN_DISCONNECT(PacketLoginDisconnect.class),
@@ -156,7 +156,7 @@ public class Packets {
         PLAY_UNLOCK_RECIPES(PacketUnlockRecipes.class),
         PLAY_DESTROY_ENTITIES(PacketDestroyEntity.class),
         PLAY_REMOVE_ENTITY_EFFECT(PacketRemoveEntityEffect.class),
-        PLAY_RESOURCE_PACK_SEND(PackerResourcePackSend.class),
+        PLAY_RESOURCE_PACK_SEND(PacketResourcePackSend.class),
         PLAY_RESPAWN(PacketRespawn.class),
         PLAY_ENTITY_HEAD_ROTATION(PacketEntityHeadRotation.class),
         PLAY_SELECT_ADVANCEMENT_TAB(PacketSelectAdvancementTab.class),
@@ -215,8 +215,5 @@ public class Packets {
         public Class<? extends ClientboundPacket> getClazz() {
             return clazz;
         }
-    }
-
-    public interface PacketBoundary {
     }
 }

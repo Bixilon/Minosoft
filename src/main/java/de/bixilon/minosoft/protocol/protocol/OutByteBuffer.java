@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
-import de.bixilon.minosoft.game.datatypes.inventory.Slot;
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.text.ChatComponent;
+import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
@@ -26,40 +26,20 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class OutByteBuffer {
-    final ArrayList<Byte> bytes = new ArrayList<>();
+    final ArrayList<Byte> bytes;
     final Connection connection;
     final int protocolId;
 
     public OutByteBuffer(Connection connection) {
+        this.bytes = new ArrayList<>();
         this.connection = connection;
         this.protocolId = connection.getVersion().getProtocolVersion();
     }
 
-    public static void writeByte(byte b, ArrayList<Byte> write) {
-        write.add(b);
-    }
-
-    public static void writeVarInt(int value, ArrayList<Byte> write) {
-        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
-        do {
-            byte temp = (byte) (value & 0b01111111);
-            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
-            value >>>= 7;
-            if (value != 0) {
-                temp |= 0b10000000;
-            }
-            writeByte(temp, write);
-        } while (value != 0);
-    }
-
-    public void writeByte(byte b) {
-        bytes.add(b);
-    }
-
-    public void writeBytes(byte[] b) {
-        for (byte value : b) {
-            bytes.add(value);
-        }
+    public OutByteBuffer(OutByteBuffer buffer) {
+        this.bytes = (ArrayList<Byte>) buffer.getBytes().clone();
+        this.connection = buffer.getConnection();
+        this.protocolId = buffer.getProtocolId();
     }
 
     public void writeByteArray(byte[] data) {
@@ -71,15 +51,25 @@ public class OutByteBuffer {
         writeBytes(data);
     }
 
-    public void writeBoolean(boolean b) {
-        bytes.add((byte) ((b) ? 0x01 : 0x00));
-    }
-
     public void writeShort(short s) {
         ByteBuffer buffer = ByteBuffer.allocate(Short.BYTES);
         buffer.putShort(s);
         for (byte b : buffer.array()) {
             bytes.add(b);
+        }
+    }
+
+    public void writeInt(int i) {
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+        buffer.putInt(i);
+        for (byte b : buffer.array()) {
+            bytes.add(b);
+        }
+    }
+
+    public void writeBytes(byte[] b) {
+        for (byte value : b) {
+            bytes.add(value);
         }
     }
 
@@ -89,6 +79,38 @@ public class OutByteBuffer {
         for (byte b : buffer.array()) {
             bytes.add(b);
         }
+    }
+
+    public void writeTextComponent(ChatComponent chatComponent) {
+        writeString(chatComponent.getMessage()); //ToDo: test if this should not be json
+    }
+
+    public void writeJSON(JsonObject j) {
+        writeString(j.toString());
+    }
+
+    public void writeString(String s) {
+        writeVarInt(s.length());
+        for (byte b : s.getBytes(StandardCharsets.UTF_8)) {
+            bytes.add(b);
+        }
+    }
+
+    public void writeVarLong(long value) {
+        do
+        {
+            byte temp = (byte) (value & 0b01111111);
+            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
+            value >>>= 7;
+            if (value != 0) {
+                temp |= 0b10000000;
+            }
+            writeByte(temp);
+        } while (value != 0);
+    }
+
+    public void writeByte(byte b) {
+        bytes.add(b);
     }
 
     public void writeFloat(Float f) {
@@ -107,13 +129,6 @@ public class OutByteBuffer {
         }
     }
 
-    public void writeString(String s) {
-        writeVarInt(s.length());
-        for (byte b : s.getBytes(StandardCharsets.UTF_8)) {
-            bytes.add(b);
-        }
-    }
-
     public void writeUUID(UUID u) {
         ByteBuffer buffer = ByteBuffer.allocate(16); // UUID.BYTES
         buffer.putLong(u.getMostSignificantBits());
@@ -123,40 +138,12 @@ public class OutByteBuffer {
         }
     }
 
-    public void writeInt(int i) {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.putInt(i);
-        for (byte b : buffer.array()) {
-            bytes.add(b);
-        }
-    }
-
-    public void writeVarInt(int value) {
-        writeVarInt(value, bytes);
-    }
-
-    public void writeVarLong(long value) {
-        do {
-            byte temp = (byte) (value & 0b01111111);
-            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
-            value >>>= 7;
-            if (value != 0) {
-                temp |= 0b10000000;
-            }
-            writeByte(temp);
-        } while (value != 0);
-    }
-
     public void writeFixedPointNumberInteger(double d) {
         writeInt((int) (d * 32.0D));
     }
 
     public ArrayList<Byte> getBytes() {
         return bytes;
-    }
-
-    public void writeJSON(JsonObject j) {
-        writeString(j.toString());
     }
 
     public void writePosition(BlockPosition position) {
@@ -171,8 +158,33 @@ public class OutByteBuffer {
         writeLong((((long) (position.getX() & 0x3FFFFFF) << 38) | ((long) (position.getZ() & 0x3FFFFFF) << 12) | (long) (position.getY() & 0xFFF)));
     }
 
-    public void writeTextComponent(TextComponent component) {
-        writeJSON(component.getRaw());
+    public void writeVarInt(int value) {
+        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
+        do
+        {
+            byte temp = (byte) (value & 0b01111111);
+            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
+            value >>>= 7;
+            if (value != 0) {
+                temp |= 0b10000000;
+            }
+            writeByte(temp);
+        } while (value != 0);
+    }
+
+    public void prefixVarInt(int value) {
+        int count = 0;
+        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
+        do
+        {
+            byte temp = (byte) (value & 0b01111111);
+            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
+            value >>>= 7;
+            if (value != 0) {
+                temp |= 0b10000000;
+            }
+            bytes.add(count++, temp);
+        } while (value != 0);
     }
 
     public void writeSlot(Slot slot) {
@@ -184,7 +196,7 @@ public class OutByteBuffer {
             writeShort((short) connection.getMapping().getItemId(slot.getItem()));
             writeByte((byte) slot.getItemCount());
             writeShort(slot.getItemMetadata());
-            writeNBT(slot.getNbt());
+            writeNBT(slot.getNbt(connection.getMapping()));
         }
         if (slot == null) {
             writeBoolean(false);
@@ -192,12 +204,16 @@ public class OutByteBuffer {
         }
         writeVarInt(connection.getMapping().getItemId(slot.getItem()));
         writeByte((byte) slot.getItemCount());
-        writeNBT(slot.getNbt());
+        writeNBT(slot.getNbt(connection.getMapping()));
     }
 
     void writeNBT(CompoundTag nbt) {
         // ToDo: test
         nbt.writeBytes(this);
+    }
+
+    public void writeBoolean(boolean b) {
+        bytes.add((byte) ((b) ? 0x01 : 0x00));
     }
 
     public void writeStringNoLength(String s) {
@@ -242,5 +258,9 @@ public class OutByteBuffer {
         } else {
             writeVarInt(entityId);
         }
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 }

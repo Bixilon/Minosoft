@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.MapSet;
-import de.bixilon.minosoft.game.datatypes.VersionValueMap;
+import de.bixilon.minosoft.data.MapSet;
+import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -32,13 +32,13 @@ public class PacketEntityAnimation implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Play entity animation (entityId=%d, animation=%s)", entityId, animation));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Play entity animation (entityId=%d, animation=%s)", entityId, animation));
     }
 
     public enum EntityAnimations {

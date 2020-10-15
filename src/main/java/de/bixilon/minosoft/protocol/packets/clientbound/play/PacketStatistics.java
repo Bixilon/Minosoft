@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.Statistic;
-import de.bixilon.minosoft.game.datatypes.objectLoader.statistics.StatisticCategories;
+import de.bixilon.minosoft.data.mappings.statistics.Statistic;
+import de.bixilon.minosoft.data.mappings.statistics.StatisticCategories;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -40,13 +40,13 @@ public class PacketStatistics implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received player statistics (count=%d)", statistics.size()));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received player statistics (count=%d)", statistics.size()));
     }
 
     public HashMap<Statistic, Integer> getStatistics() {

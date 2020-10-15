@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -27,7 +27,7 @@ public class PacketBossBar implements ClientboundPacket {
     BossBarActions action;
 
     //fields depend on action
-    TextComponent title;
+    ChatComponent title;
     float health;
     BossBarColors color;
     BossBarDivisions divisions;
@@ -38,47 +38,47 @@ public class PacketBossBar implements ClientboundPacket {
         uuid = buffer.readUUID();
         action = BossBarActions.byId(buffer.readVarInt());
         switch (action) {
-            case ADD:
+            case ADD -> {
                 title = buffer.readTextComponent();
                 health = buffer.readFloat();
                 color = BossBarColors.byId(buffer.readVarInt());
                 divisions = BossBarDivisions.byId(buffer.readVarInt());
                 flags = buffer.readByte();
-                break;
-            case REMOVE:
-                break;
-            case UPDATE_HEALTH:
-                health = buffer.readFloat();
-                break;
-            case UPDATE_TITLE:
-                title = buffer.readTextComponent();
-                break;
-            case UPDATE_STYLE:
+            }
+            case UPDATE_HEALTH -> health = buffer.readFloat();
+            case UPDATE_TITLE -> title = buffer.readTextComponent();
+            case UPDATE_STYLE -> {
                 color = BossBarColors.byId(buffer.readVarInt());
                 divisions = BossBarDivisions.byId(buffer.readVarInt());
-                break;
-            case UPDATE_FLAGS:
-                flags = buffer.readByte();
-                break;
+            }
+            case UPDATE_FLAGS -> flags = buffer.readByte();
         }
         return true;
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         switch (action) {
-            case ADD -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\", health=%s, color=%s, divisions=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), title.getColoredMessage(), health, color, divisions, isDragonBar(), shouldDarkenSky()));
+            case ADD -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\", health=%s, color=%s, divisions=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), title.getANSIColoredMessage(), health, color, divisions, isDragonBar(), shouldDarkenSky()));
             case REMOVE -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s)", action, uuid.toString()));
             case UPDATE_HEALTH -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, health=%s)", action, uuid.toString(), health));
-            case UPDATE_TITLE -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\")", action, uuid.toString(), title.getColoredMessage()));
+            case UPDATE_TITLE -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\")", action, uuid.toString(), title.getANSIColoredMessage()));
             case UPDATE_STYLE -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, color=%s, divisions=%s)", action, uuid.toString(), color, divisions));
             case UPDATE_FLAGS -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), isDragonBar(), shouldDarkenSky()));
         }
     }
 
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public boolean isDragonBar() {
+        return BitByte.isBitMask(flags, 0x02);
+    }
+
+    public boolean shouldDarkenSky() {
+        return BitByte.isBitMask(flags, 0x01);
     }
 
     public UUID getUUID() {
@@ -101,20 +101,12 @@ public class PacketBossBar implements ClientboundPacket {
         return health;
     }
 
-    public TextComponent getTitle() {
+    public ChatComponent getTitle() {
         return title;
     }
 
     public byte getFlags() {
         return flags;
-    }
-
-    public boolean shouldDarkenSky() {
-        return BitByte.isBitMask(flags, 0x01);
-    }
-
-    public boolean isDragonBar() {
-        return BitByte.isBitMask(flags, 0x02);
     }
 
     public boolean createFog() {
@@ -132,10 +124,6 @@ public class PacketBossBar implements ClientboundPacket {
         public static BossBarActions byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 
     public enum BossBarColors {
@@ -150,10 +138,6 @@ public class PacketBossBar implements ClientboundPacket {
         public static BossBarColors byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 
     public enum BossBarDivisions {
@@ -165,10 +149,6 @@ public class PacketBossBar implements ClientboundPacket {
 
         public static BossBarDivisions byId(int id) {
             return values()[id];
-        }
-
-        public int getId() {
-            return ordinal();
         }
     }
 }

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.blockIds.BlockId;
-import de.bixilon.minosoft.game.datatypes.objectLoader.blocks.actions.*;
-import de.bixilon.minosoft.game.datatypes.world.BlockPosition;
+import de.bixilon.minosoft.data.mappings.BlockId;
+import de.bixilon.minosoft.data.mappings.blocks.actions.*;
+import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -44,7 +44,7 @@ public class PacketBlockAction implements ClientboundPacket {
         clazz = switch (blockId.getIdentifier()) {
             case "noteblock" -> NoteBlockAction.class; // ToDo: was replaced in 17w47a (346) with the block id
             case "sticky_piston", "piston" -> PistonAction.class;
-            case "chest", "ender_chest", "trapped_chest", "white_shulkerbox", "orange_shulkerbox", "magenta_shulkerbox", "light_blue_shulkerbox", "yellow_shulkerbox", "lime_shulkerbox", "pink_shulkerbox", "gray_shulkerbox", "silver_shulkerbox", "cyan_shulkerbox", "purple_shulkerbox", "blue_shulkerbox", "brown_shulkerbox", "green_shulkerbox", "red_shulkerbox", "black_shulkerbox" -> ChestAction.class;
+            case "chest", "ender_chest", "trapped_chest", "white_shulker_box", "shulker_box", "orange_shulker_box", "magenta_shulker_box", "light_blue_shulker_box", "yellow_shulker_box", "lime_shulker_box", "pink_shulker_box", "gray_shulker_box", "silver_shulker_box", "cyan_shulker_box", "purple_shulker_box", "blue_shulker_box", "brown_shulker_box", "green_shulker_box", "red_shulker_box", "black_shulker_box" -> ChestAction.class;
             case "beacon" -> BeaconAction.class;
             case "mob_spawner" -> MobSpawnerAction.class;
             case "end_gateway" -> EndGatewayAction.class;
@@ -58,13 +58,21 @@ public class PacketBlockAction implements ClientboundPacket {
         return true;
     }
 
-    @Override
-    public void log() {
-        Log.protocol(String.format("Block action received %s at %s", data, position));
+    public BlockPosition getPosition() {
+        return position;
+    }
+
+    public BlockAction getData() {
+        return data;
     }
 
     @Override
     public void handle(PacketHandler h) {
         h.handle(this);
+    }
+
+    @Override
+    public void log() {
+        Log.protocol(String.format("Block action received %s at %s", data, position));
     }
 }

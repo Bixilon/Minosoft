@@ -36,13 +36,13 @@ public class PacketAttachEntity implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Attaching entity %d to entity %d (leash=%s)", entityId, vehicleId, leash));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Attaching entity %d to entity %d (leash=%s)", entityId, vehicleId, leash));
     }
 
     public int getEntityId() {

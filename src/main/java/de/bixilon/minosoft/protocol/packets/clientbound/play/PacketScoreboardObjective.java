@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketScoreboardObjective implements ClientboundPacket {
     String name;
-    TextComponent value;
+    ChatComponent value;
     ScoreboardObjectiveActions action;
     ScoreboardObjectiveTypes type;
 
@@ -33,13 +33,10 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         }
         action = ScoreboardObjectiveActions.byId(buffer.readByte());
         if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
-
             if (buffer.getProtocolId() >= 7) { // ToDo
                 value = buffer.readTextComponent();
-
             }
             if (buffer.getProtocolId() >= 12) {
-
                 if (buffer.getProtocolId() >= 346 && buffer.getProtocolId() < 349) {
                     // got removed in these 3 versions
                     return true;
@@ -55,24 +52,24 @@ public class PacketScoreboardObjective implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
-            Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\", type=%s)", action, name, value.getColoredMessage(), type));
-        } else {
-            Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\")", action, name));
-        }
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
+            Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\", type=%s)", action, name, value.getANSIColoredMessage(), type));
+        } else {
+            Log.protocol(String.format("Received scoreboard objective action (action=%s, name=\"%s\")", action, name));
+        }
     }
 
     public String getName() {
         return name;
     }
 
-    public TextComponent getValue() {
+    public ChatComponent getValue() {
         return value;
     }
 
@@ -88,21 +85,15 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         public static ScoreboardObjectiveActions byId(int id) {
             return values()[id];
         }
-
-        public int getId() {
-            return ordinal();
-        }
     }
 
     public enum ScoreboardObjectiveTypes {
-        INTEGER(0, "integer"),
-        HEARTS(1, "hearts");
+        INTEGER("integer"),
+        HEARTS("hearts");
 
-        final int id;
         final String name;
 
-        ScoreboardObjectiveTypes(int id, String name) {
-            this.id = id;
+        ScoreboardObjectiveTypes(String name) {
             this.name = name;
         }
 
@@ -115,21 +106,12 @@ public class PacketScoreboardObjective implements ClientboundPacket {
             return null;
         }
 
-        public static ScoreboardObjectiveTypes byId(int id) {
-            for (ScoreboardObjectiveTypes type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
         public String getName() {
             return name;
         }
 
-        public int getId() {
-            return id;
+        public static ScoreboardObjectiveTypes byId(int id) {
+            return values()[id];
         }
     }
 }

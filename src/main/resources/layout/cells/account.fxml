@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="500.0"
-            minHeight="-Infinity" minWidth="500.0" onMouseClicked="#clicked" prefWidth="500.0"
-            xmlns="http://javafx.com/javafx/11.0.1" fx:controller="de.bixilon.minosoft.gui.main.AccountListCell">
-    <Label fx:id="playerName" layoutX="111.0" layoutY="14.0" maxWidth="200.0" minWidth="10.0" text="Player name"
-           underline="true" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
-        <font>
-            <Font size="17.0"/>
-        </font>
-    </Label>
-    <MenuButton fx:id="optionsMenu" layoutX="389.0" layoutY="81.0" mnemonicParsing="false" text="⋮"
-                AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
-        <items>
-            <MenuItem fx:id="optionsSelect" mnemonicParsing="false" onAction="#select" text="Select"/>
-            <MenuItem mnemonicParsing="false" onAction="#delete" style="-fx-text-fill: red" text="Delete"/>
-        </items>
-    </MenuButton>
-    <Label fx:id="email" layoutX="121.0" layoutY="24.0" maxWidth="200.0" minWidth="10.0" text="email"
-           AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="30.0">
-    </Label>
-</AnchorPane>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="640.0" fx:controller="de.bixilon.minosoft.gui.main.AccountWindow">
+    <MenuBar VBox.vgrow="NEVER">
+        <Menu mnemonicParsing="false" text="_Accounts">
+            <MenuItem mnemonicParsing="false" onAction="#addAccount" text="Add" />
+        </Menu>
+    </MenuBar>
+    <AnchorPane VBox.vgrow="ALWAYS">
+        <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="14.0" layoutY="14.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <BorderPane fx:id="accountPane" />
+        </ScrollPane>
+    </AnchorPane>
+</VBox>

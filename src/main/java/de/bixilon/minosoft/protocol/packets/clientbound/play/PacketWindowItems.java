@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -34,13 +34,13 @@ public class PacketWindowItems implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Inventory slot change: %d", data.length));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Inventory slot change: %d", data.length));
     }
 
     public byte getWindowId() {

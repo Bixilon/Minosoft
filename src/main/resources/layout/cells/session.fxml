@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="500.0"
-            minHeight="-Infinity" minWidth="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.1"
-            fx:controller="de.bixilon.minosoft.gui.main.SessionListCell">
-    <Label fx:id="connectionId" layoutX="111.0" layoutY="14.0" maxWidth="200.0" minWidth="10.0" text="#1"
-           underline="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="500.0" minHeight="-Infinity" minWidth="500.0" prefWidth="500.0" fx:controller="de.bixilon.minosoft.gui.main.SessionListCell">
+    <Label fx:id="connectionId" layoutX="111.0" layoutY="14.0" maxWidth="200.0" minWidth="10.0" text="#1" underline="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
         <font>
-            <Font size="17.0"/>
+            <Font size="17.0" />
         </font>
     </Label>
-    <Label fx:id="account" layoutX="408.0" layoutY="8.0" text="account" AnchorPane.bottomAnchor="5.0"
-           AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="5.0"/>
-    <MenuButton layoutX="389.0" layoutY="81.0" mnemonicParsing="false" text="⋮" AnchorPane.bottomAnchor="5.0"
-                AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+    <Label fx:id="account" layoutX="408.0" layoutY="8.0" text="account" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="5.0" />
+    <MenuButton layoutX="389.0" layoutY="81.0" mnemonicParsing="false" text="⋮" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
         <items>
-            <MenuItem mnemonicParsing="false" onAction="#disconnect" style="-fx-text-fill: red" text="Disconnect"/>
+            <MenuItem mnemonicParsing="false" onAction="#disconnect" style="-fx-text-fill: red" text="Disconnect" />
         </items>
     </MenuButton>
 </AnchorPane>

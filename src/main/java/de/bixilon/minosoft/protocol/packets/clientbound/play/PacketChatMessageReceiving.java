@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.ChatTextPositions;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.data.ChatTextPositions;
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -23,40 +23,43 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import java.util.UUID;
 
 public class PacketChatMessageReceiving implements ClientboundPacket {
-    TextComponent message;
+    ChatComponent message;
     ChatTextPositions position;
     UUID sender;
 
     @Override
     public boolean read(InByteBuffer buffer) {
+        message = buffer.readTextComponent();
         if (buffer.getProtocolId() < 7) {
-            message = buffer.readTextComponent();
             position = ChatTextPositions.CHAT_BOX;
             return true;
         }
-        if (buffer.getProtocolId() < 718) {
-            message = buffer.readTextComponent();
-            position = ChatTextPositions.byId(buffer.readByte());
-            return true;
-        }
-
-        message = buffer.readTextComponent();
         position = ChatTextPositions.byId(buffer.readByte());
-        sender = buffer.readUUID();
+        if (buffer.getProtocolId() >= 718) {
+            sender = buffer.readUUID();
+        }
         return true;
-    }
-
-    @Override
-    public void log() {
-        Log.game(String.format("[CHAT] %s", message.getColoredMessage()));
-    }
-
-    public TextComponent getMessage() {
-        return message;
     }
 
     @Override
     public void handle(PacketHandler h) {
         h.handle(this);
+    }
+
+    @Override
+    public void log() {
+        Log.protocol(String.format("Received chat message (message=\"%s\")", message.getMessage()));
+    }
+
+    public ChatComponent getMessage() {
+        return message;
+    }
+
+    public ChatTextPositions getPosition() {
+        return position;
+    }
+
+    public UUID getSender() {
+        return sender;
     }
 }

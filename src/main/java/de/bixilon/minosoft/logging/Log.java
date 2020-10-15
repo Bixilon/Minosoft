@@ -14,7 +14,9 @@
 package de.bixilon.minosoft.logging;
 
 import de.bixilon.minosoft.Config;
-import de.bixilon.minosoft.game.datatypes.TextComponent;
+import de.bixilon.minosoft.data.text.ChatColors;
+import de.bixilon.minosoft.data.text.ChatFormattingCodes;
+import de.bixilon.minosoft.data.text.RGBColor;
 
 import java.text.SimpleDateFormat;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -22,34 +24,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Log {
     final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     final static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>();
+    final static long startTime = System.currentTimeMillis();
     static LogLevels level = LogLevels.PROTOCOL;
-    static Thread logThread;
-
-    public static void log(LogLevels l, String message, TextComponent.ChatAttributes color) {
-        if (l.ordinal() > level.ordinal()) {
-            // log level too low
-            return;
-        }
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        builder.append(timeFormat.format(System.currentTimeMillis()));
-        builder.append("] [");
-        builder.append(Thread.currentThread().getName());
-        builder.append("] [");
-        builder.append(l.name());
-        builder.append("] ");
-        if (color != null && Config.colorLog) {
-            builder.append(color);
-            builder.append(message);
-            builder.append(TextComponent.ChatAttributes.RESET);
-        } else {
-            builder.append(message);
-        }
-        queue.add(builder.toString());
-    }
 
     public static void initThread() {
-        logThread = new Thread(() -> {
+        new Thread(() -> {
             while (true) {
                 // something to print
                 String message;
@@ -63,18 +42,49 @@ public class Log {
 
                 // ToDo: log to file
             }
-        });
-        logThread.setName("Log");
-        logThread.start();
+        }, "Log").start();
     }
 
     /**
-     * Logs all game related things (chunk loading, rendering, ...)
+     * Logs all game related things (mostly visible stuff to the user)
      *
      * @param message Raw message to log
      */
     public static void game(String message) {
-        log(LogLevels.GAME, message, TextComponent.ChatAttributes.GREEN);
+        log(LogLevels.GAME, message, ChatColors.getColorByName("green"));
+    }
+
+    public static void log(LogLevels level, String message, RGBColor color) {
+        log(level, "", message, color);
+    }
+
+    public static void log(LogLevels level, String prefix, String message, RGBColor color) {
+        if (level.ordinal() > Log.level.ordinal()) {
+            // log level too low
+            return;
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        if (Config.logRelativeTime) {
+            builder.append(System.currentTimeMillis() - startTime);
+        } else {
+            builder.append(timeFormat.format(System.currentTimeMillis()));
+        }
+        builder.append("] [");
+        builder.append(Thread.currentThread().getName());
+        builder.append("] [");
+        builder.append(level.name());
+        builder.append("] ");
+        builder.append(prefix);
+        if (color != null && Config.colorLog) {
+            builder.append(ChatColors.getANSIColorByRGBColor(color));
+            builder.append(message);
+            builder.append(ChatFormattingCodes.RESET.getANSI());
+        } else {
+            builder.append(message);
+        }
+        builder.append(ChatFormattingCodes.RESET.getANSI());
+        queue.add(builder.toString());
     }
 
     /**
@@ -83,52 +93,43 @@ public class Log {
      * @param message Raw message to log
      */
     public static void fatal(String message) {
-        log(LogLevels.FATAL, message, TextComponent.ChatAttributes.DARK_RED);
+        log(LogLevels.FATAL, message, ChatColors.getColorByName("dark_red"));
     }
 
     /**
-     * Logs all general infos (connecting to server, ...)
-     *
-     * @param message Raw message to log
-     */
-    public static void info(String message) {
-        log(LogLevels.INFO, message, TextComponent.ChatAttributes.WHITE);
-    }
-
-    /**
-     * Logs all warnings (connection to server failed, ...)
+     * Logs all warnings (error occurrence, ...)
      *
      * @param message Raw message to log
      */
     public static void warn(String message) {
-        log(LogLevels.WARNING, message, TextComponent.ChatAttributes.RED);
+        log(LogLevels.WARNING, message, ChatColors.getColorByName("red"));
     }
 
     /**
-     * Logs all debug relevant infos (...)
+     * Logs way more data (data that might be important for resolving issues)
      *
      * @param message Raw message to log
      */
     public static void debug(String message) {
-        log(LogLevels.DEBUG, message, TextComponent.ChatAttributes.GRAY);
+        log(LogLevels.DEBUG, message, ChatColors.getColorByName("gray"));
     }
 
     /**
-     * Logs all debug relevant infos (even higher level!) (connection status, ...)
+     * Logs all debug relevant infos (even higher level!) (connection status, ...). Basically everything that happens
      *
      * @param message Raw message to log
      */
     public static void verbose(String message) {
-        log(LogLevels.VERBOSE, message, TextComponent.ChatAttributes.YELLOW);
+        log(LogLevels.VERBOSE, message, ChatColors.getColorByName("yellow"));
     }
 
     /**
-     * Logs all protocol data (received protocol with length and command x,...)
+     * Logs all protocol data (received packet x with data, etc). Should only be used in packets
      *
      * @param message Raw message to log
      */
     public static void protocol(String message) {
-        log(LogLevels.PROTOCOL, message, TextComponent.ChatAttributes.BLUE);
+        log(LogLevels.PROTOCOL, message, ChatColors.getColorByName("blue"));
     }
 
     /**
@@ -137,7 +138,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void mojang(String message) {
-        log(LogLevels.MOJANG, message, TextComponent.ChatAttributes.AQUA);
+        log(LogLevels.MOJANG, message, ChatColors.getColorByName("aqua"));
     }
 
     public static LogLevels getLevel() {
@@ -150,5 +151,14 @@ public class Log {
         }
         Log.info(String.format("Log level changed from %s to %s", Log.level, level));
         Log.level = level;
+    }
+
+    /**
+     * Logs all general infos, that are more or less important to the user (connecting to server, ...)
+     *
+     * @param message Raw message to log
+     */
+    public static void info(String message) {
+        log(LogLevels.INFO, message, ChatColors.getColorByName("white"));
     }
 }

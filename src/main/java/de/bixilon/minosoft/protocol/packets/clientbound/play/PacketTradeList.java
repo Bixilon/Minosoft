@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.Trade;
-import de.bixilon.minosoft.game.datatypes.entities.VillagerData;
-import de.bixilon.minosoft.game.datatypes.inventory.Slot;
+import de.bixilon.minosoft.data.Trade;
+import de.bixilon.minosoft.data.entities.VillagerData;
+import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -62,13 +62,13 @@ public class PacketTradeList implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Received select trade packet (windowId=%d, tradeLength=%d, level=%s, experience=%d, regularVillager=%s, canRestock=%s)", windowId, trades.length, level, experience, isRegularVillager, canRestock));
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol(String.format("Received select trade packet (windowId=%d, tradeLength=%d, level=%s, experience=%d, regularVillager=%s, canRestock=%s)", windowId, trades.length, level, experience, isRegularVillager, canRestock));
     }
 
     public int getWindowId() {

@@ -13,47 +13,56 @@
 
 package de.bixilon.minosoft;
 
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.gui.main.GUITools;
 import de.bixilon.minosoft.gui.main.MainWindow;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.gui.main.ServerListCell;
 import de.bixilon.minosoft.logging.Log;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class Launcher extends Application {
+    private static ProgressBar progressBar;
+    private static Dialog<Boolean> progressDialog;
 
     public static void start() {
+        Log.info("Starting launcher...");
         launch();
+        Log.info("Launcher started!");
+    }
+
+    protected static void setProgressBar(int jobsLeft) {
+        Platform.runLater(() -> {
+            if (progressBar == null || progressDialog == null) {
+                return;
+            }
+            if (jobsLeft == 0) {
+                progressDialog.setResult(Boolean.TRUE);
+                progressDialog.close();
+                return;
+            }
+            progressBar.setProgress(1.0F / jobsLeft);
+        });
     }
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Log.info("Starting launcher...");
-        GUITools.versions.add(Versions.getLowestVersionSupported());
-        for (Map.Entry<Integer, Version> version : Versions.getVersionMap().entrySet()) {
-            GUITools.versions.add(version.getValue());
-        }
-
-        GUITools.versions.sort((a, b) -> {
-            if (a.getProtocolVersion() == -1) {
-                return -Integer.MAX_VALUE;
-            }
-            return (b.getProtocolVersion() - a.getProtocolVersion());
-        });
+        Log.info("Preparing main window...");
 
         GUITools.versionList.setCellFactory(new Callback<>() {
             @Override
@@ -75,7 +84,7 @@ public class Launcher extends Application {
         servers.addAll(Minosoft.serverList);
         ServerListCell.listView.setItems(servers);
 
-        VBox root = FXMLLoader.load(getClass().getResource("/layout/main.fxml"));
+        VBox root = new FXMLLoader(getClass().getResource("/layout/main.fxml")).load();
 
         Scene scene = new Scene(root, 600, 800);
         primaryStage.setScene(scene);
@@ -87,6 +96,18 @@ public class Launcher extends Application {
         if (Minosoft.getSelectedAccount() == null) {
             MainWindow.manageAccounts();
         }
-        Log.info("Launcher started!");
+        Log.info("Main window prepared!");
+        if (Minosoft.getStartUpJobsLeft() == 0) {
+            return;
+        }
+        progressDialog = new Dialog<>();
+        progressDialog.setHeaderText("Minosoft is still starting up...");
+        progressDialog.setTitle("Starting up");
+        GridPane grid = new GridPane();
+        progressBar = new ProgressBar();
+        progressBar.setProgress(1.0D / 5);
+        grid.add(progressBar, 0, 0);
+        progressDialog.getDialogPane().setContent(grid);
+        progressDialog.show();
     }
 }

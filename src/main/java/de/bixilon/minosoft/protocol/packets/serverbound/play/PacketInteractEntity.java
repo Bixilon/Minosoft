@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.Entity;
-import de.bixilon.minosoft.game.datatypes.entities.Location;
-import de.bixilon.minosoft.game.datatypes.player.Hands;
+import de.bixilon.minosoft.data.entities.Entity;
+import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -69,7 +69,7 @@ public class PacketInteractEntity implements ServerboundPacket {
                 click = EntityInteractionClicks.INTERACT;
             }
         }
-        buffer.writeByte((byte) click.getId());
+        buffer.writeByte((byte) click.ordinal());
         if (buffer.getProtocolId() >= 33) {
             if (click == EntityInteractionClicks.INTERACT_AT) {
                 // position
@@ -80,7 +80,7 @@ public class PacketInteractEntity implements ServerboundPacket {
 
             if (click == EntityInteractionClicks.INTERACT_AT || click == EntityInteractionClicks.INTERACT) {
                 if (buffer.getProtocolId() >= 49) {
-                    buffer.writeVarInt(hand.getId());
+                    buffer.writeVarInt(hand.ordinal());
                 }
 
                 if (buffer.getProtocolId() >= 725 && buffer.getProtocolId() < 729) {
@@ -100,18 +100,8 @@ public class PacketInteractEntity implements ServerboundPacket {
     }
 
     public enum EntityInteractionClicks {
-        INTERACT(0),
-        ATTACK(1),
-        INTERACT_AT(2);
-
-        final int id;
-
-        EntityInteractionClicks(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
+        INTERACT,
+        ATTACK,
+        INTERACT_AT
     }
 }

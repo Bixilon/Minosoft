@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.game.datatypes.Difficulties;
-import de.bixilon.minosoft.game.datatypes.GameModes;
-import de.bixilon.minosoft.game.datatypes.LevelTypes;
-import de.bixilon.minosoft.game.datatypes.objectLoader.dimensions.Dimension;
+import de.bixilon.minosoft.data.Difficulties;
+import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.LevelTypes;
+import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -139,11 +139,6 @@ public class PacketJoinGame implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol(String.format("Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", entityId, gameMode, dimension, difficulty, hardcore, viewDistance));
-    }
-
-    @Override
     public void handle(PacketHandler h) {
         h.handle(this);
     }
@@ -157,7 +152,7 @@ public class PacketJoinGame implements ClientboundPacket {
             listTag = ((CompoundTag) nbt).getCompoundTag("minecraft:dimension_type").getListTag("value");
         }
 
-        for (NBTTag tag : listTag.getValue()) {
+        listTag.getValue().forEach((tag) -> {
             CompoundTag compoundTag = (CompoundTag) tag;
             String[] name;
             if (protocolId < 725) {
@@ -175,8 +170,13 @@ public class PacketJoinGame implements ClientboundPacket {
                 hasSkylight = compoundTag.getByteTag("has_skylight").getValue() == 0x01;
             }
             dimensionMap.get(name[0]).put(name[1], new Dimension(name[0], name[1], hasSkylight));
-        }
+        });
         return dimensionMap;
+    }
+
+    @Override
+    public void log() {
+        Log.protocol(String.format("Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", entityId, gameMode, dimension, difficulty, hardcore, viewDistance));
     }
 
     public boolean isHardcore() {
@@ -213,5 +213,17 @@ public class PacketJoinGame implements ClientboundPacket {
 
     public HashMap<String, HashBiMap<String, Dimension>> getDimensions() {
         return dimensions;
+    }
+
+    public boolean isReducedDebugScreen() {
+        return reducedDebugScreen;
+    }
+
+    public boolean isEnableRespawnScreen() {
+        return enableRespawnScreen;
+    }
+
+    public long getHashedSeed() {
+        return hashedSeed;
     }
 }

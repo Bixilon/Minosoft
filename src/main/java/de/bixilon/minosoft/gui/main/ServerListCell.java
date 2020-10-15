@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.game.datatypes.Player;
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Version;
-import de.bixilon.minosoft.game.datatypes.objectLoader.versions.Versions;
+import de.bixilon.minosoft.data.Player;
+import de.bixilon.minosoft.data.mappings.versions.Version;
+import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.ping.ForgeModInfo;
-import de.bixilon.minosoft.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.ping.ForgeModInfo;
+import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.util.DNSUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -37,20 +37,22 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class ServerListCell extends ListCell<Server> implements Initializable {
-    public static ListView<Server> listView = new ListView<>();
+    public static final ListView<Server> listView = new ListView<>();
     @FXML
     public ImageView icon;
     @FXML
-    public Label motd;
+    public TextFlow motd;
     @FXML
     public Label version;
     @FXML
@@ -114,7 +116,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         this.server = server;
         serverName.setText(server.getName());
 
-        Image favicon = server.getFavicon();
+        Image favicon = GUITools.getImage(server.getFavicon());
         if (favicon == null) {
             favicon = GUITools.logo;
         }
@@ -143,8 +145,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 players.setText("");
                 version.setText("Offline");
                 version.setStyle("-fx-text-fill: red;");
-                motd.setText(String.format("%s", server.getLastPing().getLastConnectionException()));
-                motd.setStyle("-fx-text-fill: red;");
+                setErrorMotd(String.format("%s", server.getLastPing().getLastConnectionException()));
                 optionsConnect.setDisable(true);
                 canConnect = false;
                 return;
@@ -169,11 +170,11 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
             serverBrand.setText(ping.getServerModInfo().getBrand());
             serverBrand.setTooltip(new Tooltip(ping.getServerModInfo().getInfo()));
-            motd.setText(ping.getMotd().getRawMessage());
+            motd.getChildren().addAll(ping.getMotd().getJavaFXText());
             if (ping.getFavicon() != null) {
-                icon.setImage(ping.getFavicon());
-                if (!ping.getBase64EncodedFavicon().equals(server.getBase64Favicon())) {
-                    server.setBase64Favicon(ping.getBase64EncodedFavicon());
+                icon.setImage(GUITools.getImage(ping.getFavicon()));
+                if (!Arrays.equals(ping.getFavicon(), server.getFavicon())) {
+                    server.setFavicon(ping.getFavicon());
                     server.saveToConfig();
                 }
             }
@@ -182,8 +183,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 version.setStyle("-fx-text-fill: red;");
                 optionsConnect.setDisable(true);
                 canConnect = false;
-                motd.setText(String.format("%s", server.getLastPing().getLastConnectionException().getLocalizedMessage()));
-                motd.setStyle("-fx-text-fill: red;");
+                setErrorMotd(String.format("%s", server.getLastPing().getLastConnectionException().getLocalizedMessage()));
             }
         }));
 
@@ -192,6 +192,75 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     @Override
     public void updateSelected(boolean selected) {
         super.updateSelected(selected);
+    }
+
+    private void resetCell() {
+        // clear all cells
+        setStyle(null);
+        motd.getChildren().clear();
+        serverBrand.setText("");
+        serverBrand.setTooltip(null);
+        motd.setStyle(null);
+        version.setText("Connecting...");
+        version.setStyle(null);
+        players.setText("");
+        optionsConnect.setDisable(true);
+    }
+
+    private void setErrorMotd(String message) {
+        motd.getChildren().clear();
+        Text text = new Text(message);
+        text.setFill(Color.RED);
+        motd.getChildren().add(text);
+    }
+
+    public void delete() {
+        server.getConnections().forEach(Connection::disconnect);
+        server.delete();
+        Log.info(String.format("Deleted server (name=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
+        listView.getItems().remove(server);
+    }
+
+    public void refresh() {
+        Log.info(String.format("Refreshing server status (serverName=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
+        if (server.getLastPing() == null) {
+            // server was not pinged, don't even try, only costs memory and cpu
+            return;
+        }
+        server.ping();
+    }
+
+    public void clicked(MouseEvent e) {
+        switch (e.getButton()) {
+            case PRIMARY -> {
+                if (e.getClickCount() == 2) {
+                    connect();
+                }
+            }
+            case SECONDARY -> optionsMenu.fire();
+            case MIDDLE -> {
+                listView.getSelectionModel().select(server);
+                edit();
+            }
+        }
+    }
+
+    public void connect() {
+        if (!canConnect || server.getLastPing() == null) {
+            return;
+        }
+        Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), new Player(Minosoft.getSelectedAccount()));
+        Version version;
+        if (server.getDesiredVersion() == -1) {
+            version = server.getLastPing().getVersion();
+        } else {
+            version = Versions.getVersionById(server.getDesiredVersion());
+        }
+        optionsConnect.setDisable(true);
+        connection.connect(server.getLastPing().getAddress(), version);
+        connection.addConnectionChangeCallback(this::handleConnectionCallback);
+        server.addConnection(connection);
+
     }
 
     public void edit() {
@@ -254,71 +323,33 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         dialog.showAndWait();
     }
 
-    public void delete() {
-        server.getConnections().forEach(Connection::disconnect);
-        server.delete();
-        Log.info(String.format("Deleted server (name=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
-        listView.getItems().remove(server);
-    }
-
-    public void connect() {
-        if (!canConnect || server.getLastPing() == null) {
+    private void handleConnectionCallback(Connection connection) {
+        if (!server.getConnections().contains(connection)) {
+            // the card got recycled
             return;
         }
-        Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), new Player(Minosoft.getSelectedAccount()));
-        Version version;
-        if (server.getDesiredVersion() == -1) {
-            version = server.getLastPing().getVersion();
-        } else {
-            version = Versions.getVersionById(server.getDesiredVersion());
-        }
-        optionsConnect.setDisable(true);
-        connection.connect(server.getLastPing().getAddress(), version);
-        connection.addConnectionChangeCallback(this::handleConnectionCallback);
-        server.addConnection(connection);
-
-    }
-
-    private void resetCell() {
-        // clear all cells
-        setStyle(null);
-        motd.setText("");
-        serverBrand.setText("");
-        serverBrand.setTooltip(null);
-        motd.setStyle(null);
-        version.setText("Connecting...");
-        version.setStyle(null);
-        players.setText("");
-        optionsConnect.setDisable(true);
-    }
-
-    public void refresh() {
-        Log.info(String.format("Refreshing server status (serverName=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
-        if (server.getLastPing() == null) {
-            // server was not pinged, don't even try, only costs memory and cpu
-            return;
-        }
-        server.ping();
-    }
-
-    public void clicked(MouseEvent e) {
-        switch (e.getButton()) {
-            case PRIMARY -> {
-                if (e.getClickCount() == 2) {
-                    connect();
+        Platform.runLater(() -> {
+            if (!connection.isConnected()) {
+                // maybe we got disconnected
+                if (!server.isConnected()) {
+                    setStyle(null);
+                    optionsSessions.setDisable(true);
+                    optionsConnect.setDisable(false);
                 }
+                return;
             }
-            case SECONDARY -> optionsMenu.fire();
-            case MIDDLE -> {
-                listView.getSelectionModel().select(server);
-                edit();
+
+            if (Minosoft.getSelectedAccount() != connection.getPlayer().getAccount()) {
+                optionsConnect.setDisable(false);
             }
-        }
+            setStyle("-fx-background-color: darkseagreen;");
+            optionsSessions.setDisable(false);
+        });
     }
 
     public void showInfo() {
 
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        Dialog<?> dialog = new Dialog<>();
         dialog.setTitle("View server info: " + server.getName());
 
         ButtonType loginButtonType = ButtonType.CLOSE;
@@ -368,7 +399,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 Label serverVersionLabel = new Label(serverVersionString);
                 Label serverBrandLabel = new Label(lastPing.getServerBrand());
                 Label playersOnlineMaxLabel = new Label(String.format("%d/%d", lastPing.getPlayerOnline(), lastPing.getMaxPlayers()));
-                Label motdLabel = new Label(lastPing.getMotd().getRawMessage());
+                TextFlow motdLabel = new TextFlow();
+                motdLabel.getChildren().addAll(lastPing.getMotd().getJavaFXText());
                 Label moddedBrandLabel = new Label(lastPing.getServerModInfo().getBrand());
 
                 grid.add(new Label("Real server address:"), 0, ++column);
@@ -413,29 +445,5 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void handleConnectionCallback(Connection connection) {
-        if (!server.getConnections().contains(connection)) {
-            // the card got recycled
-            return;
-        }
-        Platform.runLater(() -> {
-            if (!connection.isConnected()) {
-                // maybe we got disconnected
-                if (!server.isConnected()) {
-                    setStyle(null);
-                    optionsSessions.setDisable(true);
-                    optionsConnect.setDisable(false);
-                }
-                return;
-            }
-
-            if (Minosoft.getSelectedAccount() != connection.getPlayer().getAccount()) {
-                optionsConnect.setDisable(false);
-            }
-            setStyle("-fx-background-color: darkseagreen;");
-            optionsSessions.setDisable(false);
-        });
     }
 }

@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.util.mojang.api;
 
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.util.Util;
 
@@ -32,7 +31,7 @@ public class MojangAccount {
     public MojangAccount(String username, JsonObject json) {
         this.accessToken = json.get("accessToken").getAsString();
         JsonObject profile = json.get("selectedProfile").getAsJsonObject();
-        this.uuid = Util.uuidFromString(profile.get("id").getAsString());
+        this.uuid = Util.getUUIDFromString(profile.get("id").getAsString());
         this.playerName = profile.get("name").getAsString();
 
         JsonObject mojang = json.get("user").getAsJsonObject();
@@ -46,6 +45,20 @@ public class MojangAccount {
         this.uuid = uuid;
         this.playerName = playerName;
         this.mojangUserName = mojangUserName;
+    }
+
+    public static MojangAccount deserialize(JsonObject json) {
+        return new MojangAccount(json.get("accessToken").getAsString(), json.get("userId").getAsString(), Util.getUUIDFromString(json.get("uuid").getAsString()), json.get("playerName").getAsString(), json.get("userName").getAsString());
+    }
+
+    public JsonObject serialize() {
+        JsonObject json = new JsonObject();
+        json.addProperty("accessToken", accessToken);
+        json.addProperty("userId", userId);
+        json.addProperty("uuid", uuid.toString());
+        json.addProperty("playerName", playerName);
+        json.addProperty("userName", mojangUserName);
+        return json;
     }
 
     public void join(String serverId) {
@@ -86,13 +99,15 @@ public class MojangAccount {
         return mojangUserName;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
     public void saveToConfig() {
         Minosoft.getConfig().putMojangAccount(this);
-        Minosoft.getConfig().saveToFile(Config.configFileName);
+        Minosoft.getConfig().saveToFile();
+    }
+
+    public void delete() {
+        Minosoft.getAccountList().remove(this.getUserId());
+        Minosoft.getConfig().removeAccount(this);
+        Minosoft.getConfig().saveToFile();
     }
 
     @Override
@@ -100,11 +115,16 @@ public class MojangAccount {
         return getUserId();
     }
 
-    public void delete() {
-        Minosoft.getAccountList().remove(this.getUserId());
-        Minosoft.getConfig().removeAccount(this);
-        Minosoft.getConfig().saveToFile(Config.configFileName);
+    public String getUserId() {
+        return userId;
     }
+
+    public enum RefreshStates {
+        SUCCESSFUL,
+        ERROR, // account not valid anymore
+        FAILED // error occurred while checking -> Unknown state
+    }
+
 
     @Override
     public int hashCode() {
@@ -126,9 +146,4 @@ public class MojangAccount {
         return account.getUserId().equals(getUserId());
     }
 
-    public enum RefreshStates {
-        SUCCESSFUL,
-        ERROR, // account not valid anymore
-        FAILED // error occurred while checking -> Unknown state
-    }
 }

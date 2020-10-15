@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.game.datatypes.entities.Velocity;
+import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -32,6 +32,11 @@ public class PacketEntityVelocity implements ClientboundPacket {
     }
 
     @Override
+    public void handle(PacketHandler h) {
+        h.handle(this);
+    }
+
+    @Override
     public void log() {
         Log.protocol(String.format("Entity velocity changed %d: %s", entityId, velocity.toString()));
     }
@@ -42,10 +47,5 @@ public class PacketEntityVelocity implements ClientboundPacket {
 
     public Velocity getVelocity() {
         return velocity;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 }

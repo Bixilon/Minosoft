@@ -33,13 +33,13 @@ public class PacketEncryptionRequest implements ClientboundPacket {
     }
 
     @Override
-    public void log() {
-        Log.protocol("Receiving encryption request packet");
+    public void handle(PacketHandler h) {
+        h.handle(this);
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void log() {
+        Log.protocol("Receiving encryption request packet");
     }
 
     public byte[] getPublicKey() {

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.util.nbt.tag;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-public class LongArrayTag implements NBTTag {
+public class LongArrayTag extends NBTTag {
     final long[] value;
 
     public LongArrayTag(long[] value) {
@@ -45,14 +45,16 @@ public class LongArrayTag implements NBTTag {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        for (long l : value) {
-            builder.append(l);
-            builder.append("L, ");
+        builder.append('[');
+        for (int i = 0; i < value.length; i++) {
+            builder.append(value[i]);
+            builder.append("l");
+            if (i == value.length - 1) {
+                break;
+            }
+            builder.append(", ");
         }
-        builder.delete(builder.length() - 2, builder.length()); // delete last comma
         builder.append("]");
-
         return builder.toString();
     }
 }

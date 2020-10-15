@@ -16,11 +16,15 @@ package de.bixilon.minosoft.util.nbt.tag;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-public class ByteTag implements NBTTag {
+public class ByteTag extends NBTTag {
     final byte value;
 
     public ByteTag(byte value) {
         this.value = value;
+    }
+
+    public ByteTag(boolean value) {
+        this.value = (byte) (value ? 0x01 : 0x00);
     }
 
     public ByteTag(InByteBuffer buffer) {

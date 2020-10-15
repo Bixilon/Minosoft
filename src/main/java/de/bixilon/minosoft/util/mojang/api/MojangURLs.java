@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.util.mojang.api;
 
 public enum MojangURLs {
-    STATUS("https://status.mojang.com/check"),
     BLOCKED_SERVERS("https://sessionserver.mojang.com/blockedservers"),
     LOGIN("https://authserver.mojang.com/authenticate"),
     JOIN("https://sessionserver.mojang.com/session/minecraft/join"),
@@ -24,15 +23,6 @@ public enum MojangURLs {
 
     MojangURLs(String url) {
         this.url = url;
-    }
-
-    public static MojangURLs byUrl(String key) {
-        for (MojangURLs url : values()) {
-            if (url.getUrl().equals(key)) {
-                return url;
-            }
-        }
-        return null;
     }
 
     public String getUrl() {
