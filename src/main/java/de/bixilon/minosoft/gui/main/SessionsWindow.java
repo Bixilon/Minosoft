@@ -13,24 +13,32 @@
 
 package de.bixilon.minosoft.gui.main;
 
+import de.bixilon.minosoft.gui.LocaleManager;
+import de.bixilon.minosoft.gui.Strings;
 import de.bixilon.minosoft.protocol.network.Connection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SessionsWindow implements Initializable {
-    @FXML
     public BorderPane accountPane;
+    public Menu menuDisconnect;
+    public MenuItem menuDisconnectFromAll;
+
     Server server;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         SessionListCell.listView.setCellFactory((lv) -> SessionListCell.newInstance());
+
+        menuDisconnect.setText(LocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT));
+        menuDisconnectFromAll.setText(LocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT_FROM_ALL));
     }
 
     public void setServer(Server server) {

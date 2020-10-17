@@ -5,24 +5,24 @@
 
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="640.0" fx:controller="de.bixilon.minosoft.gui.main.MainWindow">
     <MenuBar VBox.vgrow="NEVER">
-        <Menu mnemonicParsing="false" text="_File">
-            <MenuItem mnemonicParsing="false" onAction="#openSettings" text="Preferences" />
+        <Menu fx:id="menuFile" mnemonicParsing="false" text="-_File-">
+            <MenuItem fx:id="menuFilePreferences" mnemonicParsing="false" onAction="#openSettings" text="-Preferences-" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#quit" text="Quit" />
+            <MenuItem fx:id="menuFileQuit" mnemonicParsing="false" onAction="#quit" text="-Quit-" />
         </Menu>
-        <Menu mnemonicParsing="false" text="_Servers">
-            <MenuItem mnemonicParsing="false" onAction="#addServer" text="New" />
-            <MenuItem mnemonicParsing="false" onAction="#refreshServers" text="Refresh">
+        <Menu fx:id="menuServers" mnemonicParsing="false" text="-_Servers-">
+            <MenuItem fx:id="menuServersAdd" mnemonicParsing="false" onAction="#addServer" text="-Add-" />
+            <MenuItem fx:id="menuServerRefresh" mnemonicParsing="false" onAction="#refreshServers" text="-Refresh-">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="UP" />
                 </accelerator>
             </MenuItem>
         </Menu>
-        <Menu mnemonicParsing="false" disable="true" text="_Help">
-            <MenuItem mnemonicParsing="false" disable="true" text="About" />
+        <Menu fx:id="menuHelp" mnemonicParsing="false" disable="true" text="-_Help-">
+            <MenuItem fx:id="menuHelpAbout" mnemonicParsing="false" disable="true" text="-About-" />
         </Menu>
-        <Menu fx:id="accountMenu" mnemonicParsing="false" text="Account">
-            <MenuItem mnemonicParsing="false" onAction="#manageAccounts" text="Manage" />
+        <Menu fx:id="menuAccount" mnemonicParsing="false" text="-Account-">
+            <MenuItem fx:id="menuAccountManage" mnemonicParsing="false" onAction="#manageAccounts" text="-Manage-" />
         </Menu>
     </MenuBar>
     <AnchorPane VBox.vgrow="ALWAYS">

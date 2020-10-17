@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.gui.LocaleManager;
+import de.bixilon.minosoft.gui.Strings;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 import de.bixilon.minosoft.util.mojang.api.MojangAccountAuthenticationAttempt;
@@ -34,8 +36,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AccountWindow implements Initializable {
-    @FXML
+
     public BorderPane accountPane;
+    public MenuItem menuAddAccount;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -45,26 +48,29 @@ public class AccountWindow implements Initializable {
         accounts.addAll(Minosoft.getAccountList().values());
         AccountListCell.listView.setItems(accounts);
         accountPane.setCenter(AccountListCell.listView);
+
+        menuAddAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_ACCOUNT));
     }
 
     @FXML
     public void addAccount() {
-        Dialog<Object> dialog = new Dialog<>();
-        dialog.setTitle("Add account");
+        Dialog<?> dialog = new Dialog<>();
+        dialog.setTitle(LocaleManager.translate(Strings.LOGIN_DIALOG_TITLE));
+        dialog.setHeaderText(LocaleManager.translate(Strings.LOGIN_DIALOG_HEADER));
 
-        ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);
+        ButtonType loginButtonType = new ButtonType(LocaleManager.translate(Strings.BUTTON_LOGIN), ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
 
         TextField email = new TextField();
-        email.setPromptText("Email");
+        email.setPromptText(LocaleManager.translate(Strings.EMAIL));
         PasswordField password = new PasswordField();
-        password.setPromptText("Password");
+        password.setPromptText(LocaleManager.translate(Strings.PASSWORD));
 
-        grid.add(new Label("Email:"), 0, 0);
+        grid.add(new Label(LocaleManager.translate(Strings.EMAIL) + ":"), 0, 0);
         grid.add(email, 1, 0);
-        grid.add(new Label("Password:"), 0, 1);
+        grid.add(new Label(LocaleManager.translate(Strings.PASSWORD) + ":"), 0, 1);
         grid.add(password, 1, 1);
         Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
 
@@ -90,7 +96,7 @@ public class AccountWindow implements Initializable {
             error.setStyle("-fx-text-fill: red");
             error.setText(attempt.getError());
 
-            grid.add(new Label("Error:"), 0, 2);
+            grid.add(new Label(LocaleManager.translate(Strings.LOGIN_ERROR)), 0, 2);
             grid.add(error, 1, 2);
             // ToDo resize window
         });

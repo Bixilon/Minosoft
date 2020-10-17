@@ -17,13 +17,14 @@ import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.Player;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
+import de.bixilon.minosoft.gui.LocaleManager;
+import de.bixilon.minosoft.gui.Strings;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.ping.ForgeModInfo;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.util.DNSUtil;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -49,29 +50,23 @@ import java.util.ResourceBundle;
 
 public class ServerListCell extends ListCell<Server> implements Initializable {
     public static final ListView<Server> listView = new ListView<>();
-    @FXML
+
     public ImageView icon;
-    @FXML
     public TextFlow motd;
-    @FXML
     public Label version;
-    @FXML
-    public ImageView ping; //ToDo
-    @FXML
     public Label players;
-    @FXML
-    public MenuItem optionsConnect;
-    @FXML
-    public MenuButton optionsMenu;
-    @FXML
     public Label serverBrand;
-    @FXML
+    public Label serverName;
+    public AnchorPane root;
+    public MenuItem optionsConnect;
+    public MenuItem optionsShowInfo;
+    public MenuItem optionsEdit;
+    public MenuItem optionsRefresh;
     public MenuItem optionsSessions;
+    public MenuItem optionsDelete;
+    public MenuButton optionsMenu;
+
     boolean canConnect = false;
-    @FXML
-    private Label serverName;
-    @FXML
-    private AnchorPane root;
     private Server server;
 
     public static ServerListCell newInstance() {
@@ -89,6 +84,14 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         updateSelected(false);
         setGraphic(root);
+
+        // change locale
+        optionsConnect.setText(LocaleManager.translate(Strings.SERVER_ACTION_CONNECT));
+        optionsShowInfo.setText(LocaleManager.translate(Strings.SERVER_ACTION_SHOW_INFO));
+        optionsEdit.setText(LocaleManager.translate(Strings.SERVER_ACTION_EDIT));
+        optionsRefresh.setText(LocaleManager.translate(Strings.SERVER_ACTION_REFRESH));
+        optionsSessions.setText(LocaleManager.translate(Strings.SERVER_ACTION_SESSIONS));
+        optionsDelete.setText(LocaleManager.translate(Strings.SERVER_ACTION_DELETE));
     }
 
     public AnchorPane getRoot() {
@@ -143,14 +146,14 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             if (ping == null) {
                 // Offline
                 players.setText("");
-                version.setText("Offline");
+                version.setText(LocaleManager.translate(Strings.OFFLINE));
                 version.setStyle("-fx-text-fill: red;");
                 setErrorMotd(String.format("%s", server.getLastPing().getLastConnectionException()));
                 optionsConnect.setDisable(true);
                 canConnect = false;
                 return;
             }
-            players.setText(String.format("%d/%d", ping.getPlayerOnline(), ping.getMaxPlayers()));
+            players.setText(LocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, ping.getPlayerOnline(), ping.getMaxPlayers()));
             Version serverVersion;
             if (server.getDesiredVersion() == -1) {
                 serverVersion = Versions.getVersionById(ping.getProtocolId());
@@ -201,7 +204,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         serverBrand.setText("");
         serverBrand.setTooltip(null);
         motd.setStyle(null);
-        version.setText("Connecting...");
+        version.setText(LocaleManager.translate(Strings.CONNECTING));
         version.setStyle(null);
         players.setText("");
         optionsConnect.setDisable(true);
@@ -264,11 +267,11 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     }
 
     public void edit() {
-        Dialog<Object> dialog = new Dialog<>();
-        dialog.setTitle("Edit server: " + server.getName());
-        dialog.setHeaderText("Edit the details of the server");
+        Dialog<?> dialog = new Dialog<>();
+        dialog.setTitle(LocaleManager.translate(Strings.EDIT_SERVER_DIALOG_TITLE, server.getName()));
+        dialog.setHeaderText(LocaleManager.translate(Strings.EDIT_SERVER_DIALOG_HEADER));
 
-        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        ButtonType saveButtonType = new ButtonType(LocaleManager.translate(Strings.BUTTON_SAVE), ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
@@ -277,10 +280,10 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         grid.setPadding(new Insets(20, 300, 10, 10));
 
         TextField serverName = new TextField();
-        serverName.setPromptText("Servername");
+        serverName.setPromptText(LocaleManager.translate(Strings.SERVER_NAME));
         serverName.setText(server.getName());
         TextField serverAddress = new TextField();
-        serverAddress.setPromptText("Server address");
+        serverAddress.setPromptText(LocaleManager.translate(Strings.SERVER_ADDRESS));
         serverAddress.setText(server.getAddress());
 
         if (server.getDesiredVersion() == -1) {
@@ -289,11 +292,11 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             GUITools.versionList.getSelectionModel().select(Versions.getVersionById(server.getDesiredVersion()));
         }
 
-        grid.add(new Label("Servername:"), 0, 0);
+        grid.add(new Label(LocaleManager.translate(Strings.SERVER_NAME) + ":"), 0, 0);
         grid.add(serverName, 1, 0);
-        grid.add(new Label("Server address:"), 0, 1);
+        grid.add(new Label(LocaleManager.translate(Strings.SERVER_ADDRESS) + ":"), 0, 1);
         grid.add(serverAddress, 1, 1);
-        grid.add(new Label("Version:"), 0, 2);
+        grid.add(new Label(LocaleManager.translate(Strings.VERSION) + ":"), 0, 2);
         grid.add(GUITools.versionList, 1, 2);
 
         Node saveButton = dialog.getDialogPane().lookupButton(saveButtonType);
@@ -371,18 +374,18 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
 
         int column = -1;
-        grid.add(new Label("Servername:"), 0, ++column);
+        grid.add(new Label(LocaleManager.translate(Strings.SERVER_NAME) + ":"), 0, ++column);
         grid.add(serverNameLabel, 1, column);
-        grid.add(new Label("Server address:"), 0, ++column);
+        grid.add(new Label(LocaleManager.translate(Strings.SERVER_ADDRESS) + ":"), 0, ++column);
         grid.add(serverAddressLabel, 1, column);
-        grid.add(new Label("Forced version:"), 0, ++column);
+        grid.add(new Label(LocaleManager.translate(Strings.FORCED_VERSION) + ":"), 0, ++column);
         grid.add(forcedVersionLabel, 1, column);
 
         if (server.getLastPing() != null) {
             if (server.getLastPing().getLastConnectionException() != null) {
                 Label lastConnectionExceptionLabel = new Label(server.getLastPing().getLastConnectionException().toString());
                 lastConnectionExceptionLabel.setStyle("-fx-text-fill: red");
-                grid.add(new Label("Last connection exception:"), 0, ++column);
+                grid.add(new Label(LocaleManager.translate(Strings.SERVER_INFO_LAST_CONNECTION_EXCEPTION) + ":"), 0, ++column);
                 grid.add(lastConnectionExceptionLabel, 1, column);
             }
 
@@ -391,29 +394,29 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 Version serverVersion = Versions.getVersionById(lastPing.getProtocolId());
                 String serverVersionString;
                 if (serverVersion == null) {
-                    serverVersionString = String.format("Unknown (%d)", lastPing.getProtocolId());
+                    serverVersionString = LocaleManager.translate(Strings.SERVER_INFO_LAST_CONNECTION_EXCEPTION, lastPing.getProtocolId());
                 } else {
                     serverVersionString = serverVersion.getVersionName();
                 }
                 Label realServerAddressLabel = new Label(server.getLastPing().getAddress().toString());
                 Label serverVersionLabel = new Label(serverVersionString);
                 Label serverBrandLabel = new Label(lastPing.getServerBrand());
-                Label playersOnlineMaxLabel = new Label(String.format("%d/%d", lastPing.getPlayerOnline(), lastPing.getMaxPlayers()));
+                Label playersOnlineMaxLabel = new Label(LocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, lastPing.getPlayerOnline(), lastPing.getMaxPlayers()));
                 TextFlow motdLabel = new TextFlow();
                 motdLabel.getChildren().addAll(lastPing.getMotd().getJavaFXText());
                 Label moddedBrandLabel = new Label(lastPing.getServerModInfo().getBrand());
 
-                grid.add(new Label("Real server address:"), 0, ++column);
+                grid.add(new Label(LocaleManager.translate(Strings.SERVER_INFO_REAL_SERVER_ADDRESS) + ":"), 0, ++column);
                 grid.add(realServerAddressLabel, 1, column);
-                grid.add(new Label("Server version:"), 0, ++column);
+                grid.add(new Label(LocaleManager.translate(Strings.VERSION) + ":"), 0, ++column);
                 grid.add(serverVersionLabel, 1, column);
-                grid.add(new Label("Server brand:"), 0, ++column);
+                grid.add(new Label(LocaleManager.translate(Strings.SERVER_INFO_SERVER_BRAND) + ":"), 0, ++column);
                 grid.add(serverBrandLabel, 1, column);
-                grid.add(new Label("Players online:"), 0, ++column);
+                grid.add(new Label(LocaleManager.translate(Strings.SERVER_INFO_PLAYERS_ONLINE) + ":"), 0, ++column);
                 grid.add(playersOnlineMaxLabel, 1, column);
-                grid.add(new Label("MotD:"), 0, ++column);
+                grid.add(new Label(LocaleManager.translate(Strings.SERVER_INFO_MESSAGE_OF_THE_DAY) + ":"), 0, ++column);
                 grid.add(motdLabel, 1, column);
-                grid.add(new Label("Modded brand:"), 0, ++column);
+                grid.add(new Label(LocaleManager.translate(Strings.SERVER_INFO_SERVER_MODDED_BRAND) + ":"), 0, ++column);
                 grid.add(moddedBrandLabel, 1, column);
 
                 if (lastPing.getServerModInfo() instanceof ForgeModInfo) {
@@ -421,7 +424,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                     Label moddedModsLabel = new Label(modInfo.getModList().toString());
                     moddedModsLabel.setWrapText(true);
 
-                    grid.add(new Label("Mod list:"), 0, ++column);
+                    grid.add(new Label(LocaleManager.translate(Strings.SERVER_INFO_SERVER_MODDED_MOD_LIST) + ":"), 0, ++column);
                     grid.add(moddedModsLabel, 1, column);
                 }
             }
@@ -439,7 +442,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             ((SessionsWindow) loader.getController()).setServer(server);
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle(String.format("Sessions - %s - Minosoft", server.getName()));
+            stage.setTitle(LocaleManager.translate(Strings.SESSIONS_DIALOG_TITLE, server.getName()));
             stage.setScene(new Scene(parent));
             stage.show();
         } catch (IOException e) {

@@ -122,6 +122,7 @@ public class Configuration {
         return switch (path) {
             case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").get("selected").getAsString();
             case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").get("log-level").getAsString();
+            case LANGUAGE -> config.getAsJsonObject("general").get("language").getAsString();
             case MAPPINGS_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").get("mappings").getAsString();
             case CLIENT_TOKEN -> config.getAsJsonObject("accounts").get("client-token").getAsString();
             default -> throw new RuntimeException(String.format("Illegal String value: %s", path));
@@ -132,6 +133,7 @@ public class Configuration {
         switch (path) {
             case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").addProperty("selected", value);
             case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").addProperty("log-level", value);
+            case LANGUAGE -> config.getAsJsonObject("general").addProperty("language", value);
             case MAPPINGS_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").addProperty("mappings", value);
             case CLIENT_TOKEN -> config.getAsJsonObject("accounts").addProperty("client-token", value);
             default -> throw new RuntimeException(String.format("Illegal String value: %s", path));

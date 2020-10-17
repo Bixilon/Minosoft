@@ -11,13 +11,12 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft;
+package de.bixilon.minosoft.gui.main;
 
+import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.mappings.versions.Version;
-import de.bixilon.minosoft.gui.main.GUITools;
-import de.bixilon.minosoft.gui.main.MainWindow;
-import de.bixilon.minosoft.gui.main.Server;
-import de.bixilon.minosoft.gui.main.ServerListCell;
+import de.bixilon.minosoft.gui.LocaleManager;
+import de.bixilon.minosoft.gui.Strings;
 import de.bixilon.minosoft.logging.Log;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -46,7 +45,7 @@ public class Launcher extends Application {
         Log.info("Launcher started!");
     }
 
-    protected static void setProgressBar(int jobsLeft) {
+    public static void setProgressBar(int jobsLeft) {
         Platform.runLater(() -> {
             if (progressBar == null || progressDialog == null) {
                 return;
@@ -89,7 +88,7 @@ public class Launcher extends Application {
         Scene scene = new Scene(root, 600, 800);
         primaryStage.setScene(scene);
 
-        primaryStage.setTitle("Minosoft");
+        primaryStage.setTitle(LocaleManager.translate(Strings.MAIN_WINDOW_TITLE));
         primaryStage.getIcons().add(GUITools.logo);
         primaryStage.show();
         primaryStage.setOnCloseRequest(windowEvent -> System.exit(0));
@@ -101,8 +100,8 @@ public class Launcher extends Application {
             return;
         }
         progressDialog = new Dialog<>();
-        progressDialog.setHeaderText("Minosoft is still starting up...");
-        progressDialog.setTitle("Starting up");
+        progressDialog.setTitle(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_TITLE));
+        progressDialog.setHeaderText(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_HEADER));
         GridPane grid = new GridPane();
         progressBar = new ProgressBar();
         progressBar.setProgress(1.0D / 5);

@@ -17,7 +17,9 @@ import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
+import de.bixilon.minosoft.gui.LocaleManager;
 import de.bixilon.minosoft.gui.main.AccountListCell;
+import de.bixilon.minosoft.gui.main.Launcher;
 import de.bixilon.minosoft.gui.main.MainWindow;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
@@ -36,7 +38,7 @@ import java.util.concurrent.CountDownLatch;
 
 public final class Minosoft {
     public static final HashSet<EventManager> eventManagers = new HashSet<>();
-    private static final CountDownLatch startStatus = new CountDownLatch(2); // number of critical components (wait for them before other "big" actions)
+    private static final CountDownLatch startStatus = new CountDownLatch(3); // number of critical components (wait for them before other "big" actions)
     public static HashBiMap<String, MojangAccount> accountList;
     public static MojangAccount selectedAccount;
     public static ArrayList<Server> serverList;
@@ -62,6 +64,11 @@ public final class Minosoft {
 
         serverList = config.getServers();
         ArrayList<Callable<Boolean>> startCallables = new ArrayList<>();
+        startCallables.add(() -> {
+            LocaleManager.load(config.getString(ConfigurationPaths.LANGUAGE));
+            countDownStart();
+            return true;
+        });
         startCallables.add(() -> {
             Log.info("Loading versions.json...");
             long mappingStartLoadingTime = System.currentTimeMillis();
@@ -129,9 +136,7 @@ public final class Minosoft {
         }
         config.putString(ConfigurationPaths.ACCOUNT_SELECTED, account.getUserId());
         selectedAccount = account;
-        if (MainWindow.accountMenu2 != null) {
-            MainWindow.accountMenu2.setText(String.format("Account (%s)", account.getPlayerName()));
-        }
+        MainWindow.selectAccount();
         account.saveToConfig();
     }
 

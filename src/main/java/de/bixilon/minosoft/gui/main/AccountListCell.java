@@ -14,9 +14,10 @@
 package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.gui.LocaleManager;
+import de.bixilon.minosoft.gui.Strings;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -29,16 +30,14 @@ import java.util.ResourceBundle;
 
 public class AccountListCell extends ListCell<MojangAccount> implements Initializable {
     public static final ListView<MojangAccount> listView = new ListView<>();
-    @FXML
+
     public MenuButton optionsMenu;
-    @FXML
     public Label playerName;
-    @FXML
     public MenuItem optionsSelect;
-    @FXML
     public Label email;
-    @FXML
-    private AnchorPane root;
+    public MenuItem optionsDelete;
+    public AnchorPane root;
+
     private MojangAccount account;
 
     public static AccountListCell newInstance() {
@@ -56,6 +55,11 @@ public class AccountListCell extends ListCell<MojangAccount> implements Initiali
     public void initialize(URL url, ResourceBundle rb) {
         updateSelected(false);
         setGraphic(root);
+
+        // change locale
+        optionsSelect.setText(LocaleManager.translate(Strings.ACCOUNTS_ACTION_SELECT));
+        optionsDelete.setText(LocaleManager.translate(Strings.ACCOUNTS_ACTION_DELETE));
+
     }
 
     public AnchorPane getRoot() {

@@ -15,21 +15,25 @@ package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
+import de.bixilon.minosoft.gui.LocaleManager;
+import de.bixilon.minosoft.gui.Strings;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.layout.GridPane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SettingsWindow implements Initializable {
-    @FXML
     public GridPane tabGeneral;
-    @FXML
     public ComboBox<LogLevels> generalLogLevel;
+    public Tab general;
+    public Tab download;
+    public Label generalLogLevelLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -44,5 +48,9 @@ public class SettingsWindow implements Initializable {
             Minosoft.getConfig().putString(ConfigurationPaths.GENERAL_LOG_LEVEL, newLevel.name());
             Minosoft.getConfig().saveToFile();
         }));
+
+        general.setText(LocaleManager.translate(Strings.SETTINGS_GENERAL));
+        generalLogLevelLabel.setText(LocaleManager.translate(Strings.SETTINGS_GENERAL_LOG_LEVEL));
+        download.setText(LocaleManager.translate(Strings.SETTINGS_DOWNLOAD));
     }
 }

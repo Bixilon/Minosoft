@@ -11,15 +11,31 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config;
+package de.bixilon.minosoft.gui;
 
-public enum ConfigurationPaths {
-    CONFIG_VERSION,
-    GAME_RENDER_DISTANCE,
-    NETWORK_FAKE_CLIENT_BRAND,
-    GENERAL_LOG_LEVEL,
-    CLIENT_TOKEN,
-    MAPPINGS_URL,
-    ACCOUNT_SELECTED,
-    LANGUAGE,
+import com.google.gson.JsonObject;
+
+import java.text.MessageFormat;
+import java.util.HashMap;
+
+public class Language {
+    private final String language;
+    private final HashMap<Strings, String> data = new HashMap<>();
+
+    protected Language(String language, JsonObject json) {
+        this.language = language;
+        json.keySet().forEach((key) -> data.put(Strings.valueOf(key.toUpperCase()), json.get(key).getAsString()));
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public boolean canTranslate(Strings key) {
+        return data.containsKey(key);
+    }
+
+    public String translate(Strings key, Object... data) {
+        return MessageFormat.format(this.data.get(key), data);
+    }
 }

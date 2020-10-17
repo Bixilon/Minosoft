@@ -15,6 +15,8 @@ package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
+import de.bixilon.minosoft.gui.LocaleManager;
+import de.bixilon.minosoft.gui.Strings;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.DNSUtil;
 import javafx.application.Platform;
@@ -37,29 +39,83 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainWindow implements Initializable {
-    @FXML
-    public BorderPane serversPane;
-    @FXML
-    public Menu accountMenu;
+    public static Menu menuAccount2;
 
-    public static Menu accountMenu2;
+    public BorderPane serversPane;
+    public Menu menuFile;
+    public MenuItem menuFilePreferences;
+    public MenuItem menuFileQuit;
+    public Menu menuServers;
+    public MenuItem menuServersAdd;
+    public MenuItem menuServerRefresh;
+    public Menu menuHelp;
+    public MenuItem menuHelpAbout;
+    public Menu menuAccount;
+    public MenuItem menuAccountManage;
+
+    public static void manageAccounts() {
+        try {
+            Parent parent = new FXMLLoader(MainWindow.class.getResource("/layout/accounts.fxml")).load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Manage accounts - Minosoft");
+            stage.setScene(new Scene(parent));
+            Platform.setImplicitExit(false);
+            stage.setOnCloseRequest(event -> {
+                if (Minosoft.getSelectedAccount() == null) {
+                    event.consume();
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Error", ButtonType.CANCEL, ButtonType.OK);
+                    alert.setHeaderText("Are you sure?");
+                    alert.setContentText("No account selected, Minosoft will exit.");
+                    alert.showAndWait().ifPresent((type) -> {
+                        if (type == ButtonType.OK) {
+                            System.exit(0);
+                            return;
+                        }
+                        alert.close();
+                    });
+                } else {
+                    stage.close();
+                }
+            });
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void selectAccount() {
+        if (Minosoft.getSelectedAccount() != null) {
+            menuAccount2.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, Minosoft.getSelectedAccount().getPlayerName()));
+        } else {
+            menuAccount2.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         serversPane.setCenter(ServerListCell.listView);
-        accountMenu2 = accountMenu;
-        if (Minosoft.getSelectedAccount() != null) {
-            accountMenu.setText(String.format("Account (%s)", Minosoft.getSelectedAccount().getPlayerName()));
-        }
+
+        menuAccount2 = menuAccount;
+        menuFile.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE));
+        menuFilePreferences.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_PREFERENCES));
+        menuFileQuit.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_QUIT));
+        menuServers.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS));
+        menuServersAdd.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ADD));
+        menuServerRefresh.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_REFRESH));
+        menuHelp.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP));
+        menuHelpAbout.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP_ABOUT));
+        menuAccountManage.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_MANAGE));
+        selectAccount();
     }
 
     @FXML
     public void addServer() {
-        Dialog<Object> dialog = new Dialog<>();
-        dialog.setTitle("Add server");
-        dialog.setHeaderText("Enter the details of the server");
+        Dialog<?> dialog = new Dialog<>();
+        dialog.setTitle(LocaleManager.translate(Strings.ADD_SERVER_DIALOG_TITLE));
+        dialog.setHeaderText(LocaleManager.translate(Strings.ADD_SERVER_DIALOG_HEADER));
 
-        ButtonType addButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
+        ButtonType addButtonType = new ButtonType(LocaleManager.translate(Strings.BUTTON_ADD), ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
@@ -68,18 +124,18 @@ public class MainWindow implements Initializable {
         grid.setPadding(new Insets(20, 300, 10, 10));
 
         TextField serverName = new TextField();
-        serverName.setPromptText("Servername");
-        serverName.setText("A Minosoft server");
+        serverName.setPromptText(LocaleManager.translate(Strings.SERVER_NAME));
+        serverName.setText(LocaleManager.translate(Strings.ADD_SERVER_DIALOG_DEFAULT_SERVER_NAME));
         TextField serverAddress = new TextField();
-        serverAddress.setPromptText("Server address");
+        serverAddress.setPromptText(LocaleManager.translate(Strings.SERVER_ADDRESS));
 
         GUITools.versionList.getSelectionModel().select(Versions.getLowestVersionSupported());
 
-        grid.add(new Label("Servername:"), 0, 0);
+        grid.add(new Label(LocaleManager.translate(Strings.SERVER_NAME) + ":"), 0, 0);
         grid.add(serverName, 1, 0);
-        grid.add(new Label("Server address:"), 0, 1);
+        grid.add(new Label(LocaleManager.translate(Strings.SERVER_ADDRESS) + ":"), 0, 1);
         grid.add(serverAddress, 1, 1);
-        grid.add(new Label("Version:"), 0, 2);
+        grid.add(new Label(LocaleManager.translate(Strings.VERSION) + ":"), 0, 2);
         grid.add(GUITools.versionList, 1, 2);
 
         Node addButton = dialog.getDialogPane().lookupButton(addButtonType);
@@ -125,43 +181,13 @@ public class MainWindow implements Initializable {
         manageAccounts();
     }
 
-    public static void manageAccounts() {
-        try {
-            Parent parent = new FXMLLoader(MainWindow.class.getResource("/layout/accounts.fxml")).load();
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Manage accounts - Minosoft");
-            stage.setScene(new Scene(parent));
-            Platform.setImplicitExit(false);
-            stage.setOnCloseRequest(event -> {
-                if (Minosoft.getSelectedAccount() == null) {
-                    event.consume();
-                    Alert alert = new Alert(Alert.AlertType.WARNING, "Error", ButtonType.CANCEL, ButtonType.OK);
-                    alert.setHeaderText("Are you sure?");
-                    alert.setContentText("No account selected, Minosoft will exit.");
-                    alert.showAndWait().ifPresent((type) -> {
-                        if (type == ButtonType.OK) {
-                            System.exit(0);
-                            return;
-                        }
-                        alert.close();
-                    });
-                } else {
-                    stage.close();
-                }
-            });
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void openSettings() {
         try {
             Parent parent = new FXMLLoader(MainWindow.class.getResource("/layout/settings.fxml")).load();
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Settings - Minosoft");
+            stage.getIcons().add(GUITools.logo);
+            stage.setTitle(LocaleManager.translate(Strings.SETTINGS_TITLE));
             stage.setScene(new Scene(parent));
             stage.show();
         } catch (IOException e) {

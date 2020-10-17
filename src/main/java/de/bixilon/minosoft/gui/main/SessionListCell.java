@@ -13,14 +13,16 @@
 
 package de.bixilon.minosoft.gui.main;
 
+import de.bixilon.minosoft.gui.LocaleManager;
+import de.bixilon.minosoft.gui.Strings;
 import de.bixilon.minosoft.protocol.network.Connection;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -30,12 +32,12 @@ import java.util.ResourceBundle;
 
 public class SessionListCell extends ListCell<Connection> implements Initializable {
     public static final ListView<Connection> listView = new ListView<>();
-    @FXML
+
     public Label account;
-    @FXML
     public Label connectionId;
-    @FXML
-    private AnchorPane root;
+    public MenuItem optionsDisconnect;
+    public AnchorPane root;
+
     private Connection connection;
 
     public static SessionListCell newInstance() {
@@ -53,6 +55,8 @@ public class SessionListCell extends ListCell<Connection> implements Initializab
     public void initialize(URL url, ResourceBundle rb) {
         updateSelected(false);
         setGraphic(root);
+
+        optionsDisconnect.setText(LocaleManager.translate(Strings.SESSIONS_ACTION_DISCONNECT));
     }
 
     public AnchorPane getRoot() {

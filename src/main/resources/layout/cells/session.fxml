@@ -11,10 +11,10 @@
             <Font size="17.0" />
         </font>
     </Label>
-    <Label fx:id="account" layoutX="408.0" layoutY="8.0" text="account" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="5.0" />
+    <Label fx:id="account" layoutX="408.0" layoutY="8.0" text="#Account#" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="5.0" />
     <MenuButton layoutX="389.0" layoutY="81.0" mnemonicParsing="false" text="⋮" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
         <items>
-            <MenuItem mnemonicParsing="false" onAction="#disconnect" style="-fx-text-fill: red" text="Disconnect" />
+            <MenuItem fx:id="optionsDisconnect" mnemonicParsing="false" onAction="#disconnect" style="-fx-text-fill: red" text="-Disconnect-" />
         </items>
     </MenuButton>
 </AnchorPane>

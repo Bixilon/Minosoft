@@ -1,7 +1,8 @@
 {
   "general": {
     "version": 1,
-    "log-level": "WARNING"
+    "log-level": "WARNING",
+    "language": "en_US"
   },
   "game": {
     "render-distance": 12
