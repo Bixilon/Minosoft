@@ -74,7 +74,7 @@ public final class Minosoft {
             long mappingStartLoadingTime = System.currentTimeMillis();
             try {
                 Versions.load(Util.readJsonAsset("mapping/versions.json"));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(1);
             }
