@@ -105,7 +105,7 @@ public class AssetsManager {
         return readAssetAsStreamByHash(assets.get(name));
     }
 
-    private static JsonElement readJsonAsset(String name) throws IOException {
+    public static JsonElement readJsonAsset(String name) throws IOException {
         return readJsonAssetByHash(assets.get(name));
     }
 

@@ -17,8 +17,9 @@ import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.data.assets.AssetsManager;
+import de.bixilon.minosoft.data.locale.LocaleManager;
+import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.gui.LocaleManager;
 import de.bixilon.minosoft.gui.main.AccountListCell;
 import de.bixilon.minosoft.gui.main.Launcher;
 import de.bixilon.minosoft.gui.main.MainWindow;
@@ -41,7 +42,7 @@ import java.util.concurrent.CountDownLatch;
 public final class Minosoft {
     public static final HashSet<EventManager> eventManagers = new HashSet<>();
     public static final CountUpAndDownLatch assetsLatch = new CountUpAndDownLatch(1);  // count of files still to download, will be used to show progress
-    private static final CountDownLatch startStatusLatch = new CountDownLatch(4); // number of critical components (wait for them before other "big" actions)
+    private static final CountDownLatch startStatusLatch = new CountDownLatch(5); // number of critical components (wait for them before other "big" actions)
     public static HashBiMap<String, MojangAccount> accountList;
     public static MojangAccount selectedAccount;
     public static ArrayList<Server> serverList;
@@ -69,7 +70,7 @@ public final class Minosoft {
         ArrayList<Callable<Boolean>> startCallables = new ArrayList<>();
         startCallables.add(() -> {
             LocaleManager.load(config.getString(ConfigurationPaths.LANGUAGE));
-            countDownStart();
+            countDownStartLatch();
             return true;
         });
         startCallables.add(() -> {
@@ -82,7 +83,7 @@ public final class Minosoft {
                 System.exit(1);
             }
             Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
-            countDownStart(); // (another) critical component was loaded
+            countDownStartLatch(); // (another) critical component was loaded
             return true;
         });
         startCallables.add(() -> {
@@ -94,7 +95,7 @@ public final class Minosoft {
         });
         startCallables.add(() -> {
             ModLoader.loadMods();
-            countDownStart();
+            countDownStartLatch();
             return true;
         });
         startCallables.add(() -> {
@@ -103,7 +104,16 @@ public final class Minosoft {
         });
         startCallables.add(() -> {
             AssetsManager.downloadAllAssets(assetsLatch);
-            countDownStart();
+            countDownStartLatch();
+            return true;
+        });
+        startCallables.add(() -> {
+            // load minecraft language file
+
+            // wait for assets to be loaded
+            assetsLatch.waitUntilZero();
+            MinecraftLocaleManager.load(config.getString(ConfigurationPaths.LANGUAGE));
+            countDownStartLatch();
             return true;
         });
         // If you add another "critical" component (wait for them at startup): You MUST adjust increment the number of the counter in `startStatus` (See in the first lines of this file)
@@ -114,7 +124,7 @@ public final class Minosoft {
         }
     }
 
-    private static void countDownStart() {
+    private static void countDownStartLatch() {
         startStatusLatch.countDown();
         Launcher.setProgressBar((int) startStatusLatch.getCount());
     }

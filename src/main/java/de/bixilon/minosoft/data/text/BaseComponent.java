@@ -165,6 +165,11 @@ public class BaseComponent implements ChatComponent {
             TextComponent finalThisChatPart = thisTextComponent;
             extras.forEach((extra -> parts.add(new BaseComponent(finalThisChatPart, extra.getAsJsonObject()))));
         }
+
+        if (json.has("translate")) {
+            parts.add(new TranslatableComponent(json.get("translate").getAsString(), json.getAsJsonArray("with")));
+        }
+
         if (thisTextComponent != null) {
             parts.add(thisTextComponent);
         }

@@ -11,7 +11,7 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui;
+package de.bixilon.minosoft.data.locale;
 
 public enum Strings {
     EMAIL,

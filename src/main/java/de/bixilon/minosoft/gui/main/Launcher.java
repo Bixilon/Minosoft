@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.data.locale.LocaleManager;
+import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Version;
-import de.bixilon.minosoft.gui.LocaleManager;
-import de.bixilon.minosoft.gui.Strings;
 import de.bixilon.minosoft.logging.Log;
 import javafx.application.Application;
 import javafx.application.Platform;

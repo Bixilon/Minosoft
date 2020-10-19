@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.main;
 
-import de.bixilon.minosoft.gui.LocaleManager;
-import de.bixilon.minosoft.gui.Strings;
+import de.bixilon.minosoft.data.locale.LocaleManager;
+import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.protocol.network.Connection;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;

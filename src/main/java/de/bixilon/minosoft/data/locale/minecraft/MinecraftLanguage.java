@@ -11,31 +11,30 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui;
+package de.bixilon.minosoft.data.locale.minecraft;
 
 import com.google.gson.JsonObject;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 
-public class Language {
+public class MinecraftLanguage {
     private final String language;
-    private final HashMap<Strings, String> data = new HashMap<>();
+    private final HashMap<String, String> data = new HashMap<>();
 
-    protected Language(String language, JsonObject json) {
+    protected MinecraftLanguage(String language, JsonObject json) {
         this.language = language;
-        json.keySet().forEach((key) -> data.put(Strings.valueOf(key.toUpperCase()), json.get(key).getAsString()));
+        json.keySet().forEach((key) -> data.put(key.toLowerCase(), json.get(key).getAsString()));
     }
 
     public String getLanguage() {
         return language;
     }
 
-    public boolean canTranslate(Strings key) {
+    public boolean canTranslate(String key) {
         return data.containsKey(key);
     }
 
-    public String translate(Strings key, Object... data) {
-        return MessageFormat.format(this.data.get(key), data);
+    public String translate(String key, Object... data) {
+        return String.format(this.data.get(key), data);
     }
 }
