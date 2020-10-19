@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.util;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 
@@ -47,5 +49,13 @@ public final class HTTP {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static JsonElement getJson(String url) {
+        HttpResponse<String> response = get(url);
+        if (response == null || response.statusCode() != 200) {
+            return null;
+        }
+        return JsonParser.parseString(response.body());
     }
 }

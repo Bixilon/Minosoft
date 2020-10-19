@@ -16,6 +16,7 @@ package de.bixilon.minosoft;
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.ConfigurationPaths;
+import de.bixilon.minosoft.data.assets.AssetsManager;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.gui.LocaleManager;
 import de.bixilon.minosoft.gui.main.AccountListCell;
@@ -26,6 +27,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.loading.ModLoader;
+import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 
@@ -38,7 +40,8 @@ import java.util.concurrent.CountDownLatch;
 
 public final class Minosoft {
     public static final HashSet<EventManager> eventManagers = new HashSet<>();
-    private static final CountDownLatch startStatus = new CountDownLatch(3); // number of critical components (wait for them before other "big" actions)
+    public static final CountUpAndDownLatch assetsLatch = new CountUpAndDownLatch(1);  // count of files still to download, will be used to show progress
+    private static final CountDownLatch startStatusLatch = new CountDownLatch(4); // number of critical components (wait for them before other "big" actions)
     public static HashBiMap<String, MojangAccount> accountList;
     public static MojangAccount selectedAccount;
     public static ArrayList<Server> serverList;
@@ -91,12 +94,16 @@ public final class Minosoft {
         });
         startCallables.add(() -> {
             ModLoader.loadMods();
-            countDownStart(); // (another) critical component was loaded
+            countDownStart();
             return true;
         });
-
         startCallables.add(() -> {
             Launcher.start();
+            return true;
+        });
+        startCallables.add(() -> {
+            AssetsManager.downloadAllAssets(assetsLatch);
+            countDownStart();
             return true;
         });
         // If you add another "critical" component (wait for them at startup): You MUST adjust increment the number of the counter in `startStatus` (See in the first lines of this file)
@@ -108,8 +115,8 @@ public final class Minosoft {
     }
 
     private static void countDownStart() {
-        startStatus.countDown();
-        Launcher.setProgressBar((int) startStatus.getCount());
+        startStatusLatch.countDown();
+        Launcher.setProgressBar((int) startStatusLatch.getCount());
     }
 
     public static void checkClientToken() {
@@ -161,13 +168,13 @@ public final class Minosoft {
      */
     public static void waitForStartup() {
         try {
-            startStatus.await();
+            startStatusLatch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     public static int getStartUpJobsLeft() {
-        return (int) startStatus.getCount();
+        return (int) startStatusLatch.getCount();
     }
 }
