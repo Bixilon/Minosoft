@@ -29,10 +29,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 import java.util.regex.Pattern;
 import java.util.zip.*;
 
@@ -226,7 +223,13 @@ public final class Util {
 
     public static <T> void executeInThreadPool(String name, Collection<Callable<T>> callables) throws InterruptedException {
         ExecutorService phaseLoader = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), getThreadFactory(name));
-        phaseLoader.invokeAll(callables);
+        phaseLoader.invokeAll(callables).forEach((tFuture -> {
+            try {
+                tFuture.get();
+            } catch (ExecutionException | InterruptedException ex) {
+                ex.getCause().printStackTrace();
+            }
+        }));
     }
 
     public static ThreadFactory getThreadFactory(String threadName) {
