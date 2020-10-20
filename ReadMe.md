@@ -16,6 +16,15 @@ Minosoft is an open source minecraft client, written from scratch in java. It ai
  - Async loading
  - Debugging on protocol layer
 
+## System requirements
+ - CPU: Minosoft benefits from multiple cores (at least for most stuff). CPU is kind of important,
+  but for the rendering clock speed is more important. 4 cores recommended with at least 2 Ghz.
+ - RAM: Out goal was it to run without compromises on an 8 Gib computer and at least limited on an 4 Gib one.
+ - Disk space: Minosoft itself is pretty small (2-3 Mib), the libraries are a bit bigger (up to 100 Mib).
+  You also need to have the "normal" minecraft assets (~ 300 Mib). So a total of 500 Mib is recommended.
+ - GPU: Currently only needed for rendering, no clue yet.
+
+
 ## Rendering
 Rendering is developed and maintained by Lukas Eisenhauer. It is very WIP, but it works. See !8 for more details.
 
