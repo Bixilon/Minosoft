@@ -15,10 +15,8 @@ package de.bixilon.minosoft.data.text;
 
 import com.google.gson.JsonArray;
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
@@ -70,8 +68,8 @@ public class TranslatableComponent implements ChatComponent {
     @Override
     public ObservableList<Node> getJavaFXText() {
         // ToDo fix nested base component (formatting), not just a string
-        ObservableList<Node> list = FXCollections.observableArrayList();
-        list.add(new Text(getMessage()));
-        return list;
+
+        // This is just a dirty workaround to enable formatting and coloring. Still need to do hover, click, ... stuff
+        return new BaseComponent(getLegacyText()).getJavaFXText();
     }
 }
