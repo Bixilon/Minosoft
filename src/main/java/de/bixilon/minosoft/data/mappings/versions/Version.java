@@ -23,14 +23,16 @@ import java.util.HashMap;
 public class Version {
     final String versionName;
     final int protocolVersion;
+    int sortingId;
     final HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
     final HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
     VersionMapping mapping;
     boolean isGettingLoaded;
 
-    public Version(String versionName, int protocolVersion, HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping, HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping) {
+    public Version(String versionName, int protocolVersion, int sortingId, HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping, HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping) {
         this.versionName = versionName;
         this.protocolVersion = protocolVersion;
+        this.sortingId = sortingId;
         this.serverboundPacketMapping = serverboundPacketMapping;
         this.clientboundPacketMapping = clientboundPacketMapping;
     }
@@ -81,6 +83,14 @@ public class Version {
         return versionName;
     }
 
+    public int getSortingId() {
+        return sortingId;
+    }
+
+    public void setSortingId(int sortingId) {
+        this.sortingId = sortingId;
+    }
+
     @Override
     public int hashCode() {
         return getProtocolVersion();
@@ -89,7 +99,6 @@ public class Version {
     public int getProtocolVersion() {
         return protocolVersion;
     }
-
 
     @Override
     public boolean equals(Object obj) {

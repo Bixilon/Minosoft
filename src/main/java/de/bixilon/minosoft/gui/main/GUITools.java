@@ -39,7 +39,7 @@ public class GUITools {
             if (a.getProtocolVersion() == -1) {
                 return -Integer.MAX_VALUE;
             }
-            return (b.getProtocolVersion() - a.getProtocolVersion());
+            return (a.getSortingId() - b.getSortingId());
         });
     }
 
