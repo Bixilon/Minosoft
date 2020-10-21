@@ -128,6 +128,13 @@ public class AssetsManager {
     public static void generateJarAssets() throws IOException {
         long startTime = System.currentTimeMillis();
         Log.verbose("Generating client.jar assets...");
+        try {
+            // ToDo: Verify assets
+            readAssetAsStreamByHash(ASSETS_CLIENT_JAR_HASH);
+            Log.verbose("client.jar assets probably already loaded, skipping");
+            return;
+        } catch (Exception ignored) {
+        }
         JsonObject manifest = HTTP.getJson("https://launchermeta.mojang.com/mc/game/version_manifest.json").getAsJsonObject();
         String assetsVersionJsonUrl = null;
         for (JsonElement versionElement : manifest.getAsJsonArray("versions")) {
