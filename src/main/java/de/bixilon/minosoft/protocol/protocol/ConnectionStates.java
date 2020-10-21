@@ -27,8 +27,4 @@ public enum ConnectionStates {
     public static ConnectionStates byId(int id) {
         return values()[id];
     }
-
-    public int getId() {
-        return ordinal();
-    }
 }

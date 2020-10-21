@@ -28,8 +28,4 @@ public enum SoundCategories {
     public static SoundCategories byId(int id) {
         return values()[id];
     }
-
-    public int getId() {
-        return ordinal();
-    }
 }

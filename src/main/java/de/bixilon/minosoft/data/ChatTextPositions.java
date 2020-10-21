@@ -21,8 +21,4 @@ public enum ChatTextPositions {
     public static ChatTextPositions byId(int id) {
         return values()[id];
     }
-
-    public int getId() {
-        return ordinal();
-    }
 }

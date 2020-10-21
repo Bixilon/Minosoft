@@ -24,8 +24,4 @@ public enum Directions {
     public static Directions byId(int id) {
         return values()[id];
     }
-
-    public int getId() {
-        return ordinal();
-    }
 }

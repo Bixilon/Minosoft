@@ -45,7 +45,7 @@ public class PacketHandshake implements ServerboundPacket {
         buffer.writeVarInt((nextState == ConnectionStates.STATUS ? -1 : connection.getVersion().getProtocolVersion())); // get best protocol version
         buffer.writeString(address.getHostname());
         buffer.writeShort((short) address.getPort());
-        buffer.writeVarInt(nextState.getId());
+        buffer.writeVarInt(nextState.ordinal());
         return buffer;
     }
 

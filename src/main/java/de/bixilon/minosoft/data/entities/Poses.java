@@ -25,8 +25,4 @@ public enum Poses {
     public static Poses byId(int id) {
         return values()[id];
     }
-
-    public int getId() {
-        return ordinal();
-    }
 }

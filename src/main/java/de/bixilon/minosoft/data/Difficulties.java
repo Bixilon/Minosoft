@@ -22,8 +22,4 @@ public enum Difficulties {
     public static Difficulties byId(int id) {
         return values()[id];
     }
-
-    public int getId() {
-        return ordinal();
-    }
 }
