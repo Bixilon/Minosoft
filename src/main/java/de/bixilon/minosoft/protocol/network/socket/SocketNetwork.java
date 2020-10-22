@@ -59,6 +59,7 @@ public class SocketNetwork implements Network {
 
     @Override
     public void connect(ServerAddress address) {
+        lastException = null;
         // check if we are already connected or try to connect
         if (connection.isConnected() || connection.getConnectionState() == ConnectionStates.CONNECTING) {
             return;
