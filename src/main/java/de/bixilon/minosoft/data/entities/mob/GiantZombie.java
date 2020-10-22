@@ -24,9 +24,9 @@ import java.util.UUID;
 public class GiantZombie extends Mob implements MobInterface {
     GiantZombieMetaData metaData;
 
-    public GiantZombie(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public GiantZombie(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new GiantZombieMetaData(sets, protocolId);
+        this.metaData = new GiantZombieMetaData(sets, versionId);
     }
 
     @Override

@@ -14,19 +14,19 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class HorseMetaData extends AbstractHorseMetaData {
 
-    public HorseMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public HorseMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public HorseColors getColor() {
         final int defaultValue = HorseColors.WHITE.ordinal();
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return HorseColors.byId(sets.getInt(20, defaultValue) & 0xFF);
         }
-        if (protocolId == 110) { //ToDo
+        if (versionId == 110) { //ToDo
             return HorseColors.byId(sets.getInt(14, defaultValue) & 0xFF);
         }
-        if (protocolId <= 401) { // ToDo
+        if (versionId <= 401) { // ToDo
             return HorseColors.byId(sets.getInt(15, defaultValue) & 0xFF);
         }
         return HorseColors.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue) & 0xFF);
@@ -34,13 +34,13 @@ public class HorseMetaData extends AbstractHorseMetaData {
 
     public HorseDots getDots() {
         final int defaultValue = HorseDots.NONE.ordinal() << 8;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return HorseDots.byId(sets.getInt(20, defaultValue) >> 8);
         }
-        if (protocolId == 110) { //ToDo
+        if (versionId == 110) { //ToDo
             return HorseDots.byId(sets.getInt(14, defaultValue) >> 8);
         }
-        if (protocolId <= 401) { // ToDo
+        if (versionId <= 401) { // ToDo
             return HorseDots.byId(sets.getInt(15, defaultValue) >> 8);
         }
         return HorseDots.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue) >> 8);
@@ -48,13 +48,13 @@ public class HorseMetaData extends AbstractHorseMetaData {
 
     public HorseArmors getArmor() {
         final int defaultValue = HorseArmors.NO_ARMOR.ordinal();
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return HorseArmors.byId(sets.getInt(21, defaultValue));
         }
-        if (protocolId == 204) { //ToDo
+        if (versionId == 204) { //ToDo
             return HorseArmors.byId(sets.getInt(17, defaultValue));
         }
-        if (protocolId < 461) {
+        if (versionId < 461) {
             return HorseArmors.byId(sets.getInt(16, defaultValue));
         }
         return HorseArmors.byId(defaultValue);

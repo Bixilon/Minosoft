@@ -19,13 +19,13 @@ import javax.annotation.Nullable;
 
 public class HumanMetaData extends LivingMetaData {
 
-    public HumanMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public HumanMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public float getAdditionalHearts() {
         final float defaultValue = 0.F;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getFloat(17, defaultValue);
         }
         return sets.getFloat(super.getLastDataIndex() + 1, defaultValue);
@@ -33,7 +33,7 @@ public class HumanMetaData extends LivingMetaData {
 
     public int getScore() {
         final int defaultValue = 0;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getInt(18, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -41,7 +41,7 @@ public class HumanMetaData extends LivingMetaData {
 
     public Hands getMainHand() {
         final int defaultValue = Hands.LEFT.ordinal();
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return Hands.byId(defaultValue);
         }
         return Hands.byId(sets.getByte(super.getLastDataIndex() + 4, defaultValue));
@@ -50,7 +50,7 @@ public class HumanMetaData extends LivingMetaData {
     @Nullable
     public CompoundTag getLeftShoulderEntityData() {
         final CompoundTag defaultValue = null;
-        if (protocolId < 318) {
+        if (versionId < 318) {
             return defaultValue;
         }
         return sets.getNBT(super.getLastDataIndex() + 5, defaultValue);
@@ -59,7 +59,7 @@ public class HumanMetaData extends LivingMetaData {
     @Nullable
     public CompoundTag getRightShoulderEntityData() {
         final CompoundTag defaultValue = null;
-        if (protocolId < 318) {
+        if (versionId < 318) {
             return defaultValue;
         }
         return sets.getNBT(super.getLastDataIndex() + 6, defaultValue);
@@ -67,7 +67,7 @@ public class HumanMetaData extends LivingMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 318) {
+        if (versionId < 318) {
             return super.getLastDataIndex() + 4;
         }
         return super.getLastDataIndex() + 6;

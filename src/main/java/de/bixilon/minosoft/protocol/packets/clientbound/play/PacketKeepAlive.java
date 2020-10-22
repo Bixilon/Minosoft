@@ -23,11 +23,11 @@ public class PacketKeepAlive implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 32) {
+        if (buffer.getVersionId() < 32) {
             id = buffer.readInt();
             return true;
         }
-        if (buffer.getProtocolId() < 339) {
+        if (buffer.getVersionId() < 339) {
             id = buffer.readVarInt();
             return true;
         }

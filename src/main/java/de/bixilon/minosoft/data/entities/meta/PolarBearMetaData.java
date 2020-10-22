@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class PolarBearMetaData extends AgeableMetaData {
 
-    public PolarBearMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public PolarBearMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isStandingUp() {
         final boolean defaultValue = false;
-        if (protocolId < 204) { //ToDo
+        if (versionId < 204) { //ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -28,7 +28,7 @@ public class PolarBearMetaData extends AgeableMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

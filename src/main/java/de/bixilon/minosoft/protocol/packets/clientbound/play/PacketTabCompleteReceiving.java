@@ -24,12 +24,12 @@ public class PacketTabCompleteReceiving implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 37) {
+        if (buffer.getVersionId() < 37) {
             count = buffer.readVarInt();
             match = new String[]{buffer.readString()};
             return true;
         }
-        if (buffer.getProtocolId() < 343) {
+        if (buffer.getVersionId() < 343) {
             count = buffer.readVarInt();
             match = new String[count];
             for (int i = 0; i < count; i++) {

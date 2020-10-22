@@ -22,17 +22,17 @@ import java.util.HashMap;
 
 public class Version {
     final String versionName;
-    final int protocolVersion;
-    int sortingId;
+    final int versionId;
+    final int protocolId;
     final HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
     final HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
     VersionMapping mapping;
     boolean isGettingLoaded;
 
-    public Version(String versionName, int protocolVersion, int sortingId, HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping, HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping) {
+    public Version(String versionName, int versionId, int protocolId, HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping, HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping) {
         this.versionName = versionName;
-        this.protocolVersion = protocolVersion;
-        this.sortingId = sortingId;
+        this.versionId = versionId;
+        this.protocolId = protocolId;
         this.serverboundPacketMapping = serverboundPacketMapping;
         this.clientboundPacketMapping = clientboundPacketMapping;
     }
@@ -76,28 +76,24 @@ public class Version {
     }
 
     public boolean isFlattened() {
-        return protocolVersion > ProtocolDefinition.FLATTING_VERSION_ID;
+        return versionId > ProtocolDefinition.FLATTING_VERSION_ID;
     }
 
     public String getVersionName() {
         return versionName;
     }
 
-    public int getSortingId() {
-        return sortingId;
-    }
-
-    public void setSortingId(int sortingId) {
-        this.sortingId = sortingId;
+    public int getVersionId() {
+        return versionId;
     }
 
     @Override
     public int hashCode() {
-        return getProtocolVersion();
+        return getVersionId();
     }
 
-    public int getProtocolVersion() {
-        return protocolVersion;
+    public int getProtocolId() {
+        return protocolId;
     }
 
     @Override

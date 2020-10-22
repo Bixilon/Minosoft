@@ -28,9 +28,9 @@ public enum DefaultPluginChannels {
         this.changeableIdentifier = changeableIdentifier;
     }
 
-    public static DefaultPluginChannels byName(String name, int protocolId) {
+    public static DefaultPluginChannels byName(String name, int versionId) {
         for (DefaultPluginChannels channel : values()) {
-            if (channel.getChangeableIdentifier().get(protocolId).equals(name)) {
+            if (channel.getChangeableIdentifier().get(versionId).equals(name)) {
                 return channel;
             }
         }

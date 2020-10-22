@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class SlimeMetaData extends InsentientMetaData {
 
-    public SlimeMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public SlimeMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public int getSize() {
         final int defaultValue = 1;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getByte(16, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);

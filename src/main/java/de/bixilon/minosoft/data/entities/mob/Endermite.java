@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Endermite extends Mob implements MobInterface {
     EndermiteMetaData metaData;
 
-    public Endermite(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Endermite(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new EndermiteMetaData(sets, protocolId);
+        this.metaData = new EndermiteMetaData(sets, versionId);
     }
 
     @Override

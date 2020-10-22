@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class MooshroomMetaData extends AnimalMetaData {
 
-    public MooshroomMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public MooshroomMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public MooshroomTypes getType() {
         final String defaultValue = MooshroomTypes.RED.name();
-        if (protocolId < 461) {
+        if (versionId < 461) {
             return MooshroomTypes.byTypeName(defaultValue);
         }
         return MooshroomTypes.byTypeName(sets.getString(super.getLastDataIndex() + 1, defaultValue));
@@ -28,7 +28,7 @@ public class MooshroomMetaData extends AnimalMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 461) {
+        if (versionId < 461) {
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

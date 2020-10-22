@@ -18,17 +18,17 @@ import javax.annotation.Nullable;
 
 public class ItemFrameMetaData extends HangingMetaData {
 
-    public ItemFrameMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public ItemFrameMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Nullable
     public Slot getItem() {
         final Slot defaultValue = null;
-        if (protocolId < 7) { // ToDo
+        if (versionId < 7) { // ToDo
             return sets.getSlot(2, defaultValue);
         }
-        if (protocolId < 57) { // ToDo
+        if (versionId < 57) { // ToDo
             return sets.getSlot(8, defaultValue);
         }
         return sets.getSlot(super.getLastDataIndex() + 1, defaultValue);
@@ -36,10 +36,10 @@ public class ItemFrameMetaData extends HangingMetaData {
 
     public int getRotation() {
         final int defaultValue = 0;
-        if (protocolId < 7) { // ToDo
+        if (versionId < 7) { // ToDo
             return sets.getByte(3, defaultValue);
         }
-        if (protocolId < 57) { // ToDo
+        if (versionId < 57) { // ToDo
             return sets.getByte(9, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);

@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class WitchMetaData extends RaidParticipantMetaData {
 
-    public WitchMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public WitchMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isAggressive() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBoolean(21, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -28,7 +28,7 @@ public class WitchMetaData extends RaidParticipantMetaData {
 
     public boolean isDrinkingPotion() {
         final boolean defaultValue = false;
-        if (protocolId < 335) { //ToDo
+        if (versionId < 335) { //ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);

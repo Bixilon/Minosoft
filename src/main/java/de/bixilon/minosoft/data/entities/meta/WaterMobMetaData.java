@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public abstract class WaterMobMetaData extends CreatureMetaData {
 
-    public WaterMobMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public WaterMobMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

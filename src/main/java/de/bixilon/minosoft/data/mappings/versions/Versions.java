@@ -38,8 +38,9 @@ import java.util.zip.ZipException;
 
 public class Versions {
 
-    static final HashBiMap<Integer, Version> versionMap = HashBiMap.create();
-    static final HashSet<Version> loadedVersion = new HashSet<>();
+    static final HashBiMap<Integer, Version> versionIdMap = HashBiMap.create();
+    static final HashBiMap<Integer, Version> versionProtocolIdMap = HashBiMap.create();
+    static final HashSet<Version> loadedVersions = new HashSet<>();
     private static final HashMap<String, Mappings> mappingsHashMap = new HashMap<>();
     static VersionMapping legacyMapping;
 
@@ -48,27 +49,26 @@ public class Versions {
         mappingsHashMap.put("blocks", Mappings.BLOCKS);
     }
 
-    public static Version getVersionById(int protocolId) {
-        return versionMap.get(protocolId);
+    public static Version getVersionById(int versionId) {
+        return versionIdMap.get(versionId);
+    }
+
+    public static Version getVersionByProtocolId(int protocolId) {
+        return versionProtocolIdMap.get(protocolId);
     }
 
     public static void load(JsonObject json) {
-        int currentSortingId = 0;
-        for (String protocolId : json.keySet()) {
-            loadVersion(json, protocolId, currentSortingId++);
+        for (String versionId : json.keySet()) {
+            loadVersion(json, versionId);
         }
     }
 
-    public static void loadVersion(JsonObject json, String protocolIdString, int sortingId) {
-        JsonObject versionJson = json.getAsJsonObject(protocolIdString);
+    public static void loadVersion(JsonObject json, String versionIdString) {
+        JsonObject versionJson = json.getAsJsonObject(versionIdString);
         String versionName = versionJson.get("name").getAsString();
-        int protocolId = Integer.parseInt(protocolIdString);
-        if (versionMap.containsKey(protocolId)) {
+        int versionId = Integer.parseInt(versionIdString);
+        if (versionIdMap.containsKey(versionId)) {
             // already loaded, skip
-            Version loadedVersion = versionMap.get(protocolId);
-            if (loadedVersion.getSortingId() == -1) {
-                loadedVersion.setSortingId(sortingId);
-            }
             return;
         }
 
@@ -76,10 +76,10 @@ public class Versions {
         HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
         if (versionJson.get("mapping").isJsonPrimitive()) {
             // inherits or copies mapping from an other version
-            if (!versionMap.containsKey(protocolId)) {
-                loadVersion(json, versionJson.get("mapping").getAsString(), -1);
+            if (!versionIdMap.containsKey(versionId)) {
+                loadVersion(json, versionJson.get("mapping").getAsString());
             }
-            Version parent = versionMap.get(versionJson.get("mapping").getAsInt());
+            Version parent = versionIdMap.get(versionJson.get("mapping").getAsInt());
             serverboundPacketMapping = parent.getServerboundPacketMapping();
             clientboundPacketMapping = parent.getClientboundPacketMapping();
         } else {
@@ -104,18 +104,23 @@ public class Versions {
                 clientboundPacketMapping.get(packet.getState()).put(packet, clientboundPacketMapping.get(packet.getState()).size());
             }
         }
-        Version version = new Version(versionName, protocolId, sortingId, serverboundPacketMapping, clientboundPacketMapping);
-        versionMap.put(version.getProtocolVersion(), version);
+        int protocolId = versionId;
+        if (versionJson.has("protocolId")) {
+            protocolId = versionJson.get("protocolId").getAsInt();
+        }
+        Version version = new Version(versionName, versionId, protocolId, serverboundPacketMapping, clientboundPacketMapping);
+        versionIdMap.put(version.getVersionId(), version);
+        versionProtocolIdMap.put(version.getProtocolId(), version);
     }
 
-    public static void loadVersionMappings(int protocolId) throws IOException {
-        Version version = versionMap.get(protocolId);
+    public static void loadVersionMappings(int versionId) throws IOException {
+        Version version = versionIdMap.get(versionId);
         if (version.getMapping() != null && version.getMapping().isFullyLoaded()) {
             // already loaded
             return;
         }
-        if (protocolId < ProtocolDefinition.FLATTING_VERSION_ID) {
-            version = versionMap.get(ProtocolDefinition.PRE_FLATTENING_VERSION_ID);
+        if (versionId < ProtocolDefinition.FLATTING_VERSION_ID) {
+            version = versionIdMap.get(ProtocolDefinition.PRE_FLATTENING_VERSION_ID);
         }
         if (version.isGettingLoaded()) {
             return;
@@ -155,17 +160,17 @@ public class Versions {
 
         for (Map.Entry<String, Mappings> mappingSet : mappingsHashMap.entrySet()) {
             JsonObject data = files.get(mappingSet.getKey() + ".json").getAsJsonObject("minecraft");
-            loadVersionMappings(mappingSet.getValue(), data, protocolId);
+            loadVersionMappings(mappingSet.getValue(), data, versionId);
         }
 
         Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", version, (System.currentTimeMillis() - startTime), version.getVersionName()));
         version.setGettingLoaded(false);
     }
 
-    public static void loadVersionMappings(Mappings type, JsonObject data, int protocolId) {
-        Version version = versionMap.get(protocolId);
+    public static void loadVersionMappings(Mappings type, JsonObject data, int versionId) {
+        Version version = versionIdMap.get(versionId);
         VersionMapping mapping;
-        if (protocolId < ProtocolDefinition.FLATTING_VERSION_ID) {
+        if (versionId < ProtocolDefinition.FLATTING_VERSION_ID) {
             if (legacyMapping == null) {
                 legacyMapping = new VersionMapping(version);
             }
@@ -181,27 +186,14 @@ public class Versions {
             mapping.load(type, data);
         }
         version.setMapping(mapping);
-        loadedVersion.add(version);
-    }
-
-    public static void unloadUnnecessaryVersions(int necessary) {
-        if (necessary >= ProtocolDefinition.FLATTING_VERSION_ID) {
-            legacyMapping.unload();
-            legacyMapping = null;
-        }
-        for (Version version : loadedVersion) {
-            if (version.getProtocolVersion() == necessary) {
-                continue;
-            }
-            version.getMapping().unload();
-        }
+        loadedVersions.add(version);
     }
 
     public static Version getLowestVersionSupported() {
         return new Version(LocaleManager.translate(Strings.VERSION_AUTOMATIC), -1, -1, null, null);
     }
 
-    public static HashBiMap<Integer, Version> getVersionMap() {
-        return versionMap;
+    public static HashBiMap<Integer, Version> getVersionIdMap() {
+        return versionIdMap;
     }
 }

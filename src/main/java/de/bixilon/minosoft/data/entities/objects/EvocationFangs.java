@@ -27,9 +27,9 @@ public class EvocationFangs extends EntityObject implements ObjectInterface {
         super(entityId, uuid, location, yaw, pitch);
     }
 
-    public EvocationFangs(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public EvocationFangs(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new EntityMetaData(sets, protocolId);
+        this.metaData = new EntityMetaData(sets, versionId);
     }
 
     @Override

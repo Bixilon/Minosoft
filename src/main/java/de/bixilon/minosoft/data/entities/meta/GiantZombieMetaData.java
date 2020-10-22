@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class GiantZombieMetaData extends CreatureMetaData {
 
-    public GiantZombieMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public GiantZombieMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

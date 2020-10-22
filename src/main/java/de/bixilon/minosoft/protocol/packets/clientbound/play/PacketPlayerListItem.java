@@ -32,10 +32,10 @@ public class PacketPlayerListItem implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 17) { //ToDo: 19?
+        if (buffer.getVersionId() < 17) { //ToDo: 19?
             String name = buffer.readString();
             int ping;
-            if (buffer.getProtocolId() < 7) {
+            if (buffer.getVersionId() < 7) {
                 ping = buffer.readShort();
             } else {
                 ping = buffer.readVarInt();

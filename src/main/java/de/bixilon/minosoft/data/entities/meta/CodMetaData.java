@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class CodMetaData extends AbstractFireballMetaData {
 
-    public CodMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public CodMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

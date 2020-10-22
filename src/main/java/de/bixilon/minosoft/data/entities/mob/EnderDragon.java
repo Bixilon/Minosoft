@@ -24,9 +24,9 @@ import java.util.UUID;
 public class EnderDragon extends Mob implements MobInterface {
     EnderDragonMetaData metaData;
 
-    public EnderDragon(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public EnderDragon(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new EnderDragonMetaData(sets, protocolId);
+        this.metaData = new EnderDragonMetaData(sets, versionId);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class PacketMapData implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 27) {
+        if (buffer.getVersionId() < 27) {
             mapId = buffer.readVarInt(); // mapId
             short length = buffer.readShort();
             // read action
@@ -68,10 +68,10 @@ public class PacketMapData implements ClientboundPacket {
             }
             return true;
         }
-        if (buffer.getProtocolId() < 373) {
+        if (buffer.getVersionId() < 373) {
             mapId = buffer.readVarInt();
             scale = buffer.readByte();
-            if (buffer.getProtocolId() >= 58) {
+            if (buffer.getVersionId() >= 58) {
                 boolean trackPosition = buffer.readBoolean();
             }
             int pinCount = buffer.readVarInt();
@@ -80,7 +80,7 @@ public class PacketMapData implements ClientboundPacket {
                 byte directionAndType = buffer.readByte();
                 byte x = buffer.readByte();
                 byte z = buffer.readByte();
-                if (buffer.getProtocolId() >= 340) { //ToDo
+                if (buffer.getVersionId() >= 340) { //ToDo
                     pins.add(new MapPinSet(MapPinTypes.byId(directionAndType >>> 4), directionAndType & 0xF, x, z));
                 } else {
                     pins.add(new MapPinSet(MapPinTypes.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
@@ -100,7 +100,7 @@ public class PacketMapData implements ClientboundPacket {
         mapId = buffer.readVarInt();
         scale = buffer.readByte();
         boolean trackPosition = buffer.readBoolean();
-        if (buffer.getProtocolId() >= 452) {
+        if (buffer.getVersionId() >= 452) {
             locked = buffer.readBoolean();
         }
         int pinCount = buffer.readVarInt();

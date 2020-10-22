@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class CreeperMetaData extends MonsterMetaData {
 
-    public CreeperMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public CreeperMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public int getState() {
         final int defaultValue = -1;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getInt(16, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -28,7 +28,7 @@ public class CreeperMetaData extends MonsterMetaData {
 
     public boolean isCharged() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBoolean(17, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
@@ -36,7 +36,7 @@ public class CreeperMetaData extends MonsterMetaData {
 
     public boolean isIgnited() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);

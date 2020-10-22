@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Sheep extends Mob implements MobInterface {
     SheepMetaData metaData;
 
-    public Sheep(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Sheep(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new SheepMetaData(sets, protocolId);
+        this.metaData = new SheepMetaData(sets, versionId);
     }
 
     @Override

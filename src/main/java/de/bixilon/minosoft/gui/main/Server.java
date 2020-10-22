@@ -117,15 +117,15 @@ public class Server {
         if (lastPing == null) {
             lastPing = new Connection(Connection.lastConnectionId++, getAddress(), null);
         }
-        lastPing.resolve(ConnectionReasons.PING, getDesiredVersion()); // resolve dns address and ping
+        lastPing.resolve(ConnectionReasons.PING, getDesiredVersionId()); // resolve dns address and ping
     }
 
-    public int getDesiredVersion() {
+    public int getDesiredVersionId() {
         return desiredVersion;
     }
 
-    public void setDesiredVersion(int desiredVersion) {
-        this.desiredVersion = desiredVersion;
+    public void setDesiredVersionId(int versionId) {
+        this.desiredVersion = versionId;
     }
 
     public ArrayList<Connection> getConnections() {

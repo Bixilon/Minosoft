@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Phantom extends Mob implements MobInterface {
     PhantomMetaData metaData;
 
-    public Phantom(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Phantom(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new PhantomMetaData(sets, protocolId);
+        this.metaData = new PhantomMetaData(sets, versionId);
     }
 
     @Override

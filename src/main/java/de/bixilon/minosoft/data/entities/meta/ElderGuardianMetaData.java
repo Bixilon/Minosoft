@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class ElderGuardianMetaData extends GuardianMetaData {
 
-    public ElderGuardianMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public ElderGuardianMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Override

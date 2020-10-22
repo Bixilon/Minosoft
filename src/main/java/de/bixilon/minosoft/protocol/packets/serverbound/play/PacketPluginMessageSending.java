@@ -34,9 +34,9 @@ public class PacketPluginMessageSending implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLUGIN_MESSAGE);
         buffer.writeString(channel);
 
-        if (buffer.getProtocolId() < 29) {
+        if (buffer.getVersionId() < 29) {
             buffer.writeShort((short) data.length);
-        } else if (buffer.getProtocolId() < 32) {
+        } else if (buffer.getVersionId() < 32) {
             buffer.writeVarInt(data.length);
         }
 

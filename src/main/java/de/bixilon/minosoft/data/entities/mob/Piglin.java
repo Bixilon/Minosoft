@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Piglin extends Mob implements MobInterface {
     PiglinMetaData metaData;
 
-    public Piglin(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Piglin(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new PiglinMetaData(sets, protocolId);
+        this.metaData = new PiglinMetaData(sets, versionId);
     }
 
     @Override

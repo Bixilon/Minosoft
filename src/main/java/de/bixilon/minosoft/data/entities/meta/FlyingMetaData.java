@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public abstract class FlyingMetaData extends InsentientMetaData {
 
-    public FlyingMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public FlyingMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

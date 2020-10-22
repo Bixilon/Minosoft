@@ -30,9 +30,9 @@ public class ItemFrame extends EntityObject implements ObjectInterface {
         direction = FrameDirections.byId(additionalInt);
     }
 
-    public ItemFrame(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public ItemFrame(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new ItemFrameMetaData(sets, protocolId);
+        this.metaData = new ItemFrameMetaData(sets, versionId);
         this.direction = FrameDirections.byId(0);
     }
 

@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Vindicator extends Mob implements MobInterface {
     VindicatorMetaData metaData;
 
-    public Vindicator(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Vindicator(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new VindicatorMetaData(sets, protocolId);
+        this.metaData = new VindicatorMetaData(sets, versionId);
     }
 
     @Override

@@ -14,16 +14,16 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class FishingHookMetaData extends EntityMetaData {
 
-    public FishingHookMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public FishingHookMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public int getHookedEntityId() {
         final int defaultValue = -1;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
-        if (protocolId == 110) { //ToDo
+        if (versionId == 110) { //ToDo
             return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue) - 1;
@@ -31,7 +31,7 @@ public class FishingHookMetaData extends EntityMetaData {
 
     public boolean isCatchable() {
         final boolean defaultValue = false;
-        if (protocolId < 743) { // ToDo
+        if (versionId < 743) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
@@ -39,10 +39,10 @@ public class FishingHookMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return super.getLastDataIndex();
         }
-        if (protocolId <= 573) { // ToDo
+        if (versionId <= 573) { // ToDo
             return super.getLastDataIndex() + 1;
         }
         return super.getLastDataIndex() + 2;

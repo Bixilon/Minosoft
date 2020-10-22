@@ -33,7 +33,7 @@ public class PacketTitle implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        action = TitleActions.byId(buffer.readVarInt(), buffer.getProtocolId());
+        action = TitleActions.byId(buffer.readVarInt(), buffer.getVersionId());
         switch (action) {
             case SET_TITLE -> text = buffer.readTextComponent();
             case SET_SUBTITLE -> subText = buffer.readTextComponent();
@@ -103,17 +103,17 @@ public class PacketTitle implements ClientboundPacket {
             valueMap = new VersionValueMap<>(id);
         }
 
-        public static TitleActions byId(int id, int protocolId) {
+        public static TitleActions byId(int id, int versionId) {
             for (TitleActions action : values()) {
-                if (action.getId(protocolId) == id) {
+                if (action.getId(versionId) == id) {
                     return action;
                 }
             }
             return null;
         }
 
-        public int getId(int protocolId) {
-            Integer ret = valueMap.get(protocolId);
+        public int getId(int versionId) {
+            Integer ret = valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

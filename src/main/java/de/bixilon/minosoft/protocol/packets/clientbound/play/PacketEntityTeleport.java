@@ -30,7 +30,7 @@ public class PacketEntityTeleport implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
-        if (buffer.getProtocolId() < 100) {
+        if (buffer.getVersionId() < 100) {
             this.location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
         } else {
             this.location = buffer.readLocation();
@@ -38,7 +38,7 @@ public class PacketEntityTeleport implements ClientboundPacket {
         this.yaw = buffer.readAngle();
         this.pitch = buffer.readAngle();
 
-        if (buffer.getProtocolId() >= 22) {
+        if (buffer.getVersionId() >= 22) {
             this.onGround = buffer.readBoolean();
         }
         return true;

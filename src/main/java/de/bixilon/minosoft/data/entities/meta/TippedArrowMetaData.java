@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class TippedArrowMetaData extends AbstractArrowMetaData {
 
-    public TippedArrowMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public TippedArrowMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public int getColor() {
         final int defaultValue = -1;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -28,7 +28,7 @@ public class TippedArrowMetaData extends AbstractArrowMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

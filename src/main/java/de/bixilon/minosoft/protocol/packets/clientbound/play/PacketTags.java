@@ -30,7 +30,7 @@ public class PacketTags implements ClientboundPacket {
         blockTags = readTags(buffer);
         itemTags = readTags(buffer);
         fluidTags = readTags(buffer); // ToDo: when was this added? Was not available in 18w01
-        if (buffer.getProtocolId() >= 440) {
+        if (buffer.getVersionId() >= 440) {
             entityTags = readTags(buffer);
         }
         return true;

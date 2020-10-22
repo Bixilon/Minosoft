@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class SquidMetaData extends WaterMobMetaData {
 
-    public SquidMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public SquidMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

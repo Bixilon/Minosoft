@@ -14,19 +14,19 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public abstract class ChestedHorseMetaData extends AbstractHorseMetaData {
 
-    public ChestedHorseMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public ChestedHorseMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean hasChest() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBitMask(16, 0x08, defaultValue);
         }
-        if (protocolId == 110) { //ToDo
+        if (versionId == 110) { //ToDo
             return sets.getBitMask(12, 0x08, defaultValue);
         }
-        if (protocolId == 204) { //ToDo
+        if (versionId == 204) { //ToDo
             return sets.getBitMask(13, 0x08, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -34,7 +34,7 @@ public abstract class ChestedHorseMetaData extends AbstractHorseMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId <= 204) { //ToDo
+        if (versionId <= 204) { //ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

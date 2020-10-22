@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class SalmonMetaData extends AbstractFishMetaData {
 
-    public SalmonMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public SalmonMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

@@ -34,13 +34,13 @@ public class PacketPlayerDigging implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_DIGGING);
-        if (buffer.getProtocolId() < 49) { //ToDo
+        if (buffer.getVersionId() < 49) { //ToDo
             buffer.writeByte((byte) status.ordinal());
         } else {
             buffer.writeVarInt(status.ordinal());
         }
 
-        if (buffer.getProtocolId() < 7) {
+        if (buffer.getVersionId() < 7) {
             if (position == null) {
                 buffer.writeInt(0);
                 buffer.writeByte((byte) 0);

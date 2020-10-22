@@ -29,19 +29,19 @@ public class PacketEntityEquipment implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 7) {
+        if (buffer.getVersionId() < 7) {
             entityId = buffer.readInt();
-            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getProtocolId()), buffer.readSlot());
+            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getVersionId()), buffer.readSlot());
             return true;
         }
-        if (buffer.getProtocolId() < 49) {
+        if (buffer.getVersionId() < 49) {
             entityId = buffer.readVarInt();
-            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getProtocolId()), buffer.readSlot());
+            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getVersionId()), buffer.readSlot());
             return true;
         }
-        if (buffer.getProtocolId() < 732) {
+        if (buffer.getVersionId() < 732) {
             entityId = buffer.readVarInt();
-            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readVarInt(), buffer.getProtocolId()), buffer.readSlot());
+            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readVarInt(), buffer.getVersionId()), buffer.readSlot());
             return true;
         }
         entityId = buffer.readVarInt();
@@ -52,7 +52,7 @@ public class PacketEntityEquipment implements ClientboundPacket {
                 slotAvailable = false;
             }
             slotId &= 0x7F;
-            slots.put(InventorySlots.EntityInventorySlots.byId(slotId, buffer.getProtocolId()), buffer.readSlot());
+            slots.put(InventorySlots.EntityInventorySlots.byId(slotId, buffer.getVersionId()), buffer.readSlot());
         }
         return true;
     }

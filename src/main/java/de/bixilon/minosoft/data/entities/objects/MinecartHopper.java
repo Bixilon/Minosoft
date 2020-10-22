@@ -25,8 +25,8 @@ public class MinecartHopper extends Minecart implements ObjectInterface {
         super(entityId, uuid, location, yaw, pitch, additionalInt);
     }
 
-    public MinecartHopper(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
-        super(entityId, uuid, location, yaw, pitch, headYaw, sets, protocolId);
+    public MinecartHopper(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw, sets, versionId);
     }
 
     @Override

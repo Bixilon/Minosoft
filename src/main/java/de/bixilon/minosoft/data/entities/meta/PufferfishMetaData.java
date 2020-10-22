@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class PufferfishMetaData extends AbstractFishMetaData {
 
-    public PufferfishMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public PufferfishMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public PufferStates getPufferState() {
         final int defaultValue = PufferStates.UN_PUFFED.ordinal();
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return PufferStates.byId(defaultValue);
         }
         return PufferStates.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));

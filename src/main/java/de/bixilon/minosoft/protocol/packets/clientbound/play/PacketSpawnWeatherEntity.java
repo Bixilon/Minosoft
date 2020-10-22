@@ -28,12 +28,12 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
         int entityId = buffer.readVarInt();
         byte type = buffer.readByte();
         Location location;
-        if (buffer.getProtocolId() < 100) {
+        if (buffer.getVersionId() < 100) {
             location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
         } else {
             location = buffer.readLocation();
         }
-        entity = new LightningBolt(entityId, location, buffer.getProtocolId());
+        entity = new LightningBolt(entityId, location, buffer.getVersionId());
         return true;
     }
 

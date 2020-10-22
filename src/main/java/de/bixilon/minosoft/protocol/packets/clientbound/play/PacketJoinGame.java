@@ -45,7 +45,7 @@ public class PacketJoinGame implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 108) {
+        if (buffer.getVersionId() < 108) {
             this.entityId = buffer.readInt();
             byte gameModeRaw = buffer.readByte();
             hardcore = BitByte.isBitSet(gameModeRaw, 3);
@@ -53,25 +53,25 @@ public class PacketJoinGame implements ClientboundPacket {
             gameModeRaw &= ~0x8;
             gameMode = GameModes.byId(gameModeRaw);
 
-            if (buffer.getProtocolId() < 108) {
+            if (buffer.getVersionId() < 108) {
                 dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
             } else {
                 dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
             }
             difficulty = Difficulties.byId(buffer.readByte());
             maxPlayers = buffer.readByte();
-            if (buffer.getProtocolId() >= 1) {
+            if (buffer.getVersionId() >= 1) {
                 levelType = LevelTypes.byType(buffer.readString());
             }
 
-            if (buffer.getProtocolId() < 29) {
+            if (buffer.getVersionId() < 29) {
                 return true;
             }
             reducedDebugScreen = buffer.readBoolean();
             return true;
         }
         this.entityId = buffer.readInt();
-        if (buffer.getProtocolId() < 738) {
+        if (buffer.getVersionId() < 738) {
             byte gameModeRaw = buffer.readByte();
             hardcore = BitByte.isBitSet(gameModeRaw, 3);
             // remove hardcore bit and get gamemode
@@ -81,18 +81,18 @@ public class PacketJoinGame implements ClientboundPacket {
             hardcore = buffer.readBoolean();
             gameMode = GameModes.byId(buffer.readByte());
         }
-        if (buffer.getProtocolId() >= 730) {
+        if (buffer.getVersionId() >= 730) {
             buffer.readByte(); // previous game mode
         }
-        if (buffer.getProtocolId() >= 719) {
+        if (buffer.getVersionId() >= 719) {
             String[] worlds = buffer.readStringArray(buffer.readVarInt());
         }
-        if (buffer.getProtocolId() < 718) {
+        if (buffer.getVersionId() < 718) {
             dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
         } else {
             NBTTag dimensionCodec = buffer.readNBT();
-            dimensions = parseDimensionCodec(dimensionCodec, buffer.getProtocolId());
-            if (buffer.getProtocolId() < 748) {
+            dimensions = parseDimensionCodec(dimensionCodec, buffer.getVersionId());
+            if (buffer.getVersionId() < 748) {
                 String[] currentDimensionSplit = buffer.readString().split(":", 2);
                 dimension = dimensions.get(currentDimensionSplit[0]).get(currentDimensionSplit[1]);
             } else {
@@ -105,34 +105,34 @@ public class PacketJoinGame implements ClientboundPacket {
             }
         }
 
-        if (buffer.getProtocolId() >= 719) {
+        if (buffer.getVersionId() >= 719) {
             buffer.readString(); // world
         }
-        if (buffer.getProtocolId() >= 552) {
+        if (buffer.getVersionId() >= 552) {
             hashedSeed = buffer.readLong();
         }
-        if (buffer.getProtocolId() < 464) {
+        if (buffer.getVersionId() < 464) {
             difficulty = Difficulties.byId(buffer.readByte());
         }
-        if (buffer.getProtocolId() < 749) {
+        if (buffer.getVersionId() < 749) {
             maxPlayers = buffer.readByte();
         } else {
             maxPlayers = buffer.readVarInt();
         }
-        if (buffer.getProtocolId() < 716) {
+        if (buffer.getVersionId() < 716) {
             levelType = LevelTypes.byType(buffer.readString());
         }
-        if (buffer.getProtocolId() >= 468) {
+        if (buffer.getVersionId() >= 468) {
             viewDistance = buffer.readVarInt();
         }
-        if (buffer.getProtocolId() >= 716) {
+        if (buffer.getVersionId() >= 716) {
             boolean isDebug = buffer.readBoolean();
             if (buffer.readBoolean()) {
                 levelType = LevelTypes.FLAT;
             }
         }
         reducedDebugScreen = buffer.readBoolean();
-        if (buffer.getProtocolId() >= 552) {
+        if (buffer.getVersionId() >= 552) {
             enableRespawnScreen = buffer.readBoolean();
         }
         return true;
@@ -143,10 +143,10 @@ public class PacketJoinGame implements ClientboundPacket {
         h.handle(this);
     }
 
-    private HashMap<String, HashBiMap<String, Dimension>> parseDimensionCodec(NBTTag nbt, int protocolId) {
+    private HashMap<String, HashBiMap<String, Dimension>> parseDimensionCodec(NBTTag nbt, int versionId) {
         HashMap<String, HashBiMap<String, Dimension>> dimensionMap = new HashMap<>();
         ListTag listTag;
-        if (protocolId < 740) {
+        if (versionId < 740) {
             listTag = ((CompoundTag) nbt).getListTag("dimension");
         } else {
             listTag = ((CompoundTag) nbt).getCompoundTag("minecraft:dimension_type").getListTag("value");
@@ -155,7 +155,7 @@ public class PacketJoinGame implements ClientboundPacket {
         listTag.getValue().forEach((tag) -> {
             CompoundTag compoundTag = (CompoundTag) tag;
             String[] name;
-            if (protocolId < 725) {
+            if (versionId < 725) {
                 name = compoundTag.getStringTag("key").getValue().split(":", 2);
             } else {
                 name = compoundTag.getStringTag("name").getValue().split(":", 2);
@@ -164,7 +164,7 @@ public class PacketJoinGame implements ClientboundPacket {
                 dimensionMap.put(name[0], HashBiMap.create());
             }
             boolean hasSkylight;
-            if (protocolId < 725 || protocolId >= 744) {
+            if (versionId < 725 || versionId >= 744) {
                 hasSkylight = compoundTag.getCompoundTag("element").getByteTag("has_skylight").getValue() == 0x01;
             } else {
                 hasSkylight = compoundTag.getByteTag("has_skylight").getValue() == 0x01;

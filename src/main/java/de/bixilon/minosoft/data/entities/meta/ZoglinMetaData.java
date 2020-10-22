@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class ZoglinMetaData extends MonsterMetaData {
 
-    public ZoglinMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public ZoglinMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isBaby() {
         final boolean defaultValue = false;
-        if (protocolId < 710) {
+        if (versionId < 710) {
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);

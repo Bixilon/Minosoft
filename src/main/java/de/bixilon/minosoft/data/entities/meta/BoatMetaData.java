@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class BoatMetaData extends EntityMetaData {
 
-    public BoatMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public BoatMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public int getTimeSinceHit() {
         final int defaultValue = 0;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getInt(17, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -28,7 +28,7 @@ public class BoatMetaData extends EntityMetaData {
 
     public int getForwardDirection() {
         final int defaultValue = 1;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getInt(18, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -36,7 +36,7 @@ public class BoatMetaData extends EntityMetaData {
 
     public float getDamageTaken() {
         final float defaultValue = 0.0F;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getFloat(19, defaultValue);
         }
         return sets.getFloat(super.getLastDataIndex() + 3, defaultValue);
@@ -44,7 +44,7 @@ public class BoatMetaData extends EntityMetaData {
 
     public BoatMaterials getMaterial() {
         final int defaultValue = BoatMaterials.OAK.ordinal();
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return BoatMaterials.byId(defaultValue);
         }
         return BoatMaterials.byId(sets.getInt(super.getLastDataIndex() + 4, defaultValue));
@@ -52,7 +52,7 @@ public class BoatMetaData extends EntityMetaData {
 
     public boolean isRightPaddleTurning() {
         final boolean defaultValue = false;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 5, defaultValue);
@@ -60,7 +60,7 @@ public class BoatMetaData extends EntityMetaData {
 
     public boolean isLeftPaddleTurning() {
         final boolean defaultValue = false;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 6, defaultValue);
@@ -68,7 +68,7 @@ public class BoatMetaData extends EntityMetaData {
 
     public int getSplashTimer() {
         final int defaultValue = 0;
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 7, defaultValue);
@@ -76,10 +76,10 @@ public class BoatMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return super.getLastDataIndex() + 4;
         }
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return super.getLastDataIndex() + 5;
         }
         return super.getLastDataIndex() + 6;

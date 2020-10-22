@@ -28,9 +28,9 @@ public class Trident extends EntityObject implements ObjectInterface {
         super(entityId, uuid, location, yaw, pitch);
     }
 
-    public Trident(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Trident(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new TridentMetaData(sets, protocolId);
+        this.metaData = new TridentMetaData(sets, versionId);
     }
 
     @Override

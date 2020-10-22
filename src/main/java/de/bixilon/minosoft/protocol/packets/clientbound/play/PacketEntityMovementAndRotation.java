@@ -30,14 +30,14 @@ public class PacketEntityMovementAndRotation implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
-        if (buffer.getProtocolId() < 100) {
+        if (buffer.getVersionId() < 100) {
             this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
         } else {
             this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
         }
         this.yaw = buffer.readAngle();
         this.pitch = buffer.readAngle();
-        if (buffer.getProtocolId() >= 22) {
+        if (buffer.getVersionId() >= 22) {
             onGround = buffer.readBoolean();
         }
         return true;

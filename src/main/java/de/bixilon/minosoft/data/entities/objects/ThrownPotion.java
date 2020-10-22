@@ -31,9 +31,9 @@ public class ThrownPotion extends EntityObject implements ObjectInterface {
         // ToDo: this.potion = MobEffects.byId(additionalInt, ProtocolVersion.VERSION_1_12_2);
     }
 
-    public ThrownPotion(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public ThrownPotion(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new PotionMetaData(sets, protocolId);
+        this.metaData = new PotionMetaData(sets, versionId);
     }
 
     @Override

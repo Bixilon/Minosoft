@@ -158,16 +158,16 @@ public class Player {
         return inventories.get(id);
     }
 
-    public Slot getSlot(int windowId, InventorySlots.InventoryInterface slot, int protocolId) {
-        return getSlot(windowId, slot.getId(protocolId));
+    public Slot getSlot(int windowId, InventorySlots.InventoryInterface slot, int versionId) {
+        return getSlot(windowId, slot.getId(versionId));
     }
 
     public Slot getSlot(int windowId, int slot) {
         return inventories.get(windowId).getSlot(slot);
     }
 
-    public void setSlot(int windowId, InventorySlots.InventoryInterface slot, int protocolId, Slot data) {
-        setSlot(windowId, slot.getId(protocolId), data);
+    public void setSlot(int windowId, InventorySlots.InventoryInterface slot, int versionId, Slot data) {
+        setSlot(windowId, slot.getId(versionId), data);
     }
 
     public void createInventory(InventoryProperties properties) {

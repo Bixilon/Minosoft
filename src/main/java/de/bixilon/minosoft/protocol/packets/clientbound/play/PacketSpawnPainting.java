@@ -30,18 +30,18 @@ public class PacketSpawnPainting implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         int entityId = buffer.readVarInt();
         UUID uuid = null;
-        if (buffer.getProtocolId() >= 95) {
+        if (buffer.getVersionId() >= 95) {
             uuid = buffer.readUUID();
         }
         Motive motive;
-        if (buffer.getProtocolId() < 353) {
+        if (buffer.getVersionId() < 353) {
             motive = buffer.getConnection().getMapping().getMotiveByIdentifier(buffer.readString());
         } else {
             motive = buffer.getConnection().getMapping().getMotiveById(buffer.readVarInt());
         }
         BlockPosition position;
         int direction;
-        if (buffer.getProtocolId() < 8) {
+        if (buffer.getVersionId() < 8) {
             position = buffer.readBlockPositionInteger();
             direction = buffer.readInt();
         } else {

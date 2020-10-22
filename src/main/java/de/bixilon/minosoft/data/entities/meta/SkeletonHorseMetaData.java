@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class SkeletonHorseMetaData extends AbstractHorseMetaData {
 
-    public SkeletonHorseMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public SkeletonHorseMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Override

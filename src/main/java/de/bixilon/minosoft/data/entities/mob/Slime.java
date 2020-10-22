@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Slime extends Mob implements MobInterface {
     SlimeMetaData metaData;
 
-    public Slime(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Slime(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new SlimeMetaData(sets, protocolId);
+        this.metaData = new SlimeMetaData(sets, versionId);
     }
 
     public Slime(int entityId, UUID uuid, Location location, short yaw, short pitch, int headYaw) {

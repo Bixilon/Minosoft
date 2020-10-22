@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class PiglinMetaData extends BasePiglinMetaData {
 
-    public PiglinMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public PiglinMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isBaby() {
         final boolean defaultValue = false;
-        if (protocolId < 743) { // ToDo
+        if (versionId < 743) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -28,7 +28,7 @@ public class PiglinMetaData extends BasePiglinMetaData {
 
     public boolean isChargingCrossbow() {
         final boolean defaultValue = false;
-        if (protocolId < 743) { // ToDo
+        if (versionId < 743) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
@@ -36,7 +36,7 @@ public class PiglinMetaData extends BasePiglinMetaData {
 
     public boolean isDancing() {
         final boolean defaultValue = false;
-        if (protocolId < 743) { // ToDo
+        if (versionId < 743) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);

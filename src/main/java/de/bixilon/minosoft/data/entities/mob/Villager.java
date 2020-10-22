@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Villager extends Mob implements MobInterface {
     VillagerMetaData metaData;
 
-    public Villager(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Villager(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new VillagerMetaData(sets, protocolId);
+        this.metaData = new VillagerMetaData(sets, versionId);
     }
 
     @Override

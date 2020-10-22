@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 public class IndirectPalette implements Palette {
     final HashBiMap<Integer, Integer> map = HashBiMap.create();
     final byte bitsPerBlock;
-    int protocolId;
+    int versionId;
     CustomMapping mapping;
 
     public IndirectPalette(byte bitsPerBlock) {
@@ -40,7 +40,7 @@ public class IndirectPalette implements Palette {
 
     @Override
     public void read(InByteBuffer buffer) {
-        this.protocolId = buffer.getProtocolId();
+        this.versionId = buffer.getVersionId();
         this.mapping = buffer.getConnection().getMapping();
         int paletteLength = buffer.readVarInt();
         for (int i = 0; i < paletteLength; i++) {

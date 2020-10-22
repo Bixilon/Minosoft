@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Wither extends Mob implements MobInterface {
     WitherMetaData metaData;
 
-    public Wither(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Wither(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new WitherMetaData(sets, protocolId);
+        this.metaData = new WitherMetaData(sets, versionId);
     }
 
     @Override

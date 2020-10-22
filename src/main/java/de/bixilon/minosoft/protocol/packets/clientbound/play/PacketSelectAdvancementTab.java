@@ -25,7 +25,7 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.readBoolean()) {
-            tab = AdvancementTabs.byName(buffer.readString(), buffer.getProtocolId());
+            tab = AdvancementTabs.byName(buffer.readString(), buffer.getVersionId());
         }
         return true;
     }
@@ -57,9 +57,9 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
             this.changeableIdentifier = changeableIdentifier;
         }
 
-        public static AdvancementTabs byName(String name, int protocolId) {
+        public static AdvancementTabs byName(String name, int versionId) {
             for (AdvancementTabs advancementTab : values()) {
-                if (advancementTab.getChangeableIdentifier().get(protocolId).equals(name)) {
+                if (advancementTab.getChangeableIdentifier().get(versionId).equals(name)) {
                     return advancementTab;
                 }
             }

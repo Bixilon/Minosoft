@@ -31,7 +31,7 @@ public class PacketResourcePackStatus implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_RESOURCE_PACK_STATUS);
-        if (buffer.getProtocolId() < 204) {
+        if (buffer.getVersionId() < 204) {
             buffer.writeString(hash);
         }
         buffer.writeVarInt(status.ordinal());

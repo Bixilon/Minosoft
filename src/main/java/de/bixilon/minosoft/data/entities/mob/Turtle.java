@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Turtle extends Mob implements MobInterface {
     TurtleMetaData metaData;
 
-    public Turtle(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Turtle(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new TurtleMetaData(sets, protocolId);
+        this.metaData = new TurtleMetaData(sets, versionId);
     }
 
     @Override

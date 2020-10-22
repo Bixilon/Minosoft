@@ -30,7 +30,7 @@ public class PacketEntityProperties implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
-        if (buffer.getProtocolId() < 7) {
+        if (buffer.getVersionId() < 7) {
             int count = buffer.readInt();
             for (int i = 0; i < count; i++) {
                 EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString());

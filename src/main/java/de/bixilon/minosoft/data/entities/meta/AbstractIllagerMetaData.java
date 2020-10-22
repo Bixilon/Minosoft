@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public abstract class AbstractIllagerMetaData extends RaidParticipantMetaData {
 
-    public AbstractIllagerMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public AbstractIllagerMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean hasTarget() {
         final boolean defaultValue = false;
-        if (protocolId < 335) { //ToDo
+        if (versionId < 335) { //ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
@@ -28,7 +28,7 @@ public abstract class AbstractIllagerMetaData extends RaidParticipantMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 335) { //ToDo
+        if (versionId < 335) { //ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

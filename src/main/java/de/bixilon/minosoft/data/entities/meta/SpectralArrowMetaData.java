@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class SpectralArrowMetaData extends AbstractArrowMetaData {
 
-    public SpectralArrowMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public SpectralArrowMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

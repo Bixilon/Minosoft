@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Zoglin extends Mob implements MobInterface {
     ZoglinMetaData metaData;
 
-    public Zoglin(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Zoglin(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new ZoglinMetaData(sets, protocolId);
+        this.metaData = new ZoglinMetaData(sets, versionId);
     }
 
     @Override

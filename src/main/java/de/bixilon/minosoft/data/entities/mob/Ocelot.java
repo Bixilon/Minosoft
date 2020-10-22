@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Ocelot extends Mob implements MobInterface {
     OcelotMetaData metaData;
 
-    public Ocelot(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Ocelot(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new OcelotMetaData(sets, protocolId);
+        this.metaData = new OcelotMetaData(sets, versionId);
     }
 
     @Override

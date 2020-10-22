@@ -35,7 +35,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
         String name = null;
         UUID uuid;
         PlayerPropertyData[] properties = null;
-        if (buffer.getProtocolId() < 19) {
+        if (buffer.getVersionId() < 19) {
             name = buffer.readString();
             uuid = UUID.fromString(buffer.readString());
             properties = new PlayerPropertyData[buffer.readVarInt()];
@@ -46,7 +46,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
             uuid = buffer.readUUID();
         }
         Location location;
-        if (buffer.getProtocolId() < 100) {
+        if (buffer.getVersionId() < 100) {
             location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
         } else {
             location = buffer.readLocation();
@@ -55,12 +55,12 @@ public class PacketSpawnPlayer implements ClientboundPacket {
         short pitch = buffer.readAngle();
 
         short currentItem = 0;
-        if (buffer.getProtocolId() < 49) {
+        if (buffer.getVersionId() < 49) {
             currentItem = buffer.readShort();
         }
         HumanMetaData metaData = null;
-        if (buffer.getProtocolId() < 550) {
-            metaData = new HumanMetaData(buffer.readMetaData(), buffer.getProtocolId());
+        if (buffer.getVersionId() < 550) {
+            metaData = new HumanMetaData(buffer.readMetaData(), buffer.getVersionId());
         }
         this.entity = new OtherPlayer(entityId, name, uuid, properties, location, yaw, pitch, 0, currentItem, metaData);
         return true;

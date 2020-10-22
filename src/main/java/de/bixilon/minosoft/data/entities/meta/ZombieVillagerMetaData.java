@@ -16,15 +16,15 @@ import de.bixilon.minosoft.data.entities.VillagerData;
 
 public class ZombieVillagerMetaData extends ZombieMetaData {
 
-    public ZombieVillagerMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public ZombieVillagerMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Override
     public VillagerData.VillagerProfessions getProfession() {
-        final int defaultValue = super.getProfession().getId(protocolId);
-        if (protocolId < 451) {
-            return VillagerData.VillagerProfessions.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue), protocolId);
+        final int defaultValue = super.getProfession().getId(versionId);
+        if (versionId < 451) {
+            return VillagerData.VillagerProfessions.byId(sets.getInt(super.getLastDataIndex() + 2, defaultValue), versionId);
         }
         return getVillageData().getProfession();
     }
@@ -32,7 +32,7 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
     @Override
     public boolean isConverting() {
         final boolean defaultValue = super.isConverting();
-        if (protocolId < 315) { // ToDo
+        if (versionId < 315) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -40,7 +40,7 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 315) { // ToDo
+        if (versionId < 315) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 2;
@@ -48,7 +48,7 @@ public class ZombieVillagerMetaData extends ZombieMetaData {
 
     public VillagerData getVillageData() {
         final VillagerData defaultValue = new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE);
-        if (protocolId < 451) {
+        if (versionId < 451) {
             return defaultValue;
         }
         return sets.getVillagerData(super.getLastDataIndex() + 2, defaultValue);

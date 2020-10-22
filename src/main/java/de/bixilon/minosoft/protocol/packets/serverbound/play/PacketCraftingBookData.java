@@ -57,7 +57,7 @@ public class PacketCraftingBookData implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_RECIPE_BOOK_DATA);
-        if (buffer.getProtocolId() < 333) {
+        if (buffer.getVersionId() < 333) {
             buffer.writeInt(action.ordinal());
         } else {
             buffer.writeVarInt(action.ordinal());
@@ -68,7 +68,7 @@ public class PacketCraftingBookData implements ServerboundPacket {
             case CRAFTING_BOOK_STATUS -> {
                 buffer.writeBoolean(craftingBookOpen);
                 buffer.writeBoolean(craftingFilter);
-                if (buffer.getProtocolId() >= 451) {
+                if (buffer.getVersionId() >= 451) {
                     buffer.writeBoolean(blastingBookOpen);
                     buffer.writeBoolean(blastingFilter);
                     buffer.writeBoolean(smokingBookOpen);

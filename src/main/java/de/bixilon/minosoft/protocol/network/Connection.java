@@ -82,9 +82,9 @@ public class Connection {
         this.hostname = hostname;
     }
 
-    public void resolve(ConnectionReasons reason, int protocolId) {
+    public void resolve(ConnectionReasons reason, int versionId) {
         lastException = null;
-        this.desiredVersionNumber = protocolId;
+        this.desiredVersionNumber = versionId;
 
         Thread resolveThread = new Thread(() -> {
             Minosoft.waitForStartup(); // wait until mappings are loaded
@@ -104,8 +104,8 @@ public class Connection {
             address = addresses.getFirst();
             this.nextReason = reason;
             Log.info(String.format("Trying to connect to %s", address));
-            if (protocolId != -1) {
-                setVersion(Versions.getVersionById(protocolId));
+            if (versionId != -1) {
+                setVersion(Versions.getVersionById(versionId));
             }
             resolve(address);
         }, String.format("%d/Resolving", connectionId));
@@ -158,7 +158,7 @@ public class Connection {
         this.version = version;
         this.customMapping.setVersion(version);
         try {
-            Versions.loadVersionMappings(version.getProtocolVersion());
+            Versions.loadVersionMappings(version.getVersionId());
         } catch (IOException e) {
             if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
                 e.printStackTrace();
@@ -337,7 +337,7 @@ public class Connection {
                     reason = nextReason;
                     Log.info(String.format("Connection to %s seems to be okay, connecting...", address));
                 }
-                network.sendPacket(new PacketHandshake(address, next, (next == ConnectionStates.STATUS) ? -1 : getVersion().getProtocolVersion()));
+                network.sendPacket(new PacketHandshake(address, next, (next == ConnectionStates.STATUS) ? -1 : getVersion().getProtocolId()));
                 // after sending it, switch to next state
                 setConnectionState(next);
             }

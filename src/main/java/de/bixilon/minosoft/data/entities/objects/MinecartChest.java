@@ -24,8 +24,8 @@ public class MinecartChest extends Minecart {
         super(entityId, uuid, location, yaw, pitch, additionalInt);
     }
 
-    public MinecartChest(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
-        super(entityId, uuid, location, yaw, pitch, headYaw, sets, protocolId);
+    public MinecartChest(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw, sets, versionId);
     }
 
     @Override

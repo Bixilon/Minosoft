@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Fox extends Mob implements MobInterface {
     FoxMetaData metaData;
 
-    public Fox(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Fox(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new FoxMetaData(sets, protocolId);
+        this.metaData = new FoxMetaData(sets, versionId);
     }
 
     @Override

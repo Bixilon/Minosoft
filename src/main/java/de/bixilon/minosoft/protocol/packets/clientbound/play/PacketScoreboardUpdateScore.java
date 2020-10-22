@@ -28,7 +28,7 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         itemName = buffer.readString();
         action = ScoreboardUpdateScoreActions.byId(buffer.readByte());
-        if (buffer.getProtocolId() < 7) { // ToDo
+        if (buffer.getVersionId() < 7) { // ToDo
             if (action == ScoreboardUpdateScoreActions.REMOVE) {
                 return true;
             }

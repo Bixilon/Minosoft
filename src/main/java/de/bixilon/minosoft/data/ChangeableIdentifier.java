@@ -22,12 +22,12 @@ public class ChangeableIdentifier extends VersionValueMap<String> {
     String mod = "minecraft";
 
     public ChangeableIdentifier(String legacy, String water) {
-        values.put(Versions.getLowestVersionSupported().getProtocolVersion(), legacy);
+        values.put(Versions.getLowestVersionSupported().getVersionId(), legacy);
         values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
     }
 
     public ChangeableIdentifier(String legacy, String water, String mod) {
-        values.put(Versions.getLowestVersionSupported().getProtocolVersion(), legacy);
+        values.put(Versions.getLowestVersionSupported().getVersionId(), legacy);
         values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
         this.mod = mod;
     }
@@ -44,7 +44,7 @@ public class ChangeableIdentifier extends VersionValueMap<String> {
         super(name);
     }
 
-    public boolean isValidName(String name, int protocolId) {
+    public boolean isValidName(String name, int versionId) {
         name = name.toLowerCase();
         if (name.indexOf(":") != 0) {
             String[] splittedName = name.split(":", 2);
@@ -56,6 +56,6 @@ public class ChangeableIdentifier extends VersionValueMap<String> {
             // split and check mod
         }
 
-        return get(protocolId).equals(name);
+        return get(versionId).equals(name);
     }
 }

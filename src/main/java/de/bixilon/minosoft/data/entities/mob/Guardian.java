@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Guardian extends Mob implements MobInterface {
     GuardianMetaData metaData;
 
-    public Guardian(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Guardian(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new GuardianMetaData(sets, protocolId);
+        this.metaData = new GuardianMetaData(sets, versionId);
     }
 
     @Override

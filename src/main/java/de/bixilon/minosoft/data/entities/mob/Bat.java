@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Bat extends Mob implements MobInterface {
     BatMetaData metaData;
 
-    public Bat(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Bat(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new BatMetaData(sets, protocolId);
+        this.metaData = new BatMetaData(sets, versionId);
     }
 
     @Override

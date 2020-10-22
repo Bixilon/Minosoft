@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class BlazeMetaData extends MonsterMetaData {
 
-    public BlazeMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public BlazeMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isOnFire() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBoolean(16, defaultValue);
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);

@@ -46,13 +46,13 @@ public class PacketClientSettings implements ServerboundPacket {
         buffer.writeByte(renderDistance); // render Distance
         buffer.writeByte((byte) 0x00); // chat settings (nobody uses them)
         buffer.writeBoolean(true); // chat colors
-        if (buffer.getProtocolId() < 6) {
+        if (buffer.getVersionId() < 6) {
             buffer.writeByte((byte) Difficulties.NORMAL.ordinal()); // difficulty
             buffer.writeBoolean(true); // cape
         } else {
             buffer.writeByte((byte) 0b01111111); // ToDo: skin parts
         }
-        if (buffer.getProtocolId() >= 49) {
+        if (buffer.getVersionId() >= 49) {
             buffer.writeVarInt(mainHand.ordinal());
         }
         return buffer;

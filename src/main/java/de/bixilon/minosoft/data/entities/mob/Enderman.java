@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Enderman extends Mob implements MobInterface {
     EndermanMetaData metaData;
 
-    public Enderman(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Enderman(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new EndermanMetaData(sets, protocolId);
+        this.metaData = new EndermanMetaData(sets, versionId);
     }
 
     @Override

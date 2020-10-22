@@ -33,12 +33,12 @@ public class PacketUpdateSignSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_SIGN);
-        if (buffer.getProtocolId() < 7) {
+        if (buffer.getVersionId() < 7) {
             buffer.writeBlockPositionByte(position);
         } else {
             buffer.writePosition(position);
         }
-        if (buffer.getProtocolId() < 21 || buffer.getProtocolId() >= 62) {
+        if (buffer.getVersionId() < 21 || buffer.getVersionId() >= 62) {
             for (int i = 0; i < 4; i++) {
                 buffer.writeString(lines[i].getMessage());
             }

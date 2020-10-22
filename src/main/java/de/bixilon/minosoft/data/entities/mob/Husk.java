@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Husk extends Mob implements MobInterface {
     HuskMetaData metaData;
 
-    public Husk(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Husk(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new HuskMetaData(sets, protocolId);
+        this.metaData = new HuskMetaData(sets, versionId);
     }
 
     @Override

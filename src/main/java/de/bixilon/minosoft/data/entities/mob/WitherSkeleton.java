@@ -24,9 +24,9 @@ import java.util.UUID;
 public class WitherSkeleton extends Mob implements MobInterface {
     WitherSkeletonMetaData metaData;
 
-    public WitherSkeleton(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public WitherSkeleton(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new WitherSkeletonMetaData(sets, protocolId);
+        this.metaData = new WitherSkeletonMetaData(sets, versionId);
     }
 
     @Override

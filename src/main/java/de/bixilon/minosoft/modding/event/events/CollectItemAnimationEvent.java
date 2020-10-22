@@ -45,7 +45,7 @@ public class CollectItemAnimationEvent extends CancelableEvent {
         return collectorEntityId;
     }
 
-    @MinimumProtocolVersion(protocolId = 301)
+    @MinimumProtocolVersion(versionId = 301)
     public int getCount() {
         return count;
     }

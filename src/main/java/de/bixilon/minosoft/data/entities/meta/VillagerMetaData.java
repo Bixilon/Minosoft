@@ -16,24 +16,24 @@ import de.bixilon.minosoft.data.entities.VillagerData;
 
 public class VillagerMetaData extends AbstractMerchantMetaData {
 
-    public VillagerMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public VillagerMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public VillagerData.VillagerProfessions getProfession() {
-        final int defaultValue = VillagerData.VillagerProfessions.FARMER.getId(protocolId);
-        if (protocolId < 57) {
-            return VillagerData.VillagerProfessions.byId(sets.getInt(16, defaultValue), protocolId);
+        final int defaultValue = VillagerData.VillagerProfessions.FARMER.getId(versionId);
+        if (versionId < 57) {
+            return VillagerData.VillagerProfessions.byId(sets.getInt(16, defaultValue), versionId);
         }
-        if (protocolId < 451) {
-            return VillagerData.VillagerProfessions.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue), protocolId);
+        if (versionId < 451) {
+            return VillagerData.VillagerProfessions.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue), versionId);
         }
         return getVillageData().getProfession();
     }
 
     public VillagerData getVillageData() {
         final VillagerData defaultValue = new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE);
-        if (protocolId < 451) {
+        if (versionId < 451) {
             return defaultValue;
         }
         return sets.getVillagerData(super.getLastDataIndex() + 1, defaultValue);

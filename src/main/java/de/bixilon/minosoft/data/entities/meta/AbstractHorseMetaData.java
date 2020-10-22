@@ -17,8 +17,8 @@ import java.util.UUID;
 
 public abstract class AbstractHorseMetaData extends AnimalMetaData {
 
-    public AbstractHorseMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public AbstractHorseMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isTame() {
@@ -26,10 +26,10 @@ public abstract class AbstractHorseMetaData extends AnimalMetaData {
     }
 
     private boolean isOptionBitMask(int bitMask, boolean defaultValue) {
-        if (protocolId < 335) { //ToDo
+        if (versionId < 335) { //ToDo
             bitMask *= 2;
         }
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBitMask(16, bitMask, defaultValue);
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, bitMask, defaultValue);
@@ -57,10 +57,10 @@ public abstract class AbstractHorseMetaData extends AnimalMetaData {
 
     public HorseTypes getType() {
         final int defaultValue = HorseTypes.HORSE.ordinal();
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return HorseTypes.byId(sets.getInt(19, defaultValue));
         }
-        if (protocolId < 204) {
+        if (versionId < 204) {
             return HorseTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
         }
         return HorseTypes.byId(defaultValue);
@@ -68,7 +68,7 @@ public abstract class AbstractHorseMetaData extends AnimalMetaData {
 
     @Nullable
     public String getOwnerName() {
-        if (protocolId < 57) { //ToDo
+        if (versionId < 57) { //ToDo
             return sets.getString(21, null);
         }
         return null;
@@ -77,13 +77,13 @@ public abstract class AbstractHorseMetaData extends AnimalMetaData {
     @Nullable
     public UUID getOwnerUUID() {
         final UUID defaultValue = null;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return null;
         }
-        if (protocolId == 110) { //ToDo
+        if (versionId == 110) { //ToDo
             return sets.getUUID(15, defaultValue);
         }
-        if (protocolId == 204) { //ToDo
+        if (versionId == 204) { //ToDo
             return sets.getUUID(16, defaultValue);
         }
         return sets.getUUID(super.getLastDataIndex() + 1, defaultValue);

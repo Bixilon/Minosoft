@@ -24,9 +24,9 @@ import java.util.UUID;
 public class ElderGuardian extends Mob implements MobInterface {
     ElderGuardianMetaData metaData;
 
-    public ElderGuardian(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public ElderGuardian(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new ElderGuardianMetaData(sets, protocolId);
+        this.metaData = new ElderGuardianMetaData(sets, versionId);
     }
 
     @Override

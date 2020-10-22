@@ -20,8 +20,8 @@ import java.util.UUID;
 
 public class MagmaCube extends Slime {
 
-    public MagmaCube(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
-        super(entityId, uuid, location, yaw, pitch, headYaw, sets, protocolId);
+    public MagmaCube(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw, sets, versionId);
     }
 
     public MagmaCube(int entityId, UUID uuid, Location location, short yaw, short pitch, int headYaw) {

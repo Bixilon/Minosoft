@@ -28,9 +28,9 @@ public class Firework extends EntityObject implements ObjectInterface {
         super(entityId, uuid, location, yaw, pitch);
     }
 
-    public Firework(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Firework(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new FireworkMetaData(sets, protocolId);
+        this.metaData = new FireworkMetaData(sets, versionId);
     }
 
     @Override

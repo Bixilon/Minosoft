@@ -16,13 +16,13 @@ import de.bixilon.minosoft.data.world.BlockPosition;
 
 public class FallingBlockMetaData extends EntityMetaData {
 
-    public FallingBlockMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public FallingBlockMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public BlockPosition getSpawnPosition() {
         BlockPosition defaultValue = new BlockPosition(0, 0, 0);
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getPosition(super.getLastDataIndex() + 1, defaultValue);
@@ -30,7 +30,7 @@ public class FallingBlockMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId <= 110) { //ToDo
+        if (versionId <= 110) { //ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

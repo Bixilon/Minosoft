@@ -38,7 +38,7 @@ public class PacketChunkData implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         boolean containsSkyLight = buffer.getConnection().getPlayer().getWorld().getDimension().hasSkyLight();
-        if (buffer.getProtocolId() < 23) {
+        if (buffer.getVersionId() < 23) {
             this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             boolean groundUpContinuous = buffer.readBoolean();
             short sectionBitMask = buffer.readShort();
@@ -46,7 +46,7 @@ public class PacketChunkData implements ClientboundPacket {
 
             // decompress chunk data
             InByteBuffer decompressed;
-            if (buffer.getProtocolId() < 27) {
+            if (buffer.getVersionId() < 27) {
                 decompressed = Util.decompress(buffer.readBytes(buffer.readInt()), buffer.getConnection());
             } else {
                 decompressed = buffer;
@@ -55,11 +55,11 @@ public class PacketChunkData implements ClientboundPacket {
             chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, containsSkyLight);
             return true;
         }
-        if (buffer.getProtocolId() < 62) { // ToDo: was this really changed in 62?
+        if (buffer.getVersionId() < 62) { // ToDo: was this really changed in 62?
             this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             boolean groundUpContinuous = buffer.readBoolean();
             int sectionBitMask;
-            if (buffer.getProtocolId() < 60) {
+            if (buffer.getVersionId() < 60) {
                 sectionBitMask = buffer.readShort();
             } else {
                 sectionBitMask = buffer.readInt();
@@ -73,22 +73,22 @@ public class PacketChunkData implements ClientboundPacket {
         }
         this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
         boolean groundUpContinuous = buffer.readBoolean();
-        if (buffer.getProtocolId() >= 732 && buffer.getProtocolId() < 746) {
+        if (buffer.getVersionId() >= 732 && buffer.getVersionId() < 746) {
             this.ignoreOldData = buffer.readBoolean();
         }
         int sectionBitMask;
-        if (buffer.getProtocolId() < 70) {
+        if (buffer.getVersionId() < 70) {
             sectionBitMask = buffer.readInt();
         } else {
             sectionBitMask = buffer.readVarInt();
         }
-        if (buffer.getProtocolId() >= 443) {
+        if (buffer.getVersionId() >= 443) {
             heightMap = (CompoundTag) buffer.readNBT();
         }
         if (groundUpContinuous) {
-            if (buffer.getProtocolId() >= 740) {
+            if (buffer.getVersionId() >= 740) {
                 biomes = buffer.readVarIntArray(buffer.readVarInt());
-            } else if (buffer.getProtocolId() >= 552) {
+            } else if (buffer.getVersionId() >= 552) {
                 biomes = buffer.readIntArray(1024);
             }
         }
@@ -100,7 +100,7 @@ public class PacketChunkData implements ClientboundPacket {
             // set position of the byte buffer, because of some reasons HyPixel makes some weired stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
             buffer.setPosition(size + lastPos);
         }
-        if (buffer.getProtocolId() >= 110) {
+        if (buffer.getVersionId() >= 110) {
             int blockEntitiesCount = buffer.readVarInt();
             for (int i = 0; i < blockEntitiesCount; i++) {
                 CompoundTag tag = (CompoundTag) buffer.readNBT();

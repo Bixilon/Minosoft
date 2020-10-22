@@ -30,9 +30,9 @@ public class Arrow extends EntityObject implements ObjectInterface {
         this.shooter = additionalInt;
     }
 
-    public Arrow(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Arrow(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new TippedArrowMetaData(sets, protocolId);
+        this.metaData = new TippedArrowMetaData(sets, versionId);
         shooter = 0; // ToDo
     }
 

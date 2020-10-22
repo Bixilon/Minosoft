@@ -21,9 +21,9 @@ public class VillagerData {
     final VillagerProfessions profession;
     final VillagerLevels level;
 
-    public VillagerData(int type, int profession, int level, int protocolId) {
+    public VillagerData(int type, int profession, int level, int versionId) {
         this.type = VillagerTypes.byId(type);
-        this.profession = VillagerProfessions.byId(profession, protocolId);
+        this.profession = VillagerProfessions.byId(profession, versionId);
         this.level = VillagerLevels.byId(level);
     }
 
@@ -61,17 +61,17 @@ public class VillagerData {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static VillagerProfessions byId(int id, int protocolId) {
+        public static VillagerProfessions byId(int id, int versionId) {
             for (VillagerProfessions profession : values()) {
-                if (profession.getId(protocolId) == id) {
+                if (profession.getId(versionId) == id) {
                     return profession;
                 }
             }
             return null;
         }
 
-        public int getId(int protocolId) {
-            return valueMap.get(protocolId);
+        public int getId(int versionId) {
+            return valueMap.get(versionId);
         }
     }
 

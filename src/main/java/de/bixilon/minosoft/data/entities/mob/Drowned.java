@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Drowned extends Mob implements MobInterface {
     DrownedMetaData metaData;
 
-    public Drowned(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Drowned(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new DrownedMetaData(sets, protocolId);
+        this.metaData = new DrownedMetaData(sets, versionId);
     }
 
     @Override

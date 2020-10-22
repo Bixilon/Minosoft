@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class FireballMetaData extends ItemedFireballMetaData {
 
-    public FireballMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public FireballMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

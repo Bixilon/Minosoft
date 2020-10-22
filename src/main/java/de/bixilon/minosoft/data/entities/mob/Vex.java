@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Vex extends Mob implements MobInterface {
     VexMetaData metaData;
 
-    public Vex(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Vex(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new VexMetaData(sets, protocolId);
+        this.metaData = new VexMetaData(sets, versionId);
     }
 
     @Override

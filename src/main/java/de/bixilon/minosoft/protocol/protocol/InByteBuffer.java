@@ -41,26 +41,26 @@ import java.util.UUID;
 
 public class InByteBuffer {
     final Connection connection;
-    final int protocolId;
+    final int versionId;
     final byte[] bytes;
     int position;
 
     public InByteBuffer(byte[] bytes, Connection connection) {
         this.bytes = bytes;
         this.connection = connection;
-        this.protocolId = connection.getVersion().getProtocolVersion();
+        this.versionId = connection.getVersion().getVersionId();
     }
 
     public InByteBuffer(InByteBuffer buffer) {
         this.bytes = buffer.getBytes();
         this.position = buffer.getPosition();
         this.connection = buffer.getConnection();
-        this.protocolId = connection.getVersion().getProtocolVersion();
+        this.versionId = connection.getVersion().getVersionId();
     }
 
     public byte[] readByteArray() {
         int count;
-        if (protocolId < 19) {
+        if (versionId < 19) {
             count = readShort();
         } else {
             count = readVarInt();
@@ -186,7 +186,7 @@ public class InByteBuffer {
 
     public BlockPosition readPosition() {
         //ToDo: protocol id 7
-        if (protocolId < 440) {
+        if (versionId < 440) {
             long raw = readLong();
             int x = (int) (raw >> 38);
             short y = (short) ((raw >> 26) & 0xFFF);
@@ -222,7 +222,7 @@ public class InByteBuffer {
     }
 
     public ParticleData readParticleData(Particle type) {
-        if (protocolId < 343) {
+        if (versionId < 343) {
             // old particle format
             return switch (type.getIdentifier()) {
                 case "iconcrack" -> new ItemParticleData(new Slot(connection.getMapping().getItemByLegacy(readVarInt(), readVarInt())), type);
@@ -284,7 +284,7 @@ public class InByteBuffer {
     }
 
     public Slot readSlot() {
-        if (protocolId < 402) {
+        if (versionId < 402) {
             short id = readShort();
             if (id == -1) {
                 return null;
@@ -292,10 +292,10 @@ public class InByteBuffer {
             byte count = readByte();
             short metaData = 0;
 
-            if (protocolId < ProtocolDefinition.FLATTING_VERSION_ID) {
+            if (versionId < ProtocolDefinition.FLATTING_VERSION_ID) {
                 metaData = readShort();
             }
-            CompoundTag nbt = (CompoundTag) readNBT(protocolId < 28);
+            CompoundTag nbt = (CompoundTag) readNBT(versionId < 28);
             return new Slot(connection.getMapping(), connection.getMapping().getItemByLegacy(id, metaData), count, metaData, nbt);
         }
         if (readBoolean()) {
@@ -386,33 +386,33 @@ public class InByteBuffer {
         return ret;
     }
 
-    public int getProtocolId() {
-        return protocolId;
+    public int getVersionId() {
+        return versionId;
     }
 
     public EntityMetaData.MetaDataHashMap readMetaData() {
         EntityMetaData.MetaDataHashMap sets = new EntityMetaData.MetaDataHashMap();
 
-        if (protocolId < 48) {
+        if (versionId < 48) {
             byte item = readByte();
 
             while (item != 0x7F) {
                 byte index = (byte) (item & 0x1F);
-                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId((item & 0xFF) >> 5, protocolId);
+                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId((item & 0xFF) >> 5, versionId);
                 sets.put((int) index, EntityMetaData.getData(type, this));
                 item = readByte();
             }
-        } else if (protocolId < 107) {
+        } else if (versionId < 107) {
             byte index = readByte();
             while (index != (byte) 0xFF) {
-                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId(readByte(), protocolId);
+                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId(readByte(), versionId);
                 sets.put((int) index, EntityMetaData.getData(type, this));
                 index = readByte();
             }
         } else {
             byte index = readByte();
             while (index != (byte) 0xFF) {
-                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId(readVarInt(), protocolId);
+                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId(readVarInt(), versionId);
                 sets.put((int) index, EntityMetaData.getData(type, this));
                 index = readByte();
             }
@@ -462,7 +462,7 @@ public class InByteBuffer {
     }
 
     public int readEntityId() {
-        if (protocolId < 7) {
+        if (versionId < 7) {
             return readInt();
         }
         return readVarInt();

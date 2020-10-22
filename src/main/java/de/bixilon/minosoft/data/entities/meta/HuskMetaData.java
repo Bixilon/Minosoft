@@ -16,8 +16,8 @@ import de.bixilon.minosoft.data.entities.VillagerData;
 
 public class HuskMetaData extends ZombieMetaData {
 
-    public HuskMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public HuskMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Override

@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class SpellcasterMetaData extends LivingMetaData {
 
-    public SpellcasterMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public SpellcasterMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public SpellTypes getSpell() {
         final int defaultValue = SpellTypes.NONE.ordinal();
-        if (protocolId < 315) { // ToDo
+        if (versionId < 315) { // ToDo
             return SpellTypes.byId(defaultValue);
         }
         return SpellTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));

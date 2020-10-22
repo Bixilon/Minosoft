@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public abstract class CreatureMetaData extends InsentientMetaData {
 
-    public CreatureMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public CreatureMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

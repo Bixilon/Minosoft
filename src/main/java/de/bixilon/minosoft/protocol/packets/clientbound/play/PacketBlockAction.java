@@ -30,7 +30,7 @@ public class PacketBlockAction implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         // that's the only difference here
-        if (buffer.getProtocolId() < 6) {
+        if (buffer.getVersionId() < 6) {
             position = buffer.readBlockPositionShort();
         } else {
             position = buffer.readPosition();

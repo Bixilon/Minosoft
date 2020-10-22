@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class MonsterMetaData extends CreatureMetaData {
 
-    public MonsterMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public MonsterMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

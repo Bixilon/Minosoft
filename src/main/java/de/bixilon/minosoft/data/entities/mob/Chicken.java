@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Chicken extends Mob implements MobInterface {
     ChickenMetaData metaData;
 
-    public Chicken(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Chicken(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new ChickenMetaData(sets, protocolId);
+        this.metaData = new ChickenMetaData(sets, versionId);
     }
 
     @Override

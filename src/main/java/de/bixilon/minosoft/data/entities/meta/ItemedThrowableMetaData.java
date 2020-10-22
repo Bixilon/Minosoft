@@ -18,13 +18,13 @@ import javax.annotation.Nullable;
 
 public abstract class ItemedThrowableMetaData extends ThrowableMetaData {
 
-    public ItemedThrowableMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public ItemedThrowableMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Nullable
     public Slot getItem() {
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return null;
         }
         return sets.getSlot(super.getLastDataIndex() + 1, null);
@@ -32,7 +32,7 @@ public abstract class ItemedThrowableMetaData extends ThrowableMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 477) {
+        if (versionId < 477) {
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

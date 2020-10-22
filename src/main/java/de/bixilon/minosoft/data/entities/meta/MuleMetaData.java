@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class MuleMetaData extends ChestedHorseMetaData {
 
-    public MuleMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public MuleMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Override

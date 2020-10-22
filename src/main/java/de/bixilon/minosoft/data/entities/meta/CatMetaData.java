@@ -18,13 +18,13 @@ import de.bixilon.minosoft.data.text.RGBColor;
 
 public class CatMetaData extends AnimalMetaData {
 
-    public CatMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public CatMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public CatTypes getType() {
         final int defaultValue = CatTypes.BLACK.ordinal();
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return CatTypes.byId(defaultValue);
         }
         return CatTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
@@ -32,7 +32,7 @@ public class CatMetaData extends AnimalMetaData {
 
     public RGBColor getCollarColor() {
         final int defaultValue = ChatColors.getColorId(ChatColors.getColorByName("red"));
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return ChatColors.getColorById(defaultValue);
         }
         return ChatColors.getColorById(sets.getInt(super.getLastDataIndex() + 2, defaultValue));
@@ -40,7 +40,7 @@ public class CatMetaData extends AnimalMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class StraySkeletonMetaData extends SkeletonMetaData {
 
-    public StraySkeletonMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public StraySkeletonMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Override

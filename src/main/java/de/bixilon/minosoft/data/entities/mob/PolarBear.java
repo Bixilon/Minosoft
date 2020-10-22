@@ -24,9 +24,9 @@ import java.util.UUID;
 public class PolarBear extends Mob implements MobInterface {
     PolarBearMetaData metaData;
 
-    public PolarBear(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public PolarBear(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new PolarBearMetaData(sets, protocolId);
+        this.metaData = new PolarBearMetaData(sets, versionId);
     }
 
     @Override

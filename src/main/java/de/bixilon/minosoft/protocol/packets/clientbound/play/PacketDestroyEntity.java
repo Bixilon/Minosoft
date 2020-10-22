@@ -25,7 +25,7 @@ public class PacketDestroyEntity implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 7) {
+        if (buffer.getVersionId() < 7) {
             this.entityIds = new int[buffer.readByte()];
         } else {
             this.entityIds = new int[buffer.readVarInt()];

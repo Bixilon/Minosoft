@@ -14,5 +14,5 @@
 package de.bixilon.minosoft.modding.event.events.annotations;
 
 public @interface MinimumProtocolVersion {
-    int protocolId() default 0;
+    int versionId() default 0;
 }

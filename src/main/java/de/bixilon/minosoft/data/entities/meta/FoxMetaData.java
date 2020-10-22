@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class FoxMetaData extends AnimalMetaData {
 
-    public FoxMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public FoxMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public FoxTypes getType() {
         final int defaultValue = FoxTypes.RED.ordinal();
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return FoxTypes.byId(defaultValue);
         }
         return FoxTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
@@ -28,7 +28,7 @@ public class FoxMetaData extends AnimalMetaData {
 
     public boolean isSitting() {
         final boolean defaultValue = false;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 2, 0x01, defaultValue);
@@ -36,7 +36,7 @@ public class FoxMetaData extends AnimalMetaData {
 
     public boolean isSneaking() {
         final boolean defaultValue = false;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 2, 0x04, defaultValue);
@@ -44,7 +44,7 @@ public class FoxMetaData extends AnimalMetaData {
 
     public boolean isSleeping() {
         final boolean defaultValue = false;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 2, 0x20, defaultValue);
@@ -53,7 +53,7 @@ public class FoxMetaData extends AnimalMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId <= 477) { // ToDo
+        if (versionId <= 477) { // ToDo
             return super.getLastDataIndex() + 2;
         }
         return super.getLastDataIndex() + 4;

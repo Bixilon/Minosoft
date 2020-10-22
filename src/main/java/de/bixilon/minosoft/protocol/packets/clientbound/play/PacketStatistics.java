@@ -29,7 +29,7 @@ public class PacketStatistics implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
-            if (buffer.getProtocolId() < 346) { // ToDo
+            if (buffer.getVersionId() < 346) { // ToDo
                 statistics.put(buffer.getConnection().getMapping().getStatisticByIdentifier(buffer.readString()), buffer.readVarInt());
             } else {
                 StatisticCategories category = StatisticCategories.byId(buffer.readVarInt());

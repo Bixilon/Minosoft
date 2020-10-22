@@ -32,9 +32,9 @@ public class FallingBlock extends EntityObject implements ObjectInterface {
         // ToDo: block = Blocks.getBlockByLegacy(additionalInt & 0xFFF, additionalInt >>> 12);
     }
 
-    public FallingBlock(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public FallingBlock(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new FallingBlockMetaData(sets, protocolId);
+        this.metaData = new FallingBlockMetaData(sets, versionId);
         block = Blocks.nullBlock; // ToDo
     }
 

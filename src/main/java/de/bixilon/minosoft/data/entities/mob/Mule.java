@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Mule extends Mob implements MobInterface {
     MuleMetaData metaData;
 
-    public Mule(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Mule(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new MuleMetaData(sets, protocolId);
+        this.metaData = new MuleMetaData(sets, versionId);
     }
 
     @Override

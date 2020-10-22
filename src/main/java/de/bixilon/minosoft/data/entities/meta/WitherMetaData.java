@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class WitherMetaData extends MonsterMetaData {
 
-    public WitherMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public WitherMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public int getWatchedTarget1() {
         final int defaultValue = 0;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getInt(17, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -28,7 +28,7 @@ public class WitherMetaData extends MonsterMetaData {
 
     public int getWatchedTarget2() {
         final int defaultValue = 0;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getInt(18, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -36,7 +36,7 @@ public class WitherMetaData extends MonsterMetaData {
 
     public int getWatchedTarget3() {
         final int defaultValue = 0;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getInt(19, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 3, defaultValue);
@@ -44,7 +44,7 @@ public class WitherMetaData extends MonsterMetaData {
 
     public int getInvulnerableTime() {
         final int defaultValue = 0;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getInt(20, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 4, defaultValue);

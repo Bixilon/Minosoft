@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public class ZombiePigman extends ZombifiedPiglin {
 
-    public ZombiePigman(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
-        super(entityId, uuid, location, yaw, pitch, headYaw, sets, protocolId);
+    public ZombiePigman(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw, sets, versionId);
     }
 }

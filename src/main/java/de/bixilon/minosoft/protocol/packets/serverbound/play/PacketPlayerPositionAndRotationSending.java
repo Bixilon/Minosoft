@@ -53,7 +53,7 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_POSITION_AND_ROTATION);
         buffer.writeDouble(x);
         buffer.writeDouble(feetY);
-        if (buffer.getProtocolId() < 10) {
+        if (buffer.getVersionId() < 10) {
             buffer.writeDouble(headY);
         }
         buffer.writeDouble(z);

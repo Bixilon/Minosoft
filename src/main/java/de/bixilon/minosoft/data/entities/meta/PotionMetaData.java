@@ -16,12 +16,12 @@ import de.bixilon.minosoft.data.inventory.Slot;
 
 public class PotionMetaData extends EntityMetaData {
 
-    public PotionMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public PotionMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public Slot getPotion() {
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return null;
         }
         return sets.getSlot(super.getLastDataIndex(), null);
@@ -29,7 +29,7 @@ public class PotionMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

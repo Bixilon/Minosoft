@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class PrimedTNTMetaData extends EntityMetaData {
 
-    public PrimedTNTMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public PrimedTNTMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public int getFuseTime() {
         final int defaultValue = 80;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);

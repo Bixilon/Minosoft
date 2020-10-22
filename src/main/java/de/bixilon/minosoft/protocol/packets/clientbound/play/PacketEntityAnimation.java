@@ -27,7 +27,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         entityId = buffer.readVarInt();
-        animation = EntityAnimations.byId(buffer.readByte(), buffer.getProtocolId());
+        animation = EntityAnimations.byId(buffer.readByte(), buffer.getVersionId());
         return true;
     }
 
@@ -60,17 +60,17 @@ public class PacketEntityAnimation implements ClientboundPacket {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static EntityAnimations byId(int id, int protocolId) {
+        public static EntityAnimations byId(int id, int versionId) {
             for (EntityAnimations animation : values()) {
-                if (animation.getId(protocolId) == id) {
+                if (animation.getId(versionId) == id) {
                     return animation;
                 }
             }
             return null;
         }
 
-        public int getId(Integer protocolId) {
-            Integer ret = valueMap.get(protocolId);
+        public int getId(Integer versionId) {
+            Integer ret = valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

@@ -155,10 +155,10 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
             players.setText(LocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, ping.getPlayerOnline(), ping.getMaxPlayers()));
             Version serverVersion;
-            if (server.getDesiredVersion() == -1) {
-                serverVersion = Versions.getVersionById(ping.getProtocolId());
+            if (server.getDesiredVersionId() == -1) {
+                serverVersion = Versions.getVersionByProtocolId(ping.getProtocolId());
             } else {
-                serverVersion = Versions.getVersionById(server.getDesiredVersion());
+                serverVersion = Versions.getVersionById(server.getDesiredVersionId());
                 version.setStyle("-fx-text-fill: green;");
             }
             if (serverVersion == null) {
@@ -254,10 +254,10 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
         Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), new Player(Minosoft.getSelectedAccount()));
         Version version;
-        if (server.getDesiredVersion() == -1) {
+        if (server.getDesiredVersionId() == -1) {
             version = server.getLastPing().getVersion();
         } else {
-            version = Versions.getVersionById(server.getDesiredVersion());
+            version = Versions.getVersionById(server.getDesiredVersionId());
         }
         optionsConnect.setDisable(true);
         connection.connect(server.getLastPing().getAddress(), version);
@@ -286,10 +286,10 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         serverAddress.setPromptText(LocaleManager.translate(Strings.SERVER_ADDRESS));
         serverAddress.setText(server.getAddress());
 
-        if (server.getDesiredVersion() == -1) {
+        if (server.getDesiredVersionId() == -1) {
             GUITools.versionList.getSelectionModel().select(Versions.getLowestVersionSupported());
         } else {
-            GUITools.versionList.getSelectionModel().select(Versions.getVersionById(server.getDesiredVersion()));
+            GUITools.versionList.getSelectionModel().select(Versions.getVersionById(server.getDesiredVersionId()));
         }
 
         grid.add(new Label(LocaleManager.translate(Strings.SERVER_NAME) + ":"), 0, 0);
@@ -311,14 +311,14 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             if (dialogButton == saveButtonType) {
                 serverName.setText(serverName.getText());
                 server.setName(serverName.getText());
-                server.setDesiredVersion(GUITools.versionList.getSelectionModel().getSelectedItem().getProtocolVersion());
-                if (server.getDesiredVersion() != -1) {
-                    version.setText(Versions.getVersionById(server.getDesiredVersion()).getVersionName());
+                server.setDesiredVersionId(GUITools.versionList.getSelectionModel().getSelectedItem().getVersionId());
+                if (server.getDesiredVersionId() != -1) {
+                    version.setText(Versions.getVersionById(server.getDesiredVersionId()).getVersionName());
                     version.setTextFill(Color.BLACK);
                 }
                 server.setAddress(DNSUtil.correctHostName(serverAddress.getText()));
                 server.saveToConfig();
-                Log.info(String.format("Edited and saved server (serverName=%s, serverAddress=%s, version=%d)", server.getName(), server.getAddress(), server.getDesiredVersion()));
+                Log.info(String.format("Edited and saved server (serverName=%s, serverAddress=%s, version=%d)", server.getName(), server.getAddress(), server.getDesiredVersionId()));
             }
             return null;
         });
@@ -367,10 +367,10 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         Label serverAddressLabel = new Label(server.getAddress());
         Label forcedVersionLabel = new Label();
 
-        if (server.getDesiredVersion() == -1) {
+        if (server.getDesiredVersionId() == -1) {
             forcedVersionLabel.setText(Versions.getLowestVersionSupported().getVersionName());
         } else {
-            forcedVersionLabel.setText(Versions.getVersionById(server.getDesiredVersion()).getVersionName());
+            forcedVersionLabel.setText(Versions.getVersionById(server.getDesiredVersionId()).getVersionName());
         }
 
         int column = -1;
@@ -391,10 +391,10 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
 
             if (server.getLastPing().getLastPing() != null) {
                 ServerListPing lastPing = server.getLastPing().getLastPing();
-                Version serverVersion = Versions.getVersionById(lastPing.getProtocolId());
+                Version serverVersion = Versions.getVersionByProtocolId(lastPing.getProtocolId());
                 String serverVersionString;
                 if (serverVersion == null) {
-                    serverVersionString = LocaleManager.translate(Strings.SERVER_INFO_LAST_CONNECTION_EXCEPTION, lastPing.getProtocolId());
+                    serverVersionString = LocaleManager.translate(Strings.SERVER_INFO_VERSION_UNKNOWN, lastPing.getProtocolId());
                 } else {
                     serverVersionString = serverVersion.getVersionName();
                 }

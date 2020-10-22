@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public abstract class AmbientMetaData extends InsentientMetaData {
 
-    public AmbientMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public AmbientMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

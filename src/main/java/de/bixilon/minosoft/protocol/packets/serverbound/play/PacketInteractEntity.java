@@ -64,13 +64,13 @@ public class PacketInteractEntity implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_INTERACT_ENTITY);
         buffer.writeEntityId(entityId);
-        if (buffer.getProtocolId() < 33) {
+        if (buffer.getVersionId() < 33) {
             if (click == EntityInteractionClicks.INTERACT_AT) {
                 click = EntityInteractionClicks.INTERACT;
             }
         }
         buffer.writeByte((byte) click.ordinal());
-        if (buffer.getProtocolId() >= 33) {
+        if (buffer.getVersionId() >= 33) {
             if (click == EntityInteractionClicks.INTERACT_AT) {
                 // position
                 buffer.writeFloat((float) location.getX());
@@ -79,15 +79,15 @@ public class PacketInteractEntity implements ServerboundPacket {
             }
 
             if (click == EntityInteractionClicks.INTERACT_AT || click == EntityInteractionClicks.INTERACT) {
-                if (buffer.getProtocolId() >= 49) {
+                if (buffer.getVersionId() >= 49) {
                     buffer.writeVarInt(hand.ordinal());
                 }
 
-                if (buffer.getProtocolId() >= 725 && buffer.getProtocolId() < 729) {
+                if (buffer.getVersionId() >= 725 && buffer.getVersionId() < 729) {
                     buffer.writeBoolean(sneaking);
                 }
             }
-            if (buffer.getProtocolId() <= 729) {
+            if (buffer.getVersionId() <= 729) {
                 buffer.writeBoolean(sneaking);
             }
         }

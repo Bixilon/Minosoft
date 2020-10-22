@@ -18,14 +18,14 @@ import javax.annotation.Nullable;
 
 public class ItemMetaData extends EntityMetaData {
 
-    public ItemMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public ItemMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Nullable
     public Slot getSlot() {
         final Slot defaultValue = null;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getSlot(10, defaultValue);
         }
         return sets.getSlot(super.getLastDataIndex() + 1, defaultValue);

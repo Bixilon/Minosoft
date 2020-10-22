@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public abstract class BasePiglinMetaData extends MonsterMetaData {
 
-    public BasePiglinMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public BasePiglinMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isImmuneToZombification() {
         final boolean defaultValue = false;
-        if (protocolId < 743) { // ToDo
+        if (versionId < 743) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);

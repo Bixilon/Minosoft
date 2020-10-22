@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class PiglinBruteMetaData extends BasePiglinMetaData {
 
-    public PiglinBruteMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public PiglinBruteMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

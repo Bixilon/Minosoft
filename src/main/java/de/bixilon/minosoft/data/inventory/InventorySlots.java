@@ -67,7 +67,7 @@ public class InventorySlots {
         HOTBAR_9,
         OFF_HAND;
 
-        public static PlayerInventorySlots byId(int id, int protocolId) {
+        public static PlayerInventorySlots byId(int id, int versionId) {
             return values()[id];
         }
 
@@ -76,7 +76,7 @@ public class InventorySlots {
         }
 
         @Override
-        public int getId(int protocolId) {
+        public int getId(int versionId) {
             return ordinal();
         }
     }
@@ -99,9 +99,9 @@ public class InventorySlots {
             valueMap = new VersionValueMap<>(id);
         }
 
-        public static EntityInventorySlots byId(int id, int protocolId) {
+        public static EntityInventorySlots byId(int id, int versionId) {
             for (EntityInventorySlots entityInventorySlot : values()) {
-                if (entityInventorySlot.getId(protocolId) == id) {
+                if (entityInventorySlot.getId(versionId) == id) {
                     return entityInventorySlot;
                 }
             }
@@ -109,13 +109,13 @@ public class InventorySlots {
         }
 
         @Override
-        public int getId(int protocolId) {
-            return valueMap.get(protocolId);
+        public int getId(int versionId) {
+            return valueMap.get(versionId);
         }
     }
 
     public interface InventoryInterface {
-        int getId(int protocolId);
+        int getId(int versionId);
     }
 
 }

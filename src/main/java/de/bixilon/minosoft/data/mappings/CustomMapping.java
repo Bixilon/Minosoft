@@ -92,11 +92,11 @@ public class CustomMapping {
     }
 
     public Item getItemByLegacy(int itemId, int metaData) {
-        int protocolId = itemId << 16;
+        int versionId = itemId << 16;
         if (metaData > 0 && metaData < Short.MAX_VALUE) {
-            protocolId |= metaData;
+            versionId |= metaData;
         }
-        Item item = getItemById(protocolId);
+        Item item = getItemById(versionId);
         if (item == null) {
             // ignore meta data ?
             return getItemById(itemId << 16);
@@ -104,39 +104,39 @@ public class CustomMapping {
         return item;
     }
 
-    public Item getItemById(int protocolId) {
-        if (itemMap.containsKey(protocolId)) {
-            return itemMap.get(protocolId);
+    public Item getItemById(int versionId) {
+        if (itemMap.containsKey(versionId)) {
+            return itemMap.get(versionId);
         }
-        return version.getMapping().getItemById(protocolId);
+        return version.getMapping().getItemById(versionId);
     }
 
-    public String getEntityIdentifierById(int protocolId) {
-        if (itemMap.containsKey(protocolId)) {
-            return entityMap.get(protocolId);
+    public String getEntityIdentifierById(int versionId) {
+        if (itemMap.containsKey(versionId)) {
+            return entityMap.get(versionId);
         }
-        return version.getMapping().getEntityIdentifierById(protocolId);
+        return version.getMapping().getEntityIdentifierById(versionId);
     }
 
-    public Motive getMotiveById(int protocolId) {
-        if (motiveIdMap.containsKey(protocolId)) {
-            return motiveIdMap.get(protocolId);
+    public Motive getMotiveById(int versionId) {
+        if (motiveIdMap.containsKey(versionId)) {
+            return motiveIdMap.get(versionId);
         }
-        return version.getMapping().getMotiveById(protocolId);
+        return version.getMapping().getMotiveById(versionId);
     }
 
-    public MobEffect getMobEffectById(int protocolId) {
-        if (mobEffectMap.containsKey(protocolId)) {
-            return mobEffectMap.get(protocolId);
+    public MobEffect getMobEffectById(int versionId) {
+        if (mobEffectMap.containsKey(versionId)) {
+            return mobEffectMap.get(versionId);
         }
-        return version.getMapping().getMobEffectById(protocolId);
+        return version.getMapping().getMobEffectById(versionId);
     }
 
-    public Dimension getDimensionById(int protocolId) {
-        if (dimensionMap.containsKey(protocolId)) {
-            return dimensionMap.get(protocolId);
+    public Dimension getDimensionById(int versionId) {
+        if (dimensionMap.containsKey(versionId)) {
+            return dimensionMap.get(versionId);
         }
-        return version.getMapping().getDimensionById(protocolId);
+        return version.getMapping().getDimensionById(versionId);
     }
 
     public Dimension getDimensionByIdentifier(String identifier) {
@@ -147,43 +147,43 @@ public class CustomMapping {
         return null;
     }
 
-    public Block getBlockByIdAndMetaData(int protocolId, int metaData) {
-        return getBlockById((protocolId << 4) | metaData);
+    public Block getBlockByIdAndMetaData(int versionId, int metaData) {
+        return getBlockById((versionId << 4) | metaData);
     }
 
-    public Block getBlockById(int protocolId) {
-        if (blockMap.containsKey(protocolId)) {
-            return blockMap.get(protocolId);
+    public Block getBlockById(int versionId) {
+        if (blockMap.containsKey(versionId)) {
+            return blockMap.get(versionId);
         }
-        return version.getMapping().getBlockById(protocolId);
+        return version.getMapping().getBlockById(versionId);
     }
 
-    public BlockId getBlockIdById(int protocolId) {
-        if (blockIdMap.containsKey(protocolId)) {
-            return blockIdMap.get(protocolId);
+    public BlockId getBlockIdById(int versionId) {
+        if (blockIdMap.containsKey(versionId)) {
+            return blockIdMap.get(versionId);
         }
-        return version.getMapping().getBlockIdById(protocolId);
+        return version.getMapping().getBlockIdById(versionId);
     }
 
-    public Enchantment getEnchantmentById(int protocolId) {
-        if (enchantmentMap.containsKey(protocolId)) {
-            return enchantmentMap.get(protocolId);
+    public Enchantment getEnchantmentById(int versionId) {
+        if (enchantmentMap.containsKey(versionId)) {
+            return enchantmentMap.get(versionId);
         }
-        return version.getMapping().getEnchantmentById(protocolId);
+        return version.getMapping().getEnchantmentById(versionId);
     }
 
-    public Particle getParticleById(int protocolId) {
-        if (particleIdMap.containsKey(protocolId)) {
-            return particleIdMap.get(protocolId);
+    public Particle getParticleById(int versionId) {
+        if (particleIdMap.containsKey(versionId)) {
+            return particleIdMap.get(versionId);
         }
-        return version.getMapping().getParticleById(protocolId);
+        return version.getMapping().getParticleById(versionId);
     }
 
-    public Statistic getStatisticById(int protocolId) {
-        if (statisticIdMap.containsKey(protocolId)) {
-            return statisticIdMap.get(protocolId);
+    public Statistic getStatisticById(int versionId) {
+        if (statisticIdMap.containsKey(versionId)) {
+            return statisticIdMap.get(versionId);
         }
-        return version.getMapping().getStatisticById(protocolId);
+        return version.getMapping().getStatisticById(versionId);
     }
 
     public int getIdByEnchantment(Enchantment enchantment) {

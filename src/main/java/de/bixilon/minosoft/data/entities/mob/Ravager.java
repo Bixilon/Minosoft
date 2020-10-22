@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Ravager extends Mob implements MobInterface {
     PillagerMetaData metaData;
 
-    public Ravager(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Ravager(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new PillagerMetaData(sets, protocolId);
+        this.metaData = new PillagerMetaData(sets, versionId);
     }
 
     @Override

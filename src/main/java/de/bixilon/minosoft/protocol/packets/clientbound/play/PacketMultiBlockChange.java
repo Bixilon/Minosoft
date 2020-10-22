@@ -29,8 +29,8 @@ public class PacketMultiBlockChange implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 25) {
-            if (buffer.getProtocolId() < 4) {
+        if (buffer.getVersionId() < 25) {
+            if (buffer.getVersionId() < 4) {
                 location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
             } else {
                 location = new ChunkLocation(buffer.readInt(), buffer.readInt());
@@ -48,7 +48,7 @@ public class PacketMultiBlockChange implements ClientboundPacket {
             }
             return true;
         }
-        if (buffer.getProtocolId() < 740) {
+        if (buffer.getVersionId() < 740) {
             location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             int count = buffer.readVarInt();
             for (int i = 0; i < count; i++) {
@@ -62,7 +62,7 @@ public class PacketMultiBlockChange implements ClientboundPacket {
         long rawPos = buffer.readLong();
         location = new ChunkLocation((int) (rawPos >> 42), (int) (rawPos << 22 >> 42));
         int yOffset = ((int) rawPos & 0xFFFFF) * 16;
-        if (buffer.getProtocolId() > 748) {
+        if (buffer.getVersionId() > 748) {
             buffer.readBoolean(); // ToDo
         }
         int count = buffer.readVarInt();

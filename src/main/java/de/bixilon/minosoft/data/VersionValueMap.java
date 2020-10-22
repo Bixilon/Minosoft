@@ -31,11 +31,11 @@ public class VersionValueMap<V> {
     }
 
     public VersionValueMap(V value) {
-        values.put(Versions.getLowestVersionSupported().getProtocolVersion(), value);
+        values.put(Versions.getLowestVersionSupported().getVersionId(), value);
     }
 
-    public V get(int protocolId) {
-        Map.Entry<Integer, V> value = values.lowerEntry(protocolId);
+    public V get(int versionId) {
+        Map.Entry<Integer, V> value = values.lowerEntry(versionId);
         if (value == null) {
             return null;
         }

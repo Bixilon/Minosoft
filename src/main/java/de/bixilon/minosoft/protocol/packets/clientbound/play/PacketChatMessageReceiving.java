@@ -30,12 +30,12 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         message = buffer.readTextComponent();
-        if (buffer.getProtocolId() < 7) {
+        if (buffer.getVersionId() < 7) {
             position = ChatTextPositions.CHAT_BOX;
             return true;
         }
         position = ChatTextPositions.byId(buffer.readByte());
-        if (buffer.getProtocolId() >= 718) {
+        if (buffer.getVersionId() >= 718) {
             sender = buffer.readUUID();
         }
         return true;

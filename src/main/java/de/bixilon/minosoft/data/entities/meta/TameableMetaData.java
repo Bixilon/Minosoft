@@ -17,13 +17,13 @@ import java.util.UUID;
 
 public abstract class TameableMetaData extends AnimalMetaData {
 
-    public TameableMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public TameableMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isSitting() {
         final boolean defaultValue = false;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
@@ -31,7 +31,7 @@ public abstract class TameableMetaData extends AnimalMetaData {
 
     public boolean isTame() {
         final boolean defaultValue = false;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
@@ -39,7 +39,7 @@ public abstract class TameableMetaData extends AnimalMetaData {
 
     public boolean isAngry() {
         final boolean defaultValue = false;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue);
@@ -47,7 +47,7 @@ public abstract class TameableMetaData extends AnimalMetaData {
 
     @Nullable
     public String getOwnerName() {
-        if (protocolId < 57) { //ToDo
+        if (versionId < 57) { //ToDo
             return sets.getString(17, null);
         }
         return null;
@@ -56,7 +56,7 @@ public abstract class TameableMetaData extends AnimalMetaData {
     @Nullable
     public UUID getOwnerUUID() {
         final UUID defaultValue = null;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getUUID(super.getLastDataIndex() + 2, defaultValue);

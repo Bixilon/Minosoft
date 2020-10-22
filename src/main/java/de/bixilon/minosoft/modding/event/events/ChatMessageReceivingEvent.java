@@ -51,7 +51,7 @@ public class ChatMessageReceivingEvent extends CancelableEvent {
     /**
      * @return The uuid of the sender
      */
-    @MinimumProtocolVersion(protocolId = 718)
+    @MinimumProtocolVersion(versionId = 718)
     public UUID getSender() {
         return this.sender;
     }

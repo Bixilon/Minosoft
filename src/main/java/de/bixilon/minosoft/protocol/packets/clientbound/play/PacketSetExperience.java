@@ -26,7 +26,7 @@ public class PacketSetExperience implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         bar = buffer.readFloat();
-        if (buffer.getProtocolId() < 7) {
+        if (buffer.getVersionId() < 7) {
             level = buffer.readShort();
             total = buffer.readShort();
             return true;

@@ -71,7 +71,7 @@ public class Launcher extends Application {
                     protected void updateItem(Version version, boolean empty) {
                         super.updateItem(version, empty);
                         if (!empty && version != null) {
-                            setText(String.format("%s (%d)", version.getVersionName(), version.getProtocolVersion()));
+                            setText(String.format("%s (%d)", version.getVersionName(), version.getProtocolId()));
                         }
                     }
                 };

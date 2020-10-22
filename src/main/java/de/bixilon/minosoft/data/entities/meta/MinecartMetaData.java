@@ -16,13 +16,13 @@ import de.bixilon.minosoft.data.mappings.blocks.Block;
 
 public class MinecartMetaData extends EntityMetaData {
 
-    public MinecartMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public MinecartMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public int getShakingPower() {
         final int defaultValue = 0;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getInt(17, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -30,7 +30,7 @@ public class MinecartMetaData extends EntityMetaData {
 
     public int getShakingDirection() {
         final int defaultValue = 0;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getInt(18, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -38,7 +38,7 @@ public class MinecartMetaData extends EntityMetaData {
 
     public float getMultiplier() {
         final float defaultValue = 0.0F;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getFloat(19, defaultValue);
         }
         return sets.getFloat(super.getLastDataIndex() + 3, defaultValue);
@@ -46,16 +46,16 @@ public class MinecartMetaData extends EntityMetaData {
 
     public Block getBlock() {
         final int defaultValue = 0;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             //ToDo return Blocks.getBlockByLegacy(sets.getInt(20, defaultValue));
         }
-        //ToDo return Blocks.getBlock(sets.getInt(super.getLastDataIndex() + 4, defaultValue), protocolId);
+        //ToDo return Blocks.getBlock(sets.getInt(super.getLastDataIndex() + 4, defaultValue), versionId);
         return null;
     }
 
     public int getBlockYPosition() {
         final int defaultValue = 6; //ToDo
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getInt(21, defaultValue);
         }
         return sets.getInt(super.getLastDataIndex() + 5, defaultValue);
@@ -63,7 +63,7 @@ public class MinecartMetaData extends EntityMetaData {
 
     public boolean isShowingBlock() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBoolean(22, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 6, defaultValue);

@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class DragonFireballMetaData extends AbstractFireballMetaData {
 
-    public DragonFireballMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public DragonFireballMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

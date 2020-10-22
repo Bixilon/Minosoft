@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Skeleton extends Mob implements MobInterface {
     SkeletonMetaData metaData;
 
-    public Skeleton(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Skeleton(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new SkeletonMetaData(sets, protocolId);
+        this.metaData = new SkeletonMetaData(sets, versionId);
     }
 
     @Override

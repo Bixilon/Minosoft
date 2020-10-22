@@ -24,9 +24,9 @@ import java.util.UUID;
 public class SnowGolem extends Mob implements MobInterface {
     SnowGolemMetaData metaData;
 
-    public SnowGolem(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public SnowGolem(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new SnowGolemMetaData(sets, protocolId);
+        this.metaData = new SnowGolemMetaData(sets, versionId);
     }
 
     @Override

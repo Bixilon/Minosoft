@@ -18,13 +18,13 @@ import javax.annotation.Nullable;
 
 public class EnderCrystalMetaData extends EntityMetaData {
 
-    public EnderCrystalMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public EnderCrystalMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public int getHealth() {
         final int defaultValue = 0;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getInt(8, defaultValue);
         }
         return defaultValue;
@@ -33,7 +33,7 @@ public class EnderCrystalMetaData extends EntityMetaData {
     @Nullable
     public BlockPosition getBeamTarget() {
         final BlockPosition defaultValue = null;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getPosition(super.getLastDataIndex() + 1, defaultValue);
@@ -41,7 +41,7 @@ public class EnderCrystalMetaData extends EntityMetaData {
 
     public boolean showBottom() {
         final boolean defaultValue = true;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
@@ -49,7 +49,7 @@ public class EnderCrystalMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return super.getLastDataIndex() + 1;
         }
         return super.getLastDataIndex() + 2;

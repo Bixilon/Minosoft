@@ -37,8 +37,8 @@ public class Inventory {
         }
     }
 
-    public Slot getSlot(InventorySlots.InventoryInterface slot, int protocolId) {
-        return getSlot(slot.getId(protocolId));
+    public Slot getSlot(InventorySlots.InventoryInterface slot, int versionId) {
+        return getSlot(slot.getId(versionId));
     }
 
     public Slot getSlot(int slot) {
@@ -49,8 +49,8 @@ public class Inventory {
         slots.put(slot, data);
     }
 
-    public void setSlot(InventorySlots.InventoryInterface slot, int protocolId, Slot data) {
-        slots.put(slot.getId(protocolId), data);
+    public void setSlot(InventorySlots.InventoryInterface slot, int versionId, Slot data) {
+        slots.put(slot.getId(versionId), data);
     }
 
     public void clear() {

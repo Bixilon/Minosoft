@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class CowMetaData extends AnimalMetaData {
 
-    public CowMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public CowMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

@@ -24,9 +24,9 @@ import java.util.UUID;
 public class WanderingTrader extends Mob implements MobInterface {
     WanderingTraderMetaData metaData;
 
-    public WanderingTrader(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public WanderingTrader(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new WanderingTraderMetaData(sets, protocolId);
+        this.metaData = new WanderingTraderMetaData(sets, versionId);
     }
 
     @Override

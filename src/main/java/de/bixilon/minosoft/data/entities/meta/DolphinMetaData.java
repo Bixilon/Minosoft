@@ -16,13 +16,13 @@ import de.bixilon.minosoft.data.world.BlockPosition;
 
 public class DolphinMetaData extends WaterMobMetaData {
 
-    public DolphinMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public DolphinMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public BlockPosition getTreasurePosition() {
         final BlockPosition defaultValue = new BlockPosition(0, 0, 0);
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getPosition(super.getLastDataIndex() + 1, defaultValue);
@@ -30,7 +30,7 @@ public class DolphinMetaData extends WaterMobMetaData {
 
     public boolean canFireTreasure() {
         final boolean defaultValue = false;
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
@@ -38,7 +38,7 @@ public class DolphinMetaData extends WaterMobMetaData {
 
     public boolean hasFish() {
         final boolean defaultValue = false;
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);

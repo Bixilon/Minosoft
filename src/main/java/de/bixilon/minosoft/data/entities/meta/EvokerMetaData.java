@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class EvokerMetaData extends SpellcasterMetaData {
 
-    public EvokerMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public EvokerMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

@@ -30,14 +30,14 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 6) {
+        if (buffer.getVersionId() < 6) {
             position = buffer.readBlockPositionShort();
-            action = BlockEntityActions.byId(buffer.readByte(), buffer.getProtocolId());
+            action = BlockEntityActions.byId(buffer.readByte(), buffer.getVersionId());
             data = BlockEntityMetaData.getData(action, (CompoundTag) buffer.readNBT(true));
             return true;
         }
         position = buffer.readPosition();
-        action = BlockEntityActions.byId(buffer.readByte(), buffer.getProtocolId());
+        action = BlockEntityActions.byId(buffer.readByte(), buffer.getVersionId());
         data = BlockEntityMetaData.getData(action, (CompoundTag) buffer.readNBT());
         return true;
     }
@@ -89,17 +89,17 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static BlockEntityActions byId(int id, int protocolId) {
+        public static BlockEntityActions byId(int id, int versionId) {
             for (BlockEntityActions actions : values()) {
-                if (actions.getId(protocolId) == id) {
+                if (actions.getId(versionId) == id) {
                     return actions;
                 }
             }
             return null;
         }
 
-        public int getId(int protocolId) {
-            Integer ret = valueMap.get(protocolId);
+        public int getId(int versionId) {
+            Integer ret = valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

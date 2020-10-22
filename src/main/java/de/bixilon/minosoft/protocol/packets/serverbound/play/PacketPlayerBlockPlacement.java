@@ -64,29 +64,29 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_BLOCK_PLACEMENT);
-        if (buffer.getProtocolId() >= 453) {
+        if (buffer.getVersionId() >= 453) {
             buffer.writeVarInt(hand.ordinal());
         }
-        if (buffer.getProtocolId() < 7) {
+        if (buffer.getVersionId() < 7) {
             buffer.writeBlockPositionByte(position);
         } else {
             buffer.writePosition(position);
         }
-        if (buffer.getProtocolId() < 49) {
+        if (buffer.getVersionId() < 49) {
             buffer.writeByte(direction);
             buffer.writeSlot(item);
         } else {
             buffer.writeVarInt(direction);
-            if (buffer.getProtocolId() < 453) {
+            if (buffer.getVersionId() < 453) {
                 buffer.writeVarInt(hand.ordinal());
             }
         }
 
-        if (buffer.getProtocolId() >= 453) {
+        if (buffer.getVersionId() >= 453) {
             buffer.writeBoolean(insideBlock);
         }
 
-        if (buffer.getProtocolId() < 309) {
+        if (buffer.getVersionId() < 309) {
             buffer.writeByte((byte) (cursorX * 15.0F));
             buffer.writeByte((byte) (cursorY * 15.0F));
             buffer.writeByte((byte) (cursorZ * 15.0F));

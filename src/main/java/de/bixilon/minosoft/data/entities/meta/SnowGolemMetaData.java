@@ -14,16 +14,16 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class SnowGolemMetaData extends GolemMetaData {
 
-    public SnowGolemMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public SnowGolemMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean hasNoPumpkinHead() {
         final boolean defaultValue = false;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
-        if (protocolId <= 315) { // ToDo
+        if (versionId <= 315) { // ToDo
             return sets.getBitMask(super.getLastDataIndex() + 1, 0x10, defaultValue);
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x1, defaultValue);

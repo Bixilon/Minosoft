@@ -16,13 +16,13 @@ import de.bixilon.minosoft.data.world.BlockPosition;
 
 public class TurtleMetaData extends AnimalMetaData {
 
-    public TurtleMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public TurtleMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public BlockPosition getHomePosition() {
         final BlockPosition defaultValue = new BlockPosition(0, 0, 0);
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getPosition(super.getLastDataIndex() + 1, defaultValue);
@@ -30,7 +30,7 @@ public class TurtleMetaData extends AnimalMetaData {
 
     public boolean hasEgg() {
         final boolean defaultValue = false;
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
@@ -38,7 +38,7 @@ public class TurtleMetaData extends AnimalMetaData {
 
     public boolean isLayingEgg() {
         final boolean defaultValue = false;
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
@@ -46,7 +46,7 @@ public class TurtleMetaData extends AnimalMetaData {
 
     public BlockPosition getTravelPosition() {
         final BlockPosition defaultValue = new BlockPosition(0, 0, 0);
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getPosition(super.getLastDataIndex() + 4, defaultValue);
@@ -54,7 +54,7 @@ public class TurtleMetaData extends AnimalMetaData {
 
     public boolean isGoingHome() {
         final boolean defaultValue = false;
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 5, defaultValue);
@@ -62,7 +62,7 @@ public class TurtleMetaData extends AnimalMetaData {
 
     public boolean isTraveling() {
         final boolean defaultValue = false;
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 6, defaultValue);
@@ -70,7 +70,7 @@ public class TurtleMetaData extends AnimalMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 6;

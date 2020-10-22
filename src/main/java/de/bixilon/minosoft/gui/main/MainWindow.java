@@ -149,11 +149,11 @@ public class MainWindow implements Initializable {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == addButtonType) {
-                Server server = new Server(Server.getNextServerId(), serverName.getText(), DNSUtil.correctHostName(serverAddress.getText()), GUITools.versionList.getSelectionModel().getSelectedItem().getProtocolVersion());
+                Server server = new Server(Server.getNextServerId(), serverName.getText(), DNSUtil.correctHostName(serverAddress.getText()), GUITools.versionList.getSelectionModel().getSelectedItem().getVersionId());
                 Minosoft.serverList.add(server);
                 server.saveToConfig();
                 ServerListCell.listView.getItems().add(server);
-                Log.info(String.format("Added and saved server (serverName=%s, serverAddress=%s, version=%d)", server.getName(), server.getAddress(), server.getDesiredVersion()));
+                Log.info(String.format("Added and saved server (serverName=%s, serverAddress=%s, version=%d)", server.getName(), server.getAddress(), server.getDesiredVersionId()));
             }
             return null;
         });

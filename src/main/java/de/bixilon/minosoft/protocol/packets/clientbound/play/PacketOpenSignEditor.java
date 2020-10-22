@@ -24,7 +24,7 @@ public class PacketOpenSignEditor implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 6) {
+        if (buffer.getVersionId() < 6) {
             position = buffer.readBlockPositionInteger();
             return true;
         }

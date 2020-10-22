@@ -33,13 +33,13 @@ public class GUITools {
 
     static {
         GUITools.versions.add(Versions.getLowestVersionSupported());
-        Versions.getVersionMap().forEach((key, value) -> GUITools.versions.add(value));
+        Versions.getVersionIdMap().forEach((key, value) -> GUITools.versions.add(value));
 
         GUITools.versions.sort((a, b) -> {
-            if (a.getProtocolVersion() == -1) {
+            if (a.getVersionId() == -1) {
                 return -Integer.MAX_VALUE;
             }
-            return (a.getSortingId() - b.getSortingId());
+            return (a.getVersionId() - b.getVersionId());
         });
     }
 

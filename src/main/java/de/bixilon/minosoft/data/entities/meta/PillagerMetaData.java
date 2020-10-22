@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class PillagerMetaData extends AbstractIllagerMetaData {
 
-    public PillagerMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public PillagerMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

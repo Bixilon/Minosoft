@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Shulker extends Mob implements MobInterface {
     ShulkerMetaData metaData;
 
-    public Shulker(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Shulker(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new ShulkerMetaData(sets, protocolId);
+        this.metaData = new ShulkerMetaData(sets, versionId);
     }
 
     @Override

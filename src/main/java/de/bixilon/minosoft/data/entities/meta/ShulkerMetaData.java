@@ -21,13 +21,13 @@ import javax.annotation.Nullable;
 
 public class ShulkerMetaData extends GolemMetaData {
 
-    public ShulkerMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public ShulkerMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public Directions getDirection() {
         final Directions defaultValue = Directions.DOWN;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getDirection(super.getLastDataIndex(), defaultValue);
@@ -36,7 +36,7 @@ public class ShulkerMetaData extends GolemMetaData {
     @Nullable
     public BlockPosition getAttachmentPosition() {
         final BlockPosition defaultValue = null;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getPosition(super.getLastDataIndex(), defaultValue);
@@ -44,7 +44,7 @@ public class ShulkerMetaData extends GolemMetaData {
 
     public byte getShieldHeight() {
         final byte defaultValue = 0;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getByte(super.getLastDataIndex(), defaultValue);
@@ -52,7 +52,7 @@ public class ShulkerMetaData extends GolemMetaData {
 
     public RGBColor getColor() {
         final int defaultValue = ChatColors.getColorId(ChatColors.getColorByName("purple"));
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return ChatColors.getColorById(defaultValue);
         }
         return ChatColors.getColorById(sets.getByte(super.getLastDataIndex(), defaultValue));

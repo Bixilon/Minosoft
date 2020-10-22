@@ -17,13 +17,13 @@ import java.util.UUID;
 
 public abstract class AbstractArrowMetaData extends EntityMetaData {
 
-    public AbstractArrowMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public AbstractArrowMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isCritical() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBoolean(16, defaultValue);
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
@@ -37,10 +37,10 @@ public abstract class AbstractArrowMetaData extends EntityMetaData {
     @Nullable
     public UUID getShooterUUID() {
         final UUID defaultValue = null;
-        if (protocolId < 394) {
+        if (versionId < 394) {
             return defaultValue;
         }
-        if (protocolId >= 743) { //ToDo
+        if (versionId >= 743) { //ToDo
             return defaultValue;
         }
         return sets.getUUID(super.getLastDataIndex() + 2, defaultValue);
@@ -48,7 +48,7 @@ public abstract class AbstractArrowMetaData extends EntityMetaData {
 
     public byte getPeircingLevel() {
         final byte defaultValue = 0;
-        if (protocolId < 440) {
+        if (versionId < 440) {
             return defaultValue;
         }
         return sets.getByte(super.getLastDataIndex() + 3, defaultValue);
@@ -56,15 +56,15 @@ public abstract class AbstractArrowMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 450) {
+        if (versionId < 450) {
             return super.getLastDataIndex() + 1;
         }
         // ToDo
-        /*if ( protocolId == 401) { // ToDo (440?)
+        /*if ( versionId == 401) { // ToDo (440?)
             return super.getLastDataIndex() + 2;
         }
         */
-        if (protocolId < 743) { //ToDo
+        if (versionId < 743) { //ToDo
             return super.getLastDataIndex() + 3;
         }
         return super.getLastDataIndex() + 2;

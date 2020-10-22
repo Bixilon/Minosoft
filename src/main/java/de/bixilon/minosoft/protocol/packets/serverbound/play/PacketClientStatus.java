@@ -30,7 +30,7 @@ public class PacketClientStatus implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CLIENT_STATUS);
-        if (buffer.getProtocolId() < 7) {
+        if (buffer.getVersionId() < 7) {
             buffer.writeByte((byte) status.ordinal());
         } else {
             buffer.writeVarInt(status.ordinal());

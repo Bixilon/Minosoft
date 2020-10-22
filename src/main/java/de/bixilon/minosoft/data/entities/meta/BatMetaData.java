@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class BatMetaData extends AmbientMetaData {
 
-    public BatMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public BatMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isHanging() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBoolean(16, defaultValue);
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);

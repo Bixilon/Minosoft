@@ -28,22 +28,22 @@ import java.util.UUID;
 public class OutByteBuffer {
     final ArrayList<Byte> bytes;
     final Connection connection;
-    final int protocolId;
+    final int versionId;
 
     public OutByteBuffer(Connection connection) {
         this.bytes = new ArrayList<>();
         this.connection = connection;
-        this.protocolId = connection.getVersion().getProtocolVersion();
+        this.versionId = connection.getVersion().getVersionId();
     }
 
     public OutByteBuffer(OutByteBuffer buffer) {
         this.bytes = (ArrayList<Byte>) buffer.getBytes().clone();
         this.connection = buffer.getConnection();
-        this.protocolId = buffer.getProtocolId();
+        this.versionId = buffer.getVersionId();
     }
 
     public void writeByteArray(byte[] data) {
-        if (protocolId < 19) {
+        if (versionId < 19) {
             writeShort((short) data.length);
         } else {
             writeVarInt(data.length);
@@ -151,7 +151,7 @@ public class OutByteBuffer {
             writeLong(0L);
             return;
         }
-        if (protocolId < 440) {
+        if (versionId < 440) {
             writeLong((((long) position.getX() & 0x3FFFFFF) << 38) | (((long) position.getZ() & 0x3FFFFFF)) | ((long) position.getY() & 0xFFF) << 26);
             return;
         }
@@ -188,7 +188,7 @@ public class OutByteBuffer {
     }
 
     public void writeSlot(Slot slot) {
-        if (protocolId < 402) {
+        if (versionId < 402) {
             if (slot == null) {
                 writeShort((short) -1);
                 return;
@@ -248,12 +248,12 @@ public class OutByteBuffer {
         }
     }
 
-    public int getProtocolId() {
-        return protocolId;
+    public int getVersionId() {
+        return versionId;
     }
 
     public void writeEntityId(int entityId) {
-        if (protocolId < 7) {
+        if (versionId < 7) {
             writeInt(entityId);
         } else {
             writeVarInt(entityId);

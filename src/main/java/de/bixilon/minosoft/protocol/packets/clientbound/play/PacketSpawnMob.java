@@ -34,18 +34,18 @@ public class PacketSpawnMob implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         int entityId = buffer.readVarInt();
         UUID uuid = null;
-        if (buffer.getProtocolId() >= 49) {
+        if (buffer.getVersionId() >= 49) {
             uuid = buffer.readUUID();
         }
         int type;
-        if (buffer.getProtocolId() < 301) {
+        if (buffer.getVersionId() < 301) {
             type = buffer.readByte();
         } else {
             type = buffer.readVarInt();
         }
         Class<? extends Entity> typeClass = Entities.getClassByIdentifier(buffer.getConnection().getMapping().getEntityIdentifierById(type));
         Location location;
-        if (buffer.getProtocolId() < 100) {
+        if (buffer.getVersionId() < 100) {
             location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
         } else {
             location = buffer.readLocation();
@@ -56,12 +56,12 @@ public class PacketSpawnMob implements ClientboundPacket {
         velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
 
         EntityMetaData.MetaDataHashMap metaData = null;
-        if (buffer.getProtocolId() < 550) {
+        if (buffer.getVersionId() < 550) {
             metaData = buffer.readMetaData();
         }
 
         try {
-            entity = typeClass.getConstructor(int.class, UUID.class, Location.class, short.class, short.class, short.class, EntityMetaData.MetaDataHashMap.class, int.class).newInstance(entityId, uuid, location, yaw, pitch, headYaw, metaData, buffer.getProtocolId());
+            entity = typeClass.getConstructor(int.class, UUID.class, Location.class, short.class, short.class, short.class, EntityMetaData.MetaDataHashMap.class, int.class).newInstance(entityId, uuid, location, yaw, pitch, headYaw, metaData, buffer.getVersionId());
             return true;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
             e.printStackTrace();

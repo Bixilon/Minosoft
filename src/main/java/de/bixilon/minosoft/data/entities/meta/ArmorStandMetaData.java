@@ -16,20 +16,20 @@ import de.bixilon.minosoft.data.EntityRotation;
 
 public class ArmorStandMetaData extends LivingMetaData {
 
-    public ArmorStandMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public ArmorStandMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isSmall() {
         final boolean defaultValue = false;
-        if (protocolId < 33) {
+        if (versionId < 33) {
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
     }
 
     public boolean hasGravity() {
-        if (protocolId < 204) { //ToDo
+        if (versionId < 204) { //ToDo
             return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, super.hasGravity());
         }
         return super.hasGravity();
@@ -37,7 +37,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public boolean hasArms() {
         final boolean defaultValue = false;
-        if (protocolId < 33) {
+        if (versionId < 33) {
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
@@ -45,7 +45,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public boolean removeBasePlate() {
         final boolean defaultValue = false;
-        if (protocolId < 33) {
+        if (versionId < 33) {
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x08, defaultValue);
@@ -53,7 +53,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public boolean hasMarker() {
         final boolean defaultValue = false;
-        if (protocolId < 33) {
+        if (versionId < 33) {
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x10, defaultValue);
@@ -61,7 +61,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public EntityRotation getHeadRotation() {
         final EntityRotation defaultValue = new EntityRotation(0, 0, 0);
-        if (protocolId < 33) {
+        if (versionId < 33) {
             return defaultValue;
         }
         return sets.getRotation(super.getLastDataIndex() + 2, defaultValue);
@@ -69,7 +69,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public EntityRotation getBodyRotation() {
         final EntityRotation defaultValue = new EntityRotation(0, 0, 0);
-        if (protocolId < 33) {
+        if (versionId < 33) {
             return defaultValue;
         }
         return sets.getRotation(super.getLastDataIndex() + 3, defaultValue);
@@ -77,7 +77,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public EntityRotation getLeftArmRotation() {
         final EntityRotation defaultValue = new EntityRotation(-10, 0, -10);
-        if (protocolId < 33) {
+        if (versionId < 33) {
             return defaultValue;
         }
         return sets.getRotation(super.getLastDataIndex() + 4, defaultValue);
@@ -85,7 +85,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public EntityRotation getRightArmRotation() {
         final EntityRotation defaultValue = new EntityRotation(-15, 0, 10);
-        if (protocolId < 33) {
+        if (versionId < 33) {
             return defaultValue;
         }
         return sets.getRotation(super.getLastDataIndex() + 5, defaultValue);
@@ -93,7 +93,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public EntityRotation getLeftLegRotation() {
         final EntityRotation defaultValue = new EntityRotation(-1, 0, -1);
-        if (protocolId < 33) {
+        if (versionId < 33) {
             return defaultValue;
         }
         return sets.getRotation(super.getLastDataIndex() + 6, defaultValue);
@@ -101,7 +101,7 @@ public class ArmorStandMetaData extends LivingMetaData {
 
     public EntityRotation getRightLegRotation() {
         final EntityRotation defaultValue = new EntityRotation(1, 0, 1);
-        if (protocolId < 33) {
+        if (versionId < 33) {
             return defaultValue;
         }
         return sets.getRotation(super.getLastDataIndex() + 7, defaultValue);

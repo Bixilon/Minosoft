@@ -24,14 +24,14 @@ import java.util.UUID;
 public class Llama extends Mob implements MobInterface {
     LlamaMetaData metaData;
 
-    public Llama(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Llama(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new LlamaMetaData(sets, protocolId);
+        this.metaData = new LlamaMetaData(sets, versionId);
     }
 
-    public Llama(int entityId, UUID uuid, Location location, short yaw, short pitch, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Llama(int entityId, UUID uuid, Location location, short yaw, short pitch, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, 0);
-        this.metaData = new LlamaMetaData(sets, protocolId);
+        this.metaData = new LlamaMetaData(sets, versionId);
     }
 
     @Override

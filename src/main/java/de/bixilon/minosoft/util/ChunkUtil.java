@@ -27,7 +27,7 @@ import java.util.HashMap;
 
 public final class ChunkUtil {
     public static Chunk readChunkPacket(InByteBuffer buffer, short sectionBitMask, short addBitMask, boolean groundUpContinuous, boolean containsSkyLight) {
-        if (buffer.getProtocolId() < 23) {
+        if (buffer.getVersionId() < 23) {
             if (sectionBitMask == 0x00 && groundUpContinuous) {
                 // unload chunk
                 return null;
@@ -91,7 +91,7 @@ public final class ChunkUtil {
             }
             return new Chunk(nibbleMap);
         }
-        if (buffer.getProtocolId() < 62) { // ToDo: was this really changed in 62?
+        if (buffer.getVersionId() < 62) { // ToDo: was this really changed in 62?
             if (sectionBitMask == 0x00 && groundUpContinuous) {
                 // unload chunk
                 return null;
@@ -144,7 +144,7 @@ public final class ChunkUtil {
             if (!BitByte.isBitSet(sectionBitMask, c)) {
                 continue;
             }
-            if (buffer.getProtocolId() >= 440) {
+            if (buffer.getVersionId() >= 440) {
                 buffer.readShort(); // block count
             }
             Palette palette = Palette.choosePalette(buffer.readByte());
@@ -174,7 +174,7 @@ public final class ChunkUtil {
                         Block block = palette.byId(blockId);
                         if (block == null) {
                             String blockName;
-                            if (buffer.getProtocolId() <= ProtocolDefinition.FLATTING_VERSION_ID) {
+                            if (buffer.getVersionId() <= ProtocolDefinition.FLATTING_VERSION_ID) {
                                 blockName = String.format("%d:%d", blockId >> 4, blockId & 0xF);
                             } else {
                                 blockName = String.valueOf(blockId);
@@ -190,7 +190,7 @@ public final class ChunkUtil {
                 }
             }
 
-            if (buffer.getProtocolId() < 440) {
+            if (buffer.getVersionId() < 440) {
                 byte[] light = buffer.readBytes(2048);
                 if (containsSkyLight) {
                     byte[] skyLight = buffer.readBytes(2048);
@@ -199,7 +199,7 @@ public final class ChunkUtil {
 
             nibbleMap.put(c, new ChunkNibble(blockMap));
         }
-        if (buffer.getProtocolId() < 552) {
+        if (buffer.getVersionId() < 552) {
             byte[] biomes = buffer.readBytes(256);
         }
         return new Chunk(nibbleMap);

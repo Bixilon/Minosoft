@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Bee extends Mob implements MobInterface {
     BeeMetaData metaData;
 
-    public Bee(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Bee(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new BeeMetaData(sets, protocolId);
+        this.metaData = new BeeMetaData(sets, versionId);
     }
 
     @Override

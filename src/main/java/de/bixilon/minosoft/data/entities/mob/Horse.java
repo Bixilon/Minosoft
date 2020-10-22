@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Horse extends Mob implements MobInterface {
     HorseMetaData metaData;
 
-    public Horse(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Horse(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new HorseMetaData(sets, protocolId);
+        this.metaData = new HorseMetaData(sets, versionId);
     }
 
     @Override

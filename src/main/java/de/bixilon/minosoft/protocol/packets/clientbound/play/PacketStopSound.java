@@ -26,7 +26,7 @@ public class PacketStopSound implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 343) { //ToDo: these 2 values need to be switched in before 1.12.2
+        if (buffer.getVersionId() < 343) { //ToDo: these 2 values need to be switched in before 1.12.2
             category = SoundCategories.valueOf(buffer.readString().toUpperCase());
             soundIdentifier = buffer.readString();
             return true;

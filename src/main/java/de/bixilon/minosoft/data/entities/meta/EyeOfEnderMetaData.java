@@ -17,13 +17,13 @@ import de.bixilon.minosoft.data.mappings.Item;
 
 public class EyeOfEnderMetaData extends EntityMetaData {
 
-    public EyeOfEnderMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public EyeOfEnderMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public Slot getItem() {
         Slot defaultValue = new Slot(new Item("minecraft", "ender_eye"));
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getSlot(super.getLastDataIndex(), defaultValue);
@@ -31,7 +31,7 @@ public class EyeOfEnderMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Panda extends Mob implements MobInterface {
     PandaMetaData metaData;
 
-    public Panda(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Panda(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new PandaMetaData(sets, protocolId);
+        this.metaData = new PandaMetaData(sets, versionId);
     }
 
     @Override

@@ -17,8 +17,8 @@ import de.bixilon.minosoft.data.mappings.Item;
 
 public class EggMetaData extends ItemedThrowableMetaData {
 
-    public EggMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public EggMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Override

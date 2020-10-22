@@ -18,13 +18,13 @@ import de.bixilon.minosoft.data.text.RGBColor;
 
 public class SheepMetaData extends AnimalMetaData {
 
-    public SheepMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public SheepMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public RGBColor getColor() {
         final int defaultValue = ChatColors.getColorId(ChatColors.getColorByName("white"));
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return ChatColors.getColorById(sets.getInt(16, defaultValue) & 0xF);
         }
         return ChatColors.getColorById(sets.getInt(super.getLastDataIndex() + 1, defaultValue) & 0xF);
@@ -32,7 +32,7 @@ public class SheepMetaData extends AnimalMetaData {
 
     public boolean isSheared() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBitMask(16, 0x10, defaultValue);
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x10, defaultValue);

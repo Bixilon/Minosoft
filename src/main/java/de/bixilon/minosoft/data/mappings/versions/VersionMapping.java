@@ -58,52 +58,52 @@ public class VersionMapping {
         return particleIdentifierMap.get(identifier);
     }
 
-    public Item getItemById(int protocolId) {
-        return itemMap.get(protocolId);
+    public Item getItemById(int versionId) {
+        return itemMap.get(versionId);
     }
 
     public int getItemId(Item item) {
         return itemMap.inverse().get(item);
     }
 
-    public String getEntityIdentifierById(int protocolId) {
-        return "minecraft:" + entityMap.get(protocolId);
+    public String getEntityIdentifierById(int versionId) {
+        return "minecraft:" + entityMap.get(versionId);
     }
 
-    public Motive getMotiveById(int protocolId) {
-        return motiveIdMap.get(protocolId);
+    public Motive getMotiveById(int versionId) {
+        return motiveIdMap.get(versionId);
     }
 
-    public MobEffect getMobEffectById(int protocolId) {
-        return mobEffectMap.get(protocolId);
+    public MobEffect getMobEffectById(int versionId) {
+        return mobEffectMap.get(versionId);
     }
 
-    public Dimension getDimensionById(int protocolId) {
-        return dimensionMap.get(protocolId);
+    public Dimension getDimensionById(int versionId) {
+        return dimensionMap.get(versionId);
     }
 
-    public Block getBlockByIdAndMetaData(int protocolId, int metaData) {
-        return getBlockById((protocolId << 4) | metaData);
+    public Block getBlockByIdAndMetaData(int versionId, int metaData) {
+        return getBlockById((versionId << 4) | metaData);
     }
 
-    public Block getBlockById(int protocolId) {
-        return blockMap.get(protocolId);
+    public Block getBlockById(int versionId) {
+        return blockMap.get(versionId);
     }
 
-    public BlockId getBlockIdById(int protocolId) {
-        return blockIdMap.get(protocolId);
+    public BlockId getBlockIdById(int versionId) {
+        return blockIdMap.get(versionId);
     }
 
-    public Enchantment getEnchantmentById(int protocolId) {
-        return enchantmentMap.get(protocolId);
+    public Enchantment getEnchantmentById(int versionId) {
+        return enchantmentMap.get(versionId);
     }
 
-    public Particle getParticleById(int protocolId) {
-        return particleIdMap.get(protocolId);
+    public Particle getParticleById(int versionId) {
+        return particleIdMap.get(versionId);
     }
 
-    public Statistic getStatisticById(int protocolId) {
-        return statisticIdMap.get(protocolId);
+    public Statistic getStatisticById(int versionId) {
+        return statisticIdMap.get(versionId);
     }
 
     public int getIdByEnchantment(Enchantment enchantment) {
@@ -119,7 +119,7 @@ public class VersionMapping {
                     Item item = new Item("minecraft", identifier);
                     JsonObject identifierJSON = itemJson.getAsJsonObject(identifier);
                     int itemId = identifierJSON.get("id").getAsInt();
-                    if (version.getProtocolVersion() < ProtocolDefinition.FLATTING_VERSION_ID) {
+                    if (version.getVersionId() < ProtocolDefinition.FLATTING_VERSION_ID) {
                         itemId <<= 16;
                         if (identifierJSON.has("meta")) {
                             // old format (with metadata)
@@ -190,7 +190,7 @@ public class VersionMapping {
                     }
                 }
             }
-            case BLOCKS -> blockMap = Blocks.load("minecraft", data, version.getProtocolVersion() < ProtocolDefinition.FLATTING_VERSION_ID);
+            case BLOCKS -> blockMap = Blocks.load("minecraft", data, version.getVersionId() < ProtocolDefinition.FLATTING_VERSION_ID);
         }
         loaded.add(type);
     }

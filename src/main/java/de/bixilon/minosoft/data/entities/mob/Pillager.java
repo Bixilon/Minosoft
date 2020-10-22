@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Pillager extends Mob implements MobInterface {
     PillagerMetaData metaData;
 
-    public Pillager(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Pillager(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new PillagerMetaData(sets, protocolId);
+        this.metaData = new PillagerMetaData(sets, versionId);
     }
 
     @Override

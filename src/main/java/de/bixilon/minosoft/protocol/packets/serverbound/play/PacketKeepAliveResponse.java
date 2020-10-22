@@ -34,9 +34,9 @@ public class PacketKeepAliveResponse implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_KEEP_ALIVE);
-        if (buffer.getProtocolId() < 32) {
+        if (buffer.getVersionId() < 32) {
             buffer.writeInt((int) id);
-        } else if (buffer.getProtocolId() < 339) {
+        } else if (buffer.getVersionId() < 339) {
             buffer.writeVarInt((int) id);
         } else {
             buffer.writeLong(id);

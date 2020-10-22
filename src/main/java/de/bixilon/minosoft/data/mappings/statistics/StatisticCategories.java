@@ -34,9 +34,9 @@ public enum StatisticCategories {
         this.id = id;
     }
 
-    public static StatisticCategories byName(String name, int protocolId) {
+    public static StatisticCategories byName(String name, int versionId) {
         for (StatisticCategories category : values()) {
-            if (category.getChangeableIdentifier().isValidName(name, protocolId)) {
+            if (category.getChangeableIdentifier().isValidName(name, versionId)) {
                 return category;
             }
         }

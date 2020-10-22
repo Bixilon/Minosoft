@@ -34,13 +34,13 @@ public class PacketParticle implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 569) {
-            if (buffer.getProtocolId() < 17) {
+        if (buffer.getVersionId() < 569) {
+            if (buffer.getVersionId() < 17) {
                 particleType = buffer.getConnection().getMapping().getParticleByIdentifier(buffer.readString());
             } else {
                 particleType = buffer.getConnection().getMapping().getParticleById(buffer.readInt());
             }
-            if (buffer.getProtocolId() >= 29) {
+            if (buffer.getVersionId() >= 29) {
                 longDistance = buffer.readBoolean();
             }
             location = buffer.readSmallLocation();

@@ -18,13 +18,13 @@ import de.bixilon.minosoft.data.text.RGBColor;
 
 public class WolfMetaData extends TameableMetaData {
 
-    public WolfMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public WolfMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Override
     public boolean isAngry() {
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBitMask(16, 0x02, super.isAngry());
         }
         return super.isAngry();
@@ -32,7 +32,7 @@ public class WolfMetaData extends TameableMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 743) { //ToDo
+        if (versionId < 743) { //ToDo
             return super.getLastDataIndex() + 2;
         }
         return super.getLastDataIndex() + 3;
@@ -40,7 +40,7 @@ public class WolfMetaData extends TameableMetaData {
 
     @Override
     public float getHealth() {
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getFloat(18, super.getHealth());
         }
         return super.getHealth();
@@ -48,11 +48,11 @@ public class WolfMetaData extends TameableMetaData {
 
     public float getDamageTaken() {
         float defaultValue = super.getHealth();
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return defaultValue;
         }
 
-        if (protocolId < 563) {
+        if (versionId < 563) {
             return sets.getFloat(15, defaultValue);
         }
         return defaultValue;
@@ -60,7 +60,7 @@ public class WolfMetaData extends TameableMetaData {
 
     public boolean isBegging() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBoolean(19, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -68,7 +68,7 @@ public class WolfMetaData extends TameableMetaData {
 
     public RGBColor getColor() {
         final int defaultValue = ChatColors.getColorId(ChatColors.getColorByName("red"));
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return ChatColors.getColorById(sets.getByte(20, defaultValue));
         }
         return ChatColors.getColorById(sets.getByte(super.getLastDataIndex() + 2, defaultValue));
@@ -76,7 +76,7 @@ public class WolfMetaData extends TameableMetaData {
 
     public int getAngerTime() {
         final int defaultValue = 0;
-        if (protocolId < 743) {//ToDo
+        if (versionId < 743) {//ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 3, defaultValue);

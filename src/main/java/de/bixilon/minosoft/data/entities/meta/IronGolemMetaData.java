@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class IronGolemMetaData extends GolemMetaData {
 
-    public IronGolemMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public IronGolemMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isCreatedByPlayer() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBoolean(16, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);

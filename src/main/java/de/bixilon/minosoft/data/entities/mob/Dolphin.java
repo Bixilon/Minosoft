@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Dolphin extends Mob implements MobInterface {
     DolphinMetaData metaData;
 
-    public Dolphin(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Dolphin(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new DolphinMetaData(sets, protocolId);
+        this.metaData = new DolphinMetaData(sets, versionId);
     }
 
     @Override

@@ -28,9 +28,9 @@ public class MinecartCommandBlock extends EntityObject implements ObjectInterfac
         super(entityId, uuid, location, yaw, pitch);
     }
 
-    public MinecartCommandBlock(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public MinecartCommandBlock(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new CommandBlockMinecartMetaData(sets, protocolId);
+        this.metaData = new CommandBlockMinecartMetaData(sets, versionId);
     }
 
     @Override

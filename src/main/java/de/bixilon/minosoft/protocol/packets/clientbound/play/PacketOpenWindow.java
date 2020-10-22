@@ -30,7 +30,7 @@ public class PacketOpenWindow implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 6) {
+        if (buffer.getVersionId() < 6) {
             this.windowId = buffer.readByte();
             this.type = InventoryTypes.byId(buffer.readByte());
             this.title = buffer.readTextComponent();
@@ -45,7 +45,7 @@ public class PacketOpenWindow implements ClientboundPacket {
         this.windowId = buffer.readByte();
         this.type = InventoryTypes.byName(buffer.readString());
         this.title = buffer.readTextComponent();
-        if (buffer.getProtocolId() < 452 || buffer.getProtocolId() >= 464) {
+        if (buffer.getVersionId() < 452 || buffer.getVersionId() >= 464) {
             slotCount = buffer.readByte();
         }
         if (type == InventoryTypes.HORSE) {

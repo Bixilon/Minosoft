@@ -35,18 +35,18 @@ public class PacketUnlockRecipes implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 333) {
+        if (buffer.getVersionId() < 333) {
             action = UnlockRecipeActions.byId(buffer.readInt());
         } else {
             action = UnlockRecipeActions.byId(buffer.readVarInt());
         }
         isCraftingBookOpen = buffer.readBoolean();
         isCraftingFilteringActive = buffer.readBoolean();
-        if (buffer.getProtocolId() >= 348) { //ToDo
+        if (buffer.getVersionId() >= 348) { //ToDo
             isSmeltingBookOpen = buffer.readBoolean();
             isSmeltingFilteringActive = buffer.readBoolean();
         }
-        if (buffer.getProtocolId() >= 738) {
+        if (buffer.getVersionId() >= 738) {
             isBlastFurnaceBookOpen = buffer.readBoolean();
             isBlastFurnaceFilteringActive = buffer.readBoolean();
             isSmokerBookOpen = buffer.readBoolean();
@@ -54,7 +54,7 @@ public class PacketUnlockRecipes implements ClientboundPacket {
         }
         listed = new Recipe[buffer.readVarInt()];
         for (int i = 0; i < listed.length; i++) {
-            if (buffer.getProtocolId() < 348) {
+            if (buffer.getVersionId() < 348) {
                 listed[i] = Recipes.getRecipeById(buffer.readVarInt());
             } else {
                 listed[i] = Recipes.getRecipe(buffer.readString());
@@ -63,7 +63,7 @@ public class PacketUnlockRecipes implements ClientboundPacket {
         if (action == UnlockRecipeActions.INITIALIZE) {
             tagged = new Recipe[buffer.readVarInt()];
             for (int i = 0; i < tagged.length; i++) {
-                if (buffer.getProtocolId() < 348) {
+                if (buffer.getVersionId() < 348) {
                     tagged[i] = Recipes.getRecipeById(buffer.readVarInt());
                 } else {
                     tagged[i] = Recipes.getRecipe(buffer.readString());

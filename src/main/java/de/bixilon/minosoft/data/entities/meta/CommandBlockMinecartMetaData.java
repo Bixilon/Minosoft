@@ -18,14 +18,14 @@ import javax.annotation.Nullable;
 
 public class CommandBlockMinecartMetaData extends EntityMetaData {
 
-    public CommandBlockMinecartMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public CommandBlockMinecartMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Nullable
     public String getCommand() {
         final String defaultValue = null;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getString(super.getLastDataIndex() + 1, defaultValue);
@@ -34,7 +34,7 @@ public class CommandBlockMinecartMetaData extends EntityMetaData {
     @Nullable
     public ChatComponent getLastOutput() {
         final ChatComponent defaultValue = null;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getTextComponent(super.getLastDataIndex() + 2, defaultValue);

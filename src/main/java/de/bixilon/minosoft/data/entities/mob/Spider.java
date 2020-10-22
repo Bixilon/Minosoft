@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Spider extends Mob implements MobInterface {
     SpiderMetaData metaData;
 
-    public Spider(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Spider(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new SpiderMetaData(sets, protocolId);
+        this.metaData = new SpiderMetaData(sets, versionId);
     }
 
     @Override

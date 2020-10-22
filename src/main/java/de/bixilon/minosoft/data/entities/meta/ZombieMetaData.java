@@ -16,32 +16,32 @@ import de.bixilon.minosoft.data.entities.VillagerData;
 
 public class ZombieMetaData extends MonsterMetaData {
 
-    public ZombieMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public ZombieMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isChild() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBoolean(12, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
     }
 
     public VillagerData.VillagerProfessions getProfession() {
-        final int defaultValue = VillagerData.VillagerProfessions.NONE.getId(protocolId) + 1;
-        if (protocolId == 110) { //ToDo
-            return VillagerData.VillagerProfessions.byId(sets.getInt(12, defaultValue) - 1, protocolId);
+        final int defaultValue = VillagerData.VillagerProfessions.NONE.getId(versionId) + 1;
+        if (versionId == 110) { //ToDo
+            return VillagerData.VillagerProfessions.byId(sets.getInt(12, defaultValue) - 1, versionId);
         }
-        if (protocolId <= 204) { //ToDo
-            return VillagerData.VillagerProfessions.byId(sets.getInt(13, defaultValue) - 1, protocolId);
+        if (versionId <= 204) { //ToDo
+            return VillagerData.VillagerProfessions.byId(sets.getInt(13, defaultValue) - 1, versionId);
         }
-        return VillagerData.VillagerProfessions.byId(defaultValue, protocolId);
+        return VillagerData.VillagerProfessions.byId(defaultValue, versionId);
     }
 
     public boolean isConverting() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBoolean(14, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
@@ -49,10 +49,10 @@ public class ZombieMetaData extends MonsterMetaData {
 
     public boolean areHandsHeldUp() {
         final boolean defaultValue = false;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return sets.getBoolean(3, defaultValue);
         }
         return defaultValue;
@@ -60,7 +60,7 @@ public class ZombieMetaData extends MonsterMetaData {
 
     public boolean isBecomingADrowned() {
         final boolean defaultValue = false;
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
@@ -68,13 +68,13 @@ public class ZombieMetaData extends MonsterMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return super.getLastDataIndex() + 3;
         }
-        if (protocolId <= 204) { //ToDo
+        if (versionId <= 204) { //ToDo
             return super.getLastDataIndex() + 4;
         }
-        if (protocolId <= 401) { // ToDo
+        if (versionId <= 401) { // ToDo
             return super.getLastDataIndex() + 3;
         }
         return super.getLastDataIndex() + 2;

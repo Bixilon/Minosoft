@@ -42,7 +42,7 @@ public class PacketHandshake implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.HANDSHAKING_HANDSHAKE);
-        buffer.writeVarInt((nextState == ConnectionStates.STATUS ? -1 : connection.getVersion().getProtocolVersion())); // get best protocol version
+        buffer.writeVarInt((nextState == ConnectionStates.STATUS ? -1 : connection.getVersion().getProtocolId())); // get best protocol version
         buffer.writeString(address.getHostname());
         buffer.writeShort((short) address.getPort());
         buffer.writeVarInt(nextState.ordinal());

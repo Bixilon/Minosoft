@@ -28,9 +28,9 @@ public class ThrownEnderpearl extends EntityObject implements ObjectInterface {
         super(entityId, uuid, location, yaw, pitch);
     }
 
-    public ThrownEnderpearl(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public ThrownEnderpearl(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new EnderPearlMetaData(sets, protocolId);
+        this.metaData = new EnderPearlMetaData(sets, versionId);
     }
 
     @Override

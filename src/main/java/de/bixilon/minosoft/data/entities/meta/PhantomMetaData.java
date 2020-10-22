@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class PhantomMetaData extends InsentientMetaData {
 
-    public PhantomMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public PhantomMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public int getSize() {
         final int defaultValue = 0;
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -28,7 +28,7 @@ public class PhantomMetaData extends InsentientMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 401) { // ToDo
+        if (versionId < 401) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

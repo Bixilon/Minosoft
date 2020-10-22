@@ -30,9 +30,9 @@ public class SmallFireball extends EntityObject implements ObjectInterface {
         this.thrower = additionalInt;
     }
 
-    public SmallFireball(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public SmallFireball(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new SmallFireballMetaData(sets, protocolId);
+        this.metaData = new SmallFireballMetaData(sets, versionId);
         this.thrower = 0; // ToDo
     }
 

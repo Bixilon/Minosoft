@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class GolemMetaData extends CreatureMetaData {
 
-    public GolemMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public GolemMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

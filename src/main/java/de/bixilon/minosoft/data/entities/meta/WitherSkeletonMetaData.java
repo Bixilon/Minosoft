@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class WitherSkeletonMetaData extends SkeletonMetaData {
 
-    public WitherSkeletonMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public WitherSkeletonMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Override

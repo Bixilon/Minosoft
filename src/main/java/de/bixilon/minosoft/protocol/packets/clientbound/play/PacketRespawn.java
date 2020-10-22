@@ -34,8 +34,8 @@ public class PacketRespawn implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 718) {
-            if (buffer.getProtocolId() < 108) {
+        if (buffer.getVersionId() < 718) {
+            if (buffer.getVersionId() < 108) {
                 dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
             } else {
                 dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
@@ -43,29 +43,29 @@ public class PacketRespawn implements ClientboundPacket {
         } else {
             dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(buffer.readString());
         }
-        if (buffer.getProtocolId() < 464) {
+        if (buffer.getVersionId() < 464) {
             difficulty = Difficulties.byId(buffer.readByte());
         }
 
-        if (buffer.getProtocolId() >= 719) {
+        if (buffer.getVersionId() >= 719) {
             buffer.readString(); // world
         }
-        if (buffer.getProtocolId() >= 552) {
+        if (buffer.getVersionId() >= 552) {
             hashedSeed = buffer.readLong();
         }
         gameMode = GameModes.byId(buffer.readByte());
 
-        if (buffer.getProtocolId() >= 730) {
+        if (buffer.getVersionId() >= 730) {
             buffer.readByte(); // previous game mode
         }
-        if (buffer.getProtocolId() >= 1 && buffer.getProtocolId() < 716) {
+        if (buffer.getVersionId() >= 1 && buffer.getVersionId() < 716) {
             levelType = LevelTypes.byType(buffer.readString());
         }
-        if (buffer.getProtocolId() >= 716) {
+        if (buffer.getVersionId() >= 716) {
             isDebug = buffer.readBoolean();
             isFlat = buffer.readBoolean();
         }
-        if (buffer.getProtocolId() >= 714) {
+        if (buffer.getVersionId() >= 714) {
             copyMetaData = buffer.readBoolean();
         }
         return true;

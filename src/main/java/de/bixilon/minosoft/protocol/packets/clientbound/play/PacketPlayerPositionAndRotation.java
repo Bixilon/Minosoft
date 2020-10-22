@@ -33,13 +33,13 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
         location = buffer.readLocation();
         yaw = buffer.readFloat();
         pitch = buffer.readFloat();
-        if (buffer.getProtocolId() < 6) {
+        if (buffer.getVersionId() < 6) {
             onGround = buffer.readBoolean();
             return true;
         } else {
             flags = buffer.readByte();
         }
-        if (buffer.getProtocolId() >= 79) {
+        if (buffer.getVersionId() >= 79) {
             teleportId = buffer.readVarInt();
         }
         return true;

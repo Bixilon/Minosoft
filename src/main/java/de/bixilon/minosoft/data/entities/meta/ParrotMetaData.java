@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class ParrotMetaData extends TameableMetaData {
 
-    public ParrotMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public ParrotMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public ParrotVariants getVariant() {
         final int defaultValue = ParrotVariants.RED_BLUE.ordinal();
-        if (protocolId < 335) { //ToDo
+        if (versionId < 335) { //ToDo
             return ParrotVariants.byId(defaultValue);
         }
         return ParrotVariants.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
@@ -28,7 +28,7 @@ public class ParrotMetaData extends TameableMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 335) { //ToDo
+        if (versionId < 335) { //ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

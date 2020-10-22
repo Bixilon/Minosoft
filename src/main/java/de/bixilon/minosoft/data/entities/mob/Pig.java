@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Pig extends Mob implements MobInterface {
     PigMetaData metaData;
 
-    public Pig(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Pig(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new PigMetaData(sets, protocolId);
+        this.metaData = new PigMetaData(sets, versionId);
     }
 
     @Override

@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public abstract class AbstractMerchantMetaData extends AgeableMetaData {
 
-    public AbstractMerchantMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public AbstractMerchantMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public int getShakeTimer() {
         final int defaultValue = 0;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -28,7 +28,7 @@ public abstract class AbstractMerchantMetaData extends AgeableMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

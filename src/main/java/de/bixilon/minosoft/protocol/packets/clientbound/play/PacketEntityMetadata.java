@@ -24,11 +24,11 @@ import java.lang.reflect.InvocationTargetException;
 public class PacketEntityMetadata implements ClientboundPacket {
     EntityMetaData.MetaDataHashMap sets;
     int entityId;
-    int protocolId;
+    int versionId;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        this.protocolId = buffer.getProtocolId();
+        this.versionId = buffer.getVersionId();
         this.entityId = buffer.readEntityId();
 
         sets = buffer.readMetaData();
@@ -55,7 +55,7 @@ public class PacketEntityMetadata implements ClientboundPacket {
 
     public EntityMetaData getEntityData(Class<? extends EntityMetaData> clazz) {
         try {
-            return clazz.getConstructor(EntityMetaData.MetaDataHashMap.class, int.class).newInstance(sets, protocolId);
+            return clazz.getConstructor(EntityMetaData.MetaDataHashMap.class, int.class).newInstance(sets, versionId);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }

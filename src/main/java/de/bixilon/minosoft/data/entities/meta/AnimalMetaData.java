@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public abstract class AnimalMetaData extends AgeableMetaData {
 
-    public AnimalMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public AnimalMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

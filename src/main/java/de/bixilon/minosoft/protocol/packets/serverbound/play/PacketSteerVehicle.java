@@ -38,7 +38,7 @@ public class PacketSteerVehicle implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_STEER_VEHICLE);
         buffer.writeFloat(sideways);
         buffer.writeFloat(forward);
-        if (buffer.getProtocolId() < 7) {
+        if (buffer.getVersionId() < 7) {
             buffer.writeBoolean(jump);
             buffer.writeBoolean(unmount);
         } else {

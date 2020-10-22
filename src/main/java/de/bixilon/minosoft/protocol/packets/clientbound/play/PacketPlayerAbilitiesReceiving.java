@@ -29,7 +29,7 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 6) { //ToDo
+        if (buffer.getVersionId() < 6) { //ToDo
             byte flags = buffer.readByte();
             creative = BitByte.isBitSet(flags, 0);
             flying = BitByte.isBitSet(flags, 1);

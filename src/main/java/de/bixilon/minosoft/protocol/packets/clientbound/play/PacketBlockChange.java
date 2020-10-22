@@ -26,7 +26,7 @@ public class PacketBlockChange implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 6) {
+        if (buffer.getVersionId() < 6) {
             position = buffer.readBlockPosition();
             block = buffer.getConnection().getMapping().getBlockByIdAndMetaData(buffer.readVarInt(), buffer.readByte()); // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
             return true;

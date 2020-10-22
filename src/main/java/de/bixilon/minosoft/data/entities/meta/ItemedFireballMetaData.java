@@ -17,13 +17,13 @@ import de.bixilon.minosoft.data.mappings.Item;
 
 public abstract class ItemedFireballMetaData extends AbstractFireballMetaData {
 
-    public ItemedFireballMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public ItemedFireballMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public Slot getItem() {
         final Slot defaultValue = new Slot(new Item("minecraft", "fire_charge"));
-        if (protocolId <= 451) {
+        if (versionId <= 451) {
             return defaultValue;
         }
         return sets.getSlot(7, defaultValue);

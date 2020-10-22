@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class EndermiteMetaData extends MonsterMetaData {
 
-    public EndermiteMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public EndermiteMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

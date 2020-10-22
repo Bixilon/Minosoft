@@ -30,13 +30,13 @@ public class PacketEntityEffect implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
-        if (buffer.getProtocolId() < 7) {
+        if (buffer.getVersionId() < 7) {
             effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readShort());
             return true;
         }
         effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readVarInt());
-        if (buffer.getProtocolId() < 110) { //ToDo
-            if (buffer.getProtocolId() >= 10) {
+        if (buffer.getVersionId() < 110) { //ToDo
+            if (buffer.getVersionId() >= 10) {
                 hideParticles = buffer.readBoolean();
                 return true;
             }
@@ -44,7 +44,7 @@ public class PacketEntityEffect implements ClientboundPacket {
         byte flags = buffer.readByte();
         isAmbient = BitByte.isBitMask(flags, 0x01);
         hideParticles = !BitByte.isBitMask(flags, 0x02);
-        if (buffer.getProtocolId() >= 498) { //ToDo
+        if (buffer.getVersionId() >= 498) { //ToDo
             showIcon = BitByte.isBitMask(flags, 0x04);
         }
         return true;

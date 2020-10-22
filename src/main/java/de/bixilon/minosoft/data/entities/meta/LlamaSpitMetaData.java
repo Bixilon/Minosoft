@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class LlamaSpitMetaData extends ChestedHorseMetaData {
 
-    public LlamaSpitMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public LlamaSpitMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

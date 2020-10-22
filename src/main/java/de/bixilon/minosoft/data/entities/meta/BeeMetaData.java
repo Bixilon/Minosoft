@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class BeeMetaData extends AnimalMetaData {
 
-    public BeeMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public BeeMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isAngry() {
         final boolean defaultValue = false;
-        if (protocolId < 573) { // ToDo
+        if (versionId < 573) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue);
@@ -28,7 +28,7 @@ public class BeeMetaData extends AnimalMetaData {
 
     public boolean hasStung() {
         final boolean defaultValue = false;
-        if (protocolId < 573) { // ToDo
+        if (versionId < 573) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
@@ -36,7 +36,7 @@ public class BeeMetaData extends AnimalMetaData {
 
     public boolean hasNectar() {
         final boolean defaultValue = false;
-        if (protocolId < 573) { // ToDo
+        if (versionId < 573) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x08, defaultValue);
@@ -44,7 +44,7 @@ public class BeeMetaData extends AnimalMetaData {
 
     public int getAngerInTicks() {
         final int defaultValue = 0;
-        if (protocolId < 573) { // ToDo
+        if (versionId < 573) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -52,7 +52,7 @@ public class BeeMetaData extends AnimalMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 573) { // ToDo
+        if (versionId < 573) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 2;

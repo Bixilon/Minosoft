@@ -14,5 +14,5 @@
 package de.bixilon.minosoft.modding.event.events.annotations;
 
 public @interface MaximumProtocolVersion {
-    int protocolId() default Integer.MAX_VALUE;
+    int versionId() default Integer.MAX_VALUE;
 }

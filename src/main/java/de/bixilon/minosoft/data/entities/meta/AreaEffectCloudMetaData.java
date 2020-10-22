@@ -16,13 +16,13 @@ import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 
 public class AreaEffectCloudMetaData extends EntityMetaData {
 
-    public AreaEffectCloudMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public AreaEffectCloudMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public float getRadius() {
         final float defaultValue = 0.5F;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getFloat(super.getLastDataIndex() + 1, defaultValue);
@@ -30,7 +30,7 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
 
     public int getColor() {
         final int defaultValue = 0;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -38,7 +38,7 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
 
     public boolean ignoreRadius() {
         final boolean defaultValue = false;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
@@ -47,10 +47,10 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
     public ParticleData getParticle() {
         // ToDo: final ParticleData defaultValue = new ParticleData(Particles.byIdentifier("minecraft:effect"));
         final ParticleData defaultValue = null;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
-        if (protocolId <= 335) { //ToDo
+        if (versionId <= 335) { //ToDo
             //ToDo return new ParticleData(Particles.byId(sets.getInt(super.getLastDataIndex() + 4, 0), version));
             return null;
         }
@@ -59,10 +59,10 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
 
     public int getParticleParameter1() {
         final int defaultValue = 0;
-        if (protocolId < 204) { //ToDo
+        if (versionId < 204) { //ToDo
             return defaultValue;
         }
-        if (protocolId <= 335) { //ToDo
+        if (versionId <= 335) { //ToDo
             return sets.getInt(super.getLastDataIndex() + 5, defaultValue);
         }
         return defaultValue;
@@ -70,10 +70,10 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
 
     public int getParticleParameter2() {
         final int defaultValue = 0;
-        if (protocolId < 204) { //ToDo
+        if (versionId < 204) { //ToDo
             return defaultValue;
         }
-        if (protocolId <= 335) { //ToDo
+        if (versionId <= 335) { //ToDo
             return sets.getInt(super.getLastDataIndex() + 6, defaultValue);
         }
         return defaultValue;
@@ -81,10 +81,10 @@ public class AreaEffectCloudMetaData extends EntityMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return super.getLastDataIndex();
         }
-        if (protocolId <= 335) { //ToDo
+        if (versionId <= 335) { //ToDo
             return super.getLastDataIndex() + 6;
         }
         return super.getLastDataIndex() + 4;

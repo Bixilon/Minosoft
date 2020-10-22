@@ -17,13 +17,13 @@ import de.bixilon.minosoft.data.mappings.blocks.Blocks;
 
 public class EndermanMetaData extends LivingMetaData {
 
-    public EndermanMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public EndermanMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public Block getCarriedBlock() {
         final Block defaultValue = Blocks.nullBlock;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             //ToDo return Blocks.getBlockByLegacy(sets.getInt(16, 0), sets.getInt(17, 0));
         }
         return sets.getBlock(super.getLastDataIndex() + 1, defaultValue);
@@ -31,7 +31,7 @@ public class EndermanMetaData extends LivingMetaData {
 
     public boolean isScreaming() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBoolean(18, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
@@ -39,7 +39,7 @@ public class EndermanMetaData extends LivingMetaData {
 
     public boolean isStarredAt() {
         final boolean defaultValue = false;
-        if (protocolId < 573) { // ToDo
+        if (versionId < 573) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 3, defaultValue);
@@ -47,7 +47,7 @@ public class EndermanMetaData extends LivingMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 573) { // ToDo
+        if (versionId < 573) { // ToDo
             return super.getLastDataIndex() + 2;
         }
         return super.getLastDataIndex() + 3;

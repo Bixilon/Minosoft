@@ -47,7 +47,7 @@ public class PacketPlayerPositionSending implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_POSITION);
         buffer.writeDouble(x);
         buffer.writeDouble(feetY);
-        if (buffer.getProtocolId() < 10) {
+        if (buffer.getVersionId() < 10) {
             buffer.writeDouble(headY);
         }
         buffer.writeDouble(z);

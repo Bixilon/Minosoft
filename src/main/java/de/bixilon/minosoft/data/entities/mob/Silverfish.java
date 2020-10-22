@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Silverfish extends Mob implements MobInterface {
     SilverfishMetaData metaData;
 
-    public Silverfish(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Silverfish(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new SilverfishMetaData(sets, protocolId);
+        this.metaData = new SilverfishMetaData(sets, versionId);
     }
 
     @Override

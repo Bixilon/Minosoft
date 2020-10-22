@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class EnderDragonMetaData extends InsentientMetaData {
 
-    public EnderDragonMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public EnderDragonMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public DragonPhases getDragonPhase() {
         final int defaultValue = DragonPhases.HOVERING.ordinal();
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return DragonPhases.byId(defaultValue);
         }
         return DragonPhases.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
@@ -28,7 +28,7 @@ public class EnderDragonMetaData extends InsentientMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

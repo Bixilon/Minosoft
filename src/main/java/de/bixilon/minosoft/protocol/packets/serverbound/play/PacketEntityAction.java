@@ -42,11 +42,11 @@ public class PacketEntityAction implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ENTITY_ACTION);
         buffer.writeEntityId(entityId);
-        if (buffer.getProtocolId() < 7) {
-            buffer.writeByte((byte) action.getId(buffer.getProtocolId()));
+        if (buffer.getVersionId() < 7) {
+            buffer.writeByte((byte) action.getId(buffer.getVersionId()));
             buffer.writeInt(parameter);
         } else {
-            buffer.writeVarInt(action.getId(buffer.getProtocolId()));
+            buffer.writeVarInt(action.getId(buffer.getVersionId()));
             buffer.writeVarInt(parameter);
         }
         return buffer;
@@ -74,17 +74,17 @@ public class PacketEntityAction implements ServerboundPacket {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static EntityActions byId(int id, int protocolId) {
+        public static EntityActions byId(int id, int versionId) {
             for (EntityActions action : values()) {
-                if (action.getId(protocolId) == id) {
+                if (action.getId(versionId) == id) {
                     return action;
                 }
             }
             return null;
         }
 
-        public int getId(int protocolId) {
-            Integer ret = valueMap.get(protocolId);
+        public int getId(int versionId) {
+            Integer ret = valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

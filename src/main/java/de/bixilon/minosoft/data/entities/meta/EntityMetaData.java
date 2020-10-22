@@ -31,7 +31,7 @@ import java.util.UUID;
 public class EntityMetaData {
 
     final MetaDataHashMap sets;
-    final int protocolId;
+    final int versionId;
 
     /*
     1.7.10: https://wiki.vg/index.php?title=Entity_metadata&oldid=5991
@@ -45,9 +45,9 @@ public class EntityMetaData {
     1.15: https://wiki.vg/index.php?title=Entity_metadata&oldid=15885
      */
 
-    public EntityMetaData(MetaDataHashMap sets, int protocolId) {
+    public EntityMetaData(MetaDataHashMap sets, int versionId) {
         this.sets = sets;
-        this.protocolId = protocolId;
+        this.versionId = versionId;
     }
 
     public static Object getData(EntityMetaDataValueTypes type, InByteBuffer buffer) {
@@ -88,7 +88,7 @@ public class EntityMetaData {
             case POSE -> buffer.readPose();
             case BLOCK_ID -> buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
             case OPT_VAR_INT -> buffer.readVarInt() - 1;
-            case VILLAGER_DATA -> new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getProtocolId()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
+            case VILLAGER_DATA -> new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getVersionId()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
             default -> throw new IllegalStateException("Unexpected value: " + type);
         };
     }
@@ -110,7 +110,7 @@ public class EntityMetaData {
     }
 
     public boolean isEating() {
-        if (protocolId > 335) { //ToDo
+        if (versionId > 335) { //ToDo
             return false;
         }
         return sets.getBitMask(0, 0x10, false);
@@ -134,24 +134,24 @@ public class EntityMetaData {
 
     @Nullable
     public ChatComponent getNameTag() {
-        if (protocolId <= 110) { //ToDo
+        if (versionId <= 110) { //ToDo
             return null;
         }
-        if (protocolId <= 335) { //ToDo
+        if (versionId <= 335) { //ToDo
             return ChatComponent.fromString(sets.getString(2, null));
         }
         return sets.getTextComponent(2, null);
     }
 
     public boolean isCustomNameVisible() {
-        if (protocolId <= 110) { //ToDo
+        if (versionId <= 110) { //ToDo
             return false;
         }
         return sets.getBoolean(3, false);
     }
 
     public boolean isSilent() {
-        if (protocolId <= 110) { //ToDo
+        if (versionId <= 110) { //ToDo
             return false;
         }
         return sets.getBoolean(4, false);
@@ -159,14 +159,14 @@ public class EntityMetaData {
     }
 
     public boolean hasGravity() {
-        if (protocolId <= 204) { //ToDo
+        if (versionId <= 204) { //ToDo
             return true;
         }
         return !sets.getBoolean(5, false);
     }
 
     public Poses getPose() {
-        if (protocolId < 461) {
+        if (versionId < 461) {
             if (isSneaking()) {
                 return Poses.SNEAKING;
             } else if (isSwimming()) {
@@ -183,20 +183,20 @@ public class EntityMetaData {
     }
 
     private boolean isSwimming() {
-        if (protocolId < 358) {
+        if (versionId < 358) {
             return false;
         }
         return sets.getBitMask(0, 0x10, false);
     }
 
     protected int getLastDataIndex() {
-        if (protocolId < 57) {
+        if (versionId < 57) {
             throw new IllegalArgumentException("EntityMetaData::getLastDataIndex does not work below 1.9!");
         }
-        if (protocolId == 110) { //ToDo
+        if (versionId == 110) { //ToDo
             return 4;
         }
-        if (protocolId <= 461) {
+        if (versionId <= 461) {
             return 5;
         }
         return 6;
@@ -237,17 +237,17 @@ public class EntityMetaData {
             valueMap = new VersionValueMap<>(id);
         }
 
-        public static EntityMetaDataValueTypes byId(int id, int protocolId) {
+        public static EntityMetaDataValueTypes byId(int id, int versionId) {
             for (EntityMetaDataValueTypes types : values()) {
-                if (types.getId(protocolId) == id) {
+                if (types.getId(versionId) == id) {
                     return types;
                 }
             }
             return null;
         }
 
-        public int getId(Integer protocolId) {
-            Integer ret = valueMap.get(protocolId);
+        public int getId(Integer versionId) {
+            Integer ret = valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class WitherSkullMetaData extends AbstractFireballMetaData {
 
-    public WitherSkullMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public WitherSkullMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isInvulnerable() {
         final boolean defaultValue = false;
-        if (protocolId < 57) { //ToDo
+        if (versionId < 57) { //ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -28,7 +28,7 @@ public class WitherSkullMetaData extends AbstractFireballMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 57) { //ToDo
+        if (versionId < 57) { //ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

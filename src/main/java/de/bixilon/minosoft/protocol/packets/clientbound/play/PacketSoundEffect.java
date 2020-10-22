@@ -30,21 +30,21 @@ public class PacketSoundEffect implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() >= 321 && buffer.getProtocolId() < 326) {
+        if (buffer.getVersionId() >= 321 && buffer.getVersionId() < 326) {
             // category was moved to the top
             category = SoundCategories.byId(buffer.readVarInt());
         }
         soundId = buffer.readVarInt();
 
-        if (buffer.getProtocolId() >= 321 && buffer.getProtocolId() < 326) {
+        if (buffer.getVersionId() >= 321 && buffer.getVersionId() < 326) {
             buffer.readString(); // parrot entity type
         }
-        if (buffer.getProtocolId() >= 95 && (buffer.getProtocolId() < 321 || buffer.getProtocolId() >= 326)) {
+        if (buffer.getVersionId() >= 95 && (buffer.getVersionId() < 321 || buffer.getVersionId() >= 326)) {
             category = SoundCategories.byId(buffer.readVarInt());
         }
         location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
         volume = buffer.readFloat();
-        if (buffer.getProtocolId() < 201) {
+        if (buffer.getVersionId() < 201) {
             pitch = (buffer.readByte() * pitchCalc) / 100F;
         } else {
             pitch = buffer.readFloat();

@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class FurnaceMinecartMetaData extends EntityMetaData {
 
-    public FurnaceMinecartMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public FurnaceMinecartMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isPowered() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getBoolean(16, defaultValue);
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);

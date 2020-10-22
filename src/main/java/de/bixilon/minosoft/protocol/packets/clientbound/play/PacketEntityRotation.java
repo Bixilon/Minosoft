@@ -31,7 +31,7 @@ public class PacketEntityRotation implements ClientboundPacket {
         this.yaw = buffer.readAngle();
         this.pitch = buffer.readAngle();
 
-        if (buffer.getProtocolId() >= 22) {
+        if (buffer.getVersionId() >= 22) {
             onGround = buffer.readBoolean();
         }
         return true;

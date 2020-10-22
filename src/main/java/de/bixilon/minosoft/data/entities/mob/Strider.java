@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Strider extends Mob implements MobInterface {
     StriderMetaData metaData;
 
-    public Strider(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Strider(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new StriderMetaData(sets, protocolId);
+        this.metaData = new StriderMetaData(sets, versionId);
     }
 
     @Override

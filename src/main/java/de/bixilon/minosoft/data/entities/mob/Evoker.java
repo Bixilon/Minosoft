@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Evoker extends Mob implements MobInterface {
     EvokerMetaData metaData;
 
-    public Evoker(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Evoker(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new EvokerMetaData(sets, protocolId);
+        this.metaData = new EvokerMetaData(sets, versionId);
     }
 
     @Override

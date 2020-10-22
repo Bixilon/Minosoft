@@ -19,8 +19,8 @@ import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
 import java.util.UUID;
 
 public class CaveSpider extends Spider {
-    public CaveSpider(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
-        super(entityId, uuid, location, yaw, pitch, headYaw, sets, protocolId);
+    public CaveSpider(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
+        super(entityId, uuid, location, yaw, pitch, headYaw, sets, versionId);
     }
 
     @Override

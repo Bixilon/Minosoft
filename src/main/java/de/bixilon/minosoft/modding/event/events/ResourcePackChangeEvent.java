@@ -18,7 +18,7 @@ import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersi
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketResourcePackSend;
 
-@MinimumProtocolVersion(protocolId = 32)
+@MinimumProtocolVersion(versionId = 32)
 public class ResourcePackChangeEvent extends CancelableEvent {
     private String url;
     private String hash;
@@ -43,12 +43,12 @@ public class ResourcePackChangeEvent extends CancelableEvent {
         this.url = url;
     }
 
-    @MaximumProtocolVersion(protocolId = 204)
+    @MaximumProtocolVersion(versionId = 204)
     public String getHash() {
         return hash;
     }
 
-    @MaximumProtocolVersion(protocolId = 204)
+    @MaximumProtocolVersion(versionId = 204)
     public void setHash(String hash) {
         this.hash = hash;
     }

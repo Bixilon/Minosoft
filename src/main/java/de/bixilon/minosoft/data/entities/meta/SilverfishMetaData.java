@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class SilverfishMetaData extends MonsterMetaData {
 
-    public SilverfishMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public SilverfishMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

@@ -30,9 +30,9 @@ public class WitherSkull extends EntityObject implements ObjectInterface {
         this.thrower = additionalInt;
     }
 
-    public WitherSkull(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public WitherSkull(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new WitherSkullMetaData(sets, protocolId);
+        this.metaData = new WitherSkullMetaData(sets, versionId);
         this.thrower = 0; // ToDo
     }
 

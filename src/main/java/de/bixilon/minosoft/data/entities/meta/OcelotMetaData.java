@@ -14,19 +14,19 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class OcelotMetaData extends AnimalMetaData {
 
-    public OcelotMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public OcelotMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public OcelotTypes getType() {
         final int defaultValue = OcelotTypes.UNTAMED.ordinal();
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return OcelotTypes.byId(sets.getInt(18, defaultValue));
         }
-        if (protocolId == 110) { //ToDo
+        if (versionId == 110) { //ToDo
             return OcelotTypes.byId(sets.getInt(14, defaultValue));
         }
-        if (protocolId <= 401) { // ToDo
+        if (versionId <= 401) { // ToDo
             return OcelotTypes.byId(sets.getInt(15, defaultValue));
         }
         return OcelotTypes.UNTAMED;
@@ -34,7 +34,7 @@ public class OcelotMetaData extends AnimalMetaData {
 
     public boolean isTrusting() {
         final boolean defaultValue = false;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);

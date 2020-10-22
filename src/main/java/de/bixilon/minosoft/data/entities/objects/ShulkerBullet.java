@@ -29,9 +29,9 @@ public class ShulkerBullet extends EntityObject implements ObjectInterface {
         this.shooter = additionalInt;
     }
 
-    public ShulkerBullet(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public ShulkerBullet(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new EntityMetaData(sets, protocolId);
+        this.metaData = new EntityMetaData(sets, versionId);
         this.shooter = 0; // ToDo
     }
 

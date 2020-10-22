@@ -24,9 +24,9 @@ import java.util.UUID;
 public class TropicalFish extends Mob implements MobInterface {
     TropicalFishMetaData metaData;
 
-    public TropicalFish(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public TropicalFish(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new TropicalFishMetaData(sets, protocolId);
+        this.metaData = new TropicalFishMetaData(sets, versionId);
     }
 
     @Override

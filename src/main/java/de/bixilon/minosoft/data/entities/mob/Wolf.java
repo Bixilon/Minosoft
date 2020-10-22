@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Wolf extends Mob implements MobInterface {
     WolfMetaData metaData;
 
-    public Wolf(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Wolf(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new WolfMetaData(sets, protocolId);
+        this.metaData = new WolfMetaData(sets, versionId);
     }
 
     @Override

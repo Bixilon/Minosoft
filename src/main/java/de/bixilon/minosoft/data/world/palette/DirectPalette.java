@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 public class DirectPalette implements Palette {
-    int protocolId;
+    int versionId;
     CustomMapping mapping;
 
     @Override
@@ -28,7 +28,7 @@ public class DirectPalette implements Palette {
 
     @Override
     public byte getBitsPerBlock() {
-        if (protocolId < 367) {
+        if (versionId < 367) {
             return 13;
         }
         return 14;
@@ -36,9 +36,9 @@ public class DirectPalette implements Palette {
 
     @Override
     public void read(InByteBuffer buffer) {
-        this.protocolId = buffer.getProtocolId();
+        this.versionId = buffer.getVersionId();
         mapping = buffer.getConnection().getMapping();
-        if (buffer.getProtocolId() < 346) {
+        if (buffer.getVersionId() < 346) {
             buffer.readVarInt();
         }
     }

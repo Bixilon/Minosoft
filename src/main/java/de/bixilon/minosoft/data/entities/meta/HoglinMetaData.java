@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class HoglinMetaData extends AnimalMetaData {
 
-    public HoglinMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public HoglinMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isImmuneToZombification() {
         final boolean defaultValue = false;
-        if (protocolId < 743) { // ToDo
+        if (versionId < 743) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);

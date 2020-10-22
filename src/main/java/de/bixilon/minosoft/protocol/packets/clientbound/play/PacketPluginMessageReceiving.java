@@ -29,9 +29,9 @@ public class PacketPluginMessageReceiving implements ClientboundPacket {
         this.connection = buffer.getConnection();
         channel = buffer.readString();
         // "read" length prefix
-        if (buffer.getProtocolId() < 29) {
+        if (buffer.getVersionId() < 29) {
             buffer.readShort();
-        } else if (buffer.getProtocolId() < 32) {
+        } else if (buffer.getVersionId() < 32) {
             buffer.readVarInt();
         }
         data = buffer.readBytesLeft();

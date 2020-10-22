@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Blaze extends Mob implements MobInterface {
     BlazeMetaData metaData;
 
-    public Blaze(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Blaze(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new BlazeMetaData(sets, protocolId);
+        this.metaData = new BlazeMetaData(sets, versionId);
     }
 
     @Override

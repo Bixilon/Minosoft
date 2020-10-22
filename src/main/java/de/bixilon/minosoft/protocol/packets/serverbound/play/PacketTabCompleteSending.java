@@ -47,10 +47,10 @@ public class PacketTabCompleteSending implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_TAB_COMPLETE);
         buffer.writeString(text);
-        if (buffer.getProtocolId() >= 59) {
+        if (buffer.getVersionId() >= 59) {
             buffer.writeBoolean(assumeCommand);
         }
-        if (buffer.getProtocolId() >= 37) {
+        if (buffer.getVersionId() >= 37) {
             if (position == null) {
                 buffer.writeBoolean(false);
             } else {

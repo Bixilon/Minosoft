@@ -41,36 +41,36 @@ public class PacketTeams implements ClientboundPacket {
         action = TeamActions.byId(buffer.readByte());
         if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {
             displayName = buffer.readTextComponent();
-            if (buffer.getProtocolId() < 352) {
+            if (buffer.getVersionId() < 352) {
                 prefix = buffer.readTextComponent();
                 suffix = buffer.readTextComponent();
             }
-            if (buffer.getProtocolId() < 100) { //ToDo
+            if (buffer.getVersionId() < 100) { //ToDo
                 setFriendlyFireByLegacy(buffer.readByte());
             } else {
                 byte friendlyFireRaw = buffer.readByte();
                 friendlyFire = BitByte.isBitMask(friendlyFireRaw, 0x01);
                 seeFriendlyInvisibles = BitByte.isBitMask(friendlyFireRaw, 0x02);
             }
-            if (buffer.getProtocolId() >= 11) {
+            if (buffer.getVersionId() >= 11) {
                 nameTagVisibility = TeamNameTagVisibilities.byName(buffer.readString());
-                if (buffer.getProtocolId() >= 100) { //ToDo
+                if (buffer.getVersionId() >= 100) { //ToDo
                     collisionRule = TeamCollisionRules.byName(buffer.readString());
                 }
-                if (buffer.getProtocolId() < 352) {
+                if (buffer.getVersionId() < 352) {
                     color = ChatColors.getColorById(buffer.readByte());
                 } else {
                     color = ChatColors.getColorById(buffer.readVarInt());
                 }
             }
-            if (buffer.getProtocolId() >= 375) {
+            if (buffer.getVersionId() >= 375) {
                 prefix = buffer.readTextComponent();
                 suffix = buffer.readTextComponent();
             }
         }
         if (action == TeamActions.CREATE || action == TeamActions.PLAYER_ADD || action == TeamActions.PLAYER_REMOVE) {
             int playerCount;
-            if (buffer.getProtocolId() < 7) {
+            if (buffer.getVersionId() < 7) {
                 playerCount = buffer.readShort();
             } else {
                 playerCount = buffer.readVarInt();

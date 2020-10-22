@@ -17,8 +17,8 @@ import de.bixilon.minosoft.data.mappings.Item;
 
 public class SnowballMetaData extends ItemedThrowableMetaData {
 
-    public SnowballMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public SnowballMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Override

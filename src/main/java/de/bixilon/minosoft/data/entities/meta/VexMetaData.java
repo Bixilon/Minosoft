@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class VexMetaData extends MonsterMetaData {
 
-    public VexMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public VexMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isInAttackMode() {
         final boolean defaultValue = false;
-        if (protocolId < 315) { // ToDo
+        if (versionId < 315) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);

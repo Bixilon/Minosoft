@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public abstract class AbstractFishMetaData extends WaterMobMetaData {
 
-    public AbstractFishMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public AbstractFishMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean fromBucket() {
         final boolean defaultValue = false;
-        if (protocolId < 362) {
+        if (versionId < 362) {
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);

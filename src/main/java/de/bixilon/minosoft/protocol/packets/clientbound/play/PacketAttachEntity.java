@@ -27,7 +27,7 @@ public class PacketAttachEntity implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readInt();
         this.vehicleId = buffer.readInt();
-        if (buffer.getProtocolId() < 77) {
+        if (buffer.getVersionId() < 77) {
             this.leash = buffer.readBoolean();
             return true;
         }

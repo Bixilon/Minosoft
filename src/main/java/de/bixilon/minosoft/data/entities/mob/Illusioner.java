@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Illusioner extends Mob implements MobInterface {
     IllusionerMetaData metaData;
 
-    public Illusioner(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Illusioner(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new IllusionerMetaData(sets, protocolId);
+        this.metaData = new IllusionerMetaData(sets, versionId);
     }
 
     @Override

@@ -30,9 +30,9 @@ public class ThrownEgg extends EntityObject implements ObjectInterface {
         this.thrower = additionalInt;
     }
 
-    public ThrownEgg(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public ThrownEgg(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new EggMetaData(sets, protocolId);
+        this.metaData = new EggMetaData(sets, versionId);
         thrower = 0; // ToDo
     }
 

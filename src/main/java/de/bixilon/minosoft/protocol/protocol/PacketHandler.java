@@ -61,13 +61,13 @@ public class PacketHandler {
 
         // now we know the version, set it, if the config allows it
         Version version;
-        int versionId = connection.getDesiredVersionNumber();
-        if (versionId == -1) {
-            versionId = pkg.getResponse().getProtocolId();
+        int protocolId = connection.getDesiredVersionNumber();
+        if (protocolId == -1) {
+            protocolId = pkg.getResponse().getProtocolId();
         }
-        version = Versions.getVersionById(versionId);
+        version = Versions.getVersionByProtocolId(protocolId);
         if (version == null) {
-            Log.fatal(String.format("Server is running on unknown version or a invalid version was forced (version=%d, brand=\"%s\")", versionId, pkg.getResponse().getServerBrand()));
+            Log.fatal(String.format("Server is running on unknown version or a invalid version was forced (protocolId=%d, brand=\"%s\")", protocolId, pkg.getResponse().getServerBrand()));
         } else {
             connection.setVersion(version);
         }
@@ -90,7 +90,7 @@ public class PacketHandler {
             case GET_VERSION -> {
                 // reconnect...
                 connection.disconnect();
-                Log.info(String.format("Server is running on version %s (%d), reconnecting...", connection.getVersion().getVersionName(), connection.getVersion().getProtocolVersion()));
+                Log.info(String.format("Server is running on version %s (versionId=%d, protocolId=%d), reconnecting...", connection.getVersion().getVersionName(), connection.getVersion().getVersionId(), connection.getVersion().getProtocolId()));
             }
         }
     }
@@ -196,12 +196,12 @@ public class PacketHandler {
     }
 
     public void handle(PacketPluginMessageReceiving pkg) {
-        if (pkg.getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getProtocolVersion()))) {
+        if (pkg.getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getVersionId()))) {
             InByteBuffer data = pkg.getDataAsBuffer();
             String serverVersion;
             String clientVersion = (Minosoft.getConfig().getBoolean(ConfigurationPaths.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
             OutByteBuffer toSend = new OutByteBuffer(connection);
-            if (connection.getVersion().getProtocolVersion() < 29) {
+            if (connection.getVersion().getVersionId() < 29) {
                 // no length prefix
                 serverVersion = new String(data.getBytes());
                 toSend.writeBytes(clientVersion.getBytes());
@@ -212,12 +212,12 @@ public class PacketHandler {
             }
             Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, connection.getVersion().getVersionName()));
 
-            connection.getSender().sendPluginMessageData(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getProtocolVersion()), toSend);
+            connection.getSender().sendPluginMessageData(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getVersionId()), toSend);
             return;
         }
 
         // MC|StopSound
-        if (pkg.getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getProtocolVersion()))) {
+        if (pkg.getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getVersionId()))) {
             // it is basically a packet, handle it like a packet:
             PacketStopSound packet = new PacketStopSound();
             packet.read(pkg.getDataAsBuffer());

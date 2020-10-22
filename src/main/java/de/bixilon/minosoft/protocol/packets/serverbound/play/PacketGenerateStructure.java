@@ -36,7 +36,7 @@ public class PacketGenerateStructure implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_GENERATE_STRUCTURE);
         buffer.writePosition(position);
         buffer.writeVarInt(levels);
-        if (buffer.getProtocolId() <= 719) {
+        if (buffer.getVersionId() <= 719) {
             buffer.writeBoolean(keepJigsaw);
         }
         return buffer;

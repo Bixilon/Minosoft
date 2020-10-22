@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class InsentientMetaData extends LivingMetaData {
 
-    public InsentientMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public InsentientMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isLeftHanded() {

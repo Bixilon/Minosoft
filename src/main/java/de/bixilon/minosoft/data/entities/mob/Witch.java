@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Witch extends Mob implements MobInterface {
     WitchMetaData metaData;
 
-    public Witch(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Witch(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new WitchMetaData(sets, protocolId);
+        this.metaData = new WitchMetaData(sets, versionId);
     }
 
     @Override

@@ -17,8 +17,8 @@ import de.bixilon.minosoft.data.mappings.Item;
 
 public class EnderPearlMetaData extends ItemedThrowableMetaData {
 
-    public EnderPearlMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public EnderPearlMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Override

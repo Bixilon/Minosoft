@@ -24,7 +24,7 @@ public class PacketSpawnLocation implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 6) {
+        if (buffer.getVersionId() < 6) {
             location = buffer.readBlockPositionInteger();
             return true;
         }

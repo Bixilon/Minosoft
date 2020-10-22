@@ -24,9 +24,9 @@ import java.util.UUID;
 public class ZombieHorse extends Mob implements MobInterface {
     ZombieHorseMetaData metaData;
 
-    public ZombieHorse(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public ZombieHorse(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new ZombieHorseMetaData(sets, protocolId);
+        this.metaData = new ZombieHorseMetaData(sets, versionId);
     }
 
     @Override

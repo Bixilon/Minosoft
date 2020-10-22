@@ -26,7 +26,7 @@ public class PacketUpdateHealth implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         health = buffer.readFloat();
-        if (buffer.getProtocolId() < 7) {
+        if (buffer.getVersionId() < 7) {
             food = buffer.readShort();
         } else {
             food = buffer.readVarInt();

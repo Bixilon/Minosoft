@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class WanderingTraderMetaData extends VillagerMetaData {
 
-    public WanderingTraderMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public WanderingTraderMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 }

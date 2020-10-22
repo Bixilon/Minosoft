@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public abstract class AgeableMetaData extends CreatureMetaData {
 
-    public AgeableMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public AgeableMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isAdult() {
         final boolean defaultValue = false;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return getAge() >= 0;
         }
         return !sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -28,7 +28,7 @@ public abstract class AgeableMetaData extends CreatureMetaData {
 
     public int getAge() {
         final int defaultValue = 0;
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return sets.getInt(12, defaultValue);
         }
         return defaultValue;

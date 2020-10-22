@@ -23,12 +23,12 @@ import java.util.UUID;
 public class LightningBolt extends EntityObject implements ObjectInterface {
     EntityMetaData metaData;
 
-    public LightningBolt(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public LightningBolt(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new EntityMetaData(sets, protocolId);
+        this.metaData = new EntityMetaData(sets, versionId);
     }
 
-    public LightningBolt(int entityId, Location location, int protocolId) {
+    public LightningBolt(int entityId, Location location, int versionId) {
         super(entityId, null, location, 0, 0);
     }
 

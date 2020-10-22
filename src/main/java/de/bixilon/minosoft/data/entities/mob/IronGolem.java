@@ -24,9 +24,9 @@ import java.util.UUID;
 public class IronGolem extends Mob implements MobInterface {
     IronGolemMetaData metaData;
 
-    public IronGolem(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public IronGolem(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new IronGolemMetaData(sets, protocolId);
+        this.metaData = new IronGolemMetaData(sets, versionId);
     }
 
     @Override

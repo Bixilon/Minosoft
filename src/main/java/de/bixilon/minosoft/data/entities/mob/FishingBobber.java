@@ -23,9 +23,9 @@ import java.util.UUID;
 public class FishingBobber extends Mob implements MobInterface {
     EntityMetaData metaData;
 
-    public FishingBobber(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public FishingBobber(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new EntityMetaData(sets, protocolId);
+        this.metaData = new EntityMetaData(sets, versionId);
     }
 
     @Override

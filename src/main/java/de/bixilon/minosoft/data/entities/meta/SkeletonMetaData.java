@@ -14,16 +14,16 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class SkeletonMetaData extends MonsterMetaData {
 
-    public SkeletonMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public SkeletonMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public SkeletonTypes getSkeletonType() {
         final int defaultValue = SkeletonTypes.NORMAL.ordinal();
-        if (protocolId < 57) {
+        if (versionId < 57) {
             return SkeletonTypes.byId(sets.getInt(13, defaultValue));
         }
-        if (protocolId <= 204) { //ToDo
+        if (versionId <= 204) { //ToDo
             return SkeletonTypes.byId(sets.getInt(super.getLastDataIndex() + 1, defaultValue));
         }
         return SkeletonTypes.byId(defaultValue);
@@ -31,13 +31,13 @@ public class SkeletonMetaData extends MonsterMetaData {
 
     public boolean isSwingingArms() {
         final boolean defaultValue = false;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
-        if (protocolId <= 204) { //ToDo
+        if (versionId <= 204) { //ToDo
             return sets.getBoolean(super.getLastDataIndex() + 2, defaultValue);
         }
-        if (protocolId <= 401) { // ToDo
+        if (versionId <= 401) { // ToDo
             return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
         }
         return defaultValue;
@@ -45,7 +45,7 @@ public class SkeletonMetaData extends MonsterMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId == 110 || protocolId == 204) { //ToDo
+        if (versionId == 110 || versionId == 204) { //ToDo
             return super.getLastDataIndex() + 2;
         }
         return super.getLastDataIndex() + 1;

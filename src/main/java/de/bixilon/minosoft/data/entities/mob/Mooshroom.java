@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Mooshroom extends Mob implements MobInterface {
     MooshroomMetaData metaData;
 
-    public Mooshroom(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Mooshroom(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new MooshroomMetaData(sets, protocolId);
+        this.metaData = new MooshroomMetaData(sets, versionId);
     }
 
     @Override

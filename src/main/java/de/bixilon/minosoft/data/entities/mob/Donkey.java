@@ -24,9 +24,9 @@ import java.util.UUID;
 public class Donkey extends Mob implements MobInterface {
     DonkeyMetaData metaData;
 
-    public Donkey(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int protocolId) {
+    public Donkey(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw, EntityMetaData.MetaDataHashMap sets, int versionId) {
         super(entityId, uuid, location, yaw, pitch, headYaw);
-        this.metaData = new DonkeyMetaData(sets, protocolId);
+        this.metaData = new DonkeyMetaData(sets, versionId);
     }
 
     @Override

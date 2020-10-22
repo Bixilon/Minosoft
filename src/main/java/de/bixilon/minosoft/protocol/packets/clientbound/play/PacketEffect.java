@@ -29,14 +29,14 @@ public class PacketEffect implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getProtocolId() < 6) {
-            this.effect = EffectEffects.byId(buffer.readInt(), buffer.getProtocolId());
+        if (buffer.getVersionId() < 6) {
+            this.effect = EffectEffects.byId(buffer.readInt(), buffer.getVersionId());
             position = buffer.readBlockPosition();
             data = buffer.readInt();
             disableRelativeVolume = buffer.readBoolean();
             return true;
         }
-        this.effect = EffectEffects.byId(buffer.readInt(), buffer.getProtocolId());
+        this.effect = EffectEffects.byId(buffer.readInt(), buffer.getVersionId());
         position = buffer.readPosition();
         data = buffer.readInt();
         disableRelativeVolume = buffer.readBoolean();
@@ -156,17 +156,17 @@ public class PacketEffect implements ClientboundPacket {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static EffectEffects byId(int id, int protocolId) {
+        public static EffectEffects byId(int id, int versionId) {
             for (EffectEffects effect : values()) {
-                if (effect.getId(protocolId) == id) {
+                if (effect.getId(versionId) == id) {
                     return effect;
                 }
             }
             return null;
         }
 
-        public int getId(Integer protocolId) {
-            Integer ret = valueMap.get(protocolId);
+        public int getId(Integer versionId) {
+            Integer ret = valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

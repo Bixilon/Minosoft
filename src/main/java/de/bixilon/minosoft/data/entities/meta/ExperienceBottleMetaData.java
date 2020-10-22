@@ -17,8 +17,8 @@ import de.bixilon.minosoft.data.mappings.Item;
 
 public class ExperienceBottleMetaData extends ItemedThrowableMetaData {
 
-    public ExperienceBottleMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public ExperienceBottleMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Override

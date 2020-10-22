@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class DonkeyMetaData extends ChestedHorseMetaData {
 
-    public DonkeyMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public DonkeyMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     @Override

@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public class PandaMetaData extends AnimalMetaData {
 
-    public PandaMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public PandaMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public int getBreedTimer() {
         final int defaultValue = 0;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 1, defaultValue);
@@ -28,7 +28,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public int getSneezeTimer() {
         final int defaultValue = 0;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 2, defaultValue);
@@ -36,7 +36,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public int getEatTimer() {
         final int defaultValue = 0;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getInt(super.getLastDataIndex() + 3, defaultValue);
@@ -44,7 +44,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public byte getMainGene() {
         final int defaultValue = 0;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getByte(super.getLastDataIndex() + 4, defaultValue);
@@ -52,7 +52,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public byte getHiddenGene() {
         final int defaultValue = 0;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getByte(super.getLastDataIndex() + 5, defaultValue);
@@ -60,7 +60,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public boolean isSneezing() {
         final boolean defaultValue = false;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 6, 0x02, defaultValue);
@@ -68,7 +68,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public boolean isRolling() {
         final boolean defaultValue = false;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 6, 0x04, defaultValue);
@@ -76,7 +76,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public boolean isSitting() {
         final boolean defaultValue = false;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 6, 0x08, defaultValue);
@@ -84,7 +84,7 @@ public class PandaMetaData extends AnimalMetaData {
 
     public boolean isOnBack() {
         final boolean defaultValue = false;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 6, 0x10, defaultValue);

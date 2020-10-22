@@ -14,13 +14,13 @@ package de.bixilon.minosoft.data.entities.meta;
 
 public abstract class RaidParticipantMetaData extends MonsterMetaData {
 
-    public RaidParticipantMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public RaidParticipantMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isCelebrating() {
         final boolean defaultValue = false;
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return defaultValue;
         }
         return sets.getBoolean(super.getLastDataIndex() + 1, defaultValue);
@@ -28,7 +28,7 @@ public abstract class RaidParticipantMetaData extends MonsterMetaData {
 
     @Override
     protected int getLastDataIndex() {
-        if (protocolId < 477) { // ToDo
+        if (versionId < 477) { // ToDo
             return super.getLastDataIndex();
         }
         return super.getLastDataIndex() + 1;

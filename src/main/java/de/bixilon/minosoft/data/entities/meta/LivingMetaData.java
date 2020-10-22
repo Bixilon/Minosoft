@@ -19,13 +19,13 @@ import javax.annotation.Nullable;
 
 public abstract class LivingMetaData extends EntityMetaData {
 
-    public LivingMetaData(MetaDataHashMap sets, int protocolId) {
-        super(sets, protocolId);
+    public LivingMetaData(MetaDataHashMap sets, int versionId) {
+        super(sets, versionId);
     }
 
     public boolean isHandActive() {
         final boolean defaultValue = false;
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x01, defaultValue);
@@ -33,7 +33,7 @@ public abstract class LivingMetaData extends EntityMetaData {
 
     public Hands getActiveHand() {
         final int defaultValue = Hands.LEFT.ordinal();
-        if (protocolId < 110) { //ToDo
+        if (versionId < 110) { //ToDo
             return Hands.byId(defaultValue);
         }
         return Hands.byBoolean(sets.getBitMask(super.getLastDataIndex() + 1, 0x02, defaultValue == 0x01));
@@ -41,7 +41,7 @@ public abstract class LivingMetaData extends EntityMetaData {
 
     public boolean isRiptideSpinAttack() {
         final boolean defaultValue = false;
-        if (protocolId < 393) { //ToDo
+        if (versionId < 393) { //ToDo
             return defaultValue;
         }
         return sets.getBitMask(super.getLastDataIndex() + 1, 0x04, defaultValue);
@@ -71,10 +71,10 @@ public abstract class LivingMetaData extends EntityMetaData {
     @Nullable
     @Override
     public ChatComponent getNameTag() {
-        if (protocolId < 7) { //ToDo
+        if (versionId < 7) { //ToDo
             return ChatComponent.fromString(sets.getString(10, null));
         }
-        if (protocolId < 57) { //ToDo
+        if (versionId < 57) { //ToDo
             return ChatComponent.fromString(sets.getString(2, null));
         }
         return super.getNameTag();
@@ -82,11 +82,11 @@ public abstract class LivingMetaData extends EntityMetaData {
 
     @Override
     public boolean isCustomNameVisible() {
-        if (protocolId < 7) { //ToDo
+        if (versionId < 7) { //ToDo
             return sets.getBoolean(11, super.isCustomNameVisible());
         }
 
-        if (protocolId < 57) { //ToDo
+        if (versionId < 57) { //ToDo
             return sets.getBoolean(3, super.isCustomNameVisible());
         }
         return super.isCustomNameVisible();
@@ -96,10 +96,10 @@ public abstract class LivingMetaData extends EntityMetaData {
     protected int getLastDataIndex() {
         //ToDo
         /*
-        if (protocolId <= 401) { // ToDo
+        if (versionId <= 401) { // ToDo
             return super.getLastDataIndex() + 5;
         }
-        if (protocolId == 477) { // ToDo
+        if (versionId == 477) { // ToDo
             return super.getLastDataIndex() + 6;
         }
          */
@@ -107,7 +107,7 @@ public abstract class LivingMetaData extends EntityMetaData {
     }
 
     public boolean hasAI() {
-        if (protocolId == 47) { //ToDo
+        if (versionId == 47) { //ToDo
             return sets.getBoolean(15, false);
         }
         return false;

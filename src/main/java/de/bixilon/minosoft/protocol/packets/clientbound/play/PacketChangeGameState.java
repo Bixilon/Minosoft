@@ -27,7 +27,7 @@ public class PacketChangeGameState implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        reason = Reason.byId(buffer.readByte(), buffer.getProtocolId());
+        reason = Reason.byId(buffer.readByte(), buffer.getVersionId());
         value = buffer.readFloat();
         return true;
     }
@@ -75,17 +75,17 @@ public class PacketChangeGameState implements ClientboundPacket {
             valueMap = new VersionValueMap<>(values, true);
         }
 
-        public static Reason byId(int id, int protocolId) {
+        public static Reason byId(int id, int versionId) {
             for (Reason reason : values()) {
-                if (reason.getId(protocolId) == id) {
+                if (reason.getId(versionId) == id) {
                     return reason;
                 }
             }
             return null;
         }
 
-        public int getId(Integer protocolId) {
-            Integer ret = valueMap.get(protocolId);
+        public int getId(Integer versionId) {
+            Integer ret = valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

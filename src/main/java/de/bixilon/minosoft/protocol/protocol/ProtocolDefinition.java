@@ -26,5 +26,5 @@ public final class ProtocolDefinition {
     public static final int FLATTING_VERSION_ID = 346;
     public static final int PRE_FLATTENING_VERSION_ID = 345;
 
-    public static final int FALLBACK_VERSION_ID = 47; // some servers (like cytooxien.de) send us version id -1.
+    public static final int FALLBACK_PROTOCOL_VERSION_ID = 47; // some servers (like cytooxien.de) send us version id -1.
 }
