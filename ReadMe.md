@@ -47,7 +47,7 @@ Almost all versions are supported, starting with 13w41b (pre 1.7 snapshot) and e
 
 ### Unsupported versions
 Sadly, we cannot support all versions. We will add support for all major versions (like 1.8.9, 1.9.4, 1.14.4, etc), but it is simply not possible to support all snapshots.
- - `1.13-pre6`, `1.13-pre5`, `17w50a`, `17w49b`, `17w49a`, `17w48a`, `17w47b`, `17w47a`: Missing blocks.json (Mappings)
+ - `1.13-pre6`, `1.13-pre5`, `17w50a`, `17w49b`, `17w49a`, `17w48a`, `17w47b`, `17w47a` Missing blocks.json (Mappings)
  - April fools: I will not add any support for them, there are only a few things known. They might work, untested.
  
 ## Modding

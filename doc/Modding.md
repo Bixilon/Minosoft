@@ -43,7 +43,7 @@ In the root folder of your jar file (the mod) must be a file called `mod.json`. 
 - `uuid` is a unique id for the mod. Generate 1 and keep it in all versions (used for dependencies, etc). **Required**
 - `versionId` like in android there is a numeric version id. It is used to compare between versions (and as identifier). **Required**
 - `versionName`, `authors`, `name` is the classic implementation of metadata. Can be anything, will be displayed in the mod list. **Required**
-- `identifier` is the prefix of items (for Minecraft it is `minecraft`). Aka the thing before the `:`.  **Required**
+- `identifier` is the prefix of items (for Minecraft it is `minecraft`). Aka the thing before the ``.  **Required**
 - `mainClass` the Main class of your mod (self explaining). The main class needs to extent the abstract class `MinosoftMod`. **Required**
 - `loading` Loading attributes. **Optional**
   - `priority` should the mod be loaded at the beginning or at the end. Possible values are `LOWEST`, `LOW`, `NORMAL`, `HIGH`, `HIGHEST` **Optional**
@@ -52,8 +52,8 @@ In the root folder of your jar file (the mod) must be a file called `mod.json`. 
   - `soft` These mods are **optional** to work. Both use the following format: **Optional**
     - `uuid` the uuid of the mod to load. **Required**
     - `version` Specifies the version you need to load. **Optional**
-      - `minimum`: Minimum versionId required. **Maximum, minimum or both**
-      - `maximum`: Maximum versionId required. **Maximum, minimum or both**
+      - `minimum` Minimum versionId required. **Maximum, minimum or both**
+      - `maximum` Maximum versionId required. **Maximum, minimum or both**
 
 ## Mod loading (aka Main class)
 Your main class must extend the following class: `de.bixilon.minosoft.MinosoftMod`.
@@ -88,7 +88,6 @@ Dependency:
     <artifactId>minosoft</artifactId>
     <version>master-SNAPSHOT</version>
 </dependency>
-
 ```
 Create a Main class, here is an example
 ```java
@@ -123,19 +122,19 @@ Your `mod.json` can look like this
 There are global events (which works on all connections) and connections events (server specific).
 
 To register a global event you need to use (in the `INITIALIZING` phase) `getEventManager().registerGlobalListener(new XYEventListener());`.
-If you want to register an event depending on an server address (like server specific support, you can use the following), you can use `EventManager::registerConnectionListener` method.
+If you want to register an event depending on a server address (like server specific support, you can use the following), you can use `EventManager::registerConnectionListener` method.
 It takes 2 arguments: The first one is your listener, the second one is a `ServerAddressValidator`.
 There are several validators, choose one or write your own:
- - `HostnameValidator`: Simply check the hostname. For example: `bixilon.de`.
- - `PortValidator`: Get all connections with a specific port. For example: `25565`
- - `SimpleAddressValidator`: Check for server address and port. e.g.: `bixilon.de:25565`
- - `RegexValidator`: Check for a regular expression like: `*.de`
+ - `HostnameValidator` Simply check the hostname. For example: `bixilon.de`.
+ - `PortValidator` Get all connections with a specific port. For example: `25565`
+ - `SimpleAddressValidator` Check for server address and port. e.g.: `bixilon.de:25565`
+ - `RegexValidator` Check for a regular expression like: `*.de`
  
  Use the following: `getEventManager().registerConnectionListener(new XYEventListener(), new HostnameValidator("127.0.0.1"));`
 
 Your event methods need to be annotated by `EventHandler`. `EventHandler` **can** take these arguments:
- - `priority`: Pretty much self explaining. `HIGH` means, that it gets executed at "the beginning", `LOW` means the opposite. Defaults to `NORMAL`.
- - `ignoreCancelled`: If it is a cancellable event, your method only gets executed, when all prior listeners (potentially with a higher priority) did not cancel the event. Defaults to `false`.
+ - `priority` Pretty much self explaining. `HIGH` means, that it gets executed at "the beginning", `LOW` means the opposite. Defaults to `NORMAL`.
+ - `ignoreCancelled` If it is a cancellable event, your method only gets executed, when all prior listeners (potentially with a higher priority) did not cancel the event. Defaults to `false`.
 
 Your XYEventListener class needs to extend `de.bixilon.minosoft.modding.event.EventListener`;
 ```java
