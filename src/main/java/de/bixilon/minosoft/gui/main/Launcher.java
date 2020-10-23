@@ -18,95 +18,69 @@ import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.logging.Log;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
-public class Launcher extends Application {
-    private static ProgressBar progressBar;
-    private static Dialog<Boolean> progressDialog;
+public class Launcher {
 
-    public static void start() {
+    public static void start() throws Exception {
         Log.info("Starting launcher...");
-        launch();
-        Log.info("Launcher started!");
-    }
-
-    public static void setProgressBar(int jobsLeft) {
+        CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(() -> {
-            if (progressBar == null || progressDialog == null) {
-                return;
-            }
-            if (jobsLeft == 0) {
-                progressDialog.setResult(Boolean.TRUE);
-                progressDialog.close();
-                return;
-            }
-            progressBar.setProgress(1.0F / jobsLeft);
-        });
-    }
+            Stage stage = new Stage();
 
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-        Log.info("Preparing main window...");
-
-        GUITools.versionList.setCellFactory(new Callback<>() {
-            @Override
-            public ListCell<Version> call(ListView<Version> p) {
-                return new ListCell<>() {
-                    @Override
-                    protected void updateItem(Version version, boolean empty) {
-                        super.updateItem(version, empty);
-                        if (!empty && version != null) {
-                            setText(String.format("%s (%d)", version.getVersionName(), version.getProtocolId()));
+            GUITools.versionList.setCellFactory(new Callback<>() {
+                @Override
+                public ListCell<Version> call(ListView<Version> p) {
+                    return new ListCell<>() {
+                        @Override
+                        protected void updateItem(Version version, boolean empty) {
+                            super.updateItem(version, empty);
+                            if (!empty && version != null) {
+                                setText(String.format("%s (%d)", version.getVersionName(), version.getProtocolId()));
+                            }
                         }
-                    }
-                };
+                    };
+                }
+            });
+            ServerListCell.listView.setCellFactory((lv) -> ServerListCell.newInstance());
+
+            ObservableList<Server> servers = FXCollections.observableArrayList();
+            servers.addAll(Minosoft.serverList);
+            ServerListCell.listView.setItems(servers);
+
+            VBox root = null;
+            try {
+                root = new FXMLLoader(Launcher.class.getResource("/layout/main.fxml")).load();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(1);
             }
+
+            Scene scene = new Scene(root, 600, 800);
+            stage.setScene(scene);
+
+            stage.setTitle(LocaleManager.translate(Strings.MAIN_WINDOW_TITLE));
+            stage.getIcons().add(GUITools.logo);
+            stage.show();
+            stage.setOnCloseRequest(windowEvent -> System.exit(0));
+            if (Minosoft.getSelectedAccount() == null) {
+                MainWindow.manageAccounts();
+            }
+            latch.countDown();
         });
-        ServerListCell.listView.setCellFactory((lv) -> ServerListCell.newInstance());
-
-        ObservableList<Server> servers = FXCollections.observableArrayList();
-        servers.addAll(Minosoft.serverList);
-        ServerListCell.listView.setItems(servers);
-
-        VBox root = new FXMLLoader(getClass().getResource("/layout/main.fxml")).load();
-
-        Scene scene = new Scene(root, 600, 800);
-        primaryStage.setScene(scene);
-
-        primaryStage.setTitle(LocaleManager.translate(Strings.MAIN_WINDOW_TITLE));
-        primaryStage.getIcons().add(GUITools.logo);
-        primaryStage.show();
-        primaryStage.setOnCloseRequest(windowEvent -> System.exit(0));
-        if (Minosoft.getSelectedAccount() == null) {
-            MainWindow.manageAccounts();
-        }
-        Log.info("Main window prepared!");
-        if (Minosoft.getStartUpJobsLeft() == 0) {
-            return;
-        }
-        progressDialog = new Dialog<>();
-        progressDialog.setTitle(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_TITLE));
-        progressDialog.setHeaderText(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_HEADER));
-        GridPane grid = new GridPane();
-        progressBar = new ProgressBar();
-        progressBar.setProgress(1.0D / 5);
-        grid.add(progressBar, 0, 0);
-        progressDialog.getDialogPane().setContent(grid);
-        progressDialog.show();
+        latch.await();
+        Log.info("Launcher started!");
     }
 }

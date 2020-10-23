@@ -20,29 +20,27 @@ import de.bixilon.minosoft.data.assets.AssetsManager;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.gui.main.AccountListCell;
-import de.bixilon.minosoft.gui.main.Launcher;
-import de.bixilon.minosoft.gui.main.MainWindow;
-import de.bixilon.minosoft.gui.main.Server;
+import de.bixilon.minosoft.gui.main.*;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.loading.ModLoader;
+import de.bixilon.minosoft.modding.loading.Priorities;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
+import de.bixilon.minosoft.util.task.AsyncTaskWorker;
+import de.bixilon.minosoft.util.task.Task;
+import de.bixilon.minosoft.util.task.TaskImportance;
+import javafx.application.Platform;
+import javafx.scene.control.Dialog;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
+import java.util.*;
 
 public final class Minosoft {
     public static final HashSet<EventManager> eventManagers = new HashSet<>();
-    public static final CountUpAndDownLatch assetsLatch = new CountUpAndDownLatch(1);  // count of files still to download, will be used to show progress
-    private static final CountDownLatch startStatusLatch = new CountDownLatch(5); // number of critical components (wait for them before other "big" actions)
+    private static final CountUpAndDownLatch startStatusLatch = new CountUpAndDownLatch();
     public static HashBiMap<String, MojangAccount> accountList;
     public static MojangAccount selectedAccount;
     public static ArrayList<Server> serverList;
@@ -67,66 +65,90 @@ public final class Minosoft {
         Log.info(String.format("Logging info with level: %s", Log.getLevel()));
 
         serverList = config.getServers();
-        ArrayList<Callable<Boolean>> startCallables = new ArrayList<>();
-        startCallables.add(() -> {
-            LocaleManager.load(config.getString(ConfigurationPaths.LANGUAGE));
-            countDownStartLatch();
-            return true;
+        AsyncTaskWorker taskWorker = new AsyncTaskWorker();
+
+        taskWorker.setFatalError((exception) -> {
+            Log.fatal("Critical error occurred while preparing. Exit");
+            if (StartProgressWindow.toolkitLatch.getCount() == 2) {
+                try {
+                    StartProgressWindow.start();
+                } catch (InterruptedException e2) {
+                    e2.printStackTrace();
+                    System.exit(1);
+                }
+            }
+            if (StartProgressWindow.toolkitLatch.getCount() > 0) {
+                try {
+                    StartProgressWindow.toolkitLatch.await();
+                } catch (InterruptedException e2) {
+                    e2.printStackTrace();
+                    System.exit(1);
+                }
+            }
+            Platform.runLater(() -> {
+                Dialog<Boolean> dialog = new Dialog<>();
+                dialog.setTitle("Critical Error");
+                dialog.setHeaderText("An error occurred while starting Minosoft");
+                dialog.setContentText(exception.getMessage());
+                dialog.showAndWait();
+                System.exit(1);
+            });
         });
-        startCallables.add(() -> {
+
+        taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFx Toolkit", "", Priorities.HIGHEST));
+
+        taskWorker.addTask(new Task((progress) -> StartProgressWindow.show(startStatusLatch), "Progress Window", "", Priorities.HIGH, TaskImportance.OPTIONAL, new HashSet<>(Collections.singleton("JavaFx Toolkit"))));
+
+        taskWorker.addTask(new Task(progress -> {
+            progress.countUp();
+            LocaleManager.load(config.getString(ConfigurationPaths.LANGUAGE));
+            progress.countDown();
+
+        }, "Minosoft Language", "", Priorities.HIGH, TaskImportance.REQUIRED));
+
+        taskWorker.addTask(new Task(progress -> {
+            progress.countUp();
             Log.info("Loading versions.json...");
             long mappingStartLoadingTime = System.currentTimeMillis();
-            try {
-                Versions.load(Util.readJsonAsset("mapping/versions.json"));
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.exit(1);
-            }
+            Versions.load(Util.readJsonAsset("mapping/versions.json"));
             Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
-            countDownStartLatch(); // (another) critical component was loaded
-            return true;
-        });
-        startCallables.add(() -> {
-            Log.debug("Refreshing client token...");
+            progress.countDown();
+
+        }, "Version mappings", "", Priorities.NORMAL, TaskImportance.REQUIRED));
+
+        taskWorker.addTask(new Task(progress -> {
+            Log.debug("Refreshing account token...");
             checkClientToken();
             accountList = config.getMojangAccounts();
             selectAccount(accountList.get(config.getString(ConfigurationPaths.ACCOUNT_SELECTED)));
-            return true;
-        });
-        startCallables.add(() -> {
+
+        }, "Token refresh", "", Priorities.LOW));
+
+        taskWorker.addTask(new Task(progress -> {
+            progress.countUp();
             ModLoader.loadMods();
-            countDownStartLatch();
-            return true;
-        });
-        startCallables.add(() -> {
-            Launcher.start();
-            return true;
-        });
-        startCallables.add(() -> {
-            AssetsManager.downloadAllAssets(assetsLatch);
-            countDownStartLatch();
-            return true;
-        });
-        startCallables.add(() -> {
-            // load minecraft language file
+            progress.countDown();
 
-            // wait for assets to be loaded
-            assetsLatch.waitUntilZero();
+        }, "ModLoading", "", Priorities.NORMAL, TaskImportance.REQUIRED));
+
+        taskWorker.addTask(new Task(progress -> Launcher.start(), "Launcher", "", Priorities.HIGH, TaskImportance.OPTIONAL, new HashSet<>(Arrays.asList("Minosoft Language", "JavaFx Toolkit"))));
+
+        taskWorker.addTask(new Task(progress -> {
+            progress.countUp();
+            AssetsManager.downloadAllAssets(progress);
+            progress.countDown();
+
+        }, "Assets", "", Priorities.HIGH, TaskImportance.REQUIRED));
+
+
+        taskWorker.addTask(new Task(progress -> {
+            progress.countUp();
             MinecraftLocaleManager.load(config.getString(ConfigurationPaths.LANGUAGE));
-            countDownStartLatch();
-            return true;
-        });
-        // If you add another "critical" component (wait for them at startup): You MUST adjust increment the number of the counter in `startStatus` (See in the first lines of this file)
-        try {
-            Util.executeInThreadPool("Start", startCallables);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+            progress.countDown();
 
-    private static void countDownStartLatch() {
-        startStatusLatch.countDown();
-        Launcher.setProgressBar((int) startStatusLatch.getCount());
+        }, "Mojang language", "", Priorities.HIGH, TaskImportance.REQUIRED, new HashSet<>(Collections.singleton("Assets"))));
+
+        taskWorker.work(startStatusLatch);
     }
 
     public static void checkClientToken() {
@@ -178,13 +200,13 @@ public final class Minosoft {
      */
     public static void waitForStartup() {
         try {
-            startStatusLatch.await();
+            startStatusLatch.waitUntilZero();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public static int getStartUpJobsLeft() {
-        return (int) startStatusLatch.getCount();
+    public static CountUpAndDownLatch getStartStatusLatch() {
+        return startStatusLatch;
     }
 }

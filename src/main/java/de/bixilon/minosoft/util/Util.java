@@ -201,17 +201,16 @@ public final class Util {
 
     public static void downloadFile(String url, String destination) throws IOException {
         createParentFolderIfNotExist(destination);
-        downloadFile(url, new FileOutputStream(destination));
+        copyFile(getInputStreamByURL(url), new FileOutputStream(destination));
     }
 
     public static void downloadFileAsGz(String url, String destination) throws IOException {
         createParentFolderIfNotExist(destination);
-        downloadFile(url, new GZIPOutputStream(new FileOutputStream(destination)));
+        copyFile(getInputStreamByURL(url), new GZIPOutputStream(new FileOutputStream(destination)));
     }
 
 
-    public static void downloadFile(String url, OutputStream output) throws IOException {
-        BufferedInputStream inputStream = new BufferedInputStream(new URL(url).openStream());
+    public static void copyFile(InputStream inputStream, OutputStream output) throws IOException {
         byte[] buffer = new byte[1024];
         int length;
         while ((length = inputStream.read(buffer, 0, 1024)) != -1) {
@@ -219,6 +218,10 @@ public final class Util {
         }
         inputStream.close();
         output.close();
+    }
+
+    public static BufferedInputStream getInputStreamByURL(String url) throws IOException {
+        return new BufferedInputStream(new URL(url).openStream());
     }
 
     public static <T> void executeInThreadPool(String name, Collection<Callable<T>> callables) throws InterruptedException {

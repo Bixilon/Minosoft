@@ -19,9 +19,16 @@ import java.util.concurrent.CountDownLatch;
 public class CountUpAndDownLatch {
     private final Object lock = new Object();
     private CountDownLatch latch;
+    private long total = 0;
 
     public CountUpAndDownLatch(int count) {
+        total += count;
         this.latch = new CountDownLatch(count);
+    }
+
+    public CountUpAndDownLatch() {
+        total = 1;
+        this.latch = new CountDownLatch(1);
     }
 
     public void countDownOrWaitIfZero() throws InterruptedException {
@@ -44,6 +51,7 @@ public class CountUpAndDownLatch {
 
     public void countUp() { //should probably check for Integer.MAX_VALUE
         synchronized (lock) {
+            total++;
             latch = new CountDownLatch((int) latch.getCount() + 1);
             lock.notifyAll();
         }
@@ -64,9 +72,23 @@ public class CountUpAndDownLatch {
 
     public void setCount(int value) {
         synchronized (lock) {
+            total += value;
             latch = new CountDownLatch(value);
             lock.notifyAll();
         }
     }
 
+    public long getTotal() {
+        return total;
+    }
+
+    public void waitForChange() throws InterruptedException {
+        long current = latch.getCount();
+        long total = this.total;
+        synchronized (lock) {
+            while (current == latch.getCount() && total == this.total) {
+                lock.wait();
+            }
+        }
+    }
 }
