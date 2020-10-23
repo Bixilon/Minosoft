@@ -196,7 +196,7 @@ public class AssetsManager {
             // ToDo: use input steam twice ?
             ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
             int len;
-            byte[] buffer = new byte[2048];
+            byte[] buffer = new byte[4096];
             while ((len = versionJar.read(buffer)) > 0) {
                 outputBuffer.write(buffer, 0, len);
             }

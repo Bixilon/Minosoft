@@ -88,7 +88,7 @@ public final class Util {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         int res = 0;
-        byte[] buf = new byte[1024];
+        byte[] buf = new byte[4096];
         while (res >= 0) {
             res = gzipInputStream.read(buf, 0, buf.length);
             if (res > 0) {
@@ -209,11 +209,10 @@ public final class Util {
         copyFile(getInputStreamByURL(url), new GZIPOutputStream(new FileOutputStream(destination)));
     }
 
-
     public static void copyFile(InputStream inputStream, OutputStream output) throws IOException {
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[4096];
         int length;
-        while ((length = inputStream.read(buffer, 0, 1024)) != -1) {
+        while ((length = inputStream.read(buffer, 0, 4096)) != -1) {
             output.write(buffer, 0, length);
         }
         inputStream.close();
