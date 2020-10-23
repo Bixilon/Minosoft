@@ -79,14 +79,14 @@ public class Launcher {
             stage.setTitle(LocaleManager.translate(Strings.MAIN_WINDOW_TITLE));
             stage.getIcons().add(GUITools.logo);
             stage.setOnCloseRequest(windowEvent -> System.exit(0));
-            if (Minosoft.getSelectedAccount() == null) {
-                MainWindow.manageAccounts();
-            }
             if (exit) {
                 return;
             }
             stage.show();
             Launcher.stage = stage;
+            if (Minosoft.getSelectedAccount() == null) {
+                MainWindow.manageAccounts();
+            }
             latch.countDown();
         });
         latch.await();
