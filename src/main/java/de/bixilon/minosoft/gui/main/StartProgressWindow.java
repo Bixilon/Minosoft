@@ -29,26 +29,33 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class StartProgressWindow extends Application {
     public static CountDownLatch toolkitLatch = new CountDownLatch(2);
+    private static Dialog<Boolean> progressDialog;
+    private static boolean exit = false;
 
     public static void show(CountUpAndDownLatch progress) {
+        if (exit) {
+            return;
+        }
         new Thread(() -> {
             if (progress.getCount() == 0) {
                 return;
             }
             AtomicReference<ProgressBar> progressBar = new AtomicReference<>();
-            AtomicReference<Dialog<Boolean>> progressDialog = new AtomicReference<>();
             Platform.runLater(() -> {
-                progressDialog.set(new Dialog<>());
-                progressDialog.get().setTitle(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_TITLE));
-                progressDialog.get().setHeaderText(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_HEADER));
+                progressDialog = new Dialog<>();
+                progressDialog.setTitle(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_TITLE));
+                progressDialog.setHeaderText(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_HEADER));
                 GridPane grid = new GridPane();
                 progressBar.set(new ProgressBar());
                 progressBar.get().setProgress(1.0F - ((float) progress.getCount() / progress.getTotal()));
                 grid.add(progressBar.get(), 0, 0);
-                progressDialog.get().getDialogPane().setContent(grid);
-                progressDialog.get().show();
+                progressDialog.getDialogPane().setContent(grid);
+                if (exit) {
+                    return;
+                }
+                progressDialog.show();
 
-                Stage stage = (Stage) progressDialog.get().getDialogPane().getScene().getWindow();
+                Stage stage = (Stage) progressDialog.getDialogPane().getScene().getWindow();
                 stage.setAlwaysOnTop(true);
                 stage.toFront();
 
@@ -61,11 +68,7 @@ public class StartProgressWindow extends Application {
                 }
                 Platform.runLater(() -> progressBar.get().setProgress(1.0F - ((float) progress.getCount() / progress.getTotal())));
             }
-
-            Platform.runLater(() -> {
-                progressDialog.get().setResult(Boolean.TRUE);
-                progressDialog.get().hide();
-            });
+            hideDialog();
         }).start();
     }
 
@@ -75,6 +78,17 @@ public class StartProgressWindow extends Application {
         new Thread(Application::launch).start();
         toolkitLatch.await();
         Log.debug("Initialized JavaFX Toolkit!");
+    }
+
+    public static void hideDialog() {
+        exit = true;
+        if (progressDialog == null) {
+            return;
+        }
+        Platform.runLater(() -> {
+            progressDialog.setResult(Boolean.TRUE);
+            progressDialog.hide();
+        });
     }
 
     @Override

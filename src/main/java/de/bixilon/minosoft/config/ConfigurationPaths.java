@@ -21,5 +21,6 @@ public enum ConfigurationPaths {
     CLIENT_TOKEN,
     MAPPINGS_URL,
     ACCOUNT_SELECTED,
-    LANGUAGE,
+    GENERAL_LANGUAGE,
+    DEBUG_VERIFY_ASSETS,
 }

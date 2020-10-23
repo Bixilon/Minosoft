@@ -102,15 +102,38 @@ public final class Util {
     }
 
     public static String sha1(byte[] data) {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
         try {
-            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
-            crypt.reset();
-            crypt.update(data);
-            return byteArrayToHexString(crypt.digest());
-        } catch (NoSuchAlgorithmException e) {
+            return sha1(inputStream);
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String sha1(File file) throws IOException {
+        return sha1(new FileInputStream(file));
+    }
+
+    public static String sha1Gzip(File file) throws IOException {
+        return sha1(new GZIPInputStream(new FileInputStream(file)));
+    }
+
+    public static String sha1(InputStream inputStream) throws IOException {
+        try {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+
+            byte[] buffer = new byte[4096];
+            int length;
+            while ((length = inputStream.read(buffer, 0, 4096)) != -1) {
+                crypt.update(buffer, 0, length);
+            }
+            return byteArrayToHexString(crypt.digest());
+        } catch (NoSuchAlgorithmException | FileNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     public static String byteArrayToHexString(byte[] b) {

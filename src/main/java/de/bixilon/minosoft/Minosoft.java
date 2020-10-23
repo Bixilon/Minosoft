@@ -34,6 +34,7 @@ import de.bixilon.minosoft.util.task.Task;
 import de.bixilon.minosoft.util.task.TaskImportance;
 import javafx.application.Platform;
 import javafx.scene.control.Dialog;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.*;
@@ -85,11 +86,19 @@ public final class Minosoft {
                     System.exit(1);
                 }
             }
+            // hide all other gui parts
+            StartProgressWindow.hideDialog();
+            Launcher.exit();
             Platform.runLater(() -> {
                 Dialog<Boolean> dialog = new Dialog<>();
                 dialog.setTitle("Critical Error");
                 dialog.setHeaderText("An error occurred while starting Minosoft");
-                dialog.setContentText(exception.getMessage());
+                dialog.setContentText(exception.getLocalizedMessage());
+
+                Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+                stage.setAlwaysOnTop(true);
+                stage.toFront();
+                dialog.setOnCloseRequest(dialogEvent -> System.exit(1));
                 dialog.showAndWait();
                 System.exit(1);
             });
@@ -101,7 +110,7 @@ public final class Minosoft {
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
-            LocaleManager.load(config.getString(ConfigurationPaths.LANGUAGE));
+            LocaleManager.load(config.getString(ConfigurationPaths.GENERAL_LANGUAGE));
             progress.countDown();
 
         }, "Minosoft Language", "", Priorities.HIGH, TaskImportance.REQUIRED));
@@ -143,7 +152,7 @@ public final class Minosoft {
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
-            MinecraftLocaleManager.load(config.getString(ConfigurationPaths.LANGUAGE));
+            MinecraftLocaleManager.load(config.getString(ConfigurationPaths.GENERAL_LANGUAGE));
             progress.countDown();
 
         }, "Mojang language", "", Priorities.HIGH, TaskImportance.REQUIRED, new HashSet<>(Collections.singleton("Assets"))));

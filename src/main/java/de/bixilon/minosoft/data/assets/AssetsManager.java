@@ -19,6 +19,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import de.bixilon.minosoft.Config;
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
@@ -146,7 +148,17 @@ public class AssetsManager {
 
     private static boolean verifyAssetHash(String hash) {
         // file does not exist
-        return getAssetSize(hash) != -1;// ToDo
+        if (getAssetSize(hash) == -1) {
+            return false;
+        }
+        if (!Minosoft.config.getBoolean(ConfigurationPaths.DEBUG_VERIFY_ASSETS)) {
+            return true;
+        }
+        try {
+            return hash.equals(Util.sha1Gzip(new File(getAssetDiskPath(hash))));
+        } catch (IOException ignored) {
+        }
+        return false;
     }
 
     public static void generateJarAssets() throws IOException {

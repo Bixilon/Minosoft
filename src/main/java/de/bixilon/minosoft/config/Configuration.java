@@ -91,6 +91,7 @@ public class Configuration {
     public boolean getBoolean(ConfigurationPaths path) {
         return switch (path) {
             case NETWORK_FAKE_CLIENT_BRAND -> config.getAsJsonObject("network").get("fake-network-brand").getAsBoolean();
+            case DEBUG_VERIFY_ASSETS -> config.getAsJsonObject("debug").get("verify-assets").getAsBoolean();
             default -> throw new RuntimeException(String.format("Illegal boolean value: %s", path));
         };
     }
@@ -98,6 +99,7 @@ public class Configuration {
     public void putBoolean(ConfigurationPaths path, boolean value) {
         switch (path) {
             case NETWORK_FAKE_CLIENT_BRAND -> config.getAsJsonObject("network").addProperty("fake-network-brand", value);
+            case DEBUG_VERIFY_ASSETS -> config.getAsJsonObject("debug").addProperty("verify-assets", value);
             default -> throw new RuntimeException(String.format("Illegal boolean value: %s", path));
         }
     }
@@ -122,7 +124,7 @@ public class Configuration {
         return switch (path) {
             case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").get("selected").getAsString();
             case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").get("log-level").getAsString();
-            case LANGUAGE -> config.getAsJsonObject("general").get("language").getAsString();
+            case GENERAL_LANGUAGE -> config.getAsJsonObject("general").get("language").getAsString();
             case MAPPINGS_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").get("mappings").getAsString();
             case CLIENT_TOKEN -> config.getAsJsonObject("accounts").get("client-token").getAsString();
             default -> throw new RuntimeException(String.format("Illegal String value: %s", path));
@@ -133,7 +135,7 @@ public class Configuration {
         switch (path) {
             case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").addProperty("selected", value);
             case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").addProperty("log-level", value);
-            case LANGUAGE -> config.getAsJsonObject("general").addProperty("language", value);
+            case GENERAL_LANGUAGE -> config.getAsJsonObject("general").addProperty("language", value);
             case MAPPINGS_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").addProperty("mappings", value);
             case CLIENT_TOKEN -> config.getAsJsonObject("accounts").addProperty("client-token", value);
             default -> throw new RuntimeException(String.format("Illegal String value: %s", path));

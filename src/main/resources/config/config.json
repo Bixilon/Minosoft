@@ -23,5 +23,8 @@
     "urls": {
       "mappings": "https://gitlab.com/Bixilon/minosoft/-/raw/master/data/mcdata/%s.tar.gz?inline=false"
     }
+  },
+  "debug": {
+    "verify-assets": true
   }
 }

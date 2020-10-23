@@ -33,11 +33,16 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 public class Launcher {
+    private static Stage stage;
+    private static boolean exit = false;
 
     public static void start() throws Exception {
         Log.info("Starting launcher...");
         CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(() -> {
+            if (exit) {
+                return;
+            }
             Stage stage = new Stage();
 
             GUITools.versionList.setCellFactory(new Callback<>() {
@@ -73,14 +78,27 @@ public class Launcher {
 
             stage.setTitle(LocaleManager.translate(Strings.MAIN_WINDOW_TITLE));
             stage.getIcons().add(GUITools.logo);
-            stage.show();
             stage.setOnCloseRequest(windowEvent -> System.exit(0));
             if (Minosoft.getSelectedAccount() == null) {
                 MainWindow.manageAccounts();
             }
+            if (exit) {
+                return;
+            }
+            stage.show();
+            Launcher.stage = stage;
             latch.countDown();
         });
         latch.await();
         Log.info("Launcher started!");
+    }
+
+    public static void exit() {
+        exit = true;
+        if (stage == null) {
+            return;
+        }
+
+        Platform.runLater(() -> stage.close());
     }
 }
