@@ -135,7 +135,7 @@ public final class Minosoft {
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
-            ModLoader.loadMods();
+            ModLoader.loadMods(progress);
             progress.countDown();
 
         }, "ModLoading", "", Priorities.NORMAL, TaskImportance.REQUIRED));

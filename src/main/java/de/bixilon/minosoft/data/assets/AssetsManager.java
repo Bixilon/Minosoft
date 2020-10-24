@@ -84,7 +84,7 @@ public class AssetsManager {
             Log.warn("Could not download assets index. Please check your internet connection");
         }
         assets.putAll(parseAssetsIndex(ASSETS_INDEX_HASH));
-        latch.setCount(assets.size() + 1); // set size of mappings + 1 (for client jar assets)
+        latch.addCount(assets.size() + 1); // set size of mappings + 1 (for client jar assets)
         // download assets
         assets.keySet().parallelStream().forEach((filename) -> {
             try {

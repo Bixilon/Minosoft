@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.MinosoftMod;
+import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.Util;
 import org.xeustechnologies.jcl.JarClassLoader;
 import org.xeustechnologies.jcl.JclObjectFactory;
@@ -31,7 +32,7 @@ import java.util.zip.ZipFile;
 public class ModLoader {
     static final LinkedList<MinosoftMod> mods = new LinkedList<>();
 
-    public static void loadMods() throws Exception {
+    public static void loadMods(CountUpAndDownLatch progress) throws Exception {
         Log.verbose("Start loading mods...");
         // load all jars, parse the mod.json
         // sort the list and prioritize
@@ -47,13 +48,14 @@ public class ModLoader {
                 continue;
             }
             callables.add(() -> {
-                MinosoftMod mod = loadMod(modFile);
+                MinosoftMod mod = loadMod(progress, modFile);
                 if (mod != null) {
                     mods.add(mod);
                 }
                 return mod;
             });
         }
+        progress.addCount(mods.size() * ModPhases.values().length); // count * mod phases
 
         Util.executeInThreadPool("ModLoader", callables);
 
@@ -74,6 +76,7 @@ public class ModLoader {
                     Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));
                     instance.setEnabled(false);
                 }
+                progress.countDown();
                 return instance;
             }));
             Util.executeInThreadPool("ModLoader", phaseLoaderCallables);
@@ -89,9 +92,10 @@ public class ModLoader {
         Log.verbose("Loading all mods finished!");
     }
 
-    public static MinosoftMod loadMod(File file) {
+    public static MinosoftMod loadMod(CountUpAndDownLatch progress, File file) {
         try {
             Log.verbose(String.format("[MOD] Loading file %s", file.getAbsolutePath()));
+            progress.countUp();
             ZipFile zipFile = new ZipFile(file);
             ModInfo modInfo = new ModInfo(Util.readJsonFromZip("mod.json", zipFile));
             if (isModLoaded(modInfo)) {
@@ -106,11 +110,13 @@ public class ModLoader {
             instance.setInfo(modInfo);
             Log.verbose(String.format("[MOD] Mod file loaded and added to classpath (%s)", modInfo));
             zipFile.close();
+            progress.countDown();
             return instance;
         } catch (IOException e) {
             e.printStackTrace();
             Log.warn(String.format("Could not load mod: %s", file.getAbsolutePath()));
         }
+        progress.countDown(); // failed
         return null;
     }
 
