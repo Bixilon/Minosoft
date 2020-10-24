@@ -87,6 +87,7 @@ public class AsyncTaskWorker {
             doing.remove(task);
             latch.countDown();
         }));
+        progress.countDown(); // remove initial value of 1
     }
 
     public boolean isJobDone(String name) {

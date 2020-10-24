@@ -55,9 +55,10 @@ public class ModLoader {
                 return mod;
             });
         }
-        progress.addCount(mods.size() * ModPhases.values().length); // count * mod phases
 
         Util.executeInThreadPool("ModLoader", callables);
+
+        progress.addCount(mods.size() * ModPhases.values().length); // count * mod phases
 
         mods.sort((a, b) -> {
             if (a == null || b == null) {

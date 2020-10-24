@@ -99,4 +99,9 @@ public class CountUpAndDownLatch {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return String.format("%d / %d", latch.getCount(), total);
+    }
 }

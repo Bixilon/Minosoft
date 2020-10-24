@@ -157,6 +157,7 @@ public final class Minosoft {
 
         }, "Mojang language", "", Priorities.HIGH, TaskImportance.REQUIRED, new HashSet<>(Collections.singleton("Assets"))));
 
+
         taskWorker.work(startStatusLatch);
     }
 
