@@ -20,6 +20,7 @@ import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -41,14 +42,16 @@ public class StartProgressWindow extends Application {
                 return;
             }
             AtomicReference<ProgressBar> progressBar = new AtomicReference<>();
+            AtomicReference<Label> progressLabel = new AtomicReference<>();
             Platform.runLater(() -> {
                 progressDialog = new Dialog<>();
                 progressDialog.setTitle(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_TITLE));
                 progressDialog.setHeaderText(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_HEADER));
                 GridPane grid = new GridPane();
                 progressBar.set(new ProgressBar());
-                progressBar.get().setProgress(1.0F - ((float) progress.getCount() / progress.getTotal()));
+                progressLabel.set(new Label());
                 grid.add(progressBar.get(), 0, 0);
+                grid.add(progressLabel.get(), 1, 0);
                 progressDialog.getDialogPane().setContent(grid);
                 if (exit) {
                     return;
@@ -66,7 +69,10 @@ public class StartProgressWindow extends Application {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Platform.runLater(() -> progressBar.get().setProgress(1.0F - ((float) progress.getCount() / progress.getTotal())));
+                Platform.runLater(() -> {
+                    progressBar.get().setProgress(1.0F - ((float) progress.getCount() / progress.getTotal()));
+                    progressLabel.get().setText(String.format("%d / %d", (progress.getTotal() - progress.getCount()), progress.getTotal()));
+                });
             }
             hideDialog();
         }).start();
