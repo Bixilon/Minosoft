@@ -37,7 +37,9 @@ import javafx.scene.control.Dialog;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.UUID;
 
 public final class Minosoft {
     public static final HashSet<EventManager> eventManagers = new HashSet<>();
@@ -106,7 +108,7 @@ public final class Minosoft {
 
         taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFx Toolkit", "", Priorities.HIGHEST));
 
-        taskWorker.addTask(new Task((progress) -> StartProgressWindow.show(startStatusLatch), "Progress Window", "", Priorities.HIGH, TaskImportance.OPTIONAL, new HashSet<>(Collections.singleton("JavaFx Toolkit"))));
+        taskWorker.addTask(new Task((progress) -> StartProgressWindow.show(startStatusLatch), "Progress Window", "", Priorities.HIGH, TaskImportance.OPTIONAL, "JavaFx Toolkit"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
@@ -140,7 +142,7 @@ public final class Minosoft {
 
         }, "ModLoading", "", Priorities.NORMAL, TaskImportance.REQUIRED));
 
-        taskWorker.addTask(new Task(progress -> Launcher.start(), "Launcher", "", Priorities.HIGH, TaskImportance.OPTIONAL, new HashSet<>(Arrays.asList("Minosoft Language", "JavaFx Toolkit"))));
+        taskWorker.addTask(new Task(progress -> Launcher.start(), "Launcher", "", Priorities.HIGH, TaskImportance.OPTIONAL, "Minosoft Language", "JavaFx Toolkit"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
@@ -155,7 +157,7 @@ public final class Minosoft {
             MinecraftLocaleManager.load(config.getString(ConfigurationPaths.GENERAL_LANGUAGE));
             progress.countDown();
 
-        }, "Mojang language", "", Priorities.HIGH, TaskImportance.REQUIRED, new HashSet<>(Collections.singleton("Assets"))));
+        }, "Mojang language", "", Priorities.HIGH, TaskImportance.REQUIRED, "Assets"));
 
 
         taskWorker.work(startStatusLatch);

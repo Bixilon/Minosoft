@@ -15,7 +15,9 @@ package de.bixilon.minosoft.util.task;
 
 import de.bixilon.minosoft.modding.loading.Priorities;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 public class Task {
     public final TaskCallable task;
@@ -23,7 +25,7 @@ public class Task {
     public final String taskDescription;
     public Priorities priority = Priorities.NORMAL;
     public TaskImportance importance = TaskImportance.OPTIONAL;
-    public HashSet<String> dependsOns = new HashSet<>();
+    public Set<String> dependsOns = new HashSet<>();
 
     public Task(TaskCallable task, String taskName, String taskDescription) {
         this.task = task;
@@ -46,13 +48,22 @@ public class Task {
         this.importance = importance;
     }
 
-    public Task(TaskCallable task, String taskName, String taskDescription, Priorities priority, TaskImportance importance, HashSet<String> dependsOn) {
+    public Task(TaskCallable task, String taskName, String taskDescription, Priorities priority, TaskImportance importance, Set<String> dependsOn) {
         this.task = task;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.priority = priority;
         this.importance = importance;
         this.dependsOns = dependsOn;
+    }
+
+    public Task(TaskCallable task, String taskName, String taskDescription, Priorities priority, TaskImportance importance, String... dependsOn) {
+        this.task = task;
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.priority = priority;
+        this.importance = importance;
+        this.dependsOns = new HashSet<>(Arrays.asList(dependsOn));
     }
 
     public TaskCallable getTask() {
@@ -75,7 +86,7 @@ public class Task {
         return importance;
     }
 
-    public HashSet<String> getDependsOns() {
+    public Set<String> getDependsOns() {
         return dependsOns;
     }
 }

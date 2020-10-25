@@ -29,7 +29,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class StartProgressWindow extends Application {
-    public static CountDownLatch toolkitLatch = new CountDownLatch(2);
+    public static CountDownLatch toolkitLatch = new CountDownLatch(2); // 2 if not started, 1 if started, 2 if loaded
     private static Dialog<Boolean> progressDialog;
     private static boolean exit = false;
 
