@@ -56,7 +56,11 @@
   "SETTINGS_DOWNLOAD": "Download",
   "LOGIN_DIALOG_TITLE": "Login - Minosoft",
   "LOGIN_DIALOG_HEADER": "Please login to your mojang account",
-  "LOGIN_ERROR": "Error",
+  "ERROR": "Error",
   "MINOSOFT_STILL_STARTING_TITLE": "Please wait",
-  "MINOSOFT_STILL_STARTING_HEADER": "Minosoft is still starting up..."
+  "MINOSOFT_STILL_STARTING_HEADER": "Minosoft is still starting up...",
+  "MANAGE_ACCOUNTS_TITLE": "Manage accounts",
+  "MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_TITLE": "Manage accounts",
+  "MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_HEADER": "Are you sure?",
+  "MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_ERROR": "No account selected, Minosoft will exit."
 }

@@ -56,7 +56,11 @@
   "SETTINGS_DOWNLOAD": "Download",
   "LOGIN_DIALOG_TITLE": "Anmelden - Minosoft",
   "LOGIN_DIALOG_HEADER": "Bitte gib deine Zugangsdaten ein um fortzufahren",
-  "LOGIN_ERROR": "Fehler",
+  "ERROR": "Fehler",
   "MINOSOFT_STILL_STARTING_TITLE": "Bitte warten",
-  "MINOSOFT_STILL_STARTING_HEADER": "Minosoft braucht noch um zu starten..."
+  "MINOSOFT_STILL_STARTING_HEADER": "Minosoft braucht noch um zu starten...",
+  "MANAGE_ACCOUNTS_TITLE": "Nutzer verwalten",
+  "MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_TITLE": "Nutzer verwalten",
+  "MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_HEADER": "Bist du sicher?",
+  "MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_ERROR": "Du hast noch keinen Account ausgewählt. Minosoft wird beendet."
 }

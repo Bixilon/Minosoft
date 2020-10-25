@@ -96,7 +96,7 @@ public class AccountWindow implements Initializable {
             error.setStyle("-fx-text-fill: red");
             error.setText(attempt.getError());
 
-            grid.add(new Label(LocaleManager.translate(Strings.LOGIN_ERROR)), 0, 2);
+            grid.add(new Label(LocaleManager.translate(Strings.ERROR)), 0, 2);
             grid.add(error, 1, 2);
             // ToDo resize window
         });

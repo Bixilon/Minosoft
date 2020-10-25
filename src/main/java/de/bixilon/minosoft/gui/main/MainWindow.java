@@ -58,15 +58,15 @@ public class MainWindow implements Initializable {
             Parent parent = new FXMLLoader(MainWindow.class.getResource("/layout/accounts.fxml")).load();
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Manage accounts - Minosoft");
+            stage.setTitle(LocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_TITLE));
             stage.setScene(new Scene(parent));
             Platform.setImplicitExit(false);
             stage.setOnCloseRequest(event -> {
                 if (Minosoft.getSelectedAccount() == null) {
                     event.consume();
-                    Alert alert = new Alert(Alert.AlertType.WARNING, "Error", ButtonType.CANCEL, ButtonType.OK);
-                    alert.setHeaderText("Are you sure?");
-                    alert.setContentText("No account selected, Minosoft will exit.");
+                    Alert alert = new Alert(Alert.AlertType.WARNING, LocaleManager.translate(Strings.ERROR), ButtonType.CANCEL, ButtonType.OK);
+                    alert.setHeaderText(LocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_HEADER));
+                    alert.setContentText(LocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_ERROR));
                     alert.showAndWait().ifPresent((type) -> {
                         if (type == ButtonType.OK) {
                             System.exit(0);
