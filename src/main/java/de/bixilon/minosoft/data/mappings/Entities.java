@@ -17,6 +17,7 @@ import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.entities.Entity;
 import de.bixilon.minosoft.data.entities.mob.*;
 import de.bixilon.minosoft.data.entities.objects.*;
+
 public class Entities {
 
     static final HashBiMap<String, Class<? extends Entity>> entityClassMap = HashBiMap.create();

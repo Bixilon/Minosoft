@@ -74,7 +74,7 @@ public class MojangAccount {
             lastRefreshStatus = RefreshStates.FAILED;
             return lastRefreshStatus;
         }
-        if (accessToken.equals("")) {
+        if (accessToken.isBlank()) {
             lastRefreshStatus = RefreshStates.ERROR;
             return lastRefreshStatus;
         }
@@ -119,13 +119,6 @@ public class MojangAccount {
         return userId;
     }
 
-    public enum RefreshStates {
-        SUCCESSFUL,
-        ERROR, // account not valid anymore
-        FAILED // error occurred while checking -> Unknown state
-    }
-
-
     @Override
     public int hashCode() {
         return userId.hashCode();
@@ -144,6 +137,12 @@ public class MojangAccount {
         }
         MojangAccount account = (MojangAccount) obj;
         return account.getUserId().equals(getUserId());
+    }
+
+    public enum RefreshStates {
+        SUCCESSFUL,
+        ERROR, // account not valid anymore
+        FAILED // error occurred while checking -> Unknown state
     }
 
 }

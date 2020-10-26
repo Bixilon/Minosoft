@@ -33,6 +33,35 @@ public class VillagerData {
         this.level = level;
     }
 
+    @Override
+    public int hashCode() {
+        return type.hashCode() * profession.hashCode() * level.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        if (hashCode() != obj.hashCode()) {
+            return false;
+        }
+        VillagerData their = (VillagerData) obj;
+        return getType() == their.getType() && getProfession() == their.getProfession() && getLevel() == their.getLevel();
+    }
+
+    public VillagerTypes getType() {
+        return type;
+    }
+
+    public VillagerProfessions getProfession() {
+        return profession;
+    }
+
+    public VillagerLevels getLevel() {
+        return level;
+    }
+
     public enum VillagerProfessions {
         NONE(new MapSet[]{new MapSet<>(451, 0)}),
         ARMORER(new MapSet[]{new MapSet<>(451, 1)}),
@@ -89,11 +118,6 @@ public class VillagerData {
         }
     }
 
-    @Override
-    public int hashCode() {
-        return type.hashCode() * profession.hashCode() * level.hashCode();
-    }
-
     public enum VillagerLevels {
         NOVICE,
         APPRENTICE,
@@ -104,32 +128,6 @@ public class VillagerData {
         public static VillagerLevels byId(int id) {
             return values()[id];
         }
-    }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        if (hashCode() != obj.hashCode()) {
-            return false;
-        }
-        VillagerData their = (VillagerData) obj;
-        return getType() == their.getType() && getProfession() == their.getProfession() && getLevel() == their.getLevel();
-    }
-
-
-    public VillagerTypes getType() {
-        return type;
-    }
-
-    public VillagerProfessions getProfession() {
-        return profession;
-    }
-
-    public VillagerLevels getLevel() {
-        return level;
     }
 
 }

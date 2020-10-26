@@ -21,7 +21,6 @@ public class MultiSlotChangeEvent extends Event {
     private final byte windowId;
     private final Slot[] data;
 
-
     public MultiSlotChangeEvent(Connection connection, byte windowId, Slot[] data) {
         super(connection);
         this.windowId = windowId;
@@ -33,7 +32,6 @@ public class MultiSlotChangeEvent extends Event {
         this.windowId = pkg.getWindowId();
         this.data = pkg.getData();
     }
-
 
     public byte getWindowId() {
         return windowId;

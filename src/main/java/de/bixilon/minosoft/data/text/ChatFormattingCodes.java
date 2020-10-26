@@ -68,7 +68,6 @@ public enum ChatFormattingCodes {
         return ansi;
     }
 
-
     public enum ChatFormattingCodePosition {
         PRE,
         POST

@@ -132,7 +132,6 @@ public class PacketUnlockRecipes implements ClientboundPacket {
         ADD,
         REMOVE;
 
-
         public static UnlockRecipeActions byId(int id) {
             return values()[id];
         }

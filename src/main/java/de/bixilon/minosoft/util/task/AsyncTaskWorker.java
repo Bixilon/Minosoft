@@ -25,7 +25,6 @@ public class AsyncTaskWorker {
     private final HashSet<String> jobsDone = new HashSet<>();
     private ExceptionRunnable exceptionRunnable;
 
-
     public AsyncTaskWorker(LinkedList<Task> tasks) {
         this.tasks = tasks;
     }

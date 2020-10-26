@@ -82,12 +82,12 @@ public class PlayerListItem {
         return (hasDisplayName() ? displayName : ChatComponent.fromString(name));
     }
 
-    public boolean hasDisplayName() {
-        return displayName != null;
-    }
-
     public void setDisplayName(ChatComponent displayName) {
         this.displayName = displayName;
+    }
+
+    public boolean hasDisplayName() {
+        return displayName != null;
     }
 
     public HashMap<PlayerProperties, PlayerProperty> getProperties() {

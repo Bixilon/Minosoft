@@ -21,7 +21,6 @@ import java.io.IOException;
 public class MinecraftLocaleManager {
     private static MinecraftLanguage language;
 
-
     public static MinecraftLanguage getLanguage() {
         return language;
     }

@@ -104,23 +104,19 @@ public class TextComponent implements ChatComponent {
         return color;
     }
 
-
     public TextComponent setColor(RGBColor color) {
         this.color = color;
         return this;
     }
 
-
     public HashSet<ChatFormattingCodes> getFormatting() {
         return formatting;
     }
-
 
     public TextComponent setFormatting(HashSet<ChatFormattingCodes> formatting) {
         this.formatting = formatting;
         return this;
     }
-
 
     @Override
     public boolean equals(Object obj) {

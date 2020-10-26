@@ -59,7 +59,6 @@ public class Server {
         return server;
     }
 
-
     @Nullable
     public byte[] getFavicon() {
         return favicon;

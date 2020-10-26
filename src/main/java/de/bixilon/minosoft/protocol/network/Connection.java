@@ -234,7 +234,6 @@ public class Connection {
         handleThread.start();
     }
 
-
     public boolean isConnected() {
         return state != ConnectionStates.FAILED && state != ConnectionStates.FAILED_NO_RETRY && state != ConnectionStates.DISCONNECTING && state != ConnectionStates.DISCONNECTED && state != ConnectionStates.CONNECTING;
     }

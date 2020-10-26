@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.entities.meta;
 
-
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.RGBColor;
 

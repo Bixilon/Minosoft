@@ -33,7 +33,6 @@ public class BossBarChangeEvent extends CancelableEvent {
     private boolean shouldDarkenSky;
     private boolean createFog;
 
-
     public BossBarChangeEvent(Connection connection, UUID uuid, PacketBossBar.BossBarActions action, ChatComponent title, float health, PacketBossBar.BossBarColors color, PacketBossBar.BossBarDivisions divisions, boolean isDragonBar, boolean shouldDarkenSky, boolean createFog) {
         super(connection);
         this.uuid = uuid;

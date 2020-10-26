@@ -151,14 +151,12 @@ public final class Minosoft {
 
         }, "Assets", "", Priorities.HIGH, TaskImportance.REQUIRED));
 
-
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
             MinecraftLocaleManager.load(config.getString(ConfigurationPaths.GENERAL_LANGUAGE));
             progress.countDown();
 
         }, "Mojang language", "", Priorities.HIGH, TaskImportance.REQUIRED, "Assets"));
-
 
         taskWorker.work(startStatusLatch);
     }

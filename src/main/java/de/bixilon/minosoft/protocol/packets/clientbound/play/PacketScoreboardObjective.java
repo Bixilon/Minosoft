@@ -106,12 +106,12 @@ public class PacketScoreboardObjective implements ClientboundPacket {
             return null;
         }
 
-        public String getName() {
-            return name;
-        }
-
         public static ScoreboardObjectiveTypes byId(int id) {
             return values()[id];
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }

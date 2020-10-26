@@ -70,21 +70,17 @@ public class ModInfo {
         return uuid;
     }
 
-
     public int getVersionId() {
         return versionId;
     }
-
 
     public String getVersionName() {
         return versionName;
     }
 
-
     public String getName() {
         return name;
     }
-
 
     @Override
     public String toString() {

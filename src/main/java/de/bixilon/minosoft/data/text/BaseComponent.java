@@ -85,7 +85,6 @@ public class BaseComponent implements ChatComponent {
         }
     }
 
-
     public BaseComponent(JsonObject json) {
         this(null, json);
     }
@@ -158,7 +157,6 @@ public class BaseComponent implements ChatComponent {
             }
             thisTextComponent = new TextComponent(text, color, formattingCodes);
         }
-
 
         if (json.has("extra")) {
             JsonArray extras = json.getAsJsonArray("extra");

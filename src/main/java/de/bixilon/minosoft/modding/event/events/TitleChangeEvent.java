@@ -27,7 +27,6 @@ public class TitleChangeEvent extends CancelableEvent {
     private final int stayTime;
     private final int fadeOutTime;
 
-
     public TitleChangeEvent(Connection connection, PacketTitle.TitleActions action, ChatComponent text, ChatComponent subText, int fadeInTime, int stayTime, int fadeOutTime) {
         super(connection);
         this.action = action;

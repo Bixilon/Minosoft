@@ -22,7 +22,6 @@ public class SingleSlotChangeEvent extends Event {
     private final short slotId;
     private final Slot slot;
 
-
     public SingleSlotChangeEvent(Connection connection, byte windowId, short slotId, Slot slot) {
         super(connection);
         this.windowId = windowId;
@@ -36,7 +35,6 @@ public class SingleSlotChangeEvent extends Event {
         this.slotId = pkg.getSlotId();
         this.slot = pkg.getSlot();
     }
-
 
     public byte getWindowId() {
         return windowId;

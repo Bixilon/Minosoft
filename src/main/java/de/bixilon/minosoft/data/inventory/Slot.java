@@ -27,6 +27,7 @@ import java.util.HashMap;
 public class Slot {
     final Item item;
     final HashMap<Enchantment, Short> enchantments = new HashMap<>();
+    final ArrayList<ChatComponent> lore = new ArrayList<>();
     int itemCount;
     short itemMetadata;
     int repairCost;
@@ -35,12 +36,27 @@ public class Slot {
     boolean unbreakable;
     String skullOwner;
     byte hideFlags;
-    final ArrayList<ChatComponent> lore = new ArrayList<>();
 
     public Slot(CustomMapping mapping, Item item, int itemCount, CompoundTag nbt) {
         this.item = item;
         this.itemCount = itemCount;
         setNBT(mapping, nbt);
+    }
+
+    public Slot(CustomMapping mapping, Item item, byte itemCount, short itemMetadata, CompoundTag nbt) {
+        this.item = item;
+        this.itemMetadata = itemMetadata;
+        this.itemCount = itemCount;
+        setNBT(mapping, nbt);
+    }
+
+    public Slot(Item item) {
+        this.item = item;
+    }
+
+    public Slot(Item item, byte itemCount) {
+        this.item = item;
+        this.itemCount = itemCount;
     }
 
     private void setNBT(CustomMapping mapping, CompoundTag nbt) {
@@ -80,22 +96,6 @@ public class Slot {
                 enchantments.put(mapping.getEnchantmentById(enchantment.getShortTag("id").getValue()), enchantment.getShortTag("lvl").getValue());
             }
         }
-    }
-
-    public Slot(CustomMapping mapping, Item item, byte itemCount, short itemMetadata, CompoundTag nbt) {
-        this.item = item;
-        this.itemMetadata = itemMetadata;
-        this.itemCount = itemCount;
-        setNBT(mapping, nbt);
-    }
-
-    public Slot(Item item) {
-        this.item = item;
-    }
-
-    public Slot(Item item, byte itemCount) {
-        this.item = item;
-        this.itemCount = itemCount;
     }
 
     public CompoundTag getNbt(CustomMapping mapping) {
@@ -167,16 +167,16 @@ public class Slot {
         return itemCount;
     }
 
+    public void setItemCount(int itemCount) {
+        this.itemCount = itemCount;
+    }
+
     public short getItemMetadata() {
         return itemMetadata;
     }
 
     public void setItemMetadata(short itemMetadata) {
         this.itemMetadata = itemMetadata;
-    }
-
-    public void setItemCount(int itemCount) {
-        this.itemCount = itemCount;
     }
 
     @Override

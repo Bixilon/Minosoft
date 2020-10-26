@@ -22,7 +22,6 @@ public class LocaleManager {
     private static Language fallbackLanguage; // en_US
     private static Language language;
 
-
     public static Language getLanguage() {
         return language;
     }

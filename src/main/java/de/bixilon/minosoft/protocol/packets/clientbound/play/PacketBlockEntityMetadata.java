@@ -42,7 +42,6 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         return true;
     }
 
-
     @Override
     public void handle(PacketHandler h) {
         h.handle(this);
@@ -83,7 +82,6 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         BEE_HIVE(new MapSet[]{new MapSet<>(550, 14)});
 
         final VersionValueMap<Integer> valueMap;
-
 
         BlockEntityActions(MapSet<Integer, Integer>[] values) {
             valueMap = new VersionValueMap<>(values, true);

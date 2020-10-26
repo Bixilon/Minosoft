@@ -34,7 +34,6 @@ public enum EntityPropertyKeys {
 
     final String identifier;
 
-
     EntityPropertyKeys(String identifier) {
         this.identifier = identifier;
     }
