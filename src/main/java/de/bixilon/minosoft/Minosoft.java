@@ -142,8 +142,6 @@ public final class Minosoft {
 
         }, "ModLoading", "", Priorities.NORMAL, TaskImportance.REQUIRED));
 
-        taskWorker.addTask(new Task(progress -> Launcher.start(), "Launcher", "", Priorities.HIGH, TaskImportance.OPTIONAL, "Minosoft Language", "JavaFx Toolkit"));
-
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
             AssetsManager.downloadAllAssets(progress);
@@ -159,6 +157,12 @@ public final class Minosoft {
         }, "Mojang language", "", Priorities.HIGH, TaskImportance.REQUIRED, "Assets"));
 
         taskWorker.work(startStatusLatch);
+        try {
+            startStatusLatch.waitUntilZero();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Launcher.start();
     }
 
     public static void checkClientToken() {

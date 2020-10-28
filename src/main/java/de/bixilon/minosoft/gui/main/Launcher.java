@@ -36,7 +36,7 @@ public class Launcher {
     private static Stage stage;
     private static boolean exit = false;
 
-    public static void start() throws Exception {
+    public static void start() {
         Log.info("Starting launcher...");
         CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(() -> {
@@ -89,7 +89,11 @@ public class Launcher {
             }
             latch.countDown();
         });
-        latch.await();
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Log.info("Launcher started!");
     }
 
@@ -100,5 +104,9 @@ public class Launcher {
         }
 
         Platform.runLater(() -> stage.close());
+    }
+
+    public static Stage getStage() {
+        return stage;
     }
 }

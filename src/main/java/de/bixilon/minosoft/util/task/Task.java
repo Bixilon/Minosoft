@@ -17,6 +17,7 @@ import de.bixilon.minosoft.modding.loading.Priorities;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Task {
@@ -55,6 +56,15 @@ public class Task {
         this.priority = priority;
         this.importance = importance;
         this.dependsOns = dependsOn;
+    }
+
+    public Task(TaskCallable task, String taskName, String taskDescription, Priorities priority, TaskImportance importance, List<Task> dependsOn) {
+        this.task = task;
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.priority = priority;
+        this.importance = importance;
+        dependsOn.forEach((dependency) -> this.dependsOns.add(dependency.getTaskName()));
     }
 
     public Task(TaskCallable task, String taskName, String taskDescription, Priorities priority, TaskImportance importance, String... dependsOn) {

@@ -23,6 +23,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.concurrent.CountDownLatch;
@@ -30,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class StartProgressWindow extends Application {
     public static CountDownLatch toolkitLatch = new CountDownLatch(2); // 2 if not started, 1 if started, 2 if loaded
-    private static Dialog<Boolean> progressDialog;
+    public static Dialog<Boolean> progressDialog;
     private static boolean exit = false;
 
     public static void show(CountUpAndDownLatch progress) {
@@ -53,13 +54,12 @@ public class StartProgressWindow extends Application {
                 grid.add(progressBar.get(), 0, 0);
                 grid.add(progressLabel.get(), 1, 0);
                 progressDialog.getDialogPane().setContent(grid);
+                Stage stage = (Stage) progressDialog.getDialogPane().getScene().getWindow();
+                stage.initModality(Modality.APPLICATION_MODAL);
                 if (exit) {
                     return;
                 }
                 progressDialog.show();
-
-                Stage stage = (Stage) progressDialog.getDialogPane().getScene().getWindow();
-                stage.setAlwaysOnTop(true);
                 stage.toFront();
 
             });
