@@ -56,6 +56,7 @@ public class StartProgressWindow extends Application {
                 progressDialog.getDialogPane().setContent(grid);
                 Stage stage = (Stage) progressDialog.getDialogPane().getScene().getWindow();
                 stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setOnCloseRequest((request) -> System.exit(0));
                 if (exit) {
                     return;
                 }
