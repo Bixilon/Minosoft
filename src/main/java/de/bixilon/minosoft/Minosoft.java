@@ -98,6 +98,7 @@ public final class Minosoft {
                 dialog.setContentText(exception.getLocalizedMessage());
 
                 Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+                stage.getIcons().add(GUITools.logo);
                 stage.setAlwaysOnTop(true);
                 stage.toFront();
                 dialog.setOnCloseRequest(dialogEvent -> System.exit(1));

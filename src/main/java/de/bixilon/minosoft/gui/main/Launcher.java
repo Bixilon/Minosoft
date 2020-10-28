@@ -44,6 +44,7 @@ public class Launcher {
                 return;
             }
             Stage stage = new Stage();
+            stage.getIcons().add(GUITools.logo);
 
             GUITools.versionList.setCellFactory(new Callback<>() {
                 @Override

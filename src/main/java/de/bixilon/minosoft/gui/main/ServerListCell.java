@@ -270,6 +270,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         Dialog<?> dialog = new Dialog<>();
         dialog.setTitle(LocaleManager.translate(Strings.EDIT_SERVER_DIALOG_TITLE, server.getName()));
         dialog.setHeaderText(LocaleManager.translate(Strings.EDIT_SERVER_DIALOG_HEADER));
+        ((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().add(GUITools.logo);
 
         ButtonType saveButtonType = new ButtonType(LocaleManager.translate(Strings.BUTTON_SAVE), ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
@@ -354,6 +355,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
 
         Dialog<?> dialog = new Dialog<>();
         dialog.setTitle("View server info: " + server.getName());
+        ((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().add(GUITools.logo);
 
         ButtonType loginButtonType = ButtonType.CLOSE;
         dialog.getDialogPane().getButtonTypes().add(loginButtonType);
@@ -443,6 +445,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle(LocaleManager.translate(Strings.SESSIONS_DIALOG_TITLE, server.getName()));
+            stage.getIcons().add(GUITools.logo);
             stage.setScene(new Scene(parent));
             stage.show();
         } catch (IOException e) {

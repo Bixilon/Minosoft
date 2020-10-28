@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 public class Configuration {
     final JsonObject config;
-    final Thread thread;
+    private final Object lock = new Object();
 
     public Configuration(String filename) throws IOException {
         File file = new File(Config.homeDir + "config/" + filename);
@@ -50,12 +50,14 @@ public class Configuration {
         config = Util.readJsonFromFile(file.getAbsolutePath());
 
         final File finalFile = file;
-        thread = new Thread(() -> {
+        new Thread(() -> {
             while (true) {
                 // wait for interrupt
-                try {
-                    Thread.sleep(Integer.MAX_VALUE);
-                } catch (InterruptedException ignored) {
+                synchronized (lock) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException ignored) {
+                    }
                 }
                 // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
                 File tempFile = new File(Config.homeDir + "config/" + filename + ".tmp");
@@ -84,8 +86,7 @@ public class Configuration {
                     Log.verbose(String.format("Configuration saved to file %s", filename));
                 }
             }
-        }, "IO");
-        thread.start();
+        }, "IO").start();
     }
 
     public boolean getBoolean(ConfigurationPaths path) {
@@ -155,7 +156,9 @@ public class Configuration {
     }
 
     public void saveToFile() {
-        thread.interrupt();
+        synchronized (lock) {
+            lock.notifyAll();
+        }
     }
 
     public HashBiMap<String, MojangAccount> getMojangAccounts() {
