@@ -68,7 +68,7 @@ public final class Minosoft {
         Log.info(String.format("Logging info with level: %s", Log.getLevel()));
 
         serverList = config.getServers();
-        AsyncTaskWorker taskWorker = new AsyncTaskWorker();
+        AsyncTaskWorker taskWorker = new AsyncTaskWorker("StartUp");
 
         taskWorker.setFatalError((exception) -> {
             Log.fatal("Critical error occurred while preparing. Exit");
