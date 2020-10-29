@@ -1,3 +1,4 @@
+
 # Minosoft
 Minosoft is an open source minecraft client, written from scratch in java. It aims to bring more functionality and stability.
 
@@ -23,6 +24,8 @@ Minosoft is an open source minecraft client, written from scratch in java. It ai
  - Disk space: Minosoft itself is pretty small (2-3 Mib), the libraries are a bit bigger (up to 100 Mib).
   You also need to have the "normal" minecraft assets (~ 300 Mib). So a total of 500 Mib is recommended.
  - GPU: Currently only needed for rendering, no clue yet.
+ - Java 14 (This is really important, we use specific features that are only available in the latest version. Java 8 is **not** supported).
+ OpenJDK 14 is (of course) also important.
 
 
 ## Rendering

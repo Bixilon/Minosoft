@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.gui.main.ConnectionChangeCallback;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
-import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.event.EventMethod;
 import de.bixilon.minosoft.modding.event.events.CancelableEvent;
 import de.bixilon.minosoft.modding.event.events.Event;
@@ -58,7 +57,6 @@ public class Connection {
     final VelocityHandler velocityHandler = new VelocityHandler(this);
     final HashSet<PingCallback> pingCallbacks = new HashSet<>();
     final HashSet<ConnectionChangeCallback> connectionChangeCallbacks = new HashSet<>();
-    final HashSet<EventManager> eventManagers = new HashSet<>();
     final LinkedList<EventMethod> eventListeners = new LinkedList<>();
     final int connectionId;
     final Player player;
@@ -225,7 +223,7 @@ public class Connection {
                     }
                     packet.handle(getHandler());
                 } catch (Exception e) {
-                    if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
+                    if (Log.getLevel().ordinal() >= LogLevels.PROTOCOL.ordinal()) {
                         e.printStackTrace();
                     }
                 }
