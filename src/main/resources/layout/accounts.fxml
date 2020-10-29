@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><?import javafx.scene.control.Menu?><?import javafx.scene.control.MenuBar?><?import javafx.scene.control.MenuItem?><?import javafx.scene.control.ScrollPane?><?import javafx.scene.layout.*?>
-<!--
-  ~ Codename Minosoft
+<?xml version="1.0" encoding="UTF-8"?><!--
+  ~ Minosoft
   ~ Copyright (C) 2020 Moritz Zwerger
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -11,7 +10,7 @@
   ~
   ~  This software is not affiliated with Mojang AB, the original developer of Minecraft.
   -->
-
+<?import javafx.scene.control.Menu?><?import javafx.scene.control.MenuBar?><?import javafx.scene.control.MenuItem?><?import javafx.scene.control.ScrollPane?><?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="640.0" fx:controller="de.bixilon.minosoft.gui.main.AccountWindow">
     <MenuBar VBox.vgrow="NEVER">
         <Menu mnemonicParsing="false" text="_Accounts">

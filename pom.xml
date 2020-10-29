@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!--
-  ~ Codename Minosoft
+  ~ Minosoft
   ~ Copyright (C) 2020 Moritz Zwerger
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -41,9 +41,7 @@
                     org.apache.maven.plugins
                 </groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>
-                    2.3
-                </version>
+                <version>2.3</version>
                 <configuration>
                     <archive>
                         <manifest>
