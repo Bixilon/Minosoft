@@ -195,7 +195,7 @@ public class SocketNetwork implements Network {
                         if (packet == null) {
                             Log.fatal(String.format("Packet mapping does not contain a packet with id 0x%x. The server sends bullshit or your versions.json broken!", inPacketBuffer.getCommand()));
                             disconnect();
-                            lastException = new RuntimeException("Invalid packet 0x" + inPacketBuffer.getCommand());
+                            lastException = new RuntimeException(String.format("Invalid packet 0x%x", inPacketBuffer.getCommand()));
                             throw lastException;
                         }
                         Class<? extends ClientboundPacket> clazz = packet.getClazz();

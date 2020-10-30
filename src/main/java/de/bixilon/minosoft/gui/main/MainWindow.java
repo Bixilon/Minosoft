@@ -86,6 +86,9 @@ public class MainWindow implements Initializable {
     }
 
     public static void selectAccount() {
+        if (menuAccount2 == null) {
+            return;
+        }
         if (Minosoft.getSelectedAccount() != null) {
             menuAccount2.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, Minosoft.getSelectedAccount().getPlayerName()));
         } else {

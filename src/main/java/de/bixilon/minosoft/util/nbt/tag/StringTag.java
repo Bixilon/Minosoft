@@ -44,6 +44,6 @@ public class StringTag extends NBTTag {
 
     @Override
     public String toString() {
-        return "\"" + value + "\"";
+        return String.format("\"%s\"", value);
     }
 }

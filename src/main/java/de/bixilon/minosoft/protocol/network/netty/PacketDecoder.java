@@ -100,7 +100,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
             if (packet == null) {
                 Log.fatal(String.format("Packet mapping does not contain a packet with id 0x%x. The server sends bullshit or your versions.json broken!", inPacketBuffer.getCommand()));
                 nettyNetwork.disconnect();
-                throw new RuntimeException("Invalid packet 0x%x" + inPacketBuffer.getCommand());
+                throw new RuntimeException(String.format("Invalid packet 0x%x", inPacketBuffer.getCommand()));
             }
             Class<? extends ClientboundPacket> clazz = packet.getClazz();
 

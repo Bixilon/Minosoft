@@ -93,7 +93,7 @@ public class Server {
 
     @Override
     public String toString() {
-        return getName() + " (" + getAddress() + ")";
+        return String.format("%s (%s)", getName(), getAddress());
     }
 
     public String getName() {
