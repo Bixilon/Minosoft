@@ -20,8 +20,6 @@ import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.data.Mappings;
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.Packets;
@@ -37,10 +35,10 @@ import java.util.Map;
 import java.util.zip.ZipException;
 
 public class Versions {
-
     static final HashBiMap<Integer, Version> versionIdMap = HashBiMap.create();
     static final HashBiMap<Integer, Version> versionProtocolIdMap = HashBiMap.create();
     static final HashSet<Version> loadedVersions = new HashSet<>();
+    private static final Version lowestVersionSupported = new Version("Automatic", -1, -1, null, null);
     private static final HashMap<String, Mappings> mappingsHashMap = new HashMap<>();
     static VersionMapping legacyMapping;
 
@@ -190,7 +188,7 @@ public class Versions {
     }
 
     public static Version getLowestVersionSupported() {
-        return new Version(LocaleManager.translate(Strings.VERSION_AUTOMATIC), -1, -1, null, null);
+        return lowestVersionSupported;
     }
 
     public static HashBiMap<Integer, Version> getVersionIdMap() {

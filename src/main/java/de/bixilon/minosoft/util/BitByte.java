@@ -15,21 +15,17 @@ package de.bixilon.minosoft.util;
 
 public final class BitByte {
     public static boolean isBitSet(int in, int pos) {
-        boolean bitSet;
         int mask = 1 << pos;
-        bitSet = ((in & mask) == mask);
-        return bitSet;
+        return ((in & mask) == mask);
     }
 
     public static boolean isBitMask(int in, int mask) {
-        boolean bitSet;
-        bitSet = ((in & mask) == mask);
-        return bitSet;
+        return ((in & mask) == mask);
     }
 
     public static byte getBitCount(short input) {
         byte ret = 0;
-        for (int i = 0; i < Short.BYTES * 8; i++) { // bytes to bits
+        for (byte i = 0; i < Short.BYTES * 8; i++) { // bytes to bits
             if (isBitSetShort(input, i)) {
                 ret++;
             }
@@ -38,17 +34,11 @@ public final class BitByte {
     }
 
     public static boolean isBitSetShort(short in, int pos) {
-        boolean bitSet;
         int mask = 1 << pos;
-        bitSet = ((in & mask) == mask);
-        return bitSet;
+        return ((in & mask) == mask);
     }
 
     public static short byteToUShort(byte b) {
         return (short) (b & 0xFF);
-    }
-
-    public static byte uShortToByte(short s) {
-        return (byte) (s);
     }
 }

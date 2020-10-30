@@ -54,20 +54,6 @@ public final class Minosoft {
         Log.initThread();
 
         Log.info("Starting...");
-        Log.info("Reading config file...");
-        try {
-            config = new Configuration(Config.configFileName);
-        } catch (IOException e) {
-            Log.fatal("Failed to load config file!");
-            e.printStackTrace();
-            return;
-        }
-        Log.info(String.format("Loaded config file (version=%s)", config.getInt(ConfigurationPaths.CONFIG_VERSION)));
-        // set log level from config
-        Log.setLevel(LogLevels.valueOf(config.getString(ConfigurationPaths.GENERAL_LOG_LEVEL)));
-        Log.info(String.format("Logging info with level: %s", Log.getLevel()));
-
-        serverList = config.getServers();
         AsyncTaskWorker taskWorker = new AsyncTaskWorker("StartUp");
 
         taskWorker.setFatalError((exception) -> {
@@ -93,6 +79,7 @@ public final class Minosoft {
             Launcher.exit();
             Platform.runLater(() -> {
                 Dialog<Boolean> dialog = new Dialog<>();
+                // Do not translate this, translations might fail to load...
                 dialog.setTitle("Critical Error");
                 dialog.setHeaderText("An error occurred while starting Minosoft");
                 dialog.setContentText(exception.getLocalizedMessage());
@@ -101,22 +88,45 @@ public final class Minosoft {
                 stage.getIcons().add(GUITools.logo);
                 stage.setAlwaysOnTop(true);
                 stage.toFront();
-                dialog.setOnCloseRequest(dialogEvent -> System.exit(1));
+                stage.setOnCloseRequest(dialogEvent -> {
+                    dialog.setResult(Boolean.TRUE);
+                    dialog.close();
+                    System.exit(1);
+                });
                 dialog.showAndWait();
                 System.exit(1);
             });
         });
+        taskWorker.addTask(new Task(progress -> {
+            progress.countUp();
+            Log.info("Reading config file...");
+            try {
+                config = new Configuration(Config.configFileName);
+            } catch (IOException e) {
+                Log.fatal("Failed to load config file!");
+                e.printStackTrace();
+                return;
+            }
+            Log.info(String.format("Loaded config file (version=%s)", config.getInt(ConfigurationPaths.CONFIG_VERSION)));
+            // set log level from config
+            Log.setLevel(LogLevels.valueOf(config.getString(ConfigurationPaths.GENERAL_LOG_LEVEL)));
+            Log.info(String.format("Logging info with level: %s", Log.getLevel()));
+
+            serverList = config.getServers();
+            progress.countDown();
+
+        }, "Configuration", "", Priorities.HIGHEST, TaskImportance.REQUIRED));
 
         taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFx Toolkit", "", Priorities.HIGHEST));
 
-        taskWorker.addTask(new Task((progress) -> StartProgressWindow.show(startStatusLatch), "Progress Window", "", Priorities.HIGH, TaskImportance.OPTIONAL, "JavaFx Toolkit"));
+        taskWorker.addTask(new Task((progress) -> StartProgressWindow.show(startStatusLatch), "Progress Window", "", Priorities.HIGH, TaskImportance.OPTIONAL, "JavaFx Toolkit", "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
             LocaleManager.load(config.getString(ConfigurationPaths.GENERAL_LANGUAGE));
             progress.countDown();
 
-        }, "Minosoft Language", "", Priorities.HIGH, TaskImportance.REQUIRED));
+        }, "Minosoft Language", "", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
@@ -126,7 +136,7 @@ public final class Minosoft {
             Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
             progress.countDown();
 
-        }, "Version mappings", "", Priorities.NORMAL, TaskImportance.REQUIRED));
+        }, "Version mappings", "", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             Log.debug("Refreshing account token...");
@@ -134,21 +144,21 @@ public final class Minosoft {
             accountList = config.getMojangAccounts();
             selectAccount(accountList.get(config.getString(ConfigurationPaths.ACCOUNT_SELECTED)));
 
-        }, "Token refresh", "", Priorities.LOW));
+        }, "Token refresh", "", Priorities.LOW, TaskImportance.OPTIONAL, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
             ModLoader.loadMods(progress);
             progress.countDown();
 
-        }, "ModLoading", "", Priorities.NORMAL, TaskImportance.REQUIRED));
+        }, "ModLoading", "", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
             AssetsManager.downloadAllAssets(progress);
             progress.countDown();
 
-        }, "Assets", "", Priorities.HIGH, TaskImportance.REQUIRED));
+        }, "Assets", "", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();

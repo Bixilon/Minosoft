@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import java.util.HashMap;
 
 public class Version {
-    final String versionName;
+    String versionName;
     final int versionId;
     final int protocolId;
     final HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
@@ -94,6 +94,10 @@ public class Version {
 
     public int getProtocolId() {
         return protocolId;
+    }
+
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
     }
 
     @Override

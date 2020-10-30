@@ -29,6 +29,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Configuration {
+    public static final int LATEST_CONFIG_VERSION = 1;
     final JsonObject config;
     private final Object lock = new Object();
 
@@ -48,6 +49,13 @@ public class Configuration {
             file = new File(Config.homeDir + "config/" + filename);
         }
         config = Util.readJsonFromFile(file.getAbsolutePath());
+        int configVersion = getInt(ConfigurationPaths.CONFIG_VERSION);
+        if (configVersion > LATEST_CONFIG_VERSION) {
+            throw new RuntimeException(String.format("Configuration was migrated to newer config format (version=%d, expected=%d). Downgrading the config file is unsupported!", configVersion, LATEST_CONFIG_VERSION));
+        }
+        if (configVersion < LATEST_CONFIG_VERSION) {
+            migrateConfiguration();
+        }
 
         final File finalFile = file;
         new Thread(() -> {
@@ -184,5 +192,24 @@ public class Configuration {
 
     public JsonObject getConfig() {
         return config;
+    }
+
+    private void migrateConfiguration() {
+        int configVersion = getInt(ConfigurationPaths.CONFIG_VERSION);
+        Log.info(String.format("Migrating config from version %d to  %d", configVersion, LATEST_CONFIG_VERSION));
+        for (int nextVersion = configVersion + 1; nextVersion <= LATEST_CONFIG_VERSION; nextVersion++) {
+            migrateConfiguration(nextVersion);
+        }
+        putInt(ConfigurationPaths.CONFIG_VERSION, LATEST_CONFIG_VERSION);
+        saveToFile();
+        Log.info("Finished migrating config!");
+
+    }
+
+    private void migrateConfiguration(int nextVersion) {
+        switch (nextVersion) {
+            // ToDo
+            default -> throw new IllegalArgumentException("Can not migrate config: Unknown config version " + nextVersion);
+        }
     }
 }

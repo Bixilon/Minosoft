@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.locale;
 
+import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.Util;
 
@@ -66,6 +67,7 @@ public class LocaleManager {
             e.printStackTrace();
             Log.warn(String.format("Could not load language file: %s", language));
         }
+        Versions.getLowestVersionSupported().setVersionName(translate(Strings.VERSION_AUTOMATIC));
         Log.verbose(String.format("Loaded language files successfully in %dms", (System.currentTimeMillis() - startTime)));
     }
 }
