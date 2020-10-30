@@ -94,4 +94,9 @@ public class PlayerListItemBulk {
     public PacketPlayerListItem.PlayerListItemActions getAction() {
         return action;
     }
+
+    @Override
+    public String toString() {
+        return String.format("uuid=%s, action=%s, name=%s, gameMode=%s, ping=%d, displayName=%s", getUUID(), getAction(), getName(), getGameMode(), getPing(), getDisplayName());
+    }
 }

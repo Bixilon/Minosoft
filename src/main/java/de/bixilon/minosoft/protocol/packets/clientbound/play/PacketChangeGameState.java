@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.GameModes;
 import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
@@ -39,12 +38,7 @@ public class PacketChangeGameState implements ClientboundPacket {
 
     @Override
     public void log() {
-        switch (getReason()) {
-            case START_RAIN -> Log.game("Received weather packet: Starting rain...");
-            case END_RAIN -> Log.game("Received weather packet: Stopping rain...");
-            case CHANGE_GAMEMODE -> Log.game(String.format("Received game mode change: Now in %s", GameModes.byId(getValue().intValue())));
-            default -> Log.protocol(String.format("Received game status change (%s)", getReason()));
-        }
+        Log.protocol(String.format("Received game status change (%s)", getReason()));
     }
 
     public Reason getReason() {

@@ -266,6 +266,13 @@ public class PacketHandler {
             return;
         }
 
+        Log.game(switch (pkg.getReason()) {
+            case START_RAIN -> "Received weather packet: Starting rain...";
+            case END_RAIN -> "Received weather packet: Stopping rain...";
+            case CHANGE_GAMEMODE -> String.format("Received game mode change: Now in %s", GameModes.byId(pkg.getValue().intValue()));
+            default -> "";
+        });
+
         switch (pkg.getReason()) {
             case START_RAIN -> connection.getPlayer().getWorld().setRaining(true);
             case END_RAIN -> connection.getPlayer().getWorld().setRaining(false);

@@ -44,7 +44,7 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.game(String.format("Sign data received at: %s", position));
+        Log.protocol(String.format("Sign data received at: %s", position));
     }
 
     public BlockPosition getPosition() {

@@ -83,11 +83,7 @@ public class PacketPlayerListItem implements ClientboundPacket {
     @Override
     public void log() {
         for (PlayerListItemBulk property : playerList) {
-            if (property.isLegacy()) {
-                Log.game(String.format("[TAB] Player list item bulk (uuid=%s, name=%s, ping=%d)", property.getUUID(), property.getName(), property.getPing()));
-            } else {
-                Log.game(String.format("[TAB] Player list item bulk (uuid=%s, action=%s, name=%s, gameMode=%s, ping=%d, displayName=%s)", property.getUUID(), property.getAction(), property.getName(), property.getGameMode(), property.getPing(), property.getDisplayName()));
-            }
+            Log.protocol(String.format("Received player list item bulk (%s)", property));
         }
     }
 

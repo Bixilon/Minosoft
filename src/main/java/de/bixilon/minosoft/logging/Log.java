@@ -59,6 +59,9 @@ public class Log {
     }
 
     public static void log(LogLevels level, String prefix, String message, RGBColor color) {
+        if (message.isBlank()) {
+            return;
+        }
         if (level.ordinal() > Log.level.ordinal()) {
             // log level too low
             return;

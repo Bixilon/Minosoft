@@ -35,7 +35,7 @@ public class PacketDisconnect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.game(String.format("Disconnected: %s", reason.getANSIColoredMessage()));
+        Log.protocol(String.format("Received disconnect packet (reason=\"%s\")", reason.getANSIColoredMessage()));
     }
 
     public ChatComponent getReason() {
