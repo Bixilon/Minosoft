@@ -33,9 +33,7 @@ public final class HTTP {
         try {
             return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
-            if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
-                e.printStackTrace();
-            }
+            Log.printException(e, LogLevels.DEBUG);
         }
         return null;
     }

@@ -233,18 +233,14 @@ public class SocketNetwork implements Network {
                             e.printStackTrace();
                         }
                     } catch (Exception e) {
+                        Log.printException(e, LogLevels.DEBUG);
                         Log.protocol(String.format("An error occurred while parsing an packet (%s): %s", packet, e));
-                        if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
-                            e.printStackTrace();
-                        }
                     }
                 }
                 disconnect();
             } catch (IOException e) {
                 // Could not connect
-                if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
-                    e.printStackTrace();
-                }
+                Log.printException(e, LogLevels.DEBUG);
                 if (socketSThread != null) {
                     socketSThread.interrupt();
                 }

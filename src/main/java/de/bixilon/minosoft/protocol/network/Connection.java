@@ -158,9 +158,7 @@ public class Connection {
         try {
             Versions.loadVersionMappings(version.getVersionId());
         } catch (IOException e) {
-            if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
-                e.printStackTrace();
-            }
+            Log.printException(e, LogLevels.DEBUG);
             Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
             lastException = new RuntimeException(String.format("Mappings could not be loaded: %s", e.getLocalizedMessage()));
             setConnectionState(ConnectionStates.FAILED_NO_RETRY);
@@ -223,9 +221,7 @@ public class Connection {
                     }
                     packet.handle(getHandler());
                 } catch (Exception e) {
-                    if (Log.getLevel().ordinal() >= LogLevels.PROTOCOL.ordinal()) {
-                        e.printStackTrace();
-                    }
+                    Log.printException(e, LogLevels.PROTOCOL);
                 }
             }
         }, String.format("%d/Handling", connectionId));

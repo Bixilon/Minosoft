@@ -78,9 +78,7 @@ public class AssetsManager {
         try {
             downloadAssetsIndex();
         } catch (IOException e) {
-            if (Log.getLevel().ordinal() >= LogLevels.DEBUG.ordinal()) {
-                e.printStackTrace();
-            }
+            Log.printException(e, LogLevels.DEBUG);
             Log.warn("Could not download assets index. Please check your internet connection");
         }
         assets.putAll(parseAssetsIndex(ASSETS_INDEX_HASH));

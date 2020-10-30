@@ -161,4 +161,17 @@ public class Log {
     public static void info(String message) {
         log(LogLevels.INFO, message, ChatColors.getColorByName("white"));
     }
+
+    public static boolean printException(Exception exception, LogLevels minimumLogLevel) {
+        // ToDo: log to file, print also exceptions that are not printed with this method
+        if (Log.getLevel().ordinal() >= minimumLogLevel.ordinal()) {
+            exception.printStackTrace();
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean printException(Exception exception) {
+        return printException(exception, LogLevels.FATAL); // always print
+    }
 }
