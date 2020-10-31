@@ -18,9 +18,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
+import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
@@ -241,6 +241,6 @@ public class AssetsManager {
     }
 
     private static String getAssetDiskPath(String hash) {
-        return Config.homeDir + String.format("assets/objects/%s/%s.gz", hash.substring(0, 2), hash);
+        return StaticConfiguration.homeDir + String.format("assets/objects/%s/%s.gz", hash.substring(0, 2), hash);
     }
 }

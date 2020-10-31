@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.logging;
 
-import de.bixilon.minosoft.Config;
+import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.ChatFormattingCodes;
 import de.bixilon.minosoft.data.text.RGBColor;
@@ -68,7 +68,7 @@ public class Log {
         }
         StringBuilder builder = new StringBuilder();
         builder.append("[");
-        if (Config.logRelativeTime) {
+        if (StaticConfiguration.LOG_RELATIVE_TIME) {
             builder.append(System.currentTimeMillis() - startTime);
         } else {
             builder.append(timeFormat.format(System.currentTimeMillis()));
@@ -79,7 +79,7 @@ public class Log {
         builder.append(level.name());
         builder.append("] ");
         builder.append(prefix);
-        if (color != null && Config.colorLog) {
+        if (color != null && StaticConfiguration.COLORED_LOG) {
             builder.append(ChatColors.getANSIColorByRGBColor(color));
             builder.append(message);
             builder.append(ChatFormattingCodes.RESET.getANSI());

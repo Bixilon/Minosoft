@@ -11,17 +11,17 @@
  *  This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft;
+package de.bixilon.minosoft.config;
 
 import de.bixilon.minosoft.util.OSUtil;
 
 import java.io.File;
 
-public class Config {
-    public static final String configFileName = "config.json"; // Filename of minosoft's base configuration (located in AppData/Minosoft/config)
-    public static final boolean skipAuthentication = false; // disables all connections to mojang
-    public static final boolean colorLog = true; // the log should be colored with ANSI (does not affect base components)
-    public static final boolean logRelativeTime = false; // prefix all log messages with the relative start time in milliseconds instead of the formatted time
+public class StaticConfiguration {
+    public static final String CONFIG_FILENAME = "config.json"; // Filename of minosoft's base configuration (located in AppData/Minosoft/config)
+    public static final boolean SKIP_MOJANG_AUTHENTICATION = false; // disables all connections to mojang
+    public static final boolean COLORED_LOG = true; // the log should be colored with ANSI (does not affect base components)
+    public static final boolean LOG_RELATIVE_TIME = false; // prefix all log messages with the relative start time in milliseconds instead of the formatted time
 
     public static String homeDir;
 

@@ -17,7 +17,6 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.Util;
@@ -33,20 +32,20 @@ public class Configuration {
     final JsonObject config;
     private final Object lock = new Object();
 
-    public Configuration(String filename) throws IOException {
-        File file = new File(Config.homeDir + "config/" + filename);
+    public Configuration() throws IOException {
+        File file = new File(StaticConfiguration.homeDir + "config/" + StaticConfiguration.CONFIG_FILENAME);
         if (!file.exists()) {
             // no configuration file
-            InputStream input = getClass().getResourceAsStream("/config/" + filename);
+            InputStream input = getClass().getResourceAsStream("/config/" + StaticConfiguration.CONFIG_FILENAME);
             if (input == null) {
-                throw new FileNotFoundException(String.format("[Config] Missing default config: %s!", filename));
+                throw new FileNotFoundException(String.format("[Config] Missing default config: %s!", StaticConfiguration.CONFIG_FILENAME));
             }
-            File folder = new File(Config.homeDir + "config/");
+            File folder = new File(StaticConfiguration.homeDir + "config/");
             if (!folder.exists() && !folder.mkdirs()) {
                 throw new IOException("[Config] Could not create config folder!");
             }
             Files.copy(input, Paths.get(file.getAbsolutePath()));
-            file = new File(Config.homeDir + "config/" + filename);
+            file = new File(StaticConfiguration.homeDir + "config/" + StaticConfiguration.CONFIG_FILENAME);
         }
         config = Util.readJsonFromFile(file.getAbsolutePath());
         int configVersion = getInt(ConfigurationPaths.CONFIG_VERSION);
@@ -68,7 +67,7 @@ public class Configuration {
                     }
                 }
                 // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
-                File tempFile = new File(Config.homeDir + "config/" + filename + ".tmp");
+                File tempFile = new File(StaticConfiguration.homeDir + "config/" + StaticConfiguration.CONFIG_FILENAME + ".tmp");
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 FileWriter writer;
                 try {
@@ -91,7 +90,7 @@ public class Configuration {
                 if (!tempFile.renameTo(finalFile)) {
                     Log.fatal("An error occurred while saving the config file");
                 } else {
-                    Log.verbose(String.format("Configuration saved to file %s", filename));
+                    Log.verbose(String.format("Configuration saved to file %s", StaticConfiguration.CONFIG_FILENAME));
                 }
             }
         }, "IO").start();

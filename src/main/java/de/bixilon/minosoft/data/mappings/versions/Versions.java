@@ -16,9 +16,9 @@ package de.bixilon.minosoft.data.mappings.versions;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
+import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.Mappings;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
@@ -128,7 +128,7 @@ public class Versions {
         long startTime = System.currentTimeMillis();
 
         // check if mapping folder exist
-        File mappingFolder = new File(Config.homeDir + "assets/mapping");
+        File mappingFolder = new File(StaticConfiguration.homeDir + "assets/mapping");
         if (!mappingFolder.exists()) {
             if (mappingFolder.mkdirs()) {
                 Log.verbose("Created mappings folder.");
@@ -138,7 +138,7 @@ public class Versions {
             }
         }
 
-        String fileName = Config.homeDir + String.format("assets/mapping/%s.tar.gz", version.getVersionName());
+        String fileName = StaticConfiguration.homeDir + String.format("assets/mapping/%s.tar.gz", version.getVersionName());
         HashMap<String, JsonObject> files;
         try {
             files = Util.readJsonTarGzFile(fileName);

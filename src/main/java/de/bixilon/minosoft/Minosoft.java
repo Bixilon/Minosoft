@@ -101,7 +101,7 @@ public final class Minosoft {
             progress.countUp();
             Log.info("Reading config file...");
             try {
-                config = new Configuration(Config.configFileName);
+                config = new Configuration();
             } catch (IOException e) {
                 Log.fatal("Failed to load config file!");
                 e.printStackTrace();

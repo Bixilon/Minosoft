@@ -15,9 +15,9 @@ package de.bixilon.minosoft.util.mojang.api;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
+import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.HTTP;
 
@@ -56,7 +56,7 @@ public final class MojangAuthentication {
     }
 
     public static void joinServer(MojangAccount account, String serverId) {
-        if (Config.skipAuthentication) {
+        if (StaticConfiguration.SKIP_MOJANG_AUTHENTICATION) {
             return;
         }
 
@@ -85,7 +85,7 @@ public final class MojangAuthentication {
     }
 
     public static String refresh(String clientToken, String accessToken) {
-        if (Config.skipAuthentication) {
+        if (StaticConfiguration.SKIP_MOJANG_AUTHENTICATION) {
             return clientToken;
         }
         JsonObject payload = new JsonObject();

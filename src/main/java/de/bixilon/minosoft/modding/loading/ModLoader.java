@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.modding.loading;
 
-import de.bixilon.minosoft.Config;
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.MinosoftMod;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
@@ -38,7 +38,7 @@ public class ModLoader {
         // sort the list and prioritize
         // load all lists and dependencies async
         HashSet<Callable<MinosoftMod>> callables = new HashSet<>();
-        File[] files = new File(Config.homeDir + "mods").listFiles();
+        File[] files = new File(StaticConfiguration.homeDir + "mods").listFiles();
         if (files == null) {
             // no mods to load
             return;
