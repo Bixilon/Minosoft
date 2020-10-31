@@ -114,7 +114,6 @@ public final class Minosoft {
 
             serverList = config.getServers();
             progress.countDown();
-
         }, "Configuration", "", Priorities.HIGHEST, TaskImportance.REQUIRED));
 
         taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFx Toolkit", "", Priorities.HIGHEST));
@@ -125,7 +124,6 @@ public final class Minosoft {
             progress.countUp();
             LocaleManager.load(config.getString(ConfigurationPaths.GENERAL_LANGUAGE));
             progress.countDown();
-
         }, "Minosoft Language", "", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
@@ -135,7 +133,6 @@ public final class Minosoft {
             Versions.load(Util.readJsonAsset("mapping/versions.json"));
             Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
             progress.countDown();
-
         }, "Version mappings", "", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
@@ -143,28 +140,24 @@ public final class Minosoft {
             checkClientToken();
             accountList = config.getMojangAccounts();
             selectAccount(accountList.get(config.getString(ConfigurationPaths.ACCOUNT_SELECTED)));
-
         }, "Token refresh", "", Priorities.LOW, TaskImportance.OPTIONAL, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
             ModLoader.loadMods(progress);
             progress.countDown();
-
         }, "ModLoading", "", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
             AssetsManager.downloadAllAssets(progress);
             progress.countDown();
-
         }, "Assets", "", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
             MinecraftLocaleManager.load(config.getString(ConfigurationPaths.GENERAL_LANGUAGE));
             progress.countDown();
-
         }, "Mojang language", "", Priorities.HIGH, TaskImportance.REQUIRED, "Assets"));
 
         taskWorker.work(startStatusLatch);
