@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 
 @Unsafe
-public class PacketReceiveEvent extends Event {
+public class PacketReceiveEvent extends ConnectionEvent {
     private final ClientboundPacket packet;
 
     public PacketReceiveEvent(Connection connection, ClientboundPacket packet) {

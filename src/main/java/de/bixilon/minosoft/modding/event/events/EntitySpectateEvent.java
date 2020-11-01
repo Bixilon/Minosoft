@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketCamera;
 /**
  * Fired when the player should spectate an entity
  */
-public class EntitySpectateEvent extends Event {
+public class EntitySpectateEvent extends ConnectionEvent {
     private final int entityId;
 
     public EntitySpectateEvent(Connection connection, int entityId) {

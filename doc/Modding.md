@@ -121,8 +121,8 @@ Your `mod.json` can look like this
 ## Events
 There are global events (which works on all connections) and connections events (server specific).
 
-To register a global event you need to use (in the `INITIALIZING` phase) `getEventManager().registerGlobalListener(new XYEventListener());`.
-If you want to register an event depending on a server address (like server specific support, you can use the following), you can use `EventManager::registerConnectionListener` method.
+To register a global connectionEvent you need to use (in the `INITIALIZING` phase) `getEventManager().registerGlobalListener(new XYEventListener());`.
+If you want to register an connectionEvent depending on a server address (like server specific support, you can use the following), you can use `EventManager::registerConnectionListener` method.
 It takes 2 arguments: The first one is your listener, the second one is a `ServerAddressValidator`.
 There are several validators, choose one or write your own:
  - `HostnameValidator` Simply check the hostname. For example: `bixilon.de`.
@@ -132,35 +132,35 @@ There are several validators, choose one or write your own:
  
  Use the following: `getEventManager().registerConnectionListener(new XYEventListener(), new HostnameValidator("127.0.0.1"));`
 
-Your event methods need to be annotated by `EventHandler`. `EventHandler` **can** take these arguments:
+Your connectionEvent methods need to be annotated by `EventHandler`. `EventHandler` **can** take these arguments:
  - `priority` Pretty much self explaining. `HIGH` means, that it gets executed at "the beginning", `LOW` means the opposite. Defaults to `NORMAL`.
- - `ignoreCancelled` If it is a cancellable event, your method only gets executed, when all prior listeners (potentially with a higher priority) did not cancel the event. Defaults to `false`.
+ - `ignoreCancelled` If it is a cancellable connectionEvent, your method only gets executed, when all prior listeners (potentially with a higher priority) did not cancel the connectionEvent. Defaults to `false`.
 
-Your XYEventListener class needs to extend `de.bixilon.minosoft.modding.event.EventListener`;
+Your XYEventListener class needs to extend `de.bixilon.minosoft.modding.connectionEvent.EventListener`;
 ```java
-import de.bixilon.minosoft.modding.event.EventListener;
-import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
-import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
-import de.bixilon.minosoft.modding.event.events.annotations.EventHandler;
+import de.bixilon.minosoft.modding.connectionEvent.EventListener;
+import de.bixilon.minosoft.modding.connectionEvent.events.ChatMessageReceivingEvent;
+import de.bixilon.minosoft.modding.connectionEvent.events.ChatMessageSendingEvent;
+import de.bixilon.minosoft.modding.connectionEvent.events.annotations.EventHandler;
 import de.bixilon.minosoft.modding.loading.Priorities;
 
 public class ChatEvent extends EventListener {
     @EventHandler(priority = Priorities.HIGHEST)
-    public void onChatMessageReceiving(ChatMessageReceivingEvent event) {
-        if (event.getMessage().getMessage().contains("Bixilon")) {
+    public void onChatMessageReceiving(ChatMessageReceivingEvent connectionEvent) {
+        if (connectionEvent.getMessage().getMessage().contains("Bixilon")) {
             MinosoftExampleMod.getInstance().getLogger().info("Bixilon wrote a potential bad chat message. Suppressing it!");
-            event.setCancelled(true);
+            connectionEvent.setCancelled(true);
         }
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onChatMessageSending(ChatMessageSendingEvent event) {
-        if (event.getMessage().contains("jeb_ is stupid")) {
-            event.setCancelled(true);
-            event.getConnection().getSender().sendChatMessage("jeb_ is awesome!");
+    public void onChatMessageSending(ChatMessageSendingEvent connectionEvent) {
+        if (connectionEvent.getMessage().contains("jeb_ is stupid")) {
+            connectionEvent.setCancelled(true);
+            connectionEvent.getConnection().getSender().sendChatMessage("jeb_ is awesome!");
         }
     }
 }
 ```
 The following code would suppress messages containing the word "Bixilon" and if you write "jeb_ is stupid" into the chat, the message's text will be "jeb_ is awesome".
-To see a list of all events look into `de.bixilon.minosoft.modding.event.events`. There is also a javadoc.
+To see a list of all events look into `de.bixilon.minosoft.modding.connectionEvent.events`. There is also a javadoc.

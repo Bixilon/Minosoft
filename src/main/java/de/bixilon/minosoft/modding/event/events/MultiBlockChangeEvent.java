@@ -24,7 +24,7 @@ import java.util.HashMap;
 /**
  * Fired when at least block is changed
  */
-public class MultiBlockChangeEvent extends Event {
+public class MultiBlockChangeEvent extends ConnectionEvent {
     private final HashMap<InChunkLocation, Block> blocks;
     private final ChunkLocation location;
 

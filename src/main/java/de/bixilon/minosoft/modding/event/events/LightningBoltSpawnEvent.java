@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.entities.objects.LightningBolt;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSpawnWeatherEntity;
 
-public class LightningBoltSpawnEvent extends Event {
+public class LightningBoltSpawnEvent extends ConnectionEvent {
     private final LightningBolt entity;
 
     public LightningBoltSpawnEvent(Connection connection, LightningBolt entity) {

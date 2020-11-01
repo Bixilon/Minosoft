@@ -15,16 +15,13 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.Connection;
 
-import javax.annotation.Nullable;
-
-public abstract class Event {
+public abstract class ConnectionEvent {
     private final Connection connection;
 
-    protected Event(Connection connection) {
+    protected ConnectionEvent(Connection connection) {
         this.connection = connection;
     }
 
-    @Nullable
     public Connection getConnection() {
         return connection;
     }

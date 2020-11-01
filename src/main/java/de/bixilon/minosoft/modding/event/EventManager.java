@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event;
 
 import de.bixilon.minosoft.modding.event.address.ServerAddressValidator;
-import de.bixilon.minosoft.modding.event.events.Event;
+import de.bixilon.minosoft.modding.event.events.ConnectionEvent;
 import de.bixilon.minosoft.modding.event.events.annotations.EventHandler;
 
 import java.lang.reflect.Method;
@@ -41,7 +41,7 @@ public class EventManager {
             if (method.getParameterCount() != 1) {
                 continue;
             }
-            if (!Event.class.isAssignableFrom(method.getParameters()[0].getType())) {
+            if (!ConnectionEvent.class.isAssignableFrom(method.getParameters()[0].getType())) {
                 continue;
             }
             eventMethods.add(new EventMethod(annotation, listener, method));

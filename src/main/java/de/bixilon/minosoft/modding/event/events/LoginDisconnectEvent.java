@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketDisconnect;
 
-public class LoginDisconnectEvent extends Event {
+public class LoginDisconnectEvent extends ConnectionEvent {
     private final ChatComponent reason;
 
     public LoginDisconnectEvent(Connection connection, ChatComponent reason) {

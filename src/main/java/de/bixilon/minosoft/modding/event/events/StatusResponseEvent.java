@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.ping.ServerListPing;
 /**
  * Fired when the connection status is "STATUS" and the server send general information such as players online, motd, etc
  */
-public class StatusResponseEvent extends Event {
+public class StatusResponseEvent extends ConnectionEvent {
     private final ServerListPing response;
 
     public StatusResponseEvent(Connection connection, ServerListPing response) {

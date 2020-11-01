@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockEntityMe
 
 import javax.annotation.Nullable;
 
-public class BlockEntityMetaDataChangeEvent extends Event {
+public class BlockEntityMetaDataChangeEvent extends ConnectionEvent {
     private final BlockPosition position;
     private final PacketBlockEntityMetadata.BlockEntityActions action;
     private final BlockEntityMetaData data;

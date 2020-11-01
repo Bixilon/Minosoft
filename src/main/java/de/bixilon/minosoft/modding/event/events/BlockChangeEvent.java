@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockChange;
 /**
  * Fired when one block is changed
  */
-public class BlockChangeEvent extends Event {
+public class BlockChangeEvent extends ConnectionEvent {
     private final BlockPosition position;
     private final Block block;
 

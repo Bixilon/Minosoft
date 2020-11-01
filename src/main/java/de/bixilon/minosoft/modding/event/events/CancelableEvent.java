@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.Connection;
 
-public abstract class CancelableEvent extends Event {
+public abstract class CancelableEvent extends ConnectionEvent {
     private boolean cancelled = false;
 
     protected CancelableEvent(Connection connection) {

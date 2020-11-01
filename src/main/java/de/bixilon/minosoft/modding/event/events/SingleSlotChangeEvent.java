@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSetSlot;
 
-public class SingleSlotChangeEvent extends Event {
+public class SingleSlotChangeEvent extends ConnectionEvent {
     private final byte windowId;
     private final short slotId;
     private final Slot slot;

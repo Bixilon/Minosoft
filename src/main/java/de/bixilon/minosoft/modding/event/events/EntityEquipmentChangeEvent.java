@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEntityEquipme
 
 import java.util.HashMap;
 
-public class EntityEquipmentChangeEvent extends Event {
+public class EntityEquipmentChangeEvent extends ConnectionEvent {
     private final int entityId;
     private final HashMap<InventorySlots.EntityInventorySlots, Slot> slots;
 

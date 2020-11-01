@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 /**
  * Fired when a new chunk is received or a full chunk changes
  */
-public class ChunkDataChangeEvent extends Event {
+public class ChunkDataChangeEvent extends ConnectionEvent {
     private final ChunkLocation location;
     private final Chunk chunk;
     private final CompoundTag heightMap;

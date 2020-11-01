@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSpawnLocation;
 
-public class SpawnLocationChangeEvent extends Event {
+public class SpawnLocationChangeEvent extends ConnectionEvent {
     private final BlockPosition location;
 
     public SpawnLocationChangeEvent(Connection connection, BlockPosition location) {

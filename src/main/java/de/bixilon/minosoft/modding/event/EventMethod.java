@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event;
 
 import de.bixilon.minosoft.modding.event.events.CancelableEvent;
-import de.bixilon.minosoft.modding.event.events.Event;
+import de.bixilon.minosoft.modding.event.events.ConnectionEvent;
 import de.bixilon.minosoft.modding.event.events.annotations.EventHandler;
 
 import java.lang.reflect.InvocationTargetException;
@@ -39,7 +39,7 @@ public class EventMethod {
         return method;
     }
 
-    public void invoke(Event event) {
+    public void invoke(ConnectionEvent event) {
         if (!method.getParameters()[0].getType().isAssignableFrom(event.getClass())) {
             return;
         }

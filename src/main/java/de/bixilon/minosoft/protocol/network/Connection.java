@@ -25,7 +25,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventMethod;
 import de.bixilon.minosoft.modding.event.events.CancelableEvent;
-import de.bixilon.minosoft.modding.event.events.Event;
+import de.bixilon.minosoft.modding.event.events.ConnectionEvent;
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent;
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -192,14 +192,14 @@ public class Connection {
     }
 
     /**
-     * @param event The event to fire
+     * @param connectionEvent The event to fire
      * @return if the event has been cancelled or not
      */
-    public boolean fireEvent(Event event) {
-        Minosoft.eventManagers.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach((method) -> method.invoke(event))));
-        eventListeners.forEach((method -> method.invoke(event)));
-        if (event instanceof CancelableEvent) {
-            return ((CancelableEvent) event).isCancelled();
+    public boolean fireEvent(ConnectionEvent connectionEvent) {
+        Minosoft.eventManagers.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach((method) -> method.invoke(connectionEvent))));
+        eventListeners.forEach((method -> method.invoke(connectionEvent)));
+        if (connectionEvent instanceof CancelableEvent) {
+            return ((CancelableEvent) connectionEvent).isCancelled();
         }
         return false;
     }

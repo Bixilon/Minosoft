@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 /**
  * Fired when the connection status is "STATUS" and the ping gets pack (pong)
  */
-public class StatusPongEvent extends Event {
+public class StatusPongEvent extends ConnectionEvent {
     private final long pongId;
 
     public StatusPongEvent(Connection connection, long pongId) {

@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.entities.Entity;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
 
-public class EntitySpawnEvent extends Event {
+public class EntitySpawnEvent extends ConnectionEvent {
     private final Entity entity;
 
     public EntitySpawnEvent(Connection connection, Entity entity) {

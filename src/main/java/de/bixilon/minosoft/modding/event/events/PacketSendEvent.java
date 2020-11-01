@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 
 @Unsafe
-public class PacketSendEvent extends Event {
+public class PacketSendEvent extends ConnectionEvent {
     private final ServerboundPacket packet;
 
     public PacketSendEvent(Connection connection, ServerboundPacket packet) {
