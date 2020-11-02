@@ -33,19 +33,19 @@ public class Configuration {
     private final Object lock = new Object();
 
     public Configuration() throws IOException {
-        File file = new File(StaticConfiguration.homeDir + "config/" + StaticConfiguration.CONFIG_FILENAME);
+        File file = new File(StaticConfiguration.HOME_DIR + "config/" + StaticConfiguration.CONFIG_FILENAME);
         if (!file.exists()) {
             // no configuration file
             InputStream input = getClass().getResourceAsStream("/config/" + StaticConfiguration.CONFIG_FILENAME);
             if (input == null) {
                 throw new FileNotFoundException(String.format("[Config] Missing default config: %s!", StaticConfiguration.CONFIG_FILENAME));
             }
-            File folder = new File(StaticConfiguration.homeDir + "config/");
+            File folder = new File(StaticConfiguration.HOME_DIR + "config/");
             if (!folder.exists() && !folder.mkdirs()) {
                 throw new IOException("[Config] Could not create config folder!");
             }
             Files.copy(input, Paths.get(file.getAbsolutePath()));
-            file = new File(StaticConfiguration.homeDir + "config/" + StaticConfiguration.CONFIG_FILENAME);
+            file = new File(StaticConfiguration.HOME_DIR + "config/" + StaticConfiguration.CONFIG_FILENAME);
         }
         config = Util.readJsonFromFile(file.getAbsolutePath());
         int configVersion = getInt(ConfigurationPaths.CONFIG_VERSION);
@@ -67,7 +67,7 @@ public class Configuration {
                     }
                 }
                 // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
-                File tempFile = new File(StaticConfiguration.homeDir + "config/" + StaticConfiguration.CONFIG_FILENAME + ".tmp");
+                File tempFile = new File(StaticConfiguration.HOME_DIR + "config/" + StaticConfiguration.CONFIG_FILENAME + ".tmp");
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 FileWriter writer;
                 try {

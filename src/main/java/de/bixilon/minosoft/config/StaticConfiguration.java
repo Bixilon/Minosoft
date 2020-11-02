@@ -23,10 +23,11 @@ public class StaticConfiguration {
     public static final boolean COLORED_LOG = true; // the log should be colored with ANSI (does not affect base components)
     public static final boolean LOG_RELATIVE_TIME = false; // prefix all log messages with the relative start time in milliseconds instead of the formatted time
 
-    public static String homeDir;
+    public static final String HOME_DIR;
 
     static {
         // Sets Config.homeDir to the correct folder per OS
+        String homeDir;
         homeDir = System.getProperty("user.home");
         if (!homeDir.endsWith(File.separator)) {
             homeDir += "/";
@@ -42,5 +43,6 @@ public class StaticConfiguration {
             // failed creating folder
             throw new RuntimeException(String.format("Could not create home folder (%s)!", homeDir));
         }
+        HOME_DIR = folder.getAbsolutePath() + "/";
     }
 }

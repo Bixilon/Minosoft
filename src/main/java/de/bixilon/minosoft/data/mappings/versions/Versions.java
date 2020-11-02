@@ -128,7 +128,7 @@ public class Versions {
         long startTime = System.currentTimeMillis();
 
         // check if mapping folder exist
-        File mappingFolder = new File(StaticConfiguration.homeDir + "assets/mapping");
+        File mappingFolder = new File(StaticConfiguration.HOME_DIR + "assets/mapping");
         if (!mappingFolder.exists()) {
             if (mappingFolder.mkdirs()) {
                 Log.verbose("Created mappings folder.");
@@ -138,7 +138,7 @@ public class Versions {
             }
         }
 
-        String fileName = StaticConfiguration.homeDir + String.format("assets/mapping/%s.tar.gz", version.getVersionName());
+        String fileName = StaticConfiguration.HOME_DIR + String.format("assets/mapping/%s.tar.gz", version.getVersionName());
         HashMap<String, JsonObject> files;
         try {
             files = Util.readJsonTarGzFile(fileName);

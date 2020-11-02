@@ -17,6 +17,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.util.Util;
 
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,11 +27,14 @@ public class ModInfo {
     final String versionName;
     final String name;
     final String[] authors;
+    final int moddingAPIVersion;
     final String identifier;
     final String mainClass;
+    final HashSet<ModDependency> hardDependencies = new HashSet<>();
+    final HashSet<ModDependency> softDependencies = new HashSet<>();
     LoadingInfo loadingInfo;
 
-    public ModInfo(JsonObject json) {
+    public ModInfo(JsonObject json) throws ModLoadingException {
         this.uuid = Util.getUUIDFromString(json.get("uuid").getAsString());
         this.versionId = json.get("versionId").getAsInt();
         this.versionName = json.get("versionName").getAsString();
@@ -39,6 +43,10 @@ public class ModInfo {
         this.authors = new String[authors.size()];
         AtomicInteger i = new AtomicInteger();
         authors.forEach((authorElement) -> this.authors[i.getAndIncrement()] = authorElement.getAsString());
+        moddingAPIVersion = json.get("moddingAPIVersion").getAsInt();
+        if (moddingAPIVersion > ModLoader.CURRENT_MODDING_API_VERSION) {
+            throw new ModLoadingException(String.format("Mod was written with for a newer version of minosoft (moddingAPIVersion=%d, expected=%d)", moddingAPIVersion, ModLoader.CURRENT_MODDING_API_VERSION));
+        }
         this.identifier = json.get("identifier").getAsString();
         this.mainClass = json.get("mainClass").getAsString();
         if (json.has("loading")) {
@@ -46,6 +54,15 @@ public class ModInfo {
             this.loadingInfo = new LoadingInfo();
             if (loading.has("priority")) {
                 this.loadingInfo.setLoadingPriority(Priorities.valueOf(loading.get("priority").getAsString()));
+            }
+        }
+        if (json.has("dependencies")) {
+            JsonObject dependencies = json.getAsJsonObject("dependencies");
+            if (dependencies.has("hard")) {
+                hardDependencies.addAll(ModDependency.serializeDependencyArray(dependencies.getAsJsonArray("hard")));
+            }
+            if (dependencies.has("soft")) {
+                softDependencies.addAll(ModDependency.serializeDependencyArray(dependencies.getAsJsonArray("soft")));
             }
         }
     }

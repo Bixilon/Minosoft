@@ -24,63 +24,78 @@ import org.xeustechnologies.jcl.JclObjectFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.zip.ZipFile;
 
 public class ModLoader {
-    static final LinkedList<MinosoftMod> mods = new LinkedList<>();
+    public static final int CURRENT_MODDING_API_VERSION = 1;
+    public static final LinkedList<MinosoftMod> mods = new LinkedList<>();
 
     public static void loadMods(CountUpAndDownLatch progress) throws Exception {
         Log.verbose("Start loading mods...");
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Util.getThreadFactory("ModLoader"));
+
         // load all jars, parse the mod.json
         // sort the list and prioritize
         // load all lists and dependencies async
-        HashSet<Callable<MinosoftMod>> callables = new HashSet<>();
-        File[] files = new File(StaticConfiguration.homeDir + "mods").listFiles();
+        File[] files = new File(StaticConfiguration.HOME_DIR + "mods").listFiles();
         if (files == null) {
             // no mods to load
             return;
         }
+        CountDownLatch latch = new CountDownLatch(files.length);
         for (File modFile : files) {
             if (modFile.isDirectory()) {
                 continue;
             }
-            callables.add(() -> {
+            executor.execute(() -> {
                 MinosoftMod mod = loadMod(progress, modFile);
                 if (mod != null) {
                     mods.add(mod);
                 }
-                return mod;
+                latch.countDown();
             });
         }
+        latch.await();
 
-        Util.executeInThreadPool("ModLoader", callables);
+        if (mods.size() == 0) {
+            Log.info("No mods to load.");
+            return;
+        }
 
         progress.addCount(mods.size() * ModPhases.values().length); // count * mod phases
 
+        // sort for priority
         mods.sort((a, b) -> {
             if (a == null || b == null) {
                 return 0;
             }
             return -(getLoadingPriorityOrDefault(b.getInfo()).ordinal() - getLoadingPriorityOrDefault(a.getInfo()).ordinal());
         });
+        // ToDo: check dependencies
+
         for (ModPhases phase : ModPhases.values()) {
             Log.verbose(String.format("Map loading phase changed: %s", phase));
-            HashSet<Callable<MinosoftMod>> phaseLoaderCallables = new HashSet<>();
-            mods.forEach((instance) -> phaseLoaderCallables.add(() -> {
-                if (!instance.isEnabled()) {
-                    return instance;
-                }
-                if (!instance.start(phase)) {
-                    Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));
-                    instance.setEnabled(false);
-                }
-                progress.countDown();
-                return instance;
-            }));
-            Util.executeInThreadPool("ModLoader", phaseLoaderCallables);
+            CountDownLatch modLatch = new CountDownLatch(mods.size());
+            mods.forEach((instance) -> {
+                executor.execute(() -> {
+                    if (!instance.isEnabled()) {
+                        modLatch.countDown();
+                        progress.countDown();
+                        return;
+                    }
+                    if (!instance.start(phase)) {
+                        Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));
+                        instance.setEnabled(false);
+                    }
+                    modLatch.countDown();
+                    progress.countDown();
+                });
+            });
+            modLatch.await();
         }
         mods.forEach((instance) -> {
             if (instance.isEnabled()) {
@@ -94,6 +109,7 @@ public class ModLoader {
     }
 
     public static MinosoftMod loadMod(CountUpAndDownLatch progress, File file) {
+        MinosoftMod instance;
         try {
             Log.verbose(String.format("[MOD] Loading file %s", file.getAbsolutePath()));
             progress.countUp();
@@ -107,18 +123,17 @@ public class ModLoader {
             jcl.add(file.getAbsolutePath());
             JclObjectFactory factory = JclObjectFactory.getInstance();
 
-            MinosoftMod instance = (MinosoftMod) factory.create(jcl, modInfo.getMainClass());
+            instance = (MinosoftMod) factory.create(jcl, modInfo.getMainClass());
             instance.setInfo(modInfo);
             Log.verbose(String.format("[MOD] Mod file loaded and added to classpath (%s)", modInfo));
             zipFile.close();
-            progress.countDown();
-            return instance;
-        } catch (IOException e) {
+        } catch (IOException | ModLoadingException | NullPointerException e) {
+            instance = null;
             e.printStackTrace();
             Log.warn(String.format("Could not load mod: %s", file.getAbsolutePath()));
         }
         progress.countDown(); // failed
-        return null;
+        return instance;
     }
 
     private static Priorities getLoadingPriorityOrDefault(ModInfo info) {

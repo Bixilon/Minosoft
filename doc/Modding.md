@@ -12,6 +12,7 @@ In the root folder of your jar file (the mod) must be a file called `mod.json`. 
     "Example dev"
   ],
   "name": "Example Mod",
+  "moddingAPIVersion": 1,
   "identifier": "example",
   "mainClass": "de.example.mod.Main",
   "loading": {
@@ -43,7 +44,8 @@ In the root folder of your jar file (the mod) must be a file called `mod.json`. 
 - `uuid` is a unique id for the mod. Generate 1 and keep it in all versions (used for dependencies, etc). **Required**
 - `versionId` like in android there is a numeric version id. It is used to compare between versions (and as identifier). **Required**
 - `versionName`, `authors`, `name` is the classic implementation of metadata. Can be anything, will be displayed in the mod list. **Required**
-- `identifier` is the prefix of items (for Minecraft it is `minecraft`). Aka the thing before the ``.  **Required**
+- `moddingAPIVersion` Modding API version of minosoft. Currently `1` **Required**
+- `identifier` is the prefix of items (for Minecraft it is `minecraft`). Aka the thing before the `:`.  **Required**
 - `mainClass` the Main class of your mod (self explaining). The main class needs to extent the abstract class `MinosoftMod`. **Required**
 - `loading` Loading attributes. **Optional**
   - `priority` should the mod be loaded at the beginning or at the end. Possible values are `LOWEST`, `LOW`, `NORMAL`, `HIGH`, `HIGHEST` **Optional**
@@ -52,8 +54,8 @@ In the root folder of your jar file (the mod) must be a file called `mod.json`. 
   - `soft` These mods are **optional** to work. Both use the following format: **Optional**
     - `uuid` the uuid of the mod to load. **Required**
     - `version` Specifies the version you need to load. **Optional**
-      - `minimum` Minimum versionId required. **Maximum, minimum or both**
-      - `maximum` Maximum versionId required. **Maximum, minimum or both**
+      - `minimum` Minimum versionId required. **Maximum, minimum, both or none**
+      - `maximum` Maximum versionId required. **Maximum, minimum, both or none**
 
 ## Mod loading (aka Main class)
 Your main class must extend the following class: `de.bixilon.minosoft.MinosoftMod`.

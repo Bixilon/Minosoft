@@ -241,6 +241,6 @@ public class AssetsManager {
     }
 
     private static String getAssetDiskPath(String hash) {
-        return StaticConfiguration.homeDir + String.format("assets/objects/%s/%s.gz", hash.substring(0, 2), hash);
+        return StaticConfiguration.HOME_DIR + String.format("assets/objects/%s/%s.gz", hash.substring(0, 2), hash);
     }
 }
