@@ -13,67 +13,55 @@
 
 package de.bixilon.minosoft.util;
 
-import java.util.concurrent.CountDownLatch;
-
 // Thanks https://stackoverflow.com/questions/14255019/latch-that-can-be-incremented
 public class CountUpAndDownLatch {
     private final Object lock = new Object();
-    private CountDownLatch latch;
+    private long count;
     private long total = 0;
 
     public CountUpAndDownLatch(int count) {
-        total += count;
-        this.latch = new CountDownLatch(count);
+        total = count;
+        this.count = count;
     }
 
     public CountUpAndDownLatch() {
         total = 1;
-        this.latch = new CountDownLatch(1);
-    }
-
-    public void countDownOrWaitIfZero() throws InterruptedException {
-        synchronized (lock) {
-            while (latch.getCount() == 0) {
-                lock.wait();
-            }
-            latch.countDown();
-            lock.notifyAll();
-        }
+        this.count = 1;
     }
 
     public void waitUntilZero() throws InterruptedException {
         synchronized (lock) {
-            while (latch.getCount() != 0) {
+            while (count > 0) {
                 lock.wait();
             }
         }
     }
 
-    public void countUp() { //should probably check for Integer.MAX_VALUE
+    public void countUp() {
         synchronized (lock) {
             total++;
-            latch = new CountDownLatch((int) latch.getCount() + 1);
+            count++;
             lock.notifyAll();
         }
     }
 
-    public void countDown() { //should probably check for Integer.MAX_VALUE
+    public void countDown() {
         synchronized (lock) {
-            latch.countDown();
+            count--;
             lock.notifyAll();
         }
     }
 
-    public int getCount() {
+    public long getCount() {
         synchronized (lock) {
-            return (int) latch.getCount();
+            return count;
         }
     }
 
     public void setCount(int value) {
         synchronized (lock) {
             total += value;
-            latch = new CountDownLatch(value);
+            count = value;
             lock.notifyAll();
         }
     }
@@ -81,7 +69,7 @@ public class CountUpAndDownLatch {
     public void addCount(int count) {
         synchronized (lock) {
             total += count;
-            latch = new CountDownLatch((int) latch.getCount() + count);
+            this.count += count;
             lock.notifyAll();
         }
     }
@@ -91,10 +79,10 @@ public class CountUpAndDownLatch {
     }
 
     public void waitForChange() throws InterruptedException {
-        long current = latch.getCount();
-        long total = this.total;
+        long latestCount = count;
+        long latestTotal = this.total;
         synchronized (lock) {
-            while (current == latch.getCount() && total == this.total) {
+            while (latestCount == count && latestTotal == total) {
                 lock.wait();
             }
         }
@@ -102,6 +90,6 @@ public class CountUpAndDownLatch {
 
     @Override
     public String toString() {
-        return String.format("%d / %d", latch.getCount(), total);
+        return String.format("%d / %d", count, total);
     }
 }
