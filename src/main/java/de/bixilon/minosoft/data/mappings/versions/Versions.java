@@ -145,7 +145,7 @@ public class Versions {
         } catch (FileNotFoundException e) {
             long downloadStartTime = System.currentTimeMillis();
             Log.info(String.format("Mappings for %s are not available on disk. Downloading them...", version.getVersionName()));
-            Util.downloadFile(String.format(Minosoft.getConfig().getString(ConfigurationPaths.MAPPINGS_URL), version.getVersionName()), fileName);
+            Util.downloadFile(String.format(Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.MAPPINGS_URL), version.getVersionName()), fileName);
             try {
                 files = Util.readJsonTarGzFile(fileName);
             } catch (ZipException e2) {

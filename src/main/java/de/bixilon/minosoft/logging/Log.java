@@ -24,10 +24,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Log {
     final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     final static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>();
-    final static long startTime = System.currentTimeMillis();
+    public final static long MINOSOFT_START_TIME = System.currentTimeMillis();
     static LogLevels level = LogLevels.PROTOCOL;
 
-    public static void initThread() {
+    static {
         new Thread(() -> {
             while (true) {
                 // something to print
@@ -69,7 +69,7 @@ public class Log {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         if (StaticConfiguration.LOG_RELATIVE_TIME) {
-            builder.append(System.currentTimeMillis() - startTime);
+            builder.append(System.currentTimeMillis() - MINOSOFT_START_TIME);
         } else {
             builder.append(timeFormat.format(System.currentTimeMillis()));
         }

@@ -51,9 +51,6 @@ public final class Minosoft {
     public static Configuration config;
 
     public static void main(String[] args) {
-        // init log thread
-        Log.initThread();
-
         Log.info("Starting...");
         AsyncTaskWorker taskWorker = new AsyncTaskWorker("StartUp");
 
@@ -108,9 +105,9 @@ public final class Minosoft {
                 e.printStackTrace();
                 return;
             }
-            Log.info(String.format("Loaded config file (version=%s)", config.getInt(ConfigurationPaths.CONFIG_VERSION)));
+            Log.info(String.format("Loaded config file (version=%s)", config.getInt(ConfigurationPaths.IntegerPaths.GENERAL_CONFIG_VERSION)));
             // set log level from config
-            Log.setLevel(LogLevels.valueOf(config.getString(ConfigurationPaths.GENERAL_LOG_LEVEL)));
+            Log.setLevel(LogLevels.valueOf(config.getString(ConfigurationPaths.StringPaths.GENERAL_LOG_LEVEL)));
             Log.info(String.format("Logging info with level: %s", Log.getLevel()));
 
             serverList = config.getServers();
@@ -123,7 +120,7 @@ public final class Minosoft {
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
-            LocaleManager.load(config.getString(ConfigurationPaths.GENERAL_LANGUAGE));
+            LocaleManager.load(config.getString(ConfigurationPaths.StringPaths.GENERAL_LANGUAGE));
             progress.countDown();
         }, "Minosoft Language", "Load minosoft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
 
@@ -140,7 +137,7 @@ public final class Minosoft {
             Log.debug("Refreshing account token...");
             checkClientToken();
             accountList = config.getMojangAccounts();
-            selectAccount(accountList.get(config.getString(ConfigurationPaths.ACCOUNT_SELECTED)));
+            selectAccount(accountList.get(config.getString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED)));
         }, "Token refresh", "Refresh selected account token", Priorities.LOW, TaskImportance.OPTIONAL, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
@@ -157,7 +154,7 @@ public final class Minosoft {
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
-            MinecraftLocaleManager.load(config.getString(ConfigurationPaths.GENERAL_LANGUAGE));
+            MinecraftLocaleManager.load(config.getString(ConfigurationPaths.StringPaths.GENERAL_LANGUAGE));
             progress.countDown();
         }, "Mojang language", "Load minecraft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Assets"));
 
@@ -171,8 +168,8 @@ public final class Minosoft {
     }
 
     public static void checkClientToken() {
-        if (config.getString(ConfigurationPaths.CLIENT_TOKEN).isBlank()) {
-            config.putString(ConfigurationPaths.CLIENT_TOKEN, UUID.randomUUID().toString());
+        if (config.getString(ConfigurationPaths.StringPaths.CLIENT_TOKEN).isBlank()) {
+            config.putString(ConfigurationPaths.StringPaths.CLIENT_TOKEN, UUID.randomUUID().toString());
             config.saveToFile();
         }
     }
@@ -180,7 +177,7 @@ public final class Minosoft {
     public static void selectAccount(MojangAccount account) {
         if (account == null) {
             selectedAccount = null;
-            config.putString(ConfigurationPaths.ACCOUNT_SELECTED, "");
+            config.putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, "");
             config.saveToFile();
             return;
         }
@@ -192,7 +189,7 @@ public final class Minosoft {
             selectedAccount = null;
             return;
         }
-        config.putString(ConfigurationPaths.ACCOUNT_SELECTED, account.getUserId());
+        config.putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, account.getUserId());
         selectedAccount = account;
         MainWindow.selectAccount();
         account.saveToConfig();

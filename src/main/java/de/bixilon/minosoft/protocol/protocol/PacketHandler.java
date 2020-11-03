@@ -199,7 +199,7 @@ public class PacketHandler {
         if (pkg.getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getVersionId()))) {
             InByteBuffer data = pkg.getDataAsBuffer();
             String serverVersion;
-            String clientVersion = (Minosoft.getConfig().getBoolean(ConfigurationPaths.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
+            String clientVersion = (Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
             OutByteBuffer toSend = new OutByteBuffer(connection);
             if (connection.getVersion().getVersionId() < 29) {
                 // no length prefix

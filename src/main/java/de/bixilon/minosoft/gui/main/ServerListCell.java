@@ -190,7 +190,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 setErrorMotd(String.format("%s", server.getLastPing().getLastConnectionException().getLocalizedMessage()));
             }
         }));
-
     }
 
     @Override

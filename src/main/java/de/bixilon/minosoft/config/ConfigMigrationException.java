@@ -13,21 +13,23 @@
 
 package de.bixilon.minosoft.config;
 
-public abstract class ConfigurationPaths {
-    public enum StringPaths {
-        GENERAL_LOG_LEVEL,
-        CLIENT_TOKEN,
-        MAPPINGS_URL,
-        ACCOUNT_SELECTED,
-        GENERAL_LANGUAGE,
+public class ConfigMigrationException extends Exception {
+    public ConfigMigrationException() {
     }
 
-    public enum BooleanPaths {
-        NETWORK_FAKE_CLIENT_BRAND, DEBUG_VERIFY_ASSETS
+    public ConfigMigrationException(String message) {
+        super(message);
     }
 
-    public enum IntegerPaths {
-        GENERAL_CONFIG_VERSION,
-        GAME_RENDER_DISTANCE
+    public ConfigMigrationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ConfigMigrationException(Throwable cause) {
+        super(cause);
+    }
+
+    public ConfigMigrationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

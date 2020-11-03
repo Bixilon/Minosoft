@@ -45,7 +45,7 @@ public class SettingsWindow implements Initializable {
                 return;
             }
             Log.setLevel(newLevel);
-            Minosoft.getConfig().putString(ConfigurationPaths.GENERAL_LOG_LEVEL, newLevel.name());
+            Minosoft.getConfig().putString(ConfigurationPaths.StringPaths.GENERAL_LOG_LEVEL, newLevel.name());
             Minosoft.getConfig().saveToFile();
         }));
 

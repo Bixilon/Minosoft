@@ -32,7 +32,7 @@ public class Configuration {
     final JsonObject config;
     private final Object lock = new Object();
 
-    public Configuration() throws IOException {
+    public Configuration() throws IOException, ConfigMigrationException {
         File file = new File(StaticConfiguration.HOME_DIR + "config/" + StaticConfiguration.CONFIG_FILENAME);
         if (!file.exists()) {
             // no configuration file
@@ -48,9 +48,9 @@ public class Configuration {
             file = new File(StaticConfiguration.HOME_DIR + "config/" + StaticConfiguration.CONFIG_FILENAME);
         }
         config = Util.readJsonFromFile(file.getAbsolutePath());
-        int configVersion = getInt(ConfigurationPaths.CONFIG_VERSION);
+        int configVersion = getInt(ConfigurationPaths.IntegerPaths.GENERAL_CONFIG_VERSION);
         if (configVersion > LATEST_CONFIG_VERSION) {
-            throw new RuntimeException(String.format("Configuration was migrated to newer config format (version=%d, expected=%d). Downgrading the config file is unsupported!", configVersion, LATEST_CONFIG_VERSION));
+            throw new ConfigMigrationException(String.format("Configuration was migrated to newer config format (version=%d, expected=%d). Downgrading the config file is unsupported!", configVersion, LATEST_CONFIG_VERSION));
         }
         if (configVersion < LATEST_CONFIG_VERSION) {
             migrateConfiguration();
@@ -96,57 +96,51 @@ public class Configuration {
         }, "IO").start();
     }
 
-    public boolean getBoolean(ConfigurationPaths path) {
+    public boolean getBoolean(ConfigurationPaths.BooleanPaths path) {
         return switch (path) {
             case NETWORK_FAKE_CLIENT_BRAND -> config.getAsJsonObject("network").get("fake-network-brand").getAsBoolean();
             case DEBUG_VERIFY_ASSETS -> config.getAsJsonObject("debug").get("verify-assets").getAsBoolean();
-            default -> throw new RuntimeException(String.format("Illegal boolean value: %s", path));
         };
     }
 
-    public void putBoolean(ConfigurationPaths path, boolean value) {
+    public void putBoolean(ConfigurationPaths.BooleanPaths path, boolean value) {
         switch (path) {
             case NETWORK_FAKE_CLIENT_BRAND -> config.getAsJsonObject("network").addProperty("fake-network-brand", value);
             case DEBUG_VERIFY_ASSETS -> config.getAsJsonObject("debug").addProperty("verify-assets", value);
-            default -> throw new RuntimeException(String.format("Illegal boolean value: %s", path));
         }
     }
 
-    public int getInt(ConfigurationPaths path) {
+    public int getInt(ConfigurationPaths.IntegerPaths path) {
         return switch (path) {
-            case CONFIG_VERSION -> config.getAsJsonObject("general").get("version").getAsInt();
+            case GENERAL_CONFIG_VERSION -> config.getAsJsonObject("general").get("version").getAsInt();
             case GAME_RENDER_DISTANCE -> config.getAsJsonObject("game").get("render-distance").getAsInt();
-            default -> throw new RuntimeException(String.format("Illegal int value: %s", path));
         };
     }
 
-    public void putInt(ConfigurationPaths path, int value) {
+    public void putInt(ConfigurationPaths.IntegerPaths path, int value) {
         switch (path) {
-            case CONFIG_VERSION -> config.getAsJsonObject("general").addProperty("version", value);
+            case GENERAL_CONFIG_VERSION -> config.getAsJsonObject("general").addProperty("version", value);
             case GAME_RENDER_DISTANCE -> config.getAsJsonObject("game").addProperty("render-distance", value);
-            default -> throw new RuntimeException(String.format("Illegal int value: %s", path));
         }
     }
 
-    public String getString(ConfigurationPaths path) {
+    public String getString(ConfigurationPaths.StringPaths path) {
         return switch (path) {
             case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").get("selected").getAsString();
             case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").get("log-level").getAsString();
             case GENERAL_LANGUAGE -> config.getAsJsonObject("general").get("language").getAsString();
             case MAPPINGS_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").get("mappings").getAsString();
             case CLIENT_TOKEN -> config.getAsJsonObject("accounts").get("client-token").getAsString();
-            default -> throw new RuntimeException(String.format("Illegal String value: %s", path));
         };
     }
 
-    public void putString(ConfigurationPaths path, String value) {
+    public void putString(ConfigurationPaths.StringPaths path, String value) {
         switch (path) {
             case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").addProperty("selected", value);
             case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").addProperty("log-level", value);
             case GENERAL_LANGUAGE -> config.getAsJsonObject("general").addProperty("language", value);
             case MAPPINGS_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").addProperty("mappings", value);
             case CLIENT_TOKEN -> config.getAsJsonObject("accounts").addProperty("client-token", value);
-            default -> throw new RuntimeException(String.format("Illegal String value: %s", path));
         }
     }
 
@@ -194,12 +188,12 @@ public class Configuration {
     }
 
     private void migrateConfiguration() {
-        int configVersion = getInt(ConfigurationPaths.CONFIG_VERSION);
+        int configVersion = getInt(ConfigurationPaths.IntegerPaths.GENERAL_CONFIG_VERSION);
         Log.info(String.format("Migrating config from version %d to  %d", configVersion, LATEST_CONFIG_VERSION));
         for (int nextVersion = configVersion + 1; nextVersion <= LATEST_CONFIG_VERSION; nextVersion++) {
             migrateConfiguration(nextVersion);
         }
-        putInt(ConfigurationPaths.CONFIG_VERSION, LATEST_CONFIG_VERSION);
+        putInt(ConfigurationPaths.IntegerPaths.GENERAL_CONFIG_VERSION, LATEST_CONFIG_VERSION);
         saveToFile();
         Log.info("Finished migrating config!");
 

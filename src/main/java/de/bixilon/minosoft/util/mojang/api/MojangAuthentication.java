@@ -26,7 +26,7 @@ import java.net.http.HttpResponse;
 public final class MojangAuthentication {
 
     public static MojangAccountAuthenticationAttempt login(String username, String password) {
-        return login(Minosoft.getConfig().getString(ConfigurationPaths.CLIENT_TOKEN), username, password);
+        return login(Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.CLIENT_TOKEN), username, password);
     }
 
     public static MojangAccountAuthenticationAttempt login(String clientToken, String username, String password) {
@@ -81,7 +81,7 @@ public final class MojangAuthentication {
     }
 
     public static String refresh(String accessToken) {
-        return refresh(Minosoft.getConfig().getString(ConfigurationPaths.CLIENT_TOKEN), accessToken);
+        return refresh(Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.CLIENT_TOKEN), accessToken);
     }
 
     public static String refresh(String clientToken, String accessToken) {
