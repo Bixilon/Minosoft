@@ -82,7 +82,7 @@ public final class Minosoft {
                 // Do not translate this, translations might fail to load...
                 dialog.setTitle("Critical Error");
                 dialog.setHeaderText("An error occurred while starting Minosoft");
-                dialog.setContentText(exception.getLocalizedMessage());
+                dialog.setContentText(exception.getClass().getCanonicalName() + ": " + exception.getLocalizedMessage());
 
                 Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
                 stage.getIcons().add(GUITools.logo);
