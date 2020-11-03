@@ -31,10 +31,10 @@ Minosoft is an open source minecraft client, written from scratch in java. It ai
 ## Rendering
 Rendering is developed and maintained by Lukas Eisenhauer. It is very WIP, but it works. See !8 for more details.
 
-![Rendering](doc/img/rendering.png)
+![Rendering](doc/img/rendering.png)  
 The current result of rendering (taken in 739f861bf62341698abcd58386c353a4831f4818).
 
-![Rendering](doc/img/rendering_hypixel.png)
+![Rendering](doc/img/rendering_hypixel.png)  
 The Hypixel prototype lobby (taken in 91ab431004fa1ae132a1eb1115550f84c27f48f8).
 
 ## Launcher

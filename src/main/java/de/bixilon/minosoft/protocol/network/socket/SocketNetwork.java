@@ -192,24 +192,20 @@ public class SocketNetwork implements Network {
                     try {
                         packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
                         if (packet == null) {
-                            Log.fatal(String.format("Packet mapping does not contain a packet with id 0x%x. The server sends bullshit or your versions.json broken!", inPacketBuffer.getCommand()));
                             disconnect();
-                            lastException = new RuntimeException(String.format("Invalid packet 0x%x", inPacketBuffer.getCommand()));
+                            lastException = new UnknownPacketException(String.format("Invalid packet 0x%x", inPacketBuffer.getCommand()));
                             throw lastException;
                         }
                         Class<? extends ClientboundPacket> clazz = packet.getClazz();
 
                         if (clazz == null) {
-                            Log.warn(String.format("[IN] Received unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), packet, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
-                            continue;
+                            throw new UnknownPacketException(String.format("Unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), packet, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
                         }
                         try {
                             ClientboundPacket packetInstance = clazz.getConstructor().newInstance();
                             boolean success = packetInstance.read(inPacketBuffer);
                             if (inPacketBuffer.getBytesLeft() > 0 || !success) {
-                                // warn not all data used
-                                Log.warn(String.format("[IN] Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packet, inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
-                                continue;
+                                throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packet, inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
                             }
 
                             //set special settings to avoid miss timing issues

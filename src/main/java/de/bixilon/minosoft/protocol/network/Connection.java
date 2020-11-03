@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.Player;
 import de.bixilon.minosoft.data.VelocityHandler;
 import de.bixilon.minosoft.data.mappings.CustomMapping;
+import de.bixilon.minosoft.data.mappings.MappingsLoadingException;
 import de.bixilon.minosoft.data.mappings.recipes.Recipes;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
@@ -160,7 +161,7 @@ public class Connection {
         } catch (IOException e) {
             Log.printException(e, LogLevels.DEBUG);
             Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
-            lastException = new RuntimeException(String.format("Mappings could not be loaded: %s", e.getLocalizedMessage()));
+            lastException = new MappingsLoadingException("Mappings could not be loaded", e);
             setConnectionState(ConnectionStates.FAILED_NO_RETRY);
         }
     }
