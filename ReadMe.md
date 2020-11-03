@@ -69,4 +69,13 @@ Many thanks to [Credits](Credits.md).
 ## Releases and beta
 We are almost ready to release a beta once !8 is merged.
 
+## Compiling and running
+1. Install Maven and java 15 (On Ubuntu based distributions: `sudo apt install maven openjdk-15-jdk`)
+2. Clone this repo (`git clone https://gitlab.bixilon.de/bixilon/minosoft.git`)
+3. Change directory (`cd minosoft`)
+4. Checkout the branch (`git checkout <branch>`). Probably `render`
+5. Run Minosoft with `mvn javafx:run`. If any errors occur, feel free to open an issue. In this early stage it might be helpful
+ to delete the app data folder (only of minosoft).
+
+
 This readme is work in progress, things may change over time.
