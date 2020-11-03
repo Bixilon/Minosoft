@@ -39,7 +39,7 @@ public class GUITools {
             if (a.getVersionId() == -1) {
                 return -Integer.MAX_VALUE;
             }
-            return (a.getVersionId() - b.getVersionId());
+            return -(a.getVersionId() - b.getVersionId());
         });
     }
 
