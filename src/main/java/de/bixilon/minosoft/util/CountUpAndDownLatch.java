@@ -17,7 +17,7 @@ package de.bixilon.minosoft.util;
 public class CountUpAndDownLatch {
     private final Object lock = new Object();
     private long count;
-    private long total = 0;
+    private long total;
 
     public CountUpAndDownLatch(int count) {
         total = count;

@@ -50,7 +50,6 @@ public class SocketNetwork implements Network {
     OutputStream outputStream;
     InputStream inputStream;
     boolean encryptionEnabled = false;
-    SecretKey secretKey;
     Exception lastException;
 
     public SocketNetwork(Connection connection) {
