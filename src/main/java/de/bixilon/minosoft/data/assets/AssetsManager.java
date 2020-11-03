@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.assets;
 
+import com.google.errorprone.annotations.DoNotCall;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -28,6 +29,8 @@ import de.bixilon.minosoft.util.HTTP;
 import de.bixilon.minosoft.util.Util;
 
 import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -203,14 +206,7 @@ public class AssetsManager {
             if (!relevant) {
                 continue;
             }
-            // ToDo: use input steam twice ?
-            ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
-            int len;
-            byte[] buffer = new byte[4096];
-            while ((len = versionJar.read(buffer)) > 0) {
-                outputBuffer.write(buffer, 0, len);
-            }
-            String hash = saveAsset(outputBuffer.toByteArray());
+            String hash = saveAsset(versionJar);
 
             clientJarAssetsHashMap.put(currentFile.getName().substring("assets/".length()), hash);
         }
@@ -221,6 +217,7 @@ public class AssetsManager {
         Log.verbose(String.format("Generated jar assets in %dms (elements=%d, hash=%s)", (System.currentTimeMillis() - startTime), clientJarAssetsHashMap.size(), assetHash));
     }
 
+    @DoNotCall
     private static String saveAsset(byte[] data) throws IOException {
         String hash = Util.sha1(data);
         String destination = getAssetDiskPath(hash);
@@ -232,6 +229,38 @@ public class AssetsManager {
         OutputStream out = new GZIPOutputStream(new FileOutputStream(destination));
         out.write(data);
         out.close();
+        return hash;
+    }
+
+    private static String saveAsset(InputStream data) throws IOException {
+        File tempDestinationFile = null;
+        while (tempDestinationFile == null || tempDestinationFile.exists() && tempDestinationFile.length() > 0) { // file exist? lol
+            tempDestinationFile = new File(System.getProperty("java.io.tmpdir") + "/minosoft/" + Util.generateRandomString(32));
+        }
+        Util.createParentFolderIfNotExist(tempDestinationFile);
+
+        OutputStream out = new GZIPOutputStream(new FileOutputStream(tempDestinationFile));
+        MessageDigest crypt;
+        try {
+            crypt = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        byte[] buffer = new byte[4096];
+        int length;
+        while ((length = data.read(buffer, 0, 4096)) != -1) {
+            crypt.update(buffer, 0, length);
+            out.write(buffer);
+        }
+        out.close();
+        String hash = Util.byteArrayToHexString(crypt.digest());
+
+        // move file to desired destination
+        File outputFile = new File(getAssetDiskPath(hash));
+        Util.createParentFolderIfNotExist(outputFile);
+        tempDestinationFile.renameTo(outputFile);
         return hash;
     }
 

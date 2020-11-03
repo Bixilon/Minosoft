@@ -27,13 +27,17 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 import java.util.zip.*;
 
 public final class Util {
     public static final Pattern UUID_FIX = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
+    public static final String RANDOM_STRING_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static final Random random = ThreadLocalRandom.current();
 
     public static UUID getUUIDFromString(String uuid) {
         if (uuid.length() == 36) {
@@ -249,9 +253,19 @@ public final class Util {
         return new ThreadFactoryBuilder().setNameFormat(threadName + "#%d").build();
     }
 
-    public static void createParentFolderIfNotExist(String destination) {
-        File file = new File(destination);
+    public static void createParentFolderIfNotExist(String file) {
+        createParentFolderIfNotExist(new File(file));
+    }
+
+    public static void createParentFolderIfNotExist(File file) {
         file.getParentFile().mkdirs();
     }
 
+    public static String generateRandomString(int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(RANDOM_STRING_CHARS.charAt(random.nextInt(RANDOM_STRING_CHARS.length())));
+        }
+        return sb.toString();
+    }
 }
