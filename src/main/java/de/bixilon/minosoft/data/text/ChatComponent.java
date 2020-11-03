@@ -48,5 +48,5 @@ public interface ChatComponent {
     /**
      * @return Returns the a list of Nodes, drawable in JavaFX (TextFlow)
      */
-    ObservableList<Node> getJavaFXText();
+    ObservableList<Node> getJavaFXText(ObservableList<Node> nodes);
 }

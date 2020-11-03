@@ -25,6 +25,7 @@ import de.bixilon.minosoft.protocol.ping.ForgeModInfo;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.util.DNSUtil;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -173,7 +174,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
             serverBrand.setText(ping.getServerModInfo().getBrand());
             serverBrand.setTooltip(new Tooltip(ping.getServerModInfo().getInfo()));
-            motd.getChildren().addAll(ping.getMotd().getJavaFXText());
+            motd.getChildren().addAll(ping.getMotd().getJavaFXText(FXCollections.observableArrayList()));
             if (ping.getFavicon() != null) {
                 icon.setImage(GUITools.getImage(ping.getFavicon()));
                 if (!Arrays.equals(ping.getFavicon(), server.getFavicon())) {
@@ -405,7 +406,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 Label serverBrandLabel = new Label(lastPing.getServerBrand());
                 Label playersOnlineMaxLabel = new Label(LocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, lastPing.getPlayerOnline(), lastPing.getMaxPlayers()));
                 TextFlow motdLabel = new TextFlow();
-                motdLabel.getChildren().addAll(lastPing.getMotd().getJavaFXText());
+                motdLabel.getChildren().addAll(lastPing.getMotd().getJavaFXText(FXCollections.observableArrayList()));
                 Label moddedBrandLabel = new Label(lastPing.getServerModInfo().getBrand());
 
                 grid.add(new Label(LocaleManager.translate(Strings.SERVER_INFO_REAL_SERVER_ADDRESS) + ":"), 0, ++column);

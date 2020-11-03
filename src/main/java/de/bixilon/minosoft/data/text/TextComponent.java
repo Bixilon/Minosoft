@@ -16,7 +16,6 @@ package de.bixilon.minosoft.data.text;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -179,7 +178,7 @@ public class TextComponent implements ChatComponent {
     }
 
     @Override
-    public ObservableList<Node> getJavaFXText() {
+    public ObservableList<Node> getJavaFXText(ObservableList<Node> nodes) {
         Text text = new Text(this.text);
         if (color != null) {
             text.setFill(Color.web(color.toString()));
@@ -197,7 +196,8 @@ public class TextComponent implements ChatComponent {
                 case ITALIC -> text.setStyle("-fx-font-weight: italic;");
             }
         }));
-        return FXCollections.observableArrayList(text);
+        nodes.add(text);
+        return nodes;
     }
 
     @Override

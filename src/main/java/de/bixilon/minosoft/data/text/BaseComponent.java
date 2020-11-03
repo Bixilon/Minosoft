@@ -16,7 +16,6 @@ package de.bixilon.minosoft.data.text;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
@@ -197,10 +196,9 @@ public class BaseComponent implements ChatComponent {
     }
 
     @Override
-    public ObservableList<Node> getJavaFXText() {
-        ObservableList<Node> list = FXCollections.observableArrayList();
-        parts.forEach((chatPart) -> list.addAll(chatPart.getJavaFXText()));
-        return list;
+    public ObservableList<Node> getJavaFXText(ObservableList<Node> nodes) {
+        parts.forEach((chatPart) -> chatPart.getJavaFXText(nodes));
+        return nodes;
     }
 
     @Unsafe

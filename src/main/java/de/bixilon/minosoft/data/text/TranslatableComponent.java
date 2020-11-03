@@ -66,10 +66,10 @@ public class TranslatableComponent implements ChatComponent {
     }
 
     @Override
-    public ObservableList<Node> getJavaFXText() {
+    public ObservableList<Node> getJavaFXText(ObservableList<Node> nodes) {
         // ToDo fix nested base component (formatting), not just a string
 
         // This is just a dirty workaround to enable formatting and coloring. Still need to do hover, click, ... stuff
-        return new BaseComponent(getLegacyText()).getJavaFXText();
+        return new BaseComponent(getLegacyText()).getJavaFXText(nodes);
     }
 }
