@@ -26,9 +26,9 @@ public class BedEntityMetaData extends BlockEntityMetaData {
     }
 
     public BedEntityMetaData(NBTTag nbt) {
-        if (nbt instanceof StringTag) {
+        if (nbt instanceof StringTag stringTag) {
             // yes, we support bed rgb colors :D
-            color = new RGBColor(((StringTag) nbt).getValue());
+            color = new RGBColor(stringTag.getValue());
             return;
         }
         color = switch (((IntTag) nbt).getValue()) {

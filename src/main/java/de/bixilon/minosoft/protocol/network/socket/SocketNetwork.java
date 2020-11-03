@@ -125,10 +125,9 @@ public class SocketNetwork implements Network {
 
                             outputStream.write(data);
                             outputStream.flush();
-                            if (packet instanceof PacketEncryptionResponse) {
+                            if (packet instanceof PacketEncryptionResponse packetEncryptionResponse) {
                                 // enable encryption
-                                secretKey = ((PacketEncryptionResponse) packet).getSecretKey();
-                                enableEncryption(secretKey);
+                                enableEncryption(packetEncryptionResponse.getSecretKey());
                                 // wake up other thread
                                 socketRThread.interrupt();
                             }
@@ -216,8 +215,8 @@ public class SocketNetwork implements Network {
                             //set special settings to avoid miss timing issues
                             if (packetInstance instanceof PacketLoginSuccess) {
                                 connection.setConnectionState(ConnectionStates.PLAY);
-                            } else if (packetInstance instanceof PacketCompressionInterface) {
-                                compressionThreshold = ((PacketCompressionInterface) packetInstance).getThreshold();
+                            } else if (packetInstance instanceof PacketCompressionInterface compressionPacket) {
+                                compressionThreshold = compressionPacket.getThreshold();
                             } else if (packetInstance instanceof PacketEncryptionRequest) {
                                 // wait until response is ready
                                 connection.handle(packetInstance);

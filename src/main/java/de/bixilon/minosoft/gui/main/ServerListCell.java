@@ -421,9 +421,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 grid.add(new Label(LocaleManager.translate(Strings.SERVER_INFO_SERVER_MODDED_BRAND) + ":"), 0, ++column);
                 grid.add(moddedBrandLabel, 1, column);
 
-                if (lastPing.getServerModInfo() instanceof ForgeModInfo) {
-                    ForgeModInfo modInfo = (ForgeModInfo) lastPing.getServerModInfo();
-                    Label moddedModsLabel = new Label(modInfo.getModList().toString());
+                if (lastPing.getServerModInfo() instanceof ForgeModInfo forgeModInfo) {
+                    Label moddedModsLabel = new Label(forgeModInfo.getModList().toString());
                     moddedModsLabel.setWrapText(true);
 
                     grid.add(new Label(LocaleManager.translate(Strings.SERVER_INFO_SERVER_MODDED_MOD_LIST) + ":"), 0, ++column);

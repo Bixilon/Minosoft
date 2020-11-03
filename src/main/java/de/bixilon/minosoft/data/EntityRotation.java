@@ -13,22 +13,7 @@
 
 package de.bixilon.minosoft.data;
 
-public class EntityRotation {
-    final float yaw;
-    final float pitch;
-    final float roll;
-
-    public EntityRotation(float yaw, float pitch, float roll) {
-        this.yaw = yaw;
-        this.pitch = pitch;
-        this.roll = roll;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", getYaw(), getPitch(), getRoll());
-    }
-
+public record EntityRotation(float yaw, float pitch, float roll) {
     public float getYaw() {
         return yaw;
     }
@@ -39,5 +24,10 @@ public class EntityRotation {
 
     public float getRoll() {
         return roll;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s %s", yaw, pitch, roll);
     }
 }

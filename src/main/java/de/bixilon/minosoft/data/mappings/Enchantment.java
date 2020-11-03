@@ -13,42 +13,17 @@
 
 package de.bixilon.minosoft.data.mappings;
 
-public class Enchantment {
-    final String mod;
-    final String identifier;
-
-    public Enchantment(String mod, String identifier) {
-        this.mod = mod;
-        this.identifier = identifier;
+public record Enchantment(String mod, String identifier) {
+    public String getMod() {
+        return mod;
     }
 
     public String getIdentifier() {
         return identifier;
     }
 
-    public String getMod() {
-        return mod;
-    }
-
     @Override
     public String toString() {
-        return String.format("%s:%s", getMod(), getIdentifier());
-    }
-
-    @Override
-    public int hashCode() {
-        return mod.hashCode() * identifier.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        if (hashCode() != obj.hashCode()) {
-            return false;
-        }
-        Enchantment their = (Enchantment) obj;
-        return getIdentifier().equals(their.getIdentifier()) && getMod().equals(their.getMod());
+        return String.format("%s:%s", mod, identifier);
     }
 }

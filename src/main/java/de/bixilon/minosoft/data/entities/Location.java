@@ -13,32 +13,7 @@
 
 package de.bixilon.minosoft.data.entities;
 
-import java.util.Objects;
-
-public class Location {
-    final double x;
-    final double y;
-    final double z;
-
-    public Location(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        Location that = (Location) obj;
-        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y, z);
-    }
+public record Location(double x, double y, double z) {
 
     public double getX() {
         return x;
@@ -54,6 +29,6 @@ public class Location {
 
     @Override
     public String toString() {
-        return String.format("%s %s %s", getX(), getY(), getZ());
+        return String.format("%s %s %s", x, y, z);
     }
 }

@@ -13,33 +13,7 @@
 
 package de.bixilon.minosoft.data.entities;
 
-import java.util.Objects;
-
-public class RelativeLocation {
-    final double x;
-    final double y;
-    final double z;
-
-    public RelativeLocation(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y, z);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        RelativeLocation that = (RelativeLocation) obj;
-        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
-    }
-
+public record RelativeLocation(double x, double y, double z) {
     public double getX() {
         return x;
     }
@@ -54,6 +28,6 @@ public class RelativeLocation {
 
     @Override
     public String toString() {
-        return String.format("%s %s %s", getX(), getY(), getZ());
+        return String.format("%s %s %s", x, y, z);
     }
 }

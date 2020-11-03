@@ -13,15 +13,7 @@
 
 package de.bixilon.minosoft.data.mappings.statistics;
 
-public class Statistic {
-    final String mod;
-    final String identifier;
-
-    public Statistic(String mod, String identifier) {
-        this.mod = mod;
-        this.identifier = identifier;
-    }
-
+public record Statistic(String mod, String identifier) {
     public String getMod() {
         return mod;
     }
@@ -32,22 +24,6 @@ public class Statistic {
 
     @Override
     public String toString() {
-        return String.format("%s:%s", getMod(), getIdentifier());
-    }
-
-    @Override
-    public int hashCode() {
-        return mod.hashCode() * identifier.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        if (hashCode() != obj.hashCode()) {
-            return false;
-        }
-        return toString().equals(obj.toString());
+        return String.format("%s:%s", mod, identifier);
     }
 }

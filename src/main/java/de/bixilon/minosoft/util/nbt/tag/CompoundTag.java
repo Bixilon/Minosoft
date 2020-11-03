@@ -80,9 +80,8 @@ public class CompoundTag extends NBTTag {
             buffer.writeStringNoLength(set.getKey());
 
             // write data
-            if (set.getValue() instanceof CompoundTag) {
+            if (set.getValue() instanceof CompoundTag compoundTag) {
                 // that's a subtag! special rule
-                CompoundTag compoundTag = (CompoundTag) set.getValue();
                 compoundTag.writeBytesSubTag(buffer);
                 continue;
             }

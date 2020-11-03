@@ -15,17 +15,7 @@ package de.bixilon.minosoft.data.entities;
 
 import de.bixilon.minosoft.data.mappings.MobEffect;
 
-public class StatusEffect {
-    final MobEffect effect;
-    final int amplifier;
-    final int duration;
-
-    public StatusEffect(MobEffect effect, int amplifier, int duration) {
-        this.effect = effect;
-        this.amplifier = amplifier;
-        this.duration = duration;
-    }
-
+public record StatusEffect(MobEffect effect, int amplifier, int duration) {
     public int getAmplifier() {
         return amplifier;
     }

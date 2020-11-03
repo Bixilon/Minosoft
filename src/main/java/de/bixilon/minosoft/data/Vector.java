@@ -13,26 +13,7 @@
 
 package de.bixilon.minosoft.data;
 
-public class Vector {
-    final int x;
-    final int y;
-    final int z;
-
-    public Vector(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        Vector pos = (Vector) obj;
-        return pos.getX() == getX() && pos.getY() == getY() && pos.getZ() == getZ();
-    }
-
+public record Vector(int x, int y, int z) {
     public int getX() {
         return x;
     }
@@ -47,6 +28,6 @@ public class Vector {
 
     @Override
     public String toString() {
-        return String.format("%s %s %s", getX(), getY(), getZ());
+        return String.format("%s %s %s", x, y, z);
     }
 }

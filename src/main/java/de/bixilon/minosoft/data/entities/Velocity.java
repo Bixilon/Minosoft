@@ -13,26 +13,7 @@
 
 package de.bixilon.minosoft.data.entities;
 
-public class Velocity {
-    final short x;
-    final short y;
-    final short z;
-
-    public Velocity(short x, short y, short z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        Velocity that = (Velocity) obj;
-        return that.getX() == getX() && that.getY() == getY() && that.getZ() == getZ();
-    }
-
+public record Velocity(short x, short y, short z) {
     public short getX() {
         return x;
     }
@@ -47,6 +28,6 @@ public class Velocity {
 
     @Override
     public String toString() {
-        return String.format("%s %s %s", getX(), getY(), getZ());
+        return String.format("%s %s %s", x, y, z);
     }
 }

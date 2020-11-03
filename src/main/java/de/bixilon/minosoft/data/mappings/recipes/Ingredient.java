@@ -15,14 +15,9 @@ package de.bixilon.minosoft.data.mappings.recipes;
 
 import de.bixilon.minosoft.data.inventory.Slot;
 
-public class Ingredient {
-    final Slot[] slot;
-
-    public Ingredient(Slot[] slot) {
-        this.slot = slot;
-    }
-
+public record Ingredient(Slot[] slot) {
     public static boolean slotEquals(Slot[] one, Slot[] two) {
+        // ToDo
         if (one.length != two.length) {
             return false;
         }
@@ -41,18 +36,6 @@ public class Ingredient {
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        if (this.hashCode() != obj.hashCode()) {
-            return false;
-        }
-        Ingredient their = (Ingredient) obj;
-        return slotEquals(getSlot(), their.getSlot());
     }
 
     public Slot[] getSlot() {

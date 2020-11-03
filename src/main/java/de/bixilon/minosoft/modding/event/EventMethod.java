@@ -43,7 +43,7 @@ public class EventMethod {
         if (!method.getParameters()[0].getType().isAssignableFrom(event.getClass())) {
             return;
         }
-        if (!annotation.ignoreCancelled() && event instanceof CancelableEvent && ((CancelableEvent) event).isCancelled()) {
+        if (!annotation.ignoreCancelled() && event instanceof CancelableEvent cancelableEvent && cancelableEvent.isCancelled()) {
             return;
         }
         try {

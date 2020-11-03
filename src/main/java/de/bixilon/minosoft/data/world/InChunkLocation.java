@@ -13,40 +13,14 @@
 
 package de.bixilon.minosoft.data.world;
 
-import java.util.Objects;
-
 /**
- * Chunk X, Y and Z location (max 16x16x16)
+ * Chunk X, Y and Z location (max 16x255x16)
  */
-public class InChunkLocation {
-    final int x;
-    final int y;
-    final int z;
-
-    public InChunkLocation(int x, int y, int z) {
-        // x 0 - 16
-        // y 0 - 255
-        // z 0 - 16
+public record InChunkLocation(int x, int y, int z) {
+    public InChunkLocation {
         if (x > 15 || y > 255 || z > 15 || x < 0 || y < 0 || z < 0) {
             throw new IllegalArgumentException(String.format("Invalid chunk location %s %s %s", x, y, z));
         }
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y, z);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        InChunkLocation that = (InChunkLocation) obj;
-        return getX() == that.getX() && getY() == that.getY() && getZ() == that.getZ();
     }
 
     public int getX() {
@@ -57,16 +31,16 @@ public class InChunkLocation {
         return y;
     }
 
+    public int getZ() {
+        return z;
+    }
+
     public ChunkNibbleLocation getChunkNibbleLocation() {
-        return new ChunkNibbleLocation(getX(), getY() % 16, getZ());
+        return new ChunkNibbleLocation(x, y % 16, z);
     }
 
     @Override
     public String toString() {
-        return String.format("%d %d %d", getX(), getY(), getZ());
-    }
-
-    public int getZ() {
-        return z;
+        return String.format("%d %d %d", x, y, z);
     }
 }

@@ -13,34 +13,10 @@
 
 package de.bixilon.minosoft.data.world;
 
-import java.util.Objects;
-
 /**
  * Chunk X and Z location (block position / 16, rounded down)
  */
-public class ChunkLocation {
-    final int x;
-    final int z;
-
-    public ChunkLocation(int x, int z) {
-        this.x = x;
-        this.z = z;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, z);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        ChunkLocation that = (ChunkLocation) obj;
-        return getX() == that.getX() && getZ() == that.getZ();
-    }
-
+public record ChunkLocation(int x, int z) {
     public int getX() {
         return x;
     }
@@ -51,6 +27,6 @@ public class ChunkLocation {
 
     @Override
     public String toString() {
-        return String.format("%d %d", getX(), getZ());
+        return String.format("%d %d", x, z);
     }
 }

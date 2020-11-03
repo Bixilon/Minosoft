@@ -309,8 +309,8 @@ public class EntityMetaData {
 
         public boolean getBoolean(int index, boolean defaultValue) {
             Object ret = get(index, defaultValue);
-            if (ret instanceof Byte) {
-                return (byte) ret == 0x01;
+            if (ret instanceof Byte b) {
+                return b == 0x01;
             }
             return (boolean) get(index, defaultValue);
         }

@@ -16,38 +16,9 @@ package de.bixilon.minosoft.data.entities;
 import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
 
-public class VillagerData {
-    final VillagerTypes type;
-    final VillagerProfessions profession;
-    final VillagerLevels level;
-
+public record VillagerData(VillagerTypes type, VillagerProfessions profession, VillagerLevels level) {
     public VillagerData(int type, int profession, int level, int versionId) {
-        this.type = VillagerTypes.byId(type);
-        this.profession = VillagerProfessions.byId(profession, versionId);
-        this.level = VillagerLevels.byId(level);
-    }
-
-    public VillagerData(VillagerTypes type, VillagerProfessions profession, VillagerLevels level) {
-        this.type = type;
-        this.profession = profession;
-        this.level = level;
-    }
-
-    @Override
-    public int hashCode() {
-        return type.hashCode() * profession.hashCode() * level.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        if (hashCode() != obj.hashCode()) {
-            return false;
-        }
-        VillagerData their = (VillagerData) obj;
-        return getType() == their.getType() && getProfession() == their.getProfession() && getLevel() == their.getLevel();
+        this(VillagerTypes.byId(type), VillagerProfessions.byId(profession, versionId), VillagerLevels.byId(level));
     }
 
     public VillagerTypes getType() {
@@ -129,5 +100,4 @@ public class VillagerData {
             return values()[id];
         }
     }
-
 }

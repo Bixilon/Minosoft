@@ -13,15 +13,7 @@
 
 package de.bixilon.minosoft.data.mappings.particle;
 
-public class Particle {
-    final String mod;
-    final String identifier;
-
-    public Particle(String mod, String identifier) {
-        this.mod = mod;
-        this.identifier = identifier;
-    }
-
+public record Particle(String mod, String identifier) {
     public String getMod() {
         return mod;
     }
@@ -32,23 +24,6 @@ public class Particle {
 
     @Override
     public String toString() {
-        return String.format("%s:%s", getMod(), getIdentifier());
-    }
-
-    @Override
-    public int hashCode() {
-        return mod.hashCode() * identifier.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        if (hashCode() != obj.hashCode()) {
-            return false;
-        }
-        Particle their = (Particle) obj;
-        return getIdentifier().equals(their.getIdentifier()) && getMod().equals(their.getMod());
+        return String.format("%s:%s", mod, identifier);
     }
 }

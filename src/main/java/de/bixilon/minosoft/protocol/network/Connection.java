@@ -198,8 +198,8 @@ public class Connection {
     public boolean fireEvent(ConnectionEvent connectionEvent) {
         Minosoft.eventManagers.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach((method) -> method.invoke(connectionEvent))));
         eventListeners.forEach((method -> method.invoke(connectionEvent)));
-        if (connectionEvent instanceof CancelableEvent) {
-            return ((CancelableEvent) connectionEvent).isCancelled();
+        if (connectionEvent instanceof CancelableEvent cancelableEvent) {
+            return cancelableEvent.isCancelled();
         }
         return false;
     }

@@ -13,64 +13,37 @@
 
 package de.bixilon.minosoft.data.world;
 
-import java.util.Objects;
-
-public class BlockPosition {
-    final int x;
-    final int y;
-    final int z;
-
-    public BlockPosition(int x, int y, int z) {
-        // y min -2048, max 2047
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
+public record BlockPosition(int x, int y, int z) {
     public ChunkLocation getChunkLocation() {
-        return new ChunkLocation(getX() / 16, getZ() / 16);
+        return new ChunkLocation(x / 16, z / 16);
     }
 
     public int getX() {
         return x;
     }
 
-    public int getZ() {
-        return z;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y, z);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        BlockPosition pos = (BlockPosition) obj;
-        return pos.getX() == getX() && pos.getY() == getY() && pos.getZ() == getZ();
-    }
-
     public int getY() {
         return y;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%d %d %d", getX(), getY(), getZ());
+    public int getZ() {
+        return z;
     }
 
     public InChunkLocation getInChunkLocation() {
-        int x = getX() % 16;
+        int x = this.x % 16;
         if (x < 0) {
             x = 16 + x;
         }
-        int z = getZ() % 16;
+        int z = this.z % 16;
         if (z < 0) {
             z = 16 + z;
         }
-        return new InChunkLocation(x, getY(), z);
+        return new InChunkLocation(x, this.y, z);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d %d %d", x, y, z);
     }
 }
