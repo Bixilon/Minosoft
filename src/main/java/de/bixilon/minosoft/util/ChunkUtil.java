@@ -16,8 +16,8 @@ package de.bixilon.minosoft.util;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.blocks.Blocks;
 import de.bixilon.minosoft.data.world.Chunk;
-import de.bixilon.minosoft.data.world.ChunkNibble;
-import de.bixilon.minosoft.data.world.ChunkNibbleLocation;
+import de.bixilon.minosoft.data.world.ChunkSection;
+import de.bixilon.minosoft.data.world.InChunkSectionLocation;
 import de.bixilon.minosoft.data.world.palette.Palette;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -51,10 +51,10 @@ public final class ChunkUtil {
 
             //parse data
             int arrayPos = 0;
-            HashMap<Byte, ChunkNibble> nibbleMap = new HashMap<>();
+            HashMap<Byte, ChunkSection> sectionMap = new HashMap<>();
             for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
                 if (BitByte.isBitSet(sectionBitMask, c)) {
-                    HashMap<ChunkNibbleLocation, Block> blockMap = new HashMap<>();
+                    HashMap<InChunkSectionLocation, Block> blockMap = new HashMap<>();
 
                     for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                         for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
@@ -81,15 +81,15 @@ public final class ChunkUtil {
                                     arrayPos++;
                                     continue;
                                 }
-                                blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), block);
+                                blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), block);
                                 arrayPos++;
                             }
                         }
                     }
-                    nibbleMap.put(c, new ChunkNibble(blockMap));
+                    sectionMap.put(c, new ChunkSection(blockMap));
                 }
             }
-            return new Chunk(nibbleMap);
+            return new Chunk(sectionMap);
         }
         if (buffer.getVersionId() < 62) { // ToDo: was this really changed in 62?
             if (sectionBitMask == 0x00 && groundUpContinuous) {
@@ -113,12 +113,12 @@ public final class ChunkUtil {
             }
 
             int arrayPos = 0;
-            HashMap<Byte, ChunkNibble> nibbleMap = new HashMap<>();
+            HashMap<Byte, ChunkSection> sectionMap = new HashMap<>();
             for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
                 if (!BitByte.isBitSet(sectionBitMask, c)) {
                     continue;
                 }
-                HashMap<ChunkNibbleLocation, Block> blockMap = new HashMap<>();
+                HashMap<InChunkSectionLocation, Block> blockMap = new HashMap<>();
 
                 for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                     for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
@@ -129,17 +129,17 @@ public final class ChunkUtil {
                                 arrayPos++;
                                 continue;
                             }
-                            blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), block);
+                            blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), block);
                             arrayPos++;
                         }
                     }
                 }
-                nibbleMap.put(c, new ChunkNibble(blockMap));
+                sectionMap.put(c, new ChunkSection(blockMap));
             }
-            return new Chunk(nibbleMap);
+            return new Chunk(sectionMap);
         }
         // really big thanks to: https://wiki.vg/index.php?title=Chunk_Format&oldid=13712
-        HashMap<Byte, ChunkNibble> nibbleMap = new HashMap<>();
+        HashMap<Byte, ChunkSection> sectionMap = new HashMap<>();
         for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
             if (!BitByte.isBitSet(sectionBitMask, c)) {
                 continue;
@@ -153,7 +153,7 @@ public final class ChunkUtil {
 
             long[] data = buffer.readLongArray(buffer.readVarInt());
 
-            HashMap<ChunkNibbleLocation, Block> blockMap = new HashMap<>();
+            HashMap<InChunkSectionLocation, Block> blockMap = new HashMap<>();
             for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                 for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                     for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
@@ -185,7 +185,7 @@ public final class ChunkUtil {
                         if (block.equals(Blocks.nullBlock)) {
                             continue;
                         }
-                        blockMap.put(new ChunkNibbleLocation(nibbleX, nibbleY, nibbleZ), block);
+                        blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), block);
                     }
                 }
             }
@@ -197,12 +197,12 @@ public final class ChunkUtil {
                 }
             }
 
-            nibbleMap.put(c, new ChunkNibble(blockMap));
+            sectionMap.put(c, new ChunkSection(blockMap));
         }
         if (buffer.getVersionId() < 552) {
             byte[] biomes = buffer.readBytes(256);
         }
-        return new Chunk(nibbleMap);
+        return new Chunk(sectionMap);
     }
 
     public static void readSkyLightPacket(InByteBuffer buffer, int skyLightMask, int blockLightMask, int emptyBlockLightMask, int emptySkyLightMask) {

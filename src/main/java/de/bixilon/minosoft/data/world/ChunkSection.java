@@ -20,31 +20,30 @@ import java.util.HashMap;
 /**
  * Collection of 16x16x16 blocks
  */
-public class ChunkNibble {
-    final HashMap<ChunkNibbleLocation, Block> blocks;
+public class ChunkSection {
+    final HashMap<InChunkSectionLocation, Block> blocks;
 
-    public ChunkNibble(HashMap<ChunkNibbleLocation, Block> blocks) {
+    public ChunkSection(HashMap<InChunkSectionLocation, Block> blocks) {
         this.blocks = blocks;
     }
 
-    public ChunkNibble() {
-        // empty
+    public ChunkSection() {
         this.blocks = new HashMap<>();
     }
 
     public Block getBlock(int x, int y, int z) {
-        return getBlock(new ChunkNibbleLocation(x, y, z));
+        return getBlock(new InChunkSectionLocation(x, y, z));
     }
 
-    public Block getBlock(ChunkNibbleLocation loc) {
+    public Block getBlock(InChunkSectionLocation loc) {
         return blocks.get(loc);
     }
 
     public void setBlock(int x, int y, int z, Block block) {
-        blocks.put(new ChunkNibbleLocation(x, y, z), block);
+        blocks.put(new InChunkSectionLocation(x, y, z), block);
     }
 
-    public void setBlock(ChunkNibbleLocation location, Block block) {
+    public void setBlock(InChunkSectionLocation location, Block block) {
         blocks.put(location, block);
     }
 }

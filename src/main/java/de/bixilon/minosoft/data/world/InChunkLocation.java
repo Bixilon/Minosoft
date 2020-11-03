@@ -35,8 +35,8 @@ public record InChunkLocation(int x, int y, int z) {
         return z;
     }
 
-    public ChunkNibbleLocation getChunkNibbleLocation() {
-        return new ChunkNibbleLocation(x, y % 16, z);
+    public InChunkSectionLocation getInChunkSectionLocation() {
+        return new InChunkSectionLocation(x, y % 16, z);
     }
 
     @Override

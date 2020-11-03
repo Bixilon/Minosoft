@@ -22,24 +22,15 @@ import de.bixilon.minosoft.data.mappings.blocks.Blocks;
 import java.util.HashMap;
 
 /**
- * Collection of ChunkColumns
+ * Collection of chunks
  */
 public class World {
     final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
     final HashMap<Integer, Entity> entities = new HashMap<>();
-    final String name;
     final HashMap<BlockPosition, BlockEntityMetaData> blockEntityMeta = new HashMap<>();
     boolean hardcore;
     boolean raining;
     Dimension dimension; // used for sky color, etc
-
-    public World(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
 
     public HashMap<ChunkLocation, Chunk> getAllChunks() {
         return chunks;

@@ -34,7 +34,7 @@ public class Player {
     public final HashMap<UUID, PlayerListItem> playerList = new HashMap<>();
     final MojangAccount account;
     final ScoreboardManager scoreboardManager = new ScoreboardManager();
-    final World world = new World("world");
+    final World world = new World();
     final HashMap<Integer, Inventory> inventories = new HashMap<>();
     float health;
     int food;

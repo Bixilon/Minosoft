@@ -18,13 +18,13 @@ import de.bixilon.minosoft.data.mappings.blocks.Block;
 import java.util.HashMap;
 
 /**
- * Collection of 16 chunks nibbles
+ * Collection of 16 chunks sections
  */
 public class Chunk {
-    final HashMap<Byte, ChunkNibble> nibbles;
+    final HashMap<Byte, ChunkSection> sections;
 
-    public Chunk(HashMap<Byte, ChunkNibble> chunks) {
-        this.nibbles = chunks;
+    public Chunk(HashMap<Byte, ChunkSection> sections) {
+        this.sections = sections;
     }
 
     public Block getBlock(InChunkLocation location) {
@@ -36,19 +36,19 @@ public class Chunk {
             throw new IllegalArgumentException(String.format("Invalid chunk location %s %s %s", x, y, z));
         }
         byte section = (byte) (y / 16);
-        return nibbles.get(section).getBlock(x, y % 16, z);
+        return sections.get(section).getBlock(x, y % 16, z);
     }
 
     public void setBlock(int x, int y, int z, Block block) {
         byte section = (byte) (y / 16);
         createSection(section);
-        nibbles.get(section).setBlock(x, y % 16, z, block);
+        sections.get(section).setBlock(x, y % 16, z, block);
     }
 
     void createSection(byte section) {
-        if (nibbles.get(section) == null) {
-            // nibble was empty before, creating it
-            nibbles.put(section, new ChunkNibble());
+        if (sections.get(section) == null) {
+            // section was empty before, creating it
+            sections.put(section, new ChunkSection());
         }
     }
 
@@ -59,6 +59,6 @@ public class Chunk {
     public void setBlock(InChunkLocation location, Block block) {
         byte section = (byte) (location.getY() / 16);
         createSection(section);
-        nibbles.get(section).setBlock(location.getChunkNibbleLocation(), block);
+        sections.get(section).setBlock(location.getInChunkSectionLocation(), block);
     }
 }

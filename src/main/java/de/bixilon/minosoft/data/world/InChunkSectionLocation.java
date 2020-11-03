@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.world;
 /**
  * Chunk X, Y and Z location (max 16x16x16)
  */
-public record ChunkNibbleLocation(int x, int y, int z) {
+public record InChunkSectionLocation(int x, int y, int z) {
     public int getX() {
         return x;
     }
