@@ -17,6 +17,8 @@ import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.inventory.Slot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class Recipes {
     final static ArrayList<Recipe> recipeList = new ArrayList<>();
@@ -44,21 +46,9 @@ public class Recipes {
         if (one.length != two.length) {
             return false;
         }
-        for (Ingredient ingredient : one) {
-            if (!containsElement(two, ingredient)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean containsElement(Ingredient[] arr, Ingredient value) {
-        for (Ingredient property : arr) {
-            if (property.equals(value)) {
-                return true;
-            }
-        }
-        return false;
+        HashSet<Ingredient> first = new HashSet<>(Arrays.asList(one));
+        HashSet<Ingredient> second = new HashSet<>(Arrays.asList(two));
+        return first.equals(second);
     }
 
     // we don't want that recipes from 1 server will appear on an other. You must call this function before reconnecting do avoid issues

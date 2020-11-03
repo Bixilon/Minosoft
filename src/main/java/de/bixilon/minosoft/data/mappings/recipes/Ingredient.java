@@ -15,27 +15,17 @@ package de.bixilon.minosoft.data.mappings.recipes;
 
 import de.bixilon.minosoft.data.inventory.Slot;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 public record Ingredient(Slot[] slot) {
     public static boolean slotEquals(Slot[] one, Slot[] two) {
-        // ToDo
         if (one.length != two.length) {
             return false;
         }
-        for (Slot slot : one) {
-            if (!containsElement(two, slot)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean containsElement(Slot[] arr, Slot value) {
-        for (Slot slot : arr) {
-            if (slot.equals(value)) {
-                return true;
-            }
-        }
-        return false;
+        HashSet<Slot> first = new HashSet<>(Arrays.asList(one));
+        HashSet<Slot> second = new HashSet<>(Arrays.asList(two));
+        return first.equals(second);
     }
 
     public Slot[] getSlot() {
