@@ -77,7 +77,7 @@ We are almost ready to release a beta once !8 is merged.
 2. Clone this repo (`git clone https://gitlab.bixilon.de/bixilon/minosoft.git`)
 3. Change directory (`cd minosoft`)
 4. Checkout the branch (`git checkout <branch>`). Probably `render`
-5. Run Minosoft with `mvn javafx:run`. If any errors occur, feel free to open an issue. In this early stage it might be helpful
+5. Build and run Minosoft with `mvn clean verify exec:java`. If any errors occur, feel free to open an issue. In this early stage it might be helpful
  to delete the app data folder (only of minosoft).
 
 
