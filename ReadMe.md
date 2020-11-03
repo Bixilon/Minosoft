@@ -9,8 +9,8 @@ Minosoft is an open source minecraft client, written from scratch in java. It ai
  - Rendering (WIP)
  - Multi protocol support (1.7 - latest)
  - Modding
- - Fast performance (start time on my laptop: 3 seconds)
- - Free and open source
+ - Fast performance (incredible start time of 3 - 5 seconds on modern hardware (tested on Intel i7-4800MQ)
+ - Free (as far as we consider original minecraft as free) and open source
  - Multi accounting
  - Multi "sessions" (Connections to a server)
  - Multi threading
@@ -21,11 +21,11 @@ Minosoft is an open source minecraft client, written from scratch in java. It ai
  - CPU: Minosoft benefits from multiple cores (at least for most stuff). CPU is kind of important,
   but for the rendering clock speed is more important. 4 cores recommended with at least 2 Ghz.
  - RAM: Out goal was it to run without compromises on an 8 Gib computer and at least limited on an 4 Gib one.
- - Disk space: Minosoft itself is pretty small (2-3 Mib), the libraries are a bit bigger (up to 100 Mib).
-  You also need to have the "normal" minecraft assets (~ 300 Mib). So a total of 500 Mib is recommended.
+ - Disk space: Minosoft itself is pretty small (2-3 Mib), the libraries are a bit bigger (up to 100 MB).
+  You also need to have the "normal" minecraft assets (~ 300 MB). So a total of 500 MB is recommended.
  - GPU: Currently only needed for rendering, no clue yet.
- - Java 15 (This is really important, we use specific features that are only available in the latest version. Java 8 is **not** supported).
- OpenJDK 15 is (of course) also supported.
+ - Java 15 (This is really important, we use specific (experimental) features that are only available in the latest version. Java 8 is **not** supported).
+ OpenJDK is (of course) also supported.
 
 
 ## Rendering
@@ -34,8 +34,11 @@ Rendering is developed and maintained by Lukas Eisenhauer. It is very WIP, but i
 ![Rendering](doc/img/rendering.png)
 The current result of rendering (taken in 739f861bf62341698abcd58386c353a4831f4818).
 
+![Rendering](doc/img/rendering_hypixel.png)
+The Hypixel prototype lobby (taken in 91ab431004fa1ae132a1eb1115550f84c27f48f8).
+
 ## Launcher
-The "Launcher" is not really a launcher, it is just a (badly designed, but functional) Serverlist with account management functionality.
+The "Launcher" is not really a launcher, it is just a (badly designed, but functional) server list with account management functionality.
 Launcher is in quotation marks, because it is not really a launcher. It is the game. You click on run and see this window. All downloads, loadings, ... happen async in the background.
 If you double-click on the server. you can connect to it. Once connected (= Received spawn location), you can play :)
 ![Server list](doc/img/server_list.png)
@@ -46,7 +49,7 @@ After pushing it, it is supported. Some versions are more complicated and need a
 Check out [wiki.vg](https://wiki.vg/Main_Page) for more information.
 
 ### Supported versions
-Almost all versions are supported, starting with 13w41b (pre 1.7 snapshot) and ending with the newest (1.16.3 as of writing this.)
+Almost all versions are supported, starting with 13w41b (pre 1.7 snapshot) and ending with the newest (1.16.4 as of writing this). I plan to maintain Minosoft to at least version 1.20, so stay tuned. 
 
 ### Unsupported versions
 Sadly, we cannot support all versions. We will add support for all major versions (like 1.8.9, 1.9.4, 1.14.4, etc), but it is simply not possible to support all snapshots.

@@ -16,6 +16,7 @@ package de.bixilon.minosoft;
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.ConfigurationPaths;
+import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.assets.AssetsManager;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
@@ -114,17 +115,17 @@ public final class Minosoft {
 
             serverList = config.getServers();
             progress.countDown();
-        }, "Configuration", "", Priorities.HIGHEST, TaskImportance.REQUIRED));
+        }, "Configuration", String.format("Load config file (%s)", StaticConfiguration.CONFIG_FILENAME), Priorities.HIGHEST, TaskImportance.REQUIRED));
 
-        taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFx Toolkit", "", Priorities.HIGHEST));
+        taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFX Toolkit", "Initialize JavaFX", Priorities.HIGHEST));
 
-        taskWorker.addTask(new Task((progress) -> StartProgressWindow.show(startStatusLatch), "Progress Window", "", Priorities.HIGH, TaskImportance.OPTIONAL, "JavaFx Toolkit", "Configuration"));
+        taskWorker.addTask(new Task((progress) -> StartProgressWindow.show(startStatusLatch), "Progress Window", "Display progress window", Priorities.HIGH, TaskImportance.OPTIONAL, "JavaFX Toolkit", "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
             LocaleManager.load(config.getString(ConfigurationPaths.GENERAL_LANGUAGE));
             progress.countDown();
-        }, "Minosoft Language", "", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
+        }, "Minosoft Language", "Load minosoft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
@@ -133,32 +134,32 @@ public final class Minosoft {
             Versions.load(Util.readJsonAsset("mapping/versions.json"));
             Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
             progress.countDown();
-        }, "Version mappings", "", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
+        }, "Version mappings", "Load available minecraft versions inclusive mappings", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             Log.debug("Refreshing account token...");
             checkClientToken();
             accountList = config.getMojangAccounts();
             selectAccount(accountList.get(config.getString(ConfigurationPaths.ACCOUNT_SELECTED)));
-        }, "Token refresh", "", Priorities.LOW, TaskImportance.OPTIONAL, "Configuration"));
+        }, "Token refresh", "Refresh selected account token", Priorities.LOW, TaskImportance.OPTIONAL, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
             ModLoader.loadMods(progress);
             progress.countDown();
-        }, "ModLoading", "", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
+        }, "ModLoading", "Load all minosoft mods", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
             AssetsManager.downloadAllAssets(progress);
             progress.countDown();
-        }, "Assets", "", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
+        }, "Assets", "Download and verify all minecraft assets", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
             MinecraftLocaleManager.load(config.getString(ConfigurationPaths.GENERAL_LANGUAGE));
             progress.countDown();
-        }, "Mojang language", "", Priorities.HIGH, TaskImportance.REQUIRED, "Assets"));
+        }, "Mojang language", "Load minecraft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Assets"));
 
         taskWorker.work(startStatusLatch);
         try {
