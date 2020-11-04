@@ -35,6 +35,7 @@ import de.bixilon.minosoft.util.task.Task;
 import de.bixilon.minosoft.util.task.TaskImportance;
 import javafx.application.Platform;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -56,21 +57,14 @@ public final class Minosoft {
 
         taskWorker.setFatalError((exception) -> {
             Log.fatal("Critical error occurred while preparing. Exit");
-            if (StartProgressWindow.toolkitLatch.getCount() == 2) {
-                try {
+            try {
+                if (StartProgressWindow.toolkitLatch.getCount() == 2) {
                     StartProgressWindow.start();
-                } catch (InterruptedException e2) {
-                    e2.printStackTrace();
-                    System.exit(1);
                 }
-            }
-            if (StartProgressWindow.toolkitLatch.getCount() > 0) {
-                try {
-                    StartProgressWindow.toolkitLatch.await();
-                } catch (InterruptedException e2) {
-                    e2.printStackTrace();
-                    System.exit(1);
-                }
+                StartProgressWindow.toolkitLatch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                System.exit(1);
             }
             // hide all other gui parts
             StartProgressWindow.hideDialog();
@@ -80,7 +74,10 @@ public final class Minosoft {
                 // Do not translate this, translations might fail to load...
                 dialog.setTitle("Critical Error");
                 dialog.setHeaderText("An error occurred while starting Minosoft");
-                dialog.setContentText(exception.getClass().getCanonicalName() + ": " + exception.getLocalizedMessage());
+                TextArea text = new TextArea(exception.getClass().getCanonicalName() + ": " + exception.getLocalizedMessage());
+                text.setEditable(false);
+                text.setWrapText(true);
+                dialog.getDialogPane().setContent(text);
 
                 Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
                 stage.getIcons().add(GUITools.logo);

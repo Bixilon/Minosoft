@@ -253,12 +253,12 @@ public final class Util {
         return new ThreadFactoryBuilder().setNameFormat(threadName + "#%d").build();
     }
 
-    public static void createParentFolderIfNotExist(String file) {
-        createParentFolderIfNotExist(new File(file));
+    public static boolean createParentFolderIfNotExist(String file) {
+        return createParentFolderIfNotExist(new File(file));
     }
 
-    public static void createParentFolderIfNotExist(File file) {
-        file.getParentFile().mkdirs();
+    public static boolean createParentFolderIfNotExist(File file) {
+        return file.getParentFile().mkdirs();
     }
 
     public static String generateRandomString(int length) {

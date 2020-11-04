@@ -187,7 +187,7 @@ public class Configuration {
         return config;
     }
 
-    private void migrateConfiguration() {
+    private void migrateConfiguration() throws ConfigMigrationException {
         int configVersion = getInt(ConfigurationPaths.IntegerPaths.GENERAL_CONFIG_VERSION);
         Log.info(String.format("Migrating config from version %d to  %d", configVersion, LATEST_CONFIG_VERSION));
         for (int nextVersion = configVersion + 1; nextVersion <= LATEST_CONFIG_VERSION; nextVersion++) {
@@ -199,10 +199,10 @@ public class Configuration {
 
     }
 
-    private void migrateConfiguration(int nextVersion) {
+    private void migrateConfiguration(int nextVersion) throws ConfigMigrationException {
         switch (nextVersion) {
             // ToDo
-            default -> throw new IllegalArgumentException("Can not migrate config: Unknown config version " + nextVersion);
+            default -> throw new ConfigMigrationException("Can not migrate config: Unknown config version " + nextVersion);
         }
     }
 }
