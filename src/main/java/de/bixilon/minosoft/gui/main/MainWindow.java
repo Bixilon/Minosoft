@@ -29,6 +29,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
@@ -76,6 +78,11 @@ public class MainWindow implements Initializable {
                         alert.close();
                     });
                 } else {
+                    stage.close();
+                }
+            });
+            stage.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+                if (event.getCode() == KeyCode.ESCAPE) {
                     stage.close();
                 }
             });
@@ -195,6 +202,12 @@ public class MainWindow implements Initializable {
             stage.setTitle(LocaleManager.translate(Strings.SETTINGS_TITLE));
             stage.getIcons().add(GUITools.logo);
             stage.setScene(new Scene(parent));
+            stage.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+                if (event.getCode() == KeyCode.ESCAPE) {
+                    stage.close();
+                }
+            });
+
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
