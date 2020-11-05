@@ -252,7 +252,7 @@ public class AssetsManager {
         int length;
         while ((length = data.read(buffer, 0, 4096)) != -1) {
             crypt.update(buffer, 0, length);
-            out.write(buffer);
+            out.write(buffer, 0, length);
         }
         out.close();
         String hash = Util.byteArrayToHexString(crypt.digest());
