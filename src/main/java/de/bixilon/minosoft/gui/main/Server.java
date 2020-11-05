@@ -17,6 +17,8 @@ import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.ConnectionReasons;
+import de.bixilon.minosoft.protocol.protocol.LANServerListener;
+import de.bixilon.minosoft.util.ServerAddress;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ public class Server {
     int desiredVersion;
     byte[] favicon;
     Connection lastPing;
+    private boolean readOnly = false;
 
     public Server(int id, String name, String address, int desiredVersion, byte[] favicon) {
         this(id, name, address, desiredVersion);
@@ -45,6 +48,14 @@ public class Server {
         this.name = name;
         this.address = address;
         this.desiredVersion = desiredVersion;
+    }
+
+    public Server(ServerAddress address) {
+        this.id = getNextServerId();
+        this.name = String.format("LAN Server #%d", LANServerListener.getServers().size());
+        this.address = address.toString();
+        this.desiredVersion = -1; // Automatic
+        this.readOnly = true;
     }
 
     public static int getNextServerId() {
@@ -73,11 +84,17 @@ public class Server {
     }
 
     public void saveToConfig() {
+        if (isReadOnly()) {
+            return;
+        }
         Minosoft.getConfig().putServer(this);
         Minosoft.getConfig().saveToFile();
     }
 
     public void delete() {
+        if (isReadOnly()) {
+            return;
+        }
         Minosoft.getConfig().removeServer(this);
         Minosoft.getConfig().saveToFile();
     }
@@ -162,5 +179,9 @@ public class Server {
             return null;
         }
         return Base64.getEncoder().encodeToString(favicon);
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
     }
 }

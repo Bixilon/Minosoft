@@ -27,6 +27,7 @@ import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.loading.ModLoader;
 import de.bixilon.minosoft.modding.loading.Priorities;
+import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
@@ -45,7 +46,7 @@ import java.util.UUID;
 
 public final class Minosoft {
     public static final HashSet<EventManager> eventManagers = new HashSet<>();
-    private static final CountUpAndDownLatch startStatusLatch = new CountUpAndDownLatch();
+    private static final CountUpAndDownLatch startStatusLatch = new CountUpAndDownLatch(1);
     public static HashBiMap<String, MojangAccount> accountList;
     public static MojangAccount selectedAccount;
     public static ArrayList<Server> serverList;
@@ -154,6 +155,15 @@ public final class Minosoft {
             MinecraftLocaleManager.load(config.getString(ConfigurationPaths.StringPaths.GENERAL_LANGUAGE));
             progress.countDown();
         }, "Mojang language", "Load minecraft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Assets"));
+
+        taskWorker.addTask(new Task(progress -> {
+            if (!config.getBoolean(ConfigurationPaths.BooleanPaths.NETWORK_SHOW_LAN_SERVERS)) {
+                return;
+            }
+            progress.countUp();
+            LANServerListener.listen();
+            progress.countDown();
+        }, "LAN Server Listener", "Listener for LAN Servers", Priorities.LOWEST, TaskImportance.OPTIONAL, "Configuration"));
 
         taskWorker.work(startStatusLatch);
         try {

@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.util.DNSUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -179,6 +180,10 @@ public class MainWindow implements Initializable {
 
     public void refreshServers() {
         Log.info("Refreshing server list");
+        // remove all lan servers
+        ServerListCell.listView.getItems().removeAll(LANServerListener.getServers().values());
+        LANServerListener.removeAll();
+
         for (Server server : ServerListCell.listView.getItems()) {
             if (server.getLastPing() == null) {
                 // server was not pinged, don't even try, only costs memory and cpu

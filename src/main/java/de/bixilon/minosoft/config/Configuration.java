@@ -99,6 +99,7 @@ public class Configuration {
     public boolean getBoolean(ConfigurationPaths.BooleanPaths path) {
         return switch (path) {
             case NETWORK_FAKE_CLIENT_BRAND -> config.getAsJsonObject("network").get("fake-network-brand").getAsBoolean();
+            case NETWORK_SHOW_LAN_SERVERS -> config.getAsJsonObject("network").get("show-lan-servers").getAsBoolean();
             case DEBUG_VERIFY_ASSETS -> config.getAsJsonObject("debug").get("verify-assets").getAsBoolean();
         };
     }
@@ -106,6 +107,7 @@ public class Configuration {
     public void putBoolean(ConfigurationPaths.BooleanPaths path, boolean value) {
         switch (path) {
             case NETWORK_FAKE_CLIENT_BRAND -> config.getAsJsonObject("network").addProperty("fake-network-brand", value);
+            case NETWORK_SHOW_LAN_SERVERS -> config.getAsJsonObject("network").addProperty("show-lan-servers", value);
             case DEBUG_VERIFY_ASSETS -> config.getAsJsonObject("debug").addProperty("verify-assets", value);
         }
     }

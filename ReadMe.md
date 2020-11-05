@@ -16,6 +16,7 @@ Minosoft is an open source minecraft client, written from scratch in java. It ai
  - Multi threading
  - Async loading
  - Debugging on protocol layer
+ - Search for LAN Server
 
 ## System requirements
  - CPU: Minosoft benefits from multiple cores (at least for most stuff). CPU is kind of important,

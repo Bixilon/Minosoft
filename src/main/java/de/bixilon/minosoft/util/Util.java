@@ -268,4 +268,9 @@ public final class Util {
         }
         return sb.toString();
     }
+
+    public static String getStringBetween(String search, String first, String second) {
+        String result = search.substring(search.indexOf(first) + first.length());
+        return result.substring(0, result.indexOf(second));
+    }
 }

@@ -182,6 +182,10 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                     server.saveToConfig();
                 }
             }
+            if (server.isReadOnly()) {
+                optionsEdit.setDisable(true);
+                optionsDelete.setDisable(true);
+            }
             if (server.getLastPing().getLastConnectionException() != null) {
                 // connection failed because of an error in minosoft, but ping was okay
                 version.setStyle("-fx-text-fill: red;");
@@ -208,6 +212,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         version.setStyle(null);
         players.setText("");
         optionsConnect.setDisable(true);
+        optionsEdit.setDisable(false);
+        optionsDelete.setDisable(false);
     }
 
     private void setErrorMotd(String message) {
@@ -218,6 +224,9 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     }
 
     public void delete() {
+        if (server.isReadOnly()) {
+            return;
+        }
         server.getConnections().forEach(Connection::disconnect);
         server.delete();
         Log.info(String.format("Deleted server (name=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
@@ -267,6 +276,9 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     }
 
     public void edit() {
+        if (server.isReadOnly()) {
+            return;
+        }
         Dialog<?> dialog = new Dialog<>();
         dialog.setTitle(LocaleManager.translate(Strings.EDIT_SERVER_DIALOG_TITLE, server.getName()));
         dialog.setHeaderText(LocaleManager.translate(Strings.EDIT_SERVER_DIALOG_HEADER));
@@ -352,7 +364,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     }
 
     public void showInfo() {
-
         Dialog<?> dialog = new Dialog<>();
         dialog.setTitle("View server info: " + server.getName());
         ((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().add(GUITools.logo);

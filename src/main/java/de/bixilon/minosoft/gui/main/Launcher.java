@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -65,6 +66,7 @@ public class Launcher {
             ObservableList<Server> servers = FXCollections.observableArrayList();
             servers.addAll(Minosoft.serverList);
             ServerListCell.listView.setItems(servers);
+            LANServerListener.removeAll(); // remove all LAN Servers
 
             VBox root = null;
             try {

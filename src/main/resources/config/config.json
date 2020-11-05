@@ -8,7 +8,8 @@
     "render-distance": 12
   },
   "network": {
-    "fake-network-brand": false
+    "fake-network-brand": false,
+    "show-lan-servers": true
   },
   "accounts": {
     "selected": "",

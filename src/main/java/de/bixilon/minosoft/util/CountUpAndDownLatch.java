@@ -24,11 +24,6 @@ public class CountUpAndDownLatch {
         this.count = count;
     }
 
-    public CountUpAndDownLatch() {
-        total = 1;
-        this.count = 1;
-    }
-
     public void waitUntilZero() throws InterruptedException {
         synchronized (lock) {
             while (count > 0) {

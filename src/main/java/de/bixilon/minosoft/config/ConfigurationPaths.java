@@ -23,7 +23,9 @@ public abstract class ConfigurationPaths {
     }
 
     public enum BooleanPaths {
-        NETWORK_FAKE_CLIENT_BRAND, DEBUG_VERIFY_ASSETS
+        NETWORK_FAKE_CLIENT_BRAND,
+        NETWORK_SHOW_LAN_SERVERS,
+        DEBUG_VERIFY_ASSETS
     }
 
     public enum IntegerPaths {
