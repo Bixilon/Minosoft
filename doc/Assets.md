@@ -29,3 +29,6 @@ Before downloading a file, the file is checked for relevance. Relevant files are
  - `minecraft/sounds/` -> Sounds
  - `minecraft/textures/` -> Textures
  - `minecraft/font/` -> Fonts
+
+## Modifications
+If you want to edit an existing file, you should disable `verify-all-assets` (in `debug`), otherwise your changes will be recognised as corruption and will be overwritten.
