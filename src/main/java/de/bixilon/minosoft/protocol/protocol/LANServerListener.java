@@ -65,7 +65,6 @@ public class LANServerListener {
                         servers.put(sender, server);
                         Platform.runLater(() -> ServerListCell.listView.getItems().add(server));
                         Log.debug(String.format("Discovered new LAN Server: %s", server));
-
                     } catch (Exception ignored) {
                     }
                 }
@@ -91,7 +90,6 @@ public class LANServerListener {
             }
             servers.inverse().remove(server);
         }
-
     }
 
     private static Server getServerByBroadcast(InetAddress address, byte[] broadcast) {
