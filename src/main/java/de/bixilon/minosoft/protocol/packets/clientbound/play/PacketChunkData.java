@@ -97,7 +97,7 @@ public class PacketChunkData implements ClientboundPacket {
 
         if (size > 0) {
             chunk = ChunkUtil.readChunkPacket(buffer, (short) sectionBitMask, (short) 0, groundUpContinuous, containsSkyLight);
-            // set position of the byte buffer, because of some reasons HyPixel makes some weired stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
+            // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
             buffer.setPosition(size + lastPos);
         }
         if (buffer.getVersionId() >= 110) {

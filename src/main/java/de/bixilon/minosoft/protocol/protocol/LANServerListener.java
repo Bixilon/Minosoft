@@ -101,7 +101,7 @@ public class LANServerListener {
         }
         String rawAddress = Util.getStringBetween(parsed, PORT_START_STRING, PORT_END_STRING);
         if (rawAddress.contains(":")) {
-            // weired, just extract the port
+            // weird, just extract the port
             rawAddress = rawAddress.split(":")[1];
         }
         int port = Integer.parseInt(rawAddress);
