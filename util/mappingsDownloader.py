@@ -16,7 +16,8 @@
 #  You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
 #
 #  This software is not affiliated with Mojang AB, the original developer of Minecraft.
-
+#
+import hashlib
 import os
 import requests
 import shutil
@@ -27,21 +28,38 @@ import ujson
 print("Minecraft mappings downloader (and generator)")
 
 PRE_FLATTENING_UPDATE_VERSION = "17w46a"
-DATA_FOLDER = "./mcdata/"
+DATA_FOLDER = "../data/resources/"
+TEMP_FOLDER = DATA_FOLDER + "tmp/"
 FILES_PER_VERSION = ["blocks.json", "registries.json"]
 DOWNLOAD_BASE_URL = "https://apimon.de/mcdata/"
 manifest = requests.get('https://launchermeta.mojang.com/mc/game/version_manifest.json').json()
 failed = []
 defaultMappings = ujson.load(open("mappingsDefaults.json"))
+resourceMappingsIndex = ujson.load(open("../src/main/resources/assets/mapping/resources.json"))
+
+
+def sha1File(fileName):
+    with open(fileName, 'rb') as f:
+        sha1 = hashlib.sha1()
+        while True:
+            data = f.read(4096)
+            if not data:
+                break
+            sha1.update(data)
+    return sha1.hexdigest()
+
 
 if not os.path.isdir(DATA_FOLDER):
     os.mkdir(DATA_FOLDER)
+if not os.path.isdir(TEMP_FOLDER):
+    os.mkdir(TEMP_FOLDER)
 
 for version in manifest["versions"]:
     if version["id"] == PRE_FLATTENING_UPDATE_VERSION:
         break
-    versionBaseFolder = DATA_FOLDER + version["id"] + "/"
-    if os.path.isfile(DATA_FOLDER + version["id"] + ".tar.gz"):
+    versionBaseFolder = TEMP_FOLDER + version["id"] + "/"
+    resourcesJsonPath = ("mappings/%s" % version["id"])
+    if resourcesJsonPath in resourceMappingsIndex and os.path.isfile(DATA_FOLDER + resourceMappingsIndex[resourcesJsonPath][:2] + "/" + resourceMappingsIndex[resourcesJsonPath] + ".tar.gz"):
         print("Skipping %s" % (version["id"]))
         continue
     if not os.path.isdir(versionBaseFolder):
@@ -100,10 +118,17 @@ for version in manifest["versions"]:
             print("Skipping %s for %s" % (fileName, version["id"]))
     if not version["id"] in failed:
         # compress the data to version.tar.gz
-        tar = tarfile.open(DATA_FOLDER + version["id"] + ".tar.gz", "w:gz")
+        tar = tarfile.open(versionBaseFolder + version["id"] + ".tar.gz", "w:gz")
         for fileName in FILES_PER_VERSION:
             tar.add(versionBaseFolder + fileName, arcname=fileName)
         tar.close()
+        sha1 = sha1File(versionBaseFolder + version["id"] + ".tar.gz")
+        if not os.path.isdir(DATA_FOLDER + sha1[:2]):
+            os.mkdir(DATA_FOLDER + sha1[:2])
+        os.rename(versionBaseFolder + version["id"] + ".tar.gz", DATA_FOLDER + sha1[:2] + "/" + sha1 + ".tar.gz")
+        resourceMappingsIndex[resourcesJsonPath] = sha1
         shutil.rmtree(versionBaseFolder)
+        with open("../src/main/resources/assets/mapping/resources.json", 'w') as file:
+            ujson.dump(resourceMappingsIndex, file)
 
 print("Done, %s failed" % failed)

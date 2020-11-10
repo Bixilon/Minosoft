@@ -18,7 +18,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
@@ -51,8 +50,10 @@ public class AssetsManager {
     }
 
     private static HashMap<String, String> parseAssetsIndex(String hash) throws IOException {
-        InputStreamReader reader = readAssetByHash(hash);
-        JsonObject json = JsonParser.parseReader(new JsonReader(reader)).getAsJsonObject();
+        return parseAssetsIndex(readJsonAssetByHash(hash).getAsJsonObject());
+    }
+
+    private static HashMap<String, String> parseAssetsIndex(JsonObject json) {
         if (json.has("objects")) {
             json = json.getAsJsonObject("objects");
         }
@@ -68,11 +69,6 @@ public class AssetsManager {
         return ret;
     }
 
-    private static HashMap<String, String> parseAssetsIndex() throws IOException {
-        HashMap<String, String> mappings = parseAssetsIndex(ASSETS_INDEX_HASH);
-        mappings.putAll(parseAssetsIndex(ASSETS_CLIENT_JAR_HASH));
-        return mappings;
-    }
 
     public static void downloadAllAssets(CountUpAndDownLatch latch) throws IOException {
         if (assets.size() > 0) {
@@ -84,23 +80,31 @@ public class AssetsManager {
             Log.printException(e, LogLevels.DEBUG);
             Log.warn("Could not download assets index. Please check your internet connection");
         }
-        assets.putAll(parseAssetsIndex(ASSETS_INDEX_HASH));
-        latch.addCount(assets.size() + 1); // set size of mappings + 1 (for client jar assets)
+        assets.putAll(verifyAssets(AssetsSource.MOJANG, latch, parseAssetsIndex(ASSETS_INDEX_HASH)));
+        assets.putAll(verifyAssets(AssetsSource.MINOSOFT_GIT, latch, parseAssetsIndex(Util.readJsonAsset("mapping/resources.json"))));
+        latch.addCount(1); // client jar
         // download assets
+        generateJarAssets();
+        assets.putAll(parseAssetsIndex(ASSETS_CLIENT_JAR_HASH));
+        latch.countDown();
+    }
+
+    private static HashMap<String, String> verifyAssets(AssetsSource source, CountUpAndDownLatch latch, HashMap<String, String> assets) {
+        latch.addCount(assets.size());
         assets.keySet().parallelStream().forEach((filename) -> {
             try {
                 String hash = assets.get(filename);
-                if (!verifyAssetHash(hash)) {
-                    AssetsManager.downloadAsset(hash);
+                boolean compressed = source == AssetsSource.MOJANG;
+                if (!verifyAssetHash(hash, compressed)) {
+                    AssetsManager.downloadAsset(source, hash);
                 }
                 latch.countDown();
             } catch (Exception e) {
                 e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
-        generateJarAssets();
-        assets.putAll(parseAssetsIndex(ASSETS_CLIENT_JAR_HASH));
-        latch.countDown();
+        return assets;
     }
 
     public static boolean doesAssetExist(String name) {
@@ -123,8 +127,11 @@ public class AssetsManager {
         return readJsonAssetByHash(assets.get(name));
     }
 
-    private static void downloadAsset(String hash) throws Exception {
-        downloadAsset(String.format("https://resources.download.minecraft.net/%s/%s", hash.substring(0, 2), hash), hash);
+    private static void downloadAsset(AssetsSource source, String hash) throws Exception {
+        switch (source) {
+            case MOJANG -> downloadAsset(String.format("https://resources.download.minecraft.net/%s/%s", hash.substring(0, 2), hash), hash);
+            case MINOSOFT_GIT -> downloadAsset(String.format(Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.RESOURCES_URL), hash.substring(0, 2), hash), hash, false);
+        }
     }
 
     private static InputStreamReader readAssetByHash(String hash) throws IOException {
@@ -147,7 +154,7 @@ public class AssetsManager {
         return file.length();
     }
 
-    private static boolean verifyAssetHash(String hash) {
+    private static boolean verifyAssetHash(String hash, boolean compressed) {
         // file does not exist
         if (getAssetSize(hash) == -1) {
             return false;
@@ -156,10 +163,17 @@ public class AssetsManager {
             return true;
         }
         try {
-            return hash.equals(Util.sha1Gzip(new File(getAssetDiskPath(hash))));
+            if (compressed) {
+                return hash.equals(Util.sha1Gzip(new File(getAssetDiskPath(hash))));
+            }
+            return hash.equals(Util.sha1(new File(getAssetDiskPath(hash))));
         } catch (IOException ignored) {
         }
         return false;
+    }
+
+    private static boolean verifyAssetHash(String hash) {
+        return verifyAssetHash(hash, true);
     }
 
     public static void generateJarAssets() throws IOException {
@@ -265,11 +279,19 @@ public class AssetsManager {
     }
 
     private static void downloadAsset(String url, String hash) throws IOException {
+        downloadAsset(url, hash, true);
+    }
+
+    private static void downloadAsset(String url, String hash, boolean compressed) throws IOException {
         if (verifyAssetHash(hash)) {
             return;
         }
         Log.verbose(String.format("Downloading %s -> %s", url, hash));
-        Util.downloadFileAsGz(url, getAssetDiskPath(hash));
+        if (compressed) {
+            Util.downloadFileAsGz(url, getAssetDiskPath(hash));
+            return;
+        }
+        Util.downloadFile(url, getAssetDiskPath(hash));
     }
 
     private static String getAssetDiskPath(String hash) {

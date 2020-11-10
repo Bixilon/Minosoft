@@ -179,9 +179,8 @@ public final class Util {
         return stringBuilder.toString();
     }
 
-    public static HashMap<String, JsonObject> readJsonTarGzFile(String fileName) throws IOException {
-        File inputFile = new File(fileName);
-        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(inputFile)));
+    public static HashMap<String, JsonObject> readJsonTarStream(InputStream inputStream) throws IOException {
+        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(inputStream);
         HashMap<String, JsonObject> ret = new HashMap<>();
         TarArchiveEntry entry;
         while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {

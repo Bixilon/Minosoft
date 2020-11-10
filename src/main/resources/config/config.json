@@ -21,7 +21,7 @@
   },
   "download": {
     "urls": {
-      "mappings": "https://gitlab.com/Bixilon/minosoft/-/raw/master/data/mcdata/%s.tar.gz?inline=false"
+      "resources": "https://gitlab.com/Bixilon/minosoft/-/raw/development/data/resources/%s/%s.tar.gz?inline=false"
     }
   },
   "debug": {

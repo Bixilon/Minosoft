@@ -131,7 +131,7 @@ public class Configuration {
             case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").get("selected").getAsString();
             case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").get("log-level").getAsString();
             case GENERAL_LANGUAGE -> config.getAsJsonObject("general").get("language").getAsString();
-            case MAPPINGS_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").get("mappings").getAsString();
+            case RESOURCES_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").get("resources").getAsString();
             case CLIENT_TOKEN -> config.getAsJsonObject("accounts").get("client-token").getAsString();
         };
     }
@@ -141,7 +141,7 @@ public class Configuration {
             case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").addProperty("selected", value);
             case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").addProperty("log-level", value);
             case GENERAL_LANGUAGE -> config.getAsJsonObject("general").addProperty("language", value);
-            case MAPPINGS_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").addProperty("mappings", value);
+            case RESOURCES_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").addProperty("resources", value);
             case CLIENT_TOKEN -> config.getAsJsonObject("accounts").addProperty("client-token", value);
         }
     }

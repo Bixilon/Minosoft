@@ -16,23 +16,18 @@ package de.bixilon.minosoft.data.mappings.versions;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.ConfigurationPaths;
-import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.Mappings;
+import de.bixilon.minosoft.data.assets.AssetsManager;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Util;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.zip.ZipException;
 
 public class Versions {
     static final HashBiMap<Integer, Version> versionIdMap = HashBiMap.create();
@@ -127,34 +122,7 @@ public class Versions {
         Log.verbose(String.format("Loading mappings for version %s...", version));
         long startTime = System.currentTimeMillis();
 
-        // check if mapping folder exist
-        File mappingFolder = new File(StaticConfiguration.HOME_DIR + "assets/mapping");
-        if (!mappingFolder.exists()) {
-            if (mappingFolder.mkdirs()) {
-                Log.verbose("Created mappings folder.");
-            } else {
-                Log.fatal(String.format("Failed creating mappings folder (%s). Exiting...", mappingFolder.getAbsolutePath()));
-                System.exit(1);
-            }
-        }
-
-        String fileName = StaticConfiguration.HOME_DIR + String.format("assets/mapping/%s.tar.gz", version.getVersionName());
-        HashMap<String, JsonObject> files;
-        try {
-            files = Util.readJsonTarGzFile(fileName);
-        } catch (FileNotFoundException e) {
-            long downloadStartTime = System.currentTimeMillis();
-            Log.info(String.format("Mappings for %s are not available on disk. Downloading them...", version.getVersionName()));
-            Util.downloadFile(String.format(Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.MAPPINGS_URL), version.getVersionName()), fileName);
-            try {
-                files = Util.readJsonTarGzFile(fileName);
-            } catch (ZipException e2) {
-                // bullshit downloaded, delete file
-                new File(fileName).delete();
-                throw e2;
-            }
-            Log.info(String.format("Mappings for %s downloaded successfully in %dms!", version.getVersionName(), (System.currentTimeMillis() - downloadStartTime)));
-        }
+        HashMap<String, JsonObject> files = Util.readJsonTarStream(AssetsManager.readAssetAsStream(String.format("mappings/%s", version.getVersionName())));
 
         for (Map.Entry<String, Mappings> mappingSet : mappingsHashMap.entrySet()) {
             JsonObject data = files.get(mappingSet.getKey() + ".json").getAsJsonObject("minecraft");

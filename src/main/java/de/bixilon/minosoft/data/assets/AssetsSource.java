@@ -11,25 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config;
+package de.bixilon.minosoft.data.assets;
 
-public abstract class ConfigurationPaths {
-    public enum StringPaths {
-        GENERAL_LOG_LEVEL,
-        CLIENT_TOKEN,
-        RESOURCES_URL,
-        ACCOUNT_SELECTED,
-        GENERAL_LANGUAGE,
-    }
-
-    public enum BooleanPaths {
-        NETWORK_FAKE_CLIENT_BRAND,
-        NETWORK_SHOW_LAN_SERVERS,
-        DEBUG_VERIFY_ASSETS
-    }
-
-    public enum IntegerPaths {
-        GENERAL_CONFIG_VERSION,
-        GAME_RENDER_DISTANCE
-    }
+public enum AssetsSource {
+    MOJANG,
+    MINOSOFT_GIT
 }
