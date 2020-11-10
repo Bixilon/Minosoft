@@ -13,389 +13,479 @@
 
 package de.bixilon.minosoft.data.mappings.blocks;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
 public enum BlockProperties {
-    NONE,
+    // rails, doors, daylight sensor, ...
+    REDSTONE_POWERED_YES,
+    REDSTONE_POWERED_NO,
+    REDSTONE_INVERTED_YES,
+    REDSTONE_INVERTED_NO,
 
-    // farmland
-    MOISTURE_0,
-    MOISTURE_1,
-    MOISTURE_2,
-    MOISTURE_3,
-    MOISTURE_4,
-    MOISTURE_5,
-    MOISTURE_6,
-    MOISTURE_7,
+    // furnace, candles, redstone torches, ...
+    GENERAL_LIT_YES,
+    GENERAL_LIT_NO,
 
-    // furnace, ...
-    LIT,
-    UN_LIT,
+    // sign, fence, trapdoors, stairs, ...
+    GENERAL_WATERLOGGED_YES,
+    GENERAL_WATERLOGGED_NO,
 
-    // sign, fence
-    WATERLOGGED,
-    NOT_WATERLOGGED,
 
-    // half (flowers)
-    HALF_UPPER,
-    HALF_LOWER,
+    // stairs
+    STAIR_DIRECTIONAL_STRAIGHT("shape", "straight"),
+    STAIR_DIRECTIONAL_INNER_LEFT("shape", "inner_left"),
+    STAIR_DIRECTIONAL_INNER_RIGHT("shape", "inner_right"),
+    STAIR_DIRECTIONAL_OUTER_LEFT("shape", "outer_left"),
+    STAIR_DIRECTIONAL_OUTER_RIGHT("shape", "outer_right"),
+    STAIR_HALF_TOP,
+    STAIR_HALF_BOTTOM,
 
     // slabs
-    SLAB_TOP,
-    SLAB_BOTTOM,
-    SLAB_DOUBLE,
+    SLAB_TYPE_TOP,
+    SLAB_TYPE_BOTTOM,
+    SLAB_TYPE_DOUBLE,
+
+
+    // farmland
+    FARMLAND_MOISTURE_LEVEL_0,
+    FARMLAND_MOISTURE_LEVEL_1,
+    FARMLAND_MOISTURE_LEVEL_2,
+    FARMLAND_MOISTURE_LEVEL_3,
+    FARMLAND_MOISTURE_LEVEL_4,
+    FARMLAND_MOISTURE_LEVEL_5,
+    FARMLAND_MOISTURE_LEVEL_6,
+    FARMLAND_MOISTURE_LEVEL_7,
+
+    // plants, stairs
+    PLANT_HALF_UPPER,
+    PLANT_HALF_LOWER,
 
     // fluids
-    LEVEL_0,
-    LEVEL_1,
-    LEVEL_2,
-    LEVEL_3,
-    LEVEL_4,
-    LEVEL_5,
-    LEVEL_6,
-    LEVEL_7,
-    LEVEL_8,
-    LEVEL_9,
-    LEVEL_10,
-    LEVEL_11,
-    LEVEL_12,
-    LEVEL_13,
-    LEVEL_14,
-    LEVEL_15,
+    FLUID_LEVEL_0("level"),
+    FLUID_LEVEL_1("level"),
+    FLUID_LEVEL_2("level"),
+    FLUID_LEVEL_3("level"),
+    FLUID_LEVEL_4("level"),
+    FLUID_LEVEL_5("level"),
+    FLUID_LEVEL_6("level"),
+    FLUID_LEVEL_7("level"),
+    FLUID_LEVEL_8("level"),
+    FLUID_LEVEL_9("level"),
+    FLUID_LEVEL_10("level"),
+    FLUID_LEVEL_11("level"),
+    FLUID_LEVEL_12("level"),
+    FLUID_LEVEL_13("level"),
+    FLUID_LEVEL_14("level"),
+    FLUID_LEVEL_15("level"),
 
     // bee hive
-    HONEY_LEVEL_0,
-    HONEY_LEVEL_1,
-    HONEY_LEVEL_2,
-    HONEY_LEVEL_3,
-    HONEY_LEVEL_4,
-    HONEY_LEVEL_5,
+    HONEY_LEVEL_0("honey_level"),
+    HONEY_LEVEL_1("honey_level"),
+    HONEY_LEVEL_2("honey_level"),
+    HONEY_LEVEL_3("honey_level"),
+    HONEY_LEVEL_4("honey_level"),
+    HONEY_LEVEL_5("honey_level"),
 
     // pistons
-    TYPE_NORMAL,
-    TYPE_STICKY,
-    EXTENDED,
-    NOT_EXTENDED,
-    SHORT,
-    LONG,
+    PISTON_EXTENDED_YES,
+    PISTON_EXTENDED_NO,
+
+    // piston head
+    PISTON_TYPE_NORMAL,
+    PISTON_TYPE_STICKY,
+    PISTON_SHORT_YES,
+    PISTON_SHORT_NO,
 
     // rails
-    POWERED,
-    NOT_POWERED,
-    STRAIGHT,
-    INNER_LEFT,
-    INNER_RIGHT,
-    OUTER_LEFT,
-    OUTER_RIGHT,
-    NORTH_SOUTH,
-    SOUTH_EAST,
-    SOUTH_WEST,
-    NORTH_WEST,
-    NORTH_EAST,
-    EAST_WEST,
-    ASCENDING_EAST,
-    ASCENDING_WEST,
-    ASCENDING_NORTH,
-    ASCENDING_SOUTH,
+    RAILS_DIRECTION_NORTH_SOUTH("shape", "north_south"),
+    RAILS_DIRECTION_SOUTH_EAST("shape", "south_east"),
+    RAILS_DIRECTION_SOUTH_WEST("shape", "south_west"),
+    RAILS_DIRECTION_NORTH_WEST("shape", "north_west"),
+    RAILS_DIRECTION_NORTH_EAST("shape", "north_east"),
+    RAILS_DIRECTION_EAST_WEST("shape", "east_west"),
+    RAILS_DIRECTION_ASCENDING_EAST("shape", "ascending_east"),
+    RAILS_DIRECTION_ASCENDING_WEST("shape", "ascending_west"),
+    RAILS_DIRECTION_ASCENDING_NORTH("shape", "ascending_north"),
+    RAILS_DIRECTION_ASCENDING_SOUTH("shape", "ascending_south"),
 
-    SNOWY,
-    NOT_SNOWY,
+    // grass, mycelium
+    GRASS_SNOWY_YES,
+    GRASS_SNOWY_NO,
 
-    STAGE_0,
-    STAGE_1,
+    // bamboo, sapling, plants
+    PLANTS_STAGE_LEVEL_0,
+    PLANTS_STAGE_LEVEL_1,
 
     // dispenser
-    TRIGGERED,
-    NOT_TRIGGERED,
+    DISPENSER_TRIGGERED_YES,
+    DISPENSER_TRIGGERED_NO,
 
     // leaves
-    DISTANCE_0,
-    DISTANCE_1,
-    DISTANCE_2,
-    DISTANCE_3,
-    DISTANCE_4,
-    DISTANCE_5,
-    DISTANCE_6,
-    DISTANCE_7,
-    PERSISTENT,
-    NOT_PERSISTENT,
+    LEAVES_DISTANCE_LEVEL_0,
+    LEAVES_DISTANCE_LEVEL_1,
+    LEAVES_DISTANCE_LEVEL_2,
+    LEAVES_DISTANCE_LEVEL_3,
+    LEAVES_DISTANCE_LEVEL_4,
+    LEAVES_DISTANCE_LEVEL_5,
+    LEAVES_DISTANCE_LEVEL_6,
+    LEAVES_DISTANCE_LEVEL_7,
+    LEAVES_PERSISTENT_YES,
+    LEAVES_PERSISTENT_NO,
 
     // bed
-    HEAD,
-    FOOT,
-    OCCUPIED,
-    NOT_OCCUPIED,
+    BED_PART_HEAD,
+    BED_PART_FOOT,
+    BED_OCCUPIED_YES,
+    BED_OCCUPIED_NO,
 
     // tnt
-    UNSTABLE,
-    STABLE,
+    TNT_UNSTABLE_YES,
+    TNT_UNSTABLE_NO,
 
     // door
-    HINGE_LEFT,
-    HINGE_RIGHT,
-    OPEN,
-    CLOSED,
+    DOOR_HINGE_LEFT,
+    DOOR_HINGE_RIGHT,
+    DOOR_OPEN_YES,
+    DOOR_OPEN_NO,
 
     // fire
-    NORTH,
-    NOT_NORTH,
-    SOUTH,
-    NOT_SOUTH,
-    EAST,
-    NOT_EAST,
-    WEST,
-    NOT_WEST,
-    UP,
-    NOT_UP,
-    DOWN,
-    NOT_DOWN,
-    AGE_0,
-    AGE_1,
-    AGE_2,
-    AGE_3,
-    AGE_4,
-    AGE_5,
-    AGE_6,
-    AGE_7,
-    AGE_8,
-    AGE_9,
-    AGE_10,
-    AGE_11,
-    AGE_12,
-    AGE_13,
-    AGE_14,
-    AGE_15,
-    AGE_16,
-    AGE_17,
-    AGE_18,
-    AGE_19,
-    AGE_20,
-    AGE_21,
-    AGE_22,
-    AGE_23,
-    AGE_24,
-    AGE_25,
+    FIRE_POSITION_NORTH_YES,
+    FIRE_POSITION_NORTH_NO,
+    FIRE_POSITION_SOUTH_YES,
+    FIRE_POSITION_SOUTH_NO,
+    FIRE_POSITION_EAST_YES,
+    FIRE_POSITION_EAST_NO,
+    FIRE_POSITION_WEST_YES,
+    FIRE_POSITION_WEST_NO,
+    FIRE_POSITION_UP_YES,
+    FIRE_POSITION_UP_NO,
+    FIRE_POSITION_DOWN_YES,
+    FIRE_POSITION_DOWN_NO,
+    FIRE_AGE_LEVEL_0,
+    FIRE_AGE_LEVEL_1,
+    FIRE_AGE_LEVEL_2,
+    FIRE_AGE_LEVEL_3,
+    FIRE_AGE_LEVEL_4,
+    FIRE_AGE_LEVEL_5,
+    FIRE_AGE_LEVEL_6,
+    FIRE_AGE_LEVEL_7,
+    FIRE_AGE_LEVEL_8,
+    FIRE_AGE_LEVEL_9,
+    FIRE_AGE_LEVEL_10,
+    FIRE_AGE_LEVEL_11,
+    FIRE_AGE_LEVEL_12,
+    FIRE_AGE_LEVEL_13,
+    FIRE_AGE_LEVEL_14,
+    FIRE_AGE_LEVEL_15,
+    FIRE_AGE_LEVEL_16,
+    FIRE_AGE_LEVEL_17,
+    FIRE_AGE_LEVEL_18,
+    FIRE_AGE_LEVEL_19,
+    FIRE_AGE_LEVEL_20,
+    FIRE_AGE_LEVEL_21,
+    FIRE_AGE_LEVEL_22,
+    FIRE_AGE_LEVEL_23,
+    FIRE_AGE_LEVEL_24,
+    FIRE_AGE_LEVEL_25,
 
     // noteblock
-    HARP,
-    BASEDRUM,
-    SNARE,
-    HAT,
-    BASS,
-    FLUTE,
-    BELL,
-    GUITAR,
-    CHIME,
-    XYLOPHONE,
-    IRON_XYLOPHONE,
-    COW_BELL,
-    DIDGERIDOO,
-    BIT,
-    BANJO,
-    PLING,
+    NOTBLOCK_INSTRUMENT_HARP,
+    NOTBLOCK_INSTRUMENT_BASEDRUM,
+    NOTBLOCK_INSTRUMENT_SNARE,
+    NOTBLOCK_INSTRUMENT_HAT,
+    NOTBLOCK_INSTRUMENT_BASS,
+    NOTBLOCK_INSTRUMENT_FLUTE,
+    NOTBLOCK_INSTRUMENT_BELL,
+    NOTBLOCK_INSTRUMENT_GUITAR,
+    NOTBLOCK_INSTRUMENT_CHIME,
+    NOTBLOCK_INSTRUMENT_XYLOPHONE,
+    NOTBLOCK_INSTRUMENT_IRON_XYLOPHONE("instrument", "iron_xylophone"),
+    NOTBLOCK_INSTRUMENT_COW_BELL("instrument", "cow_bell"),
+    NOTBLOCK_INSTRUMENT_DIDGERIDOO,
+    NOTBLOCK_INSTRUMENT_BIT,
+    NOTBLOCK_INSTRUMENT_BANJO,
+    NOTBLOCK_INSTRUMENT_PLING,
 
-    NOTE_0,
-    NOTE_1,
-    NOTE_2,
-    NOTE_3,
-    NOTE_4,
-    NOTE_5,
-    NOTE_6,
-    NOTE_7,
-    NOTE_8,
-    NOTE_9,
-    NOTE_10,
-    NOTE_11,
-    NOTE_12,
-    NOTE_13,
-    NOTE_14,
-    NOTE_15,
-    NOTE_16,
-    NOTE_17,
-    NOTE_18,
-    NOTE_19,
-    NOTE_20,
-    NOTE_21,
-    NOTE_22,
-    NOTE_23,
-    NOTE_24,
+    NOTEBLOCK_NOTE_LEVEL_0,
+    NOTEBLOCK_NOTE_LEVEL_1,
+    NOTEBLOCK_NOTE_LEVEL_2,
+    NOTEBLOCK_NOTE_LEVEL_3,
+    NOTEBLOCK_NOTE_LEVEL_4,
+    NOTEBLOCK_NOTE_LEVEL_5,
+    NOTEBLOCK_NOTE_LEVEL_6,
+    NOTEBLOCK_NOTE_LEVEL_7,
+    NOTEBLOCK_NOTE_LEVEL_8,
+    NOTEBLOCK_NOTE_LEVEL_9,
+    NOTEBLOCK_NOTE_LEVEL_10,
+    NOTEBLOCK_NOTE_LEVEL_11,
+    NOTEBLOCK_NOTE_LEVEL_12,
+    NOTEBLOCK_NOTE_LEVEL_13,
+    NOTEBLOCK_NOTE_LEVEL_14,
+    NOTEBLOCK_NOTE_LEVEL_15,
+    NOTEBLOCK_NOTE_LEVEL_16,
+    NOTEBLOCK_NOTE_LEVEL_17,
+    NOTEBLOCK_NOTE_LEVEL_18,
+    NOTEBLOCK_NOTE_LEVEL_19,
+    NOTEBLOCK_NOTE_LEVEL_20,
+    NOTEBLOCK_NOTE_LEVEL_21,
+    NOTEBLOCK_NOTE_LEVEL_22,
+    NOTEBLOCK_NOTE_LEVEL_23,
+    NOTEBLOCK_NOTE_LEVEL_24,
 
     // redstone
-    POWER_0,
-    POWER_1,
-    POWER_2,
-    POWER_3,
-    POWER_4,
-    POWER_5,
-    POWER_6,
-    POWER_7,
-    POWER_8,
-    POWER_9,
-    POWER_10,
-    POWER_11,
-    POWER_12,
-    POWER_13,
-    POWER_14,
-    POWER_15,
-    NORTH_UP,
-    SOUTH_UP,
-    EAST_UP,
-    WEST_UP,
-    NORTH_LOW,
-    SOUTH_LOW,
-    EAST_LOW,
-    WEST_LOW,
-    NORTH_SIDE,
-    SOUTH_SIDE,
-    EAST_SIDE,
-    WEST_SIDE,
-    NORTH_NONE,
-    SOUTH_NONE,
-    EAST_NONE,
-    WEST_NONE,
-    NORTH_TALL,
-    SOUTH_TALL,
-    EAST_TALL,
-    WEST_TALL,
+    REDSTONE_POWER_0,
+    REDSTONE_POWER_1,
+    REDSTONE_POWER_2,
+    REDSTONE_POWER_3,
+    REDSTONE_POWER_4,
+    REDSTONE_POWER_5,
+    REDSTONE_POWER_6,
+    REDSTONE_POWER_7,
+    REDSTONE_POWER_8,
+    REDSTONE_POWER_9,
+    REDSTONE_POWER_10,
+    REDSTONE_POWER_11,
+    REDSTONE_POWER_12,
+    REDSTONE_POWER_13,
+    REDSTONE_POWER_14,
+    REDSTONE_POWER_15,
+    REDSTONE_POSITION_NORTH_NONE("north", "none"),
+    REDSTONE_POSITION_NORTH_LOW("north", "low"),
+    REDSTONE_POSITION_NORTH_UP("north", "up"),
+    REDSTONE_POSITION_NORTH_SIDE("north", "side"),
+    REDSTONE_POSITION_NORTH_TALL("north", "tall"),
+    REDSTONE_POSITION_WEST_NONE("west", "none"),
+    REDSTONE_POSITION_WEST_LOW("west", "low"),
+    REDSTONE_POSITION_WEST_UP("west", "up"),
+    REDSTONE_POSITION_WEST_SIDE("west", "side"),
+    REDSTONE_POSITION_WEST_TALL("west", "tall"),
+    REDSTONE_POSITION_SOUTH_NONE("south", "none"),
+    REDSTONE_POSITION_SOUTH_LOW("south", "low"),
+    REDSTONE_POSITION_SOUTH_UP("south", "up"),
+    REDSTONE_POSITION_SOUTH_SIDE("south", "side"),
+    REDSTONE_POSITION_SOUTH_TALL("south", "tall"),
+    REDSTONE_POSITION_EAST_NONE("east", "none"),
+    REDSTONE_POSITION_EAST_LOW("east", "low"),
+    REDSTONE_POSITION_EAST_UP("east", "up"),
+    REDSTONE_POSITION_EAST_SIDE("east", "side"),
+    REDSTONE_POSITION_EAST_TALL("east", "tall"),
 
-    LAYERS_1,
-    LAYERS_2,
-    LAYERS_3,
-    LAYERS_4,
-    LAYERS_5,
-    LAYERS_6,
-    LAYERS_7,
-    LAYERS_8,
+    // snow
+    SNOW_LAYERS_LEVEL_1,
+    SNOW_LAYERS_LEVEL_2,
+    SNOW_LAYERS_LEVEL_3,
+    SNOW_LAYERS_LEVEL_4,
+    SNOW_LAYERS_LEVEL_5,
+    SNOW_LAYERS_LEVEL_6,
+    SNOW_LAYERS_LEVEL_7,
+    SNOW_LAYERS_LEVEL_8,
 
-    IN_WALL,
-    NOT_IN_WALL,
+    // fence
+    FENCE_IN_WALL_YES("in_wall"),
+    FENCE_IN_WALL_NO("in_wall"),
 
     // scaffolding
-    BOTTOM,
-    NOT_BOTTOM,
+    SCAFFOLDING_BOTTOM_YES,
+    SCAFFOLDING_BOTTOM_NO,
 
-    // log, portal
-    AXIS_X,
-    AXIS_Y,
-    AXIS_Z,
+    // tripwire
+    TRIPWIRE_DISARMED_YES,
+    TRIPWIRE_DISARMED_NO,
+    TRIPWIRE_IN_AIR_YES("in_air"),
+    TRIPWIRE_IN_AIR_NO("in_air"),
 
-    // trapwire
-    DISARMED,
-    ARMED,
-    ATTACHED,
-    NOT_ATTACHED,
-    IN_AIR,
-    ON_GROUND,
-
-    // daylight, etc
-    INVERTED,
-    NOT_INVERTED,
-
-    // button
-    FLOOR,
-    WALL,
-    CEILING,
+    // tripwire hook
+    TRIPWIRE_ATTACHED_YES,
+    TRIPWIRE_ATTACHED_NO,
 
     // structure block, comparator
-    SAVE,
-    LOAD,
-    CORNER,
-    DATA,
-    COMPARE,
-    SUBTRACT,
+    STRUCTURE_BLOCK_MODE_SAVE("mode", "save"),
+    STRUCTURE_BLOCK_MODE_LOAD("mode", "load"),
+    STRUCTURE_BLOCK_MODE_CORNER("mode", "corner"),
+    STRUCTURE_BLOCK_MODE_DATA("mode", "data"),
+    STRUCTURE_BLOCK_MODE_COMPARE("mode", "compare"),
+    STRUCTURE_BLOCK_MODE_SUBTRACT("mode", "subtract"),
 
     // command block
-    CONDITIONAL,
-    UNCONDITIONAL,
+    COMMAND_BLOCK_CONDITIONAL_YES,
+    COMMAND_BLOCK_CONDITIONAL_NO,
 
     // double column
-    DRAG,
-    NOT_DRAG,
+    BUBBLE_COLUMN_DRAG_YES("drag"), // whirlpool
+    BUBBLE_COLUMN_DRAG_NO("drag"), // upwards
 
     // bell
-    SINGLE_WALL,
-    DOUBLE_WALL,
+    BELL_ATTACHMENT_FLOOR,
+    BELL_ATTACHMENT_CEILING,
+    BELL_ATTACHMENT_SINGLE_WALL("attachment", "single_wall"),
+    BELL_ATTACHMENT_DOUBLE_WALL("attachment", "double_wall"),
 
     // lantern
-    HANGING,
-    NOT_HANGING,
+    LANTERN_HANGING_YES,
+    LANTERN_HANGING_NO,
 
     // sea pickle
-    PICKLES_1,
-    PICKLES_2,
-    PICKLES_3,
-    PICKLES_4,
+    SEA_PICKLE_PICKLES_LEVEL_1,
+    SEA_PICKLE_PICKLES_LEVEL_2,
+    SEA_PICKLE_PICKLES_LEVEL_3,
+    SEA_PICKLE_PICKLES_LEVEL_4,
 
     // lectern
-    HAS_BOOK,
-    NO_BOOK,
+    LECTERN_BOOK_YES("has_book"),
+    LECTERN_BOOK_NO("has_book"),
 
     // brewing stand
-    HAS_BOTTLE_0,
-    NO_BOTTLE_0,
-    HAS_BOTTLE_1,
-    NO_BOTTLE_1,
-    HAS_BOTTLE_2,
-    NO_BOTTLE_2,
+    BREWING_STAND_BOTTLE_0_YES("has_bottle_0"),
+    BREWING_STAND_BOTTLE_0_NO("has_bottle_0"),
+    BREWING_STAND_BOTTLE_1_YES("has_bottle_1"),
+    BREWING_STAND_BOTTLE_1_NO("has_bottle_1"),
+    BREWING_STAND_BOTTLE_2_YES("has_bottle_2"),
+    BREWING_STAND_BOTTLE_2_NO("has_bottle_2"),
 
     // chest
-    TYPE_SINGLE,
-    TYPE_LEFT,
-    TYPE_RIGHT,
+    CHEST_TYPE_SINGLE,
+    CHEST_TYPE_LEFT,
+    CHEST_TYPE_RIGHT,
 
     // cake
-    BITES_0,
-    BITES_1,
-    BITES_2,
-    BITES_3,
-    BITES_4,
-    BITES_5,
-    BITES_6,
+    CAKES_BITES_LEVEL_0,
+    CAKES_BITES_LEVEL_1,
+    CAKES_BITES_LEVEL_2,
+    CAKES_BITES_LEVEL_3,
+    CAKES_BITES_LEVEL_4,
+    CAKES_BITES_LEVEL_5,
+    CAKES_BITES_LEVEL_6,
 
     // bamboo
-    SMALL,
-    LARGE,
+    BAMBOO_LEAVES_NONE,
+    BAMBOO_LEAVES_SMALL,
+    BAMBOO_LEAVES_LARGE,
 
     // repeater
-    LOCKED,
-    UNLOCKED,
-    DELAY_1,
-    DELAY_2,
-    DELAY_3,
-    DELAY_4,
+    REPEATER_LOCKED_YES,
+    REPEATER_LOCKED_NO,
+    REPEATER_DELAY_LEVEL_1,
+    REPEATER_DELAY_LEVEL_2,
+    REPEATER_DELAY_LEVEL_3,
+    REPEATER_DELAY_LEVEL_4,
 
     // end portal frame
-    EYE,
-    NO_EYE,
+    PORTAL_FRAME_EYE_YES,
+    PORTAL_FRAME_EYE_NO,
 
     // jukebox
-    HAS_RECORD,
-    HAS_NO_RECORD,
+    JUKEBOX_HAS_RECORD_YES("has_record"),
+    JUKEBOX_HAS_RECORD_NO("has_record"),
 
     // campfire
-    SIGNAL_FIRE,
-    NOT_SIGNAL_FIRE,
+    CAMPFIRE_SIGNAL_FIRE_YES("signal_fire"),
+    CAMPFIRE_SIGNAL_FIRE_NO("signal_fire"),
 
     // turtle eggs
-    EGGS_1,
-    EGGS_2,
-    EGGS_3,
-    EGGS_4, // turtle eggs
-    HATCH_0,
-    HATCH_1,
-    HATCH_2,
-
-    ENABLED,
-    DISABLED,
+    TURTLE_EGGS_EGGS_LEVEL_1("eggs"),
+    TURTLE_EGGS_EGGS_LEVEL_2("eggs"),
+    TURTLE_EGGS_EGGS_LEVEL_3("eggs"),
+    TURTLE_EGGS_EGGS_LEVEL_4("eggs"),
+    TURTLE_EGGS_HATCH_LEVEL_0("hatch"),
+    TURTLE_EGGS_HATCH_LEVEL_1("hatch"),
+    TURTLE_EGGS_HATCH_LEVEL_2("hatch"),
 
     // respawn anchor
-    CHARGES_0,
-    CHARGES_1,
-    CHARGES_2,
-    CHARGES_3,
-    CHARGES_4,
+    RESPAWN_ANCHOR_CHARGES_LEVEL_0,
+    RESPAWN_ANCHOR_CHARGES_LEVEL_1,
+    RESPAWN_ANCHOR_CHARGES_LEVEL_2,
+    RESPAWN_ANCHOR_CHARGES_LEVEL_3,
+    RESPAWN_ANCHOR_CHARGES_LEVEL_4,
 
     // candles
-    CANDLES_1,
-    CANDLES_2,
-    CANDLES_3,
-    CANDLES_4
+    CANDLE_CANDLES_LEVEL_1,
+    CANDLE_CANDLES_LEVEL_2,
+    CANDLE_CANDLES_LEVEL_3,
+    CANDLE_CANDLES_LEVEL_4,
+
+    // grindstone
+    GRINDSTONE_FACE_FLOOR,
+    GRINDSTONE_FACE_WALL,
+    GRINDSTONE_FACE_CEILING,
+
+    // hopper
+    HOPPER_ENABLED_YES,
+    HOPPER_ENABLED_NO,
+
+    // button
+    BUTTON_FACE_FLOOR,
+    BUTTON_FACE_WALL,
+    BUTTON_FACE_CEILING;
+
+    public static final HashMap<String, HashMap<String, BlockProperties>> propertiesMapping = new HashMap<>();
+
+    static {
+        // add all to hashmap
+        for (BlockProperties property : values()) {
+            if (!propertiesMapping.containsKey(property.getGroup())) {
+                propertiesMapping.put(property.getGroup(), new HashMap<>());
+            }
+            propertiesMapping.get(property.getGroup()).put(property.getValue(), property);
+        }
+    }
+
+
+    final String group;
+    final String value;
+
+    BlockProperties() {
+        final String name = name();
+        final List<String> split = Arrays.asList(name.split("_"));
+
+        if (name.contains("LEVEL")) {
+            // level with int values
+            int levelIndex = split.indexOf("LEVEL");
+            group = split.get(levelIndex - 1).toLowerCase();
+        } else if (split.size() == 3) {
+            // TYPE_NAME_VALUE
+            group = split.get(1).toLowerCase();
+        } else if (name.endsWith("YES") || name.endsWith("NO")) {
+            group = split.get(split.size() - 2).toLowerCase();
+        } else {
+            throw new IllegalArgumentException(String.format("Could not find group automatically: %s", name));
+        }
+        this.value = getValueByName(name);
+    }
+
+    BlockProperties(String group) {
+        this.group = group;
+        this.value = getValueByName(name());
+    }
+
+
+    BlockProperties(String group, String value) {
+        this.group = group;
+        this.value = value;
+    }
+
+    private static String getValueByName(String name) {
+        final List<String> split = Arrays.asList(name.split("_"));
+        if (name.contains("LEVEL")) {
+            // level with int values
+            return split.get(split.indexOf("LEVEL") + 1);
+        } else if (name.endsWith("YES")) {
+            return String.valueOf(true);
+        } else if (name.endsWith("NO")) {
+            return String.valueOf(false);
+        } else if (split.size() == 3) {
+            return split.get(2).toLowerCase();
+        } else {
+            throw new IllegalArgumentException(String.format("Could not find value automatically: %s", name));
+        }
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }

@@ -13,25 +13,32 @@
 
 package de.bixilon.minosoft.data.mappings.blocks;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+
 public enum BlockRotations {
     NONE,
-    SOUTH,
-    SOUTH_SOUTH_WEST,
-    SOUTH_WEST,
-    WEST_SOUTH_WEST,
-    WEST,
-    WEST_NORTH_WEST,
-    NORTH_WEST,
-    NORTH_NORTH_WEST,
-    NORTH,
-    NORTH_NORTH_EAST,
-    NORTH_EAST,
-    EAST_NORTH_EAST,
-    EAST,
-    EAST_SOUTH_EAST,
-    SOUTH_EAST,
-    SOUTH_SOUTH_EAST,
+    // mostly sign, but general
+    SOUTH("0"),
+    SOUTH_SOUTH_WEST("1"),
+    SOUTH_WEST("2"),
+    WEST_SOUTH_WEST("3"),
+    WEST("4"),
+    WEST_NORTH_WEST("5"),
+    NORTH_WEST("6"),
+    NORTH_NORTH_WEST("7"),
+    NORTH("8"),
+    NORTH_NORTH_EAST("9"),
+    NORTH_EAST("10"),
+    EAST_NORTH_EAST("11"),
+    EAST("12"),
+    EAST_SOUTH_EAST("13"),
+    SOUTH_EAST("14"),
+    SOUTH_SOUTH_EAST("15"),
 
+
+    // stairs?
     NORTH_SOUTH,
     EAST_WEST,
     ASCENDING_EAST,
@@ -41,8 +48,6 @@ public enum BlockRotations {
 
     UP,
     DOWN,
-
-    // 1.16+
 
     DOWN_EAST,
     DOWN_WEST,
@@ -56,4 +61,33 @@ public enum BlockRotations {
     NORTH_UP,
     UP_SOUTH,
     SOUTH_UP,
+
+    // log, portal
+    AXIS_X("x"),
+    AXIS_Y("y"),
+    AXIS_Z("z");
+
+    public static final HashMap<String, BlockRotations> rotationMapping = new HashMap<>();
+
+    static {
+        // add all to hashmap
+        for (BlockRotations rotation : values()) {
+            rotationMapping.put(rotation.name().toLowerCase(), rotation);
+            rotation.getAliases().forEach((alias) -> rotationMapping.put(alias, rotation));
+        }
+    }
+
+    private final HashSet<String> aliases;
+
+    BlockRotations() {
+        aliases = new HashSet<>();
+    }
+
+    BlockRotations(String... alias) {
+        aliases = new HashSet<>(Arrays.asList(alias));
+    }
+
+    public HashSet<String> getAliases() {
+        return aliases;
+    }
 }
