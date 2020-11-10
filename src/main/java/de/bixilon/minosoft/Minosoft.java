@@ -127,7 +127,7 @@ public final class Minosoft {
             Log.info("Loading versions.json...");
             long mappingStartLoadingTime = System.currentTimeMillis();
             Versions.load(Util.readJsonAsset("mapping/versions.json"));
-            Log.info(String.format("Loaded versions mapping in %dms", (System.currentTimeMillis() - mappingStartLoadingTime)));
+            Log.info(String.format("Loaded %d versions in %dms", Versions.getVersionIdMap().size(), (System.currentTimeMillis() - mappingStartLoadingTime)));
             progress.countDown();
         }, "Version mappings", "Load available minecraft versions inclusive mappings", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
 
