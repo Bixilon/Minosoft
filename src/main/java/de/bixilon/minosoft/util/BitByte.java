@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.util;
 
 public final class BitByte {
-    public static boolean isBitSet(int in, int pos) {
-        int mask = 1 << pos;
+    public static boolean isBitSet(long in, int pos) {
+        long mask = 1 << pos;
         return ((in & mask) == mask);
     }
 

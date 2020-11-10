@@ -72,7 +72,10 @@ public class PacketChunkData implements ClientboundPacket {
             return true;
         }
         this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
-        boolean groundUpContinuous = buffer.readBoolean();
+        boolean groundUpContinuous = true; // ToDo: how should we handle this now?
+        if (buffer.getVersionId() < 758) {
+            groundUpContinuous = buffer.readBoolean();
+        }
         if (buffer.getVersionId() >= 732 && buffer.getVersionId() < 746) {
             this.ignoreOldData = buffer.readBoolean();
         }

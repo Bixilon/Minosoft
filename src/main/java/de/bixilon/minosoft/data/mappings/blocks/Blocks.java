@@ -119,6 +119,12 @@ public class Blocks {
         propertiesMapping.put("charges", propertyHashMap);
 
         propertyHashMap = new HashMap<>();
+        for (int i = 1; i <= 4; i++) {
+            propertyHashMap.put(String.valueOf(i), BlockProperties.valueOf(String.format("CANDLES_%d", i)));
+        }
+        propertiesMapping.put("candles", propertyHashMap);
+
+        propertyHashMap = new HashMap<>();
         propertyHashMap.put("0", BlockProperties.STAGE_0);
         propertyHashMap.put("1", BlockProperties.STAGE_1);
         propertiesMapping.put("stage", propertyHashMap);

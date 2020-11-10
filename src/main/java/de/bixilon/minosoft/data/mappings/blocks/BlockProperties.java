@@ -391,5 +391,11 @@ public enum BlockProperties {
     CHARGES_1,
     CHARGES_2,
     CHARGES_3,
-    CHARGES_4
+    CHARGES_4,
+
+    // candles
+    CANDLES_1,
+    CANDLES_2,
+    CANDLES_3,
+    CANDLES_4
 }

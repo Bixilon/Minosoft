@@ -205,7 +205,7 @@ public final class ChunkUtil {
         return new Chunk(sectionMap);
     }
 
-    public static void readSkyLightPacket(InByteBuffer buffer, int skyLightMask, int blockLightMask, int emptyBlockLightMask, int emptySkyLightMask) {
+    public static void readSkyLightPacket(InByteBuffer buffer, long skyLightMask, long blockLightMask, long emptyBlockLightMask, long emptySkyLightMask) {
         for (byte c = 0; c < 18; c++) { // light sections
             if (!BitByte.isBitSet(skyLightMask, c)) {
                 continue;

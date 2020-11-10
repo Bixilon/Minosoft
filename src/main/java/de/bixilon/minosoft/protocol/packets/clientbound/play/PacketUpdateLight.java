@@ -29,10 +29,11 @@ public class PacketUpdateLight implements ClientboundPacket {
         if (buffer.getVersionId() >= 725) {
             boolean trustEdges = buffer.readBoolean();
         }
-        int skyLightMask = buffer.readVarInt();
-        int blockLightMask = buffer.readVarInt();
-        int emptyBlockLightMask = buffer.readVarInt();
-        int emptySkyLightMask = buffer.readVarInt();
+        // was a varInt before 20w45a, should we change this?
+        long skyLightMask = buffer.readVarLong();
+        long blockLightMask = buffer.readVarLong();
+        long emptyBlockLightMask = buffer.readVarLong();
+        long emptySkyLightMask = buffer.readVarLong();
         ChunkUtil.readSkyLightPacket(buffer, skyLightMask, blockLightMask, emptyBlockLightMask, emptySkyLightMask);
         return true;
     }
@@ -44,6 +45,6 @@ public class PacketUpdateLight implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received sky light update (location=%s)", location));
+        Log.protocol(String.format("Received light update (location=%s)", location));
     }
 }

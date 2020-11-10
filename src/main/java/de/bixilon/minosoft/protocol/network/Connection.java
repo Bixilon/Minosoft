@@ -43,7 +43,6 @@ import de.bixilon.minosoft.util.ServerAddress;
 import org.xbill.DNS.TextParseException;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -158,7 +157,7 @@ public class Connection {
         this.customMapping.setVersion(version);
         try {
             Versions.loadVersionMappings(version.getVersionId());
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.printException(e, LogLevels.DEBUG);
             Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
             lastException = new MappingsLoadingException("Mappings could not be loaded", e);
