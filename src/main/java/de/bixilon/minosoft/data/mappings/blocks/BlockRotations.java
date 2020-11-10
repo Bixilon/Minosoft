@@ -67,13 +67,13 @@ public enum BlockRotations {
     AXIS_Y("y"),
     AXIS_Z("z");
 
-    public static final HashMap<String, BlockRotations> rotationMapping = new HashMap<>();
+    public static final HashMap<String, BlockRotations> ROTATION_MAPPING = new HashMap<>();
 
     static {
         // add all to hashmap
         for (BlockRotations rotation : values()) {
-            rotationMapping.put(rotation.name().toLowerCase(), rotation);
-            rotation.getAliases().forEach((alias) -> rotationMapping.put(alias, rotation));
+            ROTATION_MAPPING.put(rotation.name().toLowerCase(), rotation);
+            rotation.getAliases().forEach((alias) -> ROTATION_MAPPING.put(alias, rotation));
         }
     }
 

@@ -35,28 +35,28 @@ public class Blocks {
                     JsonObject propertiesJSON = statesJSON.getAsJsonObject("properties");
                     BlockRotations rotation = BlockRotations.NONE;
                     if (propertiesJSON.has("facing")) {
-                        rotation = BlockRotations.rotationMapping.get(propertiesJSON.get("facing").getAsString());
+                        rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("facing").getAsString());
                         propertiesJSON.remove("facing");
                     } else if (propertiesJSON.has("rotation")) {
-                        rotation = BlockRotations.rotationMapping.get(propertiesJSON.get("rotation").getAsString());
+                        rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("rotation").getAsString());
                         propertiesJSON.remove("rotation");
                     } else if (propertiesJSON.has("orientation")) {
-                        rotation = BlockRotations.rotationMapping.get(propertiesJSON.get("orientation").getAsString());
+                        rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("orientation").getAsString());
                         propertiesJSON.remove("orientation");
                     } else if (propertiesJSON.has("axis")) {
-                        rotation = BlockRotations.rotationMapping.get(propertiesJSON.get("axis").getAsString());
+                        rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("axis").getAsString());
                         propertiesJSON.remove("axis");
                     }
 
                     HashSet<BlockProperties> properties = new HashSet<>();
                     for (String propertyName : propertiesJSON.keySet()) {
-                        if (BlockProperties.propertiesMapping.get(propertyName) == null) {
+                        if (BlockProperties.PROPERTIES_MAPPING.get(propertyName) == null) {
                             throw new RuntimeException(String.format("Unknown block property: %s (identifier=%s)", propertyName, identifierName));
                         }
-                        if (BlockProperties.propertiesMapping.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()) == null) {
+                        if (BlockProperties.PROPERTIES_MAPPING.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()) == null) {
                             throw new RuntimeException(String.format("Unknown block property: %s -> %s (identifier=%s)", propertyName, propertiesJSON.get(propertyName).getAsString(), identifierName));
                         }
-                        properties.add(BlockProperties.propertiesMapping.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()));
+                        properties.add(BlockProperties.PROPERTIES_MAPPING.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()));
                     }
 
                     block = new Block(mod, identifierName, properties, rotation);

@@ -419,15 +419,15 @@ public enum BlockProperties {
     BUTTON_FACE_WALL,
     BUTTON_FACE_CEILING;
 
-    public static final HashMap<String, HashMap<String, BlockProperties>> propertiesMapping = new HashMap<>();
+    public static final HashMap<String, HashMap<String, BlockProperties>> PROPERTIES_MAPPING = new HashMap<>();
 
     static {
         // add all to hashmap
         for (BlockProperties property : values()) {
-            if (!propertiesMapping.containsKey(property.getGroup())) {
-                propertiesMapping.put(property.getGroup(), new HashMap<>());
+            if (!PROPERTIES_MAPPING.containsKey(property.getGroup())) {
+                PROPERTIES_MAPPING.put(property.getGroup(), new HashMap<>());
             }
-            propertiesMapping.get(property.getGroup()).put(property.getValue(), property);
+            PROPERTIES_MAPPING.get(property.getGroup()).put(property.getValue(), property);
         }
     }
 
