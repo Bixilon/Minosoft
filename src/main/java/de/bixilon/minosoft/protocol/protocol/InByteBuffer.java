@@ -29,7 +29,6 @@ import de.bixilon.minosoft.data.mappings.recipes.Ingredient;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.nbt.tag.*;
 
@@ -182,6 +181,10 @@ public class InByteBuffer {
 
     public byte readByte() {
         return bytes[position++];
+    }
+
+    public short readUnsignedByte() {
+        return (short) (bytes[position++] & 0xFF);
     }
 
     public BlockPosition readPosition() {
@@ -355,7 +358,7 @@ public class InByteBuffer {
     }
 
     public BlockPosition readBlockPosition() {
-        return new BlockPosition(readInt(), BitByte.byteToUShort(readByte()), readInt());
+        return new BlockPosition(readInt(), readUnsignedByte(), readInt());
     }
 
     public BlockPosition readBlockPositionInteger() {

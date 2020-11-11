@@ -18,7 +18,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.util.BitByte;
 
 import java.util.ArrayList;
 
@@ -43,8 +42,8 @@ public class PacketMapData implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
+        mapId = buffer.readVarInt(); // mapId
         if (buffer.getVersionId() < 27) {
-            mapId = buffer.readVarInt(); // mapId
             short length = buffer.readShort();
             // read action
             dataData = PacketMapDataDataActions.byId(buffer.readByte());
@@ -68,15 +67,27 @@ public class PacketMapData implements ClientboundPacket {
             }
             return true;
         }
-        if (buffer.getVersionId() < 373) {
-            mapId = buffer.readVarInt();
-            scale = buffer.readByte();
-            if (buffer.getVersionId() >= 58) {
-                boolean trackPosition = buffer.readBoolean();
+        scale = buffer.readByte();
+        if (buffer.getVersionId() >= 58 && buffer.getVersionId() < 759) {
+            boolean trackPosition = buffer.readBoolean();
+        }
+        if (buffer.getVersionId() >= 452) {
+            locked = buffer.readBoolean();
+        }
+
+
+        int pinCount = 0;
+        if (buffer.getVersionId() < 759) {
+            pinCount = buffer.readVarInt();
+        } else {
+            if (buffer.readBoolean()) {
+                pinCount = buffer.readVarInt();
             }
-            int pinCount = buffer.readVarInt();
-            pins = new ArrayList<>();
-            for (int i = 0; i < pinCount; i++) {
+        }
+        pins = new ArrayList<>();
+
+        for (int i = 0; i < pinCount; i++) {
+            if (buffer.getVersionId() < 373) {
                 byte directionAndType = buffer.readByte();
                 byte x = buffer.readByte();
                 byte z = buffer.readByte();
@@ -85,27 +96,8 @@ public class PacketMapData implements ClientboundPacket {
                 } else {
                     pins.add(new MapPinSet(MapPinTypes.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
                 }
+                continue;
             }
-            short columns = BitByte.byteToUShort(buffer.readByte());
-            if (columns > 0) {
-                byte rows = buffer.readByte();
-                byte xOffset = buffer.readByte();
-                byte zOffset = buffer.readByte();
-
-                int dataLength = buffer.readVarInt();
-                data = buffer.readBytes(dataLength);
-            }
-            return true;
-        }
-        mapId = buffer.readVarInt();
-        scale = buffer.readByte();
-        boolean trackPosition = buffer.readBoolean();
-        if (buffer.getVersionId() >= 452) {
-            locked = buffer.readBoolean();
-        }
-        int pinCount = buffer.readVarInt();
-        pins = new ArrayList<>();
-        for (int i = 0; i < pinCount; i++) {
             MapPinTypes type = MapPinTypes.byId(buffer.readVarInt());
             byte x = buffer.readByte();
             byte z = buffer.readByte();
@@ -116,11 +108,12 @@ public class PacketMapData implements ClientboundPacket {
             }
             pins.add(new MapPinSet(type, direction, x, z, displayName));
         }
-        short columns = BitByte.byteToUShort(buffer.readByte());
+
+        short columns = buffer.readUnsignedByte();
         if (columns > 0) {
-            byte rows = buffer.readByte();
-            byte xOffset = buffer.readByte();
-            byte zOffset = buffer.readByte();
+            short rows = buffer.readUnsignedByte();
+            short xOffset = buffer.readUnsignedByte();
+            short zOffset = buffer.readUnsignedByte();
 
             int dataLength = buffer.readVarInt();
             data = buffer.readBytes(dataLength);

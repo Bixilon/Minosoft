@@ -85,7 +85,6 @@ public class Connection {
         this.desiredVersionNumber = versionId;
 
         Thread resolveThread = new Thread(() -> {
-            Minosoft.waitForStartup(); // wait until mappings are loaded
             if (desiredVersionNumber != -1) {
                 setVersion(Versions.getVersionById(desiredVersionNumber));
             }

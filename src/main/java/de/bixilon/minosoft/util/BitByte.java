@@ -37,8 +37,4 @@ public final class BitByte {
         int mask = 1 << pos;
         return ((in & mask) == mask);
     }
-
-    public static short byteToUShort(byte b) {
-        return (short) (b & 0xFF);
-    }
 }
