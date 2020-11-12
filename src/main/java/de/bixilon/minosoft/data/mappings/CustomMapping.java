@@ -27,7 +27,6 @@ public class CustomMapping {
     final HashMap<String, HashBiMap<String, Particle>> particleIdentifierMap = new HashMap<>();
     final HashMap<String, HashBiMap<String, Statistic>> statisticIdentifierMap = new HashMap<>();
     final HashBiMap<Integer, Item> itemMap = HashBiMap.create();
-    final HashBiMap<Integer, String> entityMap = HashBiMap.create();
     final HashBiMap<Integer, Motive> motiveIdMap = HashBiMap.create();
     final HashBiMap<Integer, MobEffect> mobEffectMap = HashBiMap.create();
     final HashBiMap<Integer, Dimension> dimensionMap = HashBiMap.create();
@@ -36,6 +35,7 @@ public class CustomMapping {
     final HashBiMap<Integer, Enchantment> enchantmentMap = HashBiMap.create();
     final HashBiMap<Integer, Particle> particleIdMap = HashBiMap.create();
     final HashBiMap<Integer, Statistic> statisticIdMap = HashBiMap.create();
+    final EntityMappings entityMappings = null; //ToDo
     Version version;
     HashMap<String, HashBiMap<String, Dimension>> dimensionIdentifierMap = new HashMap<>();
 
@@ -109,13 +109,6 @@ public class CustomMapping {
             return itemMap.get(versionId);
         }
         return version.getMapping().getItemById(versionId);
-    }
-
-    public String getEntityIdentifierById(int versionId) {
-        if (itemMap.containsKey(versionId)) {
-            return entityMap.get(versionId);
-        }
-        return version.getMapping().getEntityIdentifierById(versionId);
     }
 
     public Motive getMotiveById(int versionId) {
@@ -199,7 +192,6 @@ public class CustomMapping {
         statisticIdentifierMap.clear();
         dimensionIdentifierMap.clear();
         itemMap.clear();
-        entityMap.clear();
         motiveIdMap.clear();
         mobEffectMap.clear();
         dimensionMap.clear();
@@ -212,5 +204,9 @@ public class CustomMapping {
 
     public void setDimensions(HashMap<String, HashBiMap<String, Dimension>> dimensions) {
         dimensionIdentifierMap = dimensions;
+    }
+
+    public EntityMappings getEntityMappings() {
+        return entityMappings;
     }
 }

@@ -11,13 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player;
+package de.bixilon.minosoft.data.mappings;
 
-public enum Hands {
-    OFF_HAND, // left
-    MAIN_HAND; // right
+import com.google.common.collect.HashBiMap;
+import de.bixilon.minosoft.data.entities.Entity;
+import de.bixilon.minosoft.data.entities.EntityInformation;
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 
-    public static Hands byId(int id) {
-        return values()[id];
+public class EntityMappings {
+    private final HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap = HashBiMap.create();
+
+    public EntityInformation getEntityInformation(Class<? extends Entity> clazz) {
+        return entityInformationMap.get(clazz);
+    }
+
+    public int getEntityMetaDatIndex(EntityMetaDataFields field) {
+        return 0; // ToDo
     }
 }

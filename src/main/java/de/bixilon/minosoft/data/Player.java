@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data;
 
-import de.bixilon.minosoft.data.entities.mob.OtherPlayer;
 import de.bixilon.minosoft.data.inventory.Inventory;
 import de.bixilon.minosoft.data.inventory.InventoryProperties;
 import de.bixilon.minosoft.data.inventory.InventorySlots;
@@ -44,7 +43,7 @@ public class Player {
     byte selectedSlot;
     int level;
     int totalExperience;
-    OtherPlayer player;
+    //OtherPlayer player;
     boolean spawnConfirmed = false;
 
     ChatComponent tabHeader;
@@ -220,11 +219,11 @@ public class Player {
         this.tabFooter = tabFooter;
     }
 
-    public OtherPlayer getPlayer() {
-        return player;
-    }
+    //public OtherPlayer getPlayer() {
+    //    return player;
+    // }
 
-    public void setPlayer(OtherPlayer player) {
-        this.player = player;
-    }
+    //  public void setPlayer(OtherPlayer player) {
+    //     this.player = player;
+    //  }
 }

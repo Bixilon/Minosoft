@@ -24,7 +24,11 @@ public class PacketOpenBook implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        hand = Hands.byId(buffer.readVarInt());
+        if (buffer.readVarInt() == 0) {
+            hand = Hands.MAIN_HAND;
+            return true;
+        }
+        hand = Hands.OFF_HAND;
         return true;
     }
 

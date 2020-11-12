@@ -13,10 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.objects.Painting;
 import de.bixilon.minosoft.data.mappings.Motive;
 import de.bixilon.minosoft.data.world.BlockPosition;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
@@ -24,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import java.util.UUID;
 
 public class PacketSpawnPainting implements ClientboundPacket {
-    Painting entity;
+    //Painting entity;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -48,7 +46,7 @@ public class PacketSpawnPainting implements ClientboundPacket {
             position = buffer.readPosition();
             direction = buffer.readByte();
         }
-        entity = new Painting(entityId, uuid, motive, position, direction);
+        //entity = new Painting(entityId, uuid, motive, position, direction);
         return true;
     }
 
@@ -59,11 +57,11 @@ public class PacketSpawnPainting implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Spawning painting at %s (entityId=%d, motive=%s, direction=%d)", entity.getLocation(), entity.getEntityId(), entity.getMotive(), entity.getDirection()));
+        //  Log.protocol(String.format("Spawning painting at %s (entityId=%d, motive=%s, direction=%d)", entity.getLocation(), entity.getEntityId(), entity.getMotive(), entity.getDirection()));
     }
 
-    public Painting getEntity() {
-        return entity;
-    }
+    // public Painting getEntity() {
+    //    return entity;
+    // }
 }
 

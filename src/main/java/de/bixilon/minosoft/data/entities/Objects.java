@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data.entities;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.data.entities.objects.*;
 
 public enum Objects {
+    /*
     BOAT(1, Boat.class),
     ITEM_STACK(2, ItemStack.class),
     AREA_EFFECT_CLOUD(3, AreaEffectCloud.class),
@@ -47,6 +47,7 @@ public enum Objects {
     DRAGON_FIREBALL(93, DragonFireball.class),
     TRIDENT(94, Trident.class);
 
+     */;
     final static HashBiMap<Integer, Objects> objects = HashBiMap.create();
 
     static {
@@ -56,9 +57,9 @@ public enum Objects {
     }
 
     final int id;
-    final Class<? extends EntityObject> clazz;
+    final Class<? extends Entity> clazz;
 
-    Objects(int id, Class<? extends EntityObject> clazz) {
+    Objects(int id, Class<? extends Entity> clazz) {
         this.id = id;
         this.clazz = clazz;
     }
@@ -71,7 +72,7 @@ public enum Objects {
         return id;
     }
 
-    public Class<? extends EntityObject> getClazz() {
+    public Class<? extends Entity> getClazz() {
         return clazz;
     }
 }

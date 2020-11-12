@@ -16,9 +16,9 @@ package de.bixilon.minosoft.protocol.protocol;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.data.Directions;
+import de.bixilon.minosoft.data.entities.EntityMetaData;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.Poses;
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData;
@@ -393,12 +393,12 @@ public class InByteBuffer {
         return versionId;
     }
 
-    public EntityMetaData.MetaDataHashMap readMetaData() {
-        EntityMetaData.MetaDataHashMap sets = new EntityMetaData.MetaDataHashMap();
+    public EntityMetaData readMetaData() {
+        EntityMetaData metaData = new EntityMetaData(connection);
+        EntityMetaData.MetaDataHashMap sets = metaData.getSets();
 
         if (versionId < 48) {
             byte item = readByte();
-
             while (item != 0x7F) {
                 byte index = (byte) (item & 0x1F);
                 EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId((item & 0xFF) >> 5, versionId);
@@ -420,7 +420,7 @@ public class InByteBuffer {
                 index = readByte();
             }
         }
-        return sets;
+        return metaData;
     }
 
     @Override

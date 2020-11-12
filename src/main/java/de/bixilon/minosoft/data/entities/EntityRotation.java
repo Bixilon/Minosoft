@@ -11,13 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player;
+package de.bixilon.minosoft.data.entities;
 
-public enum Hands {
-    OFF_HAND, // left
-    MAIN_HAND; // right
-
-    public static Hands byId(int id) {
-        return values()[id];
+public record EntityRotation(float yaw, float pitch, float headYaw) {
+    @Override
+    public String toString() {
+        return String.format("raw=%s, pitch=%s, headYaw=%s", yaw, pitch, headYaw);
     }
 }

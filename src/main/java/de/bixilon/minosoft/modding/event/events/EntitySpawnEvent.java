@@ -18,44 +18,44 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
 
 public class EntitySpawnEvent extends ConnectionEvent {
-    private final Entity entity;
+   // private final Entity entity;
 
     public EntitySpawnEvent(Connection connection, Entity entity) {
         super(connection);
-        this.entity = entity;
+        //this.entity = entity;
     }
 
     public EntitySpawnEvent(Connection connection, PacketSpawnMob pkg) {
         super(connection);
-        this.entity = pkg.getEntity();
+        //this.entity = pkg.getEntity();
     }
 
     public EntitySpawnEvent(Connection connection, PacketSpawnWeatherEntity pkg) {
         super(connection);
-        this.entity = pkg.getEntity();
+        //  this.entity = pkg.getEntity();
     }
 
     public EntitySpawnEvent(Connection connection, PacketSpawnPlayer pkg) {
         super(connection);
-        this.entity = pkg.getEntity();
+        //  this.entity = pkg.getEntity();
     }
 
     public EntitySpawnEvent(Connection connection, PacketSpawnExperienceOrb pkg) {
         super(connection);
-        this.entity = pkg.getEntity();
+        //  this.entity = pkg.getEntity();
     }
 
     public EntitySpawnEvent(Connection connection, PacketSpawnObject pkg) {
         super(connection);
-        this.entity = pkg.getEntity();
+        //this.entity = pkg.getEntity();
     }
 
     public EntitySpawnEvent(Connection connection, PacketSpawnPainting pkg) {
         super(connection);
-        this.entity = pkg.getEntity();
+        //   this.entity = pkg.getEntity();
     }
 
-    public Entity getEntity() {
-        return entity;
-    }
+    // public Entity getEntity() {
+    //      return entity;
+    //  }
 }

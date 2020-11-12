@@ -54,15 +54,15 @@ public class PacketSender {
     }
 
     public void swingArm() {
-        connection.sendPacket(new PacketAnimation(Hands.RIGHT));
+        connection.sendPacket(new PacketAnimation(Hands.MAIN_HAND));
     }
 
     public void sendAction(PacketEntityAction.EntityActions action) {
-        connection.sendPacket(new PacketEntityAction(connection.getPlayer().getPlayer().getEntityId(), action));
+        // connection.sendPacket(new PacketEntityAction(connection.getPlayer().getPlayer().getEntityId(), action));
     }
 
     public void jumpWithHorse(int jumpBoost) {
-        connection.sendPacket(new PacketEntityAction(connection.getPlayer().getPlayer().getEntityId(), PacketEntityAction.EntityActions.START_HORSE_JUMP, jumpBoost));
+        // connection.sendPacket(new PacketEntityAction(connection.getPlayer().getPlayer().getEntityId(), PacketEntityAction.EntityActions.START_HORSE_JUMP, jumpBoost));
     }
 
     public void dropItem() {

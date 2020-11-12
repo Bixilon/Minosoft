@@ -13,46 +13,35 @@
 
 package de.bixilon.minosoft.data.entities;
 
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.data.inventory.InventorySlots;
 import de.bixilon.minosoft.data.inventory.Slot;
-import de.bixilon.minosoft.data.mappings.Entities;
 import de.bixilon.minosoft.data.mappings.MobEffect;
+import de.bixilon.minosoft.data.text.ChatComponent;
+import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
+import de.bixilon.minosoft.protocol.network.Connection;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
-public abstract class Entity implements EntityInterface {
-    final int entityId;
-    final UUID uuid;
-    final HashMap<InventorySlots.EntityInventorySlots, Slot> equipment = new HashMap<>();
-    final HashSet<StatusEffect> effectList = new HashSet<>();
-    Location location;
-    int yaw;
-    int pitch;
-    int headYaw;
-    int attachedTo = -1;
+public abstract class Entity {
+    protected final EntityInformation information;
+    protected final int entityId;
+    protected final UUID uuid;
+    protected final HashMap<InventorySlots.EntityInventorySlots, Slot> equipment = new HashMap<>();
+    protected final HashSet<StatusEffect> effectList = new HashSet<>();
+    protected Location location;
+    protected EntityRotation rotation;
+    protected int attachedTo = -1;
+    protected EntityMetaData metaData;
 
-    public Entity(int entityId, UUID uuid, Location location, short yaw, short pitch, short headYaw) {
-        this(entityId, uuid, location, yaw, (int) pitch, headYaw);
-    }
-
-    public Entity(int entityId, UUID uuid, Location location, int yaw, int pitch, int headYaw) {
-        this(entityId, uuid, location, yaw, pitch);
-        this.headYaw = headYaw;
-    }
-
-    public Entity(int entityId, UUID uuid, Location location, int yaw, int pitch) {
+    public Entity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+        this.information = connection.getMapping().getEntityMappings().getEntityInformation(getClass());
         this.entityId = entityId;
         this.uuid = uuid;
         this.location = location;
-        this.yaw = yaw;
-        this.pitch = pitch;
-    }
-
-    public Entity(int entityId, UUID uuid, Location location, short yaw, short pitch) {
-        this(entityId, uuid, location, yaw, (int) pitch);
+        this.rotation = rotation;
     }
 
     public int getEntityId() {
@@ -68,24 +57,7 @@ public abstract class Entity implements EntityInterface {
     }
 
     public void setLocation(RelativeLocation relativeLocation) {
-        // change relative location
         location = new Location(location.getX() + relativeLocation.getX(), location.getY() + relativeLocation.getY(), location.getZ() + relativeLocation.getZ());
-    }
-
-    public int getYaw() {
-        return yaw;
-    }
-
-    public void setYaw(int yaw) {
-        this.yaw = yaw;
-    }
-
-    public int getPitch() {
-        return pitch;
-    }
-
-    public void setPitch(int pitch) {
-        this.pitch = pitch;
     }
 
     public void setEquipment(HashMap<InventorySlots.EntityInventorySlots, Slot> slots) {
@@ -98,18 +70,6 @@ public abstract class Entity implements EntityInterface {
 
     public UUID getUUID() {
         return uuid;
-    }
-
-    public int getHeadYaw() {
-        return headYaw;
-    }
-
-    public void setHeadYaw(int headYaw) {
-        this.headYaw = headYaw;
-    }
-
-    public Class<? extends EntityMetaData> getMetaDataClass() {
-        return EntityMetaData.class;
     }
 
     public HashSet<StatusEffect> getEffectList() {
@@ -142,7 +102,109 @@ public abstract class Entity implements EntityInterface {
         attachedTo = -1;
     }
 
-    public String getIdentifier() {
-        return Entities.getIdentifierByClass(this.getClass());
+    public EntityRotation getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(EntityRotation rotation) {
+        this.rotation = rotation;
+    }
+
+    public void setRotation(int yaw, int pitch) {
+        this.rotation = new EntityRotation(yaw, pitch, rotation.headYaw());
+    }
+
+    public void setRotation(int yaw, int pitch, int headYaw) {
+        this.rotation = new EntityRotation(yaw, pitch, headYaw);
+    }
+
+    public void setHeadRotation(int headYaw) {
+        this.rotation = new EntityRotation(rotation.yaw(), rotation.pitch(), headYaw);
+    }
+
+    @Unsafe
+    public EntityMetaData getMetaData() {
+        return metaData;
+    }
+
+    @Unsafe
+    public void setMetaData(EntityMetaData metaData) {
+        this.metaData = metaData;
+    }
+
+    public EntityInformation getEntityInformation() {
+        return information;
+    }
+
+    // meta data
+
+    private boolean getEntityFlag(int bitMask) {
+        return metaData.getSets().getBitMask(EntityMetaDataFields.ENTITY_FLAGS, bitMask);
+    }
+
+    public boolean isOnFire() {
+        return getEntityFlag(0x01);
+    }
+
+    public boolean isCrouching() {
+        return getEntityFlag(0x02);
+    }
+
+    public boolean isSprinting() {
+        return getEntityFlag(0x08);
+    }
+
+    public boolean isSwimming() {
+        return getEntityFlag(0x10);
+    }
+
+    public boolean isInvisible() {
+        return getEntityFlag(0x20);
+    }
+
+    public boolean hasGlowingEffect() {
+        return getEntityFlag(0x20);
+    }
+
+    public boolean isFlyingWithElytra() {
+        return getEntityFlag(0x80);
+    }
+
+    private int getAirSupply() {
+        return metaData.getSets().getInt(EntityMetaDataFields.ENTITY_AIR_SUPPLY);
+    }
+
+    @Nullable
+    private ChatComponent getCustomName() {
+        return metaData.getSets().getChatComponent(EntityMetaDataFields.ENTITY_CUSTOM_NAME);
+    }
+
+    public boolean isCustomNameVisible() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_CUSTOM_NAME_VISIBLE);
+    }
+
+    public boolean isSilent() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_SILENT);
+    }
+
+    public boolean hasNoGravity() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_NO_GRAVITY);
+    }
+
+    public Poses getPose() {
+        if (isCrouching()) {
+            // crouching
+            return Poses.SNEAKING;
+        }
+        if (isSwimming()) {
+            // crouching
+            return Poses.SWIMMING;
+        }
+        return metaData.getSets().getPose(EntityMetaDataFields.ENTITY_POSE);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s:%s", information.getMod(), information.getIdentifier());
     }
 }

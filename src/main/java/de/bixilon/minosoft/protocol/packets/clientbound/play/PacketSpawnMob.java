@@ -13,12 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Entity;
-import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.Velocity;
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.data.mappings.Entities;
+import de.bixilon.minosoft.data.entities.*;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
@@ -43,25 +40,27 @@ public class PacketSpawnMob implements ClientboundPacket {
         } else {
             type = buffer.readVarInt();
         }
-        Class<? extends Entity> typeClass = Entities.getClassByIdentifier(buffer.getConnection().getMapping().getEntityIdentifierById(type));
+        Class<? extends Entity> typeClass = null; //ToDo
         Location location;
         if (buffer.getVersionId() < 100) {
             location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
         } else {
             location = buffer.readLocation();
         }
-        short yaw = buffer.readAngle();
-        short pitch = buffer.readAngle();
-        short headYaw = buffer.readAngle();
+        EntityRotation rotation = new EntityRotation(buffer.readAngle(), buffer.readAngle(), buffer.readAngle());
         velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
 
-        EntityMetaData.MetaDataHashMap metaData = null;
+        EntityMetaData metaData = null;
         if (buffer.getVersionId() < 550) {
             metaData = buffer.readMetaData();
         }
 
         try {
-            entity = typeClass.getConstructor(int.class, UUID.class, Location.class, short.class, short.class, short.class, EntityMetaData.MetaDataHashMap.class, int.class).newInstance(entityId, uuid, location, yaw, pitch, headYaw, metaData, buffer.getVersionId());
+//    public LivingEntity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+            entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Location.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, location, rotation);
+            if (metaData != null) {
+                entity.setMetaData(metaData);
+            }
             return true;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
             e.printStackTrace();
@@ -76,7 +75,7 @@ public class PacketSpawnMob implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Mob spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity.getIdentifier()));
+        Log.protocol(String.format("Mob spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity));
     }
 
     public Entity getEntity() {
