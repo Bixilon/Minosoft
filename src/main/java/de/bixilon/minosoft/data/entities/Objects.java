@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.entities;
 
 import com.google.common.collect.HashBiMap;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 
 public enum Objects {
     /*

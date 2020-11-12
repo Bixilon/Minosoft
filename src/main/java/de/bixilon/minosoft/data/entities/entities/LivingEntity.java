@@ -11,8 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities;
+package de.bixilon.minosoft.data.entities.entities;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
+import de.bixilon.minosoft.data.entities.EntityRotation;
+import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -24,7 +27,7 @@ public abstract class LivingEntity extends Entity {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    // meta data
+
     private boolean getLivingEntityFlag(int bitMask) {
         return metaData.getSets().getBitMask(EntityMetaDataFields.LIVING_ENTITY_FLAGS, bitMask);
     }

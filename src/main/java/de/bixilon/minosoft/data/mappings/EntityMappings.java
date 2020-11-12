@@ -14,18 +14,38 @@
 package de.bixilon.minosoft.data.mappings;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.data.entities.Entity;
 import de.bixilon.minosoft.data.entities.EntityInformation;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
+import de.bixilon.minosoft.data.entities.entities.Entity;
+
+import java.util.HashMap;
 
 public class EntityMappings {
-    private final HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap = HashBiMap.create();
+    private final HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap;
+    private final HashMap<EntityMetaDataFields, Integer> indexMapping;
+    private final HashBiMap<Integer, Class<? extends Entity>> entityIdMapping;
+
+    public EntityMappings() {
+        this.entityInformationMap = HashBiMap.create();
+        this.indexMapping = new HashMap<>();
+        this.entityIdMapping = HashBiMap.create();
+    }
+
+    public EntityMappings(HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap, HashMap<EntityMetaDataFields, Integer> indexMapping, HashBiMap<Integer, Class<? extends Entity>> entityIdMapping) {
+        this.entityInformationMap = entityInformationMap;
+        this.indexMapping = indexMapping;
+        this.entityIdMapping = entityIdMapping;
+    }
 
     public EntityInformation getEntityInformation(Class<? extends Entity> clazz) {
         return entityInformationMap.get(clazz);
     }
 
     public int getEntityMetaDatIndex(EntityMetaDataFields field) {
-        return 0; // ToDo
+        return indexMapping.get(field);
+    }
+
+    public Class<? extends Entity> getEntityClassById(int id) {
+        return entityIdMapping.get(id);
     }
 }

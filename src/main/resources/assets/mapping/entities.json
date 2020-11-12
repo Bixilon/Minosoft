@@ -1,0 +1,44 @@
+{
+  "minecraft": {
+    "~abstract_entity": {
+      "data": {
+        "ENTITY_FLAGS": 0,
+        "ENTITY_AIR_SUPPLY": 1,
+        "ENTITY_CUSTOM_NAME": 2,
+        "ENTITY_CUSTOM_NAME_VISIBLE": 3,
+        "ENTITY_SILENT": 4,
+        "ENTITY_NO_GRAVITY": 5,
+        "ENTITY_POSE": 6,
+        "ENTITY_TICKS_FROZEN": 7
+      }
+    },
+    "~abstract_living_entity": {
+      "data": {
+        "LIVING_ENTITY_FLAGS": 8,
+        "LIVING_ENTITY_HEALTH": 9,
+        "LIVING_ENTITY_EFFECT_COLOR": 10,
+        "LIVING_ENTITY_EFFECT_AMBIENCE": 11,
+        "LIVING_ENTITY_ARROW_COUNT": 12,
+        "LIVING_ENTITY_ABSORPTION_HEARTS": 13,
+        "LIVING_ENTITY_BED_POSITION": 14
+      }
+    },
+    "~abstract_mob": {
+      "data": {
+        "MOB_FLAGS": 15
+      }
+    },
+    "zombie": {
+      "id": 102,
+      "length": 0.6,
+      "width": 0.6,
+      "height": 1.95,
+      "maxHealth": 20,
+      "data": {
+        "ZOMBIE_IS_BABY": 16,
+        "ZOMBIE_SPECIAL_TYPE": 17,
+        "ZOMBIE_DROWNING_CONVERSION": 18
+      }
+    }
+  }
+}

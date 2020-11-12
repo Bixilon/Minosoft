@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.world;
 
-import de.bixilon.minosoft.data.entities.Entity;
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.blocks.Blocks;

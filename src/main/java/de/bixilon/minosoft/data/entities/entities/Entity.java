@@ -11,8 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities;
+package de.bixilon.minosoft.data.entities.entities;
 
+import de.bixilon.minosoft.data.entities.*;
 import de.bixilon.minosoft.data.inventory.InventorySlots;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.MobEffect;
@@ -37,7 +38,7 @@ public abstract class Entity {
     protected EntityMetaData metaData;
 
     public Entity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
-        this.information = connection.getMapping().getEntityMappings().getEntityInformation(getClass());
+        this.information = connection.getMapping().getEntityInformation(getClass());
         this.entityId = entityId;
         this.uuid = uuid;
         this.location = location;
@@ -136,7 +137,6 @@ public abstract class Entity {
         return information;
     }
 
-    // meta data
 
     private boolean getEntityFlag(int bitMask) {
         return metaData.getSets().getBitMask(EntityMetaDataFields.ENTITY_FLAGS, bitMask);

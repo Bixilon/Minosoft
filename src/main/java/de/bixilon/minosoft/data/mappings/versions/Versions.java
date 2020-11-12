@@ -40,6 +40,7 @@ public class Versions {
     static {
         mappingsHashMap.put("registries", Mappings.REGISTRIES);
         mappingsHashMap.put("blocks", Mappings.BLOCKS);
+        mappingsHashMap.put("entities", Mappings.ENTITIES);
     }
 
     public static Version getVersionById(int versionId) {
@@ -125,7 +126,13 @@ public class Versions {
         HashMap<String, JsonObject> files = Util.readJsonTarStream(AssetsManager.readAssetAsStream(String.format("mappings/%s", version.getVersionName())));
 
         for (Map.Entry<String, Mappings> mappingSet : mappingsHashMap.entrySet()) {
-            JsonObject data = files.get(mappingSet.getKey() + ".json").getAsJsonObject("minecraft");
+            JsonObject data;
+            //ToDo
+            if (mappingSet.getValue() == Mappings.ENTITIES) {
+                data = Util.readJsonAsset("mapping/entities.json"); // ToDo
+            } else {
+                data = files.get(mappingSet.getKey() + ".json").getAsJsonObject("minecraft");
+            }
             loadVersionMappings(mappingSet.getValue(), data, versionId);
         }
 

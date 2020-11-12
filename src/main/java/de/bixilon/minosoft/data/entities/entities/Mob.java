@@ -11,23 +11,35 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data;
+package de.bixilon.minosoft.data.entities.entities;
 
-import de.bixilon.minosoft.data.entities.Velocity;
-import de.bixilon.minosoft.data.entities.entities.Entity;
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
+import de.bixilon.minosoft.data.entities.EntityRotation;
+import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.protocol.network.Connection;
 
-import java.util.HashMap;
+import java.util.UUID;
 
-public class VelocityHandler {
-    final Connection connection;
-    final HashMap<Entity, Velocity> entities = new HashMap<>();
-
-    public VelocityHandler(Connection connection) {
-        this.connection = connection;
+public abstract class Mob extends LivingEntity {
+    public Mob(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+        super(connection, entityId, uuid, location, rotation);
     }
 
-    public void handleVelocity(Entity entity, Velocity velocity) {
-        // ToDo
+    private boolean getMobFlags(int bitMask) {
+        return metaData.getSets().getBitMask(EntityMetaDataFields.MOB_FLAGS, bitMask);
     }
+
+    public boolean isNoAi() {
+        return getMobFlags(0x01);
+    }
+
+    public boolean isLeftHanded() {
+        return getMobFlags(0x02);
+    }
+
+    public boolean isAggressive() {
+        return getMobFlags(0x04);
+    }
+
 }
+

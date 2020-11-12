@@ -14,6 +14,9 @@
 package de.bixilon.minosoft.data.mappings;
 
 import com.google.common.collect.HashBiMap;
+import de.bixilon.minosoft.data.entities.EntityInformation;
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.statistics.Statistic;
@@ -35,7 +38,7 @@ public class CustomMapping {
     final HashBiMap<Integer, Enchantment> enchantmentMap = HashBiMap.create();
     final HashBiMap<Integer, Particle> particleIdMap = HashBiMap.create();
     final HashBiMap<Integer, Statistic> statisticIdMap = HashBiMap.create();
-    final EntityMappings entityMappings = null; //ToDo
+    final EntityMappings entityMappings = new EntityMappings();
     Version version;
     HashMap<String, HashBiMap<String, Dimension>> dimensionIdentifierMap = new HashMap<>();
 
@@ -186,6 +189,17 @@ public class CustomMapping {
         return version.getMapping().getIdByEnchantment(enchantment);
     }
 
+    public EntityInformation getEntityInformation(Class<? extends Entity> clazz) {
+        if (entityMappings.getEntityInformation(clazz) != null) {
+            return entityMappings.getEntityInformation(clazz);
+        }
+        return version.getMapping().getEntityInformation(clazz);
+    }
+
+    public int getEntityMetaDatIndex(EntityMetaDataFields field) {
+        return version.getMapping().getEntityMetaDatIndex(field);
+    }
+
     public void unload() {
         motiveIdentifierMap.clear();
         particleIdentifierMap.clear();
@@ -206,7 +220,10 @@ public class CustomMapping {
         dimensionIdentifierMap = dimensions;
     }
 
-    public EntityMappings getEntityMappings() {
-        return entityMappings;
+    public Class<? extends Entity> getEntityClassById(int id) {
+        if (entityMappings.getEntityClassById(id) != null) {
+            return entityMappings.getEntityClassById(id);
+        }
+        return version.getMapping().getEntityClassById(id);
     }
 }

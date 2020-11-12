@@ -11,23 +11,34 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data;
+package de.bixilon.minosoft.util;
 
-import de.bixilon.minosoft.data.entities.Velocity;
-import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.protocol.network.Connection;
+import java.util.Objects;
 
-import java.util.HashMap;
+public class Pair<K, V> {
 
-public class VelocityHandler {
-    final Connection connection;
-    final HashMap<Entity, Velocity> entities = new HashMap<>();
+    public final K key;
+    public final V value;
 
-    public VelocityHandler(Connection connection) {
-        this.connection = connection;
+    public Pair(K key, V value) {
+        this.key = key;
+        this.value = value;
     }
 
-    public void handleVelocity(Entity entity, Velocity velocity) {
-        // ToDo
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pair<?, ?> pair = (Pair<?, ?>) o;
+        return Objects.equals(key, pair.key) && Objects.equals(value, pair.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, value);
+    }
+
+    public String toString() {
+        return String.format("%s=%s", key, value);
     }
 }

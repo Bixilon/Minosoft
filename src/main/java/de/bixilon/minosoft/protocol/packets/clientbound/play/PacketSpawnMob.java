@@ -13,7 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.*;
+import de.bixilon.minosoft.data.entities.EntityMetaData;
+import de.bixilon.minosoft.data.entities.EntityRotation;
+import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Velocity;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -40,7 +44,7 @@ public class PacketSpawnMob implements ClientboundPacket {
         } else {
             type = buffer.readVarInt();
         }
-        Class<? extends Entity> typeClass = null; //ToDo
+        Class<? extends Entity> typeClass = buffer.getConnection().getMapping().getEntityClassById(type);
         Location location;
         if (buffer.getVersionId() < 100) {
             location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());

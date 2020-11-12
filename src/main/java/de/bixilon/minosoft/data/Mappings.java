@@ -15,5 +15,6 @@ package de.bixilon.minosoft.data;
 
 public enum Mappings {
     BLOCKS,
-    REGISTRIES
+    REGISTRIES,
+    ENTITIES
 }

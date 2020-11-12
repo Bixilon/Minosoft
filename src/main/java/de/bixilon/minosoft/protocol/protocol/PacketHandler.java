@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.data.GameModes;
-import de.bixilon.minosoft.data.entities.Entity;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.mappings.blocks.Blocks;
 import de.bixilon.minosoft.data.mappings.recipes.Recipes;
 import de.bixilon.minosoft.data.mappings.versions.Version;

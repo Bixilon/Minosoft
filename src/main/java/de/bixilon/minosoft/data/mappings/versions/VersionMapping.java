@@ -15,7 +15,11 @@ package de.bixilon.minosoft.data.mappings.versions;
 
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonObject;
+import de.bixilon.minosoft.data.EntityClassMappings;
 import de.bixilon.minosoft.data.Mappings;
+import de.bixilon.minosoft.data.entities.EntityInformation;
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.mappings.*;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.blocks.Blocks;
@@ -23,6 +27,7 @@ import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.statistics.Statistic;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class VersionMapping {
@@ -32,7 +37,6 @@ public class VersionMapping {
     HashBiMap<String, Particle> particleIdentifierMap;
     HashBiMap<String, Statistic> statisticIdentifierMap;
     HashBiMap<Integer, Item> itemMap;
-    HashBiMap<Integer, String> entityMap;
     HashBiMap<Integer, Motive> motiveIdMap;
     HashBiMap<Integer, MobEffect> mobEffectMap;
     HashBiMap<Integer, Dimension> dimensionMap;
@@ -41,6 +45,7 @@ public class VersionMapping {
     HashBiMap<Integer, Enchantment> enchantmentMap;
     HashBiMap<Integer, Particle> particleIdMap;
     HashBiMap<Integer, Statistic> statisticIdMap;
+    EntityMappings entityMappings;
 
     public VersionMapping(Version version) {
         this.version = version;
@@ -64,10 +69,6 @@ public class VersionMapping {
 
     public int getItemId(Item item) {
         return itemMap.inverse().get(item);
-    }
-
-    public String getEntityIdentifierById(int versionId) {
-        return "minecraft:" + entityMap.get(versionId);
     }
 
     public Motive getMotiveById(int versionId) {
@@ -128,11 +129,6 @@ public class VersionMapping {
                     }
                     itemMap.put(itemId, item);
                 }
-                entityMap = HashBiMap.create();
-                JsonObject entityJson = data.getAsJsonObject("entity_type").getAsJsonObject("entries");
-                for (String identifier : entityJson.keySet()) {
-                    entityMap.put(entityJson.getAsJsonObject(identifier).get("id").getAsInt(), identifier);
-                }
                 enchantmentMap = HashBiMap.create();
                 JsonObject enchantmentJson = data.getAsJsonObject("enchantment").getAsJsonObject("entries");
                 for (String identifier : enchantmentJson.keySet()) {
@@ -191,6 +187,36 @@ public class VersionMapping {
                 }
             }
             case BLOCKS -> blockMap = Blocks.load("minecraft", data, version.getVersionId() < ProtocolDefinition.FLATTING_VERSION_ID);
+            case ENTITIES -> {
+                HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap = HashBiMap.create();
+                HashMap<EntityMetaDataFields, Integer> indexMapping = new HashMap<>();
+                HashBiMap<Integer, Class<? extends Entity>> entityIdMap = HashBiMap.create();
+
+                for (String mod : data.keySet()) {
+                    JsonObject modJson = data.getAsJsonObject(mod);
+                    for (String identifier : modJson.keySet()) {
+                        JsonObject identifierJson = modJson.getAsJsonObject(identifier);
+                        if (!identifier.startsWith("~abstract")) {
+                            // not abstract, has attributes
+                            Class<? extends Entity> clazz = EntityClassMappings.getByIdentifier(mod, identifier);
+                            entityInformationMap.put(clazz, new EntityInformation(mod, identifier, identifierJson.get("maxHealth").getAsInt(), identifierJson.get("length").getAsInt(), identifierJson.get("width").getAsInt(), identifierJson.get("height").getAsInt()));
+
+                            entityIdMap.put(identifierJson.get("id").getAsInt(), clazz);
+                        }
+
+
+                        // meta data index
+                        if (identifierJson.has("data")) {
+                            JsonObject metaDataJson = identifierJson.getAsJsonObject("data");
+                            for (String field : metaDataJson.keySet()) {
+                                indexMapping.put(EntityMetaDataFields.valueOf(field), metaDataJson.get(field).getAsInt());
+                            }
+                        }
+                    }
+                }
+
+                entityMappings = new EntityMappings(entityInformationMap, indexMapping, entityIdMap);
+            }
         }
         loaded.add(type);
     }
@@ -200,7 +226,6 @@ public class VersionMapping {
         particleIdentifierMap.clear();
         statisticIdentifierMap.clear();
         itemMap.clear();
-        entityMap.clear();
         motiveIdMap.clear();
         mobEffectMap.clear();
         dimensionMap.clear();
@@ -218,5 +243,17 @@ public class VersionMapping {
             }
         }
         return true;
+    }
+
+    public EntityInformation getEntityInformation(Class<? extends Entity> clazz) {
+        return entityMappings.getEntityInformation(clazz);
+    }
+
+    public int getEntityMetaDatIndex(EntityMetaDataFields field) {
+        return entityMappings.getEntityMetaDatIndex(field);
+    }
+
+    public Class<? extends Entity> getEntityClassById(int id) {
+        return entityMappings.getEntityClassById(id);
     }
 }

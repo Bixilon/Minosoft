@@ -13,21 +13,20 @@
 
 package de.bixilon.minosoft.data;
 
-import de.bixilon.minosoft.data.entities.Velocity;
+import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.data.entities.entities.Zombie;
+import javafx.util.Pair;
 
-import java.util.HashMap;
+public final class EntityClassMappings {
+    public static final HashBiMap<Class<? extends Entity>, Pair<String, String>> ENTITY_CLASS_MAPPINGS = HashBiMap.create();
 
-public class VelocityHandler {
-    final Connection connection;
-    final HashMap<Entity, Velocity> entities = new HashMap<>();
-
-    public VelocityHandler(Connection connection) {
-        this.connection = connection;
+    static {
+        ENTITY_CLASS_MAPPINGS.put(Zombie.class, new Pair<>("minecraft", "zombie"));
     }
 
-    public void handleVelocity(Entity entity, Velocity velocity) {
-        // ToDo
+    public static Class<? extends Entity> getByIdentifier(String mod, String identifier) {
+        return ENTITY_CLASS_MAPPINGS.inverse().get(new Pair<>(mod, identifier));
     }
+
 }

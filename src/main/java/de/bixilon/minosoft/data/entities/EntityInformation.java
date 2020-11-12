@@ -32,6 +32,14 @@ public class EntityInformation {
         this.height = height;
     }
 
+    public EntityInformation(String mod, String identifier, int maxHealth, int width, int height) {
+        this.mod = mod;
+        this.identifier = identifier;
+        this.maxHealth = maxHealth;
+        this.width = this.length = width;
+        this.height = height;
+    }
+
     public String getMod() {
         return mod;
     }
