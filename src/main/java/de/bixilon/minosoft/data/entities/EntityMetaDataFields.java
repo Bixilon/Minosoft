@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.data.entities;
 
+import de.bixilon.minosoft.data.entities.entities.vehicle.Boat;
+import de.bixilon.minosoft.data.mappings.particle.Particle;
+import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
+
 public enum EntityMetaDataFields {
     ENTITY_FLAGS((byte) 0),
     ENTITY_AIR_SUPPLY(300),
@@ -24,7 +28,7 @@ public enum EntityMetaDataFields {
     ENTITY_TICKS_FROZEN(0),
 
     LIVING_ENTITY_FLAGS(0),
-    LIVING_ENTITY_HEALTH(1.0F),
+    LIVING_ENTITY_HEALTH(1.0f),
     LIVING_ENTITY_EFFECT_COLOR(0),
     LIVING_ENTITY_EFFECT_AMBIENCE(false),
     LIVING_ENTITY_ARROW_COUNT(0),
@@ -35,7 +39,85 @@ public enum EntityMetaDataFields {
 
     ZOMBIE_IS_BABY(false),
     ZOMBIE_SPECIAL_TYPE(0),
-    ZOMBIE_DROWNING_CONVERSION(false);
+    ZOMBIE_DROWNING_CONVERSION(false),
+
+    THROWABLE_ITEM_PROJECTILE_ITEM,
+
+    FALLING_BLOCK_SPAWN_POSITION,
+
+    AREA_EFFECT_CLOUD_RADIUS(0.5f),
+    AREA_EFFECT_CLOUD_COLOR(0),
+    AREA_EFFECT_CLOUD_WAITING(false),
+    AREA_EFFECT_CLOUD_PARTICLE(new ParticleData(new Particle("minecraft", "effect"))),
+
+    ABSTRACT_ARROW_FLAGS((byte) 0),
+    ABSTRACT_ARROW_PIERCE_LEVEL((byte) 0),
+
+    FISHING_HOOK_HOOKED_ENTITY(0),
+    FISHING_HOOK_CATCHABLE(false),
+
+    ARROW_EFFECT_COLOR(-1),
+
+    THROWN_TRIDENT_LOYALTY_LEVEL(0),
+    THROWN_TRIDENT_FOIL(false),
+
+
+    BOAT_HURT(0),
+    BOAT_HURT_DIRECTION(1),
+    BOAT_DAMAGE_TAKEN(0f),
+    BOAT_MATERIAL(Boat.BoatMaterials.OAK),
+    BOAT_PADDLE_LEFT(false),
+    BOAT_PADDLE_RIGHT(false),
+    BOAT_BUBBLE_TIME(0),
+
+    END_CRYSTAL_BEAM_TARGET,
+    END_CRYSTAL_SHOW_BOTTOM(true),
+
+    FIREBALL_ITEM,
+
+    WITHER_SKULL_DANGEROUS(false),
+
+    FIREWORK_ROCKET_ENTITY_ITEM,
+    FIREWORK_ROCKET_ENTITY_ATTACHED_ENTITY(0),
+    FIREWORK_ROCKET_ENTITY_SHOT_AT_ANGLE(false),
+
+    ITEM_FRAME_ITEM,
+    ITEM_FRAME_ROTATION(0),
+
+    ITEM_ITEM,
+
+    PLAYER_ABSORPTION_HEARTS(0f),
+    PLAYER_SCORE(0),
+    PLAYER_SKIN_PARTS_FLAGS((byte) 0),
+    PLAYER_SKIN_MAIN_HAND((byte) 1),
+    PLAYER_LEFT_SHOULDER_DATA,
+    PLAYER_RIGHT_SHOULDER_DATA,
+
+    ARMOR_STAND_FLAGS((byte) 0),
+    ARMOR_STAND_HEAD_ROTATION(new EntityRotation(0.0F, 0.0F, 0.0F)),
+    ARMOR_STAND_BODY_ROTATION(new EntityRotation(0.0F, 0.0F, 0.0F)),
+    ARMOR_STAND_LEFT_ARM_ROTATION(new EntityRotation(-10.0F, 0.0F, -10.0F)),
+    ARMOR_STAND_RIGHT_ARM_ROTATION(new EntityRotation(-15.0F, 0.0F, 10.0F)),
+    ARMOR_STAND_LEFT_LAG_ROTATION(new EntityRotation(-1.0F, 0.0F, -1.0F)),
+    ARMOR_STAND_RIGHT_LAG_ROTATION(new EntityRotation(1.0F, 0.0F, 1.0F)),
+
+    BAT_FLAGS((byte) 0),
+
+    DOLPHIN_TREASURE_POSITION,
+    DOLPHIN_HAS_FISH(false),
+    DOLPHIN_MOISTNESS_LEVEL(2400),
+
+    ABSTRACT_FISH_FROM_BUCKET(false),
+
+    PUFFERFISH_PUFF_STATE(0),
+
+    TROPICAL_FISH_VARIANT(0),
+
+    ABSTRACT_HORSE_FLAGS((byte) 0),
+    ABSTRACT_HORSE_OWNER_UUID,
+
+    HORSE_TYPE(0),
+    ;
 
     final Object defaultValue;
 

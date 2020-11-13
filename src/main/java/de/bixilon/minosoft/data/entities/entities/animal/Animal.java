@@ -11,22 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data;
+package de.bixilon.minosoft.data.entities.entities.animal;
 
-import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.data.entities.entities.monster.Zombie;
-import javafx.util.Pair;
+import de.bixilon.minosoft.data.entities.EntityRotation;
+import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.animal.water.WaterAnimal;
+import de.bixilon.minosoft.protocol.network.Connection;
 
-public final class EntityClassMappings {
-    public static final HashBiMap<Class<? extends Entity>, Pair<String, String>> ENTITY_CLASS_MAPPINGS = HashBiMap.create();
+import java.util.UUID;
 
-    static {
-        ENTITY_CLASS_MAPPINGS.put(Zombie.class, new Pair<>("minecraft", "zombie"));
+public abstract class Animal extends WaterAnimal {
+    public Animal(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+        super(connection, entityId, uuid, location, rotation);
     }
-
-    public static Class<? extends Entity> getByIdentifier(String mod, String identifier) {
-        return ENTITY_CLASS_MAPPINGS.inverse().get(new Pair<>(mod, identifier));
-    }
-
 }
+

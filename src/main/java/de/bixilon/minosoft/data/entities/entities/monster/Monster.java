@@ -11,23 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data;
+package de.bixilon.minosoft.data.entities.entities.monster;
 
-public record EntityRotation(float yaw, float pitch, float roll) {
-    public float getYaw() {
-        return yaw;
-    }
+import de.bixilon.minosoft.data.entities.EntityRotation;
+import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
+import de.bixilon.minosoft.protocol.network.Connection;
 
-    public float getPitch() {
-        return pitch;
-    }
+import java.util.UUID;
 
-    public float getRoll() {
-        return roll;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", yaw, pitch, roll);
+public abstract class Monster extends PathfinderMob {
+    public Monster(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+        super(connection, entityId, uuid, location, rotation);
     }
 }
+
