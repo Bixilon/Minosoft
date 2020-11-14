@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.entities;
 
+import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
@@ -103,6 +104,8 @@ public enum EntityMetaDataFields {
 
     BAT_FLAGS((byte) 0),
 
+    AGEABLE_IS_BABY(false),
+
     DOLPHIN_TREASURE_POSITION,
     DOLPHIN_HAS_FISH(false),
     DOLPHIN_MOISTNESS_LEVEL(2400),
@@ -143,6 +146,54 @@ public enum EntityMetaDataFields {
 
     PIG_HAS_SADDLE(false),
     PIG_BOOST_TIME(0),
+
+    RABBIT_VARIANT(0),
+
+    TURTLE_HOME_POSITION,
+    TURTLE_HAS_EGG(false),
+    TURTLE_IS_LAYING_EGG(false),
+    TURTLE_TRAVEL_POSITION,
+    TURTLE_IS_GOING_HOME(false),
+    TURTLE_IS_TRAVELING(false),
+
+    POLAR_BEAR(false),
+
+    HOGLIN_IMMUNE_TO_ZOMBIFICATION(false),
+
+    MOOSHROOM_VARIANT("red"),
+
+    SHEEP_FLAGS((byte) 0),
+
+    STRIDER_TIME_TO_BOOST(0),
+    STRIDER_IS_SUFFOCATING(false),
+    STRIDER_HAS_SADDLE(false),
+
+    TAMEABLE_ENTITY_FLAGS((byte) 0),
+    TAMEABLE_ENTITY_OWNER_UUID,
+
+    CAT_VARIANT(1),
+    CAT_IS_LYING(false),
+    CAT_IS_RELAXED(false),
+    CAT_GET_COLLAR_COLOR(14), // RED
+
+    WOLF_IS_BEGGING(false),
+    WOLF_COLLAR_COLOR(14),
+    WOLF_ANGER_TIME(0),
+
+    PARROT_VARIANT(0),
+
+    ABSTRACT_VILLAGER_UNHAPPY_TIMER(0),
+
+    VILLAGER_VILLAGER_DATA(new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE)),
+
+    IRON_GOLEM_FLAGS((byte) 0),
+
+    SNOW_GOLEM_FLAGS((byte) 0),
+
+    SHULKER_ATTACH_FACE(Directions.DOWN),
+    SHULKER_ATTACHMENT_POSITION,
+    SHULKER_PEEK((byte) 0),
+    SHULKER_COLOR((byte) 10),
     ;
 
     final Object defaultValue;

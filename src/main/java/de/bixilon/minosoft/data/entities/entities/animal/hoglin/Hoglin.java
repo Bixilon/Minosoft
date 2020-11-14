@@ -11,20 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities;
+package de.bixilon.minosoft.data.entities.entities.animal.hoglin;
 
-import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
+import de.bixilon.minosoft.data.entities.EntityRotation;
+import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.animal.Animal;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public abstract class AgeableMob extends PathfinderMob {
-    public AgeableMob(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public class Hoglin extends Animal {
+    public Hoglin(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    public boolean isBaby() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.AGEABLE_IS_BABY);
+    public boolean isImmuneToZombification() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.HOGLIN_IMMUNE_TO_ZOMBIFICATION);
     }
-
 }

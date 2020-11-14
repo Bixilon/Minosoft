@@ -16,59 +16,40 @@ package de.bixilon.minosoft.data.entities.entities.animal;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class Fox extends Animal {
-    public Fox(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public class Turtle extends Animal {
+    public Turtle(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    public int getVariant() {
-        return metaData.getSets().getInt(EntityMetaDataFields.FOX_VARIANT);
+    @Nullable
+    public BlockPosition getHomePosition() {
+        return metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_HOME_POSITION);
     }
 
-    private boolean getFoxFlag(int bitMask) {
-        return metaData.getSets().getBitMask(EntityMetaDataFields.FOX_FLAGS, bitMask);
+    public boolean hasEgg() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_HAS_EGG);
     }
 
-    private boolean isSitting() {
-        return getFoxFlag(0x01);
-    }
-
-    public boolean isCrouching() {
-        return getFoxFlag(0x04);
-    }
-
-    public boolean isInterested() {
-        return getFoxFlag(0x08);
-    }
-
-    public boolean isPouncing() {
-        return getFoxFlag(0x10);
-    }
-
-    public boolean isSleeping() {
-        return getFoxFlag(0x20);
-    }
-
-    public boolean isFaceplanted() {
-        return getFoxFlag(0x40);
-    }
-
-    public boolean isDefending() {
-        return getFoxFlag(0x80);
+    public boolean isLayingEgg() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_LAYING_EGG);
     }
 
     @Nullable
-    public UUID getFirstTrusted() {
-        return metaData.getSets().getUUID(EntityMetaDataFields.FOX_TRUSTED_1);
+    public BlockPosition getTravelPosition() {
+        return metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_TRAVEL_POSITION);
     }
 
-    @Nullable
-    public UUID getSecondTrusted() {
-        return metaData.getSets().getUUID(EntityMetaDataFields.FOX_TRUSTED_2);
+    public boolean isGoingHome() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_GOING_HOME);
+    }
+
+    public boolean isTraveling() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_TRAVELING);
     }
 }

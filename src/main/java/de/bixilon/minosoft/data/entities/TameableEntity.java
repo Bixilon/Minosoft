@@ -13,18 +13,31 @@
 
 package de.bixilon.minosoft.data.entities;
 
-import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
+import de.bixilon.minosoft.data.entities.entities.animal.Animal;
 import de.bixilon.minosoft.protocol.network.Connection;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
-public abstract class AgeableMob extends PathfinderMob {
-    public AgeableMob(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public abstract class TameableEntity extends Animal {
+    public TameableEntity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    public boolean isBaby() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.AGEABLE_IS_BABY);
+    private boolean getTameableFlag(int bitMask) {
+        return metaData.getSets().getBitMask(EntityMetaDataFields.TAMEABLE_ENTITY_FLAGS, bitMask);
     }
 
+    public boolean isSitting() {
+        return getTameableFlag(0x01);
+    }
+
+    public boolean isTamed() {
+        return getTameableFlag(0x04);
+    }
+
+    @Nullable
+    public UUID getOwner() {
+        return metaData.getSets().getUUID(EntityMetaDataFields.TAMEABLE_ENTITY_OWNER_UUID);
+    }
 }

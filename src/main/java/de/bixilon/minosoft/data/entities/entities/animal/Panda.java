@@ -37,12 +37,12 @@ public class Panda extends Animal {
         return metaData.getSets().getInt(EntityMetaDataFields.PANDA_EAT_TIMER);
     }
 
-    public Gene getMainGene() {
-        return Gene.values()[metaData.getSets().getInt(EntityMetaDataFields.PANDA_MAIN_GENE)];
+    public Genes getMainGene() {
+        return Genes.values()[metaData.getSets().getInt(EntityMetaDataFields.PANDA_MAIN_GENE)];
     }
 
-    public Gene getHiddenGene() {
-        return Gene.values()[metaData.getSets().getInt(EntityMetaDataFields.PANDA_HIDDEN_GAME)];
+    public Genes getHiddenGene() {
+        return Genes.values()[metaData.getSets().getInt(EntityMetaDataFields.PANDA_HIDDEN_GAME)];
     }
 
     private boolean getPandaFlag(int bitMask) {
@@ -65,7 +65,7 @@ public class Panda extends Animal {
         return getPandaFlag(0x10);
     }
 
-    public enum Gene {
+    public enum Genes {
         NORMAL,
         LAZY,
         WORRIED,

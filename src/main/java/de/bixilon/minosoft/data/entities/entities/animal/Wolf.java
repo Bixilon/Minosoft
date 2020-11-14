@@ -11,20 +11,32 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities;
+package de.bixilon.minosoft.data.entities.entities.animal;
 
-import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
+import de.bixilon.minosoft.data.entities.EntityRotation;
+import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.TameableEntity;
+import de.bixilon.minosoft.data.text.ChatColors;
+import de.bixilon.minosoft.data.text.RGBColor;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public abstract class AgeableMob extends PathfinderMob {
-    public AgeableMob(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public class Wolf extends TameableEntity {
+    public Wolf(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    public boolean isBaby() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.AGEABLE_IS_BABY);
+    public boolean isBegging() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.WOLF_IS_BEGGING);
     }
 
+    public RGBColor getCollarColor() {
+        return ChatColors.getColorById(metaData.getSets().getInt(EntityMetaDataFields.WOLF_COLLAR_COLOR));
+    }
+
+    public int getAngerTime() {
+        return metaData.getSets().getInt(EntityMetaDataFields.WOLF_ANGER_TIME);
+    }
 }
