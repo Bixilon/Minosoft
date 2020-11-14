@@ -203,9 +203,7 @@ public class VersionMapping {
 
                             entityIdMap.put(identifierJson.get("id").getAsInt(), clazz);
                         }
-
-
-                        // meta data index
+// meta data index
                         if (identifierJson.has("data")) {
                             JsonObject metaDataJson = identifierJson.getAsJsonObject("data");
                             for (String field : metaDataJson.keySet()) {

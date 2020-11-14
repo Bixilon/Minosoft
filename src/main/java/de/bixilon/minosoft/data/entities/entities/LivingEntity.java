@@ -27,7 +27,6 @@ public abstract class LivingEntity extends Entity {
         super(connection, entityId, uuid, location, rotation);
     }
 
-
     private boolean getLivingEntityFlag(int bitMask) {
         return metaData.getSets().getBitMask(EntityMetaDataFields.LIVING_ENTITY_FLAGS, bitMask);
     }

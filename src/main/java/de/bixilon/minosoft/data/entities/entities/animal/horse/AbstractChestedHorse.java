@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.monster;
+package de.bixilon.minosoft.data.entities.entities.animal.horse;
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
@@ -20,21 +20,12 @@ import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public class Zombie extends Monster {
-    public Zombie(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public abstract class AbstractChestedHorse extends AbstractHorse {
+    public AbstractChestedHorse(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    public boolean isBaby() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.ZOMBIE_IS_BABY);
-    }
-
-    public int getSpecialType() {
-        return metaData.getSets().getInt(EntityMetaDataFields.ZOMBIE_SPECIAL_TYPE);
-    }
-
-    public boolean isConvertingToDrowned() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.ZOMBIE_DROWNING_CONVERSION);
+    public boolean hasChest() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.ABSTRACT_CHESTED_HORSE_HAS_CHEST);
     }
 }
-

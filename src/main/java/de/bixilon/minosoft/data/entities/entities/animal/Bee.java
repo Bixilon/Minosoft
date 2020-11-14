@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.monster;
+package de.bixilon.minosoft.data.entities.entities.animal;
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
@@ -20,21 +20,28 @@ import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public class Zombie extends Monster {
-    public Zombie(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public class Bee extends Animal {
+    public Bee(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    public boolean isBaby() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.ZOMBIE_IS_BABY);
+    private boolean getBeeFlag(int bitMask) {
+        return metaData.getSets().getBitMask(EntityMetaDataFields.BEE_FLAGS, bitMask);
     }
 
-    public int getSpecialType() {
-        return metaData.getSets().getInt(EntityMetaDataFields.ZOMBIE_SPECIAL_TYPE);
+    private boolean isAngry() {
+        return getBeeFlag(0x02);
     }
 
-    public boolean isConvertingToDrowned() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.ZOMBIE_DROWNING_CONVERSION);
+    private boolean hasStung() {
+        return getBeeFlag(0x04);
+    }
+
+    private boolean hasNectar() {
+        return getBeeFlag(0x08);
+    }
+
+    public int getRemainingAngerTimer() {
+        return metaData.getSets().getInt(EntityMetaDataFields.BEE_REMAINING_ANGER_TIME);
     }
 }
-

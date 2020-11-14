@@ -137,7 +137,6 @@ public abstract class Entity {
         return information;
     }
 
-
     private boolean getEntityFlag(int bitMask) {
         return metaData.getSets().getBitMask(EntityMetaDataFields.ENTITY_FLAGS, bitMask);
     }

@@ -69,7 +69,6 @@ public class AssetsManager {
         return ret;
     }
 
-
     public static void downloadAllAssets(CountUpAndDownLatch latch) throws IOException {
         if (assets.size() > 0) {
             return;

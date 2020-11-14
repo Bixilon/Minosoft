@@ -40,7 +40,5 @@ public abstract class AbstractArrow extends Projectile {
     public byte getPiercingLevel() {
         return metaData.getSets().getByte(EntityMetaDataFields.ABSTRACT_ARROW_PIERCE_LEVEL);
     }
-
-
 }
 

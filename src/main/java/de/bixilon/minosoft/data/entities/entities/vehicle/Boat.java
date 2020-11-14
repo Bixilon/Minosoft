@@ -53,15 +53,13 @@ public class Boat extends Entity {
     public int getSplashTimer() {
         return getMetaData().getSets().getInt(EntityMetaDataFields.BOAT_BUBBLE_TIME);
     }
-
-
-    public enum BoatMaterials {
-        OAK,
-        SPRUCE,
-        BIRCH,
-        JUNGLE,
-        ACACIA,
-        DARK_OAK
-    }
+public enum BoatMaterials {
+    OAK,
+    SPRUCE,
+    BIRCH,
+    JUNGLE,
+    ACACIA,
+    DARK_OAK
+}
 }
 

@@ -44,7 +44,6 @@ public class PacketEntityMetadata implements ClientboundPacket {
         return entityId;
     }
 
-
     public EntityMetaData getEntityData() {
         return entityMetaData;
     }

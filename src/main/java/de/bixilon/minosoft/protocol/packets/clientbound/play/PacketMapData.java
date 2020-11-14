@@ -74,9 +74,7 @@ public class PacketMapData implements ClientboundPacket {
         if (buffer.getVersionId() >= 452) {
             locked = buffer.readBoolean();
         }
-
-
-        int pinCount = 0;
+int pinCount = 0;
         if (buffer.getVersionId() < 759) {
             pinCount = buffer.readVarInt();
         } else {

@@ -117,6 +117,32 @@ public enum EntityMetaDataFields {
     ABSTRACT_HORSE_OWNER_UUID,
 
     HORSE_TYPE(0),
+
+    ABSTRACT_CHESTED_HORSE_HAS_CHEST(false),
+
+    LLAMA_STRENGTH(0),
+    LLAMA_CARPET_COLOR(-1),
+    LLAMA_VARIANT(0),
+
+    BEE_FLAGS((byte) 0),
+    BEE_REMAINING_ANGER_TIME(0),
+
+    FOX_VARIANT(0),
+    FOX_FLAGS((byte) 0),
+    FOX_TRUSTED_1,
+    FOX_TRUSTED_2,
+
+    OCELOT_IS_TRUSTING(false),
+
+    PANDA_UNHAPPY_TIMER(0),
+    PANDA_SNEEZE_TIMER(0),
+    PANDA_EAT_TIMER(0),
+    PANDA_MAIN_GENE((byte) 0),
+    PANDA_HIDDEN_GAME((byte) 0),
+    PANDA_FLAGS((byte) 0),
+
+    PIG_HAS_SADDLE(false),
+    PIG_BOOST_TIME(0),
     ;
 
     final Object defaultValue;

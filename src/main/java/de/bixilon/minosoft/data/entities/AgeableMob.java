@@ -23,4 +23,3 @@ public abstract class AgeableMob extends PathfinderMob {
         super(connection, entityId, uuid, location, rotation);
     }
 }
-

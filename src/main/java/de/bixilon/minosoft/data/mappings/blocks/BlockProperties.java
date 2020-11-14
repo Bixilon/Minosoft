@@ -430,9 +430,7 @@ public enum BlockProperties {
             PROPERTIES_MAPPING.get(property.getGroup()).put(property.getValue(), property);
         }
     }
-
-
-    final String group;
+final String group;
     final String value;
 
     BlockProperties() {
@@ -458,7 +456,6 @@ public enum BlockProperties {
         this.group = group;
         this.value = getValueByName(name());
     }
-
 
     BlockProperties(String group, String value) {
         this.group = group;
