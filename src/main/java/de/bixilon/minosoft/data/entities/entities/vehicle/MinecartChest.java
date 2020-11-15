@@ -11,17 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.monster;
+package de.bixilon.minosoft.data.entities.entities.vehicle;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public abstract class Monster extends PathfinderMob {
-    public Monster(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public class MinecartChest extends AbstractMinecart {
+    public MinecartChest(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
+    }
+
+    public boolean hasFuel() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.MINECART_FURNACE_HAS_FUEL);
     }
 }

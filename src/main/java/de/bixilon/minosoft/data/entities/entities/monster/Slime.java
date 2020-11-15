@@ -13,15 +13,20 @@
 
 package de.bixilon.minosoft.data.entities.entities.monster;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
+import de.bixilon.minosoft.data.entities.entities.Mob;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public abstract class Monster extends PathfinderMob {
-    public Monster(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public class Slime extends Mob {
+    public Slime(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
+    }
+
+    public int getSize() {
+        return metaData.getSets().getInt(EntityMetaDataFields.SLIME_SIZE);
     }
 }

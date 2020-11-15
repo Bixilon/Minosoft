@@ -13,15 +13,30 @@
 
 package de.bixilon.minosoft.data.entities.entities.monster;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
+import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.protocol.network.Connection;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
-public abstract class Monster extends PathfinderMob {
-    public Monster(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public class Enderman extends AbstractSkeleton {
+    public Enderman(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
+    }
+
+    @Nullable
+    public Block getCarriedBlock() {
+        return metaData.getSets().getBlock(EntityMetaDataFields.ENDERMAN_CARRIED_BLOCK);
+    }
+
+    public boolean isScreaming() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_SCREAMING);
+    }
+
+    public boolean isStarring() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_STARRING);
     }
 }

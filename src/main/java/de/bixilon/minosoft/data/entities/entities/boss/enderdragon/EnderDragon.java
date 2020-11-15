@@ -11,17 +11,36 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.monster;
+package de.bixilon.minosoft.data.entities.entities.boss.enderdragon;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
+import de.bixilon.minosoft.data.entities.entities.Mob;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public abstract class Monster extends PathfinderMob {
-    public Monster(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public class EnderDragon extends Mob {
+    public EnderDragon(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
+    }
+
+    public DragonPhases getPhase() {
+        return DragonPhases.values()[metaData.getSets().getInt(EntityMetaDataFields.ENDER_DRAGON_PHASE)];
+    }
+
+    public enum DragonPhases {
+        HOLDING,
+        STRAFING,
+        LANDING_APPROACH,
+        LANDING,
+        TAKEOFF,
+        SITTING_FLAMING,
+        SITTING_SCANNING,
+        SITTING_ATTACKING,
+        CHARGE_PLAYER,
+        DEATH,
+        HOVER
     }
 }

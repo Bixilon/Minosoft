@@ -11,17 +11,34 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.monster;
+package de.bixilon.minosoft.data.entities.entities.boss.wither;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
+import de.bixilon.minosoft.data.entities.entities.monster.Monster;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public abstract class Monster extends PathfinderMob {
-    public Monster(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public class WitherBoss extends Monster {
+    public WitherBoss(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
+    }
+
+    public int getCenterHeadTargetEntityId() {
+        return metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID);
+    }
+
+    public int getLeftHeadTargetEntityId() {
+        return metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID);
+    }
+
+    public int getRightHeadTargetEntityId() {
+        return metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_RIGHT_HEAD_TARGET_ENTITY_ID);
+    }
+
+    public int getInvulnerableTime() {
+        return metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_INVULNERABLE_TIME);
     }
 }

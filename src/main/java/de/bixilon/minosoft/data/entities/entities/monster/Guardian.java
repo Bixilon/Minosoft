@@ -13,15 +13,23 @@
 
 package de.bixilon.minosoft.data.entities.entities.monster;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public abstract class Monster extends PathfinderMob {
-    public Monster(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public class Guardian extends Monster {
+    public Guardian(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
+    }
+
+    public boolean isMoving() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.GUARDIAN_IS_MOVING);
+    }
+
+    public int getAttackEntityId() {
+        return metaData.getSets().getInt(EntityMetaDataFields.GUARDIAN_TARGET_ENTITY_ID);
     }
 }

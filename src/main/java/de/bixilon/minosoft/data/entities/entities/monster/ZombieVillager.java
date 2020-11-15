@@ -13,15 +13,25 @@
 
 package de.bixilon.minosoft.data.entities.entities.monster;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
+import de.bixilon.minosoft.data.entities.VillagerData;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public abstract class Monster extends PathfinderMob {
-    public Monster(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public class ZombieVillager extends Zombie {
+    public ZombieVillager(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
+
+    public boolean isConverting() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.ZOMBIE_VILLAGER_IS_CONVERTING);
+    }
+
+    public VillagerData getVillagerData() {
+        return metaData.getSets().getVillagerData(EntityMetaDataFields.ZOMBIE_VILLAGER_DATA);
+    }
 }
+

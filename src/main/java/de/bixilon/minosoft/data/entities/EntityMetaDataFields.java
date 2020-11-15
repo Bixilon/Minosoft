@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
+import de.bixilon.minosoft.data.text.ChatComponent;
 
 public enum EntityMetaDataFields {
     ENTITY_FLAGS((byte) 0),
@@ -194,7 +195,67 @@ public enum EntityMetaDataFields {
     SHULKER_ATTACHMENT_POSITION,
     SHULKER_PEEK((byte) 0),
     SHULKER_COLOR((byte) 10),
-    ;
+
+    ABSTRACT_PIGLIN_IMMUNE_TO_ZOMBIFICATION(false),
+
+    PIGLIN_IS_BABY(false),
+    PIGLIN_IS_CHARGING_CROSSBOW(false),
+    PIGLIN_IS_DANCING(false),
+
+    BLAZE_FLAGS((byte) 0),
+
+    CREEPER_STATE(-1),
+    CREEPER_IS_CHARGED(false),
+    CREEPER_IS_IGNITED(false),
+
+    GUARDIAN_IS_MOVING(false),
+    GUARDIAN_TARGET_ENTITY_ID(0),
+
+    RAIDER_IS_CELEBRATING(false),
+
+    SPELLCASTER_ILLAGER_SPELL(0),
+
+    WITCH_IS_DRINKING_POTION(0),
+
+    VEX_FLAGS((byte) 0),
+
+    SPIDER_FLAGS((byte) 0),
+
+    WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID(0),
+    WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID(0),
+    WITHER_BOSS_RIGHT_HEAD_TARGET_ENTITY_ID(0),
+    WITHER_BOSS_INVULNERABLE_TIME(0),
+
+    ZOGLIN_IS_BABY(false),
+
+    ZOMBIE_VILLAGER_IS_CONVERTING(false),
+    ZOMBIE_VILLAGER_DATA(new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE)),
+
+    ENDERMAN_CARRIED_BLOCK,
+    ENDERMAN_IS_SCREAMING(false),
+    ENDERMAN_IS_STARRING(false),
+
+    ENDER_DRAGON_PHASE(10),
+
+    GHAST_IS_ATTACKING(false),
+
+    PHANTOM_SIZE(0),
+
+    SLIME_SIZE(0),
+
+    MINECART_HURT(0),
+    MINECART_HURT_DIRECTION(1),
+    MINECART_DAMAGE_TAKEN(0.0f),
+    MINECART_BLOCK_ID(0),
+    MINECART_BLOCK_Y_OFFSET(6),
+    MINECART_SHOW_BLOCK(false),
+
+    MINECART_FURNACE_HAS_FUEL(false),
+
+    MINECART_COMMAND_BLOCK_COMMAND(""),
+    MINECART_COMMAND_BLOCK_LAST_OUTPUT(ChatComponent.fromString("")),
+
+    PRIMED_TNT_FUSE_TIME(80);
 
     final Object defaultValue;
 

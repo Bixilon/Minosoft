@@ -11,29 +11,42 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.animal;
+package de.bixilon.minosoft.data.entities.entities.vehicle;
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.TameableEntity;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public class Parrot extends TameableEntity {
-    public Parrot(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public abstract class AbstractMinecart extends Entity {
+    public AbstractMinecart(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    public ParrotVariants getVariant() {
-        return ParrotVariants.values()[metaData.getSets().getInt(EntityMetaDataFields.PARROT_VARIANT)];
+    public int getShakingPower() {
+        return metaData.getSets().getInt(EntityMetaDataFields.MINECART_HURT);
     }
-public enum ParrotVariants {
-    RED_BLUE,
-    BLUE,
-    GREEN,
-    YELLOW_BLUE,
-    GREY
-}
+
+    public int getShakingDirection() {
+        return metaData.getSets().getInt(EntityMetaDataFields.MINECART_HURT_DIRECTION);
+    }
+
+    public float getShakingMultiplier() {
+        return metaData.getSets().getInt(EntityMetaDataFields.MINECART_DAMAGE_TAKEN);
+    }
+
+    public int getBlockId() {
+        return metaData.getSets().getInt(EntityMetaDataFields.MINECART_BLOCK_ID);
+    }
+
+    public int getBlockYOffset() {
+        return metaData.getSets().getInt(EntityMetaDataFields.MINECART_BLOCK_Y_OFFSET);
+    }
+
+    public boolean isShowingBlock() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.MINECART_SHOW_BLOCK);
+    }
 }
