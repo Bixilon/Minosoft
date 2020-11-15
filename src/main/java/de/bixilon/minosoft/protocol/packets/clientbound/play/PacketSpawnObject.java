@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.Objects;
 import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.Entity;
+import de.bixilon.minosoft.data.entities.entities.UnknownEntityException;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -32,7 +33,7 @@ public class PacketSpawnObject implements ClientboundPacket {
     Velocity velocity;
 
     @Override
-    public boolean read(InByteBuffer buffer) {
+    public boolean read(InByteBuffer buffer) throws Exception {
         int entityId = buffer.readVarInt();
         UUID uuid = null;
         if (buffer.getVersionId() >= 49) {
@@ -67,6 +68,9 @@ public class PacketSpawnObject implements ClientboundPacket {
             }
         } else {
             velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+        }
+        if (typeClass == null) {
+            throw new UnknownEntityException(String.format("Unknown entity (typeId=%d)", type));
         }
 
         try {

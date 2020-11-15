@@ -11,14 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.packets;
+package de.bixilon.minosoft.data.entities.entities;
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+public class UnknownEntityException extends Exception {
+    public UnknownEntityException() {
+    }
 
-// packet to send to client
-public interface ClientboundPacket extends Packet {
-    boolean read(InByteBuffer buffer) throws Exception;
+    public UnknownEntityException(String message) {
+        super(message);
+    }
 
-    void handle(PacketHandler h);
+    public UnknownEntityException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public UnknownEntityException(Throwable cause) {
+        super(cause);
+    }
+
+    public UnknownEntityException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }
