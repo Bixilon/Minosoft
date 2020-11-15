@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.data.entities.entities.player;
 
+import de.bixilon.minosoft.data.PlayerPropertyData;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.entities.LivingEntity;
+import de.bixilon.minosoft.data.mappings.Item;
 import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
@@ -24,9 +26,22 @@ import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class Player extends LivingEntity {
-    public Player(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public class PlayerEntity extends LivingEntity {
+    private final String name;
+    private final PlayerPropertyData[] properties;
+    private Item currentItem;
+
+    public PlayerEntity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
+        this.name = "Ghost Player";
+        this.properties = new PlayerPropertyData[0];
+    }
+
+    public PlayerEntity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation, String name, PlayerPropertyData[] properties, Item currentItem) {
+        super(connection, entityId, uuid, location, rotation);
+        this.name = name;
+        this.properties = properties;
+        this.currentItem = currentItem;
     }
 
     public float getPlayerAbsorptionHearts() {
@@ -53,6 +68,19 @@ public class Player extends LivingEntity {
     @Nullable
     public CompoundTag getRightShoulderData() {
         return metaData.getSets().getNBT(EntityMetaDataFields.PLAYER_RIGHT_SHOULDER_DATA);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public PlayerPropertyData[] getProperties() {
+        return properties;
+    }
+
+    @Deprecated
+    public Item getCurrentItem() {
+        return currentItem;
     }
 }
 

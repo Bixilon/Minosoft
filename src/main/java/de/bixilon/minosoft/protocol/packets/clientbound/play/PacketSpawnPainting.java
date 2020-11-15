@@ -13,8 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.Directions;
+import de.bixilon.minosoft.data.entities.entities.decoration.Painting;
 import de.bixilon.minosoft.data.mappings.Motive;
 import de.bixilon.minosoft.data.world.BlockPosition;
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
@@ -22,7 +25,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import java.util.UUID;
 
 public class PacketSpawnPainting implements ClientboundPacket {
-    //Painting entity;
+    Painting entity;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -38,15 +41,15 @@ public class PacketSpawnPainting implements ClientboundPacket {
             motive = buffer.getConnection().getMapping().getMotiveById(buffer.readVarInt());
         }
         BlockPosition position;
-        int direction;
+        Directions direction;
         if (buffer.getVersionId() < 8) {
             position = buffer.readBlockPositionInteger();
-            direction = buffer.readInt();
+            direction = Directions.byId(buffer.readInt());
         } else {
             position = buffer.readPosition();
-            direction = buffer.readByte();
+            direction = Directions.byId(buffer.readByte());
         }
-        //entity = new Painting(entityId, uuid, motive, position, direction);
+        entity = new Painting(buffer.getConnection(), entityId, uuid, position, direction, motive);
         return true;
     }
 
@@ -57,11 +60,11 @@ public class PacketSpawnPainting implements ClientboundPacket {
 
     @Override
     public void log() {
-        //  Log.protocol(String.format("Spawning painting at %s (entityId=%d, motive=%s, direction=%d)", entity.getLocation(), entity.getEntityId(), entity.getMotive(), entity.getDirection()));
+        Log.protocol(String.format("Spawning painting at %s (entityId=%d, motive=%s, direction=%s)", entity.getLocation(), entity.getEntityId(), entity.getMotive(), entity.getDirection()));
     }
 
-    // public Painting getEntity() {
-    //    return entity;
-    // }
+    public Painting getEntity() {
+        return entity;
+    }
 }
 

@@ -14,12 +14,14 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.ExperienceOrb;
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketSpawnExperienceOrb implements ClientboundPacket {
-    //ExperienceOrb entity;
+    ExperienceOrb entity;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -31,7 +33,7 @@ public class PacketSpawnExperienceOrb implements ClientboundPacket {
             location = buffer.readLocation();
         }
         short count = buffer.readShort();
-        //entity = new ExperienceOrb(entityId, location, count);
+        entity = new ExperienceOrb(buffer.getConnection(), entityId, location, count);
         return true;
     }
 
@@ -42,10 +44,10 @@ public class PacketSpawnExperienceOrb implements ClientboundPacket {
 
     @Override
     public void log() {
-        //    Log.protocol(String.format("Experience orb spawned at %s(entityId=%d, count=%d)", entity.getLocation().toString(), entity.getEntityId(), entity.getCount()));
+        Log.protocol(String.format("Experience orb spawned at %s(entityId=%d, count=%d)", entity.getLocation().toString(), entity.getEntityId(), entity.getCount()));
     }
 
-    // public ExperienceOrb getEntity() {
-    //     return entity;
-    // }
+    public ExperienceOrb getEntity() {
+        return entity;
+    }
 }

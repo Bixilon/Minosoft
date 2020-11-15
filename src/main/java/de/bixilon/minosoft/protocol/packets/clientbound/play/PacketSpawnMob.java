@@ -60,7 +60,6 @@ public class PacketSpawnMob implements ClientboundPacket {
         }
 
         try {
-//    public LivingEntity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
             entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Location.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, location, rotation);
             if (metaData != null) {
                 entity.setMetaData(metaData);

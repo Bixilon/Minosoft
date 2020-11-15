@@ -16,7 +16,9 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.PlayerPropertyData;
 import de.bixilon.minosoft.data.entities.entities.Entity;
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
 import de.bixilon.minosoft.data.mappings.blocks.Blocks;
 import de.bixilon.minosoft.data.mappings.recipes.Recipes;
 import de.bixilon.minosoft.data.mappings.versions.Version;
@@ -110,7 +112,7 @@ public class PacketHandler {
         }
 
         connection.getPlayer().setGameMode(pkg.getGameMode());
-       // connection.getPlayer().setPlayer(new OtherPlayer(pkg.getEntityId(), connection.getPlayer().getPlayerName(), connection.getPlayer().getPlayerUUID(), null, null, 0, 0, 0, (short) 0, null));
+        connection.getPlayer().setEntity(new PlayerEntity(connection, pkg.getEntityId(), connection.getPlayer().getPlayerUUID(), null, null, connection.getPlayer().getPlayerName(), new PlayerPropertyData[]{}, null));
         connection.getPlayer().getWorld().setHardcore(pkg.isHardcore());
         connection.getMapping().setDimensions(pkg.getDimensions());
         connection.getPlayer().getWorld().setDimension(pkg.getDimension());
@@ -308,20 +310,20 @@ public class PacketHandler {
 
     public void handle(PacketEntityVelocity pkg) {
         Entity entity;
-        // if (pkg.getEntityId() == connection.getPlayer().getPlayer().getEntityId()) {
-        // that's us!
-        //  entity = connection.getPlayer().getPlayer();
-        //} else {
-        entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
-        //}
+        if (pkg.getEntityId() == connection.getPlayer().getEntity().getEntityId()) {
+            // that's us!
+            entity = connection.getPlayer().getEntity();
+        } else {
+            entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        }
         connection.getVelocityHandler().handleVelocity(entity, pkg.getVelocity());
     }
 
     public void handle(PacketSpawnPlayer pkg) {
         connection.fireEvent(new EntitySpawnEvent(connection, pkg));
 
-        //connection.getPlayer().getWorld().addEntity(pkg.getEntity());
-        //connection.getVelocityHandler().handleVelocity(pkg.getEntity(), pkg.getVelocity());
+        connection.getPlayer().getWorld().addEntity(pkg.getEntity());
+        connection.getVelocityHandler().handleVelocity(pkg.getEntity(), pkg.getVelocity());
     }
 
     public void handle(PacketEntityTeleport pkg) {
@@ -340,11 +342,11 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityMetadata pkg) {
-        //if (pkg.getEntityId() == connection.getPlayer().getPlayer().getEntityId()) {
-        // our own meta data...set it
-        //  connection.getPlayer().getPlayer().setMetaData(pkg.getEntityData(HumanMetaData.class));
-        // return;
-        //}
+        if (pkg.getEntityId() == connection.getPlayer().getEntity().getEntityId()) {
+            // our own meta data...set it
+            connection.getPlayer().getEntity().setMetaData(pkg.getEntityData());
+            return;
+        }
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).setMetaData(pkg.getEntityData());
     }
 
@@ -399,7 +401,7 @@ public class PacketHandler {
     public void handle(PacketSpawnExperienceOrb pkg) {
         connection.fireEvent(new EntitySpawnEvent(connection, pkg));
 
-        //connection.getPlayer().getWorld().addEntity(pkg.getEntity());
+        connection.getPlayer().getWorld().addEntity(pkg.getEntity());
     }
 
     public void handle(PacketSpawnWeatherEntity pkg) {
@@ -416,20 +418,20 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityEffect pkg) {
-        // if (pkg.getEntityId() == connection.getPlayer().getPlayer().getEntityId()) {
-        // that's us!
-        //    connection.getPlayer().getPlayer().addEffect(pkg.getEffect());
-        //      return;
-        //   }
+        if (pkg.getEntityId() == connection.getPlayer().getEntity().getEntityId()) {
+            // that's us!
+            connection.getPlayer().getEntity().addEffect(pkg.getEffect());
+            return;
+        }
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).addEffect(pkg.getEffect());
     }
 
     public void handle(PacketRemoveEntityEffect pkg) {
-        //if (pkg.getEntityId() == connection.getPlayer().getPlayer().getEntityId()) {
-        // that's us!
-        //       connection.getPlayer().getPlayer().removeEffect(pkg.getEffect());
-        //      return;
-        //   }
+        if (pkg.getEntityId() == connection.getPlayer().getEntity().getEntityId()) {
+            // that's us!
+            connection.getPlayer().getEntity().removeEffect(pkg.getEffect());
+            return;
+        }
         connection.getPlayer().getWorld().getEntity(pkg.getEntityId()).removeEffect(pkg.getEffect());
     }
 
@@ -552,7 +554,7 @@ public class PacketHandler {
     public void handle(PacketSpawnPainting pkg) {
         connection.fireEvent(new EntitySpawnEvent(connection, pkg));
 
-        // connection.getPlayer().getWorld().addEntity(pkg.getEntity());
+        connection.getPlayer().getWorld().addEntity(pkg.getEntity());
     }
 
     public void handle(PacketParticle pkg) {

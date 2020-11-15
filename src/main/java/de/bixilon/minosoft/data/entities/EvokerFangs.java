@@ -13,28 +13,13 @@
 
 package de.bixilon.minosoft.data.entities;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
+import de.bixilon.minosoft.data.entities.entities.Entity;
+import de.bixilon.minosoft.protocol.network.Connection;
 
-public record Location(double x, double y, double z) {
+import java.util.UUID;
 
-    public static Location fromPosition(BlockPosition position) {
-        return new Location(position.x(), position.y(), position.z());
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public double getZ() {
-        return z;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", x, y, z);
+public class EvokerFangs extends Entity {
+    public EvokerFangs(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+        super(connection, entityId, uuid, location, rotation);
     }
 }
