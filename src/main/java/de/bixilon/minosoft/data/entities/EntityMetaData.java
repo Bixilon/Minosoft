@@ -203,7 +203,11 @@ public class EntityMetaData {
         }
 
         public Object get(EntityMetaDataFields field) {
-            int index = connection.getMapping().getEntityMetaDataIndex(field);
+            Integer index = connection.getMapping().getEntityMetaDataIndex(field);
+            if (index == null) {
+                // ups, index not found. Index not available in this version?, mappings broken or mappings not available
+                return field.getDefaultValue();
+            }
             if (containsKey(index)) {
                 return super.get(index);
             }

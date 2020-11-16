@@ -97,7 +97,7 @@ for version in manifest["versions"]:
                     for key in burger["items"]["item"]:
                         registries["item"]["entries"][key] = {"id": burger["items"]["item"][key]["numeric_id"]}
 
-                    # biome
+                    # biomes
                     for key in burger["biomes"]["biome"]:
                         registries["biome"]["entries"][key] = {"id": burger["biomes"]["biome"][key]["id"]}
 

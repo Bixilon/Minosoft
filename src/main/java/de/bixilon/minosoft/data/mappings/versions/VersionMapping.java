@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.data.mappings.versions;
 
 import com.google.common.collect.HashBiMap;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.data.EntityClassMappings;
 import de.bixilon.minosoft.data.Mappings;
@@ -26,6 +28,7 @@ import de.bixilon.minosoft.data.mappings.blocks.Blocks;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.statistics.Statistic;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import javafx.util.Pair;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -50,6 +53,7 @@ public class VersionMapping {
     private HashBiMap<Integer, Statistic> statisticIdMap;
     private HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap;
     private HashMap<EntityMetaDataFields, Integer> entityMetaIndexMap;
+    private HashBiMap<String, Pair<String, Integer>> entityMetaIndexOffsetParentMapping;
     private HashBiMap<Integer, Class<? extends Entity>> entityIdClassMap;
 
     public VersionMapping(Version version) {
@@ -384,6 +388,7 @@ public class VersionMapping {
             case ENTITIES -> {
                 entityInformationMap = HashBiMap.create();
                 entityMetaIndexMap = new HashMap<>();
+                entityMetaIndexOffsetParentMapping = HashBiMap.create();
                 entityIdClassMap = HashBiMap.create();
 
                 if (data == null) {
@@ -392,26 +397,48 @@ public class VersionMapping {
                 for (String mod : data.keySet()) {
                     JsonObject modJson = data.getAsJsonObject(mod);
                     for (String identifier : modJson.keySet()) {
-                        JsonObject identifierJson = modJson.getAsJsonObject(identifier);
-                        if (!identifier.startsWith("~abstract")) {
-                            // not abstract, has attributes
-                            Class<? extends Entity> clazz = EntityClassMappings.getByIdentifier(mod, identifier);
-                            entityInformationMap.put(clazz, new EntityInformation(mod, identifier, identifierJson.get("length").getAsInt(), identifierJson.get("width").getAsInt(), identifierJson.get("height").getAsInt()));
-
-                            entityIdClassMap.put(identifierJson.get("id").getAsInt(), clazz);
+                        if (entityMetaIndexOffsetParentMapping.containsKey(identifier)) {
+                            continue;
                         }
-                        // meta data index
-                        if (identifierJson.has("data")) {
-                            JsonObject metaDataJson = identifierJson.getAsJsonObject("data");
-                            for (String field : metaDataJson.keySet()) {
-                                entityMetaIndexMap.put(EntityMetaDataFields.valueOf(field), metaDataJson.get(field).getAsInt());
-                            }
-                        }
+                        loadEntityMapping(mod, identifier, modJson);
                     }
                 }
             }
         }
         loaded.add(type);
+    }
+
+    private void loadEntityMapping(String mod, String identifier, JsonObject fullModData) {
+        JsonObject data = fullModData.getAsJsonObject(identifier);
+        if (!identifier.startsWith("~abstract")) {
+            // not abstract, has id and attributes
+            Class<? extends Entity> clazz = EntityClassMappings.getByIdentifier(mod, identifier);
+            entityInformationMap.put(clazz, EntityInformation.deserialize(mod, identifier, data));
+
+            entityIdClassMap.put(data.get("id").getAsInt(), clazz);
+        }
+        String parent = null;
+        int metaDataIndexOffset = 0;
+        if (data.has("extends")) {
+            parent = data.get("extends").getAsString();
+
+            // check if parent has been loaded
+            Pair<String, Integer> metaParent = entityMetaIndexOffsetParentMapping.get(parent);
+            if (metaParent == null) {
+                loadEntityMapping(mod, parent, fullModData);
+            }
+
+            metaDataIndexOffset += entityMetaIndexOffsetParentMapping.get(parent).getValue();
+        }
+        // meta data index
+        if (data.has("data")) {
+            JsonArray metaDataJson = data.getAsJsonArray("data");
+            for (JsonElement jsonElement : metaDataJson) {
+                String field = jsonElement.getAsString();
+                entityMetaIndexMap.put(EntityMetaDataFields.valueOf(field), metaDataIndexOffset++);
+            }
+        }
+        entityMetaIndexOffsetParentMapping.put(identifier, new Pair<>(parent, metaDataIndexOffset));
     }
 
     public void unload() {

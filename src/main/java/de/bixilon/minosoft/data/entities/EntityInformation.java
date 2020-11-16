@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.entities;
 
+import com.google.gson.JsonObject;
+
 public class EntityInformation {
     private final String mod;
     private final String identifier;
@@ -34,6 +36,10 @@ public class EntityInformation {
         this.identifier = identifier;
         this.width = this.length = width;
         this.height = height;
+    }
+
+    public static EntityInformation deserialize(String mod, String identifier, JsonObject data) {
+        return new EntityInformation(mod, identifier, data.get("length").getAsInt(), data.get("width").getAsInt(), data.get("height").getAsInt());
     }
 
     public String getMod() {
