@@ -33,7 +33,6 @@
       "length": 0.6,
       "width": 0.6,
       "height": 1.95,
-      "maxHealth": 20,
       "data": {
         "ZOMBIE_IS_BABY": 16,
         "ZOMBIE_SPECIAL_TYPE": 17,

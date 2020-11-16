@@ -31,7 +31,7 @@ public class VersionValueMap<V> {
     }
 
     public VersionValueMap(V value) {
-        values.put(Versions.getLowestVersionSupported().getVersionId(), value);
+        values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), value);
     }
 
     public V get(int versionId) {

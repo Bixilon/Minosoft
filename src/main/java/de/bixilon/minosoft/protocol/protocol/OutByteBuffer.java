@@ -193,7 +193,7 @@ public class OutByteBuffer {
                 writeShort((short) -1);
                 return;
             }
-            writeShort((short) connection.getMapping().getItemId(slot.getItem()));
+            writeShort((short) (int) connection.getMapping().getItemId(slot.getItem()));
             writeByte((byte) slot.getItemCount());
             writeShort(slot.getItemMetadata());
             writeNBT(slot.getNbt(connection.getMapping()));

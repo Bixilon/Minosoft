@@ -22,12 +22,12 @@ public class ChangeableIdentifier extends VersionValueMap<String> {
     String mod = "minecraft";
 
     public ChangeableIdentifier(String legacy, String water) {
-        values.put(Versions.getLowestVersionSupported().getVersionId(), legacy);
+        values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), legacy);
         values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
     }
 
     public ChangeableIdentifier(String legacy, String water, String mod) {
-        values.put(Versions.getLowestVersionSupported().getVersionId(), legacy);
+        values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), legacy);
         values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
         this.mod = mod;
     }

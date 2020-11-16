@@ -145,7 +145,7 @@ public class AssetsManager {
         return JsonParser.parseReader(readAssetByHash(hash));
     }
 
-    private static long getAssetSize(String hash) {
+    private static long getAssetSize(String hash) throws FileNotFoundException {
         File file = new File(getAssetDiskPath(hash));
         if (!file.exists()) {
             return -1;
@@ -153,7 +153,7 @@ public class AssetsManager {
         return file.length();
     }
 
-    private static boolean verifyAssetHash(String hash, boolean compressed) {
+    private static boolean verifyAssetHash(String hash, boolean compressed) throws FileNotFoundException {
         // file does not exist
         if (getAssetSize(hash) == -1) {
             return false;
@@ -172,7 +172,12 @@ public class AssetsManager {
     }
 
     private static boolean verifyAssetHash(String hash) {
-        return verifyAssetHash(hash, true);
+        try {
+            return verifyAssetHash(hash, true);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static void generateJarAssets() throws IOException {
@@ -293,7 +298,10 @@ public class AssetsManager {
         Util.downloadFile(url, getAssetDiskPath(hash));
     }
 
-    private static String getAssetDiskPath(String hash) {
+    private static String getAssetDiskPath(String hash) throws FileNotFoundException {
+        if (hash == null) {
+            throw new FileNotFoundException("Could not find asset with hash: null");
+        }
         return StaticConfiguration.HOME_DIR + String.format("assets/objects/%s/%s.gz", hash.substring(0, 2), hash);
     }
 }

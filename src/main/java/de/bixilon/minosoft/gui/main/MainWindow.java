@@ -142,7 +142,7 @@ public class MainWindow implements Initializable {
         TextField serverAddress = new TextField();
         serverAddress.setPromptText(LocaleManager.translate(Strings.SERVER_ADDRESS));
 
-        GUITools.versionList.getSelectionModel().select(Versions.getLowestVersionSupported());
+        GUITools.versionList.getSelectionModel().select(Versions.LOWEST_VERSION_SUPPORTED);
 
         grid.add(new Label(LocaleManager.translate(Strings.SERVER_NAME) + ":"), 0, 0);
         grid.add(serverName, 1, 0);

@@ -112,10 +112,10 @@ public class PacketHandler {
         }
 
         connection.getPlayer().setGameMode(pkg.getGameMode());
-        connection.getPlayer().setEntity(new PlayerEntity(connection, pkg.getEntityId(), connection.getPlayer().getPlayerUUID(), null, null, connection.getPlayer().getPlayerName(), new PlayerPropertyData[]{}, null));
         connection.getPlayer().getWorld().setHardcore(pkg.isHardcore());
         connection.getMapping().setDimensions(pkg.getDimensions());
         connection.getPlayer().getWorld().setDimension(pkg.getDimension());
+        connection.getPlayer().setEntity(new PlayerEntity(connection, pkg.getEntityId(), connection.getPlayer().getPlayerUUID(), null, null, connection.getPlayer().getPlayerName(), new PlayerPropertyData[]{}, null));
         connection.getSender().sendChatMessage("I am alive! ~ Minosoft");
     }
 

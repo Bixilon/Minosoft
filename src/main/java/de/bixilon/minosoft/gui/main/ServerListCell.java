@@ -295,7 +295,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         serverAddress.setText(server.getAddress());
 
         if (server.getDesiredVersionId() == -1) {
-            GUITools.versionList.getSelectionModel().select(Versions.getLowestVersionSupported());
+            GUITools.versionList.getSelectionModel().select(Versions.LOWEST_VERSION_SUPPORTED);
         } else {
             GUITools.versionList.getSelectionModel().select(Versions.getVersionById(server.getDesiredVersionId()));
         }
@@ -376,7 +376,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         Label forcedVersionLabel = new Label();
 
         if (server.getDesiredVersionId() == -1) {
-            forcedVersionLabel.setText(Versions.getLowestVersionSupported().getVersionName());
+            forcedVersionLabel.setText(Versions.LOWEST_VERSION_SUPPORTED.getVersionName());
         } else {
             forcedVersionLabel.setText(Versions.getVersionById(server.getDesiredVersionId()).getVersionName());
         }

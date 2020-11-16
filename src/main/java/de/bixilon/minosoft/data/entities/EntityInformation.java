@@ -17,25 +17,21 @@ public class EntityInformation {
     private final String mod;
     private final String identifier;
 
-    private final int maxHealth;
-
     private final int length;
     private final int width;
     private final int height;
 
-    public EntityInformation(String mod, String identifier, int maxHealth, int length, int width, int height) {
+    public EntityInformation(String mod, String identifier, int length, int width, int height) {
         this.mod = mod;
         this.identifier = identifier;
-        this.maxHealth = maxHealth;
         this.length = length;
         this.width = width;
         this.height = height;
     }
 
-    public EntityInformation(String mod, String identifier, int maxHealth, int width, int height) {
+    public EntityInformation(String mod, String identifier, int width, int height) {
         this.mod = mod;
         this.identifier = identifier;
-        this.maxHealth = maxHealth;
         this.width = this.length = width;
         this.height = height;
     }
@@ -46,10 +42,6 @@ public class EntityInformation {
 
     public String getIdentifier() {
         return identifier;
-    }
-
-    public int getMaxHealth() {
-        return maxHealth;
     }
 
     public int getLength() {

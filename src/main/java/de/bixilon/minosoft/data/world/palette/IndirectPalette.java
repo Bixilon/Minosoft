@@ -14,15 +14,15 @@
 package de.bixilon.minosoft.data.world.palette;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.data.mappings.CustomMapping;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 public class IndirectPalette implements Palette {
     final HashBiMap<Integer, Integer> map = HashBiMap.create();
     final byte bitsPerBlock;
     int versionId;
-    CustomMapping mapping;
+    VersionMapping mapping;
 
     public IndirectPalette(byte bitsPerBlock) {
         this.bitsPerBlock = bitsPerBlock;

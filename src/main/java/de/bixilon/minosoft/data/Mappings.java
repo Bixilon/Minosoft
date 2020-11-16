@@ -16,5 +16,9 @@ package de.bixilon.minosoft.data;
 public enum Mappings {
     BLOCKS,
     REGISTRIES,
-    ENTITIES
+    ENTITIES;
+
+    public String getFilename() {
+        return name().toLowerCase();
+    }
 }

@@ -21,11 +21,11 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import java.util.HashMap;
 
 public class Version {
-    String versionName;
     final int versionId;
     final int protocolId;
     final HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
     final HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
+    String versionName;
     VersionMapping mapping;
     boolean isGettingLoaded;
 
@@ -76,11 +76,15 @@ public class Version {
     }
 
     public boolean isFlattened() {
-        return versionId > ProtocolDefinition.FLATTING_VERSION_ID;
+        return versionId >= ProtocolDefinition.FLATTING_VERSION_ID;
     }
 
     public String getVersionName() {
         return versionName;
+    }
+
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
     }
 
     public int getVersionId() {
@@ -96,8 +100,8 @@ public class Version {
         return protocolId;
     }
 
-    public void setVersionName(String versionName) {
-        this.versionName = versionName;
+    public boolean isLoaded() {
+        return getMapping() != null && getMapping().isFullyLoaded();
     }
 
     @Override
