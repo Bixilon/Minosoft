@@ -472,7 +472,6 @@
   "item": {"default": "air", "id": 6, "entries": {}},
   "block": {"default": "air", "id": 3, "entries": {}},
   "biome": {"entries": {}},
-  "entity_type": {"default": "pig", "id": 5, "entries": {}},
   "custom_stat": {
     "id": 19,
     "entries": {

@@ -46,11 +46,11 @@ public class PacketSpawnObject implements ClientboundPacket {
         } else {
             type = buffer.readVarInt();
         }
-        Class<? extends Entity> typeClass = null;
+        Class<? extends Entity> typeClass;
         if (buffer.getVersionId() < 458) {
             typeClass = Objects.byId(type).getClazz();
         } else {
-            //typeClass = Entities.getClassByIdentifier(buffer.getConnection().getMapping().getEntityIdentifierById(type));
+            typeClass = buffer.getConnection().getMapping().getEntityClassById(type);
         }
 
         Location location;
@@ -74,7 +74,6 @@ public class PacketSpawnObject implements ClientboundPacket {
         }
 
         try {
-//    public LivingEntity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
             entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Location.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, location, rotation);
             return true;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
