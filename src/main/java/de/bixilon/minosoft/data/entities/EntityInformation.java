@@ -19,27 +19,18 @@ public class EntityInformation {
     private final String mod;
     private final String identifier;
 
-    private final int length;
-    private final int width;
-    private final int height;
+    private final float width;
+    private final float height;
 
-    public EntityInformation(String mod, String identifier, int length, int width, int height) {
+    public EntityInformation(String mod, String identifier, float width, float height) {
         this.mod = mod;
         this.identifier = identifier;
-        this.length = length;
         this.width = width;
         this.height = height;
     }
 
-    public EntityInformation(String mod, String identifier, int width, int height) {
-        this.mod = mod;
-        this.identifier = identifier;
-        this.width = this.length = width;
-        this.height = height;
-    }
-
     public static EntityInformation deserialize(String mod, String identifier, JsonObject data) {
-        return new EntityInformation(mod, identifier, data.get("length").getAsInt(), data.get("width").getAsInt(), data.get("height").getAsInt());
+        return new EntityInformation(mod, identifier, data.get("width").getAsFloat(), data.get("height").getAsFloat());
     }
 
     public String getMod() {
@@ -50,15 +41,11 @@ public class EntityInformation {
         return identifier;
     }
 
-    public int getLength() {
-        return length;
-    }
-
-    public int getWidth() {
+    public float getWidth() {
         return width;
     }
 
-    public int getHeight() {
+    public float getHeight() {
         return height;
     }
 }

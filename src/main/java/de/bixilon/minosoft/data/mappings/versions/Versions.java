@@ -135,9 +135,6 @@ public class Versions {
             if (files.containsKey(mapping.getFilename() + ".json")) {
                 data = files.get(mapping.getFilename() + ".json").getAsJsonObject("minecraft");
             }
-            if (mapping == Mappings.ENTITIES) {
-                data = Util.readJsonAsset("mapping/entities.json"); // ToDo: Remove static, use the one from the version tar file
-            }
             loadVersionMappings(mapping, data, version);
         }
 

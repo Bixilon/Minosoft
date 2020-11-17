@@ -45,6 +45,8 @@ public enum EntityMetaDataFields {
 
     THROWABLE_ITEM_PROJECTILE_ITEM,
 
+    THROWN_POTION_ITEM,
+
     FALLING_BLOCK_SPAWN_POSITION,
 
     AREA_EFFECT_CLOUD_RADIUS(0.5f),
@@ -54,6 +56,8 @@ public enum EntityMetaDataFields {
 
     ABSTRACT_ARROW_FLAGS((byte) 0),
     ABSTRACT_ARROW_PIERCE_LEVEL((byte) 0),
+    ABSTRACT_ARROW_OWNER_UUID,
+
 
     FISHING_HOOK_HOOKED_ENTITY(0),
     FISHING_HOOK_CATCHABLE(false),
@@ -120,7 +124,7 @@ public enum EntityMetaDataFields {
     ABSTRACT_HORSE_FLAGS((byte) 0),
     ABSTRACT_HORSE_OWNER_UUID,
 
-    HORSE_TYPE(0),
+    HORSE_VARIANT(0),
 
     ABSTRACT_CHESTED_HORSE_HAS_CHEST(false),
 
@@ -157,7 +161,7 @@ public enum EntityMetaDataFields {
     TURTLE_IS_GOING_HOME(false),
     TURTLE_IS_TRAVELING(false),
 
-    POLAR_BEAR(false),
+    POLAR_BEAR_STANDING(false),
 
     HOGLIN_IMMUNE_TO_ZOMBIFICATION(false),
 
@@ -169,8 +173,8 @@ public enum EntityMetaDataFields {
     STRIDER_IS_SUFFOCATING(false),
     STRIDER_HAS_SADDLE(false),
 
-    TAMEABLE_ENTITY_FLAGS((byte) 0),
-    TAMEABLE_ENTITY_OWNER_UUID,
+    TAMABLE_ENTITY_FLAGS((byte) 0),
+    TAMABLE_ENTITY_OWNER_UUID,
 
     CAT_VARIANT(1),
     CAT_IS_LYING(false),
@@ -180,6 +184,7 @@ public enum EntityMetaDataFields {
     WOLF_IS_BEGGING(false),
     WOLF_COLLAR_COLOR(14),
     WOLF_ANGER_TIME(0),
+    WOLF_HEALTH(0.0f),
 
     PARROT_VARIANT(0),
 
@@ -201,6 +206,7 @@ public enum EntityMetaDataFields {
     PIGLIN_IS_BABY(false),
     PIGLIN_IS_CHARGING_CROSSBOW(false),
     PIGLIN_IS_DANCING(false),
+    PIGLIN_IMMUNE_TO_ZOMBIFICATION(false),
 
     BLAZE_FLAGS((byte) 0),
 
@@ -255,7 +261,11 @@ public enum EntityMetaDataFields {
     MINECART_COMMAND_BLOCK_COMMAND(""),
     MINECART_COMMAND_BLOCK_LAST_OUTPUT(ChatComponent.fromString("")),
 
-    PRIMED_TNT_FUSE_TIME(80);
+    PRIMED_TNT_FUSE_TIME(80),
+
+    PILLAGER_IS_CHARGING_CROSSBOW(false),
+
+    THROWN_EYE_OF_ENDER_ITEM;
 
     final Object defaultValue;
 

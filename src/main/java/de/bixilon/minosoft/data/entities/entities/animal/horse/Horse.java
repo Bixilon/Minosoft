@@ -30,7 +30,7 @@ public class Horse extends AbstractHorse {
     }
 
     private int getType() {
-        return metaData.getSets().getInt(EntityMetaDataFields.HORSE_TYPE);
+        return metaData.getSets().getInt(EntityMetaDataFields.HORSE_VARIANT);
     }
 
     public HorseColors getColor() {

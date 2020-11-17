@@ -32,6 +32,7 @@ public abstract class Entity {
     protected final UUID uuid;
     protected final HashMap<InventorySlots.EntityInventorySlots, Slot> equipment = new HashMap<>();
     protected final HashSet<StatusEffect> effectList = new HashSet<>();
+    protected final int versionId;
     protected Location location;
     protected EntityRotation rotation;
     protected int attachedTo = -1;
@@ -41,6 +42,7 @@ public abstract class Entity {
         this.information = connection.getMapping().getEntityInformation(getClass());
         this.entityId = entityId;
         this.uuid = uuid;
+        this.versionId = connection.getVersion().getVersionId();
         this.location = location;
         this.rotation = rotation;
     }

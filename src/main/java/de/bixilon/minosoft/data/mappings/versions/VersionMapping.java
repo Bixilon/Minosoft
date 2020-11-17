@@ -53,7 +53,7 @@ public class VersionMapping {
     private HashBiMap<Integer, Statistic> statisticIdMap;
     private HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap;
     private HashMap<EntityMetaDataFields, Integer> entityMetaIndexMap;
-    private HashBiMap<String, Pair<String, Integer>> entityMetaIndexOffsetParentMapping;
+    private HashMap<String, Pair<String, Integer>> entityMetaIndexOffsetParentMapping;
     private HashBiMap<Integer, Class<? extends Entity>> entityIdClassMap;
 
     public VersionMapping(Version version) {
@@ -388,7 +388,7 @@ public class VersionMapping {
             case ENTITIES -> {
                 entityInformationMap = HashBiMap.create();
                 entityMetaIndexMap = new HashMap<>();
-                entityMetaIndexOffsetParentMapping = HashBiMap.create();
+                entityMetaIndexOffsetParentMapping = new HashMap<>();
                 entityIdClassMap = HashBiMap.create();
 
                 if (data == null) {
@@ -410,7 +410,7 @@ public class VersionMapping {
 
     private void loadEntityMapping(String mod, String identifier, JsonObject fullModData) {
         JsonObject data = fullModData.getAsJsonObject(identifier);
-        if (!identifier.startsWith("~abstract")) {
+        if (data.has("id")) {
             // not abstract, has id and attributes
             Class<? extends Entity> clazz = EntityClassMappings.getByIdentifier(mod, identifier);
             entityInformationMap.put(clazz, EntityInformation.deserialize(mod, identifier, data));
@@ -482,5 +482,9 @@ public class VersionMapping {
 
     public void setParentMapping(VersionMapping parentMapping) {
         this.parentMapping = parentMapping;
+    }
+
+    public HashSet<Mappings> getAvailableFeatures() {
+        return loaded;
     }
 }

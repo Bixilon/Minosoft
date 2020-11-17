@@ -30,16 +30,4 @@ public abstract class AbstractPiglin extends Monster {
         return metaData.getSets().getBoolean(EntityMetaDataFields.ABSTRACT_PIGLIN_IMMUNE_TO_ZOMBIFICATION);
     }
 
-    public boolean isBaby() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_BABY);
-    }
-
-    public boolean isChargingCrossbow() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_CHARGING_CROSSBOW);
-    }
-
-    public boolean isDancing() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_DANCING);
-    }
-
 }

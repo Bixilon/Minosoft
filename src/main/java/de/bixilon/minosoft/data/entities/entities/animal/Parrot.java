@@ -16,12 +16,11 @@ package de.bixilon.minosoft.data.entities.entities.animal;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.TameableEntity;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public class Parrot extends TameableEntity {
+public class Parrot extends ShoulderRidingAnimal {
     public Parrot(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
@@ -29,11 +28,12 @@ public class Parrot extends TameableEntity {
     public ParrotVariants getVariant() {
         return ParrotVariants.values()[metaData.getSets().getInt(EntityMetaDataFields.PARROT_VARIANT)];
     }
-public enum ParrotVariants {
-    RED_BLUE,
-    BLUE,
-    GREEN,
-    YELLOW_BLUE,
-    GREY
-}
+
+    public enum ParrotVariants {
+        RED_BLUE,
+        BLUE,
+        GREEN,
+        YELLOW_BLUE,
+        GREY
+    }
 }

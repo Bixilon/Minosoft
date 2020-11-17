@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.entities.monster.piglin;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -23,5 +24,26 @@ public class Piglin extends AbstractPiglin {
     public Piglin(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
+
+    @Override
+    public boolean isImmuneToZombification() {
+        if (versionId < 738) {
+            return super.isImmuneToZombification();
+        }
+        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IMMUNE_TO_ZOMBIFICATION);
+    }
+
+    public boolean isBaby() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_BABY);
+    }
+
+    public boolean isChargingCrossbow() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_CHARGING_CROSSBOW);
+    }
+
+    public boolean isDancing() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_DANCING);
+    }
+
 
 }

@@ -13,24 +13,29 @@
 
 package de.bixilon.minosoft.data.entities.entities.projectile;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.Item;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public class ThrownEyeOfEnder extends ThrowableItemProjectile {
+public class ThrownEyeOfEnder extends Entity {
     private static final Slot DEFAULT_ITEM = new Slot(new Item("minecraft", "ender_eye"));
 
     public ThrownEyeOfEnder(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @Override
-    protected Slot getDefaultItem() {
-        return DEFAULT_ITEM;
+    public Slot getItem() {
+        Slot slot = metaData.getSets().getSlot(EntityMetaDataFields.THROWN_EYE_OF_ENDER_ITEM);
+        if (slot == null) {
+            return DEFAULT_ITEM;
+        }
+        return slot;
     }
 }
 
