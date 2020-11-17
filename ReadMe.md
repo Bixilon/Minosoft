@@ -57,7 +57,7 @@ Sadly, we cannot support all versions. We will add support for all major version
  - `1.13-pre6`, `1.13-pre5`, `17w50a`, `17w49b`, `17w49a`, `17w48a`, `17w47b`, `17w47a` Missing blocks.json (Mappings)
  - April fools: I will not add any support for them, there are only a few things known. They might work, untested.
  
-## Partly supported versions
+### Partly supported versions
  - Protocol lacking; See [snapSupportToDo.txt](/doc/snapSupportToDo.txt)
  - Entities everything below `19w36a` (shortly after 1.14.4) (except `1.14.4` and `1.8.9`). Why? There is simply no time to generate an `entities.json`. The [Generator](/util) only works after that version.
 And 1.8.9 is only supported, because it this version is widely spread, and I wrote (~ 1000 lines) by hand.
