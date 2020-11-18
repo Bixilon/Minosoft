@@ -8,22 +8,15 @@
 #  You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
 #
 #  This software is not affiliated with Mojang AB, the original developer of Minecraft.
-#
-#  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
-#
-#  This software is not affiliated with Mojang AB, the original developer of Minecraft.
 
 import hashlib
 import os
 import re
-import requests
 import shutil
 import tarfile
 import traceback
+
+import requests
 import ujson
 
 print("Minecraft mappings downloader (and generator)")
@@ -45,13 +38,13 @@ partlyFailedVersionIds = []
 
 def sha1File(filename):
     with open(filename, 'rb') as f:
-        sha1 = hashlib.sha1()
+        sha1Hash = hashlib.sha1()
         while True:
             data = f.read(4096)
             if not data:
                 break
-            sha1.update(data)
-    return sha1.hexdigest()
+            sha1Hash.update(data)
+        return sha1Hash.hexdigest()
 
 
 def downloadAndReplace(url, filename, destination):
@@ -176,16 +169,16 @@ for version in VERSION_MANIFEST["versions"]:
                     registries = DEFAULT_MAPPINGS.copy()
 
                     # items
-                    for key in burger["items"]["item"]:
-                        registries["item"]["entries"][key] = {"id": burger["items"]["item"][key]["numeric_id"]}
+                    for entityIdentifier in burger["items"]["item"]:
+                        registries["item"]["entries"][entityIdentifier] = {"id": burger["items"]["item"][entityIdentifier]["numeric_id"]}
 
                     # biomes
-                    for key in burger["biomes"]["biome"]:
-                        registries["biome"]["entries"][key] = {"id": burger["biomes"]["biome"][key]["id"]}
+                    for entityIdentifier in burger["biomes"]["biome"]:
+                        registries["biome"]["entries"][entityIdentifier] = {"id": burger["biomes"]["biome"][entityIdentifier]["id"]}
 
                     # block ids
-                    for key in burger["blocks"]["block"]:
-                        registries["block"]["entries"][key] = {"id": burger["blocks"]["block"][key]["numeric_id"]}
+                    for entityIdentifier in burger["blocks"]["block"]:
+                        registries["block"]["entries"][entityIdentifier] = {"id": burger["blocks"]["block"][entityIdentifier]["numeric_id"]}
 
                     # file write
                     with open(versionTempBaseFolder + "registries.json", 'w') as file:
@@ -194,60 +187,91 @@ for version in VERSION_MANIFEST["versions"]:
                 if "client_mappings" not in versionJson["downloads"]:
                     print("WARN: Can not generate entities.json for %s (missing deobfuscation map)" % version["id"])
                     continue
+                # download obfuscation map ToDo: make this much more efficient (aka no line looping, parsing!)
                 obfuscationMapLines = requests.get(versionJson["downloads"]["client_mappings"]["url"]).content.decode("utf-8").splitlines()
+
                 # entities
                 entities = {}
                 classesDone = []
 
-                for key in burger["entities"]["entity"]:
-                    entityData = burger["entities"]["entity"][key]
+                # loop over all entities
+                for entityIdentifier in burger["entities"]["entity"]:
+                    burgerEntityData = burger["entities"]["entity"][entityIdentifier]
+
                     entity = {}
-                    if entityData["class"] in entities:
-                        entity = entities[entityData["class"]]
-                    if "id" in entityData:
-                        entity["id"] = entityData["id"]
-                        entity["height"] = entityData["height"]
-                        entity["width"] = entityData["width"]
-                    for metadata in entityData["metadata"]:
-                        if metadata["class"] != entityData["class"]:
-                            if metadata["class"] in classesDone:
+
+                    # generate (deobfuscated) className
+                    entityOriginalClassName, unused = getMinsoftEntityFieldNames(obfuscationMapLines, burgerEntityData["class"], [])
+
+                    # check if entity was already parsed
+                    if entityOriginalClassName in entities:
+                        # copy current entity meta data
+                        entity = entities[entityOriginalClassName]
+
+                    # check if entity is not abstract
+                    if "id" in burgerEntityData:
+                        entity["id"] = burgerEntityData["id"]
+                        entity["height"] = burgerEntityData["height"]
+                        entity["width"] = burgerEntityData["width"]
+
+                    # loop over all metadata entries
+                    for metadataEntry in burgerEntityData["metadata"]:
+
+                        # check if meta data is inherited by another entity
+                        if metadataEntry["class"] != burgerEntityData["class"]:
+                            # yes it is, check if this class was already parsed
+                            if metadataEntry["class"] in classesDone:
+                                # yes, we don't care about this super entity anymore
                                 continue
-                        if "entity" in metadata:
-                            className, fields = getMinsoftEntityFieldNames(obfuscationMapLines, metadata["class"], [])
-                            entity["extends"] = className
+
+                        # check if meta data is extended by a abstract super entity
+                        if "entity" in metadataEntry:
+                            # yes, we don't care about this, this will be done later
                             continue
 
-                        if "data" not in metadata:
+                        # check if there is anything to parse
+                        if "data" not in metadataEntry:
+                            # nope, continue with next meta data entry
                             continue
-                        fields = []
-                        for metadataData in metadata["data"]:
-                            fields.append(metadataData["field"])
-                        className, fields = getMinsoftEntityFieldNames(obfuscationMapLines, metadata["class"], fields)
 
-                        tempData = {"data": fields}
-                        if "extends" in MOJANG_MINOSOFT_FIELD_MAPPINGS[className]:
-                            tempData["extends"] = MOJANG_MINOSOFT_FIELD_MAPPINGS[className]["extends"]
-                        if metadata["class"] == entityData["class"] and not key.startswith("~abstract_"):
-                            for tempDate in tempData:
-                                entity[tempDate] = tempData[tempDate]
+                        metadataObfuscatedFields = []
+                        # get all meta data fields
+                        for entry in metadataEntry["data"]:
+                            metadataObfuscatedFields.append(entry["field"])
+
+                        metadataEntryOriginalClassName, metadataOriginalFields = getMinsoftEntityFieldNames(obfuscationMapLines, metadataEntry["class"], metadataObfuscatedFields)
+
+                        metaDataEntityData = {}
+
+                        # check if the entity is the current meta data entry
+                        if metadataEntry["class"] == burgerEntityData["class"]:
+                            metaDataEntityData = entity
+                        elif metadataEntryOriginalClassName in entities:
+                            metaDataEntityData = entities[metadataEntryOriginalClassName]
                         else:
-                            entities[className] = tempData
-                        classesDone.append(metadata["class"])
+                            metaDataEntityData = {"data": metadataOriginalFields}
 
-                    className, fields = getMinsoftEntityFieldNames(obfuscationMapLines, entityData["class"], [])
+                        if "data" not in metaDataEntityData:
+                            metaDataEntityData["data"] = metadataOriginalFields
+
+                        if "extends" in MOJANG_MINOSOFT_FIELD_MAPPINGS[metadataEntryOriginalClassName]:
+                            metaDataEntityData["extends"] = MOJANG_MINOSOFT_FIELD_MAPPINGS[metadataEntryOriginalClassName]["extends"]
+                        if metadataEntry["class"] != burgerEntityData["class"] and "entity" not in burgerEntityData:
+                            entities[metadataEntryOriginalClassName] = metaDataEntityData
+                        classesDone.append(metadataEntry["class"])
+
+                    # entityOriginalClassName, metadataObfuscatedFields = getMinsoftEntityFieldNames(obfuscationMapLines, burgerEntityData["class"], [])
                     if "extends" not in entity:
                         # special meta data
-                        if className not in entities:
-                            continue
-                        if "extends" in MOJANG_MINOSOFT_FIELD_MAPPINGS[className]:
-                            entity["extends"] = MOJANG_MINOSOFT_FIELD_MAPPINGS[className]["extends"]
+                        if "extends" in MOJANG_MINOSOFT_FIELD_MAPPINGS[entityOriginalClassName]:
+                            entity["extends"] = MOJANG_MINOSOFT_FIELD_MAPPINGS[entityOriginalClassName]["extends"]
                     if len(entity) == 0:
                         continue
-                    classesDone.append(entityData["class"])
-                    if key.startswith("~abstract_"):
-                        entities[className] = entity
+                    classesDone.append(burgerEntityData["class"])
+                    if entityIdentifier.startswith("~abstract_"):
+                        entities[entityOriginalClassName] = entity
                     else:
-                        entities[key] = entity
+                        entities[entityIdentifier] = entity
 
                 # burger is missing (somehow) some entities. Try to fix them
                 for classNameKey in MOJANG_MINOSOFT_FIELD_MAPPINGS:
@@ -261,7 +285,7 @@ for version in VERSION_MANIFEST["versions"]:
 
                     # if you read this point, we need to guess. Data gets (even more?) unreliable
                     if VERBOSE_LOG:
-                        print("Burger does not has the following entity (static map, bad): %s (%s)" % (classNameKey, obfuscatedFieldName))
+                        print("Burger does not have the following entity (static map, bad): %s (%s)" % (classNameKey, obfuscatedFieldName))
 
                     entities[classNameKey] = MOJANG_MINOSOFT_FIELD_MAPPINGS[classNameKey].copy()
 
