@@ -28,11 +28,16 @@ public class PlayerPropertyData {
         return this.name;
     }
 
+    public String getValue() {
+        return value;
+    }
+
     public String getSignature() {
         return signature;
     }
 
-    public String getValue() {
-        return value;
+    @Override
+    public String toString() {
+        return String.format("%s=%s", getName(), getValue());
     }
 }
