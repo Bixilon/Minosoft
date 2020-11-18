@@ -457,7 +457,7 @@ public class PacketHandler {
         // ToDo
     }
 
-    public void handle(PacketEntityStatus pkg) {
+    public void handle(PacketEntityEvent pkg) {
         // ToDo
     }
 
