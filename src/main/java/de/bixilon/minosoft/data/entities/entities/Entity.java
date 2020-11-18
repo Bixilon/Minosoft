@@ -225,6 +225,10 @@ public abstract class Entity {
         return metaData.getSets().getPose(EntityMetaDataFields.ENTITY_POSE);
     }
 
+    @EntityMetaDataFunction(identifier = "ticksFrozen")
+    public int getTicksFrozen(){
+        return metaData.getSets().getInt(EntityMetaDataFields.ENTITY_TICKS_FROZEN);
+    }
     @Override
     public String toString() {
         return String.format("%s:%s", information.getMod(), information.getIdentifier());
