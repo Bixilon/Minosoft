@@ -33,4 +33,3 @@ public class ThrownEgg extends ThrowableItemProjectile {
         return DEFAULT_ITEM;
     }
 }
-

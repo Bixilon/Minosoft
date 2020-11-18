@@ -15,8 +15,9 @@ package de.bixilon.minosoft.data.entities.entities.monster;
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.FlyingMob;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
+import de.bixilon.minosoft.data.entities.entities.FlyingMob;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -26,6 +27,7 @@ public class Phantom extends FlyingMob {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "size")
     public int getSize() {
         return metaData.getSets().getInt(EntityMetaDataFields.PHANTOM_SIZE);
     }

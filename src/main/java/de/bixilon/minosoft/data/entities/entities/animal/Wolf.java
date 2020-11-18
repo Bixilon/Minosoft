@@ -16,7 +16,8 @@ package de.bixilon.minosoft.data.entities.entities.animal;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.TamableAnimal;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
+import de.bixilon.minosoft.data.entities.entities.TamableAnimal;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.RGBColor;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -28,18 +29,22 @@ public class Wolf extends TamableAnimal {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "isBegging")
     public boolean isBegging() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.WOLF_IS_BEGGING);
     }
 
+    @EntityMetaDataFunction(identifier = "collarColor")
     public RGBColor getCollarColor() {
         return ChatColors.getColorById(metaData.getSets().getInt(EntityMetaDataFields.WOLF_COLLAR_COLOR));
     }
 
+    @EntityMetaDataFunction(identifier = "angerTime")
     public int getAngerTime() {
         return metaData.getSets().getInt(EntityMetaDataFields.WOLF_ANGER_TIME);
     }
 
+    @EntityMetaDataFunction(identifier = "health")
     @Override
     public float getHealth() {
         if (versionId > 562) {

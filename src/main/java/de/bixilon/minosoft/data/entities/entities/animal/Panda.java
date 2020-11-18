@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.animal;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -25,22 +26,27 @@ public class Panda extends Animal {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "unhappyTimer")
     public int getUnhappyTimer() {
         return metaData.getSets().getInt(EntityMetaDataFields.PANDA_UNHAPPY_TIMER);
     }
 
+    @EntityMetaDataFunction(identifier = "sneezeTimer")
     public int getSneezeTimer() {
         return metaData.getSets().getInt(EntityMetaDataFields.PANDA_SNEEZE_TIMER);
     }
 
+    @EntityMetaDataFunction(identifier = "eatTimer")
     public int getEatTimer() {
         return metaData.getSets().getInt(EntityMetaDataFields.PANDA_EAT_TIMER);
     }
 
+    @EntityMetaDataFunction(identifier = "mainGene")
     public Genes getMainGene() {
         return Genes.values()[metaData.getSets().getInt(EntityMetaDataFields.PANDA_MAIN_GENE)];
     }
 
+    @EntityMetaDataFunction(identifier = "hiddenGene")
     public Genes getHiddenGene() {
         return Genes.values()[metaData.getSets().getInt(EntityMetaDataFields.PANDA_HIDDEN_GAME)];
     }
@@ -49,18 +55,22 @@ public class Panda extends Animal {
         return metaData.getSets().getBitMask(EntityMetaDataFields.PANDA_FLAGS, bitMask);
     }
 
+    @EntityMetaDataFunction(identifier = "isSneezing")
     public boolean isSneezing() {
         return getPandaFlag(0x02);
     }
 
+    @EntityMetaDataFunction(identifier = "isRolling")
     public boolean isRolling() {
         return getPandaFlag(0x04);
     }
 
+    @EntityMetaDataFunction(identifier = "isSitting")
     public boolean isSitting() {
         return getPandaFlag(0x08);
     }
 
+    @EntityMetaDataFunction(identifier = "isOnBack")
     public boolean isOnBack() {
         return getPandaFlag(0x10);
     }

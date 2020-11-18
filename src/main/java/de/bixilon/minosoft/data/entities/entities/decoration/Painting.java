@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.entities.Entity;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.mappings.Motive;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -39,10 +40,12 @@ public class Painting extends Entity {
         this.motive = motive;
     }
 
+    @EntityMetaDataFunction(identifier = "direction")
     public Directions getDirection() {
         return direction;
     }
 
+    @EntityMetaDataFunction(identifier = "motive")
     public Motive getMotive() {
         return motive;
     }

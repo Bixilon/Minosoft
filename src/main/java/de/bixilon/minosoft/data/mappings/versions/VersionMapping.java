@@ -277,7 +277,7 @@ public class VersionMapping {
     }
 
 
-    public void load(Mappings type, @Nullable JsonObject data, Version version) {
+    public void load(Mappings type, String mod, @Nullable JsonObject data, Version version) {
         switch (type) {
             case REGISTRIES -> {
                 if (!version.isFlattened() && version.getVersionId() != ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
@@ -312,7 +312,7 @@ public class VersionMapping {
 
                 JsonObject itemJson = data.getAsJsonObject("item").getAsJsonObject("entries");
                 for (String identifier : itemJson.keySet()) {
-                    Item item = new Item("minecraft", identifier);
+                    Item item = new Item(mod, identifier);
                     JsonObject identifierJSON = itemJson.getAsJsonObject(identifier);
                     int itemId = identifierJSON.get("id").getAsInt();
                     if (version.getVersionId() < ProtocolDefinition.FLATTING_VERSION_ID) {
@@ -326,12 +326,12 @@ public class VersionMapping {
                 }
                 JsonObject enchantmentJson = data.getAsJsonObject("enchantment").getAsJsonObject("entries");
                 for (String identifier : enchantmentJson.keySet()) {
-                    Enchantment enchantment = new Enchantment("minecraft", identifier);
+                    Enchantment enchantment = new Enchantment(mod, identifier);
                     enchantmentMap.put(enchantmentJson.getAsJsonObject(identifier).get("id").getAsInt(), enchantment);
                 }
                 JsonObject statisticJson = data.getAsJsonObject("custom_stat").getAsJsonObject("entries");
                 for (String identifier : statisticJson.keySet()) {
-                    Statistic statistic = new Statistic("minecraft", identifier);
+                    Statistic statistic = new Statistic(mod, identifier);
                     if (statisticJson.getAsJsonObject(identifier).has("id")) {
                         statisticIdMap.put(statisticJson.getAsJsonObject(identifier).get("id").getAsInt(), statistic);
                     }
@@ -339,12 +339,12 @@ public class VersionMapping {
                 }
                 JsonObject blockIdJson = data.getAsJsonObject("block").getAsJsonObject("entries");
                 for (String identifier : blockIdJson.keySet()) {
-                    BlockId blockId = new BlockId("minecraft", identifier);
+                    BlockId blockId = new BlockId(mod, identifier);
                     blockIdMap.put(blockIdJson.getAsJsonObject(identifier).get("id").getAsInt(), blockId);
                 }
                 JsonObject motiveJson = data.getAsJsonObject("motive").getAsJsonObject("entries");
                 for (String identifier : motiveJson.keySet()) {
-                    Motive motive = new Motive("minecraft", identifier);
+                    Motive motive = new Motive(mod, identifier);
                     if (motiveJson.getAsJsonObject(identifier).has("id")) {
                         motiveIdMap.put(motiveJson.getAsJsonObject(identifier).get("id").getAsInt(), motive);
                     }
@@ -352,7 +352,7 @@ public class VersionMapping {
                 }
                 JsonObject particleJson = data.getAsJsonObject("particle_type").getAsJsonObject("entries");
                 for (String identifier : particleJson.keySet()) {
-                    Particle particle = new Particle("minecraft", identifier);
+                    Particle particle = new Particle(mod, identifier);
                     if (particleJson.getAsJsonObject(identifier).has("id")) {
                         particleIdMap.put(particleJson.getAsJsonObject(identifier).get("id").getAsInt(), particle);
                     }
@@ -360,14 +360,14 @@ public class VersionMapping {
                 }
                 JsonObject mobEffectJson = data.getAsJsonObject("mob_effect").getAsJsonObject("entries");
                 for (String identifier : mobEffectJson.keySet()) {
-                    MobEffect mobEffect = new MobEffect("minecraft", identifier);
+                    MobEffect mobEffect = new MobEffect(mod, identifier);
                     mobEffectMap.put(mobEffectJson.getAsJsonObject(identifier).get("id").getAsInt(), mobEffect);
                 }
                 if (data.has("dimension_type")) {
                     dimensionMap = HashBiMap.create();
                     JsonObject dimensionJson = data.getAsJsonObject("dimension_type").getAsJsonObject("entries");
                     for (String identifier : dimensionJson.keySet()) {
-                        Dimension dimension = new Dimension("minecraft", identifier, dimensionJson.getAsJsonObject(identifier).get("has_skylight").getAsBoolean());
+                        Dimension dimension = new Dimension(mod, identifier, dimensionJson.getAsJsonObject(identifier).get("has_skylight").getAsBoolean());
                         dimensionMap.put(dimensionJson.getAsJsonObject(identifier).get("id").getAsInt(), dimension);
                     }
                 }
@@ -383,7 +383,7 @@ public class VersionMapping {
                     blockMap = HashBiMap.create();
                     break;
                 }
-                blockMap = Blocks.load("minecraft", data, version.getVersionId() < ProtocolDefinition.FLATTING_VERSION_ID);
+                blockMap = Blocks.load(mod, data, !version.isFlattened());
             }
             case ENTITIES -> {
                 entityInformationMap = HashBiMap.create();
@@ -394,14 +394,11 @@ public class VersionMapping {
                 if (data == null) {
                     break;
                 }
-                for (String mod : data.keySet()) {
-                    JsonObject modJson = data.getAsJsonObject(mod);
-                    for (String identifier : modJson.keySet()) {
-                        if (entityMetaIndexOffsetParentMapping.containsKey(identifier)) {
-                            continue;
-                        }
-                        loadEntityMapping(mod, identifier, modJson);
+                for (String identifier : data.keySet()) {
+                    if (entityMetaIndexOffsetParentMapping.containsKey(identifier)) {
+                        continue;
                     }
+                    loadEntityMapping(mod, identifier, data);
                 }
             }
         }
@@ -454,6 +451,10 @@ public class VersionMapping {
         enchantmentMap.clear();
         particleIdMap.clear();
         statisticIdMap.clear();
+        entityInformationMap.clear();
+        entityMetaIndexMap.clear();
+        entityMetaIndexOffsetParentMapping.clear();
+        entityIdClassMap.clear();
     }
 
     public boolean isFullyLoaded() {

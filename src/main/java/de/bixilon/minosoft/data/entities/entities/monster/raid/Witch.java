@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.monster.raid;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -25,6 +26,7 @@ public class Witch extends Raider {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "isDrinkingPotion")
     public boolean isDrinkingPotion() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.WITCH_IS_DRINKING_POTION);
     }

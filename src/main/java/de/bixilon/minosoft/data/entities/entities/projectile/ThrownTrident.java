@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.projectile;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -25,13 +26,14 @@ public class ThrownTrident extends AbstractArrow {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "loyaltyLevel")
     public byte getLoyaltyLevel() {
         return getMetaData().getSets().getByte(EntityMetaDataFields.THROWN_TRIDENT_LOYALTY_LEVEL);
     }
 
+    @EntityMetaDataFunction(identifier = "isEnchanted")
     public boolean isEnchanted() {
         return getMetaData().getSets().getBoolean(EntityMetaDataFields.THROWN_TRIDENT_FOIL);
     }
 
 }
-

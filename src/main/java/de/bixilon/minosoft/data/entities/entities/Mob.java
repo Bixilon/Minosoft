@@ -29,14 +29,17 @@ public abstract class Mob extends LivingEntity {
         return metaData.getSets().getBitMask(EntityMetaDataFields.MOB_FLAGS, bitMask);
     }
 
+    @EntityMetaDataFunction(identifier = "isNoAI")
     public boolean isNoAi() {
         return getMobFlags(0x01);
     }
 
+    @EntityMetaDataFunction(identifier = "isLeftHanded")
     public boolean isLeftHanded() {
         return getMobFlags(0x02);
     }
 
+    @EntityMetaDataFunction(identifier = "isAggressive")
     public boolean isAggressive() {
         return getMobFlags(0x04);
     }

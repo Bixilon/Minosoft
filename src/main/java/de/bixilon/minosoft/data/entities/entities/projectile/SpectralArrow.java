@@ -24,4 +24,3 @@ public class SpectralArrow extends AbstractArrow {
         super(connection, entityId, uuid, location, rotation);
     }
 }
-

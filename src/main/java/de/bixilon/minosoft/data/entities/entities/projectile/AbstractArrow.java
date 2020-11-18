@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.projectile;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -29,18 +30,22 @@ public abstract class AbstractArrow extends Projectile {
         return metaData.getSets().getBitMask(EntityMetaDataFields.ABSTRACT_ARROW_FLAGS, bitMask);
     }
 
+    @EntityMetaDataFunction(identifier = "isCritical")
     public boolean isCritical() {
         return getAbstractArrowFlag(0x01);
     }
 
+    @EntityMetaDataFunction(identifier = "isNoClip")
     public boolean isNoClip() {
         return getAbstractArrowFlag(0x02);
     }
 
+    @EntityMetaDataFunction(identifier = "piercingLevel")
     public byte getPiercingLevel() {
         return metaData.getSets().getByte(EntityMetaDataFields.ABSTRACT_ARROW_PIERCE_LEVEL);
     }
 
+    @EntityMetaDataFunction(identifier = "ownerUUID")
     public UUID getOwnerUUID() {
         return metaData.getSets().getUUID(EntityMetaDataFields.ABSTRACT_ARROW_OWNER_UUID);
     }

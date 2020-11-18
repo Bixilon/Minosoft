@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.animal;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -29,18 +30,22 @@ public class Bee extends Animal {
         return metaData.getSets().getBitMask(EntityMetaDataFields.BEE_FLAGS, bitMask);
     }
 
-    private boolean isAngry() {
+    @EntityMetaDataFunction(identifier = "isAngry")
+    public boolean isAngry() {
         return getBeeFlag(0x02);
     }
 
-    private boolean hasStung() {
+    @EntityMetaDataFunction(identifier = "hasStung")
+    public boolean hasStung() {
         return getBeeFlag(0x04);
     }
 
-    private boolean hasNectar() {
+    @EntityMetaDataFunction(identifier = "hasNectar")
+    public boolean hasNectar() {
         return getBeeFlag(0x08);
     }
 
+    @EntityMetaDataFunction(identifier = "remainingAngerTime")
     public int getRemainingAngerTimer() {
         return metaData.getSets().getInt(EntityMetaDataFields.BEE_REMAINING_ANGER_TIME);
     }

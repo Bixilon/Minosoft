@@ -11,9 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities;
+package de.bixilon.minosoft.data.entities.entities;
 
-import de.bixilon.minosoft.data.entities.entities.Mob;
+import de.bixilon.minosoft.data.entities.EntityRotation;
+import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;

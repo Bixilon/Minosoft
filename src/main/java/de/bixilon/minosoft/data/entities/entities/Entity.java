@@ -13,17 +13,22 @@
 
 package de.bixilon.minosoft.data.entities.entities;
 
+import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.entities.*;
 import de.bixilon.minosoft.data.inventory.InventorySlots;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.MobEffect;
 import de.bixilon.minosoft.data.text.ChatComponent;
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeMap;
 import java.util.UUID;
 
 public abstract class Entity {
@@ -133,6 +138,9 @@ public abstract class Entity {
     @Unsafe
     public void setMetaData(EntityMetaData metaData) {
         this.metaData = metaData;
+        if (StaticConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
+            Log.verbose(String.format("Metadata of entity %s (entityId=%d): %s", toString(), getEntityId(), getEntityMetaDataAsString()));
+        }
     }
 
     public EntityInformation getEntityInformation() {
@@ -143,55 +151,65 @@ public abstract class Entity {
         return metaData.getSets().getBitMask(EntityMetaDataFields.ENTITY_FLAGS, bitMask);
     }
 
+    @EntityMetaDataFunction(identifier = "onFire")
     public boolean isOnFire() {
         return getEntityFlag(0x01);
     }
 
-    public boolean isCrouching() {
+    private boolean isCrouching() {
         return getEntityFlag(0x02);
     }
 
+    @EntityMetaDataFunction(identifier = "isSprinting")
     public boolean isSprinting() {
         return getEntityFlag(0x08);
     }
 
-    public boolean isSwimming() {
+    private boolean isSwimming() {
         return getEntityFlag(0x10);
     }
 
+    @EntityMetaDataFunction(identifier = "isInvisible")
     public boolean isInvisible() {
         return getEntityFlag(0x20);
     }
 
+    @EntityMetaDataFunction(identifier = "hasGlowingEffect")
     public boolean hasGlowingEffect() {
         return getEntityFlag(0x20);
     }
 
-    public boolean isFlyingWithElytra() {
+    private boolean isFlyingWithElytra() {
         return getEntityFlag(0x80);
     }
 
+    @EntityMetaDataFunction(identifier = "airSupply")
     private int getAirSupply() {
         return metaData.getSets().getInt(EntityMetaDataFields.ENTITY_AIR_SUPPLY);
     }
 
+    @EntityMetaDataFunction(identifier = "customName")
     @Nullable
     private ChatComponent getCustomName() {
         return metaData.getSets().getChatComponent(EntityMetaDataFields.ENTITY_CUSTOM_NAME);
     }
 
+    @EntityMetaDataFunction(identifier = "customNameVisible")
     public boolean isCustomNameVisible() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_CUSTOM_NAME_VISIBLE);
     }
 
+    @EntityMetaDataFunction(identifier = "isSilent")
     public boolean isSilent() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_SILENT);
     }
 
+    @EntityMetaDataFunction(identifier = "hasNoGravity")
     public boolean hasNoGravity() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_NO_GRAVITY);
     }
 
+    @EntityMetaDataFunction(identifier = "pose")
     public Poses getPose() {
         if (isCrouching()) {
             // crouching
@@ -201,11 +219,46 @@ public abstract class Entity {
             // crouching
             return Poses.SWIMMING;
         }
+        if (isFlyingWithElytra()) {
+            return Poses.FLYING;
+        }
         return metaData.getSets().getPose(EntityMetaDataFields.ENTITY_POSE);
     }
 
     @Override
     public String toString() {
         return String.format("%s:%s", information.getMod(), information.getIdentifier());
+    }
+
+    public String getEntityMetaDataAsString() {
+        return getEntityMetaDataFormatted().toString();
+    }
+
+    public TreeMap<String, Object> getEntityMetaDataFormatted() {
+        // scan all methods of current class for EntityMetaDataFunction annotation and write it into a list
+        Class<? extends Entity> clazz = this.getClass();
+        TreeMap<String, Object> values = new TreeMap<>();
+        for (Method method : clazz.getMethods()) {
+            if (!method.isAnnotationPresent(EntityMetaDataFunction.class)) {
+                continue;
+            }
+            if (method.getParameterCount() > 0) {
+                continue;
+            }
+            try {
+                String identifier = method.getAnnotation(EntityMetaDataFunction.class).identifier();
+                if (values.containsKey(identifier)) {
+                    continue;
+                }
+                Object methodRetValue = method.invoke(this);
+                if (methodRetValue == null) {
+                    continue;
+                }
+                values.put(identifier, methodRetValue);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+        return values;
     }
 }

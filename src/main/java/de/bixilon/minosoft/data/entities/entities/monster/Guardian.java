@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.monster;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -25,10 +26,12 @@ public class Guardian extends Monster {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "isMoving")
     public boolean isMoving() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.GUARDIAN_IS_MOVING);
     }
 
+    @EntityMetaDataFunction(identifier = "attackedEntityId")
     public int getAttackEntityId() {
         return metaData.getSets().getInt(EntityMetaDataFields.GUARDIAN_TARGET_ENTITY_ID);
     }

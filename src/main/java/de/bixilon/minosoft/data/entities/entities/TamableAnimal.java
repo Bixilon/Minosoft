@@ -11,8 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities;
+package de.bixilon.minosoft.data.entities.entities;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
+import de.bixilon.minosoft.data.entities.EntityRotation;
+import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.entities.animal.Animal;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -28,14 +31,17 @@ public abstract class TamableAnimal extends Animal {
         return metaData.getSets().getBitMask(EntityMetaDataFields.TAMABLE_ENTITY_FLAGS, bitMask);
     }
 
+    @EntityMetaDataFunction(identifier = "isSitting")
     public boolean isSitting() {
         return getTameableFlag(0x01);
     }
 
+    @EntityMetaDataFunction(identifier = "isTamed")
     public boolean isTamed() {
         return getTameableFlag(0x04);
     }
 
+    @EntityMetaDataFunction(identifier = "ownerUUID")
     @Nullable
     public UUID getOwner() {
         return metaData.getSets().getUUID(EntityMetaDataFields.TAMABLE_ENTITY_OWNER_UUID);

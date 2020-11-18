@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.animal;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -25,6 +26,7 @@ public class Parrot extends ShoulderRidingAnimal {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "variant")
     public ParrotVariants getVariant() {
         return ParrotVariants.values()[metaData.getSets().getInt(EntityMetaDataFields.PARROT_VARIANT)];
     }

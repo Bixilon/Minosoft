@@ -33,4 +33,3 @@ public class ThrownSnowball extends ThrowableItemProjectile {
         return DEFAULT_ITEM;
     }
 }
-

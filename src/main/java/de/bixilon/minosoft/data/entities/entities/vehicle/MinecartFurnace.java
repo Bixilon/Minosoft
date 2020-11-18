@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.data.entities.entities.vehicle;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -22,5 +24,10 @@ import java.util.UUID;
 public class MinecartFurnace extends AbstractMinecartContainer {
     public MinecartFurnace(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
+    }
+
+    @EntityMetaDataFunction(identifier = "hasFuel")
+    public boolean hasFuel() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.MINECART_FURNACE_HAS_FUEL);
     }
 }

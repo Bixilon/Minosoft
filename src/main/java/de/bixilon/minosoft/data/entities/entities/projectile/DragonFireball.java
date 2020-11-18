@@ -24,4 +24,3 @@ public class DragonFireball extends AbstractHurtingProjectile {
         super(connection, entityId, uuid, location, rotation);
     }
 }
-

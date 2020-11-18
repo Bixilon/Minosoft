@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.monster;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.Mob;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -26,6 +27,7 @@ public class Slime extends Mob {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "size")
     public int getSize() {
         return metaData.getSets().getInt(EntityMetaDataFields.SLIME_SIZE);
     }

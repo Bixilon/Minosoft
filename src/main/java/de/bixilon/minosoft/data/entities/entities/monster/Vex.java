@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.monster;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -27,5 +28,11 @@ public class Vex extends Monster {
 
     private boolean getVexFlag(int bitMask) {
         return metaData.getSets().getBitMask(EntityMetaDataFields.VEX_FLAGS, bitMask);
+    }
+
+
+    @EntityMetaDataFunction(identifier = "isAttacking")
+    public boolean isAttacking() {
+        return getVexFlag(0x01);
     }
 }

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.entities.Entity;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -28,11 +29,13 @@ public class EndCrystal extends Entity {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "beamTarget")
     @Nullable
     public BlockPosition getBeamTarget() {
         return getMetaData().getSets().getPosition(EntityMetaDataFields.END_CRYSTAL_BEAM_TARGET);
     }
 
+    @EntityMetaDataFunction(identifier = "showBottom")
     public boolean shotBottom() {
         return getMetaData().getSets().getBoolean(EntityMetaDataFields.END_CRYSTAL_SHOW_BOTTOM);
     }

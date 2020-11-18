@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.animal.horse;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.animal.Animal;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -31,26 +32,32 @@ public abstract class AbstractHorse extends Animal {
         return metaData.getSets().getBitMask(EntityMetaDataFields.ABSTRACT_HORSE_FLAGS, bitMask);
     }
 
+    @EntityMetaDataFunction(identifier = "isTame")
     public boolean isTame() {
         return getAbstractHorseFlag(0x02);
     }
 
+    @EntityMetaDataFunction(identifier = "isSaddled")
     public boolean isSaddled() {
         return getAbstractHorseFlag(0x04);
     }
 
+    @EntityMetaDataFunction(identifier = "hasBred")
     public boolean hasBred() {
         return getAbstractHorseFlag(0x08);
     }
 
+    @EntityMetaDataFunction(identifier = "isEating")
     public boolean isEating() {
         return getAbstractHorseFlag(0x10);
     }
 
+    @EntityMetaDataFunction(identifier = "isRearing")
     public boolean isRearing() {
         return getAbstractHorseFlag(0x20);
     }
 
+    @EntityMetaDataFunction(identifier = "isMouthOpen")
     public boolean isMouthOpen() {
         return getAbstractHorseFlag(0x40);
     }

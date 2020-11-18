@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.VillagerData;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -26,10 +27,12 @@ public class ZombieVillager extends Zombie {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "isConverting")
     public boolean isConverting() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.ZOMBIE_VILLAGER_IS_CONVERTING);
     }
 
+    @EntityMetaDataFunction(identifier = "villagerData")
     public VillagerData getVillagerData() {
         return metaData.getSets().getVillagerData(EntityMetaDataFields.ZOMBIE_VILLAGER_DATA);
     }

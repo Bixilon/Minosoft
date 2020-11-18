@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.animal.hoglin;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.animal.Animal;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -26,6 +27,7 @@ public class Hoglin extends Animal {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "immuneToZombification")
     public boolean isImmuneToZombification() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.HOGLIN_IMMUNE_TO_ZOMBIFICATION);
     }

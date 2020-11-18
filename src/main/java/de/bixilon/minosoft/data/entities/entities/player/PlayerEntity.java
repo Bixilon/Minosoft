@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.PlayerPropertyData;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.LivingEntity;
 import de.bixilon.minosoft.data.mappings.Item;
 import de.bixilon.minosoft.data.player.Hands;
@@ -44,10 +45,12 @@ public class PlayerEntity extends LivingEntity {
         this.currentItem = currentItem;
     }
 
+    @EntityMetaDataFunction(identifier = "absorptionHearts")
     public float getPlayerAbsorptionHearts() {
         return metaData.getSets().getFloat(EntityMetaDataFields.PLAYER_ABSORPTION_HEARTS);
     }
 
+    @EntityMetaDataFunction(identifier = "score")
     public int getScore() {
         return metaData.getSets().getInt(EntityMetaDataFields.PLAYER_SCORE);
     }
@@ -56,24 +59,29 @@ public class PlayerEntity extends LivingEntity {
         return metaData.getSets().getBitMask(EntityMetaDataFields.PLAYER_SKIN_PARTS_FLAGS, bitMask);
     }
 
+    @EntityMetaDataFunction(identifier = "mainHand")
     public Hands getMainHand() {
         return metaData.getSets().getByte(EntityMetaDataFields.PLAYER_SKIN_MAIN_HAND) == 0x01 ? Hands.OFF_HAND : Hands.MAIN_HAND;
     }
 
+    @EntityMetaDataFunction(identifier = "leftShoulderEntityData")
     @Nullable
     public CompoundTag getLeftShoulderData() {
         return metaData.getSets().getNBT(EntityMetaDataFields.PLAYER_LEFT_SHOULDER_DATA);
     }
 
+    @EntityMetaDataFunction(identifier = "rightShoulderEntityData")
     @Nullable
     public CompoundTag getRightShoulderData() {
         return metaData.getSets().getNBT(EntityMetaDataFields.PLAYER_RIGHT_SHOULDER_DATA);
     }
 
+    @EntityMetaDataFunction(identifier = "name")
     public String getName() {
         return name;
     }
 
+    @EntityMetaDataFunction(identifier = "properties")
     public PlayerPropertyData[] getProperties() {
         return properties;
     }

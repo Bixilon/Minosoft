@@ -11,18 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.animal;
+package de.bixilon.minosoft.data.entities.entities;
 
-import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.entities.AgeableMob;
-import de.bixilon.minosoft.protocol.network.Connection;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import java.util.UUID;
-
-public abstract class Animal extends AgeableMob {
-    public Animal(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
-        super(connection, entityId, uuid, location, rotation);
-    }
+@Retention(RetentionPolicy.RUNTIME)
+public @interface EntityMetaDataFunction {
+    String identifier();
 }
-

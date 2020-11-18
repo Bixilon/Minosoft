@@ -133,23 +133,29 @@ public class Versions {
         for (Mappings mapping : Mappings.values()) {
             JsonObject data = null;
             if (files.containsKey(mapping.getFilename() + ".json")) {
-                data = files.get(mapping.getFilename() + ".json").getAsJsonObject("minecraft");
+                data = files.get(mapping.getFilename() + ".json");
             }
-            loadVersionMappings(mapping, data, version);
+            if (data == null) {
+                loadVersionMappings(mapping, "minecraft", data, version);
+                continue;
+            }
+            for (String mod : data.keySet()) {
+                loadVersionMappings(mapping, mod, data.getAsJsonObject(mod), version);
+            }
         }
 
         Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", version, (System.currentTimeMillis() - startTime), version.getVersionName()));
         version.setGettingLoaded(false);
     }
 
-    public static void loadVersionMappings(Mappings type, @Nullable JsonObject data, Version version) {
+    public static void loadVersionMappings(Mappings type, String mod, @Nullable JsonObject data, Version version) {
         VersionMapping mapping;
         mapping = version.getMapping();
         if (mapping == null) {
             mapping = new VersionMapping(version);
             version.setMapping(mapping);
         }
-        mapping.load(type, data, version);
+        mapping.load(type, mod, data, version);
 
         if (version.getVersionId() == ProtocolDefinition.PRE_FLATTENING_VERSION_ID && PRE_FLATTENING_MAPPING == null) {
             PRE_FLATTENING_MAPPING = mapping;

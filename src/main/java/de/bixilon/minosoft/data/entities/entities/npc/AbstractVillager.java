@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.data.entities.entities.npc;
 
-import de.bixilon.minosoft.data.entities.AgeableMob;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.AgeableMob;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -26,6 +27,7 @@ public abstract class AbstractVillager extends AgeableMob {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "unhappyTimer")
     public int getUnhappyTimer() {
         return metaData.getSets().getInt(EntityMetaDataFields.ABSTRACT_VILLAGER_UNHAPPY_TIMER);
     }

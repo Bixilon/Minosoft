@@ -33,4 +33,3 @@ public class ThrownExperienceBottle extends ThrowableItemProjectile {
         return DEFAULT_ITEM;
     }
 }
-

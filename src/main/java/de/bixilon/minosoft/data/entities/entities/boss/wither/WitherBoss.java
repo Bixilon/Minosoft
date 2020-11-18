@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.boss.wither;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.monster.Monster;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -26,18 +27,22 @@ public class WitherBoss extends Monster {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "centerHeadTargetEntityId")
     public int getCenterHeadTargetEntityId() {
         return metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID);
     }
 
+    @EntityMetaDataFunction(identifier = "leftHeadTargetEntityId")
     public int getLeftHeadTargetEntityId() {
         return metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID);
     }
 
+    @EntityMetaDataFunction(identifier = "rightHeadTargetEntityId")
     public int getRightHeadTargetEntityId() {
         return metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_RIGHT_HEAD_TARGET_ENTITY_ID);
     }
 
+    @EntityMetaDataFunction(identifier = "invulnerableTime")
     public int getInvulnerableTime() {
         return metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_INVULNERABLE_TIME);
     }

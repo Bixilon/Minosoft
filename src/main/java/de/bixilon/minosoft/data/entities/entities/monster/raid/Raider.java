@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.monster.raid;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.monster.PatrollingMonster;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -26,8 +27,8 @@ public abstract class Raider extends PatrollingMonster {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "isCelebrating")
     public boolean isCelebrating() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.RAIDER_IS_CELEBRATING);
     }
-
 }

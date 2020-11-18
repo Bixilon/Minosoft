@@ -199,7 +199,7 @@ public class EntityMetaData {
         }
 
         public boolean getBitMask(EntityMetaDataFields field, int bitMask) {
-            return BitByte.isBitMask(getByte(field), bitMask);
+            return BitByte.isBitMask(getInt(field), bitMask);
         }
 
         public Object get(EntityMetaDataFields field) {
@@ -231,7 +231,14 @@ public class EntityMetaData {
         }
 
         public int getInt(EntityMetaDataFields field) {
-            return (int) get(field);
+            Object object = get(field);
+            if (object instanceof Integer i) {
+                return i;
+            }
+            if (object instanceof Byte b) {
+                return b;
+            }
+            return 0;
         }
 
         public Short getShort(EntityMetaDataFields field) {

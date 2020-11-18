@@ -24,4 +24,3 @@ public class Husk extends Zombie {
         super(connection, entityId, uuid, location, rotation);
     }
 }
-

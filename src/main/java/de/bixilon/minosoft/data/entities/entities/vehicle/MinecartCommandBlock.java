@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.vehicle;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -26,10 +27,12 @@ public class MinecartCommandBlock extends AbstractMinecart {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "command")
     public String getCommand() {
         return metaData.getSets().getString(EntityMetaDataFields.MINECART_COMMAND_BLOCK_COMMAND);
     }
 
+    @EntityMetaDataFunction(identifier = "lastOutput")
     public ChatComponent getLastOutput() {
         return metaData.getSets().getChatComponent(EntityMetaDataFields.MINECART_COMMAND_BLOCK_LAST_OUTPUT);
     }

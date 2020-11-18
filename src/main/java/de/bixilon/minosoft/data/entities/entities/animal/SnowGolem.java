@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.animal;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -29,6 +30,7 @@ public class SnowGolem extends AbstractGolem {
         return metaData.getSets().getBitMask(EntityMetaDataFields.SNOW_GOLEM_FLAGS, bitMask);
     }
 
+    @EntityMetaDataFunction(identifier = "pumpkinHat")
     public boolean hasPumpkinHat() {
         return getPumpkinFlags(0x10);
     }

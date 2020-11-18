@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.projectile;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -25,12 +26,13 @@ public class FishingHook extends Projectile {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "hookedEntityId")
     public int getHookedEntityId() {
         return getMetaData().getSets().getInt(EntityMetaDataFields.FISHING_HOOK_HOOKED_ENTITY);
     }
 
+    @EntityMetaDataFunction(identifier = "isCatchable")
     public boolean isCatchable() {
         return getMetaData().getSets().getBoolean(EntityMetaDataFields.FISHING_HOOK_CATCHABLE);
     }
 }
-

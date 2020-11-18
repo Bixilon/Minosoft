@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.ambient;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -29,6 +30,7 @@ public class Bat extends AmbientCreature {
         return metaData.getSets().getBitMask(EntityMetaDataFields.BAT_FLAGS, bitMask);
     }
 
+    @EntityMetaDataFunction(identifier = "hanging")
     public boolean isHanging() {
         return getBatFlag(0x01);
     }

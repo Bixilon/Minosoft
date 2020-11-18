@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.projectile;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -28,6 +29,7 @@ public class ThrownPotion extends ThrowableItemProjectile {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "item")
     @Override
     public Slot getItem() {
         if (versionId > 704) {
@@ -46,4 +48,3 @@ public class ThrownPotion extends ThrowableItemProjectile {
         return DEFAULT_ITEM;
     }
 }
-

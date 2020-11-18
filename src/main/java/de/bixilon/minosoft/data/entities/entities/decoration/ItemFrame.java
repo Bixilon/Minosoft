@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.decoration;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -27,11 +28,13 @@ public class ItemFrame extends HangingEntity {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "item")
     @Nullable
     public Slot getItem() {
         return metaData.getSets().getSlot(EntityMetaDataFields.ITEM_FRAME_ITEM);
     }
 
+    @EntityMetaDataFunction(identifier = "itemRotationLevel")
     public int getItemRotation() {
         return metaData.getSets().getInt(EntityMetaDataFields.ITEM_FRAME_ROTATION);
     }

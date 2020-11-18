@@ -16,7 +16,8 @@ package de.bixilon.minosoft.data.entities.entities.animal;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.TamableAnimal;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
+import de.bixilon.minosoft.data.entities.entities.TamableAnimal;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.RGBColor;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -28,18 +29,22 @@ public class Cat extends TamableAnimal {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "variant")
     public CatVariants getVariant() {
         return CatVariants.values()[metaData.getSets().getInt(EntityMetaDataFields.CAT_VARIANT)];
     }
 
+    @EntityMetaDataFunction(identifier = "lying")
     public boolean isLying() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.CAT_IS_LYING);
     }
 
+    @EntityMetaDataFunction(identifier = "relaxed")
     public boolean isRelaxed() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.CAT_IS_RELAXED);
     }
 
+    @EntityMetaDataFunction(identifier = "collarColor")
     public RGBColor getCollarColor() {
         return ChatColors.getColorById(metaData.getSets().getInt(EntityMetaDataFields.CAT_GET_COLLAR_COLOR));
     }

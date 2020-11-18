@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.animal.horse;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -29,16 +30,18 @@ public class Horse extends AbstractHorse {
         return metaData.getSets().getBitMask(EntityMetaDataFields.ABSTRACT_HORSE_FLAGS, bitMask);
     }
 
-    private int getType() {
+    private int getVariant() {
         return metaData.getSets().getInt(EntityMetaDataFields.HORSE_VARIANT);
     }
 
+    @EntityMetaDataFunction(identifier = "color")
     public HorseColors getColor() {
-        return HorseColors.byId(getType() & 0xFF);
+        return HorseColors.byId(getVariant() & 0xFF);
     }
 
+    @EntityMetaDataFunction(identifier = "dots")
     public HorseDots getDots() {
-        return HorseDots.byId(getType() >> 8);
+        return HorseDots.byId(getVariant() >> 8);
     }
 
     public enum HorseColors {

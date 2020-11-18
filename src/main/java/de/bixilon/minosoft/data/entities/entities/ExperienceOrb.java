@@ -32,6 +32,7 @@ public class ExperienceOrb extends Entity {
         this.count = count;
     }
 
+    @EntityMetaDataFunction(identifier = "count")
     public int getCount() {
         return count;
     }

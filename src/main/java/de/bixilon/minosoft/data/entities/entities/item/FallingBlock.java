@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.entities.Entity;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -29,6 +30,7 @@ public class FallingBlock extends Entity {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "spawnPosition")
     @Nullable
     public BlockPosition getSpawnPosition() {
         return getMetaData().getSets().getPosition(EntityMetaDataFields.FALLING_BLOCK_SPAWN_POSITION);

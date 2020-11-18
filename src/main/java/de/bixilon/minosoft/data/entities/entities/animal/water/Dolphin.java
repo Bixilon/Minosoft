@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.animal.water;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -27,15 +28,18 @@ public class Dolphin extends WaterAnimal {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "treasurePosition")
     @Nullable
     public BlockPosition getTreasurePosition() {
         return metaData.getSets().getPosition(EntityMetaDataFields.DOLPHIN_TREASURE_POSITION);
     }
 
+    @EntityMetaDataFunction(identifier = "hasFish")
     public boolean hasFish() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.DOLPHIN_HAS_FISH);
     }
 
+    @EntityMetaDataFunction(identifier = "moistnessLevel")
     public int getMoistnessLevel() {
         return metaData.getSets().getInt(EntityMetaDataFields.DOLPHIN_MOISTNESS_LEVEL);
     }

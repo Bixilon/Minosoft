@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.animal.horse;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
@@ -25,14 +26,17 @@ public class Llama extends AbstractChestedHorse {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "strength")
     public int getStrength() {
         return metaData.getSets().getInt(EntityMetaDataFields.LLAMA_STRENGTH);
     }
 
+    @EntityMetaDataFunction(identifier = "carpetColor")
     public int getCarpetColor() {
         return metaData.getSets().getInt(EntityMetaDataFields.LLAMA_CARPET_COLOR);
     }
 
+    @EntityMetaDataFunction(identifier = "variant")
     public int getVariant() {
         return metaData.getSets().getInt(EntityMetaDataFields.LLAMA_VARIANT);
     }

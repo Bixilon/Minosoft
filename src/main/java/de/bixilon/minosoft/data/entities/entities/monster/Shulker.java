@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.animal.AbstractGolem;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.RGBColor;
@@ -32,19 +33,23 @@ public class Shulker extends AbstractGolem {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    public Directions getAttachFace() {
+    @EntityMetaDataFunction(identifier = "attachmentFace")
+    public Directions getAttachmentFace() {
         return metaData.getSets().getDirection(EntityMetaDataFields.SHULKER_ATTACH_FACE);
     }
 
+    @EntityMetaDataFunction(identifier = "attachmentPosition")
     @Nullable
     public BlockPosition getAttachmentPosition() {
         return metaData.getSets().getPosition(EntityMetaDataFields.SHULKER_ATTACHMENT_POSITION);
     }
 
+    @EntityMetaDataFunction(identifier = "peek")
     public byte getPeek() {
         return metaData.getSets().getByte(EntityMetaDataFields.SHULKER_PEEK);
     }
 
+    @EntityMetaDataFunction(identifier = "color")
     public RGBColor getColor() {
         return ChatColors.getColorById(metaData.getSets().getByte(EntityMetaDataFields.SHULKER_COLOR));
     }

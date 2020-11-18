@@ -33,4 +33,3 @@ public class ThrownEnderPearl extends ThrowableItemProjectile {
         return DEFAULT_ITEM;
     }
 }
-

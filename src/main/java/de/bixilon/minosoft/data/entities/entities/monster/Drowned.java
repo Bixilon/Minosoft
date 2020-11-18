@@ -24,4 +24,3 @@ public class Drowned extends Zombie {
         super(connection, entityId, uuid, location, rotation);
     }
 }
-

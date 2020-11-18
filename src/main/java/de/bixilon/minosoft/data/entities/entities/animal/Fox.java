@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.animal;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import javax.annotation.Nullable;
@@ -26,6 +27,7 @@ public class Fox extends Animal {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "variant")
     public int getVariant() {
         return metaData.getSets().getInt(EntityMetaDataFields.FOX_VARIANT);
     }
@@ -34,39 +36,48 @@ public class Fox extends Animal {
         return metaData.getSets().getBitMask(EntityMetaDataFields.FOX_FLAGS, bitMask);
     }
 
+    @EntityMetaDataFunction(identifier = "isSitting")
     private boolean isSitting() {
         return getFoxFlag(0x01);
     }
 
+    @EntityMetaDataFunction(identifier = "isCrouching")
     public boolean isCrouching() {
         return getFoxFlag(0x04);
     }
 
+    @EntityMetaDataFunction(identifier = "isInterested")
     public boolean isInterested() {
         return getFoxFlag(0x08);
     }
 
+    @EntityMetaDataFunction(identifier = "isPouncing")
     public boolean isPouncing() {
         return getFoxFlag(0x10);
     }
 
+    @EntityMetaDataFunction(identifier = "isSleeping")
     public boolean isSleeping() {
         return getFoxFlag(0x20);
     }
 
+    @EntityMetaDataFunction(identifier = "isFaceplanted")
     public boolean isFaceplanted() {
         return getFoxFlag(0x40);
     }
 
+    @EntityMetaDataFunction(identifier = "isDefending")
     public boolean isDefending() {
         return getFoxFlag(0x80);
     }
 
+    @EntityMetaDataFunction(identifier = "trusted1")
     @Nullable
     public UUID getFirstTrusted() {
         return metaData.getSets().getUUID(EntityMetaDataFields.FOX_TRUSTED_1);
     }
 
+    @EntityMetaDataFunction(identifier = "trusted2")
     @Nullable
     public UUID getSecondTrusted() {
         return metaData.getSets().getUUID(EntityMetaDataFields.FOX_TRUSTED_2);

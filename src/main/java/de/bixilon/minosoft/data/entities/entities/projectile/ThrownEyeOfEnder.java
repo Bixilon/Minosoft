@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.entities.Entity;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.Item;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -30,6 +31,7 @@ public class ThrownEyeOfEnder extends Entity {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "item")
     public Slot getItem() {
         Slot slot = metaData.getSets().getSlot(EntityMetaDataFields.THROWN_EYE_OF_ENDER_ITEM);
         if (slot == null) {
@@ -38,4 +40,3 @@ public class ThrownEyeOfEnder extends Entity {
         return slot;
     }
 }
-

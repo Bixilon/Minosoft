@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.monster.piglin;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.monster.Monster;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -26,6 +27,7 @@ public abstract class AbstractPiglin extends Monster {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "isImmuneToZombification")
     public boolean isImmuneToZombification() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.ABSTRACT_PIGLIN_IMMUNE_TO_ZOMBIFICATION);
     }

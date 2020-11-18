@@ -33,4 +33,3 @@ public class SmallFireball extends Fireball {
         return DEFAULT_ITEM;
     }
 }
-

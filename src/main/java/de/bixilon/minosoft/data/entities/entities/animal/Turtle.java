@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.animal;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -27,28 +28,34 @@ public class Turtle extends Animal {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "homePosition")
     @Nullable
     public BlockPosition getHomePosition() {
         return metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_HOME_POSITION);
     }
 
+    @EntityMetaDataFunction(identifier = "hasEgg")
     public boolean hasEgg() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_HAS_EGG);
     }
 
+    @EntityMetaDataFunction(identifier = "isLayingEgg")
     public boolean isLayingEgg() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_LAYING_EGG);
     }
 
+    @EntityMetaDataFunction(identifier = "travelPosition")
     @Nullable
     public BlockPosition getTravelPosition() {
         return metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_TRAVEL_POSITION);
     }
 
+    @EntityMetaDataFunction(identifier = "isGoingHome")
     public boolean isGoingHome() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_GOING_HOME);
     }
 
+    @EntityMetaDataFunction(identifier = "isTraveling")
     public boolean isTraveling() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_TRAVELING);
     }

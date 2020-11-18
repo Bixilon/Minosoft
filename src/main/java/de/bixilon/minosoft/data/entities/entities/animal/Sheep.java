@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.animal;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.RGBColor;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -27,10 +28,12 @@ public class Sheep extends Animal {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @EntityMetaDataFunction(identifier = "color")
     private RGBColor getColor() {
         return ChatColors.getColorById(metaData.getSets().getByte(EntityMetaDataFields.SHEEP_FLAGS) & 0xF);
     }
 
+    @EntityMetaDataFunction(identifier = "isSheared")
     private boolean isSheared() {
         return metaData.getSets().getBitMask(EntityMetaDataFields.SHEEP_FLAGS, 0x10);
     }

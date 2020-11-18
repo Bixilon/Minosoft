@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public abstract class LivingEntity extends Entity {
@@ -32,38 +33,48 @@ public abstract class LivingEntity extends Entity {
     }
 
     // = isUsingItem
+    @EntityMetaDataFunction(identifier = "isHandActive")
     public boolean isHandActive() {
         return getLivingEntityFlag(0x01);
     }
 
+    @EntityMetaDataFunction(identifier = "mainHand")
     public Hands getMainHand() {
         return getLivingEntityFlag(0x04) ? Hands.OFF_HAND : Hands.MAIN_HAND;
     }
 
+    @EntityMetaDataFunction(identifier = "isAutoSpinAttack")
     public boolean isAutoSpinAttack() {
         return getLivingEntityFlag(0x04);
     }
 
+    @EntityMetaDataFunction(identifier = "health")
     public float getHealth() {
         return metaData.getSets().getFloat(EntityMetaDataFields.LIVING_ENTITY_HEALTH);
     }
 
+    @EntityMetaDataFunction(identifier = "effectColor")
     public int getEffectColor() {
         return metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_EFFECT_COLOR);
     }
 
+    @EntityMetaDataFunction(identifier = "isEffectAmbient")
     public boolean getEffectAmbient() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.LIVING_ENTITY_EFFECT_AMBIENCE);
     }
 
+    @EntityMetaDataFunction(identifier = "arrowsInEntity")
     public int getArrowCount() {
         return metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ARROW_COUNT);
     }
 
+    @EntityMetaDataFunction(identifier = "absorptionHearts")
     public int getAbsorptionHearts() {
         return metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ABSORPTION_HEARTS);
     }
 
+    @EntityMetaDataFunction(identifier = "bedLocation")
+    @Nullable
     public BlockPosition getBedLocation() {
         return metaData.getSets().getPosition(EntityMetaDataFields.LIVING_ENTITY_BED_POSITION);
     }
