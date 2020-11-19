@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class Dolphin extends WaterAnimal {
+
     public Dolphin(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }

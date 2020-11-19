@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.entities.entities;
 
 public class UnknownEntityException extends Exception {
+
     public UnknownEntityException() {
     }
 

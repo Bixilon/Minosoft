@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.config;
 
 public class ConfigMigrationException extends Exception {
+
     public ConfigMigrationException() {
     }
 

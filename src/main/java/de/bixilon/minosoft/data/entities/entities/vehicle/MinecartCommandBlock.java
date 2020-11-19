@@ -23,6 +23,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public class MinecartCommandBlock extends AbstractMinecart {
+
     public MinecartCommandBlock(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }

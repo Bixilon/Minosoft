@@ -282,7 +282,7 @@ public class Connection {
         if (this.state == state) {
             return;
         }
-        Log.verbose("ConnectionStatus changed: " + state);
+        Log.verbose("ConnectionState changed: " + state);
         ConnectionStates previousState = this.state;
         this.state = state;
         switch (state) {

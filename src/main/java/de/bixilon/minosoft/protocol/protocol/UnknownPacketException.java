@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 public class UnknownPacketException extends Exception {
+
     public UnknownPacketException() {
     }
 
