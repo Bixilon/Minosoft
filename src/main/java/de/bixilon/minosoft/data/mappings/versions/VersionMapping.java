@@ -429,10 +429,19 @@ public class VersionMapping {
         }
         // meta data index
         if (data.has("data")) {
-            JsonArray metaDataJson = data.getAsJsonArray("data");
-            for (JsonElement jsonElement : metaDataJson) {
-                String field = jsonElement.getAsString();
-                entityMetaIndexMap.put(EntityMetaDataFields.valueOf(field), metaDataIndexOffset++);
+            JsonElement metaDataJson = data.get("data");
+            if (metaDataJson instanceof JsonArray metaDataJsonArray) {
+                for (JsonElement jsonElement : metaDataJsonArray) {
+                    String field = jsonElement.getAsString();
+                    entityMetaIndexMap.put(EntityMetaDataFields.valueOf(field), metaDataIndexOffset++);
+                }
+            } else if (metaDataJson instanceof JsonObject metaDataJsonObject) {
+                for (String key : metaDataJsonObject.keySet()) {
+                    entityMetaIndexMap.put(EntityMetaDataFields.valueOf(key), metaDataJsonObject.get(key).getAsInt());
+                    metaDataIndexOffset++;
+                }
+            } else {
+                throw new RuntimeException("entities.json is invalid");
             }
         }
         entityMetaIndexOffsetParentMapping.put(identifier, new Pair<>(parent, metaDataIndexOffset));
