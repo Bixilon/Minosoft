@@ -58,13 +58,13 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>16-ea+3</version>
+            <version>16-ea+4</version>
             <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>16-ea+3</version>
+            <version>16-ea+4</version>
             <type>pom</type>
         </dependency>
         <dependency>
