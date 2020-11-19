@@ -11,10 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.main;
+package de.bixilon.minosoft.modding.event.events;
 
+import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 
-public interface ConnectionChangeCallback {
-    void handle(Connection connection);
+/**
+ * Fired when the connection state was just changed
+ */
+@Unsafe
+public class ConnectionStateChangeEvent extends ConnectionEvent {
+    private final ConnectionStates previousState;
+    private final ConnectionStates currentState;
+
+    public ConnectionStateChangeEvent(Connection connection, ConnectionStates previousState, ConnectionStates currentState) {
+        super(connection);
+        this.previousState = previousState;
+        this.currentState = currentState;
+    }
+
+    public ConnectionStates getPreviousState() {
+        return previousState;
+    }
+
+    public ConnectionStates getCurrentState() {
+        return currentState;
+    }
 }

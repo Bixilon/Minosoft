@@ -16,23 +16,23 @@ package de.bixilon.minosoft.modding.event;
 import de.bixilon.minosoft.modding.event.events.CancelableEvent;
 import de.bixilon.minosoft.modding.event.events.ConnectionEvent;
 import de.bixilon.minosoft.modding.event.events.annotations.EventHandler;
+import de.bixilon.minosoft.modding.loading.Priorities;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class EventMethod {
-    private final EventHandler annotation;
-    private final EventListener listener;
+public class EventInvokerMethod extends EventInvoker {
     private final Method method;
+    private final Class<? extends ConnectionEvent> eventType;
 
-    public EventMethod(EventHandler annotation, EventListener listener, Method method) {
-        this.annotation = annotation;
-        this.listener = listener;
+    public EventInvokerMethod(boolean ignoreCancelled, Priorities priority, EventListener listener, Method method) {
+        super(ignoreCancelled, priority, listener);
         this.method = method;
+        eventType = (Class<? extends ConnectionEvent>) method.getParameters()[0].getType();
     }
 
-    public EventHandler getAnnotation() {
-        return annotation;
+    public EventInvokerMethod(EventHandler annotation, EventListener listener, Method method) {
+        this(annotation.ignoreCancelled(), annotation.priority(), listener, method);
     }
 
     public Method getMethod() {
@@ -43,7 +43,7 @@ public class EventMethod {
         if (!method.getParameters()[0].getType().isAssignableFrom(event.getClass())) {
             return;
         }
-        if (!annotation.ignoreCancelled() && event instanceof CancelableEvent cancelableEvent && cancelableEvent.isCancelled()) {
+        if (!ignoreCancelled && event instanceof CancelableEvent cancelableEvent && cancelableEvent.isCancelled()) {
             return;
         }
         try {
@@ -51,5 +51,9 @@ public class EventMethod {
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
+    }
+
+    public Class<? extends ConnectionEvent> getEventType() {
+        return eventType;
     }
 }

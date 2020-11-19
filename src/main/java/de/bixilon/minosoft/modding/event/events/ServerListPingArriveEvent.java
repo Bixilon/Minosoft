@@ -11,8 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.ping;
+package de.bixilon.minosoft.modding.event.events;
 
-public interface PingCallback {
-    void handle(ServerListPing ping);
+import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.ping.ServerListPing;
+
+import javax.annotation.Nullable;
+
+/**
+ * Fired when a ping arrives from the server or the ping already arrived and the event got registered to late
+ */
+public class ServerListPingArriveEvent extends ConnectionEvent {
+    private final ServerListPing serverListPing;
+
+    public ServerListPingArriveEvent(Connection connection, ServerListPing serverListPing) {
+        super(connection);
+        this.serverListPing = serverListPing;
+    }
+
+    @Nullable
+    public ServerListPing getServerListPing() {
+        return serverListPing;
+    }
 }

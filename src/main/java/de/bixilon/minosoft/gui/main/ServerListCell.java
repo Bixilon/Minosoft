@@ -20,6 +20,9 @@ import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.EventInvokerCallback;
+import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
+import de.bixilon.minosoft.modding.event.events.ServerListPingArriveEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.ping.ForgeModInfo;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
@@ -134,7 +137,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (server.getLastPing() == null) {
             server.ping();
         }
-        server.getLastPing().addPingCallback(ping -> Platform.runLater(() -> {
+        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListPingArriveEvent>(ServerListPingArriveEvent.class, event -> Platform.runLater(() -> {
+            ServerListPing ping = event.getServerListPing();
             if (server != this.server) {
                 // cell does not contains us anymore
                 return;
@@ -193,7 +197,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 canConnect = false;
                 setErrorMotd(String.format("%s: %s", server.getLastPing().getLastConnectionException().getClass().getCanonicalName(), server.getLastPing().getLastConnectionException().getLocalizedMessage()));
             }
-        }));
+        })));
     }
 
     private void resetCell() {
@@ -265,7 +269,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
         optionsConnect.setDisable(true);
         connection.connect(server.getLastPing().getAddress(), version);
-        connection.addConnectionChangeCallback(this::handleConnectionCallback);
+        connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
         server.addConnection(connection);
 
     }
@@ -334,7 +338,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         dialog.showAndWait();
     }
 
-    private void handleConnectionCallback(Connection connection) {
+    private void handleConnectionCallback(ConnectionStateChangeEvent event) {
+        Connection connection = event.getConnection();
         if (!server.getConnections().contains(connection)) {
             // the card got recycled
             return;
