@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world;
 
+import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 
 import java.util.HashMap;
@@ -60,5 +61,26 @@ public class Chunk {
         byte section = (byte) (location.getY() / 16);
         createSection(section);
         sections.get(section).setBlock(location.getInChunkSectionLocation(), block);
+    }
+
+
+    public void setBlockEntityData(InChunkLocation position, BlockEntityMetaData data) {
+        ChunkSection section = sections.get((byte) (position.getY() / 16));
+        if (section == null) {
+            return;
+        }
+        section.setBlockEntityData(position.getInChunkSectionLocation(), data);
+    }
+
+    public BlockEntityMetaData getBlockEntityData(InChunkLocation position) {
+        ChunkSection section = sections.get((byte) (position.getY() / 16));
+        if (section == null) {
+            return null;
+        }
+        return section.getBlockEntityData(position.getInChunkSectionLocation());
+    }
+
+    public void setBlockEntityData(HashMap<InChunkLocation, BlockEntityMetaData> blockEntities) {
+        blockEntities.forEach(this::setBlockEntityData);
     }
 }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world;
 
+import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 
 import java.util.HashMap;
@@ -21,7 +22,8 @@ import java.util.HashMap;
  * Collection of 16x16x16 blocks
  */
 public class ChunkSection {
-    final HashMap<InChunkSectionLocation, Block> blocks;
+    private final HashMap<InChunkSectionLocation, Block> blocks;
+    private final HashMap<InChunkSectionLocation, BlockEntityMetaData> blockEntityMeta = new HashMap<>();
 
     public ChunkSection(HashMap<InChunkSectionLocation, Block> blocks) {
         this.blocks = blocks;
@@ -40,10 +42,27 @@ public class ChunkSection {
     }
 
     public void setBlock(int x, int y, int z, Block block) {
-        blocks.put(new InChunkSectionLocation(x, y, z), block);
+        setBlock(new InChunkSectionLocation(x, y, z), block);
     }
 
     public void setBlock(InChunkSectionLocation location, Block block) {
+        if (blocks.get(location).equals(block)) {
+            return;
+        }
         blocks.put(location, block);
+        blockEntityMeta.remove(location);
+    }
+
+    public void setBlockEntityData(InChunkSectionLocation position, BlockEntityMetaData data) {
+        // ToDo check if block is really a block entity (command block, spawner, skull, flower pot)
+        blockEntityMeta.put(position, data);
+    }
+
+    public BlockEntityMetaData getBlockEntityData(InChunkSectionLocation position) {
+        return blockEntityMeta.get(position);
+    }
+
+    public void setBlockEntityData(HashMap<InChunkSectionLocation, BlockEntityMetaData> blockEntities) {
+        blockEntities.forEach(blockEntityMeta::put);
     }
 }
