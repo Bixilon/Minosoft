@@ -76,7 +76,7 @@ public class AssetsManager {
         }
         try {
             downloadAssetsIndex();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.printException(e, LogLevels.DEBUG);
             Log.warn("Could not download assets index. Please check your internet connection");
         }

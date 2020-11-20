@@ -71,6 +71,7 @@ public class LANServerListener {
 
             } catch (Exception e) {
                 e.printStackTrace();
+                latch.countDown();
             }
             servers = null;
             Log.warn("Stopping LAN Server Listener Thread");
@@ -83,6 +84,9 @@ public class LANServerListener {
     }
 
     public static void removeAll() {
+        if (servers == null) {
+            return;
+        }
         HashSet<Server> temp = new HashSet<>(servers.values());
         for (Server server : temp) {
             if (server.isConnected()) {

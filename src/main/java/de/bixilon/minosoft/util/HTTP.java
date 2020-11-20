@@ -32,7 +32,7 @@ public final class HTTP {
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).POST(HttpRequest.BodyPublishers.ofString(json.toString())).header("Content-Type", "application/json").build();
         try {
             return client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             Log.printException(e, LogLevels.DEBUG);
         }
         return null;
