@@ -82,7 +82,7 @@ public class InByteBuffer {
     public byte[] readBytes(int count) {
         byte[] ret = new byte[count];
         System.arraycopy(bytes, position, ret, 0, count);
-        position = position + count;
+        position += count;
         return ret;
     }
 
@@ -97,33 +97,26 @@ public class InByteBuffer {
     }
 
     public String readString() {
-        int length = readVarInt();
-        return new String(readBytes(length), StandardCharsets.UTF_8);
+        return new String(readBytes(readVarInt()), StandardCharsets.UTF_8);
     }
 
     public long readVarLong() {
-        int numRead = 0;
+        int byteCount = 0;
         long result = 0;
         byte read;
-        do
-        {
+        do {
             read = readByte();
-            int value = (read & 0b01111111);
-            result |= (value << (7 * numRead));
-
-            numRead++;
-            if (numRead > 10) {
-                throw new RuntimeException("VarLong is too big");
+            result |= (read & 0x7F) << (7 * byteCount);
+            byteCount++;
+            if (byteCount > 10) {
+                throw new IllegalArgumentException("VarLong is too big");
             }
-        } while ((read & 0b10000000) != 0);
-
+        } while ((read & 0x80) != 0);
         return result;
     }
 
     public boolean readBoolean() {
-        boolean ret;
-        ret = readByte() == 1;
-        return ret;
+        return readByte() == 1;
     }
 
     public short[] readLEShorts(int num) {
@@ -152,21 +145,17 @@ public class InByteBuffer {
     }
 
     public int readVarInt() {
-        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
-        int numRead = 0;
+        int byteCount = 0;
         int result = 0;
         byte read;
-        do
-        {
+        do {
             read = readByte();
-            int value = (read & 0b01111111);
-            result |= (value << (7 * numRead));
-
-            numRead++;
-            if (numRead > 5) {
-                throw new RuntimeException("VarInt is too big");
+            result |= (read & 0x7F) << (7 * byteCount);
+            byteCount++;
+            if (byteCount > 5) {
+                throw new IllegalArgumentException("VarInt is too big");
             }
-        } while ((read & 0b10000000) != 0);
+        } while ((read & 0x80) != 0);
 
         return result;
     }
@@ -189,15 +178,13 @@ public class InByteBuffer {
 
     public BlockPosition readPosition() {
         //ToDo: protocol id 7
+        long raw = readLong();
+        int x = (int) (raw >> 38);
         if (versionId < 440) {
-            long raw = readLong();
-            int x = (int) (raw >> 38);
             short y = (short) ((raw >> 26) & 0xFFF);
             int z = (int) (raw & 0x3FFFFFF);
             return new BlockPosition(x, y, z);
         }
-        long raw = readLong();
-        int x = (int) (raw >> 38);
         short y = (short) (raw & 0xFFF);
         int z = (int) (raw << 26 >> 38);
         return new BlockPosition(x, y, z);

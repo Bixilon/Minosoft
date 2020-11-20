@@ -49,7 +49,6 @@ public class SocketNetwork implements Network {
     Socket socket;
     OutputStream outputStream;
     InputStream inputStream;
-    boolean encryptionEnabled = false;
     Exception lastException;
 
     public SocketNetwork(Connection connection) {
@@ -149,21 +148,20 @@ public class SocketNetwork implements Network {
                     int numRead = 0;
                     int length = 0;
                     int read;
-                    do
-                    {
+                    do {
                         read = inputStream.read();
                         if (read == -1) {
                             disconnect();
                             return;
                         }
-                        int value = (read & 0b01111111);
+                        int value = (read & 0x7F);
                         length |= (value << (7 * numRead));
 
                         numRead++;
                         if (numRead > 5) {
                             throw new RuntimeException("VarInt is too big");
                         }
-                    } while ((read & 0b10000000) != 0);
+                    } while ((read & 0x80) != 0);
                     if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
                         Log.protocol(String.format("Server sent us a to big packet (%d bytes > %d bytes)", length, ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE));
                         inputStream.skip(length);
@@ -276,7 +274,6 @@ public class SocketNetwork implements Network {
         Cipher cipherDecrypt = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey);
         inputStream = new CipherInputStream(inputStream, cipherDecrypt);
         outputStream = new CipherOutputStream(outputStream, cipherEncrypt);
-        encryptionEnabled = true;
         Log.debug("Encryption enabled!");
     }
 }

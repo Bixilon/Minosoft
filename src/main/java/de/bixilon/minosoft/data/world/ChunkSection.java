@@ -24,13 +24,21 @@ import java.util.HashMap;
 public class ChunkSection {
     private final HashMap<InChunkSectionLocation, Block> blocks;
     private final HashMap<InChunkSectionLocation, BlockEntityMetaData> blockEntityMeta = new HashMap<>();
+    private final HashMap<InChunkSectionLocation, Byte> light;
+    private final HashMap<InChunkSectionLocation, Byte> skyLight;
 
     public ChunkSection(HashMap<InChunkSectionLocation, Block> blocks) {
+        this(blocks, new HashMap<>(), new HashMap<>());
+    }
+
+    public ChunkSection(HashMap<InChunkSectionLocation, Block> blocks, HashMap<InChunkSectionLocation, Byte> light, HashMap<InChunkSectionLocation, Byte> skyLight) {
         this.blocks = blocks;
+        this.light = light;
+        this.skyLight = skyLight;
     }
 
     public ChunkSection() {
-        this.blocks = new HashMap<>();
+        this(new HashMap<>());
     }
 
     public Block getBlock(int x, int y, int z) {
@@ -56,6 +64,22 @@ public class ChunkSection {
     public void setBlockEntityData(InChunkSectionLocation position, BlockEntityMetaData data) {
         // ToDo check if block is really a block entity (command block, spawner, skull, flower pot)
         blockEntityMeta.put(position, data);
+    }
+
+    public HashMap<InChunkSectionLocation, Block> getBlocks() {
+        return blocks;
+    }
+
+    public HashMap<InChunkSectionLocation, BlockEntityMetaData> getBlockEntityMeta() {
+        return blockEntityMeta;
+    }
+
+    public HashMap<InChunkSectionLocation, Byte> getLight() {
+        return light;
+    }
+
+    public HashMap<InChunkSectionLocation, Byte> getSkyLight() {
+        return skyLight;
     }
 
     public BlockEntityMetaData getBlockEntityData(InChunkSectionLocation position) {

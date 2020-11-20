@@ -94,7 +94,7 @@ public class AssetsManager {
         assets.keySet().parallelStream().forEach((filename) -> {
             try {
                 String hash = assets.get(filename);
-                boolean compressed = source == AssetsSource.MOJANG;
+                boolean compressed = (source == AssetsSource.MOJANG);
                 if (!verifyAssetHash(hash, compressed)) {
                     AssetsManager.downloadAsset(source, hash);
                 }

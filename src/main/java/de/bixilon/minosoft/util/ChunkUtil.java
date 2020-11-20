@@ -107,7 +107,6 @@ public final class ChunkUtil {
             if (containsSkyLight) {
                 skyLight = buffer.readBytes(halfBytes);
             }
-
             if (groundUpContinuous) {
                 byte[] biomes = buffer.readBytes(256);
             }
