@@ -302,6 +302,6 @@ public class AssetsManager {
         if (hash == null) {
             throw new FileNotFoundException("Could not find asset with hash: null");
         }
-        return StaticConfiguration.HOME_DIR + String.format("assets/objects/%s/%s.gz", hash.substring(0, 2), hash);
+        return StaticConfiguration.HOME_DIRECTORY + String.format("assets/objects/%s/%s.gz", hash.substring(0, 2), hash);
     }
 }

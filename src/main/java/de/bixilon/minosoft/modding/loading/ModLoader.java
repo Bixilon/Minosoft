@@ -41,7 +41,7 @@ public class ModLoader {
         // load all jars, parse the mod.json
         // sort the list and prioritize
         // load all lists and dependencies async
-        File[] files = new File(StaticConfiguration.HOME_DIR + "mods").listFiles();
+        File[] files = new File(StaticConfiguration.HOME_DIRECTORY + "mods").listFiles();
         if (files == null) {
             // no mods to load
             return;
