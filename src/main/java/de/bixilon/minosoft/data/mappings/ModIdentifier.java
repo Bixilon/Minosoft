@@ -61,7 +61,7 @@ public class ModIdentifier {
         if (hashCode() != obj.hashCode()) {
             return false;
         }
-        Item their = (Item) obj;
+        ModIdentifier their = (ModIdentifier) obj;
         return getIdentifier().equals(their.getIdentifier()) && getMod().equals(their.getMod());
     }
 }

@@ -136,7 +136,7 @@ public class Versions {
                 data = files.get(mapping.getFilename() + ".json");
             }
             if (data == null) {
-                loadVersionMappings(mapping, ProtocolDefinition.DEFAULT_MOD, data, version);
+                loadVersionMappings(mapping, ProtocolDefinition.DEFAULT_MOD, null, version);
                 continue;
             }
             for (String mod : data.keySet()) {
