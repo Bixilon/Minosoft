@@ -13,48 +13,36 @@
 
 package de.bixilon.minosoft.data.mappings.blocks;
 
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
+
 import java.util.HashSet;
 
-public class Block {
-    final String mod;
-    final String identifier;
+public class Block extends ModIdentifier {
     final BlockRotations rotation;
     final HashSet<BlockProperties> properties;
 
     public Block(String mod, String identifier, HashSet<BlockProperties> properties, BlockRotations rotation) {
-        this.mod = mod;
-        this.identifier = identifier;
+        super(mod, identifier);
         this.properties = properties;
         this.rotation = rotation;
     }
 
     public Block(String mod, String identifier, HashSet<BlockProperties> properties) {
-        this.mod = mod;
-        this.identifier = identifier;
+        super(mod, identifier);
         this.properties = properties;
         this.rotation = BlockRotations.NONE;
     }
 
     public Block(String mod, String identifier, BlockRotations rotation) {
-        this.mod = mod;
-        this.identifier = identifier;
+        super(mod, identifier);
         this.properties = new HashSet<>();
         this.rotation = rotation;
     }
 
     public Block(String mod, String identifier) {
-        this.mod = mod;
-        this.identifier = identifier;
+        super(mod, identifier);
         this.properties = new HashSet<>();
         this.rotation = BlockRotations.NONE;
-    }
-
-    public String getMod() {
-        return mod;
-    }
-
-    public String getIdentifier() {
-        return identifier;
     }
 
     public BlockRotations getRotation() {

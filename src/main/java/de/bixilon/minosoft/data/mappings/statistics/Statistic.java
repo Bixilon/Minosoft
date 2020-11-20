@@ -13,17 +13,15 @@
 
 package de.bixilon.minosoft.data.mappings.statistics;
 
-public record Statistic(String mod, String identifier) {
-    public String getMod() {
-        return mod;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
+
+public class Statistic extends ModIdentifier {
+
+    public Statistic(String mod, String identifier) {
+        super(mod, identifier);
     }
 
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s:%s", mod, identifier);
+    public Statistic(String fullIdentifier) {
+        super(fullIdentifier);
     }
 }
