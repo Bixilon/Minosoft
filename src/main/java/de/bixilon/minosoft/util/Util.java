@@ -227,15 +227,15 @@ public final class Util {
 
     public static void downloadFile(String url, String destination) throws IOException {
         createParentFolderIfNotExist(destination);
-        copyFile(getInputStreamByURL(url), new FileOutputStream(destination));
+        copyStream(getInputStreamByURL(url), new FileOutputStream(destination));
     }
 
     public static void downloadFileAsGz(String url, String destination) throws IOException {
         createParentFolderIfNotExist(destination);
-        copyFile(getInputStreamByURL(url), new GZIPOutputStream(new FileOutputStream(destination)));
+        copyStream(getInputStreamByURL(url), new GZIPOutputStream(new FileOutputStream(destination)));
     }
 
-    public static void copyFile(InputStream inputStream, OutputStream output) throws IOException {
+    public static void copyStream(InputStream inputStream, OutputStream output) throws IOException {
         byte[] buffer = new byte[ProtocolDefinition.DEFAULT_BUFFER_SIZE];
         int length;
         while ((length = inputStream.read(buffer, 0, buffer.length)) != -1) {

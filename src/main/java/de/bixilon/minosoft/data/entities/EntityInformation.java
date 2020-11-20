@@ -14,31 +14,20 @@
 package de.bixilon.minosoft.data.entities;
 
 import com.google.gson.JsonObject;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 
-public class EntityInformation {
-    private final String mod;
-    private final String identifier;
-
+public class EntityInformation extends ModIdentifier {
     private final float width;
     private final float height;
 
     public EntityInformation(String mod, String identifier, float width, float height) {
-        this.mod = mod;
-        this.identifier = identifier;
+        super(mod, identifier);
         this.width = width;
         this.height = height;
     }
 
     public static EntityInformation deserialize(String mod, String identifier, JsonObject data) {
         return new EntityInformation(mod, identifier, data.get("width").getAsFloat(), data.get("height").getAsFloat());
-    }
-
-    public String getMod() {
-        return mod;
-    }
-
-    public String getIdentifier() {
-        return identifier;
     }
 
     public float getWidth() {
