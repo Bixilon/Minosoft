@@ -61,11 +61,6 @@ def downloadAndReplace(url, filename, destination):
         file.write(json)
 
 
-def camelCaseToSnakeCase(camelCase):
-    # thanks https://stackoverflow.com/questions/1175208/elegant-python-function-to-convert-camelcase-to-snake-case
-    return re.sub(r'(?<!^)(?=[A-Z])', '_', camelCase).lower()
-
-
 def getMinsoftEntityFieldNames(obfuscationMapLines, clazz, obfuscatedFields):
     classLineStart = -1
     for i in range(0, len(obfuscationMapLines)):
@@ -271,12 +266,18 @@ for version in VERSION_MANIFEST["versions"]:
                     if entityIdentifier.startswith("~abstract_"):
                         entities[entityOriginalClassName] = entity
                     else:
-                        entities[entityIdentifier] = entity
+                        if "identifier" in MOJANG_MINOSOFT_FIELD_MAPPINGS[entityOriginalClassName]:
+                            entities[MOJANG_MINOSOFT_FIELD_MAPPINGS[entityOriginalClassName]["identifier"]] = entity
+                        else:
+                            entities[entityIdentifier] = entity
 
                 # burger is missing (somehow) some entities. Try to fix them
                 for classNameKey in MOJANG_MINOSOFT_FIELD_MAPPINGS:
-                    if classNameKey in entities or camelCaseToSnakeCase(classNameKey) in entities:
+                    if classNameKey in entities:
                         continue
+                    if "identifier" in MOJANG_MINOSOFT_FIELD_MAPPINGS[classNameKey]:
+                        if MOJANG_MINOSOFT_FIELD_MAPPINGS[classNameKey]["identifier"] in entities:
+                            continue
 
                     # check obfuscated mappings
                     obfuscatedFieldName = getObfuscatedNameByClass(obfuscationMapLines, classNameKey)
@@ -293,10 +294,11 @@ for version in VERSION_MANIFEST["versions"]:
                 for entity in entities:
                     if "extends" not in entities[entity]:
                         continue
-                    snakeCaseName = camelCaseToSnakeCase(entities[entity]["extends"])
-                    if snakeCaseName not in entities:
+                    if entities[entity]["extends"] not in MOJANG_MINOSOFT_FIELD_MAPPINGS:
                         continue
-                    entities[entity]["extends"] = snakeCaseName
+                    if "identifier" not in MOJANG_MINOSOFT_FIELD_MAPPINGS[entities[entity]["extends"]]:
+                        continue
+                    entities[entity]["extends"] = MOJANG_MINOSOFT_FIELD_MAPPINGS[entities[entity]["extends"]]["identifier"]
 
                 # save to file
                 with open(versionTempBaseFolder + "entities.json", 'w') as file:

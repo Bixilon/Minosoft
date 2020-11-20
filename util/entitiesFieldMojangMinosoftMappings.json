@@ -30,6 +30,7 @@
     }
   },
   "Zombie": {
+    "identifier": "zombie",
     "extends": "Monster",
     "data": {
       "DATA_BABY_ID": "ZOMBIE_IS_BABY",
@@ -38,6 +39,7 @@
     }
   },
   "AreaEffectCloud": {
+    "identifier": "area_effect_cloud",
     "extends": "Entity",
     "data": {
       "DATA_RADIUS": "AREA_EFFECT_CLOUD_RADIUS",
@@ -47,6 +49,7 @@
     }
   },
   "ArmorStand": {
+    "identifier": "armor_stand",
     "extends": "LivingEntity",
     "data": {
       "DATA_CLIENT_FLAGS": "ARMOR_STAND_FLAGS",
@@ -59,6 +62,7 @@
     }
   },
   "Arrow": {
+    "identifier": "arrow",
     "extends": "AbstractArrow",
     "data": {
       "ID_EFFECT_COLOR": "ARROW_EFFECT_COLOR"
@@ -77,6 +81,7 @@
     "extends": "Entity"
   },
   "FallingBlockEntity": {
+    "identifier": "falling_block",
     "extends": "Entity",
     "data": {
       "DATA_START_POS": "FALLING_BLOCK_SPAWN_POSITION"
@@ -91,6 +96,7 @@
     }
   },
   "FishingHook": {
+    "identifier": "fishing_bobber",
     "extends": "Projectile",
     "data": {
       "DATA_HOOKED_ENTITY": "FISHING_HOOK_HOOKED_ENTITY",
@@ -98,6 +104,7 @@
     }
   },
   "ThrownTrident": {
+    "identifier": "trident",
     "extends": "AbstractArrow",
     "data": {
       "ID_LOYALTY": "THROWN_TRIDENT_LOYALTY_LEVEL",
@@ -105,6 +112,7 @@
     }
   },
   "Boat": {
+    "identifier": "boat",
     "extends": "Entity",
     "data": {
       "DATA_ID_HURT": "BOAT_HURT",
@@ -117,6 +125,7 @@
     }
   },
   "EndCrystal": {
+    "identifier": "end_crystal",
     "extends": "Entity",
     "data": {
       "DATA_BEAM_TARGET": "END_CRYSTAL_BEAM_TARGET",
@@ -133,12 +142,14 @@
     }
   },
   "WitherSkull": {
+    "identifier": "wither_skull",
     "extends": "AbstractHurtingProjectile",
     "data": {
       "DATA_DANGEROUS": "WITHER_SKULL_DANGEROUS"
     }
   },
   "FireworkRocketEntity": {
+    "identifier": "firework_rocket",
     "extends": "Projectile",
     "data": {
       "DATA_ID_FIREWORKS_ITEM": "FIREWORK_ROCKET_ENTITY_ITEM",
@@ -150,6 +161,7 @@
     "extends": "Entity"
   },
   "ItemFrame": {
+    "identifier": "item_frame",
     "extends": "HangingEntity",
     "data": {
       "DATA_ITEM": "ITEM_FRAME_ITEM",
@@ -157,12 +169,14 @@
     }
   },
   "ItemEntity": {
+    "identifier": "item",
     "extends": "Entity",
     "data": {
       "DATA_ITEM": "ITEM_ITEM"
     }
   },
   "Player": {
+    "identifier": "player",
     "extends": "LivingEntity",
     "data": {
       "DATA_PLAYER_ABSORPTION_ID": "PLAYER_ABSORPTION_HEARTS",
@@ -177,6 +191,7 @@
     "extends": "Mob"
   },
   "Bat": {
+    "identifier": "bat",
     "extends": "AmbientCreature",
     "data": {
       "DATA_ID_FLAGS": "BAT_FLAGS"
@@ -198,6 +213,7 @@
     "extends": "Mob"
   },
   "Dolphin": {
+    "identifier": "dolphin",
     "extends": "WaterAnimal",
     "data": {
       "TREASURE_POS": "DOLPHIN_TREASURE_POSITION",
@@ -229,15 +245,18 @@
     "extends": "AgeableMob"
   },
   "Donkey": {
+    "identifier": "donkey",
     "extends": "AbstractChestedHorse"
   },
   "Horse": {
+    "identifier": "horse",
     "extends": "AbstractHorse",
     "data": {
       "DATA_ID_TYPE_VARIANT": "HORSE_VARIANT"
     }
   },
   "Llama": {
+    "identifier": "llama",
     "extends": "AbstractChestedHorse",
     "data": {
       "DATA_STRENGTH_ID": "LLAMA_STRENGTH",
@@ -246,15 +265,19 @@
     }
   },
   "Mule": {
+    "identifier": "mule",
     "extends": "AbstractChestedHorse"
   },
   "SkeletonHorse": {
+    "identifier": "skeleton_horse",
     "extends": "AbstractHorse"
   },
   "TraderLlama": {
+    "identifier": "trader_llama",
     "extends": "Llama"
   },
   "ZombieHorse": {
+    "identifier": "zombie_horse",
     "extends": "AbstractHorse"
   },
   "WaterAnimal": {
@@ -267,6 +290,7 @@
     "extends": "AbstractFish"
   },
   "Bee": {
+    "identifier": "bee",
     "extends": "Animal",
     "data": {
       "DATA_FLAGS_ID": "BEE_FLAGS",
@@ -275,6 +299,7 @@
     }
   },
   "Cat": {
+    "identifier": "cat",
     "extends": "TamableAnimal",
     "data": {
       "DATA_TYPE_ID": "CAT_VARIANT",
@@ -291,15 +316,19 @@
     }
   },
   "Chicken": {
+    "identifier": "chicken",
     "extends": "Animal"
   },
   "Cod": {
+    "identifier": "cod",
     "extends": "AbstractSchoolingFish"
   },
   "Cow": {
+    "identifier": "cow",
     "extends": "Animal"
   },
   "Fox": {
+    "identifier": "fox",
     "extends": "Animal",
     "data": {
       "DATA_TYPE_ID": "FOX_VARIANT",
@@ -309,24 +338,28 @@
     }
   },
   "IronGolem": {
+    "identifier": "iron_golem",
     "extends": "AbstractGolem",
     "data": {
       "DATA_FLAGS_ID": "IRON_GOLEM_FLAGS"
     }
   },
   "MushroomCow": {
+    "identifier": "mooshroom",
     "extends": "Cow",
     "data": {
       "DATA_TYPE": "MOOSHROOM_VARIANT"
     }
   },
   "Ocelot": {
+    "identifier": "ocelot",
     "extends": "Animal",
     "data": {
       "DATA_TRUSTING": "OCELOT_IS_TRUSTING"
     }
   },
   "Panda": {
+    "identifier": "panda",
     "extends": "Animal",
     "data": {
       "UNHAPPY_COUNTER": "PANDA_UNHAPPY_TIMER",
@@ -341,12 +374,14 @@
     "extends": "TamableAnimal"
   },
   "Parrot": {
+    "identifier": "parrot",
     "extends": "ShoulderRidingEntity",
     "data": {
       "DATA_VARIANT_ID": "PARROT_VARIANT"
     }
   },
   "Pig": {
+    "identifier": "pig",
     "extends": "Animal",
     "data": {
       "DATA_SADDLE_ID": "PIG_HAS_SADDLE",
@@ -354,18 +389,21 @@
     }
   },
   "PolarBear": {
+    "identifier": "polar_bear",
     "extends": "Animal",
     "data": {
       "DATA_STANDING_ID": "POLAR_BEAR_STANDING"
     }
   },
   "Pufferfish": {
+    "identifier": "pufferfish",
     "extends": "AbstractFish",
     "data": {
       "PUFF_STATE": "PUFFERFISH_PUFF_STATE"
     }
   },
   "Rabbit": {
+    "identifier": "rabbit",
     "extends": "Animal",
     "data": {
       "DATA_TYPE_ID": "RABBIT_VARIANT"
@@ -375,30 +413,36 @@
     "extends": "PathfinderMob"
   },
   "Salmon": {
+    "identifier": "salmon",
     "extends": "AbstractSchoolingFish"
   },
   "Sheep": {
+    "identifier": "sheep",
     "extends": "Animal",
     "data": {
       "DATA_WOOL_ID": "SHEEP_FLAGS"
     }
   },
   "SnowGolem": {
+    "identifier": "snow_golem",
     "extends": "AbstractGolem",
     "data": {
       "DATA_PUMPKIN_ID": "SNOW_GOLEM_FLAGS"
     }
   },
   "Squid": {
+    "identifier": "squid",
     "extends": "WaterAnimal"
   },
   "TropicalFish": {
+    "identifier": "tropical_fish",
     "extends": "AbstractSchoolingFish",
     "data": {
       "DATA_ID_TYPE_VARIANT": "TROPICAL_FISH_VARIANT"
     }
   },
   "Turtle": {
+    "identifier": "turtle",
     "extends": "Animal",
     "data": {
       "HOME_POS": "TURTLE_HOME_POSITION",
@@ -410,6 +454,7 @@
     }
   },
   "Wolf": {
+    "identifier": "wolf",
     "extends": "TamableAnimal",
     "data": {
       "DATA_INTERESTED_ID": "WOLF_IS_BEGGING",
@@ -419,12 +464,14 @@
     }
   },
   "EnderDragon": {
+    "identifier": "ender_dragon",
     "extends": "Mob",
     "data": {
       "DATA_PHASE": "ENDER_DRAGON_PHASE"
     }
   },
   "WitherBoss": {
+    "identifier": "wither",
     "extends": "Mob",
     "data": {
       "DATA_TARGET_A": "WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID",
@@ -437,15 +484,18 @@
     "extends": "HangingEntity"
   },
   "Painting": {
+    "identifier": "painting",
     "extends": "HangingEntity"
   },
   "PrimedTnt": {
+    "identifier": "tnt",
     "extends": "Entity",
     "data": {
       "DATA_FUSE_ID": "PRIMED_TNT_FUSE_TIME"
     }
   },
   "Hoglin": {
+    "identifier": "hoglin",
     "extends": "Animal",
     "data": {
       "DATA_IMMUNE_TO_ZOMBIFICATION": "HOGLIN_IMMUNE_TO_ZOMBIFICATION"
@@ -458,6 +508,7 @@
     }
   },
   "Piglin": {
+    "identifier": "piglin",
     "extends": "AbstractPiglin",
     "data": {
       "DATA_BABY_ID": "PIGLIN_IS_BABY",
@@ -476,15 +527,18 @@
     "extends": "Monster"
   },
   "Blaze": {
+    "identifier": "blaze",
     "extends": "Monster",
     "data": {
       "DATA_FLAGS_ID": "BLAZE_FLAGS"
     }
   },
   "CaveSpider": {
+    "identifier": "cave_spider",
     "extends": "Spider"
   },
   "Creeper": {
+    "identifier": "creeper",
     "extends": "Monster",
     "data": {
       "DATA_SWELL_DIR": "CREEPER_STATE",
@@ -493,12 +547,15 @@
     }
   },
   "Drowned": {
+    "identifier": "drowned",
     "extends": "Zombie"
   },
   "ElderGuardian": {
+    "identifier": "elder_guardian",
     "extends": "Guardian"
   },
   "EnderMan": {
+    "identifier": "enderman",
     "extends": "Monster",
     "data": {
       "DATA_CARRY_STATE": "ENDERMAN_CARRIED_BLOCK",
@@ -507,9 +564,11 @@
     }
   },
   "Endermite": {
+    "identifier": "endermite",
     "extends": "Monster"
   },
   "Evoker": {
+    "identifier": "evoker",
     "extends": "SpellcasterIllager"
   },
   "SpellcasterIllager": {
@@ -519,6 +578,7 @@
     }
   },
   "Ghast": {
+    "identifier": "ghast",
     "extends": "FlyingMob",
     "data": {
       "DATA_IS_CHARGING": "GHAST_IS_ATTACKING"
@@ -528,9 +588,11 @@
     "extends": "Mob"
   },
   "Giant": {
+    "identifier": "giant",
     "extends": "Monster"
   },
   "Guardian": {
+    "identifier": "guardian",
     "extends": "Monster",
     "data": {
       "DATA_ID_MOVING": "GUARDIAN_IS_MOVING",
@@ -538,24 +600,28 @@
     }
   },
   "Husk": {
+    "identifier": "husk",
     "extends": "Zombie"
   },
   "Illusioner": {
     "extends": "SpellcasterIllager"
   },
   "MagmaCube": {
+    "identifier": "magma_cube",
     "extends": "Slime"
   },
   "PatrollingMonster": {
     "extends": "Monster"
   },
   "Phantom": {
+    "identifier": "phantom",
     "extends": "FlyingMob",
     "data": {
       "ID_SIZE": "PHANTOM_SIZE"
     }
   },
   "Pillager": {
+    "identifier": "pillager",
     "extends": "AbstractIllager",
     "data": {
       "IS_CHARGING_CROSSBOW": "PILLAGER_IS_CHARGING_CROSSBOW"
@@ -565,6 +631,7 @@
     "extends": "Raider"
   },
   "Shulker": {
+    "identifier": "shulker",
     "extends": "AbstractGolem",
     "data": {
       "DATA_ATTACH_FACE_ID": "SHULKER_ATTACH_FACE",
@@ -574,24 +641,29 @@
     }
   },
   "Silverfish": {
+    "identifier": "silverfish",
     "extends": "Monster"
   },
   "Skeleton": {
+    "identifier": "skeleton",
     "extends": "AbstractSkeleton"
   },
   "Slime": {
+    "identifier": "slime",
     "extends": "Mob",
     "data": {
       "ID_SIZE": "SLIME_SIZE"
     }
   },
   "Spider": {
+    "identifier": "spider",
     "extends": "Monster",
     "data": {
       "DATA_FLAGS_ID": "SPIDER_FLAGS"
     }
   },
   "Stray": {
+    "identifier": "stray",
     "extends": "AbstractSkeleton"
   },
   "Strider": {
@@ -603,24 +675,29 @@
     }
   },
   "Vex": {
+    "identifier": "vex",
     "extends": "Monster",
     "data": {
       "DATA_FLAGS_ID": "VEX_FLAGS"
     }
   },
   "Vindicator": {
+    "identifier": "vindicator",
     "extends": "AbstractIllager"
   },
   "Witch": {
+    "identifier": "witch",
     "extends": "Raider",
     "data": {
       "DATA_USING_ITEM": "WITCH_IS_DRINKING_POTION"
     }
   },
   "WitherSkeleton": {
+    "identifier": "wither_skeleton",
     "extends": "AbstractSkeleton"
   },
   "ZombieVillager": {
+    "identifier": "zombie_villager",
     "extends": "Zombie",
     "data": {
       "DATA_CONVERTING_ID": "ZOMBIE_VILLAGER_IS_CONVERTING",
@@ -628,6 +705,7 @@
     }
   },
   "ZombifiedPiglin": {
+    "identifier": "zombified_piglin",
     "extends": "Zombie"
   },
   "AbstractVillager": {
@@ -637,54 +715,69 @@
     }
   },
   "Villager": {
+    "identifier": "villager",
     "extends": "AbstractVillager",
     "data": {
       "DATA_VILLAGER_DATA": "VILLAGER_VILLAGER_DATA"
     }
   },
   "WanderingTrader": {
+    "identifier": "wandering_trader",
     "extends": "AbstractVillager"
   },
   "DragonFireball": {
+    "identifier": "dragon_fireball",
     "extends": "AbstractHurtingProjectile"
   },
   "EvokerFangs": {
+    "identifier": "evoker_fangs",
     "extends": "Entity"
   },
   "EyeOfEnder": {
+    "identifier": "eye_of_ender",
     "extends": "Entity",
     "data": {
       "DATA_ITEM_STACK": "THROWN_EYE_OF_ENDER_ITEM"
     }
   },
   "LargeFireball": {
+    "identifier": "fireball",
     "extends": "Fireball"
   },
   "LlamaSpit": {
+    "identifier": "llama_spit",
     "extends": "Projectile"
   },
   "ShulkerBullet": {
+    "identifier": "shulker_bullet",
     "extends": "Projectile"
   },
   "SmallFireball": {
+    "identifier": "small_fireball",
     "extends": "Fireball"
   },
   "Snowball": {
+    "identifier": "snowball",
     "extends": "ThrowableItemProjectile"
   },
   "SpectralArrow": {
+    "identifier": "spectral_arrow",
     "extends": "AbstractArrow"
   },
   "ThrownEgg": {
+    "identifier": "egg",
     "extends": "ThrowableItemProjectile"
   },
   "ThrownEnderpearl": {
+    "identifier": "ender_pearl",
     "extends": "ThrowableItemProjectile"
   },
   "ThrownExperienceBottle": {
+    "identifier": "experience_bottle",
     "extends": "ThrowableItemProjectile"
   },
   "ThrownPotion": {
+    "identifier": "potion",
     "extends": "ThrowableItemProjectile",
     "data": {
       "DATA_ITEM_STACK": "THROWN_POTION_ITEM"
@@ -711,12 +804,15 @@
     "extends": "AbstractMinecart"
   },
   "Minecart": {
+    "identifier": "minecart",
     "extends": "AbstractMinecart"
   },
   "MinecartChest": {
+    "identifier": "chest_minecart",
     "extends": "AbstractMinecartContainer"
   },
   "MinecartCommandBlock": {
+    "identifier": "command_block_minecart",
     "extends": "AbstractMinecart",
     "data": {
       "DATA_ID_COMMAND_NAME": "MINECART_COMMAND_BLOCK_COMMAND",
@@ -724,33 +820,41 @@
     }
   },
   "MinecartFurnace": {
+    "identifier": "furnace_minecart",
     "extends": "AbstractMinecart",
     "data": {
       "DATA_ID_FUEL": "MINECART_FURNACE_HAS_FUEL"
     }
   },
   "MinecartHopper": {
+    "identifier": "hopper_minecart",
     "extends": "AbstractMinecartContainer"
   },
   "MinecartSpawner": {
+    "identifier": "spawner_minecart",
     "extends": "AbstractMinecartContainer"
   },
   "MinecartTNT": {
+    "identifier": "tnt_minecart",
     "extends": "AbstractMinecart"
   },
   "Zoglin": {
+    "identifier": "zoglin",
     "extends": "Monster",
     "data": {
       "DATA_BABY_ID": "ZOGLIN_IS_BABY"
     }
   },
   "ExperienceOrb": {
+    "identifier": "experience_orb",
     "extends": "Entity"
   },
   "LightningBolt": {
+    "identifier": "lightning_bolt",
     "extends": "Entity"
   },
   "PigZombie": {
+    "identifier": "zombie_pigman",
     "extends": "Zombie"
   }
 }
