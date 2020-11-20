@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import java.util.TreeMap;
 
 public class ChangeableIdentifier extends VersionValueMap<String> {
-    String mod = "minecraft";
+    String mod = ProtocolDefinition.DEFAULT_MOD;
 
     public ChangeableIdentifier(String legacy, String water) {
         values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), legacy);

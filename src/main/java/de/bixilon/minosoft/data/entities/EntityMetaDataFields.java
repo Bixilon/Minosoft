@@ -52,7 +52,7 @@ public enum EntityMetaDataFields {
     AREA_EFFECT_CLOUD_RADIUS(0.5f),
     AREA_EFFECT_CLOUD_COLOR(0),
     AREA_EFFECT_CLOUD_WAITING(false),
-    AREA_EFFECT_CLOUD_PARTICLE(new ParticleData(new Particle("minecraft", "effect"))),
+    AREA_EFFECT_CLOUD_PARTICLE(new ParticleData(new Particle("effect"))),
 
     ABSTRACT_ARROW_FLAGS((byte) 0),
     ABSTRACT_ARROW_PIERCE_LEVEL((byte) 0),

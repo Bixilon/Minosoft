@@ -22,6 +22,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.util.nbt.tag.ListTag;
@@ -98,9 +99,9 @@ public class PacketJoinGame implements ClientboundPacket {
             } else {
                 CompoundTag tag = (CompoundTag) buffer.readNBT();
                 if (tag.getByteTag("has_skylight").getValue() == 0x01) { //ToDo: this is just for not messing up the skylight
-                    dimension = dimensions.get("minecraft").get("overworld");
+                    dimension = dimensions.get(ProtocolDefinition.DEFAULT_MOD).get("overworld");
                 } else {
-                    dimension = dimensions.get("minecraft").get("the_nether");
+                    dimension = dimensions.get(ProtocolDefinition.DEFAULT_MOD).get("the_nether");
                 }
             }
         }

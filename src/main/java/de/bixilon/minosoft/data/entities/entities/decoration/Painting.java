@@ -31,7 +31,7 @@ public class Painting extends Entity {
     public Painting(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
         direction = Directions.NORTH;
-        motive = new Motive("minecraft", "kebab");
+        motive = new Motive("kebab");
     }
 
     public Painting(Connection connection, int entityId, UUID uuid, BlockPosition position, Directions direction, Motive motive) {

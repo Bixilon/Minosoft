@@ -45,6 +45,12 @@ public class Block extends ModIdentifier {
         this.rotation = BlockRotations.NONE;
     }
 
+    public Block(String fullIdentifier) {
+        super(fullIdentifier);
+        this.properties = new HashSet<>();
+        this.rotation = BlockRotations.NONE;
+    }
+
     public BlockRotations getRotation() {
         return rotation;
     }
@@ -87,13 +93,15 @@ public class Block extends ModIdentifier {
 
     @Override
     public boolean equals(Object obj) {
-        if (super.equals(obj)) {
+        if (this == obj) {
             return true;
         }
         if (hashCode() != obj.hashCode()) {
             return false;
         }
-        Block their = (Block) obj;
+        if (!(obj instanceof Block their)) {
+            return false;
+        }
         return getIdentifier().equals(their.getIdentifier()) && getRotation() == their.getRotation() && getProperties().equals(their.getProperties()) && getMod().equals(their.getMod());
     }
 }

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.mappings.Enchantment;
 import de.bixilon.minosoft.data.mappings.Item;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.data.text.ChatComponent;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.nbt.tag.*;
 
@@ -261,7 +262,7 @@ public class Slot {
     }
 
     public String getSkullOwner() {
-        if (!item.getMod().equals("minecraft") || !item.getIdentifier().equals("skull")) {
+        if (!item.getMod().equals(ProtocolDefinition.DEFAULT_MOD) || !item.getIdentifier().equals("skull")) {
             throw new IllegalArgumentException("Item is not a skull!");
         }
         return skullOwner;

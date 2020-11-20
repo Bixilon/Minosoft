@@ -35,4 +35,4 @@ you need to provide the full packet mapping. The id depends on the order.
 
 
 ---
-Note: Do not check for protocolIds (especially  in EntityMetaData or Packets), this data is not reliable! Use version Ids.
+Note: Do not check for protocolIds (especially  in EntityMetaData or Packets), this data is not reliable (because snapshot ids are that much higher)! Use version Ids.

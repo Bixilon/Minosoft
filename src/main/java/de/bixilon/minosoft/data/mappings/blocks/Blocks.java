@@ -20,7 +20,7 @@ import com.google.gson.JsonObject;
 import java.util.HashSet;
 
 public class Blocks {
-    public static final Block nullBlock = new Block("minecraft", "air");
+    public static final Block nullBlock = new Block("air");
 
     public static HashBiMap<Integer, Block> load(String mod, JsonObject json, boolean metaData) {
         HashBiMap<Integer, Block> versionMapping = HashBiMap.create();

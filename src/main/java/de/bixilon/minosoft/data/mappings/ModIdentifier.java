@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.data.mappings;
 
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+
 public class ModIdentifier {
-    public static final String DEFAULT_MOD = "minecraft";
     protected final String mod;
     protected final String identifier;
 
@@ -26,7 +27,7 @@ public class ModIdentifier {
     public ModIdentifier(String fullIdentifier) {
         String[] split = fullIdentifier.split(":");
         if (split.length == 1) {
-            this.mod = DEFAULT_MOD;
+            this.mod = ProtocolDefinition.DEFAULT_MOD;
             this.identifier = fullIdentifier;
             return;
         }
