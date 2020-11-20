@@ -23,6 +23,7 @@ import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.HTTP;
 import de.bixilon.minosoft.util.Util;
@@ -266,9 +267,9 @@ public class AssetsManager {
             throw new RuntimeException(e);
         }
 
-        byte[] buffer = new byte[4096];
+        byte[] buffer = new byte[ProtocolDefinition.DEFAULT_BUFFER_SIZE];
         int length;
-        while ((length = data.read(buffer, 0, 4096)) != -1) {
+        while ((length = data.read(buffer, 0, buffer.length)) != -1) {
             crypt.update(buffer, 0, length);
             out.write(buffer, 0, length);
         }

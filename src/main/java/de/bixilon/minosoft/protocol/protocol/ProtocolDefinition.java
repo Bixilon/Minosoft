@@ -37,6 +37,8 @@ public final class ProtocolDefinition {
 
     public static final String DEFAULT_MOD = "minecraft";
 
+    public static final int DEFAULT_BUFFER_SIZE = 4096;
+
     static {
         try {
             LAN_SERVER_BROADCAST_ADDRESS = InetAddress.getByName("224.0.2.60");
