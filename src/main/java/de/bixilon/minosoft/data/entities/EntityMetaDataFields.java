@@ -29,7 +29,7 @@ public enum EntityMetaDataFields {
     ENTITY_POSE(Poses.STANDING),
     ENTITY_TICKS_FROZEN(0),
 
-    LIVING_ENTITY_FLAGS(0),
+    LIVING_ENTITY_FLAGS((byte) 0),
     LIVING_ENTITY_HEALTH(1.0f),
     LIVING_ENTITY_EFFECT_COLOR(0),
     LIVING_ENTITY_EFFECT_AMBIENCE(false),
@@ -37,7 +37,7 @@ public enum EntityMetaDataFields {
     LIVING_ENTITY_ABSORPTION_HEARTS(0),
     LIVING_ENTITY_BED_POSITION,
 
-    MOB_FLAGS(0),
+    MOB_FLAGS((byte) 0),
 
     ZOMBIE_IS_BABY(false),
     ZOMBIE_SPECIAL_TYPE(0),
