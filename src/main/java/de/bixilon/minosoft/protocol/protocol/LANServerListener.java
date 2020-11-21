@@ -34,13 +34,12 @@ public class LANServerListener {
     private final static String PORT_START_STRING = "[AD]";
     private final static String PORT_END_STRING = "[/AD]";
     private final static String[] BROADCAST_MUST_CONTAIN = {MOTD_BEGIN_STRING, MOTD_END_STRING, PORT_START_STRING, PORT_END_STRING};
-    public static HashBiMap<InetAddress, Server> servers;
+    public final static HashBiMap<InetAddress, Server> servers = HashBiMap.create();
 
     public static void listen() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         new Thread(() -> {
             try {
-                servers = HashBiMap.create();
                 MulticastSocket socket = new MulticastSocket(ProtocolDefinition.LAN_SERVER_BROADCAST_PORT);
                 socket.joinGroup(ProtocolDefinition.LAN_SERVER_BROADCAST_ADDRESS); // ToDo: do not use deprecated methods
                 byte[] buf = new byte[256]; // this should be enough, if the packet is longer, it is probably invalid
@@ -73,7 +72,7 @@ public class LANServerListener {
                 e.printStackTrace();
                 latch.countDown();
             }
-            servers = null;
+            servers.clear();
             Log.warn("Stopping LAN Server Listener Thread");
         }, "LAN Server Listener").start();
         latch.await();
@@ -84,9 +83,6 @@ public class LANServerListener {
     }
 
     public static void removeAll() {
-        if (servers == null) {
-            return;
-        }
         HashSet<Server> temp = new HashSet<>(servers.values());
         for (Server server : temp) {
             if (server.isConnected()) {

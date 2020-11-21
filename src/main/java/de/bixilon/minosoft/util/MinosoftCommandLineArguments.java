@@ -31,7 +31,6 @@ public class MinosoftCommandLineArguments {
     public static void parseCommandLineArguments(String[] args) {
         MinosoftCommandLineArguments.optionHashMap.forEach((option, commandLineArgumentHandler) -> options.addOption(option));
 
-
         try {
             CommandLine commandLine = new DefaultParser().parse(options, args);
 
