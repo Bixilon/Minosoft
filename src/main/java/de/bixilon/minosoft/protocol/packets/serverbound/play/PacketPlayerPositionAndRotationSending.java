@@ -42,7 +42,7 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
     public PacketPlayerPositionAndRotationSending(double x, double feetY, double z, float yaw, float pitch, boolean onGround) {
         this.x = x;
         this.feetY = feetY;
-        this.headY = feetY - 1.62F;
+        this.headY = feetY + 1.62F;
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;

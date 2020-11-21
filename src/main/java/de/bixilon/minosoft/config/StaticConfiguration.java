@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.config;
 
+import com.google.common.base.StandardSystemProperty;
 import de.bixilon.minosoft.util.OSUtil;
 
 import java.io.File;
@@ -29,7 +30,7 @@ public class StaticConfiguration {
     static {
         // Sets Config.homeDir to the correct folder per OS
         String homeDir;
-        homeDir = System.getProperty("user.home");
+        homeDir = System.getProperty(StandardSystemProperty.USER_HOME.key());
         if (!homeDir.endsWith(File.separator)) {
             homeDir += "/";
         }

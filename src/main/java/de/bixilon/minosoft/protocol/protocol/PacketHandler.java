@@ -64,7 +64,10 @@ public class PacketHandler {
 
         // now we know the version, set it, if the config allows it
         Version version;
-        int protocolId = connection.getDesiredVersionNumber();
+        int protocolId = -1;
+        if (connection.getDesiredVersionNumber() != -1) {
+            protocolId = Versions.getVersionById(connection.getDesiredVersionNumber()).getProtocolId();
+        }
         if (protocolId == -1) {
             protocolId = pkg.getResponse().getProtocolId();
         }
