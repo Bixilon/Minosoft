@@ -45,15 +45,6 @@ public class Log {
         }, "Log").start();
     }
 
-    /**
-     * Logs all game related things (mostly visible stuff to the user)
-     *
-     * @param message Raw message to log
-     */
-    public static void game(String message) {
-        log(LogLevels.GAME, message, ChatColors.getColorByName("green"));
-    }
-
     public static void log(LogLevels level, String message, RGBColor color) {
         log(level, "", message, color);
     }
@@ -91,12 +82,21 @@ public class Log {
     }
 
     /**
+     * Logs all game related things (mostly visible stuff to the user)
+     *
+     * @param message Raw message to log
+     */
+    public static void game(String message) {
+        log(LogLevels.GAME, message, ChatColors.GREEN);
+    }
+
+    /**
      * Logs all fatal errors (critical exceptions, etc)
      *
      * @param message Raw message to log
      */
     public static void fatal(String message) {
-        log(LogLevels.FATAL, message, ChatColors.getColorByName("dark_red"));
+        log(LogLevels.FATAL, message, ChatColors.DARK_RED);
     }
 
     /**
@@ -105,7 +105,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void warn(String message) {
-        log(LogLevels.WARNING, message, ChatColors.getColorByName("red"));
+        log(LogLevels.WARNING, message, ChatColors.RED);
     }
 
     /**
@@ -114,7 +114,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void debug(String message) {
-        log(LogLevels.DEBUG, message, ChatColors.getColorByName("gray"));
+        log(LogLevels.DEBUG, message, ChatColors.GRAY);
     }
 
     /**
@@ -123,7 +123,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void verbose(String message) {
-        log(LogLevels.VERBOSE, message, ChatColors.getColorByName("yellow"));
+        log(LogLevels.VERBOSE, message, ChatColors.YELLOW);
     }
 
     /**
@@ -132,7 +132,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void protocol(String message) {
-        log(LogLevels.PROTOCOL, message, ChatColors.getColorByName("blue"));
+        log(LogLevels.PROTOCOL, message, ChatColors.BLUE);
     }
 
     /**
@@ -141,7 +141,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void mojang(String message) {
-        log(LogLevels.MOJANG, message, ChatColors.getColorByName("aqua"));
+        log(LogLevels.MOJANG, message, ChatColors.AQUA);
     }
 
     public static LogLevels getLevel() {
@@ -162,7 +162,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void info(String message) {
-        log(LogLevels.INFO, message, ChatColors.getColorByName("white"));
+        log(LogLevels.INFO, message, ChatColors.WHITE);
     }
 
     public static boolean printException(Exception exception, LogLevels minimumLogLevel) {

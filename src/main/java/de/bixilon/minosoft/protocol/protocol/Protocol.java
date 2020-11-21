@@ -17,9 +17,9 @@ import com.google.common.collect.HashBiMap;
 
 import java.util.HashMap;
 
-public abstract class Protocol {
-    static final HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping = new HashMap<>();
-    static final HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping = new HashMap<>();
+public final class Protocol {
+    private static final HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping = new HashMap<>();
+    private static final HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping = new HashMap<>();
 
     static {
         serverboundPacketMapping.put(ConnectionStates.HANDSHAKING, HashBiMap.create());

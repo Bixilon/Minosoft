@@ -16,25 +16,30 @@ package de.bixilon.minosoft.data.text;
 import com.google.common.collect.HashBiMap;
 
 public final class ChatColors {
-    private static final HashBiMap<Integer, RGBColor> colors = HashBiMap.create();
+    public static final RGBColor BLACK = new RGBColor(0, 0, 0);
+    public static final RGBColor DARK_BLUE = new RGBColor(0, 0, 170);
+    public static final RGBColor DARK_GREEN = new RGBColor(0, 170, 0);
+    public static final RGBColor DARK_AQUA = new RGBColor(0, 170, 170);
+    public static final RGBColor DARK_RED = new RGBColor(170, 0, 0);
+    public static final RGBColor DARK_PURPLE = new RGBColor(170, 0, 170);
+    public static final RGBColor GOLD = new RGBColor(255, 170, 0);
+    public static final RGBColor GRAY = new RGBColor(170, 170, 170);
+    public static final RGBColor DARK_GRAY = new RGBColor(85, 85, 85);
+    public static final RGBColor BLUE = new RGBColor(85, 85, 255);
+    public static final RGBColor GREEN = new RGBColor(85, 255, 85);
+    public static final RGBColor AQUA = new RGBColor(85, 255, 255);
+    public static final RGBColor RED = new RGBColor(255, 85, 85);
+    public static final RGBColor LIGHT_PURPLE = new RGBColor(255, 85, 255);
+    public static final RGBColor YELLOW = new RGBColor(255, 255, 85);
+    public static final RGBColor WHITE = new RGBColor(255, 255, 255);
+
+    private static final HashBiMap<RGBColor, Integer> colorIntMap = HashBiMap.create();
+    private static final RGBColor[] colors = {BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE};
 
     static {
-        colors.put(0, new RGBColor(0, 0, 0));
-        colors.put(1, new RGBColor(0, 0, 170));
-        colors.put(2, new RGBColor(0, 170, 0));
-        colors.put(3, new RGBColor(0, 170, 170));
-        colors.put(4, new RGBColor(170, 0, 0));
-        colors.put(5, new RGBColor(170, 0, 170));
-        colors.put(6, new RGBColor(255, 170, 0));
-        colors.put(7, new RGBColor(170, 170, 170));
-        colors.put(8, new RGBColor(85, 85, 85));
-        colors.put(9, new RGBColor(85, 85, 255));
-        colors.put(10, new RGBColor(85, 255, 85));
-        colors.put(11, new RGBColor(85, 255, 255));
-        colors.put(12, new RGBColor(255, 85, 85));
-        colors.put(13, new RGBColor(255, 85, 255));
-        colors.put(14, new RGBColor(255, 255, 85));
-        colors.put(15, new RGBColor(255, 255, 255));
+        for (int i = 0; i < colors.length; i++) {
+            colorIntMap.put(colors[i], i);
+        }
     }
 
     public static String getANSIColorByFormattingChar(char c) {
@@ -46,36 +51,36 @@ public final class ChatColors {
     }
 
     public static RGBColor getColorByFormattingChar(char c) {
-        return colors.get(Character.digit(c, 16));
+        return colors[Character.digit(c, 16)];
     }
 
     public static RGBColor getColorById(int id) {
-        return colors.get(id);
+        return colors[id];
     }
 
     public static Integer getColorId(RGBColor color) {
-        return colors.inverse().get(color);
+        return colorIntMap.get(color);
     }
 
     public static RGBColor getColorByName(String name) {
-        return colors.get(switch (name.toLowerCase()) {
-            case "black" -> 0;
-            case "dark_blue" -> 1;
-            case "dark_green" -> 2;
-            case "dark_aqua" -> 3;
-            case "dark_red" -> 4;
-            case "dark_purple" -> 5;
-            case "gold" -> 6;
-            case "gray", "grey" -> 7;
-            case "dark_gray", "dark_grey" -> 8;
-            case "blue" -> 9;
-            case "green" -> 10;
-            case "aqua" -> 11;
-            case "red" -> 12;
-            case "light_purple" -> 13;
-            case "yellow" -> 14;
-            case "white" -> 15;
+        return switch (name.toLowerCase()) {
+            case "black" -> BLACK;
+            case "dark_blue" -> DARK_BLUE;
+            case "dark_green" -> DARK_GREEN;
+            case "dark_aqua" -> DARK_AQUA;
+            case "dark_red" -> DARK_RED;
+            case "dark_purple" -> DARK_PURPLE;
+            case "gold" -> GOLD;
+            case "gray", "grey" -> GRAY;
+            case "dark_gray", "dark_grey" -> DARK_GRAY;
+            case "blue" -> BLUE;
+            case "green" -> GREEN;
+            case "aqua" -> AQUA;
+            case "red" -> RED;
+            case "light_purple" -> LIGHT_PURPLE;
+            case "yellow" -> YELLOW;
+            case "white" -> WHITE;
             default -> throw new IllegalStateException("Unexpected value: " + name);
-        });
+        };
     }
 }

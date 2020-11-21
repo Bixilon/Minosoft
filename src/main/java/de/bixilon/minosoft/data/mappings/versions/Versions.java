@@ -122,7 +122,7 @@ public class Versions {
         try {
             files = Util.readJsonTarStream(AssetsManager.readAssetAsStream(String.format("mappings/%s", version.getVersionName())));
         } catch (Exception e) {
-            // should not happen, but if this version is not flattend, we can fallback to the flatten mappings. Some things might not work...
+            // should not happen, but if this version is not flattened, we can fallback to the flatten mappings. Some things might not work...
             Log.printException(e, LogLevels.VERBOSE);
             if (version.isFlattened() || version.getVersionId() == ProtocolDefinition.FLATTING_VERSION_ID) {
                 throw e;

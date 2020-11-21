@@ -19,12 +19,12 @@ import de.bixilon.minosoft.util.OSUtil;
 import java.io.File;
 
 public class StaticConfiguration {
+    public static final boolean DEBUG_MODE = false; // if true, additional checks will be made to validate data, ... Decreases performance
     public static String CONFIG_FILENAME = "config.json"; // Filename of minosoft's base configuration (located in AppData/Minosoft/config)
     public static boolean SKIP_MOJANG_AUTHENTICATION = false; // disables all connections to mojang
     public static boolean COLORED_LOG = true; // the log should be colored with ANSI (does not affect base components)
     public static boolean LOG_RELATIVE_TIME = false; // prefix all log messages with the relative start time in milliseconds instead of the formatted time
     public static boolean VERBOSE_ENTITY_META_DATA_LOGGING = false; // if true, the entity meta data is getting serial
-
     public static String HOME_DIRECTORY;
 
     static {
@@ -34,7 +34,7 @@ public class StaticConfiguration {
         if (!homeDir.endsWith(File.separator)) {
             homeDir += "/";
         }
-        homeDir += switch (OSUtil.getOS()) {
+        homeDir += switch (OSUtil.OS) {
             case LINUX -> ".local/share/minosoft/";
             case WINDOWS -> "AppData/Roaming/Minosoft/";
             case MAC -> "Library/Application Support/Minosoft/";
