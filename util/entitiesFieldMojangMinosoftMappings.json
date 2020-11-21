@@ -197,12 +197,6 @@
       "DATA_ID_FLAGS": "BAT_FLAGS"
     }
   },
-  "AgableMob": {
-    "extends": "PathfinderMob",
-    "data": {
-      "DATA_BABY_ID": "AGEABLE_IS_BABY"
-    }
-  },
   "AgeableMob": {
     "extends": "PathfinderMob",
     "data": {

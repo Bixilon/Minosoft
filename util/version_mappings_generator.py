@@ -12,11 +12,10 @@
 import hashlib
 import os
 import re
+import requests
 import shutil
 import tarfile
 import traceback
-
-import requests
 import ujson
 
 print("Minecraft mappings downloader (and generator)")
@@ -74,6 +73,9 @@ def getMinsoftEntityFieldNames(obfuscationMapLines, clazz, obfuscatedFields):
 
     # find line, split by ., get last split, extract everything before the arrow
     className = obfuscationMapLines[classLineStart].split(".")[-1][:-len(" -> %s:" % clazz)]
+    if className == "AgableMob":
+        # thanks mojang
+        className = "AgeableMob"
     if VERBOSE_LOG:
         print("Found class: " + className)
 
