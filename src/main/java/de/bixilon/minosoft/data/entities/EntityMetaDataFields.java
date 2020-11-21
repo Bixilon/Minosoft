@@ -267,7 +267,7 @@ public enum EntityMetaDataFields {
 
     THROWN_EYE_OF_ENDER_ITEM;
 
-    final Object defaultValue;
+    private final Object defaultValue;
 
     EntityMetaDataFields() {
         defaultValue = null;

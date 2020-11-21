@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.mappings.particle;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 
 public class Particle extends ModIdentifier {
-    
+
     public Particle(String mod, String identifier) {
         super(mod, identifier);
     }

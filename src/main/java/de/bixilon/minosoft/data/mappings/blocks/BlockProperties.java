@@ -430,7 +430,8 @@ public enum BlockProperties {
             PROPERTIES_MAPPING.get(property.getGroup()).put(property.getValue(), property);
         }
     }
-final String group;
+
+    final String group;
     final String value;
 
     BlockProperties() {

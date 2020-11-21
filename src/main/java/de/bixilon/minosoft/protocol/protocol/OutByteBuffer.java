@@ -146,8 +146,7 @@ public class OutByteBuffer {
 
     public void writeVarInt(int value) {
         // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
-        do
-        {
+        do {
             byte temp = (byte) (value & 0x7F);
             value >>>= 7;
             if (value != 0) {
@@ -160,8 +159,7 @@ public class OutByteBuffer {
     public void prefixVarInt(int value) {
         int count = 0;
         // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
-        do
-        {
+        do {
             byte temp = (byte) (value & 0x7F);
             value >>>= 7;
             if (value != 0) {

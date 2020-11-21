@@ -294,7 +294,7 @@ public class PacketHandler {
 
     public void handle(PacketEntityMovementAndRotation pkg) {
         Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
-        if(entity == null){
+        if (entity == null) {
             // thanks mojang
             return;
         }
@@ -304,7 +304,7 @@ public class PacketHandler {
 
     public void handle(PacketEntityMovement pkg) {
         Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
-        if(entity == null){
+        if (entity == null) {
             // thanks mojang
             return;
         }
@@ -313,11 +313,11 @@ public class PacketHandler {
 
     public void handle(PacketEntityRotation pkg) {
         Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
-        if(entity == null){
+        if (entity == null) {
             // thanks mojang
             return;
         }
-       entity.setRotation(pkg.getYaw(), pkg.getPitch());
+        entity.setRotation(pkg.getYaw(), pkg.getPitch());
     }
 
     public void handle(PacketDestroyEntity pkg) {
@@ -336,7 +336,7 @@ public class PacketHandler {
         } else {
             entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
         }
-        if(entity == null){
+        if (entity == null) {
             // thanks mojang
             return;
         }
@@ -352,7 +352,7 @@ public class PacketHandler {
 
     public void handle(PacketEntityTeleport pkg) {
         Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
-        if(entity == null){
+        if (entity == null) {
             // thanks mojang
             return;
         }
@@ -362,7 +362,7 @@ public class PacketHandler {
 
     public void handle(PacketEntityHeadRotation pkg) {
         Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
-        if(entity == null){
+        if (entity == null) {
             // thanks mojang
             return;
         }
@@ -376,8 +376,8 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityMetadata pkg) {
-        Entity entity= connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
-        if(entity == null){
+        Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        if (entity == null) {
             // thanks mojang
             return;
         }
@@ -388,7 +388,7 @@ public class PacketHandler {
         connection.fireEvent(new EntityEquipmentChangeEvent(connection, pkg));
 
         Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
-        if(entity == null){
+        if (entity == null) {
             // thanks mojang
             return;
         }
@@ -397,7 +397,7 @@ public class PacketHandler {
 
     public void handle(PacketBlockChange pkg) {
         Chunk chunk = connection.getPlayer().getWorld().getChunk(pkg.getPosition().getChunkLocation());
-        if(chunk == null){
+        if (chunk == null) {
             // thanks mojang
             return;
         }
@@ -462,8 +462,8 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityEffect pkg) {
-        Entity entity= connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
-        if(entity == null){
+        Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        if (entity == null) {
             // thanks mojang
             return;
         }
@@ -472,7 +472,7 @@ public class PacketHandler {
 
     public void handle(PacketRemoveEntityEffect pkg) {
         Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
-        if(entity == null){
+        if (entity == null) {
             // thanks mojang
             return;
         }
@@ -510,7 +510,7 @@ public class PacketHandler {
 
     public void handle(PacketAttachEntity pkg) {
         Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
-        if(entity == null){
+        if (entity == null) {
             // thanks mojang
             return;
         }
