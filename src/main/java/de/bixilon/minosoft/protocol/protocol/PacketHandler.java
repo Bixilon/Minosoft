@@ -40,7 +40,9 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketConfirmTeleport;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.util.nbt.tag.StringTag;
 
@@ -505,7 +507,12 @@ public class PacketHandler {
     }
 
     public void handle(PacketPlayerPositionAndRotation pkg) {
-        // ToDo
+        // ToDo: GUI should do this
+        if (connection.getVersion().getVersionId() >= 79) {
+            connection.sendPacket(new PacketConfirmTeleport(pkg.getTeleportId()));
+        } else {
+            connection.sendPacket(new PacketPlayerPositionAndRotationSending(pkg.getLocation(), pkg.getYaw(), pkg.getPitch(), pkg.isOnGround()));
+        }
     }
 
     public void handle(PacketAttachEntity pkg) {

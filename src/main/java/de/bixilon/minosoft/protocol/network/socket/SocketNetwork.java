@@ -103,14 +103,16 @@ public class SocketNetwork implements Network {
                                 OutByteBuffer outRawBuffer = new OutByteBuffer(connection);
                                 if (data.length >= compressionThreshold) {
                                     // compress it
-                                    OutByteBuffer compressedBuffer = new OutByteBuffer(connection);
+                                    OutByteBuffer lengthPrefixedBuffer = new OutByteBuffer(connection);
                                     byte[] compressed = Util.compress(data);
-                                    compressedBuffer.writeVarInt(data.length);
-                                    compressedBuffer.writeBytes(compressed);
-                                    outRawBuffer.prefixVarInt(compressedBuffer.getOutBytes().length);
+                                    lengthPrefixedBuffer.writeVarInt(data.length); // uncompressed length
+                                    lengthPrefixedBuffer.writeBytes(compressed);
+                                    outRawBuffer.prefixVarInt(lengthPrefixedBuffer.getOutBytes().length); // length of total data is uncompressed length + compressed data
+                                    outRawBuffer.writeBytes(lengthPrefixedBuffer.getOutBytes()); // write all bytes
                                 } else {
-                                    outRawBuffer.prefixVarInt(0);
                                     outRawBuffer.writeVarInt(data.length + 1); // 1 for the compressed length (0)
+                                    outRawBuffer.writeVarInt(0); // data is uncompressed, compressed size is 0
+                                    outRawBuffer.writeBytes(data);
                                 }
                                 data = outRawBuffer.getOutBytes();
                             } else {

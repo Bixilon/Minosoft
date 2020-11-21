@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
+import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -43,6 +44,16 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
         this.feetY = feetY;
         this.headY = feetY - 1.62F;
         this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.onGround = onGround;
+    }
+
+    public PacketPlayerPositionAndRotationSending(Location location, float yaw, float pitch, boolean onGround) {
+        this.x = location.getX();
+        this.feetY = location.getY();
+        this.z = location.getZ();
+        this.headY = feetY - 1.62F;
         this.yaw = yaw;
         this.pitch = pitch;
         this.onGround = onGround;
