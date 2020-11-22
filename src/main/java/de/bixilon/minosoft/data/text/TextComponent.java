@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.text;
 
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.hash.BetterHashSet;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -140,11 +141,11 @@ public class TextComponent extends ChatComponent {
         StringBuilder output = new StringBuilder();
         Integer colorChar = ChatColors.getColorId(color);
         if (colorChar != null) {
-            output.append('§').append(Integer.toHexString(colorChar));
+            output.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(Integer.toHexString(colorChar));
         }
-        formatting.forEach((chatFormattingCode -> output.append('§').append(chatFormattingCode.getChar())));
+        formatting.forEach((chatFormattingCode -> output.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(chatFormattingCode.getChar())));
         output.append(text);
-        output.append('§').append(PostChatFormattingCodes.RESET.getChar());
+        output.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(PostChatFormattingCodes.RESET.getChar());
         return output.toString();
     }
 

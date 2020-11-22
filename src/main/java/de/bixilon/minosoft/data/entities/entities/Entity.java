@@ -212,11 +212,9 @@ public abstract class Entity {
     @EntityMetaDataFunction(identifier = "pose")
     public Poses getPose() {
         if (isCrouching()) {
-            // crouching
             return Poses.SNEAKING;
         }
         if (isSwimming()) {
-            // crouching
             return Poses.SWIMMING;
         }
         if (isFlyingWithElytra()) {

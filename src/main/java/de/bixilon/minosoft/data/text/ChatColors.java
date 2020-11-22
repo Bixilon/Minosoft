@@ -83,6 +83,10 @@ public final class ChatColors {
         return colorIntMap.get(color);
     }
 
+    public static String getColorChar(RGBColor color) {
+        return String.format("%x", colorIntMap.get(color));
+    }
+
     public static RGBColor getColorByName(String name) {
         return switch (name.toLowerCase()) {
             case "black" -> BLACK;
@@ -100,7 +104,7 @@ public final class ChatColors {
             case "red" -> RED;
             case "light_purple" -> LIGHT_PURPLE;
             case "yellow" -> YELLOW;
-            case "white" -> WHITE;
+            case "white", "reset" -> WHITE;
             default -> throw new IllegalStateException("Unexpected value: " + name);
         };
     }

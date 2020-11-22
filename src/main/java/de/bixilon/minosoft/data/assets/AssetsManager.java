@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.assets;
 
+import com.google.common.base.StandardSystemProperty;
 import com.google.errorprone.annotations.DoNotCall;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -254,7 +255,7 @@ public class AssetsManager {
     private static String saveAsset(InputStream data) throws IOException {
         File tempDestinationFile = null;
         while (tempDestinationFile == null || tempDestinationFile.exists()) { // file exist? lol
-            tempDestinationFile = new File(System.getProperty("java.io.tmpdir") + "/minosoft/" + Util.generateRandomString(32));
+            tempDestinationFile = new File(System.getProperty(StandardSystemProperty.JAVA_IO_TMPDIR.value()) + "/minosoft/" + Util.generateRandomString(32));
         }
         Util.createParentFolderIfNotExist(tempDestinationFile);
 

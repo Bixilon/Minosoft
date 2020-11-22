@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.text;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.hash.BetterHashSet;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -40,7 +41,7 @@ public class BaseComponent extends ChatComponent {
         while (iterator.current() != CharacterIterator.DONE) {
             char c = iterator.current();
             iterator.next();
-            if (c != '§') {
+            if (c != ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) {
                 currentText.append(c);
                 continue;
             }
@@ -92,7 +93,7 @@ public class BaseComponent extends ChatComponent {
         TextComponent thisTextComponent = null;
         if (json.has("text")) {
             String text = json.get("text").getAsString();
-            if (text.contains("§")) {
+            if (text.contains(String.valueOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR))) {
                 // legacy text component
                 parts.add(new BaseComponent(text));
                 return;
@@ -140,20 +141,20 @@ public class BaseComponent extends ChatComponent {
             parts.add(thisTextComponent);
         }
 
+        final TextComponent parentParameter = thisTextComponent == null ? parent : thisTextComponent;
         if (json.has("extra")) {
             JsonArray extras = json.getAsJsonArray("extra");
-            TextComponent finalThisChatPart = thisTextComponent;
-            extras.forEach((extra -> parts.add(new BaseComponent(finalThisChatPart, extra.getAsJsonObject()))));
+            extras.forEach((extra -> parts.add(new BaseComponent(parentParameter, extra.getAsJsonObject()))));
         }
 
         if (json.has("translate")) {
-            parts.add(new TranslatableComponent(json.get("translate").getAsString(), json.getAsJsonArray("with")));
+            parts.add(new TranslatableComponent(parentParameter, json.get("translate").getAsString(), json.getAsJsonArray("with")));
         }
     }
 
     @Override
     public String toString() {
-        return getANSIColoredMessage();
+        return PostChatFormattingCodes.RESET.getANSI() + getANSIColoredMessage();
     }
 
     public String getANSIColoredMessage() {

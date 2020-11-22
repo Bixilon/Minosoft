@@ -19,13 +19,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
+import javax.annotation.Nullable;
+
 public abstract class ChatComponent {
     public static ChatComponent fromString(String raw) {
+        return fromString(null, raw);
+    }
+
+    public static ChatComponent fromString(@Nullable TextComponent parent, String raw) {
         if (raw == null) {
             return new BaseComponent();
         }
         try {
-            return new BaseComponent(JsonParser.parseString(raw).getAsJsonObject());
+            return new BaseComponent(parent, JsonParser.parseString(raw).getAsJsonObject());
         } catch (JsonParseException | IllegalStateException ignored) {
         }
         return new BaseComponent(raw);

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.block;
 
+import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.RGBColor;
 import de.bixilon.minosoft.util.nbt.tag.IntTag;
 import de.bixilon.minosoft.util.nbt.tag.NBTTag;
@@ -26,6 +27,10 @@ public class BedEntityMetaData extends BlockEntityMetaData {
     }
 
     public BedEntityMetaData(NBTTag nbt) {
+        if (nbt == null) {
+            color = ChatColors.RED;
+            return;
+        }
         if (nbt instanceof StringTag stringTag) {
             // yes, we support bed rgb colors :D
             color = new RGBColor(stringTag.getValue());
