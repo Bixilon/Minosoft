@@ -25,7 +25,7 @@ import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class BaseComponent implements ChatComponent {
+public class BaseComponent extends ChatComponent {
     private final ArrayList<ChatComponent> parts = new ArrayList<>();
 
     public BaseComponent() {

@@ -25,7 +25,7 @@ import javafx.util.Duration;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class TextComponent implements ChatComponent {
+public class TextComponent extends ChatComponent {
     private final String text;
     private RGBColor color;
     private HashSet<ChatFormattingCodes> formatting;

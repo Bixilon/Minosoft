@@ -20,7 +20,7 @@ import javafx.scene.Node;
 
 import java.util.ArrayList;
 
-public class TranslatableComponent implements ChatComponent {
+public class TranslatableComponent extends ChatComponent {
     private final ArrayList<ChatComponent> data = new ArrayList<>();
     private final String key;
 
