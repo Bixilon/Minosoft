@@ -15,9 +15,9 @@ package de.bixilon.minosoft.data.mappings.blocks.actions;
 
 public class NoteBlockAction implements BlockAction {
     final Instruments instrument;
-    final byte pitch;
+    final short pitch;
 
-    public NoteBlockAction(byte instrument, byte pitch) {
+    public NoteBlockAction(short instrument, short pitch) {
         this.instrument = Instruments.byId(instrument);
         this.pitch = pitch;
     }

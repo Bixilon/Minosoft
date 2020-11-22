@@ -157,6 +157,10 @@ public class BaseComponent implements ChatComponent {
             thisTextComponent = new TextComponent(text, color, formattingCodes);
         }
 
+        if (thisTextComponent != null) {
+            parts.add(thisTextComponent);
+        }
+
         if (json.has("extra")) {
             JsonArray extras = json.getAsJsonArray("extra");
             TextComponent finalThisChatPart = thisTextComponent;
@@ -165,10 +169,6 @@ public class BaseComponent implements ChatComponent {
 
         if (json.has("translate")) {
             parts.add(new TranslatableComponent(json.get("translate").getAsString(), json.getAsJsonArray("with")));
-        }
-
-        if (thisTextComponent != null) {
-            parts.add(thisTextComponent);
         }
     }
 

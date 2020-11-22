@@ -37,6 +37,9 @@ public class Chunk {
             throw new IllegalArgumentException(String.format("Invalid chunk location %s %s %s", x, y, z));
         }
         byte section = (byte) (y / 16);
+        if (!sections.containsKey(section)) {
+            return null;
+        }
         return sections.get(section).getBlock(x, y % 16, z);
     }
 

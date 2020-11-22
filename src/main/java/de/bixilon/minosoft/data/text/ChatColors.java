@@ -51,7 +51,11 @@ public final class ChatColors {
     }
 
     public static RGBColor getColorByFormattingChar(char c) {
-        return colors[Character.digit(c, 16)];
+        try {
+            return colors[Character.digit(c, 16)];
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     public static RGBColor getColorById(int id) {

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings.blocks.actions;
 
 public class EndGatewayAction implements BlockAction {
 
-    public EndGatewayAction(byte status, byte ignored) {
+    public EndGatewayAction(short status, short ignored) {
         // only 1 action (id 1)
     }
 

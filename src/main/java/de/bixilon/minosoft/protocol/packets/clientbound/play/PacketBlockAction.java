@@ -21,8 +21,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-import java.lang.reflect.InvocationTargetException;
-
 public class PacketBlockAction implements ClientboundPacket {
     BlockPosition position;
     BlockAction data;
@@ -35,26 +33,19 @@ public class PacketBlockAction implements ClientboundPacket {
         } else {
             position = buffer.readPosition();
         }
-        byte byte1 = buffer.readByte();
-        byte byte2 = buffer.readByte();
-        Class<? extends BlockAction> clazz;
+        short byte1 = buffer.readUnsignedByte();
+        short byte2 = buffer.readUnsignedByte();
         BlockId blockId = buffer.getConnection().getMapping().getBlockIdById(buffer.readVarInt());
-        // beacon
-        // end gateway
-        clazz = switch (blockId.getIdentifier()) {
-            case "noteblock" -> NoteBlockAction.class; // ToDo: was replaced in 17w47a (346) with the block id
-            case "sticky_piston", "piston" -> PistonAction.class;
-            case "chest", "ender_chest", "trapped_chest", "white_shulker_box", "shulker_box", "orange_shulker_box", "magenta_shulker_box", "light_blue_shulker_box", "yellow_shulker_box", "lime_shulker_box", "pink_shulker_box", "gray_shulker_box", "silver_shulker_box", "cyan_shulker_box", "purple_shulker_box", "blue_shulker_box", "brown_shulker_box", "green_shulker_box", "red_shulker_box", "black_shulker_box" -> ChestAction.class;
-            case "beacon" -> BeaconAction.class;
-            case "mob_spawner" -> MobSpawnerAction.class;
-            case "end_gateway" -> EndGatewayAction.class;
-            default -> throw new IllegalStateException(String.format("Unexpected block action (blockId=%s)", blockId));
+
+        data = switch (blockId.getIdentifier()) {
+            case "noteblock" -> new NoteBlockAction(byte1, byte2); // ToDo: was replaced in 17w47a (346) with the block id
+            case "sticky_piston", "piston" -> new PistonAction(byte1, byte2);
+            case "chest", "ender_chest", "trapped_chest", "white_shulker_box", "shulker_box", "orange_shulker_box", "magenta_shulker_box", "light_blue_shulker_box", "yellow_shulker_box", "lime_shulker_box", "pink_shulker_box", "gray_shulker_box", "silver_shulker_box", "cyan_shulker_box", "purple_shulker_box", "blue_shulker_box", "brown_shulker_box", "green_shulker_box", "red_shulker_box", "black_shulker_box" -> new ChestAction(byte1, byte2);
+            case "beacon" -> new BeaconAction(byte1, byte2);
+            case "mob_spawner" -> new MobSpawnerAction(byte1, byte2);
+            case "end_gateway" -> new EndGatewayAction(byte1, byte2);
+            default -> null;
         };
-        try {
-            data = clazz.getConstructor(byte.class, byte.class).newInstance(byte1, byte2);
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
         return true;
     }
 

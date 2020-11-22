@@ -21,6 +21,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 public class PacketRespawn implements ClientboundPacket {
     Dimension dimension;
@@ -40,8 +41,11 @@ public class PacketRespawn implements ClientboundPacket {
             } else {
                 dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
             }
-        } else {
+        } else if (buffer.getVersionId() < 748) {
             dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(buffer.readString());
+        } else {
+            CompoundTag tag = (CompoundTag) buffer.readNBT();
+            dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(tag.getStringTag("effects").getValue()); //ToDo
         }
         if (buffer.getVersionId() < 464) {
             difficulty = Difficulties.byId(buffer.readByte());

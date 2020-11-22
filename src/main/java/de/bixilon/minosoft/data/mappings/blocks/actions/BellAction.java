@@ -13,14 +13,21 @@
 
 package de.bixilon.minosoft.data.mappings.blocks.actions;
 
-public class MobSpawnerAction implements BlockAction {
+import com.sun.javafx.scene.traversal.Direction;
 
-    public MobSpawnerAction(short status, short ignored) {
-        // only 1 action (id 1)
+public class BellAction implements BlockAction {
+    private final Direction direction;
+
+    public BellAction(short unused, short direction) {
+        this.direction = Direction.values()[direction];
+    }
+
+    public Direction getDirection() {
+        return direction;
     }
 
     @Override
     public String toString() {
-        return "MOB_SPAWNER_RESET_DELAY";
+        return String.format("BELL_HIT_%s", direction);
     }
 }
