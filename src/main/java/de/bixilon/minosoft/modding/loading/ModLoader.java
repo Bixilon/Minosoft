@@ -23,7 +23,6 @@ import org.xeustechnologies.jcl.JarClassLoader;
 import org.xeustechnologies.jcl.JclObjectFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -87,7 +86,12 @@ public class ModLoader {
                         progress.countDown();
                         return;
                     }
-                    if (!instance.start(phase)) {
+                    try {
+                        if (!instance.start(phase)) {
+                            throw new ModLoadingException(String.format("Could not load nod %s", instance.getInfo()));
+                        }
+                    } catch (Throwable e) {
+                        e.printStackTrace();
                         Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));
                         instance.setEnabled(false);
                     }
@@ -127,7 +131,7 @@ public class ModLoader {
             instance.setInfo(modInfo);
             Log.verbose(String.format("[MOD] Mod file loaded and added to classpath (%s)", modInfo));
             zipFile.close();
-        } catch (IOException | ModLoadingException | NullPointerException e) {
+        } catch (Throwable e) {
             instance = null;
             e.printStackTrace();
             Log.warn(String.format("Could not load mod: %s", file.getAbsolutePath()));
