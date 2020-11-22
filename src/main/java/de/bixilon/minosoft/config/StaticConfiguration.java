@@ -24,7 +24,7 @@ public class StaticConfiguration {
     public static boolean SKIP_MOJANG_AUTHENTICATION = false; // disables all connections to mojang
     public static boolean COLORED_LOG = true; // the log should be colored with ANSI (does not affect base components)
     public static boolean LOG_RELATIVE_TIME = false; // prefix all log messages with the relative start time in milliseconds instead of the formatted time
-    public static boolean VERBOSE_ENTITY_META_DATA_LOGGING = false; // if true, the entity meta data is getting serial
+    public static boolean VERBOSE_ENTITY_META_DATA_LOGGING = false; // if true, the entity meta data is getting serialized
     public static String HOME_DIRECTORY;
 
     static {
