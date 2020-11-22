@@ -25,20 +25,21 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.UUID;
 
 public class PlayerEntity extends LivingEntity {
     private final String name;
-    private final PlayerPropertyData[] properties;
+    private final HashSet<PlayerPropertyData> properties;
     private Item currentItem;
 
     public PlayerEntity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
         this.name = "Ghost Player";
-        this.properties = new PlayerPropertyData[0];
+        this.properties = null;
     }
 
-    public PlayerEntity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation, String name, PlayerPropertyData[] properties, Item currentItem) {
+    public PlayerEntity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation, String name, @Nullable HashSet<PlayerPropertyData> properties, Item currentItem) {
         super(connection, entityId, uuid, location, rotation);
         this.name = name;
         this.properties = properties;
@@ -82,7 +83,8 @@ public class PlayerEntity extends LivingEntity {
     }
 
     @EntityMetaDataFunction(identifier = "properties")
-    public PlayerPropertyData[] getProperties() {
+    @Nullable
+    public HashSet<PlayerPropertyData> getProperties() {
         return properties;
     }
 

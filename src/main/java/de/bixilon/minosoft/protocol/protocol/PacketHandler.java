@@ -16,7 +16,6 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.data.GameModes;
-import de.bixilon.minosoft.data.PlayerPropertyData;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
 import de.bixilon.minosoft.data.mappings.blocks.Blocks;
@@ -121,7 +120,7 @@ public class PacketHandler {
         connection.getPlayer().getWorld().setHardcore(pkg.isHardcore());
         connection.getMapping().setDimensions(pkg.getDimensions());
         connection.getPlayer().getWorld().setDimension(pkg.getDimension());
-        PlayerEntity entity = new PlayerEntity(connection, pkg.getEntityId(), connection.getPlayer().getPlayerUUID(), null, null, connection.getPlayer().getPlayerName(), new PlayerPropertyData[]{}, null);
+        PlayerEntity entity = new PlayerEntity(connection, pkg.getEntityId(), connection.getPlayer().getPlayerUUID(), null, null, connection.getPlayer().getPlayerName(), null, null);
         connection.getPlayer().setEntity(entity);
         connection.getPlayer().getWorld().addEntity(entity);
         connection.getSender().sendChatMessage("I am alive! ~ Minosoft");

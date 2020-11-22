@@ -51,15 +51,32 @@ public final class ChatColors {
     }
 
     public static RGBColor getColorByFormattingChar(char c) {
-        try {
-            return colors[Character.digit(c, 16)];
-        } catch (IndexOutOfBoundsException e) {
-            return null;
+        return getColorById(Character.digit(c, 16));
+    }
+
+    public static ChatFormattingCode getFormattingById(int id) {
+        if (id <= 15) {
+            return getColorById(id);
         }
+        return switch (id) {
+            case 16 -> ChatFormattingCodes.OBFUSCATED;
+            case 17 -> ChatFormattingCodes.BOLD;
+            case 18 -> ChatFormattingCodes.STRIKETHROUGH;
+            case 19 -> ChatFormattingCodes.UNDERLINED;
+            case 20 -> ChatFormattingCodes.ITALIC;
+            case 21 -> ChatFormattingCodes.RESET;
+            default -> null;
+        };
     }
 
     public static RGBColor getColorById(int id) {
-        return colors[id];
+        if (id < 0) {
+            return null;
+        }
+        if (id <= 15) {
+            return colors[id];
+        }
+        return null;
     }
 
     public static Integer getColorId(RGBColor color) {

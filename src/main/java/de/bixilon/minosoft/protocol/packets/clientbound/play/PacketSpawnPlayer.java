@@ -25,6 +25,7 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
+import java.util.HashSet;
 import java.util.UUID;
 
 public class PacketSpawnPlayer implements ClientboundPacket {
@@ -36,13 +37,14 @@ public class PacketSpawnPlayer implements ClientboundPacket {
         int entityId = buffer.readVarInt();
         String name = null;
         UUID uuid;
-        PlayerPropertyData[] properties = null;
+        HashSet<PlayerPropertyData> properties = null;
         if (buffer.getVersionId() < 19) {
             name = buffer.readString();
             uuid = UUID.fromString(buffer.readString());
-            properties = new PlayerPropertyData[buffer.readVarInt()];
-            for (int i = 0; i < properties.length; i++) {
-                properties[i] = new PlayerPropertyData(buffer.readString(), buffer.readString(), buffer.readString());
+            properties = new HashSet<>();
+            int length = buffer.readVarInt();
+            for (int i = 0; i < length; i++) {
+                properties.add(new PlayerPropertyData(buffer.readString(), buffer.readString(), buffer.readString()));
             }
         } else {
             uuid = buffer.readUUID();

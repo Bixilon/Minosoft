@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.data.text.RGBColor;
+import de.bixilon.minosoft.data.text.ChatFormattingCode;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -32,7 +32,7 @@ public class PacketTeams implements ClientboundPacket {
     boolean seeFriendlyInvisibles;
     TeamCollisionRules collisionRule = TeamCollisionRules.NEVER;
     TeamNameTagVisibilities nameTagVisibility = TeamNameTagVisibilities.ALWAYS;
-    RGBColor color;
+    ChatFormattingCode formattingCode;
     String[] playerNames;
 
     @Override
@@ -58,9 +58,9 @@ public class PacketTeams implements ClientboundPacket {
                     collisionRule = TeamCollisionRules.byName(buffer.readString());
                 }
                 if (buffer.getVersionId() < 352) {
-                    color = ChatColors.getColorById(buffer.readByte());
+                    formattingCode = ChatColors.getFormattingById(buffer.readByte());
                 } else {
-                    color = ChatColors.getColorById(buffer.readVarInt());
+                    formattingCode = ChatColors.getFormattingById(buffer.readVarInt());
                 }
             }
             if (buffer.getVersionId() >= 375) {
@@ -133,8 +133,8 @@ public class PacketTeams implements ClientboundPacket {
         return seeFriendlyInvisibles;
     }
 
-    public RGBColor getColor() {
-        return color;
+    public ChatFormattingCode getFormattingCode() {
+        return formattingCode;
     }
 
     public TeamCollisionRules getCollisionRule() {

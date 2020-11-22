@@ -21,6 +21,8 @@ import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.data.world.BlockPosition;
+import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
@@ -147,47 +149,47 @@ public class EntityMetaData {
     public class MetaDataHashMap extends HashMap<Integer, Object> {
 
         public Poses getPose(EntityMetaDataFields field) {
-            return (Poses) get(field);
+            return get(field);
         }
 
         public byte getByte(EntityMetaDataFields field) {
-            return (byte) get(field);
+            return get(field);
         }
 
         public VillagerData getVillagerData(EntityMetaDataFields field) {
-            return (VillagerData) get(field);
+            return get(field);
         }
 
         public ParticleData getParticle(EntityMetaDataFields field) {
-            return (ParticleData) get(field);
+            return get(field);
         }
 
         public CompoundTag getNBT(EntityMetaDataFields field) {
-            return (CompoundTag) get(field);
+            return get(field);
         }
 
         public Block getBlock(EntityMetaDataFields field) {
-            return (Block) get(field);
+            return get(field);
         }
 
         public UUID getUUID(EntityMetaDataFields field) {
-            return (UUID) get(field);
+            return get(field);
         }
 
         public Directions getDirection(EntityMetaDataFields field) {
-            return (Directions) get(field);
+            return get(field);
         }
 
         public BlockPosition getPosition(EntityMetaDataFields field) {
-            return (BlockPosition) get(field);
+            return get(field);
         }
 
         public EntityRotation getRotation(EntityMetaDataFields field) {
-            return (EntityRotation) get(field);
+            return get(field);
         }
 
         public Vector getVector(EntityMetaDataFields field) {
-            return (Vector) get(field);
+            return get(field);
         }
 
         public boolean getBoolean(EntityMetaDataFields field) {
@@ -202,40 +204,45 @@ public class EntityMetaData {
             return BitByte.isBitMask(getByte(field), bitMask);
         }
 
-        public Object get(EntityMetaDataFields field) {
+        public <K> K get(EntityMetaDataFields field) {
             Integer index = connection.getMapping().getEntityMetaDataIndex(field);
             if (index == null) {
                 // ups, index not found. Index not available in this version?, mappings broken or mappings not available
                 return field.getDefaultValue();
             }
             if (containsKey(index)) {
-                return super.get(index);
+                Object ret = super.get(index);
+                try {
+                    return (K) ret;
+                } catch (ClassCastException e) {
+                    Log.printException(e, LogLevels.VERBOSE);
+                }
             }
             return field.getDefaultValue();
         }
 
         public Slot getSlot(EntityMetaDataFields field) {
-            return (Slot) get(field);
+            return get(field);
         }
 
         public ChatComponent getChatComponent(EntityMetaDataFields field) {
-            return (ChatComponent) get(field);
+            return get(field);
         }
 
         public String getString(EntityMetaDataFields field) {
-            return (String) get(field);
+            return get(field);
         }
 
         public float getFloat(EntityMetaDataFields field) {
-            return (float) get(field);
+            return get(field);
         }
 
         public int getInt(EntityMetaDataFields field) {
-            return (int) get(field);
+            return get(field);
         }
 
         public Short getShort(EntityMetaDataFields field) {
-            return (Short) get(field);
+            return get(field);
         }
     }
 

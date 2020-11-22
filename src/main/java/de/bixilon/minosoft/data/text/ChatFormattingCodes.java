@@ -17,7 +17,7 @@ import com.google.common.collect.HashBiMap;
 
 import java.util.Arrays;
 
-public enum ChatFormattingCodes {
+public enum ChatFormattingCodes implements ChatFormattingCode {
     OBFUSCATED('k', "\u001b[5m"),
     BOLD('l', "\u001b[1m"),
     STRIKETHROUGH('m', "\u001b[9m"),
