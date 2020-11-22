@@ -11,13 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text;
+package de.bixilon.minosoft.util.hash;
 
-public interface ChatFormattingCode extends ChatCode {
-    char getChar();
+import java.util.Collection;
+import java.util.HashSet;
 
-    @Override
-    String toString();
+public class BetterHashSet<E> extends HashSet<E> {
 
-    String getANSI();
+    public BetterHashSet() {
+        super();
+    }
+
+    public BetterHashSet(Collection<? extends E> c) {
+        super(c);
+    }
+
+    public void addOrRemove(E value, boolean addOrRemove) {
+        if (addOrRemove) {
+            super.add(value);
+        } else {
+            super.remove(value);
+        }
+    }
 }

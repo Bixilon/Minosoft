@@ -17,60 +17,17 @@ import com.google.common.collect.HashBiMap;
 
 import java.util.Arrays;
 
-public enum ChatFormattingCodes implements ChatFormattingCode {
-    OBFUSCATED('k', "\u001b[5m"),
-    BOLD('l', "\u001b[1m"),
-    STRIKETHROUGH('m', "\u001b[9m"),
-    UNDERLINED('n', "\u001b[4m"),
-    ITALIC('o', "\u001b[3m"),
-    RESET('r', "\u001b[0m", ChatFormattingCodePosition.POST);
+public final class ChatFormattingCodes {
 
-    private final static HashBiMap<Character, ChatFormattingCodes> formattingCodes = HashBiMap.create();
+    private static final HashBiMap<Character, ChatFormattingCode> formattingCodes = HashBiMap.create();
 
     static {
-        Arrays.stream(values()).forEach(chatFormattingCodes -> formattingCodes.put(chatFormattingCodes.getChar(), chatFormattingCodes));
+        Arrays.stream(PreChatFormattingCodes.values()).forEach(chatFormattingCodes -> formattingCodes.put(chatFormattingCodes.getChar(), chatFormattingCodes));
+        Arrays.stream(PostChatFormattingCodes.values()).forEach(chatFormattingCodes -> formattingCodes.put(chatFormattingCodes.getChar(), chatFormattingCodes));
+
     }
 
-    final char c;
-    final String ansi;
-    final ChatFormattingCodePosition position;
-
-    ChatFormattingCodes(char c, String ansi) {
-        this.c = c;
-        this.ansi = ansi;
-        this.position = ChatFormattingCodePosition.PRE;
-    }
-
-    ChatFormattingCodes(char c, String ansi, ChatFormattingCodePosition position) {
-        this.c = c;
-        this.ansi = ansi;
-        this.position = position;
-    }
-
-    public static ChatFormattingCodes getChatFormattingCodeByChar(char c) {
-        return formattingCodes.get(c);
-    }
-
-    public char getChar() {
-        return c;
-    }
-
-    public ChatFormattingCodePosition getPosition() {
-        return position;
-    }
-
-    @Override
-    public String toString() {
-        return getANSI();
-    }
-
-    public String getANSI() {
-        return ansi;
-    }
-
-    public enum ChatFormattingCodePosition {
-        PRE,
-        POST
+    public static ChatFormattingCode getChatFormattingCodeByChar(char nextFormattingChar) {
+        return formattingCodes.get(nextFormattingChar);
     }
 }
-

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.text.ChatCode;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.data.text.ChatFormattingCode;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -32,7 +32,7 @@ public class PacketTeams implements ClientboundPacket {
     boolean seeFriendlyInvisibles;
     TeamCollisionRules collisionRule = TeamCollisionRules.NEVER;
     TeamNameTagVisibilities nameTagVisibility = TeamNameTagVisibilities.ALWAYS;
-    ChatFormattingCode formattingCode;
+    ChatCode formattingCode;
     String[] playerNames;
 
     @Override
@@ -133,7 +133,7 @@ public class PacketTeams implements ClientboundPacket {
         return seeFriendlyInvisibles;
     }
 
-    public ChatFormattingCode getFormattingCode() {
+    public ChatCode getFormattingCode() {
         return formattingCode;
     }
 

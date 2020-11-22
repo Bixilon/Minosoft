@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.text;
 
+import de.bixilon.minosoft.util.hash.BetterHashSet;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -22,15 +23,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-import java.util.HashSet;
 import java.util.Objects;
 
 public class TextComponent extends ChatComponent {
     private final String text;
     private RGBColor color;
-    private HashSet<ChatFormattingCodes> formatting;
+    private BetterHashSet<ChatFormattingCode> formatting;
 
-    public TextComponent(String text, RGBColor color, HashSet<ChatFormattingCodes> formatting) {
+    public TextComponent(String text, RGBColor color, BetterHashSet<ChatFormattingCode> formatting) {
         this.text = text;
         this.color = color;
         this.formatting = formatting;
@@ -46,56 +46,32 @@ public class TextComponent extends ChatComponent {
     }
 
     public TextComponent setObfuscated(boolean obfuscated) {
-        if (obfuscated) {
-            formatting.add(ChatFormattingCodes.OBFUSCATED);
-        } else {
-            formatting.remove(ChatFormattingCodes.OBFUSCATED);
-        }
+        formatting.addOrRemove(PreChatFormattingCodes.OBFUSCATED, obfuscated);
         return this;
     }
 
     public TextComponent setBold(boolean bold) {
-        if (bold) {
-            formatting.add(ChatFormattingCodes.BOLD);
-        } else {
-            formatting.remove(ChatFormattingCodes.BOLD);
-        }
+        formatting.addOrRemove(PreChatFormattingCodes.BOLD, bold);
         return this;
     }
 
     public TextComponent setStrikethrough(boolean strikethrough) {
-        if (strikethrough) {
-            formatting.add(ChatFormattingCodes.STRIKETHROUGH);
-        } else {
-            formatting.remove(ChatFormattingCodes.STRIKETHROUGH);
-        }
+        formatting.addOrRemove(PreChatFormattingCodes.STRIKETHROUGH, strikethrough);
         return this;
     }
 
     public TextComponent setUnderlined(boolean underlined) {
-        if (underlined) {
-            formatting.add(ChatFormattingCodes.UNDERLINED);
-        } else {
-            formatting.remove(ChatFormattingCodes.UNDERLINED);
-        }
+        formatting.addOrRemove(PreChatFormattingCodes.UNDERLINED, underlined);
         return this;
     }
 
     public TextComponent setItalic(boolean italic) {
-        if (italic) {
-            formatting.add(ChatFormattingCodes.ITALIC);
-        } else {
-            formatting.remove(ChatFormattingCodes.ITALIC);
-        }
+        formatting.addOrRemove(PreChatFormattingCodes.ITALIC, italic);
         return this;
     }
 
     public TextComponent setReset(boolean reset) {
-        if (reset) {
-            formatting.add(ChatFormattingCodes.RESET);
-        } else {
-            formatting.remove(ChatFormattingCodes.RESET);
-        }
+        formatting.addOrRemove(PostChatFormattingCodes.RESET, reset);
         return this;
     }
 
@@ -108,11 +84,11 @@ public class TextComponent extends ChatComponent {
         return this;
     }
 
-    public HashSet<ChatFormattingCodes> getFormatting() {
+    public BetterHashSet<ChatFormattingCode> getFormatting() {
         return formatting;
     }
 
-    public TextComponent setFormatting(HashSet<ChatFormattingCodes> formatting) {
+    public TextComponent setFormatting(BetterHashSet<ChatFormattingCode> formatting) {
         this.formatting = formatting;
         return this;
     }
@@ -142,20 +118,20 @@ public class TextComponent extends ChatComponent {
         }
         if (formatting != null) {
             formatting.forEach((chatFormattingCodes -> {
-                if (chatFormattingCodes.getPosition() == ChatFormattingCodes.ChatFormattingCodePosition.PRE) {
-                    builder.append(chatFormattingCodes.getANSI());
+                if (chatFormattingCodes instanceof PreChatFormattingCodes code) {
+                    builder.append(code.getANSI());
                 }
             }));
         }
         builder.append(text);
         if (formatting != null) {
             formatting.forEach((chatFormattingCodes -> {
-                if (chatFormattingCodes.getPosition() == ChatFormattingCodes.ChatFormattingCodePosition.POST) {
-                    builder.append(chatFormattingCodes.getANSI());
+                if (chatFormattingCodes instanceof PostChatFormattingCodes code) {
+                    builder.append(code.getANSI());
                 }
             }));
         }
-        builder.append(ChatFormattingCodes.RESET);
+        builder.append(PostChatFormattingCodes.RESET);
         return builder.toString();
     }
 
@@ -168,7 +144,7 @@ public class TextComponent extends ChatComponent {
         }
         formatting.forEach((chatFormattingCode -> output.append('§').append(chatFormattingCode.getChar())));
         output.append(text);
-        output.append('§').append(ChatFormattingCodes.RESET.getChar());
+        output.append('§').append(PostChatFormattingCodes.RESET.getChar());
         return output.toString();
     }
 
@@ -184,16 +160,18 @@ public class TextComponent extends ChatComponent {
             text.setFill(Color.web(color.toString()));
         }
         formatting.forEach((chatFormattingCode -> {
-            switch (chatFormattingCode) {
-                case OBFUSCATED -> {
-                    Timeline flasher = new Timeline(new KeyFrame(Duration.seconds(1), e -> text.setVisible(false)), new KeyFrame(Duration.seconds(2), e -> text.setVisible(true)));
-                    flasher.setCycleCount(Animation.INDEFINITE);
-                    flasher.play();
+            if (chatFormattingCode instanceof PreChatFormattingCodes code) {
+                switch (code) {
+                    case OBFUSCATED -> {
+                        Timeline flasher = new Timeline(new KeyFrame(Duration.seconds(1), e -> text.setVisible(false)), new KeyFrame(Duration.seconds(2), e -> text.setVisible(true)));
+                        flasher.setCycleCount(Animation.INDEFINITE);
+                        flasher.play();
+                    }
+                    case BOLD -> text.setStyle("-fx-font-weight: bold;");
+                    case STRIKETHROUGH -> text.setStyle("-fx-strikethrough: true;");
+                    case UNDERLINED -> text.setStyle("-fx-underline: true;");
+                    case ITALIC -> text.setStyle("-fx-font-weight: italic;");
                 }
-                case BOLD -> text.setStyle("-fx-font-weight: bold;");
-                case STRIKETHROUGH -> text.setStyle("-fx-strikethrough: true;");
-                case UNDERLINED -> text.setStyle("-fx-underline: true;");
-                case ITALIC -> text.setStyle("-fx-font-weight: italic;");
             }
         }));
         nodes.add(text);

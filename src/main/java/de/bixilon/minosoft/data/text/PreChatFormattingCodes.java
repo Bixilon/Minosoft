@@ -13,11 +13,34 @@
 
 package de.bixilon.minosoft.data.text;
 
-public interface ChatFormattingCode extends ChatCode {
-    char getChar();
+public enum PreChatFormattingCodes implements ChatFormattingCode {
+    OBFUSCATED('k', "\u001b[5m"),
+    BOLD('l', "\u001b[1m"),
+    STRIKETHROUGH('m', "\u001b[9m"),
+    UNDERLINED('n', "\u001b[4m"),
+    ITALIC('o', "\u001b[3m");
+
+
+    final char c;
+    final String ansi;
+
+    PreChatFormattingCodes(char c, String ansi) {
+        this.c = c;
+        this.ansi = ansi;
+    }
+
+    public char getChar() {
+        return c;
+    }
+
 
     @Override
-    String toString();
+    public String toString() {
+        return getANSI();
+    }
 
-    String getANSI();
+    public String getANSI() {
+        return ansi;
+    }
 }
+

@@ -13,11 +13,28 @@
 
 package de.bixilon.minosoft.data.text;
 
-public interface ChatFormattingCode extends ChatCode {
-    char getChar();
+public enum PostChatFormattingCodes implements ChatFormattingCode {
+    RESET('r', "\u001b[0m");
+
+    final char c;
+    final String ansi;
+
+    PostChatFormattingCodes(char c, String ansi) {
+        this.c = c;
+        this.ansi = ansi;
+    }
+
+    public char getChar() {
+        return c;
+    }
 
     @Override
-    String toString();
+    public String toString() {
+        return getANSI();
+    }
 
-    String getANSI();
+    public String getANSI() {
+        return ansi;
+    }
 }
+

@@ -13,11 +13,5 @@
 
 package de.bixilon.minosoft.data.text;
 
-public interface ChatFormattingCode extends ChatCode {
-    char getChar();
-
-    @Override
-    String toString();
-
-    String getANSI();
+public interface ChatCode {
 }

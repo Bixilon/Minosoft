@@ -15,7 +15,7 @@ package de.bixilon.minosoft.logging;
 
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.text.ChatColors;
-import de.bixilon.minosoft.data.text.ChatFormattingCodes;
+import de.bixilon.minosoft.data.text.PostChatFormattingCodes;
 import de.bixilon.minosoft.data.text.RGBColor;
 
 import java.text.SimpleDateFormat;
@@ -73,11 +73,11 @@ public class Log {
         if (color != null && StaticConfiguration.COLORED_LOG) {
             builder.append(ChatColors.getANSIColorByRGBColor(color));
             builder.append(message);
-            builder.append(ChatFormattingCodes.RESET.getANSI());
+            builder.append(PostChatFormattingCodes.RESET.getANSI());
         } else {
             builder.append(message);
         }
-        builder.append(ChatFormattingCodes.RESET.getANSI());
+        builder.append(PostChatFormattingCodes.RESET.getANSI());
         queue.add(builder.toString());
     }
 

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.text;
 
-public final class RGBColor implements ChatFormattingCode {
+public final class RGBColor implements ChatCode {
     private final int color;
 
     public RGBColor(int color) {
