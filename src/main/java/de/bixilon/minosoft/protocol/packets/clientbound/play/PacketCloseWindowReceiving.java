@@ -34,7 +34,7 @@ public class PacketCloseWindowReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Closing inventory (windowId=%d)", windowId));
+        Log.protocol(String.format("[IN] Closing inventory (windowId=%d)", windowId));
     }
 
     public byte getWindowId() {

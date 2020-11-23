@@ -36,6 +36,6 @@ public class PacketEntityEvent implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity status: (entityId=%d, eventId=%s)", entityId, eventId));
+        Log.protocol(String.format("[IN] Entity status: (entityId=%d, eventId=%s)", entityId, eventId));
     }
 }

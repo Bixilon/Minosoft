@@ -39,7 +39,7 @@ public class PacketSpawnLocation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received spawn location %s", location));
+        Log.protocol(String.format("[IN] Received spawn location %s", location));
     }
 
     public BlockPosition getSpawnLocation() {

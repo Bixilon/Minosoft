@@ -38,6 +38,6 @@ public class PacketAnimation implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending hand animation (hand=%s)", hand));
+        Log.protocol(String.format("[OUT] Sending hand animation (hand=%s)", hand));
     }
 }

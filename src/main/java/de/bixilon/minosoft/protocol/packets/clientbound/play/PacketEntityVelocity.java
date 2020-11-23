@@ -38,7 +38,7 @@ public class PacketEntityVelocity implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity velocity changed %d: %s", entityId, velocity.toString()));
+        Log.protocol(String.format("[IN] Entity velocity changed %d: %s", entityId, velocity.toString()));
     }
 
     public int getEntityId() {

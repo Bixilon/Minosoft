@@ -37,7 +37,7 @@ public class PacketSetCooldown implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving item cooldown (item=%s, coolDown=%dt)", item, cooldownTicks));
+        Log.protocol(String.format("[IN] Receiving item cooldown (item=%s, coolDown=%dt)", item, cooldownTicks));
     }
 
     public int getItem() {

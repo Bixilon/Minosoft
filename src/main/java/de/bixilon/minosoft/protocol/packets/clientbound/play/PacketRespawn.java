@@ -82,7 +82,7 @@ public class PacketRespawn implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Respawn packet received (dimension=%s, difficulty=%s, gamemode=%s, levelType=%s)", dimension, difficulty, gameMode, levelType));
+        Log.protocol(String.format("[IN] Respawn packet received (dimension=%s, difficulty=%s, gamemode=%s, levelType=%s)", dimension, difficulty, gameMode, levelType));
     }
 
     public Dimension getDimension() {

@@ -40,6 +40,6 @@ public class PacketCreativeInventoryAction implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending creative inventory action (slot=%d, item=%s)", slot, clickedItem.getDisplayName()));
+        Log.protocol(String.format("[OUT] Sending creative inventory action (slot=%d, item=%s)", slot, clickedItem.getDisplayName()));
     }
 }

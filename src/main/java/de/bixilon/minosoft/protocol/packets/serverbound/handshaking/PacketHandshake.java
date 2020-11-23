@@ -51,6 +51,6 @@ public class PacketHandshake implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending handshake packet (address=%s)", address));
+        Log.protocol(String.format("[OUT] Sending handshake packet (address=%s)", address));
     }
 }

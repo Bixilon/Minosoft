@@ -35,7 +35,7 @@ public class PacketLoginDisconnect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving login disconnect packet (%s)", reason.getANSIColoredMessage()));
+        Log.protocol(String.format("[IN] Receiving login disconnect packet (%s)", reason.getANSIColoredMessage()));
     }
 
     public ChatComponent getReason() {

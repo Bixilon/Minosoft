@@ -89,7 +89,7 @@ public class PacketSpawnObject implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Object spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity));
+        Log.protocol(String.format("[IN] Object spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity));
     }
 
     public Entity getEntity() {

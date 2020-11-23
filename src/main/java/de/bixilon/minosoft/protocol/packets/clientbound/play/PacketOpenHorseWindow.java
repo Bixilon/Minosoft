@@ -38,7 +38,7 @@ public class PacketOpenHorseWindow implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received open horse window packet (windowId=%d, slotCount=%d, entityId=%s)", windowId, slotCount, entityId));
+        Log.protocol(String.format("[IN] Received open horse window packet (windowId=%d, slotCount=%d, entityId=%s)", windowId, slotCount, entityId));
     }
 
     public byte getWindowId() {

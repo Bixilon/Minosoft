@@ -38,6 +38,6 @@ public class PacketQueryEntityNBT implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Querying entity nbt (transactionId=%d, entityId=%d)", transactionId, entityId));
+        Log.protocol(String.format("[OUT] Querying entity nbt (transactionId=%d, entityId=%d)", transactionId, entityId));
     }
 }

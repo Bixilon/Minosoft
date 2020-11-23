@@ -40,6 +40,6 @@ public class PacketHeldItemChangeSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending slot selection: (%s)", slot));
+        Log.protocol(String.format("[OUT] Sending slot selection: (%s)", slot));
     }
 }

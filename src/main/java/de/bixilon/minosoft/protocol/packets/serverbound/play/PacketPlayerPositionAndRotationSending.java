@@ -76,6 +76,6 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending player position and rotation: %s %s %s (yaw=%s, pitch=%s)", x, headY, z, yaw, pitch));
+        Log.protocol(String.format("[OUT] Sending player position and rotation: %s %s %s (yaw=%s, pitch=%s)", x, headY, z, yaw, pitch));
     }
 }

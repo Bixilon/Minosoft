@@ -38,7 +38,7 @@ public class PacketChangeGameState implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received game status change (%s)", getReason()));
+        Log.protocol(String.format("[IN] Received game status change (%s)", getReason()));
     }
 
     public Reason getReason() {

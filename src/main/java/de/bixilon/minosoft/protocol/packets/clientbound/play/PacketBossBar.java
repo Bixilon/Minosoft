@@ -64,12 +64,12 @@ public class PacketBossBar implements ClientboundPacket {
     @Override
     public void log() {
         switch (action) {
-            case ADD -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\", health=%s, color=%s, divisions=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), title.getANSIColoredMessage(), health, color, divisions, isDragonBar(), shouldDarkenSky()));
-            case REMOVE -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s)", action, uuid.toString()));
-            case UPDATE_HEALTH -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, health=%s)", action, uuid.toString(), health));
-            case UPDATE_TITLE -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, title=\"%s\")", action, uuid.toString(), title.getANSIColoredMessage()));
-            case UPDATE_STYLE -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, color=%s, divisions=%s)", action, uuid.toString(), color, divisions));
-            case UPDATE_FLAGS -> Log.protocol(String.format("Received boss bar (action=%s, uuid=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), isDragonBar(), shouldDarkenSky()));
+            case ADD -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, title=\"%s\", health=%s, color=%s, divisions=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), title.getANSIColoredMessage(), health, color, divisions, isDragonBar(), shouldDarkenSky()));
+            case REMOVE -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s)", action, uuid.toString()));
+            case UPDATE_HEALTH -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, health=%s)", action, uuid.toString(), health));
+            case UPDATE_TITLE -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, title=\"%s\")", action, uuid.toString(), title.getANSIColoredMessage()));
+            case UPDATE_STYLE -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, color=%s, divisions=%s)", action, uuid.toString(), color, divisions));
+            case UPDATE_FLAGS -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), isDragonBar(), shouldDarkenSky()));
         }
     }
 

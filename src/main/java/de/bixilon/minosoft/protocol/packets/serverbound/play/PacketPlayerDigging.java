@@ -58,7 +58,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Send player digging packet (status=%s, position=%s, face=%s)", status, position, face));
+        Log.protocol(String.format("[OUT] Send player digging packet (status=%s, position=%s, face=%s)", status, position, face));
     }
 
     public enum DiggingStatus {

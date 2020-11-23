@@ -41,7 +41,7 @@ public class PacketUseBed implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity used bed at %s (entityId=%d)", position, entityId));
+        Log.protocol(String.format("[IN] Entity used bed at %s (entityId=%d)", position, entityId));
     }
 
     public int getEntityId() {

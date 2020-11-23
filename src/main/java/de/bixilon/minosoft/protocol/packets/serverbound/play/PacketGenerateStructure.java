@@ -44,6 +44,6 @@ public class PacketGenerateStructure implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending generate structure packet (position=%s, levels=%d, keepJigsaw=%s)", position, levels, keepJigsaw));
+        Log.protocol(String.format("[OUT] Sending generate structure packet (position=%s, levels=%d, keepJigsaw=%s)", position, levels, keepJigsaw));
     }
 }

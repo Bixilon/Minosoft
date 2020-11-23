@@ -39,6 +39,6 @@ public class PacketSteerBoat implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Steering boat: (leftPaddle=%s, rightPaddle=%s)", leftPaddle, rightPaddle));
+        Log.protocol(String.format("[OUT] Steering boat: (leftPaddle=%s, rightPaddle=%s)", leftPaddle, rightPaddle));
     }
 }

@@ -61,7 +61,7 @@ public class PacketOpenWindow implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received inventory open packet (windowId=%d, type=%s, title=%s, entityId=%d, slotCount=%d)", windowId, type, title, entityId, slotCount));
+        Log.protocol(String.format("[IN] Received inventory open packet (windowId=%d, type=%s, title=%s, entityId=%d, slotCount=%d)", windowId, type, title, entityId, slotCount));
     }
 
     public byte getSlotCount() {

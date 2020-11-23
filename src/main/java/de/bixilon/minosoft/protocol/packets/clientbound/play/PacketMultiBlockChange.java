@@ -80,7 +80,7 @@ public class PacketMultiBlockChange implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Multi block change received at %s (size=%d)", location, blocks.size()));
+        Log.protocol(String.format("[IN] Multi block change received at %s (size=%d)", location, blocks.size()));
     }
 
     public ChunkLocation getLocation() {

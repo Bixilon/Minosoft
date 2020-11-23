@@ -36,6 +36,6 @@ public class PacketSelectTrade implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending select trade packet (id=%d)", id));
+        Log.protocol(String.format("[OUT] Sending select trade packet (id=%d)", id));
     }
 }

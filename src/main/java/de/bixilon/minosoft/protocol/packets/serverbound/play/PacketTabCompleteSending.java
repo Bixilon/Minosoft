@@ -63,6 +63,6 @@ public class PacketTabCompleteSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending tab complete for message=\"%s\"", text.replace("\"", "\\\"")));
+        Log.protocol(String.format("[OUT] Sending tab complete for message=\"%s\"", text.replace("\"", "\\\"")));
     }
 }

@@ -56,7 +56,7 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received player abilities packet: (creative=%s, flying=%s, canFly=%s, godMode=%s, flyingSpeed=%s, walkingSpeed=%s)", creative, flying, canFly, godMode, flyingSpeed, walkingSpeed));
+        Log.protocol(String.format("[IN] Received player abilities packet: (creative=%s, flying=%s, canFly=%s, godMode=%s, flyingSpeed=%s, walkingSpeed=%s)", creative, flying, canFly, godMode, flyingSpeed, walkingSpeed));
     }
 
     public boolean canFly() {

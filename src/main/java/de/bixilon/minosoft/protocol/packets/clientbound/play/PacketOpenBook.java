@@ -39,7 +39,7 @@ public class PacketOpenBook implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received open book packet (hand=%s)", hand));
+        Log.protocol(String.format("[IN] Received open book packet (hand=%s)", hand));
     }
 
     public Hands getHand() {

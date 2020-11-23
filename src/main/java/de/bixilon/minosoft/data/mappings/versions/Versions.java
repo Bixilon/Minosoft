@@ -143,8 +143,11 @@ public class Versions {
                 loadVersionMappings(mapping, mod, data.getAsJsonObject(mod), version);
             }
         }
-
-        Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", version, (System.currentTimeMillis() - startTime), version.getVersionName()));
+        if (!files.isEmpty()) {
+            Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", version, (System.currentTimeMillis() - startTime), version.getVersionName()));
+        } else {
+            Log.verbose(String.format("Could not load mappings for version %s. Some features will be unavailable.", version));
+        }
         version.setGettingLoaded(false);
     }
 

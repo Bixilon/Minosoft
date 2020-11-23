@@ -46,7 +46,7 @@ public class PacketCollectItem implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Item %s was collected by %d (count=%s)", item, collectorId, ((count == 0) ? "?" : count)));
+        Log.protocol(String.format("[IN] Item %s was collected by %d (count=%s)", item, collectorId, ((count == 0) ? "?" : count)));
     }
 
     public Item getItem() {

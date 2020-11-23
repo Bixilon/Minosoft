@@ -52,6 +52,6 @@ public class PacketUpdateSignSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending Sign Update: %s", position));
+        Log.protocol(String.format("[OUT] Sending Sign Update: %s", position));
     }
 }

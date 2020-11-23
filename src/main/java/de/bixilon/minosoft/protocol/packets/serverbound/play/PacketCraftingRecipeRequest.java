@@ -38,6 +38,6 @@ public class PacketCraftingRecipeRequest implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending entity action packet (windowId=%d, recipeId=%d)", windowId, recipeId));
+        Log.protocol(String.format("[OUT] Sending entity action packet (windowId=%d, recipeId=%d)", windowId, recipeId));
     }
 }

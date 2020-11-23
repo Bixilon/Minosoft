@@ -44,7 +44,7 @@ public class PacketBlockChange implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Block change received at %s (block=%s)", position, block));
+        Log.protocol(String.format("[IN] Block change received at %s (block=%s)", position, block));
     }
 
     public BlockPosition getPosition() {

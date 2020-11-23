@@ -57,7 +57,7 @@ public class PacketEntityEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity effect added: %d %s", entityId, effect.toString()));
+        Log.protocol(String.format("[IN] Entity effect added: %d %s", entityId, effect.toString()));
     }
 
     public int getEntityId() {

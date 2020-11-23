@@ -28,6 +28,6 @@ public class PacketStatusRequest implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol("Sending status request packet");
+        Log.protocol("[OUT] Sending status request packet");
     }
 }

@@ -64,6 +64,6 @@ public class PacketBlockAction implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Block action received %s at %s", data, position));
+        Log.protocol(String.format("[IN] Block action received %s at %s", data, position));
     }
 }

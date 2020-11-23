@@ -62,7 +62,7 @@ public class PacketUpdateCommandBlock implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending update command block packet at %s (command=\"%s\", type=%s, trackOutput=%s, isConditional=%s, isAutomatic=%s)", position, command, type, trackOutput, isConditional, isAutomatic));
+        Log.protocol(String.format("[OUT] Sending update command block packet at %s (command=\"%s\", type=%s, trackOutput=%s, isConditional=%s, isAutomatic=%s)", position, command, type, trackOutput, isConditional, isAutomatic));
     }
 
     public enum CommandBlockType {

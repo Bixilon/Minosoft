@@ -48,6 +48,6 @@ public class PacketLoginPluginResponse implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending login plugin response (messageId=%d, successful=%s)", messageId, successful));
+        Log.protocol(String.format("[OUT] Sending login plugin response (messageId=%d, successful=%s)", messageId, successful));
     }
 }

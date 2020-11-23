@@ -84,7 +84,7 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending update structure block packet (position=%s, action=%s, mode=%s, name=\"%s\", offsetX=%d, offsetY=%d, offsetZ=%d, sizeX=%d, sizeY=%d, sizeZ=%d, mirror=%s, rotation=%s, metaData=\"%s\", integrity=%s, seed=%s, flags=%s)", position, action, mode, name, offsetX, offsetY, offsetZ, sizeX, sizeY, sizeZ, mirror, rotation, metaData, integrity, seed, flags));
+        Log.protocol(String.format("[OUT] Sending update structure block packet (position=%s, action=%s, mode=%s, name=\"%s\", offsetX=%d, offsetY=%d, offsetZ=%d, sizeX=%d, sizeY=%d, sizeZ=%d, mirror=%s, rotation=%s, metaData=\"%s\", integrity=%s, seed=%s, flags=%s)", position, action, mode, name, offsetX, offsetY, offsetZ, sizeX, sizeY, sizeZ, mirror, rotation, metaData, integrity, seed, flags));
     }
 
     public enum StructureBlockActions {

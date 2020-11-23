@@ -36,6 +36,6 @@ public class PacketSetDisplayedRecipe implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending set displayed recipe packet (identifier=%s:%s)", recipe.getResult().getItem().getMod(), recipe.getResult().getItem().getIdentifier()));
+        Log.protocol(String.format("[OUT] Sending set displayed recipe packet (identifier=%s:%s)", recipe.getResult().getItem().getMod(), recipe.getResult().getItem().getIdentifier()));
     }
 }

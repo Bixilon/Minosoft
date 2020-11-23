@@ -34,6 +34,6 @@ public class PacketUpdateViewDistance implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received view distance update (viewDistance=%s)", viewDistance));
+        Log.protocol(String.format("[IN] Received view distance update (viewDistance=%s)", viewDistance));
     }
 }

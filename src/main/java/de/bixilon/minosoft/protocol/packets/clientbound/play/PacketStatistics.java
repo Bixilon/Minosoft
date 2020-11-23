@@ -46,7 +46,7 @@ public class PacketStatistics implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received player statistics (count=%d)", statistics.size()));
+        Log.protocol(String.format("[IN] Received player statistics (count=%d)", statistics.size()));
     }
 
     public HashMap<Statistic, Integer> getStatistics() {

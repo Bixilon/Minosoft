@@ -40,7 +40,7 @@ public class PacketResourcePackSend implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received resource pack send (url=\"%s\", hash=%s", url, hash));
+        Log.protocol(String.format("[IN] Received resource pack send (url=\"%s\", hash=%s", url, hash));
     }
 
     public String getUrl() {

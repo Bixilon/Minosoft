@@ -73,12 +73,12 @@ public class PacketWorldBorder implements ClientboundPacket {
     @Override
     public void log() {
         switch (action) {
-            case SET_SIZE -> Log.protocol(String.format("Receiving world border packet (action=%s, radius=%s)", action, radius));
-            case LERP_SIZE -> Log.protocol(String.format("Receiving world border packet (action=%s, oldRadius=%s, newRadius=%s, speed=%s", action, oldRadius, newRadius, speed));
-            case SET_CENTER -> Log.protocol(String.format("Receiving world border packet (action=%s, x=%s, z=%s)", action, x, z));
-            case INITIALIZE -> Log.protocol(String.format("Receiving world border packet (action=%s, x=%s, z=%s, oldRadius=%s, newRadius=%s, speed=%s, portalBound=%s, warningTime=%s, warningBlocks=%s)", action, x, z, oldRadius, newRadius, speed, portalBound, warningTime, warningBlocks));
-            case SET_WARNING_TIME -> Log.protocol(String.format("Receiving world border packet (action=%s, warningTime=%s)", action, warningTime));
-            case SET_WARNING_BLOCKS -> Log.protocol(String.format("Receiving world border packet (action=%s, warningBlocks=%s)", action, warningBlocks));
+            case SET_SIZE -> Log.protocol(String.format("[IN] Receiving world border packet (action=%s, radius=%s)", action, radius));
+            case LERP_SIZE -> Log.protocol(String.format("[IN] Receiving world border packet (action=%s, oldRadius=%s, newRadius=%s, speed=%s", action, oldRadius, newRadius, speed));
+            case SET_CENTER -> Log.protocol(String.format("[IN] Receiving world border packet (action=%s, x=%s, z=%s)", action, x, z));
+            case INITIALIZE -> Log.protocol(String.format("[IN] Receiving world border packet (action=%s, x=%s, z=%s, oldRadius=%s, newRadius=%s, speed=%s, portalBound=%s, warningTime=%s, warningBlocks=%s)", action, x, z, oldRadius, newRadius, speed, portalBound, warningTime, warningBlocks));
+            case SET_WARNING_TIME -> Log.protocol(String.format("[IN] Receiving world border packet (action=%s, warningTime=%s)", action, warningTime));
+            case SET_WARNING_BLOCKS -> Log.protocol(String.format("[IN] Receiving world border packet (action=%s, warningBlocks=%s)", action, warningBlocks));
         }
     }
 

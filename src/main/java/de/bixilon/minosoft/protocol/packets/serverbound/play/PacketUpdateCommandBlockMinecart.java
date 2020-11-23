@@ -42,6 +42,6 @@ public class PacketUpdateCommandBlockMinecart implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending update minecart command block packet (entityId=%d, command=\"%s\", trackOutput=%s)", entityId, command, trackOutput));
+        Log.protocol(String.format("[OUT] Sending update minecart command block packet (entityId=%d, command=\"%s\", trackOutput=%s)", entityId, command, trackOutput));
     }
 }

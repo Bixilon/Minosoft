@@ -38,7 +38,7 @@ public class PacketWindowProperty implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received window property (windowId=%d, property=%d, value=%d)", windowId, property, value));
+        Log.protocol(String.format("[IN] Received window property (windowId=%d, property=%d, value=%d)", windowId, property, value));
     }
 
     public byte getWindowId() {

@@ -43,7 +43,7 @@ public class PacketEntitySoundEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Play sound entity effect (soundId=%d, category=%s, entityId=%d, volume=%s, pitch=%s)", soundId, category, entityId, volume, pitch));
+        Log.protocol(String.format("[IN] Play sound entity effect (soundId=%d, category=%s, entityId=%d, volume=%s, pitch=%s)", soundId, category, entityId, volume, pitch));
     }
 
     public int getSoundId() {

@@ -41,6 +41,6 @@ public class PacketLoginStart implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending login start (username=%s)", username));
+        Log.protocol(String.format("[OUT] Sending login start (username=%s)", username));
     }
 }

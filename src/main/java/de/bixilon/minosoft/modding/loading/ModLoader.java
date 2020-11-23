@@ -34,7 +34,7 @@ public class ModLoader {
     public static final LinkedList<MinosoftMod> mods = new LinkedList<>();
 
     public static void loadMods(CountUpAndDownLatch progress) throws Exception {
-        Log.verbose("Start loading mods...");
+        Log.info("Start loading mods...");
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Util.getThreadFactory("ModLoader"));
 
         // load all jars, parse the mod.json
@@ -77,7 +77,7 @@ public class ModLoader {
         // ToDo: check dependencies
 
         for (ModPhases phase : ModPhases.values()) {
-            Log.verbose(String.format("Map loading phase changed: %s", phase));
+            Log.verbose(String.format("Mod loading phase changed: %s", phase));
             CountDownLatch modLatch = new CountDownLatch(mods.size());
             mods.forEach((instance) -> {
                 executor.execute(() -> {
@@ -106,10 +106,9 @@ public class ModLoader {
                 Minosoft.eventManagers.add(instance.getEventManager());
             } else {
                 mods.remove(instance);
-                Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));
             }
         });
-        Log.verbose("Loading all mods finished!");
+        Log.info("Loading of %d mods finished!", mods.size());
     }
 
     public static MinosoftMod loadMod(CountUpAndDownLatch progress, File file) {
