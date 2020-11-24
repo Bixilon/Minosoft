@@ -238,7 +238,11 @@ public class EntityMetaData {
         }
 
         public int getInt(EntityMetaDataFields field) {
-            return get(field);
+            Object value = get(field);
+            if (value instanceof Byte b) {
+                return b;
+            }
+            return (int) value;
         }
 
         public Short getShort(EntityMetaDataFields field) {

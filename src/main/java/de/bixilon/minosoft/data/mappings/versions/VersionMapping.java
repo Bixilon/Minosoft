@@ -97,6 +97,13 @@ public class VersionMapping {
     }
 
     public Item getItemById(int versionId) {
+        if (!version.isFlattened()) {
+            return getItemByLegacy(versionId >>> 16, versionId & 0xFFFF);
+        }
+        return getItemByIdIgnoreFlattened(versionId);
+    }
+
+    private Item getItemByIdIgnoreFlattened(int versionId) {
         if (parentMapping != null) {
             Item item = parentMapping.getItemById(versionId);
             if (item != null) {
@@ -268,10 +275,10 @@ public class VersionMapping {
         if (metaData > 0 && metaData < Short.MAX_VALUE) {
             versionItemId |= metaData;
         }
-        Item item = getItemById(versionItemId);
+        Item item = getItemByIdIgnoreFlattened(versionItemId);
         if (item == null) {
             // ignore meta data ?
-            return getItemById(itemId << 16);
+            return getItemByIdIgnoreFlattened(itemId << 16);
         }
         return item;
     }
