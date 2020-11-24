@@ -27,7 +27,11 @@ public class EntityInformation extends ModIdentifier {
     }
 
     public static EntityInformation deserialize(String mod, String identifier, JsonObject data) {
-        return new EntityInformation(mod, identifier, data.get("width").getAsFloat(), data.get("height").getAsFloat());
+        if (data.has("width") && data.has("height")) {
+            return new EntityInformation(mod, identifier, data.get("width").getAsFloat(), data.get("height").getAsFloat());
+        }
+        return null;
+
     }
 
     public float getWidth() {

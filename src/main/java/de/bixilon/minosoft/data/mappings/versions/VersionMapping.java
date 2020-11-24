@@ -407,12 +407,15 @@ public class VersionMapping {
 
     private void loadEntityMapping(String mod, String identifier, JsonObject fullModData) {
         JsonObject data = fullModData.getAsJsonObject(identifier);
-        if (data.has("id")) {
+        Class<? extends Entity> clazz = EntityClassMappings.getByIdentifier(mod, identifier);
+        EntityInformation information = EntityInformation.deserialize(mod, identifier, data);
+        if (information != null) {
             // not abstract, has id and attributes
-            Class<? extends Entity> clazz = EntityClassMappings.getByIdentifier(mod, identifier);
-            entityInformationMap.put(clazz, EntityInformation.deserialize(mod, identifier, data));
+            entityInformationMap.put(clazz, information);
 
-            entityIdClassMap.put(data.get("id").getAsInt(), clazz);
+            if (data.has("id")) {
+                entityIdClassMap.put(data.get("id").getAsInt(), clazz);
+            }
         }
         String parent = null;
         int metaDataIndexOffset = 0;
