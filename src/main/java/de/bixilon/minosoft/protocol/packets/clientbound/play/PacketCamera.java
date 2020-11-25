@@ -34,7 +34,7 @@ public class PacketCamera implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving camera packet (entityId=%d)", entityId));
+        Log.protocol(String.format("[IN] Receiving camera packet (entityId=%d)", entityId));
     }
 
     public int getEntityId() {

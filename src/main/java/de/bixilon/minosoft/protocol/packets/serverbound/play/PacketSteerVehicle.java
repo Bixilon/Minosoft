@@ -56,6 +56,6 @@ public class PacketSteerVehicle implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Steering vehicle: %s %s (jump=%s, unmount=%s)", sideways, forward, jump, unmount));
+        Log.protocol(String.format("[OUT] Steering vehicle: %s %s (jump=%s, unmount=%s)", sideways, forward, jump, unmount));
     }
 }

@@ -13,17 +13,15 @@
 
 package de.bixilon.minosoft.data.mappings.particle;
 
-public record Particle(String mod, String identifier) {
-    public String getMod() {
-        return mod;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
+
+public class Particle extends ModIdentifier {
+
+    public Particle(String mod, String identifier) {
+        super(mod, identifier);
     }
 
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s:%s", mod, identifier);
+    public Particle(String fullIdentifier) {
+        super(fullIdentifier);
     }
 }

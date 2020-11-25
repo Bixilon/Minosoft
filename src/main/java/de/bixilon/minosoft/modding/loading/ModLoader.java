@@ -23,7 +23,6 @@ import org.xeustechnologies.jcl.JarClassLoader;
 import org.xeustechnologies.jcl.JclObjectFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -35,13 +34,13 @@ public class ModLoader {
     public static final LinkedList<MinosoftMod> mods = new LinkedList<>();
 
     public static void loadMods(CountUpAndDownLatch progress) throws Exception {
-        Log.verbose("Start loading mods...");
+        Log.info("Start loading mods...");
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Util.getThreadFactory("ModLoader"));
 
         // load all jars, parse the mod.json
         // sort the list and prioritize
         // load all lists and dependencies async
-        File[] files = new File(StaticConfiguration.HOME_DIR + "mods").listFiles();
+        File[] files = new File(StaticConfiguration.HOME_DIRECTORY + "mods").listFiles();
         if (files == null) {
             // no mods to load
             return;
@@ -78,7 +77,7 @@ public class ModLoader {
         // ToDo: check dependencies
 
         for (ModPhases phase : ModPhases.values()) {
-            Log.verbose(String.format("Map loading phase changed: %s", phase));
+            Log.verbose(String.format("Mod loading phase changed: %s", phase));
             CountDownLatch modLatch = new CountDownLatch(mods.size());
             mods.forEach((instance) -> {
                 executor.execute(() -> {
@@ -87,7 +86,12 @@ public class ModLoader {
                         progress.countDown();
                         return;
                     }
-                    if (!instance.start(phase)) {
+                    try {
+                        if (!instance.start(phase)) {
+                            throw new ModLoadingException(String.format("Could not load nod %s", instance.getInfo()));
+                        }
+                    } catch (Throwable e) {
+                        e.printStackTrace();
                         Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));
                         instance.setEnabled(false);
                     }
@@ -102,10 +106,9 @@ public class ModLoader {
                 Minosoft.eventManagers.add(instance.getEventManager());
             } else {
                 mods.remove(instance);
-                Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));
             }
         });
-        Log.verbose("Loading all mods finished!");
+        Log.info("Loading of %d mods finished!", mods.size());
     }
 
     public static MinosoftMod loadMod(CountUpAndDownLatch progress, File file) {
@@ -127,7 +130,7 @@ public class ModLoader {
             instance.setInfo(modInfo);
             Log.verbose(String.format("[MOD] Mod file loaded and added to classpath (%s)", modInfo));
             zipFile.close();
-        } catch (IOException | ModLoadingException | NullPointerException e) {
+        } catch (Throwable e) {
             instance = null;
             e.printStackTrace();
             Log.warn(String.format("Could not load mod: %s", file.getAbsolutePath()));

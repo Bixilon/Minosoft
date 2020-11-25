@@ -13,12 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Entity;
+import de.bixilon.minosoft.data.entities.EntityMetaData;
+import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.Velocity;
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.data.mappings.Entities;
+import de.bixilon.minosoft.data.entities.entities.Entity;
+import de.bixilon.minosoft.data.entities.entities.UnknownEntityException;
+import de.bixilon.minosoft.data.mappings.VersionTweaker;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
@@ -31,7 +34,7 @@ public class PacketSpawnMob implements ClientboundPacket {
     Velocity velocity;
 
     @Override
-    public boolean read(InByteBuffer buffer) {
+    public boolean read(InByteBuffer buffer) throws Exception {
         int entityId = buffer.readVarInt();
         UUID uuid = null;
         if (buffer.getVersionId() >= 49) {
@@ -43,25 +46,31 @@ public class PacketSpawnMob implements ClientboundPacket {
         } else {
             type = buffer.readVarInt();
         }
-        Class<? extends Entity> typeClass = Entities.getClassByIdentifier(buffer.getConnection().getMapping().getEntityIdentifierById(type));
+        Class<? extends Entity> typeClass = buffer.getConnection().getMapping().getEntityClassById(type);
         Location location;
         if (buffer.getVersionId() < 100) {
             location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
         } else {
             location = buffer.readLocation();
         }
-        short yaw = buffer.readAngle();
-        short pitch = buffer.readAngle();
-        short headYaw = buffer.readAngle();
+        EntityRotation rotation = new EntityRotation(buffer.readAngle(), buffer.readAngle(), buffer.readAngle());
         velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
 
-        EntityMetaData.MetaDataHashMap metaData = null;
+        EntityMetaData metaData = null;
         if (buffer.getVersionId() < 550) {
             metaData = buffer.readMetaData();
+            // we have meta data, check if we need to correct the class
+            typeClass = VersionTweaker.getRealEntityClass(typeClass, metaData, buffer.getVersionId());
+        }
+        if (typeClass == null) {
+            throw new UnknownEntityException(String.format("Unknown entity (typeId=%d)", type));
         }
 
         try {
-            entity = typeClass.getConstructor(int.class, UUID.class, Location.class, short.class, short.class, short.class, EntityMetaData.MetaDataHashMap.class, int.class).newInstance(entityId, uuid, location, yaw, pitch, headYaw, metaData, buffer.getVersionId());
+            entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Location.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, location, rotation);
+            if (metaData != null) {
+                entity.setMetaData(metaData);
+            }
             return true;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
             e.printStackTrace();
@@ -76,7 +85,7 @@ public class PacketSpawnMob implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Mob spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity.getIdentifier()));
+        Log.protocol(String.format("[IN] Mob spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity));
     }
 
     public Entity getEntity() {

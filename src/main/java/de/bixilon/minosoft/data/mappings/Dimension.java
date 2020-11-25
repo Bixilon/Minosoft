@@ -13,37 +13,16 @@
 
 package de.bixilon.minosoft.data.mappings;
 
-public class Dimension {
-    final String mod;
-    final String identifier;
+public class Dimension extends ModIdentifier {
     final boolean hasSkyLight;
 
     public Dimension(String mod, String identifier, boolean hasSkyLight) {
-        this.mod = mod;
-        this.identifier = identifier;
+        super(mod, identifier);
         this.hasSkyLight = hasSkyLight;
-    }
-
-    public String getMod() {
-        return mod;
-    }
-
-    public String getIdentifier() {
-        return identifier;
     }
 
     public boolean hasSkyLight() {
         return hasSkyLight;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s:%s", getMod(), getIdentifier());
-    }
-
-    @Override
-    public int hashCode() {
-        return mod.hashCode() * identifier.hashCode();
     }
 
     @Override

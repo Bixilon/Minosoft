@@ -16,6 +16,8 @@ package de.bixilon.minosoft.data.text;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.hash.BetterHashSet;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
@@ -23,9 +25,8 @@ import javax.annotation.Nullable;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
-import java.util.HashSet;
 
-public class BaseComponent implements ChatComponent {
+public class BaseComponent extends ChatComponent {
     private final ArrayList<ChatComponent> parts = new ArrayList<>();
 
     public BaseComponent() {
@@ -35,12 +36,12 @@ public class BaseComponent implements ChatComponent {
         // legacy String
         StringBuilder currentText = new StringBuilder();
         RGBColor color = null;
-        HashSet<ChatFormattingCodes> formattingCodes = new HashSet<>();
+        BetterHashSet<ChatFormattingCode> formattingCodes = new BetterHashSet<>();
         StringCharacterIterator iterator = new StringCharacterIterator(text);
         while (iterator.current() != CharacterIterator.DONE) {
             char c = iterator.current();
             iterator.next();
-            if (c != '§') {
+            if (c != ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) {
                 currentText.append(c);
                 continue;
             }
@@ -55,19 +56,19 @@ public class BaseComponent implements ChatComponent {
                     currentText = new StringBuilder();
                 }
                 color = nextColor;
-                formattingCodes = new HashSet<>();
+                formattingCodes = new BetterHashSet<>();
                 continue;
             }
-            ChatFormattingCodes nextFormattingCode = ChatFormattingCodes.getChatFormattingCodeByChar(nextFormattingChar);
+            ChatFormattingCode nextFormattingCode = ChatFormattingCodes.getChatFormattingCodeByChar(nextFormattingChar);
             if (nextFormattingCode != null) {
                 if (currentText.length() > 0) {
                     parts.add(new TextComponent(currentText.toString(), color, formattingCodes));
                     currentText = new StringBuilder();
                     color = null;
-                    formattingCodes = new HashSet<>();
+                    formattingCodes = new BetterHashSet<>();
                 }
                 formattingCodes.add(nextFormattingCode);
-                if (nextFormattingCode == ChatFormattingCodes.RESET) {
+                if (nextFormattingCode == PostChatFormattingCodes.RESET) {
                     // special rule here
                     if (currentText.length() > 0) {
                         // color change, add text part
@@ -75,7 +76,7 @@ public class BaseComponent implements ChatComponent {
                         currentText = new StringBuilder();
                     }
                     color = null;
-                    formattingCodes = new HashSet<>();
+                    formattingCodes = new BetterHashSet<>();
                 }
             }
         }
@@ -92,7 +93,7 @@ public class BaseComponent implements ChatComponent {
         TextComponent thisTextComponent = null;
         if (json.has("text")) {
             String text = json.get("text").getAsString();
-            if (text.contains("§")) {
+            if (text.contains(String.valueOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR))) {
                 // legacy text component
                 parts.add(new BaseComponent(text));
                 return;
@@ -112,69 +113,48 @@ public class BaseComponent implements ChatComponent {
                     color = ChatColors.getColorByName(colorString);
                 }
             }
-            HashSet<ChatFormattingCodes> formattingCodes;
+            BetterHashSet<ChatFormattingCode> formattingCodes;
             if (parent != null && parent.getFormatting() != null) {
-                formattingCodes = (HashSet<ChatFormattingCodes>) parent.getFormatting().clone();
+                formattingCodes = (BetterHashSet<ChatFormattingCode>) parent.getFormatting().clone();
             } else {
-                formattingCodes = new HashSet<>();
+                formattingCodes = new BetterHashSet<>();
             }
             if (json.has("bold")) {
-                if (json.get("bold").getAsBoolean()) {
-                    formattingCodes.add(ChatFormattingCodes.BOLD);
-                } else {
-                    formattingCodes.remove(ChatFormattingCodes.BOLD);
-                }
+                formattingCodes.addOrRemove(PreChatFormattingCodes.BOLD, json.get("bold").getAsBoolean());
             }
             if (json.has("italic")) {
-                if (json.get("italic").getAsBoolean()) {
-                    formattingCodes.add(ChatFormattingCodes.ITALIC);
-                } else {
-                    formattingCodes.remove(ChatFormattingCodes.ITALIC);
-                }
+                formattingCodes.addOrRemove(PreChatFormattingCodes.ITALIC, json.get("italic").getAsBoolean());
             }
             if (json.has("underlined")) {
-                if (json.get("underlined").getAsBoolean()) {
-                    formattingCodes.add(ChatFormattingCodes.UNDERLINED);
-                } else {
-                    formattingCodes.remove(ChatFormattingCodes.UNDERLINED);
-
-                }
+                formattingCodes.addOrRemove(PreChatFormattingCodes.UNDERLINED, json.get("underlined").getAsBoolean());
             }
             if (json.has("strikethrough")) {
-                if (json.get("strikethrough").getAsBoolean()) {
-                    formattingCodes.add(ChatFormattingCodes.STRIKETHROUGH);
-                } else {
-                    formattingCodes.remove(ChatFormattingCodes.STRIKETHROUGH);
-                }
+                formattingCodes.addOrRemove(PreChatFormattingCodes.STRIKETHROUGH, json.get("strikethrough").getAsBoolean());
             }
             if (json.has("obfuscated")) {
-                if (json.get("obfuscated").getAsBoolean()) {
-                    formattingCodes.add(ChatFormattingCodes.OBFUSCATED);
-                } else {
-                    formattingCodes.remove(ChatFormattingCodes.OBFUSCATED);
-                }
+                formattingCodes.addOrRemove(PreChatFormattingCodes.OBFUSCATED, json.get("obfuscated").getAsBoolean());
             }
             thisTextComponent = new TextComponent(text, color, formattingCodes);
-        }
-
-        if (json.has("extra")) {
-            JsonArray extras = json.getAsJsonArray("extra");
-            TextComponent finalThisChatPart = thisTextComponent;
-            extras.forEach((extra -> parts.add(new BaseComponent(finalThisChatPart, extra.getAsJsonObject()))));
-        }
-
-        if (json.has("translate")) {
-            parts.add(new TranslatableComponent(json.get("translate").getAsString(), json.getAsJsonArray("with")));
         }
 
         if (thisTextComponent != null) {
             parts.add(thisTextComponent);
         }
+
+        final TextComponent parentParameter = thisTextComponent == null ? parent : thisTextComponent;
+        if (json.has("extra")) {
+            JsonArray extras = json.getAsJsonArray("extra");
+            extras.forEach((extra -> parts.add(new BaseComponent(parentParameter, extra.getAsJsonObject()))));
+        }
+
+        if (json.has("translate")) {
+            parts.add(new TranslatableComponent(parentParameter, json.get("translate").getAsString(), json.getAsJsonArray("with")));
+        }
     }
 
     @Override
     public String toString() {
-        return getANSIColoredMessage();
+        return PostChatFormattingCodes.RESET.getANSI() + getANSIColoredMessage();
     }
 
     public String getANSIColoredMessage() {

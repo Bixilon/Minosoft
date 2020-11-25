@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.world;
 
-import de.bixilon.minosoft.data.entities.Entity;
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.blocks.Blocks;
@@ -27,7 +27,6 @@ import java.util.HashMap;
 public class World {
     final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
     final HashMap<Integer, Entity> entities = new HashMap<>();
-    final HashMap<BlockPosition, BlockEntityMetaData> blockEntityMeta = new HashMap<>();
     boolean hardcore;
     boolean raining;
     Dimension dimension; // used for sky color, etc
@@ -108,15 +107,22 @@ public class World {
     }
 
     public void setBlockEntityData(BlockPosition position, BlockEntityMetaData data) {
-        // ToDo check if block is really a block entity (command block, spawner, skull, flower pot)
-        blockEntityMeta.put(position, data);
+        Chunk chunk = chunks.get(position.getChunkLocation());
+        if (chunk == null) {
+            return;
+        }
+        chunk.setBlockEntityData(position.getInChunkLocation(), data);
     }
 
     public BlockEntityMetaData getBlockEntityData(BlockPosition position) {
-        return blockEntityMeta.get(position);
+        Chunk chunk = chunks.get(position.getChunkLocation());
+        if (chunk == null) {
+            return null;
+        }
+        return chunk.getBlockEntityData(position.getInChunkLocation());
     }
 
     public void setBlockEntityData(HashMap<BlockPosition, BlockEntityMetaData> blockEntities) {
-        blockEntities.forEach(blockEntityMeta::put);
+        blockEntities.forEach(this::setBlockEntityData);
     }
 }

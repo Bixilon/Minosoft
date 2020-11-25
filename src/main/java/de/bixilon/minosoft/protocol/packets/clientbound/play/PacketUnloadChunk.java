@@ -35,7 +35,7 @@ public class PacketUnloadChunk implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received unload chunk packet (location=%s)", location));
+        Log.protocol(String.format("[IN] Received unload chunk packet (location=%s)", location));
     }
 
     public ChunkLocation getLocation() {

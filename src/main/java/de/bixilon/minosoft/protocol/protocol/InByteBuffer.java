@@ -16,9 +16,9 @@ package de.bixilon.minosoft.protocol.protocol;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.data.Directions;
+import de.bixilon.minosoft.data.entities.EntityMetaData;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.Poses;
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData;
@@ -73,6 +73,10 @@ public class InByteBuffer {
         return buffer.getShort(0);
     }
 
+    public int readUnsignedShort() {
+        return readShort() & 0xFFFF;
+    }
+
     public int readInt() {
         ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
         buffer.put(readBytes(Integer.BYTES));
@@ -82,7 +86,7 @@ public class InByteBuffer {
     public byte[] readBytes(int count) {
         byte[] ret = new byte[count];
         System.arraycopy(bytes, position, ret, 0, count);
-        position = position + count;
+        position += count;
         return ret;
     }
 
@@ -97,33 +101,26 @@ public class InByteBuffer {
     }
 
     public String readString() {
-        int length = readVarInt();
-        return new String(readBytes(length), StandardCharsets.UTF_8);
+        return new String(readBytes(readVarInt()), StandardCharsets.UTF_8);
     }
 
     public long readVarLong() {
-        int numRead = 0;
+        int byteCount = 0;
         long result = 0;
         byte read;
-        do
-        {
+        do {
             read = readByte();
-            int value = (read & 0b01111111);
-            result |= (value << (7 * numRead));
-
-            numRead++;
-            if (numRead > 10) {
-                throw new RuntimeException("VarLong is too big");
+            result |= (read & 0x7F) << (7 * byteCount);
+            byteCount++;
+            if (byteCount > 10) {
+                throw new IllegalArgumentException("VarLong is too big");
             }
-        } while ((read & 0b10000000) != 0);
-
+        } while ((read & 0x80) != 0);
         return result;
     }
 
     public boolean readBoolean() {
-        boolean ret;
-        ret = readByte() == 1;
-        return ret;
+        return readByte() == 1;
     }
 
     public short[] readLEShorts(int num) {
@@ -152,21 +149,17 @@ public class InByteBuffer {
     }
 
     public int readVarInt() {
-        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
-        int numRead = 0;
+        int byteCount = 0;
         int result = 0;
         byte read;
-        do
-        {
+        do {
             read = readByte();
-            int value = (read & 0b01111111);
-            result |= (value << (7 * numRead));
-
-            numRead++;
-            if (numRead > 5) {
-                throw new RuntimeException("VarInt is too big");
+            result |= (read & 0x7F) << (7 * byteCount);
+            byteCount++;
+            if (byteCount > 5) {
+                throw new IllegalArgumentException("VarInt is too big");
             }
-        } while ((read & 0b10000000) != 0);
+        } while ((read & 0x80) != 0);
 
         return result;
     }
@@ -189,15 +182,13 @@ public class InByteBuffer {
 
     public BlockPosition readPosition() {
         //ToDo: protocol id 7
+        long raw = readLong();
+        int x = (int) (raw >> 38);
         if (versionId < 440) {
-            long raw = readLong();
-            int x = (int) (raw >> 38);
             short y = (short) ((raw >> 26) & 0xFFF);
             int z = (int) (raw & 0x3FFFFFF);
             return new BlockPosition(x, y, z);
         }
-        long raw = readLong();
-        int x = (int) (raw >> 38);
         short y = (short) (raw & 0xFFF);
         int z = (int) (raw << 26 >> 38);
         return new BlockPosition(x, y, z);
@@ -393,12 +384,12 @@ public class InByteBuffer {
         return versionId;
     }
 
-    public EntityMetaData.MetaDataHashMap readMetaData() {
-        EntityMetaData.MetaDataHashMap sets = new EntityMetaData.MetaDataHashMap();
+    public EntityMetaData readMetaData() {
+        EntityMetaData metaData = new EntityMetaData(connection);
+        EntityMetaData.MetaDataHashMap sets = metaData.getSets();
 
         if (versionId < 48) {
             byte item = readByte();
-
             while (item != 0x7F) {
                 byte index = (byte) (item & 0x1F);
                 EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId((item & 0xFF) >> 5, versionId);
@@ -420,7 +411,7 @@ public class InByteBuffer {
                 index = readByte();
             }
         }
-        return sets;
+        return metaData;
     }
 
     @Override

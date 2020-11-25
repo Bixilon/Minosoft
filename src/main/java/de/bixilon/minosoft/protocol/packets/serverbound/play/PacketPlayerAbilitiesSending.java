@@ -44,6 +44,6 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending player abilities packet: (flying=%s)", flying));
+        Log.protocol(String.format("[OUT] Sending player abilities packet: (flying=%s)", flying));
     }
 }

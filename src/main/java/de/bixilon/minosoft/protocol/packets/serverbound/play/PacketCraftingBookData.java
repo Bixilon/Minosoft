@@ -82,8 +82,8 @@ public class PacketCraftingBookData implements ServerboundPacket {
     @Override
     public void log() {
         switch (action) {
-            case DISPLAY_RECIPE -> Log.protocol(String.format("Sending crafting book status (action=%s, recipeId=%d)", action, recipeId));
-            case CRAFTING_BOOK_STATUS -> Log.protocol(String.format("Sending crafting book status (action=%s, craftingBookOpen=%s, craftingFilter=%s)", action, craftingBookOpen, craftingFilter));
+            case DISPLAY_RECIPE -> Log.protocol(String.format("[OUT] Sending crafting book status (action=%s, recipeId=%d)", action, recipeId));
+            case CRAFTING_BOOK_STATUS -> Log.protocol(String.format("[OUT] Sending crafting book status (action=%s, craftingBookOpen=%s, craftingFilter=%s)", action, craftingBookOpen, craftingFilter));
         }
     }
 

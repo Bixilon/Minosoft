@@ -2,8 +2,8 @@
 # Minosoft
 Minosoft is an open source minecraft client, written from scratch in java. It aims to bring more functionality and stability.
 
-[![pipeline status](https://gitlab.bixilon.de/bixilon/minosoft/badges/master/pipeline.svg)](https://gitlab.bixilon.de/bixilon/minosoft/-/commits/master)
-
+[![pipeline status](https://gitlab.bixilon.de/bixilon/minosoft/badges/master/pipeline.svg)](https://gitlab.bixilon.de/bixilon/minosoft/-/commits/master) 
+[![](https://jitpack.io/v/de.bixilon.gitlab.bixilon/minosoft.svg)](https://jitpack.io/#de.bixilon.gitlab.bixilon/minosoft)
 
 ## Feature overview
  - Rendering (WIP)
@@ -57,6 +57,11 @@ Sadly, we cannot support all versions. We will add support for all major version
  - `1.13-pre6`, `1.13-pre5`, `17w50a`, `17w49b`, `17w49a`, `17w48a`, `17w47b`, `17w47a` Missing blocks.json (Mappings)
  - April fools: I will not add any support for them, there are only a few things known. They might work, untested.
  
+### Partly supported versions
+ - Protocol lacking; See [snapSupportToDo.txt](/doc/snapSupportToDo.txt)
+ - Entities everything below `19w36a` (shortly after 1.14.4) (except `1.14.4` and `1.8.9`). Why? There is simply no time to generate an `entities.json`. The [Generator](/util) only works after that version.
+And 1.8.9 is only supported, because it this version is widely spread, and I wrote (~ 1000 lines) by hand.
+
 ## Modding
 Minosoft is modding friendly. I am working hard on a reasonable API. See !17 for more details. See [Modding.md](doc/Modding.md) for more details. The code is pretty dynamic (all blocks, items, entities, etc are stored in json files). It is pretty easy to load custom entities, etc.
 We will add a real modding API once Rendering is complete. Spoiler: Forge mods are NOT compatible. Feel free to write a compatibility layer (This is a really hard thing, we do things completely different).

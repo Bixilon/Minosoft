@@ -65,6 +65,6 @@ public class PacketUpdateJigsawBlock implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Updating jigsaw block (position=%s, attachmentType=%s, targetPool=%s, finalState=%s)", position, attachmentType, targetPool, finalState));
+        Log.protocol(String.format("[OUT] Updating jigsaw block (position=%s, attachmentType=%s, targetPool=%s, finalState=%s)", position, attachmentType, targetPool, finalState));
     }
 }

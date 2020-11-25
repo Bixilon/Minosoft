@@ -34,7 +34,7 @@ public class PacketEntityInitialisation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Initialising entity (entityId=%d)", entityId));
+        Log.protocol(String.format("[IN] Initialising entity (entityId=%d)", entityId));
     }
 
     public int getEntityId() {

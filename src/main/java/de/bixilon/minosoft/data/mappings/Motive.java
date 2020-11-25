@@ -13,17 +13,13 @@
 
 package de.bixilon.minosoft.data.mappings;
 
-public record Motive(String mod, String identifier) {
-    public String getMod() {
-        return mod;
+public class Motive extends ModIdentifier {
+
+    public Motive(String mod, String identifier) {
+        super(mod, identifier);
     }
 
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s:%s", getMod(), getIdentifier());
+    public Motive(String fullIdentifier) {
+        super(fullIdentifier);
     }
 }

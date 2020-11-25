@@ -29,6 +29,7 @@ import de.bixilon.minosoft.modding.loading.ModLoader;
 import de.bixilon.minosoft.modding.loading.Priorities;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
+import de.bixilon.minosoft.util.MinosoftCommandLineArguments;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 import de.bixilon.minosoft.util.task.AsyncTaskWorker;
@@ -53,6 +54,7 @@ public final class Minosoft {
     public static Configuration config;
 
     public static void main(String[] args) {
+        MinosoftCommandLineArguments.parseCommandLineArguments(args);
         Log.info("Starting...");
         AsyncTaskWorker taskWorker = new AsyncTaskWorker("StartUp");
 
@@ -126,7 +128,7 @@ public final class Minosoft {
             progress.countUp();
             Log.info("Loading versions.json...");
             long mappingStartLoadingTime = System.currentTimeMillis();
-            Versions.load(Util.readJsonAsset("mapping/versions.json"));
+            Versions.loadAvailableVersions(Util.readJsonAsset("mapping/versions.json"));
             Log.info(String.format("Loaded %d versions in %dms", Versions.getVersionIdMap().size(), (System.currentTimeMillis() - mappingStartLoadingTime)));
             progress.countDown();
         }, "Version mappings", "Load available minecraft versions inclusive mappings", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));

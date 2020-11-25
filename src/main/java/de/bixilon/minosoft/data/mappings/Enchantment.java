@@ -13,17 +13,13 @@
 
 package de.bixilon.minosoft.data.mappings;
 
-public record Enchantment(String mod, String identifier) {
-    public String getMod() {
-        return mod;
+public class Enchantment extends ModIdentifier {
+
+    public Enchantment(String mod, String identifier) {
+        super(mod, identifier);
     }
 
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s:%s", mod, identifier);
+    public Enchantment(String fullIdentifier) {
+        super(fullIdentifier);
     }
 }

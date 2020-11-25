@@ -49,6 +49,6 @@ public class PacketEncryptionResponse implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol("Sending encryption response");
+        Log.protocol("[OUT] Sending encryption response");
     }
 }

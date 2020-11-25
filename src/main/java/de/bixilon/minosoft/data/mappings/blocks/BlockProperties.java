@@ -431,7 +431,6 @@ public enum BlockProperties {
         }
     }
 
-
     final String group;
     final String value;
 
@@ -458,7 +457,6 @@ public enum BlockProperties {
         this.group = group;
         this.value = getValueByName(name());
     }
-
 
     BlockProperties(String group, String value) {
         this.group = group;

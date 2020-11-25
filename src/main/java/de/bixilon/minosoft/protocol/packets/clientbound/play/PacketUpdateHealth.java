@@ -42,7 +42,7 @@ public class PacketUpdateHealth implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Health update. Now at %s hearts and %s food level and %s saturation", health, food, saturation));
+        Log.protocol(String.format("[IN] Health update. Now at %s hearts and %s food level and %s saturation", health, food, saturation));
     }
 
     public int getFood() {

@@ -36,7 +36,7 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received display scoreboard packet (position=%s, scoreName=\"%s\"", action, scoreName));
+        Log.protocol(String.format("[IN] Received display scoreboard packet (position=%s, scoreName=\"%s\"", action, scoreName));
     }
 
     public enum ScoreboardAnimations {

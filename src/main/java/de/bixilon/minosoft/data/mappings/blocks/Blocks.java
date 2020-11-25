@@ -16,15 +16,16 @@ package de.bixilon.minosoft.data.mappings.blocks;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import de.bixilon.minosoft.config.StaticConfiguration;
 
 import java.util.HashSet;
 
 public class Blocks {
-    public static final Block nullBlock = new Block("minecraft", "air");
+    public static final Block nullBlock = new Block("air");
 
     public static HashBiMap<Integer, Block> load(String mod, JsonObject json, boolean metaData) {
         HashBiMap<Integer, Block> versionMapping = HashBiMap.create();
-        json.keySet().forEach((identifierName) -> {
+        for (String identifierName : json.keySet()) {
             JsonObject identifierJSON = json.getAsJsonObject(identifierName);
             JsonArray statesArray = identifierJSON.getAsJsonArray("states");
             for (int i = 0; i < statesArray.size(); i++) {
@@ -50,11 +51,13 @@ public class Blocks {
 
                     HashSet<BlockProperties> properties = new HashSet<>();
                     for (String propertyName : propertiesJSON.keySet()) {
-                        if (BlockProperties.PROPERTIES_MAPPING.get(propertyName) == null) {
-                            throw new RuntimeException(String.format("Unknown block property: %s (identifier=%s)", propertyName, identifierName));
-                        }
-                        if (BlockProperties.PROPERTIES_MAPPING.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()) == null) {
-                            throw new RuntimeException(String.format("Unknown block property: %s -> %s (identifier=%s)", propertyName, propertiesJSON.get(propertyName).getAsString(), identifierName));
+                        if (StaticConfiguration.DEBUG_MODE) {
+                            if (BlockProperties.PROPERTIES_MAPPING.get(propertyName) == null) {
+                                throw new RuntimeException(String.format("Unknown block property: %s (identifier=%s)", propertyName, identifierName));
+                            }
+                            if (BlockProperties.PROPERTIES_MAPPING.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()) == null) {
+                                throw new RuntimeException(String.format("Unknown block property: %s -> %s (identifier=%s)", propertyName, propertiesJSON.get(propertyName).getAsString(), identifierName));
+                            }
                         }
                         properties.add(BlockProperties.PROPERTIES_MAPPING.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()));
                     }
@@ -65,10 +68,12 @@ public class Blocks {
                     block = new Block(mod, identifierName);
                 }
                 int blockId = getBlockId(statesJSON, metaData);
-                checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping);
+                if (StaticConfiguration.DEBUG_MODE) {
+                    checkAndCrashIfBlockIsIn(blockId, identifierName, versionMapping);
+                }
                 versionMapping.put(blockId, block);
             }
-        });
+        }
         return versionMapping;
     }
 
@@ -76,10 +81,10 @@ public class Blocks {
         int blockId = json.get("id").getAsInt();
         if (metaData) {
             blockId <<= 4;
-        }
-        if (json.has("meta")) {
-            // old format (with metadata)
-            blockId |= json.get("meta").getAsByte();
+            if (json.has("meta")) {
+                // old format (with metadata)
+                blockId |= json.get("meta").getAsByte();
+            }
         }
         return blockId;
     }

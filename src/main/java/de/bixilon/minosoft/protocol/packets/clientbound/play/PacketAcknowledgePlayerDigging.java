@@ -43,7 +43,7 @@ public class PacketAcknowledgePlayerDigging implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received acknowledge digging packet (position=%s, block=%s, status=%s, successful=%s)", position, block, status, successful));
+        Log.protocol(String.format("[IN] Received acknowledge digging packet (position=%s, block=%s, status=%s, successful=%s)", position, block, status, successful));
     }
 
     public BlockPosition getPosition() {

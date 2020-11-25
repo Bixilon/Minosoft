@@ -44,6 +44,6 @@ public class PacketStatusPing implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending ping packet (%s)", id));
+        Log.protocol(String.format("[OUT] Sending ping packet (%s)", id));
     }
 }

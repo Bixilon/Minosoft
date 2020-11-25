@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.assets;
 
+import com.google.common.base.StandardSystemProperty;
 import com.google.errorprone.annotations.DoNotCall;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -23,6 +24,7 @@ import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.HTTP;
 import de.bixilon.minosoft.util.Util;
@@ -69,14 +71,13 @@ public class AssetsManager {
         return ret;
     }
 
-
     public static void downloadAllAssets(CountUpAndDownLatch latch) throws IOException {
         if (assets.size() > 0) {
             return;
         }
         try {
             downloadAssetsIndex();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.printException(e, LogLevels.DEBUG);
             Log.warn("Could not download assets index. Please check your internet connection");
         }
@@ -94,7 +95,7 @@ public class AssetsManager {
         assets.keySet().parallelStream().forEach((filename) -> {
             try {
                 String hash = assets.get(filename);
-                boolean compressed = source == AssetsSource.MOJANG;
+                boolean compressed = (source == AssetsSource.MOJANG);
                 if (!verifyAssetHash(hash, compressed)) {
                     AssetsManager.downloadAsset(source, hash);
                 }
@@ -146,7 +147,7 @@ public class AssetsManager {
         return JsonParser.parseReader(readAssetByHash(hash));
     }
 
-    private static long getAssetSize(String hash) {
+    private static long getAssetSize(String hash) throws FileNotFoundException {
         File file = new File(getAssetDiskPath(hash));
         if (!file.exists()) {
             return -1;
@@ -154,7 +155,7 @@ public class AssetsManager {
         return file.length();
     }
 
-    private static boolean verifyAssetHash(String hash, boolean compressed) {
+    private static boolean verifyAssetHash(String hash, boolean compressed) throws FileNotFoundException {
         // file does not exist
         if (getAssetSize(hash) == -1) {
             return false;
@@ -173,7 +174,12 @@ public class AssetsManager {
     }
 
     private static boolean verifyAssetHash(String hash) {
-        return verifyAssetHash(hash, true);
+        try {
+            return verifyAssetHash(hash, true);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static void generateJarAssets() throws IOException {
@@ -249,7 +255,7 @@ public class AssetsManager {
     private static String saveAsset(InputStream data) throws IOException {
         File tempDestinationFile = null;
         while (tempDestinationFile == null || tempDestinationFile.exists()) { // file exist? lol
-            tempDestinationFile = new File(System.getProperty("java.io.tmpdir") + "/minosoft/" + Util.generateRandomString(32));
+            tempDestinationFile = new File(System.getProperty(StandardSystemProperty.JAVA_IO_TMPDIR.value()) + "/minosoft/" + Util.generateRandomString(32));
         }
         Util.createParentFolderIfNotExist(tempDestinationFile);
 
@@ -262,9 +268,9 @@ public class AssetsManager {
             throw new RuntimeException(e);
         }
 
-        byte[] buffer = new byte[4096];
+        byte[] buffer = new byte[ProtocolDefinition.DEFAULT_BUFFER_SIZE];
         int length;
-        while ((length = data.read(buffer, 0, 4096)) != -1) {
+        while ((length = data.read(buffer, 0, buffer.length)) != -1) {
             crypt.update(buffer, 0, length);
             out.write(buffer, 0, length);
         }
@@ -294,7 +300,10 @@ public class AssetsManager {
         Util.downloadFile(url, getAssetDiskPath(hash));
     }
 
-    private static String getAssetDiskPath(String hash) {
-        return StaticConfiguration.HOME_DIR + String.format("assets/objects/%s/%s.gz", hash.substring(0, 2), hash);
+    private static String getAssetDiskPath(String hash) throws FileNotFoundException {
+        if (hash == null) {
+            throw new FileNotFoundException("Could not find asset with hash: null");
+        }
+        return StaticConfiguration.HOME_DIRECTORY + String.format("assets/objects/%s/%s.gz", hash.substring(0, 2), hash);
     }
 }

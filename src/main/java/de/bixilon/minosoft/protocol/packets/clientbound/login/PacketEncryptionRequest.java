@@ -39,7 +39,7 @@ public class PacketEncryptionRequest implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol("Receiving encryption request packet");
+        Log.protocol("[IN] Receiving encryption request packet");
     }
 
     public byte[] getPublicKey() {

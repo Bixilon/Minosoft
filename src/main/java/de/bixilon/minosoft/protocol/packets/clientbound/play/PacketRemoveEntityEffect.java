@@ -38,7 +38,7 @@ public class PacketRemoveEntityEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Entity effect removed (entityId=%d, effect=%s)", entityId, effect));
+        Log.protocol(String.format("[IN] Entity effect removed (entityId=%d, effect=%s)", entityId, effect));
     }
 
     public int getEntityId() {

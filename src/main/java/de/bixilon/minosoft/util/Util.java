@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 
@@ -56,7 +57,7 @@ public final class Util {
     public static byte[] decompress(byte[] bytes) {
         Inflater inflater = new Inflater();
         inflater.setInput(bytes, 0, bytes.length);
-        byte[] buffer = new byte[4096];
+        byte[] buffer = new byte[ProtocolDefinition.DEFAULT_BUFFER_SIZE];
         ByteArrayOutputStream stream = new ByteArrayOutputStream(bytes.length);
         try {
             while (!inflater.finished()) {
@@ -73,7 +74,7 @@ public final class Util {
         Deflater deflater = new Deflater();
         deflater.setInput(bytes);
         deflater.finish();
-        byte[] buffer = new byte[4096];
+        byte[] buffer = new byte[ProtocolDefinition.DEFAULT_BUFFER_SIZE];
         ByteArrayOutputStream stream = new ByteArrayOutputStream(bytes.length);
         while (!deflater.finished()) {
             stream.write(buffer, 0, deflater.deflate(buffer));
@@ -91,11 +92,11 @@ public final class Util {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         int res = 0;
-        byte[] buf = new byte[4096];
+        byte[] buffer = new byte[ProtocolDefinition.DEFAULT_BUFFER_SIZE];
         while (res >= 0) {
-            res = gzipInputStream.read(buf, 0, buf.length);
+            res = gzipInputStream.read(buffer, 0, buffer.length);
             if (res > 0) {
-                outputStream.write(buf, 0, res);
+                outputStream.write(buffer, 0, res);
             }
         }
         gzipInputStream.close();
@@ -127,9 +128,9 @@ public final class Util {
             MessageDigest crypt = MessageDigest.getInstance("SHA-1");
             crypt.reset();
 
-            byte[] buffer = new byte[4096];
+            byte[] buffer = new byte[ProtocolDefinition.DEFAULT_BUFFER_SIZE];
             int length;
-            while ((length = inputStream.read(buffer, 0, 4096)) != -1) {
+            while ((length = inputStream.read(buffer, 0, buffer.length)) != -1) {
                 crypt.update(buffer, 0, length);
             }
             return byteArrayToHexString(crypt.digest());
@@ -226,18 +227,18 @@ public final class Util {
 
     public static void downloadFile(String url, String destination) throws IOException {
         createParentFolderIfNotExist(destination);
-        copyFile(getInputStreamByURL(url), new FileOutputStream(destination));
+        copyStream(getInputStreamByURL(url), new FileOutputStream(destination));
     }
 
     public static void downloadFileAsGz(String url, String destination) throws IOException {
         createParentFolderIfNotExist(destination);
-        copyFile(getInputStreamByURL(url), new GZIPOutputStream(new FileOutputStream(destination)));
+        copyStream(getInputStreamByURL(url), new GZIPOutputStream(new FileOutputStream(destination)));
     }
 
-    public static void copyFile(InputStream inputStream, OutputStream output) throws IOException {
-        byte[] buffer = new byte[4096];
+    public static void copyStream(InputStream inputStream, OutputStream output) throws IOException {
+        byte[] buffer = new byte[ProtocolDefinition.DEFAULT_BUFFER_SIZE];
         int length;
-        while ((length = inputStream.read(buffer, 0, 4096)) != -1) {
+        while ((length = inputStream.read(buffer, 0, buffer.length)) != -1) {
             output.write(buffer, 0, length);
         }
         inputStream.close();

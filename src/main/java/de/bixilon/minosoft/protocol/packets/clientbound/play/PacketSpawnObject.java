@@ -13,12 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Entity;
+import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.Objects;
 import de.bixilon.minosoft.data.entities.Velocity;
-import de.bixilon.minosoft.data.mappings.Entities;
+import de.bixilon.minosoft.data.entities.entities.Entity;
+import de.bixilon.minosoft.data.entities.entities.UnknownEntityException;
+import de.bixilon.minosoft.data.mappings.VersionTweaker;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
@@ -31,8 +34,7 @@ public class PacketSpawnObject implements ClientboundPacket {
     Velocity velocity;
 
     @Override
-    public boolean read(InByteBuffer buffer) {
-
+    public boolean read(InByteBuffer buffer) throws Exception {
         int entityId = buffer.readVarInt();
         UUID uuid = null;
         if (buffer.getVersionId() >= 49) {
@@ -49,7 +51,7 @@ public class PacketSpawnObject implements ClientboundPacket {
         if (buffer.getVersionId() < 458) {
             typeClass = Objects.byId(type).getClazz();
         } else {
-            typeClass = Entities.getClassByIdentifier(buffer.getConnection().getMapping().getEntityIdentifierById(type));
+            typeClass = buffer.getConnection().getMapping().getEntityClassById(type);
         }
 
         Location location;
@@ -58,8 +60,7 @@ public class PacketSpawnObject implements ClientboundPacket {
         } else {
             location = buffer.readLocation();
         }
-        short yaw = buffer.readAngle();
-        short pitch = buffer.readAngle();
+        EntityRotation rotation = new EntityRotation(buffer.readAngle(), buffer.readAngle(), 0);
         int data = buffer.readInt();
 
         if (buffer.getVersionId() < 49) {
@@ -70,10 +71,18 @@ public class PacketSpawnObject implements ClientboundPacket {
             velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
         }
 
+        if (buffer.getVersionId() <= 47) { // ToDo
+            typeClass = VersionTweaker.getRealEntityObjectClass(typeClass, data, buffer.getVersionId());
+        }
+
+        if (typeClass == null) {
+            throw new UnknownEntityException(String.format("Unknown entity (typeId=%d)", type));
+        }
+
         try {
-            entity = typeClass.getConstructor(int.class, UUID.class, Location.class, short.class, short.class, int.class).newInstance(entityId, uuid, location, yaw, pitch, data);
+            entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Location.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, location, rotation);
             return true;
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
             e.printStackTrace();
         }
         return false;
@@ -86,7 +95,7 @@ public class PacketSpawnObject implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Object spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity.getIdentifier()));
+        Log.protocol(String.format("[IN] Object spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity));
     }
 
     public Entity getEntity() {

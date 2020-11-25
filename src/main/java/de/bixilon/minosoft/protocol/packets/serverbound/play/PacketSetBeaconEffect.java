@@ -39,6 +39,6 @@ public class PacketSetBeaconEffect implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending beacon effect select packet (primaryEffectId=%d, secondaryEffectId=%d)", primaryEffectId, secondaryEffectId));
+        Log.protocol(String.format("[OUT] Sending beacon effect select packet (primaryEffectId=%d, secondaryEffectId=%d)", primaryEffectId, secondaryEffectId));
     }
 }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
+import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -41,8 +42,18 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
     public PacketPlayerPositionAndRotationSending(double x, double feetY, double z, float yaw, float pitch, boolean onGround) {
         this.x = x;
         this.feetY = feetY;
-        this.headY = feetY - 1.62F;
+        this.headY = feetY + 1.62F;
         this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.onGround = onGround;
+    }
+
+    public PacketPlayerPositionAndRotationSending(Location location, float yaw, float pitch, boolean onGround) {
+        this.x = location.getX();
+        this.feetY = location.getY();
+        this.z = location.getZ();
+        this.headY = feetY - 1.62F;
         this.yaw = yaw;
         this.pitch = pitch;
         this.onGround = onGround;
@@ -65,6 +76,6 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending player position and rotation: %s %s %s (yaw=%s, pitch=%s)", x, headY, z, yaw, pitch));
+        Log.protocol(String.format("[OUT] Sending player position and rotation: %s %s %s (yaw=%s, pitch=%s)", x, headY, z, yaw, pitch));
     }
 }

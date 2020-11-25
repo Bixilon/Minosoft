@@ -13,7 +13,13 @@
 
 package de.bixilon.minosoft.data.entities;
 
+import de.bixilon.minosoft.data.world.BlockPosition;
+
 public record Location(double x, double y, double z) {
+
+    public static Location fromPosition(BlockPosition position) {
+        return new Location(position.x(), position.y(), position.z());
+    }
 
     public double getX() {
         return x;

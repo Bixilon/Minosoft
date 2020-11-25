@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
@@ -29,8 +29,8 @@ public class CryptManager {
             return key.generateKey();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     public static KeyPair createNewKeyPair() {
@@ -40,17 +40,11 @@ public class CryptManager {
             return keyPair.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
-
     public static byte[] getServerHash(String serverId, PublicKey publicKey, SecretKey secretKey) {
-        try {
-            return digestOperation(serverId.getBytes("ISO_8859_1"), secretKey.getEncoded(), publicKey.getEncoded());
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return digestOperation(serverId.getBytes(StandardCharsets.ISO_8859_1), secretKey.getEncoded(), publicKey.getEncoded());
     }
 
     static byte[] digestOperation(byte[]... bytes) {
@@ -62,8 +56,8 @@ public class CryptManager {
             return disgest.digest();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     public static PublicKey decodePublicKey(byte[] key) {
@@ -73,32 +67,32 @@ public class CryptManager {
             return keyFactory.generatePublic(keySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     public static byte[] encryptData(Key key, byte[] data) {
         return cipherOperation(1, key, data);
     }
 
-    static byte[] cipherOperation(int p_75885_0_, Key key, byte[] data) {
+    static byte[] cipherOperation(int opMode, Key key, byte[] data) {
         try {
-            return createTheCipherInstance(p_75885_0_, key.getAlgorithm(), key).doFinal(data);
+            return createTheCipherInstance(opMode, key.getAlgorithm(), key).doFinal(data);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
-    static Cipher createTheCipherInstance(int p_75886_0_, String transformation, Key key) {
+    static Cipher createTheCipherInstance(int opMode, String transformation, Key key) {
         try {
             Cipher cipher = Cipher.getInstance(transformation);
-            cipher.init(p_75886_0_, key);
+            cipher.init(opMode, key);
             return cipher;
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     public static Cipher createNetCipherInstance(int opMode, Key key) {

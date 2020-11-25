@@ -79,7 +79,7 @@ public class PacketChunkBulk implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Chunk bulk packet received (chunks=%s)", chunks.size()));
+        Log.protocol(String.format("[IN] Chunk bulk packet received (chunks=%s)", chunks.size()));
     }
 
     public HashMap<ChunkLocation, Chunk> getChunks() {

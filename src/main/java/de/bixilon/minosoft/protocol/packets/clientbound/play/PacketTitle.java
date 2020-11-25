@@ -54,10 +54,10 @@ public class PacketTitle implements ClientboundPacket {
     @Override
     public void log() {
         switch (action) {
-            case SET_TITLE -> Log.protocol(String.format("Received title (action=%s, text=%s)", action, text.getANSIColoredMessage()));
-            case SET_SUBTITLE -> Log.protocol(String.format("Received title (action=%s, subText=%s)", action, subText.getANSIColoredMessage()));
-            case SET_TIMES_AND_DISPLAY -> Log.protocol(String.format("Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", action, fadeInTime, stayTime, fadeOutTime));
-            case HIDE, RESET -> Log.protocol(String.format("Received title (action=%s)", action));
+            case SET_TITLE -> Log.protocol(String.format("[IN] Received title (action=%s, text=%s)", action, text.getANSIColoredMessage()));
+            case SET_SUBTITLE -> Log.protocol(String.format("[IN] Received title (action=%s, subText=%s)", action, subText.getANSIColoredMessage()));
+            case SET_TIMES_AND_DISPLAY -> Log.protocol(String.format("[IN] Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", action, fadeInTime, stayTime, fadeOutTime));
+            case HIDE, RESET -> Log.protocol(String.format("[IN] Received title (action=%s)", action));
         }
     }
 

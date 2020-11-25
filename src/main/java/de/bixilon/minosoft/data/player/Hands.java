@@ -14,14 +14,10 @@
 package de.bixilon.minosoft.data.player;
 
 public enum Hands {
-    LEFT,
-    RIGHT;
+    OFF_HAND, // left
+    MAIN_HAND; // right
 
     public static Hands byId(int id) {
         return values()[id];
-    }
-
-    public static Hands byBoolean(boolean id) {
-        return id ? LEFT : RIGHT;
     }
 }

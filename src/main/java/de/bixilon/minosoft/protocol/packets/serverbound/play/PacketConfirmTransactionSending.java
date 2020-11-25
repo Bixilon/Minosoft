@@ -42,6 +42,6 @@ public class PacketConfirmTransactionSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending confirm transaction packet (windowId=%d, actionNumber=%d, accepted=%s)", windowId, actionNumber, accepted));
+        Log.protocol(String.format("[OUT] Sending confirm transaction packet (windowId=%d, actionNumber=%d, accepted=%s)", windowId, actionNumber, accepted));
     }
 }

@@ -48,7 +48,7 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received chat message (message=\"%s\")", message.getMessage()));
+        Log.protocol(String.format("[IN] Received chat message (message=\"%s\")", message.getMessage()));
     }
 
     public ChatComponent getMessage() {

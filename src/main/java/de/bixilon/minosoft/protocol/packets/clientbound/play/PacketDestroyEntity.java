@@ -44,7 +44,7 @@ public class PacketDestroyEntity implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Despawning the following entities: %s", Arrays.toString(entityIds)));
+        Log.protocol(String.format("[IN] Despawning the following entities: %s", Arrays.toString(entityIds)));
     }
 
     public int[] getEntityIds() {

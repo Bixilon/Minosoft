@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 public final class ProtocolDefinition {
     public static final int STRING_MAX_LEN = 32767;
@@ -35,12 +34,20 @@ public final class ProtocolDefinition {
     public static final InetAddress LAN_SERVER_BROADCAST_ADDRESS;
     public static final int LAN_SERVER_MAXIMUM_SERVERS = 100; // maximum number of lan servers, set because otherwise dos attacks would be easy
 
+    public static final String DEFAULT_MOD = "minecraft";
+    public static final char TEXT_COMPONENT_SPECIAL_PREFIX_CHAR = '§';
+
+    public static final int DEFAULT_BUFFER_SIZE = 4096;
+
     static {
+        // java does (why ever) not allow to directly assign a null
+        InetAddress temp;
         try {
-            LAN_SERVER_BROADCAST_ADDRESS = InetAddress.getByName("224.0.2.60");
-        } catch (UnknownHostException e) {
+            temp = InetAddress.getByName("224.0.2.60");
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            temp = null;
         }
+        LAN_SERVER_BROADCAST_ADDRESS = temp;
     }
 }

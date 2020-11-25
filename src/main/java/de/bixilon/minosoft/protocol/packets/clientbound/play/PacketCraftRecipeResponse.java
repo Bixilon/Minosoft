@@ -42,7 +42,7 @@ public class PacketCraftRecipeResponse implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received Crafting recipe response (windowId=%d, recipeId=%d)", windowId, recipeId));
+        Log.protocol(String.format("[IN] Received Crafting recipe response (windowId=%d, recipeId=%d)", windowId, recipeId));
     }
 
     public byte getWindowId() {

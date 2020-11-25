@@ -57,6 +57,6 @@ public class PacketPlayerPositionSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending player position: %s %s %s", x, headY, z));
+        Log.protocol(String.format("[OUT] Sending player position: %s %s %s", x, headY, z));
     }
 }

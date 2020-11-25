@@ -23,16 +23,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class EventManager {
-    private final HashSet<EventMethod> globalEventListeners = new HashSet<>();
-    private final HashMap<HashSet<ServerAddressValidator>, HashSet<EventMethod>> specificEventListeners = new HashMap<>();
+    private final HashSet<EventInvoker> globalEventListeners = new HashSet<>();
+    private final HashMap<HashSet<ServerAddressValidator>, HashSet<EventInvoker>> specificEventListeners = new HashMap<>();
 
     public void registerGlobalListener(EventListener listener) {
         globalEventListeners.addAll(getEventMethods(listener));
     }
 
-    private HashSet<EventMethod> getEventMethods(EventListener listener) {
+    private HashSet<EventInvoker> getEventMethods(EventListener listener) {
         Class<? extends EventListener> clazz = listener.getClass();
-        HashSet<EventMethod> eventMethods = new HashSet<>();
+        HashSet<EventInvoker> eventInvokers = new HashSet<>();
         for (Method method : clazz.getMethods()) {
             EventHandler annotation = method.getAnnotation(EventHandler.class);
             if (annotation == null) {
@@ -44,12 +44,12 @@ public class EventManager {
             if (!ConnectionEvent.class.isAssignableFrom(method.getParameters()[0].getType())) {
                 continue;
             }
-            eventMethods.add(new EventMethod(annotation, listener, method));
+            eventInvokers.add(new EventInvokerMethod(annotation, listener, method));
         }
-        return eventMethods;
+        return eventInvokers;
     }
 
-    public HashSet<EventMethod> getGlobalEventListeners() {
+    public HashSet<EventInvoker> getGlobalEventListeners() {
         return globalEventListeners;
     }
 
@@ -61,7 +61,7 @@ public class EventManager {
         specificEventListeners.put(serverAddresses, getEventMethods(listener));
     }
 
-    public HashMap<HashSet<ServerAddressValidator>, HashSet<EventMethod>> getSpecificEventListeners() {
+    public HashMap<HashSet<ServerAddressValidator>, HashSet<EventInvoker>> getSpecificEventListeners() {
         return specificEventListeners;
     }
 }

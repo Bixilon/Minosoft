@@ -13,26 +13,28 @@
 
 package de.bixilon.minosoft.config;
 
+import com.google.common.base.StandardSystemProperty;
 import de.bixilon.minosoft.util.OSUtil;
 
 import java.io.File;
 
 public class StaticConfiguration {
-    public static final String CONFIG_FILENAME = "config.json"; // Filename of minosoft's base configuration (located in AppData/Minosoft/config)
-    public static final boolean SKIP_MOJANG_AUTHENTICATION = false; // disables all connections to mojang
-    public static final boolean COLORED_LOG = true; // the log should be colored with ANSI (does not affect base components)
-    public static final boolean LOG_RELATIVE_TIME = false; // prefix all log messages with the relative start time in milliseconds instead of the formatted time
-
-    public static final String HOME_DIR;
+    public static final boolean DEBUG_MODE = false; // if true, additional checks will be made to validate data, ... Decreases performance
+    public static String CONFIG_FILENAME = "config.json"; // Filename of minosoft's base configuration (located in AppData/Minosoft/config)
+    public static boolean SKIP_MOJANG_AUTHENTICATION = false; // disables all connections to mojang
+    public static boolean COLORED_LOG = true; // the log should be colored with ANSI (does not affect base components)
+    public static boolean LOG_RELATIVE_TIME = false; // prefix all log messages with the relative start time in milliseconds instead of the formatted time
+    public static boolean VERBOSE_ENTITY_META_DATA_LOGGING = false; // if true, the entity meta data is getting serialized
+    public static String HOME_DIRECTORY;
 
     static {
         // Sets Config.homeDir to the correct folder per OS
         String homeDir;
-        homeDir = System.getProperty("user.home");
+        homeDir = System.getProperty(StandardSystemProperty.USER_HOME.key());
         if (!homeDir.endsWith(File.separator)) {
             homeDir += "/";
         }
-        homeDir += switch (OSUtil.getOS()) {
+        homeDir += switch (OSUtil.OS) {
             case LINUX -> ".local/share/minosoft/";
             case WINDOWS -> "AppData/Roaming/Minosoft/";
             case MAC -> "Library/Application Support/Minosoft/";
@@ -43,6 +45,6 @@ public class StaticConfiguration {
             // failed creating folder
             throw new RuntimeException(String.format("Could not create home folder (%s)!", homeDir));
         }
-        HOME_DIR = folder.getAbsolutePath() + "/";
+        HOME_DIRECTORY = folder.getAbsolutePath() + "/";
     }
 }

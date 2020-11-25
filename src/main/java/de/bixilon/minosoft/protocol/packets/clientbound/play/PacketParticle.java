@@ -77,7 +77,7 @@ public class PacketParticle implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received particle spawn packet (location=%s, offsetX=%s, offsetY=%s, offsetZ=%s, particleType=%s, dataFloat=%s, count=%d, particleData=%s)", location, offsetX, offsetY, offsetZ, particleType, particleDataFloat, count, particleData));
+        Log.protocol(String.format("[IN] Received particle spawn packet (location=%s, offsetX=%s, offsetY=%s, offsetZ=%s, particleType=%s, dataFloat=%s, count=%d, particleData=%s)", location, offsetX, offsetY, offsetZ, particleType, particleDataFloat, count, particleData));
     }
 
     public Location getLocation() {

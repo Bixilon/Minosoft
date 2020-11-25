@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data;
 
-import de.bixilon.minosoft.data.entities.Entity;
 import de.bixilon.minosoft.data.entities.Velocity;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.HashMap;

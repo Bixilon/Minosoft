@@ -108,7 +108,7 @@ public class PacketAdvancements implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving advancements (reset=%s, advancements=%s, progresses=%s)", reset, advancements.size(), progresses.size()));
+        Log.protocol(String.format("[IN] Receiving advancements (reset=%s, advancements=%s, progresses=%s)", reset, advancements.size(), progresses.size()));
     }
 
     public boolean isReset() {

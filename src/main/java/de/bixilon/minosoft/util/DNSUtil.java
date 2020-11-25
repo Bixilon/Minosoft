@@ -49,7 +49,6 @@ public final class DNSUtil {
             return new ServerAddress(splitHostname[0], ProtocolDefinition.DEFAULT_PORT);
         }
         return new ServerAddress(splitHostname[0], Integer.parseInt(splitHostname[1]));
-
     }
 
     public static String correctHostName(String hostname) {
@@ -57,5 +56,4 @@ public final class DNSUtil {
         hostname = hostname.replaceAll("\\s", "");
         return hostname.toLowerCase();
     }
-
 }

@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.data.inventory;
 
-import de.bixilon.minosoft.data.mappings.CustomMapping;
 import de.bixilon.minosoft.data.mappings.Enchantment;
 import de.bixilon.minosoft.data.mappings.Item;
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.data.text.ChatComponent;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.nbt.tag.*;
 
@@ -37,13 +38,13 @@ public class Slot {
     String skullOwner;
     byte hideFlags;
 
-    public Slot(CustomMapping mapping, Item item, int itemCount, CompoundTag nbt) {
+    public Slot(VersionMapping mapping, Item item, int itemCount, CompoundTag nbt) {
         this.item = item;
         this.itemCount = itemCount;
         setNBT(mapping, nbt);
     }
 
-    public Slot(CustomMapping mapping, Item item, byte itemCount, short itemMetadata, CompoundTag nbt) {
+    public Slot(VersionMapping mapping, Item item, byte itemCount, short itemMetadata, CompoundTag nbt) {
         this.item = item;
         this.itemMetadata = itemMetadata;
         this.itemCount = itemCount;
@@ -59,7 +60,7 @@ public class Slot {
         this.itemCount = itemCount;
     }
 
-    private void setNBT(CustomMapping mapping, CompoundTag nbt) {
+    private void setNBT(VersionMapping mapping, CompoundTag nbt) {
         if (nbt == null) {
             return;
         }
@@ -98,7 +99,7 @@ public class Slot {
         }
     }
 
-    public CompoundTag getNbt(CustomMapping mapping) {
+    public CompoundTag getNbt(VersionMapping mapping) {
         CompoundTag nbt = new CompoundTag();
 
         if (repairCost != 0) {
@@ -137,7 +138,7 @@ public class Slot {
                 ListTag enchantmentList = new ListTag(TagTypes.COMPOUND, new ArrayList<>());
                 enchantments.forEach((id, level) -> {
                     CompoundTag tag = new CompoundTag();
-                    tag.writeTag("id", new ShortTag((short) mapping.getIdByEnchantment(id)));
+                    tag.writeTag("id", new ShortTag((short) (int) mapping.getIdByEnchantment(id)));
                     tag.writeTag("lvl", new ShortTag(level));
                     enchantmentList.getValue().add(tag);
                 });
@@ -261,7 +262,7 @@ public class Slot {
     }
 
     public String getSkullOwner() {
-        if (!item.getMod().equals("minecraft") || !item.getIdentifier().equals("skull")) {
+        if (!item.getMod().equals(ProtocolDefinition.DEFAULT_MOD) || !item.getIdentifier().equals("skull")) {
             throw new IllegalArgumentException("Item is not a skull!");
         }
         return skullOwner;

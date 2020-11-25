@@ -25,31 +25,31 @@ public class Logger {
         this.modName = modName;
     }
 
-    public void game(String message) {
-        log(LogLevels.GAME, message, ChatColors.getColorByName("green"));
+    public void log(LogLevels level, RGBColor color, Object message, Object... format) {
+        Log.log(level, String.format("[%s] ", modName), color, message, format);
     }
 
-    public void log(LogLevels level, String message, RGBColor color) {
-        Log.log(level, String.format("[%s] ", modName), message, color);
+    public void game(Object message, Object... format) {
+        log(LogLevels.GAME, ChatColors.GREEN, message, format);
     }
 
-    public void fatal(String message) {
-        log(LogLevels.FATAL, message, ChatColors.getColorByName("dark_red"));
+    public void fatal(Object message, Object... format) {
+        log(LogLevels.FATAL, ChatColors.DARK_RED, message, format);
     }
 
-    public void info(String message) {
-        log(LogLevels.INFO, message, ChatColors.getColorByName("white"));
+    public void info(Object message, Object... format) {
+        log(LogLevels.INFO, ChatColors.WHITE, message, format);
     }
 
-    public void warn(String message) {
-        log(LogLevels.WARNING, message, ChatColors.getColorByName("red"));
+    public void warn(Object message, Object... format) {
+        log(LogLevels.WARNING, ChatColors.RED, message, format);
     }
 
-    public void debug(String message) {
-        log(LogLevels.DEBUG, message, ChatColors.getColorByName("gray"));
+    public void debug(Object message, Object... format) {
+        log(LogLevels.DEBUG, ChatColors.GRAY, message, format);
     }
 
-    public void verbose(String message) {
-        log(LogLevels.VERBOSE, message, ChatColors.getColorByName("yellow"));
+    public void verbose(Object message, Object... format) {
+        log(LogLevels.VERBOSE, ChatColors.YELLOW, message, format);
     }
 }

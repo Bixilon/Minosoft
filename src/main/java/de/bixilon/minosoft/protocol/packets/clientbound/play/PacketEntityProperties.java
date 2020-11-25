@@ -69,7 +69,7 @@ public class PacketEntityProperties implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received entity properties (entityId=%d)", entityId));
+        Log.protocol(String.format("[IN] Received entity properties (entityId=%d)", entityId));
     }
 
     public int getEntityId() {

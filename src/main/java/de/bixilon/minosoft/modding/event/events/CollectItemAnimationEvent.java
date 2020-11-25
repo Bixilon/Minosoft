@@ -13,36 +13,37 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.mappings.Item;
+import de.bixilon.minosoft.data.entities.entities.Entity;
+import de.bixilon.minosoft.data.entities.entities.item.ItemEntity;
 import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketCollectItem;
 
 public class CollectItemAnimationEvent extends CancelableEvent {
-    private final Item item;
-    private final int collectorEntityId;
+    private final ItemEntity item;
+    private final Entity collector;
     private final int count;
 
-    public CollectItemAnimationEvent(Connection connection, Item item, int collectorEntityId, int count) {
+    public CollectItemAnimationEvent(Connection connection, ItemEntity item, Entity collector, int count) {
         super(connection);
         this.item = item;
-        this.collectorEntityId = collectorEntityId;
+        this.collector = collector;
         this.count = count;
     }
 
     public CollectItemAnimationEvent(Connection connection, PacketCollectItem pkg) {
         super(connection);
-        this.item = pkg.getItem();
-        this.collectorEntityId = pkg.getCollectorId();
+        this.item = (ItemEntity) connection.getPlayer().getWorld().getEntity(pkg.getItemEntityId());
+        this.collector = connection.getPlayer().getWorld().getEntity(pkg.getCollectorEntityId());
         this.count = pkg.getCount();
     }
 
-    public Item getItem() {
+    public ItemEntity getItem() {
         return item;
     }
 
-    public int getCollectorEntityId() {
-        return collectorEntityId;
+    public Entity getCollector() {
+        return collector;
     }
 
     @MinimumProtocolVersion(versionId = 301)

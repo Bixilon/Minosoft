@@ -45,6 +45,6 @@ public class PacketUpdateLight implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received light update (location=%s)", location));
+        Log.protocol(String.format("[IN] Received light update (location=%s)", location));
     }
 }

@@ -46,6 +46,6 @@ public class PacketKeepAliveResponse implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending keep alive back (%d)", id));
+        Log.protocol(String.format("[OUT] Sending keep alive back (%d)", id));
     }
 }

@@ -39,7 +39,7 @@ public class PacketOpenSignEditor implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Opening sign editor: %s", position));
+        Log.protocol(String.format("[IN] Opening sign editor: %s", position));
     }
 
     public BlockPosition getPosition() {

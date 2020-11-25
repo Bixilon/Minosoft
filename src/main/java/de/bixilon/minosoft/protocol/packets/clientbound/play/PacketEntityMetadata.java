@@ -13,25 +13,20 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
+import de.bixilon.minosoft.data.entities.EntityMetaData;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-import java.lang.reflect.InvocationTargetException;
-
 public class PacketEntityMetadata implements ClientboundPacket {
-    EntityMetaData.MetaDataHashMap sets;
     int entityId;
-    int versionId;
+    EntityMetaData entityMetaData;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        this.versionId = buffer.getVersionId();
         this.entityId = buffer.readEntityId();
-
-        sets = buffer.readMetaData();
+        entityMetaData = buffer.readMetaData();
         return true;
     }
 
@@ -42,23 +37,14 @@ public class PacketEntityMetadata implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received entity metadata (entityId=%d)", entityId));
+        Log.protocol(String.format("[IN] Received entity metadata (entityId=%d)", entityId));
     }
 
     public int getEntityId() {
         return entityId;
     }
 
-    public EntityMetaData.MetaDataHashMap getSets() {
-        return sets;
-    }
-
-    public EntityMetaData getEntityData(Class<? extends EntityMetaData> clazz) {
-        try {
-            return clazz.getConstructor(EntityMetaData.MetaDataHashMap.class, int.class).newInstance(sets, versionId);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public EntityMetaData getEntityData() {
+        return entityMetaData;
     }
 }

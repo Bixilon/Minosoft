@@ -124,7 +124,7 @@ public class PacketChunkData implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Chunk packet received (chunk: %s)", location));
+        Log.protocol(String.format("[IN] Chunk packet received (chunk: %s)", location));
     }
 
     public ChunkLocation getLocation() {

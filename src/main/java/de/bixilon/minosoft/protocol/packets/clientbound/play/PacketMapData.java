@@ -74,8 +74,6 @@ public class PacketMapData implements ClientboundPacket {
         if (buffer.getVersionId() >= 452) {
             locked = buffer.readBoolean();
         }
-
-
         int pinCount = 0;
         if (buffer.getVersionId() < 759) {
             pinCount = buffer.readVarInt();
@@ -128,7 +126,7 @@ public class PacketMapData implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received map meta data (mapId=%d)", mapId));
+        Log.protocol(String.format("[IN] Received map meta data (mapId=%d)", mapId));
     }
 
     public PacketMapDataDataActions getDataData() {

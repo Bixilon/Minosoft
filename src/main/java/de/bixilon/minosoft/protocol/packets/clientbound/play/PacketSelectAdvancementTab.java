@@ -37,7 +37,7 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received select advancement tab (tab=%s)", tab));
+        Log.protocol(String.format("[IN] Received select advancement tab (tab=%s)", tab));
     }
 
     public AdvancementTabs getTab() {

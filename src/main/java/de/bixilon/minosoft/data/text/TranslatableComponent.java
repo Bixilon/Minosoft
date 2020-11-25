@@ -15,54 +15,50 @@ package de.bixilon.minosoft.data.text;
 
 import com.google.gson.JsonArray;
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public class TranslatableComponent implements ChatComponent {
+public class TranslatableComponent extends ChatComponent {
     private final ArrayList<ChatComponent> data = new ArrayList<>();
     private final String key;
+    private final TextComponent parent;
 
     public TranslatableComponent(String key, JsonArray data) {
+        this(null, key, data);
+    }
+
+    public TranslatableComponent(@Nullable TextComponent parent, String key, JsonArray data) {
+        this.parent = parent;
         this.key = key;
         if (data == null) {
             return;
         }
         data.forEach((jsonElement -> {
             if (jsonElement.isJsonPrimitive()) {
-                this.data.add(ChatComponent.fromString(jsonElement.getAsString()));
+                this.data.add(ChatComponent.fromString(parent, jsonElement.getAsString()));
             } else {
-                this.data.add(new BaseComponent(jsonElement.getAsJsonObject()));
+                this.data.add(new BaseComponent(parent, jsonElement.getAsJsonObject()));
             }
         }));
     }
 
     @Override
     public String getANSIColoredMessage() {
-        Object[] data = new String[this.data.size()];
-        for (int i = 0; i < this.data.size(); i++) {
-            data[i] = this.data.get(i).getANSIColoredMessage();
-        }
-        return MinecraftLocaleManager.translate(key, data);
+        return getList("getANSIColoredMessage");
     }
 
     @Override
     public String getLegacyText() {
-        Object[] data = new String[this.data.size()];
-        for (int i = 0; i < this.data.size(); i++) {
-            data[i] = this.data.get(i).getLegacyText();
-        }
-        return MinecraftLocaleManager.translate(key, data);
+        return getList("getLegacyText");
     }
 
     @Override
     public String getMessage() {
-        Object[] data = new String[this.data.size()];
-        for (int i = 0; i < this.data.size(); i++) {
-            data[i] = this.data.get(i).getMessage();
-        }
-        return MinecraftLocaleManager.translate(key, data);
+        return getList("getMessage");
     }
 
     @Override
@@ -71,5 +67,47 @@ public class TranslatableComponent implements ChatComponent {
 
         // This is just a dirty workaround to enable formatting and coloring. Still need to do hover, click, ... stuff
         return new BaseComponent(getLegacyText()).getJavaFXText(nodes);
+    }
+
+    // just used reflections to not write this twice anc only change the method name
+    private String getList(String methodName) {
+        try {
+            Object[] data = new String[this.data.size()];
+            for (int i = 0; i < this.data.size(); i++) {
+                data[i] = this.data.get(i).getClass().getMethod(methodName).invoke(this.data.get(i));
+            }
+            if (parent != null) {
+                StringBuilder builder = new StringBuilder();
+                if (methodName.equals("getANSIColoredMessage")) {
+                    builder.append(ChatColors.getANSIColorByRGBColor(parent.getColor()));
+                } else if (methodName.equals("getLegacyText")) {
+                    builder.append(ChatColors.getColorChar(parent.getColor()));
+
+                }
+                for (ChatFormattingCode code : parent.getFormatting()) {
+                    if (code instanceof PreChatFormattingCodes preCode) {
+                        builder.append(switch (methodName) {
+                            case "getANSIColoredMessage" -> preCode.getANSI();
+                            case "getLegacyText" -> ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR + preCode.getChar();
+                            default -> "";
+                        });
+                    }
+                }
+                builder.append(MinecraftLocaleManager.translate(key, data));
+                for (ChatFormattingCode code : parent.getFormatting()) {
+                    if (code instanceof PostChatFormattingCodes postCode) {
+                        builder.append(switch (methodName) {
+                            case "getANSIColoredMessage" -> postCode.getANSI();
+                            case "getLegacyText" -> ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR + postCode.getChar();
+                            default -> "";
+                        });
+                    }
+                }
+                return builder.toString();
+            }
+            return MinecraftLocaleManager.translate(key, data);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -15,16 +15,23 @@ package de.bixilon.minosoft.data.text;
 
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
-public interface ChatComponent {
-    static ChatComponent fromString(String raw) {
+import javax.annotation.Nullable;
+
+public abstract class ChatComponent {
+    public static ChatComponent fromString(String raw) {
+        return fromString(null, raw);
+    }
+
+    public static ChatComponent fromString(@Nullable TextComponent parent, String raw) {
         if (raw == null) {
             return new BaseComponent();
         }
         try {
-            return new BaseComponent(JsonParser.parseString(raw).getAsJsonObject());
+            return new BaseComponent(parent, JsonParser.parseString(raw).getAsJsonObject());
         } catch (JsonParseException | IllegalStateException ignored) {
         }
         return new BaseComponent(raw);
@@ -33,20 +40,27 @@ public interface ChatComponent {
     /**
      * @return Returns the message formatted with ANSI Formatting codes
      */
-    String getANSIColoredMessage();
+    public abstract String getANSIColoredMessage();
 
     /**
      * @return Returns the message formatted with minecraft formatting codes (§)
      */
-    String getLegacyText();
+    public abstract String getLegacyText();
 
     /**
      * @return Returns the unformatted message
      */
-    String getMessage();
+    public abstract String getMessage();
 
     /**
      * @return Returns the a list of Nodes, drawable in JavaFX (TextFlow)
      */
-    ObservableList<Node> getJavaFXText(ObservableList<Node> nodes);
+    public abstract ObservableList<Node> getJavaFXText(ObservableList<Node> nodes);
+
+    /**
+     * @return Returns the a list of Nodes, drawable in JavaFX (TextFlow)
+     */
+    public ObservableList<Node> getJavaFXText() {
+        return getJavaFXText(FXCollections.observableArrayList());
+    }
 }

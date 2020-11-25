@@ -40,7 +40,7 @@ public class PacketWindowItems implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Inventory slot change: %d", data.length));
+        Log.protocol(String.format("[IN] Inventory slot change: %d", data.length));
     }
 
     public byte getWindowId() {

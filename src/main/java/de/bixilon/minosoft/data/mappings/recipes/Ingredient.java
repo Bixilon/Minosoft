@@ -15,18 +15,7 @@ package de.bixilon.minosoft.data.mappings.recipes;
 
 import de.bixilon.minosoft.data.inventory.Slot;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 public record Ingredient(Slot[] slot) {
-    public static boolean slotEquals(Slot[] one, Slot[] two) {
-        if (one.length != two.length) {
-            return false;
-        }
-        HashSet<Slot> first = new HashSet<>(Arrays.asList(one));
-        HashSet<Slot> second = new HashSet<>(Arrays.asList(two));
-        return first.equals(second);
-    }
 
     public Slot[] getSlot() {
         return slot;

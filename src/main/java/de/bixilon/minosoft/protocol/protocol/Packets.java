@@ -127,7 +127,7 @@ public class Packets {
         PLAY_PLUGIN_MESSAGE(PacketPluginMessageReceiving.class),
         PLAY_NAMED_SOUND_EFFECT(PacketNamedSoundEffect.class),
         PLAY_DISCONNECT(PacketDisconnect.class),
-        PLAY_ENTITY_STATUS(PacketEntityStatus.class),
+        PLAY_ENTITY_EVENT(PacketEntityEvent.class),
         PLAY_EXPLOSION(PacketExplosion.class),
         PLAY_UNLOAD_CHUNK(PacketUnloadChunk.class),
         PLAY_CHANGE_GAME_STATE(PacketChangeGameState.class),

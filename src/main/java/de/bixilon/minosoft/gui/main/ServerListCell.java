@@ -20,12 +20,14 @@ import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.EventInvokerCallback;
+import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
+import de.bixilon.minosoft.modding.event.events.ServerListPingArriveEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.ping.ForgeModInfo;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.util.DNSUtil;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -134,7 +136,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (server.getLastPing() == null) {
             server.ping();
         }
-        server.getLastPing().addPingCallback(ping -> Platform.runLater(() -> {
+        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListPingArriveEvent>(ServerListPingArriveEvent.class, event -> Platform.runLater(() -> {
+            ServerListPing ping = event.getServerListPing();
             if (server != this.server) {
                 // cell does not contains us anymore
                 return;
@@ -174,7 +177,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
             serverBrand.setText(ping.getServerModInfo().getBrand());
             serverBrand.setTooltip(new Tooltip(ping.getServerModInfo().getInfo()));
-            motd.getChildren().addAll(ping.getMotd().getJavaFXText(FXCollections.observableArrayList()));
+            motd.getChildren().addAll(ping.getMotd().getJavaFXText());
             if (ping.getFavicon() != null) {
                 icon.setImage(GUITools.getImage(ping.getFavicon()));
                 if (!Arrays.equals(ping.getFavicon(), server.getFavicon())) {
@@ -193,7 +196,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 canConnect = false;
                 setErrorMotd(String.format("%s: %s", server.getLastPing().getLastConnectionException().getClass().getCanonicalName(), server.getLastPing().getLastConnectionException().getLocalizedMessage()));
             }
-        }));
+        })));
     }
 
     private void resetCell() {
@@ -265,7 +268,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
         optionsConnect.setDisable(true);
         connection.connect(server.getLastPing().getAddress(), version);
-        connection.addConnectionChangeCallback(this::handleConnectionCallback);
+        connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
         server.addConnection(connection);
 
     }
@@ -295,7 +298,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         serverAddress.setText(server.getAddress());
 
         if (server.getDesiredVersionId() == -1) {
-            GUITools.versionList.getSelectionModel().select(Versions.getLowestVersionSupported());
+            GUITools.versionList.getSelectionModel().select(Versions.LOWEST_VERSION_SUPPORTED);
         } else {
             GUITools.versionList.getSelectionModel().select(Versions.getVersionById(server.getDesiredVersionId()));
         }
@@ -334,7 +337,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         dialog.showAndWait();
     }
 
-    private void handleConnectionCallback(Connection connection) {
+    private void handleConnectionCallback(ConnectionStateChangeEvent event) {
+        Connection connection = event.getConnection();
         if (!server.getConnections().contains(connection)) {
             // the card got recycled
             return;
@@ -376,7 +380,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         Label forcedVersionLabel = new Label();
 
         if (server.getDesiredVersionId() == -1) {
-            forcedVersionLabel.setText(Versions.getLowestVersionSupported().getVersionName());
+            forcedVersionLabel.setText(Versions.LOWEST_VERSION_SUPPORTED.getVersionName());
         } else {
             forcedVersionLabel.setText(Versions.getVersionById(server.getDesiredVersionId()).getVersionName());
         }
@@ -411,7 +415,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 Label serverBrandLabel = new Label(lastPing.getServerBrand());
                 Label playersOnlineMaxLabel = new Label(LocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, lastPing.getPlayerOnline(), lastPing.getMaxPlayers()));
                 TextFlow motdLabel = new TextFlow();
-                motdLabel.getChildren().addAll(lastPing.getMotd().getJavaFXText(FXCollections.observableArrayList()));
+                motdLabel.getChildren().addAll(lastPing.getMotd().getJavaFXText());
                 Label moddedBrandLabel = new Label(lastPing.getServerModInfo().getBrand());
 
                 grid.add(new Label(LocaleManager.translate(Strings.SERVER_INFO_REAL_SERVER_ADDRESS) + ":"), 0, ++column);

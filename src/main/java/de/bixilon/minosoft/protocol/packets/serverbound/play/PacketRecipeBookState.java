@@ -41,7 +41,7 @@ public class PacketRecipeBookState implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending recipe book state (book=%s, bookOpen=%s, filterActive=%s)", book, bookOpen, filterActive));
+        Log.protocol(String.format("[OUT] Sending recipe book state (book=%s, bookOpen=%s, filterActive=%s)", book, bookOpen, filterActive));
     }
 
     public enum RecipeBooks {

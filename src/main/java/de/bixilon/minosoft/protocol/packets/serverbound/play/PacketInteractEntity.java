@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.data.entities.Entity;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -96,7 +96,7 @@ public class PacketInteractEntity implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Interacting with entity (entityId=%d, click=%s)", entityId, click));
+        Log.protocol(String.format("[OUT] Interacting with entity (entityId=%d, click=%s)", entityId, click));
     }
 
     public enum EntityInteractionClicks {

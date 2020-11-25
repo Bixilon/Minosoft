@@ -37,8 +37,8 @@ public class PacketTabHeaderAndFooter implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received tab list header: %s", header.getANSIColoredMessage()));
-        Log.protocol(String.format("Received tab list footer: %s", footer.getANSIColoredMessage()));
+        Log.protocol(String.format("[IN] Received tab list header: %s", header.getANSIColoredMessage()));
+        Log.protocol(String.format("[IN] Received tab list footer: %s", footer.getANSIColoredMessage()));
     }
 
     public ChatComponent getHeader() {

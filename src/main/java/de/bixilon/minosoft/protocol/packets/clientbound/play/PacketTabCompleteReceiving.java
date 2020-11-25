@@ -48,7 +48,7 @@ public class PacketTabCompleteReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received tab complete for message(count=%d)", count));
+        Log.protocol(String.format("[IN] Received tab complete for message(count=%d)", count));
     }
 
     public int getCount() {

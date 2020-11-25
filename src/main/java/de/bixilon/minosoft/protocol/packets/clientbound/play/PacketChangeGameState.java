@@ -38,7 +38,7 @@ public class PacketChangeGameState implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received game status change (%s)", getReason()));
+        Log.protocol(String.format("[IN] Received game status change (%s)", getReason()));
     }
 
     public Reason getReason() {
@@ -50,18 +50,18 @@ public class PacketChangeGameState implements ClientboundPacket {
     }
 
     public enum Reason {
-        INVALID_BED(new MapSet[]{new MapSet<>(0, 0)}),
-        END_RAIN(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(498, 2), new MapSet<>(578, 1)}), // ToDo: when exactly did these 2 switch?
-        START_RAIN(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(498, 1), new MapSet<>(578, 2)}),
+        NO_RESPAWN_BLOCK_AVAILABLE(new MapSet[]{new MapSet<>(0, 0)}),
+        START_RAINING(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(498, 2), new MapSet<>(578, 1)}), // ToDo: when exactly did these 2 switch?
+        STOP_RAINING(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(498, 1), new MapSet<>(578, 2)}),
         CHANGE_GAMEMODE(new MapSet[]{new MapSet<>(0, 3)}),
         ENTER_CREDITS(new MapSet[]{new MapSet<>(0, 4)}),
         DEMO_MESSAGES(new MapSet[]{new MapSet<>(0, 5)}),
         ARROW_HITTING_PLAYER(new MapSet[]{new MapSet<>(0, 6)}),
-        FADE_VALUE(new MapSet[]{new MapSet<>(0, 7)}),
-        FADE_TIME(new MapSet[]{new MapSet<>(0, 8)}),
-        PLAY_PUFFERFISH_STING_SOUND(new MapSet[]{new MapSet<>(0, 9)}),
-        PLAY_ELDER_GUARDIAN_MOB_APPEARANCE(new MapSet[]{new MapSet<>(0, 10)}),
-        ENABLE_RESPAWN_SCREEN(new MapSet[]{new MapSet<>(552, 11)});
+        RAIN_LEVEL_CHANGE(new MapSet[]{new MapSet<>(0, 7)}),
+        THUNDER_LEVEL_CHANGE(new MapSet[]{new MapSet<>(0, 8)}),
+        PUFFERFISH_STING(new MapSet[]{new MapSet<>(0, 9)}),
+        GUARDIAN_ELDER_EFFECT(new MapSet[]{new MapSet<>(0, 10)}),
+        IMMEDIATE_RESPAWN(new MapSet[]{new MapSet<>(552, 11)});
 
         final VersionValueMap<Integer> valueMap;
 

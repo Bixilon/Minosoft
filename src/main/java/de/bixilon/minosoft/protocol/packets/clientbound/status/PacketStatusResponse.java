@@ -35,7 +35,7 @@ public class PacketStatusResponse implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving status response packet (online=%d, maxPlayers=%d, protocolId=%d)", response.getPlayerOnline(), response.getMaxPlayers(), response.getProtocolId()));
+        Log.protocol(String.format("[IN] Receiving status response packet (online=%d, maxPlayers=%d, protocolId=%d)", response.getPlayerOnline(), response.getMaxPlayers(), response.getProtocolId()));
     }
 
     public ServerListPing getResponse() {

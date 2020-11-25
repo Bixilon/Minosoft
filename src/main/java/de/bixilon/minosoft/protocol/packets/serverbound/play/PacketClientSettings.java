@@ -60,6 +60,6 @@ public class PacketClientSettings implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending settings (locale=%s, renderDistance=%d)", locale, renderDistance));
+        Log.protocol(String.format("[OUT] Sending settings (locale=%s, renderDistance=%d)", locale, renderDistance));
     }
 }

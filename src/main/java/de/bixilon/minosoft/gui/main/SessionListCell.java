@@ -15,6 +15,8 @@ package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.modding.event.EventInvokerCallback;
+import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -81,12 +83,13 @@ public class SessionListCell extends ListCell<Connection> implements Initializab
         }
         setStyle(null);
         this.connection = connection;
-        connection.addConnectionChangeCallback(this::handleConnectionCallback);
+        connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
         connectionId.setText(String.format("#%d", connection.getConnectionId()));
         account.setText(connection.getPlayer().getAccount().getPlayerName());
     }
 
-    private void handleConnectionCallback(Connection connection) {
+    private void handleConnectionCallback(ConnectionStateChangeEvent event) {
+        Connection connection = event.getConnection();
         if (this.connection != connection) {
             // the card got recycled
             return;

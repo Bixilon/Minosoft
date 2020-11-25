@@ -41,7 +41,7 @@ public class PacketLoginPluginRequest implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received login plugin request in channel \"%s\" with %s bytes of data (messageId=%d)", channel, data.length, messageId));
+        Log.protocol(String.format("[IN] Received login plugin request in channel \"%s\" with %s bytes of data (messageId=%d)", channel, data.length, messageId));
     }
 
     public int getMessageId() {

@@ -65,7 +65,7 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Play sound effect (sound=%s, category=%s, volume=%s, pitch=%s, location=%s)", sound, category, volume, pitch, location));
+        Log.protocol(String.format("[IN] Play sound effect (sound=%s, category=%s, volume=%s, pitch=%s, location=%s)", sound, category, volume, pitch, location));
     }
 
     public Location getLocation() {

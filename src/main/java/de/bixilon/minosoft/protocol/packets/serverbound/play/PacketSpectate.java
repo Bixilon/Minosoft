@@ -37,6 +37,6 @@ public class PacketSpectate implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Spectating entity (entityUUID=%s)", entityUUID));
+        Log.protocol(String.format("[OUT] Spectating entity (entityUUID=%s)", entityUUID));
     }
 }

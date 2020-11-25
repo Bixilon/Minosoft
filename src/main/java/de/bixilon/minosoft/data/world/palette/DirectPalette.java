@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.data.world.palette;
 
-import de.bixilon.minosoft.data.mappings.CustomMapping;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 public class DirectPalette implements Palette {
     int versionId;
-    CustomMapping mapping;
+    VersionMapping mapping;
 
     @Override
     public Block byId(int id) {

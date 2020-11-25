@@ -14,26 +14,22 @@
 package de.bixilon.minosoft.util;
 
 public final class OSUtil {
-    final static OS os;
+    public static final OSs OS;
 
     static {
         String name = System.getProperty("os.name");
         if (name.startsWith("Windows")) {
-            os = OS.WINDOWS;
+            OS = OSs.WINDOWS;
         } else if (name.startsWith("Linux")) {
-            os = OS.LINUX;
+            OS = OSs.LINUX;
         } else if (name.startsWith("Mac")) {
-            os = OS.MAC;
+            OS = OSs.MAC;
         } else {
-            os = OS.OTHER;
+            OS = OSs.OTHER;
         }
     }
 
-    public static OS getOS() {
-        return os;
-    }
-
-    public enum OS {
+    public enum OSs {
         WINDOWS,
         LINUX,
         MAC,

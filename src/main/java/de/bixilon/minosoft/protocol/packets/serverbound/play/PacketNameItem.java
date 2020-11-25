@@ -36,6 +36,6 @@ public class PacketNameItem implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending name item packet (name=\"%s\")", name));
+        Log.protocol(String.format("[OUT] Sending name item packet (name=\"%s\")", name));
     }
 }

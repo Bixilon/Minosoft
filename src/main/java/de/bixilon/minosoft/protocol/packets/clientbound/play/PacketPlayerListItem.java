@@ -83,7 +83,7 @@ public class PacketPlayerListItem implements ClientboundPacket {
     @Override
     public void log() {
         for (PlayerListItemBulk property : playerList) {
-            Log.protocol(String.format("Received player list item bulk (%s)", property));
+            Log.protocol(String.format("[IN] Received player list item bulk (%s)", property));
         }
     }
 

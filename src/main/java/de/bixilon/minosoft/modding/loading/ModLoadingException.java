@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.modding.loading;
 
 public class ModLoadingException extends Exception {
+
     public ModLoadingException() {
     }
 

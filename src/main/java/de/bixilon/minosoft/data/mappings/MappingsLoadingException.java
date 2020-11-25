@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.mappings;
 
 public class MappingsLoadingException extends Exception {
+
     public MappingsLoadingException() {
     }
 

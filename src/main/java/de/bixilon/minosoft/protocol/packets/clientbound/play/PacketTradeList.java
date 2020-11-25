@@ -68,7 +68,7 @@ public class PacketTradeList implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received select trade packet (windowId=%d, tradeLength=%d, level=%s, experience=%d, regularVillager=%s, canRestock=%s)", windowId, trades.length, level, experience, isRegularVillager, canRestock));
+        Log.protocol(String.format("[IN] Received select trade packet (windowId=%d, tradeLength=%d, level=%s, experience=%d, regularVillager=%s, canRestock=%s)", windowId, trades.length, level, experience, isRegularVillager, canRestock));
     }
 
     public int getWindowId() {

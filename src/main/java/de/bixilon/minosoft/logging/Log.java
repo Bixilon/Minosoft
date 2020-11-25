@@ -15,16 +15,16 @@ package de.bixilon.minosoft.logging;
 
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.text.ChatColors;
-import de.bixilon.minosoft.data.text.ChatFormattingCodes;
+import de.bixilon.minosoft.data.text.PostChatFormattingCodes;
 import de.bixilon.minosoft.data.text.RGBColor;
 
 import java.text.SimpleDateFormat;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Log {
+    public final static long MINOSOFT_START_TIME = System.currentTimeMillis();
     final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     final static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>();
-    public final static long MINOSOFT_START_TIME = System.currentTimeMillis();
     static LogLevels level = LogLevels.PROTOCOL;
 
     static {
@@ -45,26 +45,23 @@ public class Log {
         }, "Log").start();
     }
 
-    /**
-     * Logs all game related things (mostly visible stuff to the user)
-     *
-     * @param message Raw message to log
-     */
-    public static void game(String message) {
-        log(LogLevels.GAME, message, ChatColors.getColorByName("green"));
+    public static void log(LogLevels level, RGBColor color, Object message, Object... format) {
+        log(level, "", color, message, format);
     }
 
-    public static void log(LogLevels level, String message, RGBColor color) {
-        log(level, "", message, color);
-    }
-
-    public static void log(LogLevels level, String prefix, String message, RGBColor color) {
-        if (message.isBlank()) {
-            return;
-        }
+    public static void log(LogLevels level, String prefix, RGBColor color, Object message, Object... format) {
         if (level.ordinal() > Log.level.ordinal()) {
             // log level too low
             return;
+        }
+        if (message == null) {
+            return;
+        }
+        if (message instanceof String string) {
+            if (string.isBlank()) {
+                return;
+            }
+            message = String.format(string, format);
         }
         StringBuilder builder = new StringBuilder();
         builder.append("[");
@@ -82,12 +79,21 @@ public class Log {
         if (color != null && StaticConfiguration.COLORED_LOG) {
             builder.append(ChatColors.getANSIColorByRGBColor(color));
             builder.append(message);
-            builder.append(ChatFormattingCodes.RESET.getANSI());
+            builder.append(PostChatFormattingCodes.RESET.getANSI());
         } else {
             builder.append(message);
         }
-        builder.append(ChatFormattingCodes.RESET.getANSI());
+        builder.append(PostChatFormattingCodes.RESET.getANSI());
         queue.add(builder.toString());
+    }
+
+    /**
+     * Logs all game related things (mostly visible stuff to the user)
+     *
+     * @param message Raw message to log
+     */
+    public static void game(Object message, Object... format) {
+        log(LogLevels.GAME, ChatColors.GREEN, message, format);
     }
 
     /**
@@ -95,8 +101,8 @@ public class Log {
      *
      * @param message Raw message to log
      */
-    public static void fatal(String message) {
-        log(LogLevels.FATAL, message, ChatColors.getColorByName("dark_red"));
+    public static void fatal(Object message, Object... format) {
+        log(LogLevels.FATAL, ChatColors.DARK_RED, message, format);
     }
 
     /**
@@ -104,8 +110,8 @@ public class Log {
      *
      * @param message Raw message to log
      */
-    public static void warn(String message) {
-        log(LogLevels.WARNING, message, ChatColors.getColorByName("red"));
+    public static void warn(Object message, Object... format) {
+        log(LogLevels.WARNING, ChatColors.RED, message, format);
     }
 
     /**
@@ -113,8 +119,8 @@ public class Log {
      *
      * @param message Raw message to log
      */
-    public static void debug(String message) {
-        log(LogLevels.DEBUG, message, ChatColors.getColorByName("gray"));
+    public static void debug(Object message, Object... format) {
+        log(LogLevels.DEBUG, ChatColors.GRAY, message, format);
     }
 
     /**
@@ -122,8 +128,8 @@ public class Log {
      *
      * @param message Raw message to log
      */
-    public static void verbose(String message) {
-        log(LogLevels.VERBOSE, message, ChatColors.getColorByName("yellow"));
+    public static void verbose(Object message, Object... format) {
+        log(LogLevels.VERBOSE, ChatColors.YELLOW, message, format);
     }
 
     /**
@@ -131,8 +137,8 @@ public class Log {
      *
      * @param message Raw message to log
      */
-    public static void protocol(String message) {
-        log(LogLevels.PROTOCOL, message, ChatColors.getColorByName("blue"));
+    public static void protocol(Object message, Object... format) {
+        log(LogLevels.PROTOCOL, ChatColors.BLUE, message, format);
     }
 
     /**
@@ -140,9 +146,19 @@ public class Log {
      *
      * @param message Raw message to log
      */
-    public static void mojang(String message) {
-        log(LogLevels.MOJANG, message, ChatColors.getColorByName("aqua"));
+    public static void mojang(Object message, Object... format) {
+        log(LogLevels.MOJANG, ChatColors.AQUA, message, format);
     }
+
+    /**
+     * Logs all general infos, that are more or less important to the user (connecting to server, ...)
+     *
+     * @param message Raw message to log
+     */
+    public static void info(Object message, Object... format) {
+        log(LogLevels.INFO, ChatColors.WHITE, message, format);
+    }
+
 
     public static LogLevels getLevel() {
         return level;
@@ -154,15 +170,6 @@ public class Log {
         }
         Log.info(String.format("Log level changed from %s to %s", Log.level, level));
         Log.level = level;
-    }
-
-    /**
-     * Logs all general infos, that are more or less important to the user (connecting to server, ...)
-     *
-     * @param message Raw message to log
-     */
-    public static void info(String message) {
-        log(LogLevels.INFO, message, ChatColors.getColorByName("white"));
     }
 
     public static boolean printException(Exception exception, LogLevels minimumLogLevel) {

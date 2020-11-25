@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 // packet to send to client
 public interface ClientboundPacket extends Packet {
-    boolean read(InByteBuffer buffer);
+    boolean read(InByteBuffer buffer) throws Exception;
 
     void handle(PacketHandler h);
 }

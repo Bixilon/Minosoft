@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.objects.LightningBolt;
+import de.bixilon.minosoft.data.entities.entities.LightningBolt;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -33,7 +33,7 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
         } else {
             location = buffer.readLocation();
         }
-        entity = new LightningBolt(entityId, location, buffer.getVersionId());
+        entity = new LightningBolt(buffer.getConnection(), entityId, location);
         return true;
     }
 
@@ -44,7 +44,7 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Thunderbolt spawned at %s (entityId=%d)", entity.getLocation(), entity.getEntityId()));
+        Log.protocol(String.format("[IN] Thunderbolt spawned at %s (entityId=%d)", entity.getLocation(), entity.getEntityId()));
     }
 
     public LightningBolt getEntity() {

@@ -40,7 +40,7 @@ public class PacketClientStatus implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending client status packet (status=%s)", status));
+        Log.protocol(String.format("[OUT] Sending client status packet (status=%s)", status));
     }
 
     public enum ClientStates {

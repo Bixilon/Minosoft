@@ -13,5 +13,9 @@
 
 package de.bixilon.minosoft.modding.event.events.annotations;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Unsafe {
 }

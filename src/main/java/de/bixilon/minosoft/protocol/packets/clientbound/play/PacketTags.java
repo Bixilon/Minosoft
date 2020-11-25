@@ -51,6 +51,6 @@ public class PacketTags implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received tags (blockLength=%d, itemLength=%d, fluidLength=%d, entityLength=%d)", blockTags.length, itemTags.length, fluidTags.length, ((entityTags == null) ? 0 : entityTags.length)));
+        Log.protocol(String.format("[IN] Received tags (blockLength=%d, itemLength=%d, fluidLength=%d, entityLength=%d)", blockTags.length, itemTags.length, fluidTags.length, ((entityTags == null) ? 0 : entityTags.length)));
     }
 }

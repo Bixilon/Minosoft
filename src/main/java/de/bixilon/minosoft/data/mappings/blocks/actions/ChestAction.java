@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data.mappings.blocks.actions;
 
 public class ChestAction implements BlockAction {
-    final byte playersLookingInChest;
+    final short playersLookingInChest;
 
-    public ChestAction(byte unused, byte playersLookingInChest) {
+    public ChestAction(short unused, short playersLookingInChest) {
         this.playersLookingInChest = playersLookingInChest;
     }
 

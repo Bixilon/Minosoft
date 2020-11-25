@@ -48,7 +48,7 @@ public class PacketStopSound implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received stop sound (category=%s, soundIdentifier=%s)", category, soundIdentifier));
+        Log.protocol(String.format("[IN] Received stop sound (category=%s, soundIdentifier=%s)", category, soundIdentifier));
     }
 
     public SoundCategories getSoundId() {

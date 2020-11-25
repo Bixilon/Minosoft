@@ -36,6 +36,6 @@ public class PacketConfirmTeleport implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Confirming teleport (teleportId=%d)", teleportId));
+        Log.protocol(String.format("[OUT] Confirming teleport (teleportId=%d)", teleportId));
     }
 }

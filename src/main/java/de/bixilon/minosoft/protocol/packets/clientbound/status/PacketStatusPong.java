@@ -34,7 +34,7 @@ public class PacketStatusPong implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Receiving pong packet (%s)", id));
+        Log.protocol(String.format("[IN] Receiving pong packet (%s)", id));
     }
 
     public long getID() {

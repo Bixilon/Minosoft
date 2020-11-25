@@ -36,6 +36,6 @@ public class PacketChatMessageSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Sending Chat message: %s", message));
+        Log.protocol(String.format("[OUT] Sending Chat message: %s", message));
     }
 }

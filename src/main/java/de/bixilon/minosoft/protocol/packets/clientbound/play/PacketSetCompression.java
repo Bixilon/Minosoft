@@ -34,7 +34,7 @@ public class PacketSetCompression implements PacketCompressionInterface {
 
     @Override
     public void log() {
-        Log.protocol(String.format("Received set compression packet (threshold=%d)", threshold));
+        Log.protocol(String.format("[IN] Received set compression packet (threshold=%d)", threshold));
     }
 
     @Override
