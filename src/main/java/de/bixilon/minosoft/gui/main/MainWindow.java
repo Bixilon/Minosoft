@@ -97,11 +97,13 @@ public class MainWindow implements Initializable {
         if (menuAccount2 == null) {
             return;
         }
-        if (Minosoft.getSelectedAccount() != null) {
-            menuAccount2.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, Minosoft.getSelectedAccount().getPlayerName()));
-        } else {
-            menuAccount2.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
-        }
+        Platform.runLater(() -> {
+            if (Minosoft.getSelectedAccount() != null) {
+                menuAccount2.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, Minosoft.getSelectedAccount().getPlayerName()));
+            } else {
+                menuAccount2.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
+            }
+        });
     }
 
     @Override
