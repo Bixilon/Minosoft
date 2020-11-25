@@ -73,6 +73,10 @@ public class InByteBuffer {
         return buffer.getShort(0);
     }
 
+    public int readUnsignedShort() {
+        return readShort() & 0xFFFF;
+    }
+
     public int readInt() {
         ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
         buffer.put(readBytes(Integer.BYTES));

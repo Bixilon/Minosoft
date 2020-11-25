@@ -11,35 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.decoration;
+package de.bixilon.minosoft.data.entities.entities.monster;
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
-import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.protocol.network.Connection;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class ItemFrame extends HangingEntity {
+/**
+ * This class is just for the hashmap, it is not used anywhere
+ */
+@Deprecated
+public class ZombiePigman extends ZombifiedPiglin {
 
-    public ItemFrame(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+    public ZombiePigman(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
-
-
-    @EntityMetaDataFunction(identifier = "item")
-    @Nullable
-    public Slot getItem() {
-        return metaData.getSets().getSlot(EntityMetaDataFields.ITEM_FRAME_ITEM);
-    }
-
-    @EntityMetaDataFunction(identifier = "itemRotationLevel")
-    public int get() {
-        return metaData.getSets().getInt(EntityMetaDataFields.ITEM_FRAME_ROTATION);
-    }
-
 }
 

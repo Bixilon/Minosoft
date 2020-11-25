@@ -31,4 +31,8 @@ public class Witch extends Raider {
     public boolean isDrinkingPotion() {
         return metaData.getSets().getBoolean(EntityMetaDataFields.WITCH_IS_DRINKING_POTION);
     }
+
+    public boolean isAggressive() {
+        return metaData.getSets().getBoolean(EntityMetaDataFields.LEGACY_WITCH_IS_AGGRESSIVE);
+    }
 }

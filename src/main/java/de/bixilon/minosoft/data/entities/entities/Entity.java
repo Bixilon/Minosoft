@@ -32,6 +32,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 public abstract class Entity {
+    protected final Connection connection;
     protected final EntityInformation information;
     protected final int entityId;
     protected final UUID uuid;
@@ -44,6 +45,7 @@ public abstract class Entity {
     protected EntityMetaData metaData;
 
     public Entity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+        this.connection = connection;
         this.information = connection.getMapping().getEntityInformation(getClass());
         this.entityId = entityId;
         this.uuid = uuid;
@@ -230,6 +232,9 @@ public abstract class Entity {
 
     @Override
     public String toString() {
+        if (information == null) {
+            return this.getClass().getCanonicalName();
+        }
         return String.format("%s:%s", information.getMod(), information.getIdentifier());
     }
 

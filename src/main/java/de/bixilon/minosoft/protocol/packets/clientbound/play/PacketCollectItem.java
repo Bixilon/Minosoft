@@ -13,26 +13,24 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.mappings.Item;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketCollectItem implements ClientboundPacket {
-    Item item;
-    int collectorId;
+    int itemEntityId;
+    int collectorEntityId;
     int count;
 
     @Override
     public boolean read(InByteBuffer buffer) {
+        itemEntityId = buffer.readEntityId();
         if (buffer.getVersionId() < 7) {
-            item = buffer.getConnection().getMapping().getItemById(buffer.readInt());
-            collectorId = buffer.readInt();
+            collectorEntityId = buffer.readInt();
             return true;
         }
-        item = buffer.getConnection().getMapping().getItemById(buffer.readVarInt());
-        collectorId = buffer.readVarInt();
+        collectorEntityId = buffer.readVarInt();
         if (buffer.getVersionId() >= 301) {
             count = buffer.readVarInt();
         }
@@ -46,15 +44,15 @@ public class PacketCollectItem implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Item %s was collected by %d (count=%s)", item, collectorId, ((count == 0) ? "?" : count)));
+        Log.protocol(String.format("[IN] Item %d was collected by %d (count=%s)", itemEntityId, collectorEntityId, ((count == 0) ? "?" : count)));
     }
 
-    public Item getItem() {
-        return item;
+    public int getItemEntityId() {
+        return itemEntityId;
     }
 
-    public int getCollectorId() {
-        return collectorId;
+    public int getCollectorEntityId() {
+        return collectorEntityId;
     }
 
     public int getCount() {

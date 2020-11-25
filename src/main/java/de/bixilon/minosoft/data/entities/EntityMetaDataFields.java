@@ -71,7 +71,7 @@ public enum EntityMetaDataFields {
     BOAT_HURT(0),
     BOAT_HURT_DIRECTION(1),
     BOAT_DAMAGE_TAKEN(0f),
-    BOAT_MATERIAL(Boat.BoatMaterials.OAK),
+    BOAT_MATERIAL(Boat.BoatMaterials.OAK.ordinal()),
     BOAT_PADDLE_LEFT(false),
     BOAT_PADDLE_RIGHT(false),
     BOAT_BUBBLE_TIME(0),
@@ -265,7 +265,24 @@ public enum EntityMetaDataFields {
 
     PILLAGER_IS_CHARGING_CROSSBOW(false),
 
-    THROWN_EYE_OF_ENDER_ITEM;
+    THROWN_EYE_OF_ENDER_ITEM,
+
+
+    // pretty old stuff here. 1.8 mostly (or even after, I don't know and I don't care)
+    LEGACY_SKELETON_TYPE((byte) 0),
+    LEGACY_ENDERMAN_CARRIED_BLOCK(0),
+    LEGACY_ENDERMAN_CARRIED_BLOCK_DATA(0),
+    LEGACY_WITCH_IS_AGGRESSIVE(false),
+    LEGACY_GUARDIAN_FLAGS((byte) 0),
+    LEGACY_OCELOT_TYPE((byte) 0),
+    LEGACY_HORSE_OWNER_NAME(""),
+    LEGACY_HORSE_SPECIAL_TYPE((byte) 0),
+    LEGACY_HORSE_ARMOR(0),
+    LEGACY_VILLAGE_PROFESSION(0),
+    LEGACY_END_CRYSTAL_HEALTH(5),
+    LEGACY_LIVING_ENTITY_AI_DISABLED((byte) 0),
+    LEGACY_AGEABLE_ENTITY_AGE((byte) 0),
+    LEGACY_AGEABLE_OWNER_NAME("");
 
     private final Object defaultValue;
 

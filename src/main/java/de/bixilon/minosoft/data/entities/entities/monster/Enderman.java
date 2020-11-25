@@ -32,6 +32,9 @@ public class Enderman extends AbstractSkeleton {
     @EntityMetaDataFunction(identifier = "carriedBlock")
     @Nullable
     public Block getCarriedBlock() {
+        if (versionId <= 47) { // ToDo: No clue here
+            return connection.getMapping().getBlockById(metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK) << 4 | metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK_DATA));
+        }
         return metaData.getSets().getBlock(EntityMetaDataFields.ENDERMAN_CARRIED_BLOCK);
     }
 

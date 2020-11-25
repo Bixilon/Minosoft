@@ -44,7 +44,7 @@ public class EntityMetaData {
         return switch (type) {
             case BYTE -> buffer.readByte();
             case VAR_INT -> buffer.readVarInt();
-            case SHORT -> buffer.readShort();
+            case SHORT -> buffer.readUnsignedShort();
             case INT -> buffer.readInt();
             case FLOAT -> buffer.readFloat();
             case STRING -> buffer.readString();
@@ -226,7 +226,11 @@ public class EntityMetaData {
         }
 
         public ChatComponent getChatComponent(EntityMetaDataFields field) {
-            return get(field);
+            Object object = get(field);
+            if (object instanceof String string) {
+                return ChatComponent.fromString(string);
+            }
+            return (ChatComponent) object;
         }
 
         public String getString(EntityMetaDataFields field) {

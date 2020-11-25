@@ -37,7 +37,7 @@ public enum Objects {
     ARROW(60, Arrow.class), // ToDo: Tipped Arrows
     SNOWBALL(61, ThrownSnowball.class),
     EGG(62, ThrownEgg.class),
-    FIREBALL(63, Fireball.class),
+    FIREBALL(63, LargeFireball.class),
     FIRE_CHARGE(64, SmallFireball.class),
     ENDER_PEARL(65, ThrownEnderPearl.class),
     WITHER_SKULL(66, WitherSkull.class),

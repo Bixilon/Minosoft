@@ -154,6 +154,7 @@ public final class EntityClassMappings {
         ENTITY_CLASS_MAPPINGS.put(Zombie.class, new ModIdentifier("zombie"));
         ENTITY_CLASS_MAPPINGS.put(ZombieHorse.class, new ModIdentifier("zombie_horse"));
         ENTITY_CLASS_MAPPINGS.put(ZombieVillager.class, new ModIdentifier("zombie_villager"));
+        ENTITY_CLASS_MAPPINGS.put(ZombiePigman.class, new ModIdentifier("zombie_pigman"));
         ENTITY_CLASS_MAPPINGS.put(ZombifiedPiglin.class, new ModIdentifier("zombified_piglin"));
         ENTITY_CLASS_MAPPINGS.put(PlayerEntity.class, new ModIdentifier("player"));
         ENTITY_CLASS_MAPPINGS.put(FishingHook.class, new ModIdentifier("fishing_bobber"));
