@@ -36,7 +36,7 @@ public class PacketRespawn implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 718) {
-            if (buffer.getVersionId() < 108) {
+            if (buffer.getVersionId() < 47) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
                 dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
             } else {
                 dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
