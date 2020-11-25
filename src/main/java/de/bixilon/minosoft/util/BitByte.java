@@ -23,10 +23,10 @@ public final class BitByte {
         return ((in & mask) == mask);
     }
 
-    public static byte getBitCount(short input) {
+    public static byte getBitCount(int input) {
         byte ret = 0;
         for (byte i = 0; i < Short.BYTES * 8; i++) { // bytes to bits
-            if (isBitSetShort(input, i)) {
+            if (isBitSet(input, i)) {
                 ret++;
             }
         }

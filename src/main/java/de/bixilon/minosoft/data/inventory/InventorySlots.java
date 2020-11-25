@@ -110,7 +110,11 @@ public class InventorySlots {
 
         @Override
         public int getId(int versionId) {
-            return valueMap.get(versionId);
+            Integer value = valueMap.get(versionId);
+            if (value == null) {
+                return Integer.MIN_VALUE;
+            }
+            return value;
         }
     }
 

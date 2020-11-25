@@ -26,7 +26,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import java.util.HashMap;
 
 public final class ChunkUtil {
-    public static Chunk readChunkPacket(InByteBuffer buffer, short sectionBitMask, short addBitMask, boolean groundUpContinuous, boolean containsSkyLight) {
+    public static Chunk readChunkPacket(InByteBuffer buffer, int sectionBitMask, int addBitMask, boolean groundUpContinuous, boolean containsSkyLight) {
         if (buffer.getVersionId() < 23) {
             if (sectionBitMask == 0x00 && groundUpContinuous) {
                 // unload chunk
@@ -100,7 +100,7 @@ public final class ChunkUtil {
             int totalBlocks = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
             int halfBytes = totalBlocks / 2; // half bytes
 
-            short[] blockData = buffer.readLEShorts(totalBlocks); // blocks >>> 4, data & 0xF
+            int[] blockData = buffer.readUnsignedLEShorts(totalBlocks); // blocks >>> 4, data & 0xF
 
             byte[] light = buffer.readBytes(halfBytes);
             byte[] skyLight = null;
@@ -122,9 +122,9 @@ public final class ChunkUtil {
                 for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
                     for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
                         for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
-                            int blockId = blockData[arrayPos] & 0xFFFF;
+                            int blockId = blockData[arrayPos];
                             Block block = buffer.getConnection().getMapping().getBlockById(blockId);
-                            if (block.equals(Blocks.nullBlock)) {
+                            if (block == null || block.equals(Blocks.nullBlock)) {
                                 arrayPos++;
                                 continue;
                             }

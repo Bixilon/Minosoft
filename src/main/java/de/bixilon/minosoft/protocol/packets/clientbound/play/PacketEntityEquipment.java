@@ -29,22 +29,15 @@ public class PacketEntityEquipment implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 7) {
-            entityId = buffer.readInt();
-            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getVersionId()), buffer.readSlot());
-            return true;
-        }
+        entityId = buffer.readEntityId();
         if (buffer.getVersionId() < 49) {
-            entityId = buffer.readVarInt();
             slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getVersionId()), buffer.readSlot());
             return true;
         }
         if (buffer.getVersionId() < 732) {
-            entityId = buffer.readVarInt();
             slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readVarInt(), buffer.getVersionId()), buffer.readSlot());
             return true;
         }
-        entityId = buffer.readVarInt();
         boolean slotAvailable = true;
         while (slotAvailable) {
             int slotId = buffer.readByte();

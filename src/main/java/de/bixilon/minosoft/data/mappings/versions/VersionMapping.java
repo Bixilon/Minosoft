@@ -38,23 +38,23 @@ public class VersionMapping {
     private final HashSet<Mappings> loaded = new HashSet<>();
     private Version version;
     private VersionMapping parentMapping;
-    private HashBiMap<String, Motive> motiveIdentifierMap;
-    private HashBiMap<String, Particle> particleIdentifierMap;
-    private HashBiMap<String, Statistic> statisticIdentifierMap;
-    private HashBiMap<Integer, Item> itemMap;
-    private HashBiMap<Integer, Motive> motiveIdMap;
-    private HashBiMap<Integer, MobEffect> mobEffectMap;
-    private HashBiMap<Integer, Dimension> dimensionMap;
+    private final HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap = HashBiMap.create();
+    private final HashMap<EntityMetaDataFields, Integer> entityMetaIndexMap = new HashMap<>();
+    private final HashMap<String, Pair<String, Integer>> entityMetaIndexOffsetParentMapping = new HashMap<>();
+    private final HashBiMap<Integer, Class<? extends Entity>> entityIdClassMap = HashBiMap.create();
+    private HashBiMap<String, Motive> motiveIdentifierMap = HashBiMap.create();
+    private HashBiMap<String, Particle> particleIdentifierMap = HashBiMap.create();
+    private HashBiMap<String, Statistic> statisticIdentifierMap = HashBiMap.create();
     private HashMap<String, HashBiMap<String, Dimension>> dimensionIdentifierMap = new HashMap<>();
-    private HashBiMap<Integer, Block> blockMap;
-    private HashBiMap<Integer, BlockId> blockIdMap;
-    private HashBiMap<Integer, Enchantment> enchantmentMap;
-    private HashBiMap<Integer, Particle> particleIdMap;
-    private HashBiMap<Integer, Statistic> statisticIdMap;
-    private HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap;
-    private HashMap<EntityMetaDataFields, Integer> entityMetaIndexMap;
-    private HashMap<String, Pair<String, Integer>> entityMetaIndexOffsetParentMapping;
-    private HashBiMap<Integer, Class<? extends Entity>> entityIdClassMap;
+    private HashBiMap<Integer, Item> itemMap = HashBiMap.create();
+    private HashBiMap<Integer, Motive> motiveIdMap = HashBiMap.create();
+    private HashBiMap<Integer, MobEffect> mobEffectMap = HashBiMap.create();
+    private HashBiMap<Integer, Dimension> dimensionMap = HashBiMap.create();
+    private HashBiMap<Integer, Block> blockMap = HashBiMap.create();
+    private HashBiMap<Integer, BlockId> blockIdMap = HashBiMap.create();
+    private HashBiMap<Integer, Enchantment> enchantmentMap = HashBiMap.create();
+    private HashBiMap<Integer, Particle> particleIdMap = HashBiMap.create();
+    private HashBiMap<Integer, Statistic> statisticIdMap = HashBiMap.create();
 
     public VersionMapping(Version version) {
         this.version = version;
@@ -153,7 +153,11 @@ public class VersionMapping {
         return dimensionMap.get(versionId);
     }
 
+    @Nullable
     public Block getBlockById(int versionId) {
+        if (versionId == ProtocolDefinition.NULL_BLOCK_ID) {
+            return null;
+        }
         if (parentMapping != null) {
             Block block = parentMapping.getBlockById(versionId);
             if (block != null) {
@@ -302,16 +306,6 @@ public class VersionMapping {
                     dimensionMap = Versions.PRE_FLATTENING_MAPPING.dimensionMap;
                     break;
                 }
-                itemMap = HashBiMap.create();
-                enchantmentMap = HashBiMap.create();
-                statisticIdMap = HashBiMap.create();
-                statisticIdentifierMap = HashBiMap.create();
-                blockIdMap = HashBiMap.create();
-                motiveIdMap = HashBiMap.create();
-                motiveIdentifierMap = HashBiMap.create();
-                particleIdMap = HashBiMap.create();
-                particleIdentifierMap = HashBiMap.create();
-                mobEffectMap = HashBiMap.create();
 
                 if (data == null) {
                     break;
@@ -387,17 +381,11 @@ public class VersionMapping {
                 }
 
                 if (data == null) {
-                    blockMap = HashBiMap.create();
                     break;
                 }
                 blockMap = Blocks.load(mod, data, !version.isFlattened());
             }
             case ENTITIES -> {
-                entityInformationMap = HashBiMap.create();
-                entityMetaIndexMap = new HashMap<>();
-                entityMetaIndexOffsetParentMapping = new HashMap<>();
-                entityIdClassMap = HashBiMap.create();
-
                 if (data == null) {
                     break;
                 }

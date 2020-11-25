@@ -39,6 +39,8 @@ public final class ProtocolDefinition {
 
     public static final int DEFAULT_BUFFER_SIZE = 4096;
 
+    public static final int NULL_BLOCK_ID = 0;
+
     static {
         // java does (why ever) not allow to directly assign a null
         InetAddress temp;

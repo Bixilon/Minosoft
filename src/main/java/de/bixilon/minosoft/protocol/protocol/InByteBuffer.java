@@ -123,8 +123,8 @@ public class InByteBuffer {
         return readByte() == 1;
     }
 
-    public short[] readLEShorts(int num) {
-        short[] ret = new short[num];
+    public int[] readUnsignedLEShorts(int num) {
+        int[] ret = new int[num];
         for (int i = 0; i < ret.length; i++) {
             ret[i] = (short) (readByte() & 0xFF);
             ret[i] |= (readByte() & 0xFF) << 8;
