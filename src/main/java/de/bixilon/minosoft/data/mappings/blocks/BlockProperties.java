@@ -417,7 +417,17 @@ public enum BlockProperties {
     // button
     BUTTON_FACE_FLOOR,
     BUTTON_FACE_WALL,
-    BUTTON_FACE_CEILING;
+    BUTTON_FACE_CEILING,
+
+
+    POINTED_DRIPSTONE_THICKNESS_TIP_MERGE("thickness", "tip_merge"),
+    POINTED_DRIPSTONE_THICKNESS_TIP("thickness", "tip"),
+    POINTED_DRIPSTONE_THICKNESS_FRUSTUM("thickness", "frustum"),
+    POINTED_DRIPSTONE_THICKNESS_MIDDLE("thickness", "middle"),
+    POINTED_DRIPSTONE_THICKNESS_BASE("thickness", "base"),
+    POINTED_DRIPSTONE_VERTICAL_DIRECTION_UP("vertical_direction", "up"),
+    POINTED_DRIPSTONE_VERTICAL_DIRECTION_DOWN("vertical_direction", "down");
+
 
     public static final HashMap<String, HashMap<String, BlockProperties>> PROPERTIES_MAPPING = new HashMap<>();
 
