@@ -77,7 +77,7 @@ public final class Minosoft {
                 // Do not translate this, translations might fail to load...
                 dialog.setTitle("Critical Error");
                 dialog.setHeaderText("An error occurred while starting Minosoft");
-                TextArea text = new TextArea(exception.getClass().getCanonicalName() + ": " + exception.getLocalizedMessage());
+                TextArea text = new TextArea(exception.getClass().getCanonicalName() + ": " + exception.getMessage());
                 text.setEditable(false);
                 text.setWrapText(true);
                 dialog.getDialogPane().setContent(text);

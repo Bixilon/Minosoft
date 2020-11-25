@@ -85,7 +85,7 @@ public class AsyncTaskWorker {
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (task.getImportance() == TaskImportance.REQUIRED) {
-                                Log.fatal(String.format("Task %s (%s) failed: %s", task.getTaskName(), task.getTaskDescription(), e.getLocalizedMessage()));
+                                Log.fatal(String.format("Task %s (%s) failed: %s", task.getTaskName(), task.getTaskDescription(), e.getMessage()));
                                 if (exceptionRunnable != null) {
                                     exceptionRunnable.onFatal(e);
                                 }
