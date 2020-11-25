@@ -101,5 +101,6 @@ public class StartProgressWindow extends Application {
     @Override
     public void start(Stage stage) {
         toolkitLatch.countDown();
+        Platform.setImplicitExit(false);
     }
 }
