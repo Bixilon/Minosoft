@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.main;
 
+import com.jfoenix.controls.JFXComboBox;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.data.locale.LocaleManager;
@@ -20,7 +21,6 @@ import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.GridPane;
@@ -30,7 +30,7 @@ import java.util.ResourceBundle;
 
 public class SettingsWindow implements Initializable {
     public GridPane tabGeneral;
-    public ComboBox<LogLevels> generalLogLevel;
+    public JFXComboBox<LogLevels> generalLogLevel;
     public Tab general;
     public Tab download;
     public Label generalLogLevelLabel;

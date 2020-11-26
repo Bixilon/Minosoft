@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.main;
 
+import com.jfoenix.controls.JFXAlert;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialogLayout;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.Player;
 import de.bixilon.minosoft.data.locale.LocaleManager;
@@ -29,7 +32,6 @@ import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -302,17 +304,21 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     }
 
     public void showInfo() {
-        Dialog<?> dialog = new Dialog<>();
-        dialog.setTitle("View server info: " + server.getName());
+        JFXAlert<?> dialog = new JFXAlert<>();
+        dialog.setTitle("View server info: " + server.getName().getMessage());
         GUITools.initializePane(dialog.getDialogPane());
 
-        ButtonType loginButtonType = ButtonType.CLOSE;
-        dialog.getDialogPane().getButtonTypes().add(loginButtonType);
+        JFXDialogLayout layout = new JFXDialogLayout();
+
+
+        JFXButton closeButton = new JFXButton(ButtonType.CLOSE.getText());
+        closeButton.setOnAction((actionEvent -> dialog.hide()));
+        closeButton.setButtonType(JFXButton.ButtonType.RAISED);
+        layout.setActions(closeButton);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new Insets(20, 300, 10, 10));
 
         TextFlow serverNameLabel = new TextFlow();
         serverNameLabel.getChildren().setAll(server.getName().getJavaFXText());
@@ -326,7 +332,9 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
 
         int column = -1;
-        grid.add(new Label(LocaleManager.translate(Strings.SERVER_NAME) + ":"), 0, ++column);
+        Label a = new Label(LocaleManager.translate(Strings.SERVER_NAME) + ":");
+        a.setWrapText(false);
+        grid.add(a, 0, ++column);
         grid.add(serverNameLabel, 1, column);
         grid.add(new Label(LocaleManager.translate(Strings.SERVER_ADDRESS) + ":"), 0, ++column);
         grid.add(serverAddressLabel, 1, column);
@@ -380,9 +388,9 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 }
             }
         }
-
-        dialog.getDialogPane().setContent(grid);
-
+        // ToDo: size probably
+        layout.setBody(grid);
+        dialog.setContent(layout);
         dialog.showAndWait();
     }
 

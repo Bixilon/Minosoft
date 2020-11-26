@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.main;
 
+import com.jfoenix.controls.JFXAlert;
+import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXProgressBar;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
@@ -20,18 +22,18 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class StartProgressWindow extends Application {
     public final static CountDownLatch toolkitLatch = new CountDownLatch(2); // 2 if not started, 1 if started, 2 if loaded
-    public static Dialog<Boolean> progressDialog;
+    public static JFXAlert<Boolean> progressDialog;
+    private static JFXProgressBar progressBar;
+    private static Label progressLabel;
     private static boolean exit = false;
 
     public static void show(CountUpAndDownLatch progress) {
@@ -42,20 +44,29 @@ public class StartProgressWindow extends Application {
             if (progress.getCount() == 0) {
                 return;
             }
-            AtomicReference<JFXProgressBar> progressBar = new AtomicReference<>();
-            AtomicReference<Label> progressLabel = new AtomicReference<>();
             Platform.runLater(() -> {
-                progressDialog = new Dialog<>();
+                progressDialog = new JFXAlert<>();
                 GUITools.initializePane(progressDialog.getDialogPane());
                 progressDialog.setTitle(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_TITLE));
-                progressDialog.setHeaderText(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_HEADER));
-                GridPane grid = new GridPane();
-                progressBar.set(new JFXProgressBar());
-                progressBar.get().setPrefHeight(50);
-                progressLabel.set(new Label());
-                grid.add(progressBar.get(), 0, 0);
-                grid.add(progressLabel.get(), 1, 0);
-                progressDialog.getDialogPane().setContent(grid);
+
+                JFXDialogLayout layout = new JFXDialogLayout();
+                layout.setHeading(new Label(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_HEADER)));
+
+
+                progressBar = new JFXProgressBar();
+                progressBar.setPrefHeight(50);
+
+                progressLabel = new Label();
+
+                GridPane gridPane = new GridPane();
+                gridPane.setHgap(20);
+                gridPane.add(progressBar, 0, 0);
+                gridPane.add(progressLabel, 1, 0);
+
+
+                layout.setBody(gridPane);
+                progressDialog.setContent(layout);
+
                 Stage stage = (Stage) progressDialog.getDialogPane().getScene().getWindow();
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.setOnCloseRequest((request) -> System.exit(0));
@@ -72,8 +83,8 @@ public class StartProgressWindow extends Application {
                     e.printStackTrace();
                 }
                 Platform.runLater(() -> {
-                    progressBar.get().setProgress(1.0F - ((float) progress.getCount() / progress.getTotal()));
-                    progressLabel.get().setText(String.format("%d / %d", (progress.getTotal() - progress.getCount()), progress.getTotal()));
+                    progressBar.setProgress(1.0F - ((float) progress.getCount() / progress.getTotal()));
+                    progressLabel.setText(String.format("%d / %d", (progress.getTotal() - progress.getCount()), progress.getTotal()));
                 });
             }
             hideDialog();

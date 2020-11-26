@@ -33,7 +33,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -74,16 +77,21 @@ public class MainWindow implements Initializable {
             stage.setOnCloseRequest(event -> {
                 if (Minosoft.getSelectedAccount() == null) {
                     event.consume();
-                    Alert alert = new Alert(Alert.AlertType.WARNING, LocaleManager.translate(Strings.ERROR), ButtonType.CANCEL, ButtonType.OK);
-                    alert.setHeaderText(LocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_HEADER));
-                    alert.setContentText(LocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_ERROR));
-                    alert.showAndWait().ifPresent((type) -> {
-                        if (type == ButtonType.OK) {
-                            System.exit(0);
-                            return;
-                        }
-                        alert.close();
-                    });
+                    JFXAlert<?> alert = new JFXAlert<>();
+                    GUITools.initializePane(alert.getDialogPane());
+                    alert.setTitle(LocaleManager.translate(Strings.ERROR));
+                    JFXDialogLayout layout = new JFXDialogLayout();
+                    layout.setHeading(new Label(LocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_HEADER)));
+                    layout.setBody(new Label(LocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_ERROR)));
+
+                    JFXButton cancel = new JFXButton(ButtonType.CANCEL.getText());
+                    cancel.setOnAction((actionEvent -> alert.close()));
+                    JFXButton close = new JFXButton(ButtonType.OK.getText());
+                    close.setOnAction(actionEvent -> System.exit(0));
+
+                    layout.setActions(cancel, close);
+                    alert.setContent(layout);
+                    alert.showAndWait();
                 } else {
                     stage.close();
                 }
@@ -119,9 +127,9 @@ public class MainWindow implements Initializable {
 
         JFXDialogLayout layout = new JFXDialogLayout();
 
-        GridPane vbox = new GridPane();
-        vbox.setVgap(15);
-        vbox.setHgap(50);
+        GridPane gridPane = new GridPane();
+        gridPane.setVgap(15);
+        gridPane.setHgap(50);
 
         JFXButton submitButton;
 
@@ -131,9 +139,9 @@ public class MainWindow implements Initializable {
 
         JFXTextField serverAddressField = new JFXTextField();
         serverAddressField.setPromptText(LocaleManager.translate(Strings.SERVER_ADDRESS));
-        RequiredFieldValidator validator = new RequiredFieldValidator();
-        validator.setMessage(LocaleManager.translate(Strings.SERVER_ADDRESS_INPUT_REQUIRED));
-        serverAddressField.getValidators().add(validator);
+        RequiredFieldValidator serverAddressValidator = new RequiredFieldValidator();
+        serverAddressValidator.setMessage(LocaleManager.translate(Strings.SERVER_ADDRESS_INPUT_REQUIRED));
+        serverAddressField.getValidators().add(serverAddressValidator);
         serverAddressField.focusedProperty().addListener((o, oldValue, newValue) -> {
             if (!newValue) {
                 serverAddressField.validate();
@@ -166,19 +174,19 @@ public class MainWindow implements Initializable {
         }
         submitButton.setButtonType(JFXButton.ButtonType.RAISED);
 
-        vbox.add(new Label(LocaleManager.translate(Strings.SERVER_NAME) + ":"), 0, 0);
-        vbox.add(serverNameField, 1, 0);
-        vbox.add(new Label(LocaleManager.translate(Strings.SERVER_ADDRESS) + ":"), 0, 1);
-        vbox.add(serverAddressField, 1, 1);
-        vbox.add(new Label(LocaleManager.translate(Strings.VERSION) + ":"), 0, 2);
-        vbox.add(GUITools.VERSION_COMBO_BOX, 1, 2);
+        gridPane.add(new Label(LocaleManager.translate(Strings.SERVER_NAME) + ":"), 0, 0);
+        gridPane.add(serverNameField, 1, 0);
+        gridPane.add(new Label(LocaleManager.translate(Strings.SERVER_ADDRESS) + ":"), 0, 1);
+        gridPane.add(serverAddressField, 1, 1);
+        gridPane.add(new Label(LocaleManager.translate(Strings.VERSION) + ":"), 0, 2);
+        gridPane.add(GUITools.VERSION_COMBO_BOX, 1, 2);
 
 
-        layout.setBody(vbox);
+        layout.setBody(gridPane);
         JFXButton closeButton = new JFXButton(ButtonType.CLOSE.getText());
         closeButton.setOnAction((actionEvent -> dialog.hide()));
         closeButton.setButtonType(JFXButton.ButtonType.RAISED);
-        layout.setActions(submitButton, closeButton);
+        layout.setActions(closeButton, submitButton);
 
 
         serverAddressField.textProperty().addListener((observable, oldValue, newValue) -> submitButton.setDisable(newValue.trim().isEmpty()));

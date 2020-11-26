@@ -20,6 +20,7 @@ import java.io.File;
 
 public class StaticConfiguration {
     public static final boolean DEBUG_MODE = false; // if true, additional checks will be made to validate data, ... Decreases performance
+    public static final boolean DEBUG_SLOW_LOADING = false; // if true, many Thread.sleep will be executed and the start will be delayed (by a lot)
     public static String CONFIG_FILENAME = "config.json"; // Filename of minosoft's base configuration (located in AppData/Minosoft/config)
     public static boolean SKIP_MOJANG_AUTHENTICATION = false; // disables all connections to mojang
     public static boolean COLORED_LOG = true; // the log should be colored with ANSI (does not affect base components)

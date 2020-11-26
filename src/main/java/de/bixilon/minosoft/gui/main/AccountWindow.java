@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.main;
 
+import com.jfoenix.controls.*;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
@@ -26,8 +27,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
@@ -53,35 +54,39 @@ public class AccountWindow implements Initializable {
 
     @FXML
     public void addAccount() {
-        Dialog<?> dialog = new Dialog<>();
+        JFXAlert<?> dialog = new JFXAlert<>();
         dialog.setTitle(LocaleManager.translate(Strings.LOGIN_DIALOG_TITLE));
-        dialog.setHeaderText(LocaleManager.translate(Strings.LOGIN_DIALOG_HEADER));
         GUITools.initializePane(dialog.getDialogPane());
+        JFXDialogLayout layout = new JFXDialogLayout();
+        layout.setHeading(new Label(LocaleManager.translate(Strings.LOGIN_DIALOG_HEADER)));
 
-        ButtonType loginButtonType = new ButtonType(LocaleManager.translate(Strings.BUTTON_LOGIN), ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+        JFXButton loginButton = new JFXButton(LocaleManager.translate(Strings.BUTTON_LOGIN));
+        layout.setActions(loginButton);
 
-        GridPane grid = new GridPane();
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(15);
+        gridPane.setVgap(15);
 
-        TextField email = new TextField();
-        email.setPromptText(LocaleManager.translate(Strings.EMAIL));
-        PasswordField password = new PasswordField();
-        password.setPromptText(LocaleManager.translate(Strings.PASSWORD));
+        JFXTextField emailField = new JFXTextField();
+        emailField.setPromptText(LocaleManager.translate(Strings.EMAIL));
 
-        grid.add(new Label(LocaleManager.translate(Strings.EMAIL) + ":"), 0, 0);
-        grid.add(email, 1, 0);
-        grid.add(new Label(LocaleManager.translate(Strings.PASSWORD) + ":"), 0, 1);
-        grid.add(password, 1, 1);
-        Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+        JFXPasswordField passwordField = new JFXPasswordField();
+        passwordField.setPromptText(LocaleManager.translate(Strings.PASSWORD));
 
-        email.textProperty().addListener((observable, oldValue, newValue) -> loginButton.setDisable(newValue.trim().isEmpty()));
+        gridPane.add(new Label(LocaleManager.translate(Strings.EMAIL) + ":"), 0, 0);
+        gridPane.add(emailField, 1, 0);
+        gridPane.add(new Label(LocaleManager.translate(Strings.PASSWORD) + ":"), 0, 1);
+        gridPane.add(passwordField, 1, 1);
+
+        emailField.textProperty().addListener((observable, oldValue, newValue) -> loginButton.setDisable(newValue.trim().isEmpty()));
         loginButton.setDisable(true);
 
-        dialog.getDialogPane().setContent(grid);
+        layout.setBody(gridPane);
+        dialog.setContent(layout);
 
-        Platform.runLater(email::requestFocus);
+        Platform.runLater(emailField::requestFocus);
         loginButton.addEventFilter(ActionEvent.ACTION, event -> {
-            MojangAccountAuthenticationAttempt attempt = MojangAuthentication.login(email.getText(), password.getText());
+            MojangAccountAuthenticationAttempt attempt = MojangAuthentication.login(emailField.getText(), passwordField.getText());
             if (attempt.succeeded()) {
                 // login okay
                 MojangAccount account = attempt.getAccount();
@@ -89,6 +94,7 @@ public class AccountWindow implements Initializable {
                 account.saveToConfig();
                 AccountListCell.listView.getItems().add(account);
                 Log.info(String.format("Added and saved account (playerName=%s, email=%s, uuid=%s)", account.getPlayerName(), account.getMojangUserName(), account.getUUID()));
+                dialog.close();
                 return;
             }
             event.consume();
@@ -96,8 +102,8 @@ public class AccountWindow implements Initializable {
             error.setStyle("-fx-text-fill: red");
             error.setText(attempt.getError());
 
-            grid.add(new Label(LocaleManager.translate(Strings.ERROR)), 0, 2);
-            grid.add(error, 1, 2);
+            gridPane.add(new Label(LocaleManager.translate(Strings.ERROR)), 0, 2);
+            gridPane.add(error, 1, 2);
             // ToDo resize window
         });
 

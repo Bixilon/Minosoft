@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <!--
   ~ Minosoft
   ~ Copyright (C) 2020 Moritz Zwerger
@@ -14,23 +11,29 @@
   ~
   ~ This software is not affiliated with Mojang AB, the original developer of Minecraft.
   -->
-<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="640.0" fx:controller="de.bixilon.minosoft.gui.main.SettingsWindow">
-    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" prefHeight="400.0" prefWidth="640.0" fx:controller="de.bixilon.minosoft.gui.main.SettingsWindow" styleClass="vbox">
+    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" styleClass="tab-pane">
         <Tab fx:id="general" text="-General-">
             <GridPane fx:id="tabGeneral" hgap="10" minHeight="0.0" minWidth="0.0" prefHeight="429.0" prefWidth="640.0" vgap="10">
                 <padding>
-                    <Insets bottom="10" left="10" right="300" top="10" />
+                    <Insets bottom="10" left="10" right="300" top="10"/>
                 </padding>
                 <columnConstraints>
-                    <ColumnConstraints />
-                    <ColumnConstraints />
+                    <ColumnConstraints/>
+                    <ColumnConstraints/>
                 </columnConstraints>
                 <rowConstraints>
                     <RowConstraints />
                     <RowConstraints />
                 </rowConstraints>
                 <Label fx:id="generalLogLevelLabel" text="-Log level-" />
-                <ComboBox fx:id="generalLogLevel" prefWidth="150.0" GridPane.columnIndex="1" />
+                <JFXComboBox fx:id="generalLogLevel" prefWidth="150.0" GridPane.columnIndex="1"/>
             </GridPane>
         </Tab>
         <Tab disable="true"  fx:id="download" text="Download">
