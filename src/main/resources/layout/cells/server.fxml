@@ -1,36 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
-<!--
-  ~ Minosoft
-  ~ Copyright (C) 2020 Moritz Zwerger
-  ~
-  ~ This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
-  ~
-  ~ This software is not affiliated with Mojang AB, the original developer of Minecraft.
-  -->
-<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="500.0" minHeight="-Infinity" minWidth="500.0" onMouseClicked="#clicked" prefWidth="500.0" fx:controller="de.bixilon.minosoft.gui.main.ServerListCell">
-    <ImageView fx:id="icon" fitHeight="100.0" fitWidth="100.0" layoutX="54.0" layoutY="108.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
-    <TextFlow fx:id="serverName" layoutX="111.0" layoutY="14.0" maxWidth="200.0" minWidth="10.0" prefHeight="30.0" prefWidth="200.0" AnchorPane.leftAnchor="110.0" AnchorPane.topAnchor="5.0" />
-    <Label fx:id="players" layoutX="408.0" layoutY="8.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="5.0" />
-    <TextFlow fx:id="motd" layoutX="104.0" layoutY="49.0" maxWidth="320.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="40.0" />
-    <Label fx:id="version" layoutX="350.0" layoutY="8.0" text="#Version#" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="5.0" />
-    <MenuButton fx:id="optionsMenu" layoutX="389.0" layoutY="81.0" mnemonicParsing="false" text="⋮" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="580" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="de.bixilon.minosoft.gui.main.ServerListCell">
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="ALWAYS" maxWidth="200.0" minWidth="10.0" prefWidth="150.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
+    </rowConstraints>
+    <ImageView fx:id="faviconField" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowSpan="3" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS">
+    </ImageView>
+    <TextFlow fx:id="nameField" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3">
+        <GridPane.margin>
+            <Insets left="15.0"/>
+        </GridPane.margin>
+    </TextFlow>
+    <TextFlow fx:id="motdField" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.rowSpan="2">
+        <GridPane.margin>
+            <Insets left="15.0"/>
+        </GridPane.margin>
+    </TextFlow>
+    <Label fx:id="versionField" text="VERSION" textAlignment="RIGHT" GridPane.columnIndex="4" GridPane.halignment="RIGHT">
+        <GridPane.margin>
+            <Insets right="10.0"/>
+        </GridPane.margin>
+    </Label>
+    <Label fx:id="playersField" minHeight="-Infinity" minWidth="-Infinity" text="100000 / 100000" GridPane.columnIndex="5" GridPane.halignment="CENTER"/>
+    <Label fx:id="brandField" text="BRAND" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+        <GridPane.margin>
+            <Insets right="15.0"/>
+        </GridPane.margin>
+    </Label>
+    <MenuButton mnemonicParsing="false" text="⋮" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
         <items>
-            <MenuItem fx:id="optionsConnect" disable="true" mnemonicParsing="false" onAction="#connect" text="-Connect-" />
-            <MenuItem fx:id="optionsShowInfo" mnemonicParsing="false" onAction="#showInfo" text="-Info-" />
-            <MenuItem fx:id="optionsEdit" mnemonicParsing="false" onAction="#editServer" text="-Edit-" />
-            <MenuItem fx:id="optionsRefresh" mnemonicParsing="false" onAction="#refresh" text="-Refresh-" />
-            <MenuItem fx:id="optionsSessions" mnemonicParsing="false" onAction="#manageSessions" disable="true" text="-Sessions-" />
-            <MenuItem fx:id="optionsDelete" mnemonicParsing="false" style="-fx-text-fill: red" onAction="#delete" text="-Delete-" />
+            <MenuItem fx:id="optionsConnect" disable="true" mnemonicParsing="false" onAction="#connect" text="-Connect-"/>
+            <MenuItem fx:id="optionsShowInfo" mnemonicParsing="false" onAction="#showInfo" text="-Info-"/>
+            <MenuItem fx:id="optionsEdit" mnemonicParsing="false" onAction="#editServer" text="-Edit-"/>
+            <MenuItem fx:id="optionsRefresh" mnemonicParsing="false" onAction="#refresh" text="-Refresh-"/>
+            <MenuItem fx:id="optionsSessions" disable="true" mnemonicParsing="false" onAction="#manageSessions" text="-Sessions-"/>
+            <MenuItem fx:id="optionsDelete" mnemonicParsing="false" onAction="#delete" style="-fx-text-fill: red" text="-Delete-"/>
         </items>
+        <GridPane.margin>
+            <Insets right="15.0"/>
+        </GridPane.margin>
     </MenuButton>
-    <Label layoutX="464.0" layoutY="59.0" text="#Brand#" fx:id="serverBrand" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="5.0" />
-</AnchorPane>
+    <padding>
+        <Insets bottom="10.0" top="10.0"/>
+    </padding>
+</GridPane>

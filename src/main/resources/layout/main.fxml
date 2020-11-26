@@ -37,7 +37,7 @@
         </Menu>
     </MenuBar>
     <AnchorPane VBox.vgrow="ALWAYS" styleClass="anchor-pane">
-        <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="14.0" layoutY="14.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="14.0" layoutY="14.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <BorderPane fx:id="serversPane"/>
         </ScrollPane>
     </AnchorPane>

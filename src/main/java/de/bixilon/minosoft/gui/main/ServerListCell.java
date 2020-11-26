@@ -38,7 +38,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -54,13 +53,14 @@ import java.util.ResourceBundle;
 public class ServerListCell extends ListCell<Server> implements Initializable {
     public static final ListView<Server> listView = new ListView<>();
 
-    public ImageView icon;
-    public TextFlow motd;
-    public Label version;
-    public Label players;
-    public Label serverBrand;
-    public TextFlow serverName;
-    public AnchorPane root;
+    public ImageView faviconField;
+    public TextFlow nameField;
+    public TextFlow motdField;
+    public Label versionField;
+    public Label playersField;
+    public Label brandField;
+
+    public GridPane root;
     public MenuItem optionsConnect;
     public MenuItem optionsShowInfo;
     public MenuItem optionsEdit;
@@ -97,10 +97,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         optionsDelete.setText(LocaleManager.translate(Strings.SERVER_ACTION_DELETE));
     }
 
-    public AnchorPane getRoot() {
-        return root;
-    }
-
     @Override
     protected void updateItem(Server server, boolean empty) {
         super.updateItem(server, empty);
@@ -120,13 +116,13 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         resetCell();
 
         this.server = server;
-        serverName.getChildren().setAll(server.getName().getJavaFXText());
+        nameField.getChildren().setAll(server.getName().getJavaFXText());
 
         Image favicon = GUITools.getImage(server.getFavicon());
         if (favicon == null) {
             favicon = GUITools.MINOSOFT_LOGO;
         }
-        icon.setImage(favicon);
+        faviconField.setImage(favicon);
         if (server.isConnected()) {
             setStyle("-fx-background-color: darkseagreen;");
             optionsSessions.setDisable(false);
@@ -149,37 +145,37 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
             if (ping == null) {
                 // Offline
-                players.setText("");
-                version.setText(LocaleManager.translate(Strings.OFFLINE));
-                version.setStyle("-fx-text-fill: red;");
+                playersField.setText("");
+                versionField.setText(LocaleManager.translate(Strings.OFFLINE));
+                versionField.setStyle("-fx-text-fill: red;");
                 setErrorMotd(String.format("%s", server.getLastPing().getLastConnectionException()));
                 optionsConnect.setDisable(true);
                 canConnect = false;
                 return;
             }
-            players.setText(LocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, ping.getPlayerOnline(), ping.getMaxPlayers()));
+            playersField.setText(LocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, ping.getPlayerOnline(), ping.getMaxPlayers()));
             Version serverVersion;
             if (server.getDesiredVersionId() == -1) {
                 serverVersion = Versions.getVersionByProtocolId(ping.getProtocolId());
             } else {
                 serverVersion = Versions.getVersionById(server.getDesiredVersionId());
-                version.setStyle("-fx-text-fill: green;");
+                versionField.setStyle("-fx-text-fill: green;");
             }
             if (serverVersion == null) {
-                version.setText(ping.getServerBrand());
-                version.setStyle("-fx-text-fill: red;");
+                versionField.setText(ping.getServerBrand());
+                versionField.setStyle("-fx-text-fill: red;");
                 optionsConnect.setDisable(true);
                 canConnect = false;
             } else {
-                version.setText(serverVersion.getVersionName());
+                versionField.setText(serverVersion.getVersionName());
                 optionsConnect.setDisable(false);
                 canConnect = true;
             }
-            serverBrand.setText(ping.getServerModInfo().getBrand());
-            serverBrand.setTooltip(new Tooltip(ping.getServerModInfo().getInfo()));
-            motd.getChildren().setAll(ping.getMotd().getJavaFXText());
+            brandField.setText(ping.getServerModInfo().getBrand());
+            brandField.setTooltip(new Tooltip(ping.getServerModInfo().getInfo()));
+            motdField.getChildren().setAll(ping.getMotd().getJavaFXText());
             if (ping.getFavicon() != null) {
-                icon.setImage(GUITools.getImage(ping.getFavicon()));
+                faviconField.setImage(GUITools.getImage(ping.getFavicon()));
                 if (!Arrays.equals(ping.getFavicon(), server.getFavicon())) {
                     server.setFavicon(ping.getFavicon());
                     server.saveToConfig();
@@ -191,7 +187,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
             if (server.getLastPing().getLastConnectionException() != null) {
                 // connection failed because of an error in minosoft, but ping was okay
-                version.setStyle("-fx-text-fill: red;");
+                versionField.setStyle("-fx-text-fill: red;");
                 optionsConnect.setDisable(true);
                 canConnect = false;
                 setErrorMotd(String.format("%s: %s", server.getLastPing().getLastConnectionException().getClass().getCanonicalName(), server.getLastPing().getLastConnectionException().getMessage()));
@@ -202,24 +198,22 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     private void resetCell() {
         // clear all cells
         setStyle(null);
-        motd.getChildren().clear();
-        serverBrand.setText("");
-        serverBrand.setTooltip(null);
-        motd.setStyle(null);
-        version.setText(LocaleManager.translate(Strings.CONNECTING));
-        version.setStyle(null);
-        players.setText("");
+        motdField.getChildren().clear();
+        brandField.setText("");
+        brandField.setTooltip(null);
+        motdField.setStyle(null);
+        versionField.setText(LocaleManager.translate(Strings.CONNECTING));
+        versionField.setStyle(null);
+        playersField.setText("");
         optionsConnect.setDisable(true);
         optionsEdit.setDisable(false);
         optionsDelete.setDisable(false);
-        serverName.getChildren().clear();
     }
 
     private void setErrorMotd(String message) {
-        motd.getChildren().clear();
         Text text = new Text(message);
         text.setFill(Color.RED);
-        motd.getChildren().add(text);
+        motdField.getChildren().setAll(text);
     }
 
     public void delete() {
