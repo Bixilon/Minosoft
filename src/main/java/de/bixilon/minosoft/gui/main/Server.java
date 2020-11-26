@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.main;
 
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.ConnectionReasons;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
@@ -25,34 +26,36 @@ import java.util.ArrayList;
 import java.util.Base64;
 
 public class Server {
-    static int highestServerId;
-    final int id;
-    final ArrayList<Connection> connections = new ArrayList<>();
-    String name;
-    String address;
-    int desiredVersion;
-    byte[] favicon;
-    Connection lastPing;
+    private static int highestServerId;
+    private final int id;
+    private final ArrayList<Connection> connections = new ArrayList<>();
+    private BaseComponent name;
+    private BaseComponent addressName;
+    private String address;
+    private int desiredVersion;
+    private byte[] favicon;
+    private Connection lastPing;
     private boolean readOnly = false;
 
-    public Server(int id, String name, String address, int desiredVersion, byte[] favicon) {
+    public Server(int id, BaseComponent name, String address, int desiredVersion, byte[] favicon) {
         this(id, name, address, desiredVersion);
         this.favicon = favicon;
     }
 
-    public Server(int id, String name, String address, int desiredVersion) {
+    public Server(int id, BaseComponent name, String address, int desiredVersion) {
         this.id = id;
         if (id > highestServerId) {
             highestServerId = id;
         }
         this.name = name;
         this.address = address;
+        this.addressName = new BaseComponent(address);
         this.desiredVersion = desiredVersion;
     }
 
     public Server(ServerAddress address) {
         this.id = getNextServerId();
-        this.name = String.format("LAN Server #%d", LANServerListener.getServers().size());
+        this.name = new BaseComponent(String.format("LAN Server #%d", LANServerListener.getServers().size()));
         this.address = address.toString();
         this.desiredVersion = -1; // Automatic
         this.readOnly = true;
@@ -63,7 +66,7 @@ public class Server {
     }
 
     public static Server deserialize(JsonObject json) {
-        Server server = new Server(json.get("id").getAsInt(), json.get("name").getAsString(), json.get("address").getAsString(), json.get("version").getAsInt());
+        Server server = new Server(json.get("id").getAsInt(), new BaseComponent(json.get("name").getAsString()), json.get("address").getAsString(), json.get("version").getAsInt());
         if (json.has("favicon")) {
             server.setFavicon(Base64.getDecoder().decode(json.get("favicon").getAsString()));
         }
@@ -113,11 +116,15 @@ public class Server {
         return String.format("%s (%s)", getName(), getAddress());
     }
 
-    public String getName() {
+    public BaseComponent getName() {
+        if (name.isEmpty()) {
+            return addressName;
+        }
         return name;
     }
 
-    public void setName(String name) {
+
+    public void setName(BaseComponent name) {
         this.name = name;
     }
 
@@ -127,6 +134,7 @@ public class Server {
 
     public void setAddress(String address) {
         this.address = address;
+        this.addressName = new BaseComponent(address);
     }
 
     public void ping() {
@@ -164,7 +172,7 @@ public class Server {
     public JsonObject serialize() {
         JsonObject json = new JsonObject();
         json.addProperty("id", id);
-        json.addProperty("name", name);
+        json.addProperty("name", name.getLegacyText());
         json.addProperty("address", address);
         json.addProperty("version", desiredVersion);
         if (favicon != null) {

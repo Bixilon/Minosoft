@@ -18,11 +18,7 @@
   -->
 <AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="500.0" minHeight="-Infinity" minWidth="500.0" onMouseClicked="#clicked" prefWidth="500.0" fx:controller="de.bixilon.minosoft.gui.main.ServerListCell">
     <ImageView fx:id="icon" fitHeight="100.0" fitWidth="100.0" layoutX="54.0" layoutY="108.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
-    <Label fx:id="serverName" layoutX="111.0" layoutY="14.0" maxWidth="200.0" minWidth="10.0" text="#Servername#" underline="true" AnchorPane.leftAnchor="110.0" AnchorPane.topAnchor="5.0">
-        <font>
-            <Font size="17.0" />
-        </font>
-    </Label>
+    <TextFlow fx:id="serverName" layoutX="111.0" layoutY="14.0" maxWidth="200.0" minWidth="10.0" prefHeight="30.0" prefWidth="200.0" AnchorPane.leftAnchor="110.0" AnchorPane.topAnchor="5.0" />
     <Label fx:id="players" layoutX="408.0" layoutY="8.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="5.0" />
     <TextFlow fx:id="motd" layoutX="104.0" layoutY="49.0" maxWidth="320.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="40.0" />
     <Label fx:id="version" layoutX="350.0" layoutY="8.0" text="#Version#" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="5.0" />
@@ -30,7 +26,7 @@
         <items>
             <MenuItem fx:id="optionsConnect" disable="true" mnemonicParsing="false" onAction="#connect" text="-Connect-" />
             <MenuItem fx:id="optionsShowInfo" mnemonicParsing="false" onAction="#showInfo" text="-Info-" />
-            <MenuItem fx:id="optionsEdit" mnemonicParsing="false" onAction="#edit" text="-Edit-" />
+            <MenuItem fx:id="optionsEdit" mnemonicParsing="false" onAction="#editServer" text="-Edit-" />
             <MenuItem fx:id="optionsRefresh" mnemonicParsing="false" onAction="#refresh" text="-Refresh-" />
             <MenuItem fx:id="optionsSessions" mnemonicParsing="false" onAction="#manageSessions" disable="true" text="-Sessions-" />
             <MenuItem fx:id="optionsDelete" mnemonicParsing="false" style="-fx-text-fill: red" onAction="#delete" text="-Delete-" />

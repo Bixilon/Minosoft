@@ -27,6 +27,7 @@ import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 
 public class BaseComponent extends ChatComponent {
+    private final static String LEGACY_RESET_SUFFIX = String.valueOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) + PostChatFormattingCodes.RESET.getChar();
     private final ArrayList<ChatComponent> parts = new ArrayList<>();
 
     public BaseComponent() {
@@ -157,18 +158,25 @@ public class BaseComponent extends ChatComponent {
         return PostChatFormattingCodes.RESET.getANSI() + getANSIColoredMessage();
     }
 
+    @Override
     public String getANSIColoredMessage() {
         StringBuilder builder = new StringBuilder();
         parts.forEach((chatPart -> builder.append(chatPart.getANSIColoredMessage())));
         return builder.toString();
     }
 
+    @Override
     public String getLegacyText() {
         StringBuilder builder = new StringBuilder();
         parts.forEach((chatPart -> builder.append(chatPart.getLegacyText())));
-        return builder.toString();
+        String string = builder.toString();
+        if (string.endsWith(LEGACY_RESET_SUFFIX)) {
+            string = string.substring(0, string.length() - LEGACY_RESET_SUFFIX.length());
+        }
+        return string;
     }
 
+    @Override
     public String getMessage() {
         StringBuilder builder = new StringBuilder();
         parts.forEach((chatPart -> builder.append(chatPart.getMessage())));
@@ -194,5 +202,9 @@ public class BaseComponent extends ChatComponent {
     public BaseComponent append(String message) {
         parts.add(new BaseComponent(message));
         return this;
+    }
+
+    public boolean isEmpty() {
+        return parts.isEmpty();
     }
 }

@@ -45,8 +45,7 @@ public class AccountWindow implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         AccountListCell.listView.setCellFactory((lv) -> AccountListCell.newInstance());
 
-        ObservableList<MojangAccount> accounts = FXCollections.observableArrayList();
-        accounts.addAll(Minosoft.getAccountList().values());
+        ObservableList<MojangAccount> accounts = FXCollections.observableArrayList(Minosoft.getAccountList().values());
         AccountListCell.listView.setItems(accounts);
         accountPane.setCenter(AccountListCell.listView);
 

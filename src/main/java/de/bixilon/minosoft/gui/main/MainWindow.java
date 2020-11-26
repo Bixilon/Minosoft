@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
+import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.util.DNSUtil;
@@ -37,6 +38,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -106,6 +108,93 @@ public class MainWindow implements Initializable {
         });
     }
 
+    public static void addOrEditServer(@Nullable final Server server) {
+        Dialog<?> dialog = new Dialog<>();
+        ((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().add(GUITools.logo);
+
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 300, 10, 10));
+
+        ButtonType submitButtonType;
+
+
+        TextField serverNameField = new TextField();
+        serverNameField.setPromptText(LocaleManager.translate(Strings.SERVER_NAME));
+
+        TextField serverAddressField = new TextField();
+        serverAddressField.setPromptText(LocaleManager.translate(Strings.SERVER_ADDRESS));
+
+
+        GUITools.versionList.getSelectionModel().select(Versions.LOWEST_VERSION_SUPPORTED);
+
+
+        if (server == null) {
+            // add
+            dialog.setTitle(LocaleManager.translate(Strings.ADD_SERVER_DIALOG_TITLE));
+            dialog.setHeaderText(LocaleManager.translate(Strings.ADD_SERVER_DIALOG_HEADER));
+
+            submitButtonType = new ButtonType(LocaleManager.translate(Strings.BUTTON_ADD), ButtonBar.ButtonData.OK_DONE);
+
+            serverNameField.setText(LocaleManager.translate(Strings.ADD_SERVER_DIALOG_DEFAULT_SERVER_NAME));
+
+        } else {
+            dialog.setTitle(LocaleManager.translate(Strings.EDIT_SERVER_DIALOG_TITLE, server.getName().getMessage()));
+            dialog.setHeaderText(LocaleManager.translate(Strings.EDIT_SERVER_DIALOG_HEADER));
+
+            submitButtonType = new ButtonType(LocaleManager.translate(Strings.BUTTON_SAVE), ButtonBar.ButtonData.OK_DONE);
+
+            serverNameField.setText(server.getName().getLegacyText()); // ToDo: Remove final §r
+            serverAddressField.setText(server.getAddress());
+
+            if (server.getDesiredVersionId() != -1) {
+                GUITools.versionList.getSelectionModel().select(Versions.getVersionById(server.getDesiredVersionId()));
+            }
+        }
+        dialog.getDialogPane().getButtonTypes().setAll(submitButtonType, ButtonType.CANCEL);
+
+        Node submitButton = dialog.getDialogPane().lookupButton(submitButtonType);
+
+
+        grid.add(new Label(LocaleManager.translate(Strings.SERVER_NAME) + ":"), 0, 0);
+        grid.add(serverNameField, 1, 0);
+        grid.add(new Label(LocaleManager.translate(Strings.SERVER_ADDRESS) + ":"), 0, 1);
+        grid.add(serverAddressField, 1, 1);
+        grid.add(new Label(LocaleManager.translate(Strings.VERSION) + ":"), 0, 2);
+        grid.add(GUITools.versionList, 1, 2);
+
+
+        serverAddressField.textProperty().addListener((observable, oldValue, newValue) -> submitButton.setDisable(newValue.trim().isEmpty()));
+        submitButton.setDisable(serverAddressField.getText().isBlank());
+        dialog.getDialogPane().setContent(grid);
+
+        Platform.runLater(serverNameField::requestFocus);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == submitButtonType) {
+                Server server1 = server;
+                BaseComponent serverName = new BaseComponent(serverNameField.getText());
+                String serverAddress = DNSUtil.correctHostName(serverAddressField.getText());
+                int desiredVersionId = GUITools.versionList.getSelectionModel().getSelectedItem().getVersionId();
+
+                if (server1 == null) {
+                    server1 = new Server(Server.getNextServerId(), serverName, serverAddress, desiredVersionId);
+                    Minosoft.serverList.add(server1);
+                    ServerListCell.listView.getItems().add(server1);
+                } else {
+                    server1.setName(serverName);
+                    server1.setDesiredVersionId(desiredVersionId);
+                }
+                server1.saveToConfig();
+                Log.info(String.format("%s and saved server (serverName=%s, serverAddress=%s, version=%d)", ((server == null) ? "Added" : "Edited"), serverName.getLegacyText(), serverAddress, desiredVersionId));
+            }
+            return null;
+        });
+        dialog.showAndWait();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         serversPane.setCenter(ServerListCell.listView);
@@ -125,54 +214,7 @@ public class MainWindow implements Initializable {
 
     @FXML
     public void addServer() {
-        Dialog<?> dialog = new Dialog<>();
-        dialog.setTitle(LocaleManager.translate(Strings.ADD_SERVER_DIALOG_TITLE));
-        dialog.setHeaderText(LocaleManager.translate(Strings.ADD_SERVER_DIALOG_HEADER));
-        ((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().add(GUITools.logo);
-
-        ButtonType addButtonType = new ButtonType(LocaleManager.translate(Strings.BUTTON_ADD), ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 300, 10, 10));
-
-        TextField serverName = new TextField();
-        serverName.setPromptText(LocaleManager.translate(Strings.SERVER_NAME));
-        serverName.setText(LocaleManager.translate(Strings.ADD_SERVER_DIALOG_DEFAULT_SERVER_NAME));
-        TextField serverAddress = new TextField();
-        serverAddress.setPromptText(LocaleManager.translate(Strings.SERVER_ADDRESS));
-
-        GUITools.versionList.getSelectionModel().select(Versions.LOWEST_VERSION_SUPPORTED);
-
-        grid.add(new Label(LocaleManager.translate(Strings.SERVER_NAME) + ":"), 0, 0);
-        grid.add(serverName, 1, 0);
-        grid.add(new Label(LocaleManager.translate(Strings.SERVER_ADDRESS) + ":"), 0, 1);
-        grid.add(serverAddress, 1, 1);
-        grid.add(new Label(LocaleManager.translate(Strings.VERSION) + ":"), 0, 2);
-        grid.add(GUITools.versionList, 1, 2);
-
-        Node addButton = dialog.getDialogPane().lookupButton(addButtonType);
-
-        serverAddress.textProperty().addListener((observable, oldValue, newValue) -> addButton.setDisable(newValue.trim().isEmpty()));
-        addButton.setDisable(true);
-
-        dialog.getDialogPane().setContent(grid);
-
-        Platform.runLater(serverName::requestFocus);
-
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == addButtonType) {
-                Server server = new Server(Server.getNextServerId(), serverName.getText(), DNSUtil.correctHostName(serverAddress.getText()), GUITools.versionList.getSelectionModel().getSelectedItem().getVersionId());
-                Minosoft.serverList.add(server);
-                server.saveToConfig();
-                ServerListCell.listView.getItems().add(server);
-                Log.info(String.format("Added and saved server (serverName=%s, serverAddress=%s, version=%d)", server.getName(), server.getAddress(), server.getDesiredVersionId()));
-            }
-            return null;
-        });
-        dialog.showAndWait();
+        addOrEditServer(null);
     }
 
     @FXML
