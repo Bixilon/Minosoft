@@ -37,7 +37,7 @@ public class SettingsWindow implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        generalLogLevel.setItems(GUITools.logLevels);
+        generalLogLevel.setItems(GUITools.LOG_LEVELS);
         generalLogLevel.getSelectionModel().select(Log.getLevel());
         generalLogLevel.setOnAction((actionEvent -> {
             LogLevels newLevel = generalLogLevel.getValue();

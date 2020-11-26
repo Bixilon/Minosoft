@@ -1,0 +1,56 @@
+* {
+    -primary-color: #448aff;
+    -primary-light-color: #83b9ff;
+    -primary-dark-color: #005ecb;
+    -secondary-color: #2c3746;
+    -secondary-light-color: #566171;
+    -secondary-dark-color: #03111f;
+    -primary-text-color: #000000;
+    -secondary-text-color: #ffffff;
+}
+
+.root {
+    -fx-background-color: -primary-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.jfx-button {
+    -jfx-button-type: RAISED;
+    -fx-background-color: -primary-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.jfx-alert-content-container, .jfx-text-field, .label {
+    -fx-background-color: -secondary-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.jfx-combo-box {
+    -fx-background-color: -secondary-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.combo-box .list-cell {
+    -fx-background: -secondary-color;
+    -fx-background-color: transparent;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: -secondary-color;
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover {
+    -fx-background: -primary-light-color;
+    -fx-background-color: -secondary-dark-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover {
+    -fx-background-color: -secondary-light-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.combo-box-base {
+    -fx-background-color: -secondary-color;
+}

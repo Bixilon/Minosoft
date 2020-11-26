@@ -1,4 +1,3 @@
-
 # Minosoft
 Minosoft is an open source minecraft client, written from scratch in java. It aims to bring more functionality and stability.
 

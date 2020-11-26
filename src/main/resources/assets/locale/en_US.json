@@ -10,6 +10,7 @@
   "EDIT_SERVER_DIALOG_HEADER": "Edit the server",
   "SERVER_NAME": "Server name",
   "SERVER_ADDRESS": "Server address",
+  "SERVER_ADDRESS_INPUT_REQUIRED": "A server address is required",
   "VERSION": "Version",
   "BUTTON_SAVE": "Save",
   "BUTTON_LOGIN": "Login",

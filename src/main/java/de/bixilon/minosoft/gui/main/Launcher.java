@@ -44,10 +44,8 @@ public class Launcher {
             if (exit) {
                 return;
             }
-            Stage stage = new Stage();
-            stage.getIcons().add(GUITools.logo);
 
-            GUITools.versionList.setCellFactory(new Callback<>() {
+            GUITools.VERSION_COMBO_BOX.setCellFactory(new Callback<>() {
                 @Override
                 public ListCell<Version> call(ListView<Version> p) {
                     return new ListCell<>() {
@@ -76,11 +74,12 @@ public class Launcher {
                 System.exit(1);
             }
 
+            Stage stage = new Stage();
             Scene scene = new Scene(root, 600, 800);
             stage.setScene(scene);
 
             stage.setTitle(LocaleManager.translate(Strings.MAIN_WINDOW_TITLE));
-            stage.getIcons().add(GUITools.logo);
+            GUITools.initializeScene(scene);
             stage.setOnCloseRequest(windowEvent -> System.exit(0));
             if (exit) {
                 return;

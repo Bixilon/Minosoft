@@ -74,6 +74,7 @@ public final class Minosoft {
             Launcher.exit();
             Platform.runLater(() -> {
                 Dialog<Boolean> dialog = new Dialog<>();
+                GUITools.initializePane(dialog.getDialogPane());
                 // Do not translate this, translations might fail to load...
                 dialog.setTitle("Critical Error");
                 dialog.setHeaderText("An error occurred while starting Minosoft");
@@ -83,7 +84,6 @@ public final class Minosoft {
                 dialog.getDialogPane().setContent(text);
 
                 Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(GUITools.logo);
                 stage.setAlwaysOnTop(true);
                 stage.toFront();
                 stage.setOnCloseRequest(dialogEvent -> {

@@ -13,29 +13,32 @@
 
 package de.bixilon.minosoft.gui.main;
 
+import com.jfoenix.controls.JFXComboBox;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.logging.LogLevels;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ComboBox;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Base64;
 
 public class GUITools {
-    public final static Image logo = new Image(GUITools.class.getResourceAsStream("/icons/windowIcon.png"));
-    public final static ObservableList<Version> versions = FXCollections.observableArrayList();
-    public final static ComboBox<Version> versionList = new ComboBox<>(GUITools.versions);
-    public final static ObservableList<LogLevels> logLevels = FXCollections.observableList(Arrays.asList(LogLevels.values().clone()));
+    public final static Image MINOSOFT_LOGO = new Image(GUITools.class.getResourceAsStream("/icons/windowIcon.png"));
+    public final static ObservableList<Version> VERSIONS = FXCollections.observableArrayList();
+    public final static JFXComboBox<Version> VERSION_COMBO_BOX = new JFXComboBox<>(GUITools.VERSIONS);
+    public final static ObservableList<LogLevels> LOG_LEVELS = FXCollections.observableList(Arrays.asList(LogLevels.values().clone()));
 
     static {
-        GUITools.versions.add(Versions.LOWEST_VERSION_SUPPORTED);
-        Versions.getVersionIdMap().forEach((key, value) -> GUITools.versions.add(value));
+        GUITools.VERSIONS.add(Versions.LOWEST_VERSION_SUPPORTED);
+        Versions.getVersionIdMap().forEach((key, value) -> GUITools.VERSIONS.add(value));
 
-        GUITools.versions.sort((a, b) -> {
+        GUITools.VERSIONS.sort((a, b) -> {
             if (a.getVersionId() == -1) {
                 return -Integer.MAX_VALUE;
             }
@@ -65,5 +68,18 @@ public class GUITools {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static Scene initializeScene(Scene scene) {
+        scene.getStylesheets().add("/layout/style.css");
+        if (scene.getWindow() instanceof Stage stage) {
+            stage.getIcons().add(GUITools.MINOSOFT_LOGO);
+        }
+        return scene;
+    }
+
+    public static Pane initializePane(Pane pane) {
+        initializeScene(pane.getScene());
+        return pane;
     }
 }

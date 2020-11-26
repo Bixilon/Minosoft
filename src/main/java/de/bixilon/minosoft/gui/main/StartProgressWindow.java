@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.main;
 
+import com.jfoenix.controls.JFXProgressBar;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.logging.Log;
@@ -21,7 +22,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -30,7 +30,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class StartProgressWindow extends Application {
-    public static CountDownLatch toolkitLatch = new CountDownLatch(2); // 2 if not started, 1 if started, 2 if loaded
+    public final static CountDownLatch toolkitLatch = new CountDownLatch(2); // 2 if not started, 1 if started, 2 if loaded
     public static Dialog<Boolean> progressDialog;
     private static boolean exit = false;
 
@@ -42,20 +42,21 @@ public class StartProgressWindow extends Application {
             if (progress.getCount() == 0) {
                 return;
             }
-            AtomicReference<ProgressBar> progressBar = new AtomicReference<>();
+            AtomicReference<JFXProgressBar> progressBar = new AtomicReference<>();
             AtomicReference<Label> progressLabel = new AtomicReference<>();
             Platform.runLater(() -> {
                 progressDialog = new Dialog<>();
+                GUITools.initializePane(progressDialog.getDialogPane());
                 progressDialog.setTitle(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_TITLE));
                 progressDialog.setHeaderText(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_HEADER));
                 GridPane grid = new GridPane();
-                progressBar.set(new ProgressBar());
+                progressBar.set(new JFXProgressBar());
+                progressBar.get().setPrefHeight(50);
                 progressLabel.set(new Label());
                 grid.add(progressBar.get(), 0, 0);
                 grid.add(progressLabel.get(), 1, 0);
                 progressDialog.getDialogPane().setContent(grid);
                 Stage stage = (Stage) progressDialog.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(GUITools.logo);
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.setOnCloseRequest((request) -> System.exit(0));
                 if (exit) {
@@ -100,7 +101,7 @@ public class StartProgressWindow extends Application {
 
     @Override
     public void start(Stage stage) {
-        toolkitLatch.countDown();
         Platform.setImplicitExit(false);
+        toolkitLatch.countDown();
     }
 }

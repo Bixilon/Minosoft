@@ -122,7 +122,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
 
         Image favicon = GUITools.getImage(server.getFavicon());
         if (favicon == null) {
-            favicon = GUITools.logo;
+            favicon = GUITools.MINOSOFT_LOGO;
         }
         icon.setImage(favicon);
         if (server.isConnected()) {
@@ -304,7 +304,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public void showInfo() {
         Dialog<?> dialog = new Dialog<>();
         dialog.setTitle("View server info: " + server.getName());
-        ((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().add(GUITools.logo);
+        GUITools.initializePane(dialog.getDialogPane());
 
         ButtonType loginButtonType = ButtonType.CLOSE;
         dialog.getDialogPane().getButtonTypes().add(loginButtonType);
@@ -394,8 +394,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle(LocaleManager.translate(Strings.SESSIONS_DIALOG_TITLE, server.getName()));
-            stage.getIcons().add(GUITools.logo);
             stage.setScene(new Scene(parent));
+            GUITools.initializeScene(stage.getScene());
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
