@@ -92,10 +92,6 @@ public final class ChunkUtil {
             return new Chunk(sectionMap);
         }
         if (buffer.getVersionId() < 62) { // ToDo: was this really changed in 62?
-            if (sectionBitMask == 0x00 && groundUpContinuous) {
-                // unload chunk
-                return null;
-            }
             byte sections = BitByte.getBitCount(sectionBitMask);
             int totalBlocks = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
             int halfBytes = totalBlocks / 2; // half bytes
@@ -109,6 +105,10 @@ public final class ChunkUtil {
             }
             if (groundUpContinuous) {
                 byte[] biomes = buffer.readBytes(256);
+            }
+            if (sectionBitMask == 0x00 && groundUpContinuous) {
+                // unload chunk
+                return null;
             }
 
             int arrayPos = 0;
