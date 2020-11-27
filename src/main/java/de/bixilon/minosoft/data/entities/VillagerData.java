@@ -52,7 +52,7 @@ public record VillagerData(VillagerTypes type, VillagerProfessions profession, V
         PRIEST(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(451, -1)}),
         BLACKSMITH(new MapSet[]{new MapSet<>(0, 3), new MapSet<>(451, -1)}),
 
-        HUSK(new MapSet[]{new MapSet<>(204, 5), new MapSet<>(315, -100)}), //ToDo
+        HUSK(new MapSet[]{new MapSet<>(204, 5), new MapSet<>(315, -100)}), // ToDo
         ZOMBIE(new MapSet[]{new MapSet<>(204, -1), new MapSet<>(315, -100)}); // used earlier (ZombieVillagerMeta)
 
         final VersionValueMap<Integer> valueMap;

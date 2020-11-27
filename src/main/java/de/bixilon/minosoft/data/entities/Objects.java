@@ -47,7 +47,7 @@ public enum Objects {
     ITEM_FRAME(71, ItemFrame.class),
     EYE_OF_ENDER(72, ThrownEyeOfEnder.class),
     THROWN_POTION(73, ThrownPotion.class),
-    //FALLING_DRAGON_EGG(74, FallingDragonEgg.class),
+    // FALLING_DRAGON_EGG(74, FallingDragonEgg.class),
     THROWN_EXP_BOTTLE(75, ThrownExperienceBottle.class),
     FIREWORK(76, FireworkRocketEntity.class),
     LEASH_KNOT(77, LeashFenceKnotEntity.class),

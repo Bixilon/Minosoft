@@ -25,6 +25,7 @@ public class EventInvokerMethod extends EventInvoker {
     private final Method method;
     private final Class<? extends ConnectionEvent> eventType;
 
+    @SuppressWarnings("unchecked")
     public EventInvokerMethod(boolean ignoreCancelled, Priorities priority, EventListener listener, Method method) {
         super(ignoreCancelled, priority, listener);
         this.method = method;

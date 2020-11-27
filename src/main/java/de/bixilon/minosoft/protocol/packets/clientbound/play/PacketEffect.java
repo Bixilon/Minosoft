@@ -29,15 +29,12 @@ public class PacketEffect implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 6) {
-            this.effect = EffectEffects.byId(buffer.readInt(), buffer.getVersionId());
-            position = buffer.readBlockPosition();
-            data = buffer.readInt();
-            disableRelativeVolume = buffer.readBoolean();
-            return true;
-        }
         this.effect = EffectEffects.byId(buffer.readInt(), buffer.getVersionId());
-        position = buffer.readPosition();
+        if (buffer.getVersionId() < 6) {
+            position = buffer.readBlockPosition();
+        } else {
+            position = buffer.readPosition();
+        }
         data = buffer.readInt();
         disableRelativeVolume = buffer.readBoolean();
         return true;
@@ -79,7 +76,7 @@ public class PacketEffect implements ClientboundPacket {
 
     public enum EffectEffects {
 
-        //ToDo: find out correct versions
+        // ToDo: find out correct versions
         RANDOM_CLICK(new MapSet[]{new MapSet<>(0, 1000), new MapSet<>(110, -1)}),
         DISPENSER_DISPENSES(new MapSet[]{new MapSet<>(110, 1000)}),
         RANDOM_CLICK1(new MapSet[]{new MapSet<>(0, 1001), new MapSet<>(110, -1)}),
@@ -136,7 +133,7 @@ public class PacketEffect implements ClientboundPacket {
 
         PARTICLE_10_SMOKE(new MapSet[]{new MapSet<>(0, 2000)}), // data: smoke direction
         BLOCK_BREAK(new MapSet[]{new MapSet<>(0, 2001)}), // data: blockId
-        SPLASH_POTION(new MapSet[]{new MapSet<>(0, 2002)}), //data: portionId
+        SPLASH_POTION(new MapSet[]{new MapSet<>(0, 2002)}), // data: portionId
         EYE_OF_ENDER_BREAK_ANIMATION(new MapSet[]{new MapSet<>(0, 2003)}),
         MOB_SPAWN_SMOKE_FLAMES(new MapSet[]{new MapSet<>(0, 2004)}),
         SPAWN_HAPPY_VILLAGER(new MapSet[]{new MapSet<>(0, 2005), new MapSet<>(110, -1)}),

@@ -45,10 +45,10 @@ public class PacketRespawn implements ClientboundPacket {
             dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(buffer.readString());
         } else {
             CompoundTag tag = (CompoundTag) buffer.readNBT();
-            dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(tag.getStringTag("effects").getValue()); //ToDo
+            dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(tag.getStringTag("effects").getValue()); // ToDo
         }
         if (buffer.getVersionId() < 464) {
-            difficulty = Difficulties.byId(buffer.readByte());
+            difficulty = Difficulties.byId(buffer.readUnsignedByte());
         }
 
         if (buffer.getVersionId() >= 719) {
@@ -57,7 +57,7 @@ public class PacketRespawn implements ClientboundPacket {
         if (buffer.getVersionId() >= 552) {
             hashedSeed = buffer.readLong();
         }
-        gameMode = GameModes.byId(buffer.readByte());
+        gameMode = GameModes.byId(buffer.readUnsignedByte());
 
         if (buffer.getVersionId() >= 730) {
             buffer.readByte(); // previous game mode

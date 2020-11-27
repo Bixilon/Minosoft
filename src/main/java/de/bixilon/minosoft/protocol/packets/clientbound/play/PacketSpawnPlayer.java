@@ -60,7 +60,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
 
         Item currentItem = null;
         if (buffer.getVersionId() < 49) {
-            currentItem = buffer.getConnection().getMapping().getItemById(buffer.readShort());
+            currentItem = buffer.getConnection().getMapping().getItemById(buffer.readUnsignedShort());
         }
         EntityMetaData metaData = null;
         if (buffer.getVersionId() < 550) {

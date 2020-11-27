@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketWorldBorder implements ClientboundPacket {
     WorldBorderActions action;
 
-    //fields depend on action
+    // fields depend on action
     double radius;
 
     double oldRadius;

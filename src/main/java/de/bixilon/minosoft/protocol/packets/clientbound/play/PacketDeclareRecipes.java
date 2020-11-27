@@ -33,7 +33,7 @@ public class PacketDeclareRecipes implements ClientboundPacket {
             Recipe recipe;
             String identifier;
             String typeName;
-            if (buffer.getVersionId() >= 453) { //ToDo: find out version
+            if (buffer.getVersionId() >= 453) { // ToDo: find out version
                 typeName = buffer.readString();
                 identifier = buffer.readString();
             } else {

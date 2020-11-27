@@ -42,6 +42,7 @@ public class VersionValueMap<V> {
         return value.getValue();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) {

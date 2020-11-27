@@ -146,7 +146,7 @@ public class PacketHandler {
                 case ADD -> connection.getPlayer().getPlayerList().put(bulk.getUUID(), new PlayerListItem(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGameMode(), bulk.getDisplayName(), bulk.getProperties()));
                 case UPDATE_LATENCY -> {
                     if (bulk.isLegacy()) {
-                        //add or update
+                        // add or update
                         if (item == null) {
                             // create
                             UUID uuid = UUID.randomUUID();
@@ -747,7 +747,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketTags pkg) {
-        //ToDo
+        // ToDo
     }
 
     public void handle(PacketDeclareRecipes pkg) {

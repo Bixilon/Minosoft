@@ -258,6 +258,7 @@ public class AssetsManager {
     private static String saveAsset(InputStream data) throws IOException {
         File tempDestinationFile = null;
         while (tempDestinationFile == null || tempDestinationFile.exists()) { // file exist? lol
+            //noinspection ConstantConditions
             tempDestinationFile = new File(System.getProperty(StandardSystemProperty.JAVA_IO_TMPDIR.value()) + "/minosoft/" + Util.generateRandomString(32));
         }
         Util.createParentFolderIfNotExist(tempDestinationFile);
@@ -283,7 +284,9 @@ public class AssetsManager {
         // move file to desired destination
         File outputFile = new File(getAssetDiskPath(hash));
         Util.createParentFolderIfNotExist(outputFile);
-        tempDestinationFile.renameTo(outputFile);
+        if (!tempDestinationFile.renameTo(outputFile)) {
+            throw new RuntimeException(String.format("Could not rename file %s to %s", tempDestinationFile.getAbsolutePath(), outputFile.getAbsolutePath()));
+        }
         return hash;
     }
 

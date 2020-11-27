@@ -36,12 +36,12 @@ import java.util.HashSet;
 
 public class VersionMapping {
     private final HashSet<Mappings> loaded = new HashSet<>();
-    private Version version;
-    private VersionMapping parentMapping;
     private final HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap = HashBiMap.create();
     private final HashMap<EntityMetaDataFields, Integer> entityMetaIndexMap = new HashMap<>();
     private final HashMap<String, Pair<String, Integer>> entityMetaIndexOffsetParentMapping = new HashMap<>();
     private final HashBiMap<Integer, Class<? extends Entity>> entityIdClassMap = HashBiMap.create();
+    private Version version;
+    private VersionMapping parentMapping;
     private HashBiMap<String, Motive> motiveIdentifierMap = HashBiMap.create();
     private HashBiMap<String, Particle> particleIdentifierMap = HashBiMap.create();
     private HashBiMap<String, Statistic> statisticIdentifierMap = HashBiMap.create();
@@ -224,9 +224,6 @@ public class VersionMapping {
                 return information;
             }
         }
-        if (entityInformationMap == null) {
-            return null;
-        }
         return entityInformationMap.get(clazz);
     }
 
@@ -237,9 +234,6 @@ public class VersionMapping {
                 return metaDataIndex;
             }
         }
-        if (entityMetaIndexMap == null) {
-            return null;
-        }
         return entityMetaIndexMap.get(field);
     }
 
@@ -249,9 +243,6 @@ public class VersionMapping {
             if (clazz != null) {
                 return clazz;
             }
-        }
-        if (entityIdClassMap == null) {
-            return null;
         }
         return entityIdClassMap.get(id);
     }

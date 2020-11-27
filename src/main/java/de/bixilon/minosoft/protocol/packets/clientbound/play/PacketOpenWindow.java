@@ -32,7 +32,7 @@ public class PacketOpenWindow implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 6) {
             this.windowId = buffer.readByte();
-            this.type = InventoryTypes.byId(buffer.readByte());
+            this.type = InventoryTypes.byId(buffer.readUnsignedByte());
             this.title = buffer.readTextComponent();
             slotCount = buffer.readByte();
             if (!buffer.readBoolean()) {

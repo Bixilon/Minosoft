@@ -294,6 +294,7 @@ public enum EntityMetaDataFields {
         this.defaultValue = defaultValue;
     }
 
+    @SuppressWarnings("unchecked")
     public <K> K getDefaultValue() {
         return (K) defaultValue;
     }

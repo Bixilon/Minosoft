@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketTitle implements ClientboundPacket {
     TitleActions action;
 
-    //fields depend on action
+    // fields depend on action
     ChatComponent text;
     ChatComponent subText;
     int fadeInTime;

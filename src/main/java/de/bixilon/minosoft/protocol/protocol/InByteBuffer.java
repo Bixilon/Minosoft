@@ -60,7 +60,7 @@ public class InByteBuffer {
     public byte[] readByteArray() {
         int count;
         if (versionId < 19) {
-            count = readShort();
+            count = readUnsignedShort();
         } else {
             count = readVarInt();
         }
@@ -181,7 +181,7 @@ public class InByteBuffer {
     }
 
     public BlockPosition readPosition() {
-        //ToDo: protocol id 7
+        // ToDo: protocol id 7
         long raw = readLong();
         int x = (int) (raw >> 38);
         if (versionId < 440) {
@@ -234,7 +234,7 @@ public class InByteBuffer {
 
     public NBTTag readNBT(boolean compressed) {
         if (compressed) {
-            short length = readShort();
+            int length = readUnsignedShort();
             if (length == -1) {
                 // no nbt data here...
                 return new CompoundTag();

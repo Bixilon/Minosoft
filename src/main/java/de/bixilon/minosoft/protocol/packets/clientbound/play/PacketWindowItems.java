@@ -26,7 +26,7 @@ public class PacketWindowItems implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         windowId = buffer.readByte();
-        data = new Slot[buffer.readShort()];
+        data = new Slot[buffer.readUnsignedShort()];
         for (int i = 0; i < data.length; i++) {
             data[i] = buffer.readSlot();
         }

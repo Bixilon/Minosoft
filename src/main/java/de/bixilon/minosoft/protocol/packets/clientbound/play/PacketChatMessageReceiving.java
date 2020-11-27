@@ -34,7 +34,7 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
             position = ChatTextPositions.CHAT_BOX;
             return true;
         }
-        position = ChatTextPositions.byId(buffer.readByte());
+        position = ChatTextPositions.byId(buffer.readUnsignedByte());
         if (buffer.getVersionId() >= 718) {
             sender = buffer.readUUID();
         }

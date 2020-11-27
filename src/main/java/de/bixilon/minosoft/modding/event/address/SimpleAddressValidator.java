@@ -36,6 +36,7 @@ public class SimpleAddressValidator implements ServerAddressValidator {
         return address.hashCode();
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object obj) {
         return address.equals(obj);

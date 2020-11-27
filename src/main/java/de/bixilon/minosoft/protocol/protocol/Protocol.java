@@ -51,6 +51,7 @@ public final class Protocol {
         clientboundPacketMapping.get(ConnectionStates.LOGIN).put(Packets.Clientbound.LOGIN_PLUGIN_REQUEST, 0x04);
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static int getPacketCommand(Packets.Serverbound packet) {
         return serverboundPacketMapping.get(packet.getState()).get(packet);
     }

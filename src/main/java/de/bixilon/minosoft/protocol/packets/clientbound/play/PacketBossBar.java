@@ -26,7 +26,7 @@ public class PacketBossBar implements ClientboundPacket {
     UUID uuid;
     BossBarActions action;
 
-    //fields depend on action
+    // fields depend on action
     ChatComponent title;
     float health;
     BossBarColors color;

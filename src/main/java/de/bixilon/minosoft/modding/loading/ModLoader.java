@@ -79,26 +79,24 @@ public class ModLoader {
         for (ModPhases phase : ModPhases.values()) {
             Log.verbose(String.format("Mod loading phase changed: %s", phase));
             CountDownLatch modLatch = new CountDownLatch(mods.size());
-            mods.forEach((instance) -> {
-                executor.execute(() -> {
-                    if (!instance.isEnabled()) {
-                        modLatch.countDown();
-                        progress.countDown();
-                        return;
-                    }
-                    try {
-                        if (!instance.start(phase)) {
-                            throw new ModLoadingException(String.format("Could not load nod %s", instance.getInfo()));
-                        }
-                    } catch (Throwable e) {
-                        e.printStackTrace();
-                        Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));
-                        instance.setEnabled(false);
-                    }
+            mods.forEach((instance) -> executor.execute(() -> {
+                if (!instance.isEnabled()) {
                     modLatch.countDown();
                     progress.countDown();
-                });
-            });
+                    return;
+                }
+                try {
+                    if (!instance.start(phase)) {
+                        throw new ModLoadingException(String.format("Could not load nod %s", instance.getInfo()));
+                    }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));
+                    instance.setEnabled(false);
+                }
+                modLatch.countDown();
+                progress.countDown();
+            }));
             modLatch.await();
         }
         mods.forEach((instance) -> {

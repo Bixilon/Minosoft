@@ -27,7 +27,7 @@ public class PlayerListItemBulk {
     final String name;
     final boolean legacy;
     final int ping;
-    //optional fields
+    // optional fields
     final GameModes gameMode;
     final ChatComponent displayName;
     final HashMap<PlayerProperties, PlayerProperty> properties;

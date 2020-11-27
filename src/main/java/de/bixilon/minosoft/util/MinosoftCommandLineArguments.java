@@ -60,6 +60,8 @@ public class MinosoftCommandLineArguments {
         registerCommandLineOption(new Option("colored_log", true, "Should the log be colored"), (value -> StaticConfiguration.COLORED_LOG = Boolean.parseBoolean(value)));
         registerCommandLineOption(new Option("verbose_entity_logging", true, "Should entity meta data be printed"), (value -> StaticConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING = Boolean.parseBoolean(value)));
         registerCommandLineOption(new Option("log_time_relativ", true, "Should time in log timestamp be relative"), (value -> StaticConfiguration.LOG_RELATIVE_TIME = Boolean.parseBoolean(value)));
+        registerCommandLineOption(new Option("config_filename", true, "The name of the config file (defaults to config.json)"), (value -> StaticConfiguration.CONFIG_FILENAME = value));
+        registerCommandLineOption(new Option("skip_mojang_authentication", true, "Debug: Disable all connections to mojang "), (value -> StaticConfiguration.SKIP_MOJANG_AUTHENTICATION = Boolean.parseBoolean(value)));
     }
 
     public interface CommandLineArgumentHandler {

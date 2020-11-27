@@ -69,6 +69,7 @@ public class ListTag extends NBTTag {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <K extends NBTTag> ArrayList<K> getValue() {
         return (ArrayList<K>) list;
     }

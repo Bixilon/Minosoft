@@ -204,6 +204,7 @@ public class EntityMetaData {
             return BitByte.isBitMask(getByte(field), bitMask);
         }
 
+        @SuppressWarnings("unchecked")
         public <K> K get(EntityMetaDataFields field) {
             Integer index = connection.getMapping().getEntityMetaDataIndex(field);
             if (index == null) {

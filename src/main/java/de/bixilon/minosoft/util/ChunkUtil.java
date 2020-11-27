@@ -32,7 +32,7 @@ public final class ChunkUtil {
                 // unload chunk
                 return null;
             }
-            //chunk
+            // chunk
             byte sections = BitByte.getBitCount(sectionBitMask);
             int totalBytes = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
             int halfBytes = totalBytes / 2; // half bytes
@@ -49,7 +49,7 @@ public final class ChunkUtil {
                 byte[] biomes = buffer.readBytes(256);
             }
 
-            //parse data
+            // parse data
             int arrayPos = 0;
             HashMap<Byte, ChunkSection> sectionMap = new HashMap<>();
             for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column

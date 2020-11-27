@@ -36,6 +36,7 @@ public class OutByteBuffer {
         this.versionId = connection.getVersion().getVersionId();
     }
 
+    @SuppressWarnings("unchecked")
     public OutByteBuffer(OutByteBuffer buffer) {
         this.bytes = (ArrayList<Byte>) buffer.getBytes().clone();
         this.connection = buffer.getConnection();
@@ -76,7 +77,7 @@ public class OutByteBuffer {
     }
 
     public void writeTextComponent(ChatComponent chatComponent) {
-        writeString(chatComponent.getMessage()); //ToDo: test if this should not be json
+        writeString(chatComponent.getMessage()); // ToDo: test if this should not be json
     }
 
     public void writeJSON(JsonObject j) {

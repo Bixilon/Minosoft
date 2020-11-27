@@ -207,7 +207,7 @@ public class SocketNetwork implements Network {
                                 throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packet, inPacketBuffer.getPosition(), inPacketBuffer.getBytesLeft(), inPacketBuffer.getLength(), success));
                             }
 
-                            //set special settings to avoid miss timing issues
+                            // set special settings to avoid miss timing issues
                             if (packetInstance instanceof PacketLoginSuccess) {
                                 connection.setConnectionState(ConnectionStates.PLAY);
                             } else if (packetInstance instanceof PacketCompressionInterface compressionPacket) {

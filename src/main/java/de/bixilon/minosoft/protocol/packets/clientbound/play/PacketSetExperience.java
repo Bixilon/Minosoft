@@ -27,8 +27,8 @@ public class PacketSetExperience implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         bar = buffer.readFloat();
         if (buffer.getVersionId() < 7) {
-            level = buffer.readShort();
-            total = buffer.readShort();
+            level = buffer.readUnsignedShort();
+            total = buffer.readUnsignedShort();
             return true;
         }
         level = buffer.readVarInt();

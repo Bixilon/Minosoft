@@ -85,7 +85,9 @@ public class Configuration {
                     e.printStackTrace();
                 }
                 if (finalFile.exists()) {
-                    finalFile.delete();
+                    if (!finalFile.delete()) {
+                        throw new RuntimeException("Could not save config!");
+                    }
                 }
                 if (!tempFile.renameTo(finalFile)) {
                     Log.fatal("An error occurred while saving the config file");

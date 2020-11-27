@@ -27,7 +27,7 @@ public class ExperienceOrb extends Entity {
         count = 0;
     }
 
-    public ExperienceOrb(Connection connection, int entityId, Location location, short count) {
+    public ExperienceOrb(Connection connection, int entityId, Location location, int count) {
         super(connection, entityId, UUID.randomUUID(), location, new EntityRotation(0, 0, 0));
         this.count = count;
     }

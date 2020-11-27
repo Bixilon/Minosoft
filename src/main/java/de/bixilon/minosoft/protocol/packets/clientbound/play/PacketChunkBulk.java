@@ -30,7 +30,7 @@ public class PacketChunkBulk implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 23) {
-            short chunkCount = buffer.readShort();
+            int chunkCount = buffer.readUnsignedShort();
             int dataLen = buffer.readInt();
             boolean containsSkyLight = buffer.readBoolean();
 
@@ -46,8 +46,8 @@ public class PacketChunkBulk implements ClientboundPacket {
             for (int i = 0; i < chunkCount; i++) {
                 int x = buffer.readInt();
                 int z = buffer.readInt();
-                short sectionBitMask = buffer.readShort();
-                short addBitMask = buffer.readShort();
+                int sectionBitMask = buffer.readUnsignedShort();
+                int addBitMask = buffer.readUnsignedShort();
 
                 chunks.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
             }
@@ -57,14 +57,14 @@ public class PacketChunkBulk implements ClientboundPacket {
         int chunkCount = buffer.readVarInt();
         int[] x = new int[chunkCount];
         int[] z = new int[chunkCount];
-        short[] sectionBitMask = new short[chunkCount];
+        int[] sectionBitMask = new int[chunkCount];
 
-        //ToDo: this was still compressed in 14w28a
+        // ToDo: this was still compressed in 14w28a
 
         for (int i = 0; i < chunkCount; i++) {
             x[i] = buffer.readInt();
             z[i] = buffer.readInt();
-            sectionBitMask[i] = buffer.readShort();
+            sectionBitMask[i] = buffer.readUnsignedShort();
         }
         for (int i = 0; i < chunkCount; i++) {
             chunks.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));

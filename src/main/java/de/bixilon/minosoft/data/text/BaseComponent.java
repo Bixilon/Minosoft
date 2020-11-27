@@ -90,6 +90,7 @@ public class BaseComponent extends ChatComponent {
         this(null, json);
     }
 
+    @SuppressWarnings("unchecked")
     public BaseComponent(@Nullable TextComponent parent, JsonObject json) {
         TextComponent thisTextComponent = null;
         if (json.has("text")) {

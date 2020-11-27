@@ -47,7 +47,7 @@ public class PacketSpawnPainting implements ClientboundPacket {
             direction = Directions.byId(buffer.readInt());
         } else {
             position = buffer.readPosition();
-            direction = Directions.byId(buffer.readByte());
+            direction = Directions.byId(buffer.readUnsignedByte());
         }
         entity = new Painting(buffer.getConnection(), entityId, uuid, position, direction, motive);
         return true;

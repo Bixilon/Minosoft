@@ -35,7 +35,7 @@ public class PacketMapData implements ClientboundPacket {
     ArrayList<MapPinSet> pins;
 
     boolean locked = false;
-    //scale
+    // scale
     byte scale;
 
     byte[] data;
@@ -44,9 +44,9 @@ public class PacketMapData implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         mapId = buffer.readVarInt(); // mapId
         if (buffer.getVersionId() < 27) {
-            short length = buffer.readShort();
+            int length = buffer.readUnsignedShort();
             // read action
-            dataData = PacketMapDataDataActions.byId(buffer.readByte());
+            dataData = PacketMapDataDataActions.byId(buffer.readUnsignedByte());
             switch (dataData) {
                 case START -> {
                     xStart = buffer.readByte();
@@ -89,7 +89,7 @@ public class PacketMapData implements ClientboundPacket {
                 byte directionAndType = buffer.readByte();
                 byte x = buffer.readByte();
                 byte z = buffer.readByte();
-                if (buffer.getVersionId() >= 340) { //ToDo
+                if (buffer.getVersionId() >= 340) { // ToDo
                     pins.add(new MapPinSet(MapPinTypes.byId(directionAndType >>> 4), directionAndType & 0xF, x, z));
                 } else {
                     pins.add(new MapPinSet(MapPinTypes.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));

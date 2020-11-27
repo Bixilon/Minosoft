@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.BitByte;
 
 public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
-    boolean creative; // is this needed? receiving the gameMode in change Gamestate
+    boolean creative; // is this needed? receiving the gameMode in change Game state
     boolean flying;
     boolean canFly;
     boolean godMode;
@@ -29,7 +29,7 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 6) { //ToDo
+        if (buffer.getVersionId() < 6) { // ToDo
             byte flags = buffer.readByte();
             creative = BitByte.isBitSet(flags, 0);
             flying = BitByte.isBitSet(flags, 1);

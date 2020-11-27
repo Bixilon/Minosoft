@@ -32,7 +32,7 @@ public class PacketSpawnExperienceOrb implements ClientboundPacket {
         } else {
             location = buffer.readLocation();
         }
-        short count = buffer.readShort();
+        int count = buffer.readUnsignedShort();
         entity = new ExperienceOrb(buffer.getConnection(), entityId, location, count);
         return true;
     }

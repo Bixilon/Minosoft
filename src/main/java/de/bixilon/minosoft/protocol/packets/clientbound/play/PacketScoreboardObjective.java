@@ -31,7 +31,7 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         if (buffer.getVersionId() < 7) { // ToDo
             value = buffer.readTextComponent();
         }
-        action = ScoreboardObjectiveActions.byId(buffer.readByte());
+        action = ScoreboardObjectiveActions.byId(buffer.readUnsignedByte());
         if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
             if (buffer.getVersionId() >= 7) { // ToDo
                 value = buffer.readTextComponent();

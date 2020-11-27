@@ -42,7 +42,7 @@ public class PacketUnlockRecipes implements ClientboundPacket {
         }
         isCraftingBookOpen = buffer.readBoolean();
         isCraftingFilteringActive = buffer.readBoolean();
-        if (buffer.getVersionId() >= 348) { //ToDo
+        if (buffer.getVersionId() >= 348) { // ToDo
             isSmeltingBookOpen = buffer.readBoolean();
             isSmeltingFilteringActive = buffer.readBoolean();
         }

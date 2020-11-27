@@ -29,12 +29,12 @@ import java.util.HashSet;
 import java.util.concurrent.CountDownLatch;
 
 public class LANServerListener {
+    public final static HashBiMap<InetAddress, Server> servers = HashBiMap.create();
     private final static String MOTD_BEGIN_STRING = "[MOTD]";
     private final static String MOTD_END_STRING = "[/MOTD]";
     private final static String PORT_START_STRING = "[AD]";
     private final static String PORT_END_STRING = "[/AD]";
     private final static String[] BROADCAST_MUST_CONTAIN = {MOTD_BEGIN_STRING, MOTD_END_STRING, PORT_START_STRING, PORT_END_STRING};
-    public final static HashBiMap<InetAddress, Server> servers = HashBiMap.create();
 
     public static void listen() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);

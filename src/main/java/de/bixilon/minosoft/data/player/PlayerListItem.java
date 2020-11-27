@@ -26,7 +26,7 @@ public class PlayerListItem {
     final String name;
     final boolean legacy;
     int ping;
-    //optional fields
+    // optional fields
     GameModes gameMode;
     ChatComponent displayName;
     HashMap<PlayerProperties, PlayerProperty> properties;

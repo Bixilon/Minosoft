@@ -59,7 +59,7 @@ public class PacketJoinGame implements ClientboundPacket {
             } else {
                 dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
             }
-            difficulty = Difficulties.byId(buffer.readByte());
+            difficulty = Difficulties.byId(buffer.readUnsignedByte());
             maxPlayers = buffer.readByte();
             if (buffer.getVersionId() >= 1) {
                 levelType = LevelTypes.byType(buffer.readString());
@@ -80,7 +80,7 @@ public class PacketJoinGame implements ClientboundPacket {
             gameMode = GameModes.byId(gameModeRaw);
         } else {
             hardcore = buffer.readBoolean();
-            gameMode = GameModes.byId(buffer.readByte());
+            gameMode = GameModes.byId(buffer.readUnsignedByte());
         }
         if (buffer.getVersionId() >= 730) {
             buffer.readByte(); // previous game mode
@@ -98,7 +98,7 @@ public class PacketJoinGame implements ClientboundPacket {
                 dimension = dimensions.get(currentDimensionSplit[0]).get(currentDimensionSplit[1]);
             } else {
                 CompoundTag tag = (CompoundTag) buffer.readNBT();
-                if (tag.getByteTag("has_skylight").getValue() == 0x01) { //ToDo: this is just for not messing up the skylight
+                if (tag.getByteTag("has_skylight").getValue() == 0x01) { // ToDo: this is just for not messing up the skylight
                     dimension = dimensions.get(ProtocolDefinition.DEFAULT_MOD).get("overworld");
                 } else {
                     dimension = dimensions.get(ProtocolDefinition.DEFAULT_MOD).get("the_nether");
@@ -113,7 +113,7 @@ public class PacketJoinGame implements ClientboundPacket {
             hashedSeed = buffer.readLong();
         }
         if (buffer.getVersionId() < 464) {
-            difficulty = Difficulties.byId(buffer.readByte());
+            difficulty = Difficulties.byId(buffer.readUnsignedByte());
         }
         if (buffer.getVersionId() < 749) {
             maxPlayers = buffer.readByte();

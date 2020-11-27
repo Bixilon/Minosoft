@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketEncryptionRequest implements ClientboundPacket {
 
-    String serverId; //normally empty
+    String serverId; // normally empty
     byte[] publicKey;
     byte[] verifyToken;
 

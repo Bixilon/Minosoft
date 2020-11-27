@@ -38,14 +38,14 @@ public class PacketTeams implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         name = buffer.readString();
-        action = TeamActions.byId(buffer.readByte());
+        action = TeamActions.byId(buffer.readUnsignedByte());
         if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {
             displayName = buffer.readTextComponent();
             if (buffer.getVersionId() < 352) {
                 prefix = buffer.readTextComponent();
                 suffix = buffer.readTextComponent();
             }
-            if (buffer.getVersionId() < 100) { //ToDo
+            if (buffer.getVersionId() < 100) { // ToDo
                 setFriendlyFireByLegacy(buffer.readByte());
             } else {
                 byte friendlyFireRaw = buffer.readByte();
@@ -54,7 +54,7 @@ public class PacketTeams implements ClientboundPacket {
             }
             if (buffer.getVersionId() >= 11) {
                 nameTagVisibility = TeamNameTagVisibilities.byName(buffer.readString());
-                if (buffer.getVersionId() >= 100) { //ToDo
+                if (buffer.getVersionId() >= 100) { // ToDo
                     collisionRule = TeamCollisionRules.byName(buffer.readString());
                 }
                 if (buffer.getVersionId() < 352) {
@@ -71,7 +71,7 @@ public class PacketTeams implements ClientboundPacket {
         if (action == TeamActions.CREATE || action == TeamActions.PLAYER_ADD || action == TeamActions.PLAYER_REMOVE) {
             int playerCount;
             if (buffer.getVersionId() < 7) {
-                playerCount = buffer.readShort();
+                playerCount = buffer.readUnsignedShort();
             } else {
                 playerCount = buffer.readVarInt();
             }

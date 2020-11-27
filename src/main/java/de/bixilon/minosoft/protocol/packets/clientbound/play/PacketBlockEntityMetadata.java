@@ -32,12 +32,12 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 6) {
             position = buffer.readBlockPositionShort();
-            action = BlockEntityActions.byId(buffer.readByte(), buffer.getVersionId());
+            action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
             data = BlockEntityMetaData.getData(action, (CompoundTag) buffer.readNBT(true));
             return true;
         }
         position = buffer.readPosition();
-        action = BlockEntityActions.byId(buffer.readByte(), buffer.getVersionId());
+        action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
         data = BlockEntityMetaData.getData(action, (CompoundTag) buffer.readNBT());
         return true;
     }

@@ -82,7 +82,7 @@ public class Slot {
             this.unbreakable = nbt.getByteTag("unbreakable").getValue() == 0x01;
         }
         if (nbt.containsKey("SkullOwner")) {
-            //this.skullOwner = nbt.getStringTag("SkullOwner").getValue(); // ToDo
+            // this.skullOwner = nbt.getStringTag("SkullOwner").getValue(); // ToDo
         }
         if (nbt.containsKey("HideFlags")) {
             this.hideFlags = (byte) nbt.getIntTag("HideFlags").getValue();
@@ -119,7 +119,7 @@ public class Slot {
             nbt.writeTag("unbreakable", new ByteTag(true));
         }
         if (skullOwner != null) {
-            //nbt.writeTag("SkullOwner", new StringTag(skullOwner)); // ToDo
+            // nbt.writeTag("SkullOwner", new StringTag(skullOwner)); // ToDo
         }
         if (hideFlags != 0) {
             nbt.writeTag("HideFlags", new IntTag(hideFlags));

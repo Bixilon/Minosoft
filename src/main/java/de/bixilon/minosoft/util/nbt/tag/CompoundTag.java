@@ -46,10 +46,10 @@ public class CompoundTag extends NBTTag {
             byte tag = buffer.readByte();
             TagTypes tagType = TagTypes.getById(tag);
             if (tagType == TagTypes.END) {
-                //end tag
+                // end tag
                 break;
             }
-            String tagName = buffer.readString(buffer.readShort()); // length
+            String tagName = buffer.readString(buffer.readUnsignedShort()); // length
             data.put(tagName, buffer.readNBT(tagType));
         }
     }

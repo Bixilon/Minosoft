@@ -42,7 +42,7 @@ public class Wolf extends TamableAnimal {
 
     @EntityMetaDataFunction(identifier = "angerTime")
     public int getAngerTime() {
-        if (versionId <= 47) {//ToDo
+        if (versionId <= 47) {// ToDo
             return metaData.getSets().getBitMask(EntityMetaDataFields.TAMABLE_ENTITY_FLAGS, 0x02) ? 1 : 0;
         }
         return metaData.getSets().getInt(EntityMetaDataFields.WOLF_ANGER_TIME);

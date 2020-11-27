@@ -32,11 +32,11 @@ public class PacketPlayerListItem implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 17) { //ToDo: 19?
+        if (buffer.getVersionId() < 17) { // ToDo: 19?
             String name = buffer.readString();
             int ping;
             if (buffer.getVersionId() < 7) {
-                ping = buffer.readShort();
+                ping = buffer.readUnsignedShort();
             } else {
                 ping = buffer.readVarInt();
             }
@@ -49,7 +49,7 @@ public class PacketPlayerListItem implements ClientboundPacket {
         for (int i = 0; i < count; i++) {
             UUID uuid = buffer.readUUID();
             PlayerListItemBulk listItemBulk;
-            //UUID uuid, String name, int ping, GameMode gameMode, TextComponent displayName, HashMap< PlayerProperties, PlayerProperty > properties, PacketPlayerInfo.PlayerInfoAction action) {
+            // UUID uuid, String name, int ping, GameMode gameMode, TextComponent displayName, HashMap< PlayerProperties, PlayerProperty > properties, PacketPlayerInfo.PlayerInfoAction action) {
             switch (action) {
                 case ADD -> {
                     String name = buffer.readString();

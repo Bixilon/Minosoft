@@ -37,6 +37,7 @@ public class EventInvokerCallback<V extends ConnectionEvent> extends EventInvoke
         this(false, callback);
     }
 
+    @SuppressWarnings("unchecked")
     public void invoke(ConnectionEvent event) {
         if (eventType != event.getClass()) {
             return;

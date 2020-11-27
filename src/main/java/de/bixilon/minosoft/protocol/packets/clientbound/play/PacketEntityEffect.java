@@ -35,7 +35,7 @@ public class PacketEntityEffect implements ClientboundPacket {
             return true;
         }
         effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readVarInt());
-        if (buffer.getVersionId() < 110) { //ToDo
+        if (buffer.getVersionId() < 110) { // ToDo
             if (buffer.getVersionId() >= 10) {
                 hideParticles = buffer.readBoolean();
                 return true;
@@ -44,7 +44,7 @@ public class PacketEntityEffect implements ClientboundPacket {
         byte flags = buffer.readByte();
         isAmbient = BitByte.isBitMask(flags, 0x01);
         hideParticles = !BitByte.isBitMask(flags, 0x02);
-        if (buffer.getVersionId() >= 498) { //ToDo
+        if (buffer.getVersionId() >= 498) { // ToDo
             showIcon = BitByte.isBitMask(flags, 0x04);
         }
         return true;

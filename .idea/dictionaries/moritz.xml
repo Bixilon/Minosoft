@@ -1,16 +1,25 @@
 <component name="ProjectDictionaryState">
   <dictionary name="moritz">
     <words>
+      <w>aaaaah</w>
       <w>adddye</w>
       <w>ageable</w>
       <w>allium</w>
       <w>ambiententityeffect</w>
       <w>andesite</w>
       <w>angryvillager</w>
+      <w>armordye</w>
       <w>authserver</w>
+      <w>banneraddpattern</w>
+      <w>bannerduplicate</w>
+      <w>basedrum</w>
       <w>bassattack</w>
+      <w>biome</w>
       <w>bixilon</w>
       <w>blastfurnace</w>
+      <w>blockdust</w>
+      <w>bobber</w>
+      <w>bookcloning</w>
       <w>bowhit</w>
       <w>chainmail</w>
       <w>chestclosed</w>
@@ -24,14 +33,17 @@
       <w>composter</w>
       <w>cooldown</w>
       <w>crit</w>
+      <w>cytooxien</w>
       <w>damageindicator</w>
       <w>deadbush</w>
+      <w>despawn</w>
       <w>despawning</w>
       <w>diorite</w>
       <w>downinside</w>
       <w>dragonbreath</w>
       <w>drippinglava</w>
       <w>drippingwater</w>
+      <w>dripstone</w>
       <w>dyearmor</w>
       <w>eisenhauer</w>
       <w>elderguardian</w>
@@ -50,6 +62,7 @@
       <w>entityeffect</w>
       <w>evoker</w>
       <w>explosionemitter</w>
+      <w>faceplanted</w>
       <w>fallbig</w>
       <w>fallingdust</w>
       <w>fallinglava</w>
@@ -63,24 +76,35 @@
       <w>glowstone</w>
       <w>golem</w>
       <w>happyvillager</w>
+      <w>hoglin</w>
       <w>hotbar</w>
+      <w>hypixel</w>
+      <w>iconcrack</w>
       <w>illager</w>
+      <w>illusioner</w>
       <w>instanteffect</w>
+      <w>invisibles</w>
       <w>irongolem</w>
       <w>itemframe</w>
       <w>itemslime</w>
       <w>itemsnowball</w>
       <w>jitpack</w>
+      <w>knockback</w>
       <w>landinglava</w>
       <w>lapis</w>
       <w>largesmoke</w>
       <w>lavapop</w>
       <w>leashknot</w>
+      <w>lerp</w>
       <w>levelup</w>
       <w>magmacube</w>
+      <w>mapcloning</w>
+      <w>mapextending</w>
       <w>mellohi</w>
       <w>minecart</w>
       <w>minosoft</w>
+      <w>minosoft's</w>
+      <w>modid</w>
       <w>mojang</w>
       <w>mooshroom</w>
       <w>motd</w>
@@ -95,9 +119,11 @@
       <w>overworld</w>
       <w>oxeye</w>
       <w>pickaxe</w>
+      <w>piglin</w>
       <w>pigman</w>
       <w>pling</w>
       <w>podzol</w>
+      <w>pokechu</w>
       <w>polarbear</w>
       <w>porkchop</w>
       <w>presneeze</w>
@@ -105,31 +131,40 @@
       <w>pufferfish</w>
       <w>purpur</w>
       <w>purreow</w>
+      <w>ravenger</w>
       <w>redstone</w>
+      <w>repairitem</w>
       <w>scute</w>
       <w>seagrass</w>
       <w>serverbound</w>
       <w>sessionserver</w>
+      <w>shielddecoration</w>
       <w>shulker</w>
       <w>shulkerbox</w>
       <w>shulkerboxclosed</w>
+      <w>shulkerboxcoloring</w>
       <w>shulkerboxopen</w>
+      <w>shulkers</w>
       <w>singleplayer</w>
       <w>smithing</w>
       <w>snowgolem</w>
       <w>spawner</w>
+      <w>spellcaster</w>
       <w>squidink</w>
       <w>stal</w>
       <w>stonebrick</w>
       <w>stonecutter</w>
+      <w>stonecutting</w>
       <w>strad</w>
       <w>straymeow</w>
       <w>stutterturn</w>
+      <w>suspiciousstew</w>
       <w>sweepattack</w>
       <w>takepotion</w>
       <w>takewater</w>
       <w>tallgrass</w>
       <w>tameable</w>
+      <w>tippedarrow</w>
       <w>totemofundying</w>
       <w>uncraftable</w>
       <w>unfect</w>
@@ -138,7 +173,11 @@
       <w>wanderingtrader</w>
       <w>wololo</w>
       <w>woodbreak</w>
+      <w>zabcdefghijklmnopqrstuvwxyz</w>
+      <w>zoglin</w>
       <w>zombiepig</w>
+      <w>zombification</w>
+      <w>zombified</w>
       <w>zpig</w>
       <w>zpigangry</w>
       <w>zpigdeath</w>

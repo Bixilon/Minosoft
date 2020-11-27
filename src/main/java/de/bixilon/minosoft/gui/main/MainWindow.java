@@ -211,7 +211,7 @@ public class MainWindow implements Initializable {
                 server1.setDesiredVersionId(desiredVersionId);
                 if (server1.getCell() != null) {
                     server1.getCell().setName(server1.getName());
-                    //ToDo: version
+                    // ToDo: version
                 }
             }
             server1.saveToConfig();

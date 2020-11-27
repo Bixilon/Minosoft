@@ -35,11 +35,11 @@ public class PacketEntityProperties implements ClientboundPacket {
             for (int i = 0; i < count; i++) {
                 EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString());
                 double value = buffer.readDouble();
-                short listLength = buffer.readShort();
+                int listLength = buffer.readUnsignedShort();
                 for (int ii = 0; ii < listLength; ii++) {
                     UUID uuid = buffer.readUUID();
                     double amount = buffer.readDouble();
-                    ModifierActions operation = ModifierActions.byId(buffer.readByte());
+                    ModifierActions operation = ModifierActions.byId(buffer.readUnsignedByte());
                     // ToDo: modifiers
                 }
                 properties.put(key, new EntityProperty(value));
@@ -54,7 +54,7 @@ public class PacketEntityProperties implements ClientboundPacket {
             for (int ii = 0; ii < listLength; ii++) {
                 UUID uuid = buffer.readUUID();
                 double amount = buffer.readDouble();
-                ModifierActions operation = ModifierActions.byId(buffer.readByte());
+                ModifierActions operation = ModifierActions.byId(buffer.readUnsignedByte());
                 // ToDo: modifiers
             }
             properties.put(key, new EntityProperty(value));

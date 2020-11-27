@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTitle;
 public class TitleChangeEvent extends CancelableEvent {
     private final PacketTitle.TitleActions action;
 
-    //fields depend on action
+    // fields depend on action
     private final ChatComponent text;
     private final ChatComponent subText;
     private final int fadeInTime;

@@ -42,7 +42,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
     }
 
     public enum EntityAnimations {
-        //ToDo
+        // ToDo
         SWING_RIGHT_ARM(new MapSet[]{new MapSet<>(0, 0)}),
         TAKE_DAMAGE(new MapSet[]{new MapSet<>(0, 1)}),
         LEAVE_BED(new MapSet[]{new MapSet<>(0, 2)}),
