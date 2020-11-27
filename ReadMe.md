@@ -59,7 +59,7 @@ Sadly, we cannot support all versions. We will add support for all major version
 ### Partly supported versions
  - Protocol lacking; See [snapSupportToDo.txt](/doc/snapSupportToDo.txt)
  - Entities everything below `19w36a` (shortly after 1.14.4) (except `1.14.4` and `1.8.9`). Why? There is simply no time to generate an `entities.json`. The [Generator](/util) only works after that version.
-And 1.8.9 is only supported, because it this version is widely spread, and I wrote (~ 1000 lines) by hand.
+And 1.8.9 is only supported, because this version is widely spread, and I wrote (~ 1000 lines) by hand.
 
 ## Modding
 Minosoft is modding friendly. I am working hard on a reasonable API. See !17 for more details. See [Modding.md](doc/Modding.md) for more details. The code is pretty dynamic (all blocks, items, entities, etc are stored in json files). It is pretty easy to load custom entities, etc.
