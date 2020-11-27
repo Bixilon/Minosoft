@@ -48,7 +48,11 @@
             <Insets right="10.0"/>
         </GridPane.margin>
     </Label>
-    <Label fx:id="playersField" minHeight="-Infinity" minWidth="-Infinity" text="100000 / 100000" GridPane.columnIndex="5" GridPane.halignment="CENTER"/>
+    <Label fx:id="playersField" minHeight="-Infinity" minWidth="-Infinity" text="100000 / 100000" GridPane.columnIndex="5" GridPane.halignment="RIGHT">
+        <GridPane.margin>
+            <Insets right="15.0"/>
+        </GridPane.margin>
+    </Label>
     <Label fx:id="brandField" text="BRAND" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
         <GridPane.margin>
             <Insets right="15.0"/>

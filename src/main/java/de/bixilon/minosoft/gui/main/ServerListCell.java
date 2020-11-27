@@ -162,7 +162,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 serverVersion = Versions.getVersionByProtocolId(ping.getProtocolId());
             } else {
                 serverVersion = Versions.getVersionById(server.getDesiredVersionId());
-                versionField.setStyle("-fx-text-fill: green;");
+                versionField.setStyle("-fx-text-fill: -secondary-light-light-color;");
             }
             if (serverVersion == null) {
                 versionField.setText(ping.getServerBrand());
@@ -232,12 +232,12 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
         server.getConnections().forEach(Connection::disconnect);
         server.delete();
-        Log.info(String.format("Deleted server (name=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
+        Log.info(String.format("Deleted server (name=\"%s\", address=\"%s\")", server.getName().getLegacyText(), server.getAddress()));
         listView.getItems().remove(server);
     }
 
     public void refresh() {
-        Log.info(String.format("Refreshing server status (serverName=\"%s\", address=\"%s\")", server.getName(), server.getAddress()));
+        Log.info(String.format("Refreshing server status (serverName=\"%s\", address=\"%s\")", server.getName().getLegacyText(), server.getAddress()));
         if (server.getLastPing() == null) {
             // server was not pinged, don't even try, only costs memory and cpu
             return;
