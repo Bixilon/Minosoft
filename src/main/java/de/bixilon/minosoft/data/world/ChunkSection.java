@@ -54,7 +54,8 @@ public class ChunkSection {
     }
 
     public void setBlock(InChunkSectionLocation location, Block block) {
-        if (blocks.get(location).equals(block)) {
+        Block current = blocks.get(location);
+        if (current == null || current.equals(block)) {
             return;
         }
         blocks.put(location, block);

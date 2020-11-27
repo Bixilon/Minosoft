@@ -426,7 +426,14 @@ public enum BlockProperties {
     POINTED_DRIPSTONE_THICKNESS_MIDDLE("thickness", "middle"),
     POINTED_DRIPSTONE_THICKNESS_BASE("thickness", "base"),
     POINTED_DRIPSTONE_VERTICAL_DIRECTION_UP("vertical_direction", "up"),
-    POINTED_DRIPSTONE_VERTICAL_DIRECTION_DOWN("vertical_direction", "down");
+    POINTED_DRIPSTONE_VERTICAL_DIRECTION_DOWN("vertical_direction", "down"),
+
+    LEGACY_LEAVES_BLOCK_UPDATE_YES("block_update"),
+    LEGACY_LEAVES_BLOCK_UPDATE_NO("block_update"),
+
+    // is smooth cobble stone in < 17w46a a thing? probably (double cobble stone slab is smooth so ... (and even more))
+    LEGACY_SMOOTH_YES,
+    LEGACY_SMOOTH_NO;
 
 
     public static final HashMap<String, HashMap<String, BlockProperties>> PROPERTIES_MAPPING = new HashMap<>();

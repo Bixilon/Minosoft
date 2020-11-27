@@ -124,6 +124,11 @@ public final class ChunkUtil {
                         for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
                             int blockId = blockData[arrayPos];
                             Block block = buffer.getConnection().getMapping().getBlockById(blockId);
+                            /*
+                            if (blockId != 0 && block == null) {
+                                Log.warn("Unknown block: %d", blockId);
+                            }
+                             */
                             if (block == null || block.equals(Blocks.nullBlock)) {
                                 arrayPos++;
                                 continue;

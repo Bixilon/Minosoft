@@ -61,7 +61,9 @@ public class Log {
             if (string.isBlank()) {
                 return;
             }
-            message = String.format(string, format);
+            if (format.length > 0) {
+                message = String.format(string, format);
+            }
         }
         StringBuilder builder = new StringBuilder();
         builder.append("[");
