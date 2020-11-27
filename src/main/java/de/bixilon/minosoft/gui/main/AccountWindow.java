@@ -29,6 +29,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
@@ -109,6 +110,17 @@ public class AccountWindow implements Initializable {
 
         Window window = dialog.getDialogPane().getScene().getWindow();
         window.setOnCloseRequest(windowEvent -> window.hide());
+
+
+        dialog.getDialogPane().setOnKeyReleased(keyEvent -> {
+            if (keyEvent.getCode() != KeyCode.ENTER) {
+                return;
+            }
+            if (emailField.getText().trim().isEmpty()) {
+                return;
+            }
+            loginButton.fire();
+        });
 
         dialog.showAndWait();
     }

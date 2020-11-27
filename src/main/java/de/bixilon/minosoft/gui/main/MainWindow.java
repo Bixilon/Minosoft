@@ -218,6 +218,15 @@ public class MainWindow implements Initializable {
             Log.info(String.format("%s and saved server (serverName=%s, serverAddress=%s, version=%d)", ((server == null) ? "Added" : "Edited"), serverName.getLegacyText(), serverAddress, desiredVersionId));
             dialog.hide();
         });
+        dialog.getDialogPane().setOnKeyReleased(keyEvent -> {
+            if (keyEvent.getCode() != KeyCode.ENTER) {
+                return;
+            }
+            if (serverAddressField.getText().trim().isEmpty()) {
+                return;
+            }
+            submitButton.fire();
+        });
         dialog.showAndWait();
     }
 
