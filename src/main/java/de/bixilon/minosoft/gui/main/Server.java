@@ -36,6 +36,7 @@ public class Server {
     private byte[] favicon;
     private Connection lastPing;
     private boolean readOnly = false;
+    private ServerListCell cell;
 
     public Server(int id, BaseComponent name, String address, int desiredVersion, byte[] favicon) {
         this(id, name, address, desiredVersion);
@@ -191,5 +192,13 @@ public class Server {
 
     public boolean isReadOnly() {
         return readOnly;
+    }
+
+    public ServerListCell getCell() {
+        return cell;
+    }
+
+    public void setCell(ServerListCell cell) {
+        this.cell = cell;
     }
 }

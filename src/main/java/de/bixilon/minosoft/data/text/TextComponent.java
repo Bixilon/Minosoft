@@ -157,7 +157,9 @@ public class TextComponent extends ChatComponent {
     @Override
     public ObservableList<Node> getJavaFXText(ObservableList<Node> nodes) {
         Text text = new Text(this.text);
-        if (color != null) {
+        if (color == null) {
+            text.setFill(Color.WHITE);
+        } else {
             text.setFill(Color.web(color.toString()));
         }
         formatting.forEach((chatFormattingCode -> {

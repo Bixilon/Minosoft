@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
+import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.EventInvokerCallback;
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
@@ -32,6 +33,7 @@ import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -113,10 +115,11 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (server.equals(this.server)) {
             return;
         }
+        server.setCell(this);
         resetCell();
 
         this.server = server;
-        nameField.getChildren().setAll(server.getName().getJavaFXText());
+        setName(server.getName());
 
         Image favicon = GUITools.getImage(server.getFavicon());
         if (favicon == null) {
@@ -193,6 +196,13 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 setErrorMotd(String.format("%s: %s", server.getLastPing().getLastConnectionException().getClass().getCanonicalName(), server.getLastPing().getLastConnectionException().getMessage()));
             }
         })));
+    }
+
+    public void setName(BaseComponent name) {
+        nameField.getChildren().setAll(name.getJavaFXText());
+        for (Node node : nameField.getChildren()) {
+            node.setStyle("-fx-font-size: 15pt ;");
+        }
     }
 
     private void resetCell() {

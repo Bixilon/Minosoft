@@ -207,7 +207,12 @@ public class MainWindow implements Initializable {
                 ServerListCell.listView.getItems().add(server1);
             } else {
                 server1.setName(serverName);
+                server1.setAddress(serverAddress);
                 server1.setDesiredVersionId(desiredVersionId);
+                if (server1.getCell() != null) {
+                    server1.getCell().setName(server1.getName());
+                    //ToDo: version
+                }
             }
             server1.saveToConfig();
             Log.info(String.format("%s and saved server (serverName=%s, serverAddress=%s, version=%d)", ((server == null) ? "Added" : "Edited"), serverName.getLegacyText(), serverAddress, desiredVersionId));
