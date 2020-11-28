@@ -39,6 +39,7 @@ public class Log {
                     continue;
                 }
                 System.out.println(message);
+                System.out.flush();
 
                 // ToDo: log to file
             }
