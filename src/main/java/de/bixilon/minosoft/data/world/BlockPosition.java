@@ -18,14 +18,17 @@ public record BlockPosition(int x, int y, int z) {
         return new ChunkLocation(x / 16, z / 16);
     }
 
+    @Deprecated
     public int getX() {
         return x;
     }
 
+    @Deprecated
     public int getY() {
         return y;
     }
 
+    @Deprecated
     public int getZ() {
         return z;
     }

@@ -21,14 +21,17 @@ public record VillagerData(VillagerTypes type, VillagerProfessions profession, V
         this(VillagerTypes.byId(type), VillagerProfessions.byId(profession, versionId), VillagerLevels.byId(level));
     }
 
+    @Deprecated
     public VillagerTypes getType() {
         return type;
     }
 
+    @Deprecated
     public VillagerProfessions getProfession() {
         return profession;
     }
 
+    @Deprecated
     public VillagerLevels getLevel() {
         return level;
     }

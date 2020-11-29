@@ -14,14 +14,17 @@
 package de.bixilon.minosoft.data.entities;
 
 public record Velocity(short x, short y, short z) {
+    @Deprecated
     public short getX() {
         return x;
     }
 
+    @Deprecated
     public short getY() {
         return y;
     }
 
+    @Deprecated
     public short getZ() {
         return z;
     }

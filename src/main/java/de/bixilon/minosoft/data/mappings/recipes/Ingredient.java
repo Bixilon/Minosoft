@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.inventory.Slot;
 
 public record Ingredient(Slot[] slot) {
 
+    @Deprecated
     public Slot[] getSlot() {
         return slot;
     }

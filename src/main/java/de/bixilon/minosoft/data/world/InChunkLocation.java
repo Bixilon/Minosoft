@@ -23,14 +23,17 @@ public record InChunkLocation(int x, int y, int z) {
         }
     }
 
+    @Deprecated
     public int getX() {
         return x;
     }
 
+    @Deprecated
     public int getY() {
         return y;
     }
 
+    @Deprecated
     public int getZ() {
         return z;
     }

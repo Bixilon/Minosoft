@@ -21,14 +21,17 @@ public record Location(double x, double y, double z) {
         return new Location(position.x(), position.y(), position.z());
     }
 
+    @Deprecated
     public double getX() {
         return x;
     }
 
+    @Deprecated
     public double getY() {
         return y;
     }
 
+    @Deprecated
     public double getZ() {
         return z;
     }

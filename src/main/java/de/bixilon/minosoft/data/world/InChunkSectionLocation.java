@@ -17,14 +17,17 @@ package de.bixilon.minosoft.data.world;
  * Chunk X, Y and Z location (max 16x16x16)
  */
 public record InChunkSectionLocation(int x, int y, int z) {
+    @Deprecated
     public int getX() {
         return x;
     }
 
+    @Deprecated
     public int getY() {
         return y;
     }
 
+    @Deprecated
     public int getZ() {
         return z;
     }
