@@ -506,10 +506,11 @@ public class PacketHandler {
 
     public void handle(PacketPlayerPositionAndRotation pkg) {
         // ToDo: GUI should do this
+        connection.getPlayer().getEntity().setLocation(pkg.getLocation());
         if (connection.getVersion().getVersionId() >= 79) {
             connection.sendPacket(new PacketConfirmTeleport(pkg.getTeleportId()));
         } else {
-            connection.sendPacket(new PacketPlayerPositionAndRotationSending(pkg.getLocation(), pkg.getYaw(), pkg.getPitch(), pkg.isOnGround()));
+            connection.sendPacket(new PacketPlayerPositionAndRotationSending(pkg.getLocation(), pkg.getRotation(), pkg.isOnGround()));
         }
     }
 

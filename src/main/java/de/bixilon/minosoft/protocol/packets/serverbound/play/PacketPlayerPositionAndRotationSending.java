@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
+import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -21,61 +22,33 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketPlayerPositionAndRotationSending implements ServerboundPacket {
-    final double x;
-    final double feetY;
-    final double headY;
-    final double z;
-    final float yaw;
-    final float pitch;
+    Location location;
+    EntityRotation rotation;
     final boolean onGround;
 
-    public PacketPlayerPositionAndRotationSending(double x, double feetY, double headY, double z, float yaw, float pitch, boolean onGround) {
-        this.x = x;
-        this.feetY = feetY;
-        this.headY = headY;
-        this.z = z;
-        this.yaw = yaw;
-        this.pitch = pitch;
-        this.onGround = onGround;
-    }
-
-    public PacketPlayerPositionAndRotationSending(double x, double feetY, double z, float yaw, float pitch, boolean onGround) {
-        this.x = x;
-        this.feetY = feetY;
-        this.headY = feetY + 1.62F;
-        this.z = z;
-        this.yaw = yaw;
-        this.pitch = pitch;
-        this.onGround = onGround;
-    }
-
-    public PacketPlayerPositionAndRotationSending(Location location, float yaw, float pitch, boolean onGround) {
-        this.x = location.getX();
-        this.feetY = location.getY();
-        this.z = location.getZ();
-        this.headY = feetY - 1.62F;
-        this.yaw = yaw;
-        this.pitch = pitch;
+    public PacketPlayerPositionAndRotationSending(Location location, EntityRotation rotation, boolean onGround) {
+        this.location = location;
+        this.rotation = rotation;
         this.onGround = onGround;
     }
 
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_POSITION_AND_ROTATION);
-        buffer.writeDouble(x);
-        buffer.writeDouble(feetY);
+        buffer.writeDouble(location.x());
+        buffer.writeDouble(location.y());
         if (buffer.getVersionId() < 10) {
-            buffer.writeDouble(headY);
+            buffer.writeDouble(location.y() - 1.62);
         }
-        buffer.writeDouble(z);
-        buffer.writeFloat(yaw);
-        buffer.writeFloat(pitch);
+        buffer.writeDouble(location.z());
+        buffer.writeFloat(rotation.yaw());
+        buffer.writeFloat(rotation.pitch());
         buffer.writeBoolean(onGround);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending player position and rotation: %s %s %s (yaw=%s, pitch=%s)", x, headY, z, yaw, pitch));
+        Log.protocol(String.format("[OUT] Sending player position and rotation: (location=%s, rotation=%s, onGround=%b)", location, rotation, onGround));
     }
 }

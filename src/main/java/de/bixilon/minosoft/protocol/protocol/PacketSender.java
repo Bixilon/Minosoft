@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import de.bixilon.minosoft.data.entities.EntityRotation;
+import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
 import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
@@ -58,11 +60,11 @@ public class PacketSender {
     }
 
     public void sendAction(PacketEntityAction.EntityActions action) {
-        // connection.sendPacket(new PacketEntityAction(connection.getPlayer().getPlayer().getEntityId(), action));
+        connection.sendPacket(new PacketEntityAction(connection.getPlayer().getEntity().getEntityId(), action));
     }
 
     public void jumpWithHorse(int jumpBoost) {
-        // connection.sendPacket(new PacketEntityAction(connection.getPlayer().getPlayer().getEntityId(), PacketEntityAction.EntityActions.START_HORSE_JUMP, jumpBoost));
+        connection.sendPacket(new PacketEntityAction(connection.getPlayer().getEntity().getEntityId(), PacketEntityAction.EntityActions.START_HORSE_JUMP, jumpBoost));
     }
 
     public void dropItem() {
@@ -99,5 +101,11 @@ public class PacketSender {
 
     public void sendLoginPluginMessageResponse(int messageId, OutByteBuffer toSend) {
         connection.sendPacket(new PacketLoginPluginResponse(messageId, toSend.getOutBytes()));
+    }
+
+    public void setLocation(Location location, EntityRotation rotation, boolean onGround) {
+        connection.sendPacket(new PacketPlayerPositionAndRotationSending(location, rotation, onGround));
+        connection.getPlayer().getEntity().setLocation(location);
+        connection.getPlayer().getEntity().setRotation(rotation);
     }
 }

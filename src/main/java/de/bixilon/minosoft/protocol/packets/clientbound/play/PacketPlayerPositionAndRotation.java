@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -21,8 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketPlayerPositionAndRotation implements ClientboundPacket {
     Location location;
-    float yaw;
-    float pitch;
+    EntityRotation rotation;
     boolean onGround;
     byte flags;
 
@@ -31,8 +31,7 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         location = buffer.readLocation();
-        yaw = buffer.readFloat();
-        pitch = buffer.readFloat();
+        rotation = new EntityRotation(buffer.readFloat(), buffer.readFloat(), 0);
         if (buffer.getVersionId() < 6) {
             onGround = buffer.readBoolean();
             return true;
@@ -52,19 +51,15 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received player location: %s (yaw=%s, pitch=%s)", location, yaw, pitch));
+        Log.protocol(String.format("[IN] Received player location: (location=%s, rotation=%s, onGround=%b)", location, rotation, onGround));
     }
 
     public Location getLocation() {
         return location;
     }
 
-    public float getPitch() {
-        return pitch;
-    }
-
-    public float getYaw() {
-        return yaw;
+    public EntityRotation getRotation() {
+        return rotation;
     }
 
     public boolean isOnGround() {
@@ -74,4 +69,5 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
     public int getTeleportId() {
         return teleportId;
     }
+
 }
