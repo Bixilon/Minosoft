@@ -57,21 +57,6 @@ In the root folder of your jar file (the mod) must be a file called `mod.json`. 
       - `minimum` Minimum versionId required. **Maximum, minimum, both or none**
       - `maximum` Maximum versionId required. **Maximum, minimum, both or none**
 
-## Mod loading (aka Main class)
-Your main class must extend the following class: `de.bixilon.minosoft.MinosoftMod`.
-
-### Phases
-There are different phases (states) for the loading. There are the following phases:
- 1. `BOOTING` Happens after loading all configuration files and while displaying the server list.
- 2. `INITIALIZING` All mods are loaded into the ram and everything before registering anything happens here (like OpenGL stuff, etc). You should also register Events here.
- 3. `LOADING` You have custom items, entities, blocks, etc? Load it here.
- 4. `STARTING` All items, etc are loaded. If you want to do anything else, do it here.
- 5. `STARTED` The loading is complete
-
-The most important thing is performance. To archive fast loading times, etc, all mods (if they don't on each other) are getting loaded async.
-One phase is completed (= Next phase starts), once all mods have completed the previous phase. Everything is async.
-If your start function needs much time, you can set the loading priority in the `mod.json` to start at the beginning. The `start` method returns a success boolean.
-
 ## Getting started
 Add Minosoft to your maven dependencies with  
 Repository:
@@ -85,12 +70,33 @@ Repository:
 ```  
 Dependency:  
 ```xml
-<dependency>
-    <groupId>de.bixilon.gitlab.bixilon</groupId>
-    <artifactId>minosoft</artifactId>
-    <version>master-SNAPSHOT</version>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>de.bixilon.gitlab.bixilon</groupId>
+        <artifactId>minosoft</artifactId>
+        <version>master-SNAPSHOT</version>
+    </dependency>
+</dependencies>
 ```
+Instead of `master-SNAPSHOT` you should write the latest commit, if there is no release tagged yet. 
+
+
+## Mod loading (aka Main class)
+Your main class must extend the following class: `de.bixilon.minosoft.modding.MinosoftMod`.
+
+### Phases
+There are different phases (states) for the loading. There are the following phases:
+ 1. `BOOTING` Happens after loading all configuration files and while displaying the server list.
+ 2. `INITIALIZING` All mods are loaded into the ram and everything before registering anything happens here (like OpenGL stuff, etc). You should also register Events here.
+ 3. `LOADING` You have custom items, entities, blocks, etc? Load it here.
+ 4. `STARTING` All items, etc are loaded. If you want to do anything else, do it here.
+ 5. `STARTED` The loading is complete
+
+The most important thing is performance. To archive fast loading times, etc, all mods (if they don't on each other) are getting loaded async.
+One phase is completed (= Next phase starts), once all mods have completed the previous phase. Everything is async.
+If your start function needs much time, you can set the loading priority in the `mod.json` to start at the beginning. The `start` method returns a success boolean.
+
+
 Create a Main class, here is an example
 ```java
 package de.bixilon.example.mod.main;
