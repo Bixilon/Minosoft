@@ -38,8 +38,8 @@ The current result of rendering (taken in 739f861bf62341698abcd58386c353a4831f48
 The Hypixel prototype lobby (taken in 91ab431004fa1ae132a1eb1115550f84c27f48f8).
 
 ## Launcher
-The "Launcher" is not really a launcher, it is just a (badly designed, but functional) server list with account management functionality.
-Launcher is in quotation marks, because it is not really a launcher. It is the game. You click on run and see this window. All downloads, loadings, ... happen async in the background.
+The "Launcher" is not really a launcher, it is just a (beautifully designed, but functional) server list with account management functionality.
+Launcher is in quotation marks, because it is not really a launcher. It is the game. You click on run and see this window. All downloads, loadings, ... happen before it asynchronous in the background.
 If you double-click on the server. you can connect to it. Once connected (= Received spawn location), you can play :)
 ![Server list](doc/img/server_list.png)
 
@@ -65,23 +65,26 @@ And 1.8.9 is only supported, because this version is widely spread, and I wrote 
 Minosoft is modding friendly. I am working hard on a reasonable API. See !17 for more details. See [Modding.md](doc/Modding.md) for more details. The code is pretty dynamic (all blocks, items, entities, etc are stored in json files). It is pretty easy to load custom entities, etc.
 We will add a real modding API once Rendering is complete. Spoiler: Forge mods are NOT compatible. Feel free to write a compatibility layer (This is a really hard thing, we do things completely different).
 
-## Contribution
-You're welcome. Because this is pretty much incomplete, contact us before working on it and submitting a pull request.
+## Botting
+On the ToDo List
 
-## Tools
+## Contribution or helping out
+You're welcome. Because this is still work-in-progress, consider contacting us first, but feel free to take a look at [Contribution.md](/Contribution.md).
+
+## Tools and generators
 We wrote some tools to help out, see [Utility](util/ReadMe.md).
 
 ## Credits
-Many thanks to [Credits](Credits.md).
+Some projects and persons helped this project a lot. See [Credits](Credits.md).
 
 ## Releases and beta
-We are almost ready to release a beta once !8 is merged.
+No clue, but still waiting for !8. Also, some features need to be implemented, so not soo soon (but we are getting closer).
 
 ## Compiling and running
-1. Install Maven and java 15 (On Ubuntu based distributions: `sudo apt install maven openjdk-15-jdk`)
-2. Clone this repo (`git clone https://gitlab.bixilon.de/bixilon/minosoft.git`)
-3. Change directory (`cd minosoft`)
-4. Checkout the branch (`git checkout <branch>`). Probably `render`
+1. Install Maven and java 15 (On Ubuntu based distributions: `sudo apt install maven openjdk-15-jdk`).
+2. Clone this repo (`git clone https://gitlab.bixilon.de/bixilon/minosoft.git`).
+3. Change directory (`cd minosoft`).
+4. Checkout the branch (`git checkout <branch>`). Eventually `render` or `development`.
 5. Build and run Minosoft with `mvn clean verify exec:java`. If any errors occur, feel free to open an issue. In this early stage it might be helpful
  to delete the app data folder (only of minosoft).
 
