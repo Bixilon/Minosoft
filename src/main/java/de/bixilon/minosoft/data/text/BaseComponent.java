@@ -50,7 +50,7 @@ public class BaseComponent extends ChatComponent {
             char nextFormattingChar = iterator.current();
             iterator.next();
             RGBColor nextColor = ChatColors.getColorByFormattingChar(nextFormattingChar);
-            if (nextColor != null && nextColor != color) {
+            if (nextColor != null) {
                 // color change, add text part
                 if (currentText.length() > 0) {
                     parts.add(new TextComponent(currentText.toString(), color, formattingCodes));

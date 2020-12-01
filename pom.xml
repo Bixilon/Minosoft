@@ -87,5 +87,10 @@
             <artifactId>commons-cli</artifactId>
             <version>1.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>3.17.1</version>
+        </dependency>
     </dependencies>
 </project>
