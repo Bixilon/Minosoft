@@ -124,6 +124,7 @@ public class Slot {
         if (hideFlags != 0) {
             nbt.writeTag("HideFlags", new IntTag(hideFlags));
         }
+
         if (enchantments.size() > 0) {
             if (mapping.getVersion().isFlattened()) {
                 ListTag enchantmentList = new ListTag(TagTypes.COMPOUND, new ArrayList<>());
