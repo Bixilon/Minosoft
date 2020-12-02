@@ -13,41 +13,31 @@
 
 package de.bixilon.minosoft.util.nbt.tag;
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
+public abstract class NumberTag extends NBTTag {
 
-public class IntTag extends NumberTag {
-    final int value;
-
-    public IntTag(int value) {
-        this.value = value;
+    public byte getAsByte() {
+        return (byte) getAsLong();
     }
 
-    public IntTag(InByteBuffer buffer) {
-        this.value = buffer.readInt();
+    public short getAsShort() {
+        return (short) getAsLong();
     }
 
-    @Override
-    public TagTypes getType() {
-        return TagTypes.INT;
+    public int getAsInt() {
+        return (int) getAsLong();
     }
 
-    @Override
-    public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeInt(value);
+    public abstract long getAsLong();
+
+    public int getAsUnsignedByte() {
+        return getAsShort();
     }
 
-    public int getValue() {
-        return value;
+    public int getAsUnsignedShort() {
+        return getAsShort();
     }
 
-    @Override
-    public String toString() {
-        return String.valueOf(value);
-    }
-
-    @Override
-    public long getAsLong() {
-        return value;
+    public long getAsUnsignedInt() {
+        return getAsInt();
     }
 }

@@ -27,7 +27,7 @@ import java.util.HashMap;
 
 public class Slot {
     final Item item;
-    final HashMap<Enchantment, Short> enchantments = new HashMap<>();
+    final HashMap<Enchantment, Integer> enchantments = new HashMap<>();
     final ArrayList<ChatComponent> lore = new ArrayList<>();
     int itemCount;
     short itemMetadata;
@@ -90,11 +90,11 @@ public class Slot {
         if (nbt.containsKey("Enchantments")) {
             for (CompoundTag enchantment : nbt.getListTag("Enchantments").<CompoundTag>getValue()) {
                 String[] spilittedIdentifier = enchantment.getStringTag("id").getValue().split(":");
-                enchantments.put(new Enchantment(spilittedIdentifier[0], spilittedIdentifier[1]), enchantment.getShortTag("lvl").getValue());
+                enchantments.put(new Enchantment(spilittedIdentifier[0], spilittedIdentifier[1]), enchantment.getNumberTag("lvl").getAsInt());
             }
         } else if (nbt.containsKey("ench")) {
             for (CompoundTag enchantment : nbt.getListTag("ench").<CompoundTag>getValue()) {
-                enchantments.put(mapping.getEnchantmentById(enchantment.getShortTag("id").getValue()), enchantment.getShortTag("lvl").getValue());
+                enchantments.put(mapping.getEnchantmentById(enchantment.getNumberTag("id").getAsInt()), enchantment.getNumberTag("lvl").getAsInt());
             }
         }
     }
@@ -130,7 +130,7 @@ public class Slot {
                 enchantments.forEach((id, level) -> {
                     CompoundTag tag = new CompoundTag();
                     tag.writeTag("id", new StringTag(id.toString()));
-                    tag.writeTag("lvl", new ShortTag(level));
+                    tag.writeTag("lvl", new ShortTag(level.shortValue()));
                     enchantmentList.getValue().add(tag);
                 });
                 nbt.writeTag("Enchantments", enchantmentList);
@@ -139,7 +139,7 @@ public class Slot {
                 enchantments.forEach((id, level) -> {
                     CompoundTag tag = new CompoundTag();
                     tag.writeTag("id", new ShortTag((short) (int) mapping.getIdByEnchantment(id)));
-                    tag.writeTag("lvl", new ShortTag(level));
+                    tag.writeTag("lvl", new ShortTag(level.shortValue()));
                     enchantmentList.getValue().add(tag);
                 });
                 nbt.writeTag("ench", enchantmentList);
@@ -257,7 +257,7 @@ public class Slot {
         return BitByte.isBitSet(hideFlags, 6);
     }
 
-    public HashMap<Enchantment, Short> getEnchantments() {
+    public HashMap<Enchantment, Integer> getEnchantments() {
         return enchantments;
     }
 

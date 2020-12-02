@@ -133,6 +133,10 @@ public class CompoundTag extends NBTTag {
         return (CompoundTag) data.get(key);
     }
 
+    public NumberTag getNumberTag(String key) {
+        return (NumberTag) data.get(key);
+    }
+
     public NBTTag getTag(String key) {
         return data.get(key);
     }

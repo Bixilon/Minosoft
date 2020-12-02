@@ -17,8 +17,8 @@ import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
-import de.bixilon.minosoft.data.mappings.blocks.Blocks;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 
 /**
@@ -35,12 +35,13 @@ public class World {
         return chunks;
     }
 
+    @Nullable
     public Block getBlock(BlockPosition pos) {
         ChunkLocation loc = pos.getChunkLocation();
         if (getChunk(loc) != null) {
             return getChunk(loc).getBlock(pos.getInChunkLocation());
         }
-        return Blocks.nullBlock;
+        return null;
     }
 
     public Chunk getChunk(ChunkLocation loc) {

@@ -18,7 +18,6 @@ import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.data.GameModes;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
-import de.bixilon.minosoft.data.mappings.blocks.Blocks;
 import de.bixilon.minosoft.data.mappings.recipes.Recipes;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
@@ -247,7 +246,11 @@ public class PacketHandler {
         if (connection.fireEvent(event)) {
             return;
         }
-        Log.game("[CHAT] " + event.getMessage());
+        Log.game(switch (pkg.getPosition()) {
+            case SYSTEM_MESSAGE -> "[SYSTEM] ";
+            case ABOVE_HOTBAR -> "[HOTBAR] ";
+            default -> "[CHAT] ";
+        } + event.getMessage());
     }
 
     public void handle(PacketDisconnect pkg) {
@@ -553,7 +556,7 @@ public class PacketHandler {
             int y = ((int) pkg.getLocation().getY()) + record[1];
             int z = ((int) pkg.getLocation().getZ()) + record[2];
             BlockPosition blockPosition = new BlockPosition(x, (short) y, z);
-            connection.getPlayer().getWorld().setBlock(blockPosition, Blocks.nullBlock);
+            connection.getPlayer().getWorld().setBlock(blockPosition, null);
         }
         // ToDo: motion support
     }

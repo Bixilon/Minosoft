@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.util;
 
 import de.bixilon.minosoft.data.mappings.blocks.Block;
-import de.bixilon.minosoft.data.mappings.blocks.Blocks;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkSection;
 import de.bixilon.minosoft.data.world.InChunkSectionLocation;
@@ -76,11 +75,12 @@ public final class ChunkUtil {
                                     }
                                 }
                                 // ToDo light, biome
-                                Block block = buffer.getConnection().getMapping().getBlockById((singeBlockId << 4) | singleMeta);
-                                if (block.equals(Blocks.nullBlock)) {
+                                int fullBlockId = (singeBlockId << 4) | singleMeta;
+                                if (fullBlockId == ProtocolDefinition.NULL_BLOCK_ID) {
                                     arrayPos++;
                                     continue;
                                 }
+                                Block block = buffer.getConnection().getMapping().getBlockById(fullBlockId);
                                 blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), block);
                                 arrayPos++;
                             }
@@ -129,7 +129,7 @@ public final class ChunkUtil {
                                 Log.warn("Unknown block: %d", blockId);
                             }
                              */
-                            if (block == null || block.equals(Blocks.nullBlock)) {
+                            if (block == null) {
                                 arrayPos++;
                                 continue;
                             }
@@ -177,6 +177,9 @@ public final class ChunkUtil {
 
                         Block block = palette.byId(blockId);
                         if (block == null) {
+                            if (blockId == ProtocolDefinition.NULL_BLOCK_ID) {
+                                continue;
+                            }
                             String blockName;
                             if (buffer.getVersionId() <= ProtocolDefinition.FLATTING_VERSION_ID) {
                                 blockName = String.format("%d:%d", blockId >> 4, blockId & 0xF);
@@ -184,9 +187,6 @@ public final class ChunkUtil {
                                 blockName = String.valueOf(blockId);
                             }
                             Log.warn(String.format("Server sent unknown block: %s", blockName));
-                            continue;
-                        }
-                        if (block.equals(Blocks.nullBlock)) {
                             continue;
                         }
                         blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), block);
