@@ -282,6 +282,9 @@ public class AssetsManager {
         // move file to desired destination
         File outputFile = new File(getAssetDiskPath(hash));
         Util.createParentFolderIfNotExist(outputFile);
+        if (outputFile.exists()) {
+            return hash;
+        }
         if (!tempDestinationFile.renameTo(outputFile)) {
             throw new RuntimeException(String.format("Could not rename file %s to %s", tempDestinationFile.getAbsolutePath(), outputFile.getAbsolutePath()));
         }
