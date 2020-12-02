@@ -29,7 +29,6 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
-import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.protocol.*;
@@ -62,7 +61,7 @@ public class Connection {
     ConnectionStates state = ConnectionStates.DISCONNECTED;
     ConnectionReasons reason;
     ConnectionReasons nextReason;
-    ConnectionPing connectionStatusPing;
+    public ConnectionPing connectionStatusPing;
     ServerListPing lastPing;
     Exception lastException;
 
@@ -318,10 +317,8 @@ public class Connection {
                 setConnectionState(next);
             }
             case STATUS -> {
-                // send status request and ping
+                // send status request
                 network.sendPacket(new PacketStatusRequest());
-                connectionStatusPing = new ConnectionPing();
-                network.sendPacket(new PacketStatusPing(connectionStatusPing));
             }
             case LOGIN -> network.sendPacket(new PacketLoginStart(player));
             case DISCONNECTED -> {

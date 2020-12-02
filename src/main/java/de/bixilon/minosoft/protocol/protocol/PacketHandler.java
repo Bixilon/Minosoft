@@ -41,6 +41,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionRe
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketConfirmTeleport;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending;
+import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.util.nbt.tag.StringTag;
 
@@ -77,6 +78,8 @@ public class PacketHandler {
         }
         Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getANSIColoredMessage()));
         connection.handlePingCallbacks(pkg.getResponse());
+        connection.connectionStatusPing = new ConnectionPing();
+        connection.sendPacket(new PacketStatusPing(connection.connectionStatusPing));
     }
 
     public void handle(PacketStatusPong pkg) {
