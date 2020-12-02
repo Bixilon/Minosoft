@@ -283,6 +283,10 @@ public class AssetsManager {
         File outputFile = new File(getAssetDiskPath(hash));
         Util.createParentFolderIfNotExist(outputFile);
         if (outputFile.exists()) {
+            // file is already extracted
+            if (!tempDestinationFile.delete()) {
+                throw new RuntimeException(String.format("Could not delete temporary file %s", tempDestinationFile.getAbsolutePath()));
+            }
             return hash;
         }
         if (!tempDestinationFile.renameTo(outputFile)) {
