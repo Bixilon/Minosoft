@@ -101,6 +101,10 @@ public class InByteBuffer {
     }
 
     public String readString() {
+        byte[] data = readBytes(readVarInt());
+        if (data.length > ProtocolDefinition.STRING_MAX_LEN) {
+            throw new IllegalArgumentException(String.format("String max string length exceeded %d > %d", data.length, ProtocolDefinition.STRING_MAX_LEN));
+        }
         return new String(readBytes(readVarInt()), StandardCharsets.UTF_8);
     }
 
@@ -152,7 +156,8 @@ public class InByteBuffer {
         int byteCount = 0;
         int result = 0;
         byte read;
-        do {
+        do
+        {
             read = readByte();
             result |= (read & 0x7F) << (7 * byteCount);
             byteCount++;
