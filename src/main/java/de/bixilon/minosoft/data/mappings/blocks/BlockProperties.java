@@ -433,7 +433,11 @@ public enum BlockProperties {
 
     // is smooth cobble stone in < 17w46a a thing? probably (double cobble stone slab is smooth so ... (and even more))
     LEGACY_SMOOTH_YES,
-    LEGACY_SMOOTH_NO;
+    LEGACY_SMOOTH_NO,
+
+    SCULK_SENSOR_PHASE_INACTIVE("sculk_sensor_phase", "inactive"),
+    SCULK_SENSOR_PHASE_ACTIVE("sculk_sensor_phase", "active"),
+    SCULK_SENSOR_PHASE_COOLDOWN("sculk_sensor_phase", "cooldown");
 
 
     public static final HashMap<String, HashMap<String, BlockProperties>> PROPERTIES_MAPPING = new HashMap<>();
