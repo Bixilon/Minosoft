@@ -14,6 +14,8 @@
 package de.bixilon.minosoft;
 
 import com.google.common.collect.HashBiMap;
+import com.jfoenix.controls.JFXAlert;
+import com.jfoenix.controls.JFXDialogLayout;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
@@ -36,8 +38,8 @@ import de.bixilon.minosoft.util.task.AsyncTaskWorker;
 import de.bixilon.minosoft.util.task.Task;
 import de.bixilon.minosoft.util.task.TaskImportance;
 import javafx.application.Platform;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.TextArea;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -73,18 +75,19 @@ public final class Minosoft {
             StartProgressWindow.hideDialog();
             Launcher.exit();
             Platform.runLater(() -> {
-                Dialog<Boolean> dialog = new Dialog<>();
+                JFXAlert<Boolean> dialog = new JFXAlert<>();
                 GUITools.initializePane(dialog.getDialogPane());
                 // Do not translate this, translations might fail to load...
                 dialog.setTitle("Critical Error");
-                dialog.setHeaderText("An error occurred while starting Minosoft");
+                JFXDialogLayout layout = new JFXDialogLayout();
+                layout.setHeading(new Text("A fatal error occurred while starting Minosoft"));
                 TextArea text = new TextArea(exception.getClass().getCanonicalName() + ": " + exception.getMessage());
                 text.setEditable(false);
                 text.setWrapText(true);
-                dialog.getDialogPane().setContent(text);
+                layout.setBody(text);
+                dialog.getDialogPane().setContent(layout);
 
                 Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
-                stage.setAlwaysOnTop(true);
                 stage.toFront();
                 stage.setOnCloseRequest(dialogEvent -> {
                     dialog.setResult(Boolean.TRUE);
