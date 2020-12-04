@@ -15,15 +15,12 @@ package de.bixilon.minosoft.modding.loading;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.util.Util;
 
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ModInfo {
-    final UUID uuid;
-    final int versionId;
     final String versionName;
     final String name;
     final String[] authors;
@@ -32,11 +29,11 @@ public class ModInfo {
     final String mainClass;
     final HashSet<ModDependency> hardDependencies = new HashSet<>();
     final HashSet<ModDependency> softDependencies = new HashSet<>();
+    private final ModIdentifier modIdentifier;
     LoadingInfo loadingInfo;
 
     public ModInfo(JsonObject json) throws ModLoadingException {
-        this.uuid = Util.getUUIDFromString(json.get("uuid").getAsString());
-        this.versionId = json.get("versionId").getAsInt();
+        this.modIdentifier = ModIdentifier.serialize(json);
         this.versionName = json.get("versionName").getAsString();
         this.name = json.get("name").getAsString();
         JsonArray authors = json.get("authors").getAsJsonArray();
@@ -83,12 +80,18 @@ public class ModInfo {
         return loadingInfo;
     }
 
+    @Deprecated
     public UUID getUUID() {
-        return uuid;
+        return modIdentifier.uuid();
     }
 
+    @Deprecated
     public int getVersionId() {
-        return versionId;
+        return modIdentifier.versionId();
+    }
+
+    public ModIdentifier getModIdentifier() {
+        return modIdentifier;
     }
 
     public String getVersionName() {
@@ -99,28 +102,16 @@ public class ModInfo {
         return name;
     }
 
+    public HashSet<ModDependency> getHardDependencies() {
+        return hardDependencies;
+    }
+
+    public HashSet<ModDependency> getSoftDependencies() {
+        return softDependencies;
+    }
+
     @Override
     public String toString() {
         return String.format("name=\"%s\", uuid=%s, versionName=\"%s\", versionId=%d", getName(), getUUID(), getVersionName(), getVersionId());
-    }
-
-    @Override
-    public int hashCode() {
-        return uuid.hashCode() * versionId;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj)) {
-            return true;
-        }
-        if (this.hashCode() != obj.hashCode()) {
-            return false;
-        }
-        ModInfo their = (ModInfo) obj;
-        return getUUID().equals(their.getUUID()) && getVersionId() == their.getVersionId();
     }
 }

@@ -13,15 +13,18 @@
 
 package de.bixilon.minosoft.modding.loading;
 
-public enum Priorities {
-    LOWEST,
-    LOW,
-    NORMAL,
-    HIGH,
-    HIGHEST,
-    ULTRA_HIGH; // this priority is even higher. Do not use in normal case!
+import com.google.gson.JsonObject;
+import de.bixilon.minosoft.util.Util;
 
-    public static Priorities getHigherPriority(Priorities priority) {
-        return Priorities.values()[priority.ordinal() + 1];
+import java.util.UUID;
+
+public record ModIdentifier(UUID uuid, int versionId) {
+    public static ModIdentifier serialize(JsonObject json) {
+        return new ModIdentifier(Util.getUUIDFromString(json.get("uuid").getAsString()), json.get("versionId").getAsInt());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("uuid=%s, versionId=%d", uuid, versionId);
     }
 }
