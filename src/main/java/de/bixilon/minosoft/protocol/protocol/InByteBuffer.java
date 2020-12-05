@@ -105,7 +105,7 @@ public class InByteBuffer {
         if (data.length > ProtocolDefinition.STRING_MAX_LEN) {
             throw new IllegalArgumentException(String.format("String max string length exceeded %d > %d", data.length, ProtocolDefinition.STRING_MAX_LEN));
         }
-        return new String(readBytes(readVarInt()), StandardCharsets.UTF_8);
+        return new String(data, StandardCharsets.UTF_8);
     }
 
     public long readVarLong() {
@@ -114,7 +114,7 @@ public class InByteBuffer {
         byte read;
         do {
             read = readByte();
-            result |= (read & 0x7F) << (7 * byteCount);
+            result |= (long) (read & 0x7F) << (7 * byteCount);
             byteCount++;
             if (byteCount > 10) {
                 throw new IllegalArgumentException("VarLong is too big");
