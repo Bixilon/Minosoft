@@ -13,8 +13,19 @@
 
 package de.bixilon.minosoft.config;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 public abstract class ConfigurationPaths {
-    public enum StringPaths {
+    static HashSet<ConfigurationPath> ALL_PATHS = new HashSet<>();
+
+    static {
+        ALL_PATHS.addAll(Arrays.asList(StringPaths.values()));
+        ALL_PATHS.addAll(Arrays.asList(BooleanPaths.values()));
+        ALL_PATHS.addAll(Arrays.asList(IntegerPaths.values()));
+    }
+
+    public enum StringPaths implements ConfigurationPath {
         GENERAL_LOG_LEVEL,
         CLIENT_TOKEN,
         RESOURCES_URL,
@@ -22,14 +33,17 @@ public abstract class ConfigurationPaths {
         GENERAL_LANGUAGE,
     }
 
-    public enum BooleanPaths {
+    public enum BooleanPaths implements ConfigurationPath {
         NETWORK_FAKE_CLIENT_BRAND,
         NETWORK_SHOW_LAN_SERVERS,
         DEBUG_VERIFY_ASSETS
     }
 
-    public enum IntegerPaths {
+    public enum IntegerPaths implements ConfigurationPath {
         GENERAL_CONFIG_VERSION,
         GAME_RENDER_DISTANCE
+    }
+
+    public interface ConfigurationPath {
     }
 }

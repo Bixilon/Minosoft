@@ -105,7 +105,6 @@ public class MojangAccount {
     }
 
     public void delete() {
-        Minosoft.getAccountList().remove(this.getUserId());
         Minosoft.getConfig().removeAccount(this);
         Minosoft.getConfig().saveToFile();
     }

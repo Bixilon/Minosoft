@@ -102,10 +102,10 @@ public class AccountListCell extends ListCell<MojangAccount> implements Initiali
     public void delete() {
         account.delete();
         if (Minosoft.getSelectedAccount() == account) {
-            if (Minosoft.getAccountList().isEmpty()) {
+            if (Minosoft.getConfig().getAccountList().isEmpty()) {
                 Minosoft.selectAccount(null);
             } else {
-                Minosoft.selectAccount(Minosoft.getAccountList().values().iterator().next());
+                Minosoft.selectAccount(Minosoft.getConfig().getAccountList().values().iterator().next());
             }
             listView.refresh();
         }

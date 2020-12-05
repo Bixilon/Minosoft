@@ -203,7 +203,7 @@ public class MainWindow implements Initializable {
 
             if (server1 == null) {
                 server1 = new Server(Server.getNextServerId(), serverName, serverAddress, desiredVersionId);
-                Minosoft.serverList.add(server1);
+                Minosoft.getConfig().putServer(server1);
                 ServerListCell.listView.getItems().add(server1);
             } else {
                 server1.setName(serverName);

@@ -46,7 +46,7 @@ public class AccountWindow implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         AccountListCell.listView.setCellFactory((lv) -> AccountListCell.newInstance());
 
-        ObservableList<MojangAccount> accounts = FXCollections.observableArrayList(Minosoft.getAccountList().values());
+        ObservableList<MojangAccount> accounts = FXCollections.observableArrayList(Minosoft.getConfig().getAccountList().values());
         AccountListCell.listView.setItems(accounts);
         accountPane.setCenter(AccountListCell.listView);
 
@@ -91,7 +91,7 @@ public class AccountWindow implements Initializable {
             if (attempt.succeeded()) {
                 // login okay
                 MojangAccount account = attempt.getAccount();
-                Minosoft.accountList.put(account.getUserId(), account);
+                Minosoft.getConfig().putMojangAccount(account);
                 account.saveToConfig();
                 AccountListCell.listView.getItems().add(account);
                 Log.info(String.format("Added and saved account (playerName=%s, email=%s, uuid=%s)", account.getPlayerName(), account.getMojangUserName(), account.getUUID()));

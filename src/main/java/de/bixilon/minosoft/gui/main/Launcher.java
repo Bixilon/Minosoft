@@ -62,7 +62,7 @@ public class Launcher {
             ServerListCell.listView.setCellFactory((lv) -> ServerListCell.newInstance());
 
             ObservableList<Server> servers = FXCollections.observableArrayList();
-            servers.addAll(Minosoft.serverList);
+            servers.addAll(Minosoft.getConfig().getServerList().values());
             ServerListCell.listView.setItems(servers);
             LANServerListener.removeAll(); // remove all LAN Servers
 
