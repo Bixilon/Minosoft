@@ -5,11 +5,12 @@ Also, (before someone asks): I don't care if you use Kotlin or Java.
 
 
 ## Git Rules
- - Small Features in `development`.
- - `master` is always functional.
- - No force pushes (or modifying the git history) on `master`.
- - Bigger features on own branches. Merge only via Merge Request.
- - No commits directly on `master`
+
+- Small Features in `development`.
+- `master` must always be stable and functional.
+- No force pushes (or modifying the git history) in protected branches (aka. `master`).
+- Bigger features on own branches. Merge only via Merge Request.
+- No commits directly in `master`
 
 ## Git access
  - Don't just request developer access, I'll not just give you access, instead create a fork, and a pull requests, we will accept (or decline) it. Probably a bit of discussion.

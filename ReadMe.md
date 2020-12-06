@@ -8,21 +8,20 @@ Minosoft is an open source minecraft client, written from scratch in java. It ai
  - Rendering (WIP)
  - Multi protocol support (1.7 - latest)
  - Modding
- - Fast performance (incredible start time of 3 - 5 seconds on modern hardware (tested on Intel i7-4800MQ)
+ - Fast performance (incredible start time of 3 - 5 seconds on modern hardware (tested on Intel i7-4800MQ))
  - Free (as far as we consider original minecraft as free) and open source
  - Multi accounting
  - Multi "sessions" (Connections to a server)
  - Multi threading
  - Async loading
  - Debugging on protocol layer
- - Search for LAN Server
+ - LAN Servers
 
 ## System requirements
- - CPU: Minosoft benefits from multiple cores (at least for most stuff). CPU is kind of important,
-  but for the rendering clock speed is more important. 4 cores recommended with at least 2 Ghz.
- - RAM: Out goal was it to run without compromises on an 8 Gib computer and at least limited on an 4 Gib one.
- - Disk space: Minosoft itself is pretty small (2-3 Mib), the libraries are a bit bigger (up to 100 MB).
-  You also need to have the "normal" minecraft assets (~ 300 MB). So a total of 500 MB is recommended.
+
+- CPU: Minosoft benefits from multiple cores (at least for most stuff). CPU is kind of important, but for the rendering clock speed is more important. 4 cores recommended with at least 2 Ghz.
+- RAM: Our goal was it to run without compromises on an 8 Gib computer and at least limited on an 4 Gib one.
+- Disk space: Minosoft itself is pretty small (2-3 Mib), the libraries are a bit bigger (up to 100 MB). You also need to have the "normal" minecraft assets (~ 300 MB). So a total of 500 MB is recommended.
  - GPU: Currently only needed for rendering, no clue yet.
  - Java 15 (This is really important, we use specific (experimental) features that are only available in the latest version. Java 8 is **not** supported).
  OpenJDK is (of course) also supported.
@@ -38,9 +37,8 @@ The current result of rendering (taken in 739f861bf62341698abcd58386c353a4831f48
 The Hypixel prototype lobby (taken in 91ab431004fa1ae132a1eb1115550f84c27f48f8).
 
 ## Launcher
-The "Launcher" is not really a launcher, it is just a (beautifully designed, but functional) server list with account management functionality.
-Launcher is in quotation marks, because it is not really a launcher. It is the game. You click on run and see this window. All downloads, loadings, ... happen before it asynchronous in the background.
-If you double-click on the server. you can connect to it. Once connected (= Received spawn location), you can play :)
+
+The "Launcher" is not really a launcher, it is just a (beautifully designed and functional) server list with account management functionality. Launcher is in quotation marks, because it is not really a launcher. It is the game. You click on run and this window will be shown to you. All downloads, loadings, ... happen before it asynchronous before showing it. After double-clicking on the server. you can connect to it. Once connected (= Received spawn location), you can play :)
 ![Server list](doc/img/server_list.png)
 
 ## Version support
@@ -57,13 +55,13 @@ Sadly, we cannot support all versions. We will add support for all major version
  - April fools: I will not add any support for them, there are only a few things known. They might work, untested.
  
 ### Partly supported versions
- - Protocol lacking; See [snapSupportToDo.txt](/doc/snapSupportToDo.txt)
- - Entities everything below `19w36a` (shortly after 1.14.4) (except `1.14.4` and `1.8.9`). Why? There is simply no time to generate an `entities.json`. The [Generator](/util) only works after that version.
-And 1.8.9 is only supported, because this version is widely spread, and I wrote (~ 1000 lines) by hand.
+
+- Protocol lacking; See [snapSupportToDo.txt](/doc/snapSupportToDo.txt)
+- Entities everything below `19w36a` (shortly after 1.14.4) (except `1.14.4` and `1.8.9`). Why? There is simply no time to create an `entities.json`. The [Generator](/util) only works after that version. And 1.8.9 is only supported, because this version is widely spread, and I wrote (~ 1000 lines) by hand.
 
 ## Modding
-Minosoft is modding friendly. I am working hard on a reasonable API. See !17 for more details. See [Modding.md](doc/Modding.md) for more details. The code is pretty dynamic (all blocks, items, entities, etc are stored in json files). It is pretty easy to load custom entities, etc.
-We will add a real modding API once Rendering is complete. Spoiler: Forge mods are NOT compatible. Feel free to write a compatibility layer (This is a really hard thing, we do things completely different).
+
+Minosoft is modding friendly. A decent API was introduced with !17. It is pretty final, but some things might still change. See [Modding.md](doc/Modding.md) for more details. The code is pretty dynamic (all blocks, items, entities, etc are stored in json files). It is pretty easy to load custom entities, etc. Spoiler: Forge mods are NOT compatible. Feel free to write a compatibility layer (This is a really hard thing, we do things completely different).
 
 ## Botting
 On the ToDo List
