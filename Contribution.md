@@ -23,7 +23,7 @@ that I developed something useful, and people start contributing.
 
 ### Donating
 
-I started this project inb mind, that I'll never earn money from it. Just doing it for fun, so I am not dependent on it. So: Currently not available and not planned.
+I started this project in mind, that I'll never earn money from it. Just doing it for fun, so I am not dependent on it. So: Currently not available and not planned.
 
 ## Issue and MR rules
 - Do not spam, we will answer when we have time.

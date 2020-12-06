@@ -60,6 +60,10 @@ public final class Minosoft {
 
         taskWorker.setFatalError((exception) -> {
             Log.fatal("Critical error occurred while preparing. Exit");
+            if (StaticConfiguration.HEADLESS_MODE) {
+                System.exit(1);
+                return;
+            }
             try {
                 if (StartProgressWindow.toolkitLatch.getCount() == 2) {
                     StartProgressWindow.start();
@@ -113,9 +117,19 @@ public final class Minosoft {
             progress.countDown();
         }, "Configuration", String.format("Load config file (%s)", StaticConfiguration.CONFIG_FILENAME), Priorities.HIGHEST, TaskImportance.REQUIRED));
 
-        taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFX Toolkit", "Initialize JavaFX", Priorities.HIGHEST));
+        taskWorker.addTask(new Task((progress) -> {
+            if (StaticConfiguration.HEADLESS_MODE) {
+                return;
+            }
+            StartProgressWindow.start();
+        }, "JavaFX Toolkit", "Initialize JavaFX", Priorities.HIGHEST));
 
-        taskWorker.addTask(new Task((progress) -> StartProgressWindow.show(startStatusLatch), "Progress Window", "Display progress window", Priorities.HIGH, TaskImportance.OPTIONAL, "JavaFX Toolkit", "Configuration"));
+        taskWorker.addTask(new Task((progress) -> {
+            if (StaticConfiguration.HEADLESS_MODE) {
+                return;
+            }
+            StartProgressWindow.show(startStatusLatch);
+        }, "Progress Window", "Display progress window", Priorities.HIGH, TaskImportance.OPTIONAL, "JavaFX Toolkit", "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
@@ -170,6 +184,10 @@ public final class Minosoft {
             startStatusLatch.waitUntilZero();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+        Log.info("Everything initialized!");
+        if (StaticConfiguration.HEADLESS_MODE) {
+            return;
         }
         Launcher.start();
     }
