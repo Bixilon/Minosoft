@@ -58,7 +58,7 @@
             <Insets right="15.0"/>
         </GridPane.margin>
     </Label>
-    <MenuButton mnemonicParsing="false" text="⋮" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+    <MenuButton fx:id="optionsMenu" mnemonicParsing="false" text="⋮" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
         <items>
             <MenuItem fx:id="optionsConnect" disable="true" mnemonicParsing="false" onAction="#connect" text="-Connect-"/>
             <MenuItem fx:id="optionsShowInfo" mnemonicParsing="false" onAction="#showInfo" text="-Info-"/>

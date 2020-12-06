@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.data.world.palette;
 
-import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import java.util.HashMap;
+
 public class IndirectPalette implements Palette {
-    final HashBiMap<Integer, Integer> map = HashBiMap.create();
+    final HashMap<Integer, Integer> map = new HashMap<>();
     final byte bitsPerBlock;
     int versionId;
     VersionMapping mapping;

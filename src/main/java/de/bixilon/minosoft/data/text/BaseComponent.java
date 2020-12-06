@@ -14,7 +14,9 @@
 package de.bixilon.minosoft.data.text;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.hash.BetterHashSet;
@@ -34,6 +36,10 @@ public class BaseComponent extends ChatComponent {
     }
 
     public BaseComponent(String text) {
+        this(null, text);
+    }
+
+    public BaseComponent(@Nullable ChatComponent parent, String text) {
         // legacy String
         StringBuilder currentText = new StringBuilder();
         RGBColor color = null;
@@ -91,66 +97,70 @@ public class BaseComponent extends ChatComponent {
     }
 
     @SuppressWarnings("unchecked")
-    public BaseComponent(@Nullable TextComponent parent, JsonObject json) {
+    public BaseComponent(@Nullable TextComponent parent, JsonElement data) {
         TextComponent thisTextComponent = null;
-        if (json.has("text")) {
-            String text = json.get("text").getAsString();
-            if (text.contains(String.valueOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR))) {
-                // legacy text component
-                parts.add(new BaseComponent(text));
-                return;
-            }
-            RGBColor color;
-            if (parent != null && parent.getColor() != null) {
-                color = parent.getColor();
-            } else {
-                color = null;
-            }
-            if (json.has("color")) {
-                String colorString = json.get("color").getAsString();
-                if (colorString.startsWith("#")) {
-                    // RGB
-                    color = new RGBColor(colorString);
-                } else {
-                    color = ChatColors.getColorByName(colorString);
+        if (data instanceof JsonObject json) {
+            if (json.has("text")) {
+                String text = json.get("text").getAsString();
+                if (text.contains(String.valueOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR))) {
+                    // legacy text component
+                    parts.add(new BaseComponent(text));
+                    return;
                 }
+                RGBColor color;
+                if (parent != null && parent.getColor() != null) {
+                    color = parent.getColor();
+                } else {
+                    color = null;
+                }
+                if (json.has("color")) {
+                    String colorString = json.get("color").getAsString();
+                    if (colorString.startsWith("#")) {
+                        // RGB
+                        color = new RGBColor(colorString);
+                    } else {
+                        color = ChatColors.getColorByName(colorString);
+                    }
+                }
+                BetterHashSet<ChatFormattingCode> formattingCodes;
+                if (parent != null && parent.getFormatting() != null) {
+                    formattingCodes = (BetterHashSet<ChatFormattingCode>) parent.getFormatting().clone();
+                } else {
+                    formattingCodes = new BetterHashSet<>();
+                }
+                if (json.has("bold")) {
+                    formattingCodes.addOrRemove(PreChatFormattingCodes.BOLD, json.get("bold").getAsBoolean());
+                }
+                if (json.has("italic")) {
+                    formattingCodes.addOrRemove(PreChatFormattingCodes.ITALIC, json.get("italic").getAsBoolean());
+                }
+                if (json.has("underlined")) {
+                    formattingCodes.addOrRemove(PreChatFormattingCodes.UNDERLINED, json.get("underlined").getAsBoolean());
+                }
+                if (json.has("strikethrough")) {
+                    formattingCodes.addOrRemove(PreChatFormattingCodes.STRIKETHROUGH, json.get("strikethrough").getAsBoolean());
+                }
+                if (json.has("obfuscated")) {
+                    formattingCodes.addOrRemove(PreChatFormattingCodes.OBFUSCATED, json.get("obfuscated").getAsBoolean());
+                }
+                thisTextComponent = new TextComponent(text, color, formattingCodes);
             }
-            BetterHashSet<ChatFormattingCode> formattingCodes;
-            if (parent != null && parent.getFormatting() != null) {
-                formattingCodes = (BetterHashSet<ChatFormattingCode>) parent.getFormatting().clone();
-            } else {
-                formattingCodes = new BetterHashSet<>();
-            }
-            if (json.has("bold")) {
-                formattingCodes.addOrRemove(PreChatFormattingCodes.BOLD, json.get("bold").getAsBoolean());
-            }
-            if (json.has("italic")) {
-                formattingCodes.addOrRemove(PreChatFormattingCodes.ITALIC, json.get("italic").getAsBoolean());
-            }
-            if (json.has("underlined")) {
-                formattingCodes.addOrRemove(PreChatFormattingCodes.UNDERLINED, json.get("underlined").getAsBoolean());
-            }
-            if (json.has("strikethrough")) {
-                formattingCodes.addOrRemove(PreChatFormattingCodes.STRIKETHROUGH, json.get("strikethrough").getAsBoolean());
-            }
-            if (json.has("obfuscated")) {
-                formattingCodes.addOrRemove(PreChatFormattingCodes.OBFUSCATED, json.get("obfuscated").getAsBoolean());
-            }
-            thisTextComponent = new TextComponent(text, color, formattingCodes);
-        }
 
-        if (thisTextComponent != null) {
-            parts.add(thisTextComponent);
-        }
+            if (thisTextComponent != null) {
+                parts.add(thisTextComponent);
+            }
 
-        final TextComponent parentParameter = thisTextComponent == null ? parent : thisTextComponent;
-        if (json.has("extra")) {
-            JsonArray extras = json.getAsJsonArray("extra");
-            extras.forEach((extra -> parts.add(new BaseComponent(parentParameter, extra.getAsJsonObject()))));
-        }
+            final TextComponent parentParameter = thisTextComponent == null ? parent : thisTextComponent;
+            if (json.has("extra")) {
+                JsonArray extras = json.getAsJsonArray("extra");
+                extras.forEach((extra -> parts.add(new BaseComponent(parentParameter, extra))));
+            }
 
-        if (json.has("translate")) {
-            parts.add(new TranslatableComponent(parentParameter, json.get("translate").getAsString(), json.getAsJsonArray("with")));
+            if (json.has("translate")) {
+                parts.add(new TranslatableComponent(parentParameter, json.get("translate").getAsString(), json.getAsJsonArray("with")));
+            }
+        } else if (data instanceof JsonPrimitive primitive) {
+            parts.add(new BaseComponent(parent, primitive.getAsString()));
         }
     }
 
