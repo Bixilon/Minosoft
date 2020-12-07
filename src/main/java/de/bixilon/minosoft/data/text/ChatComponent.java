@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.text;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import javafx.collections.FXCollections;
@@ -30,11 +31,13 @@ public abstract class ChatComponent {
         if (raw == null) {
             return new BaseComponent();
         }
+        JsonObject json;
         try {
-            return new BaseComponent(parent, JsonParser.parseString(raw).getAsJsonObject());
+            json = JsonParser.parseString(raw).getAsJsonObject();
         } catch (JsonParseException | IllegalStateException ignored) {
+            return new BaseComponent(raw);
         }
-        return new BaseComponent(raw);
+        return new BaseComponent(parent, json);
     }
 
     /**
