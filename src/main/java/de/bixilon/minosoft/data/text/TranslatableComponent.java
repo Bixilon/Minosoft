@@ -39,7 +39,7 @@ public class TranslatableComponent extends ChatComponent {
         }
         data.forEach((jsonElement -> {
             if (jsonElement.isJsonPrimitive()) {
-                this.data.add(ChatComponent.fromString(parent, jsonElement.getAsString()));
+                this.data.add(ChatComponent.valueOf(parent, jsonElement.getAsString()));
             } else {
                 this.data.add(new BaseComponent(parent, jsonElement.getAsJsonObject()));
             }

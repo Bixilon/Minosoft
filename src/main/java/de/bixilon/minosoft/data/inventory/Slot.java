@@ -70,11 +70,11 @@ public class Slot {
         if (nbt.containsKey("display")) {
             CompoundTag display = nbt.getCompoundTag("display");
             if (display.containsKey("Name")) {
-                this.customDisplayName = ChatComponent.fromString(display.getStringTag("Name").getValue());
+                this.customDisplayName = ChatComponent.valueOf(display.getStringTag("Name").getValue());
             }
             if (display.containsKey("Lore")) {
                 for (StringTag lore : display.getListTag("Lore").<StringTag>getValue()) {
-                    this.lore.add(ChatComponent.fromString(lore.getValue()));
+                    this.lore.add(ChatComponent.valueOf(lore.getValue()));
                 }
             }
         }

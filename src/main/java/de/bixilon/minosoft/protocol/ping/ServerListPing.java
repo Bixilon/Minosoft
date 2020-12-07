@@ -46,7 +46,7 @@ public class ServerListPing {
         }
 
         if (json.get("description").isJsonPrimitive()) {
-            motd = ChatComponent.fromString(json.get("description").getAsString());
+            motd = ChatComponent.valueOf(json.get("description").getAsString());
         } else {
             motd = new BaseComponent(json.getAsJsonObject("description"));
         }

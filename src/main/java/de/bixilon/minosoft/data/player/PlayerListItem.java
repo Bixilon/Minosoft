@@ -79,7 +79,7 @@ public class PlayerListItem {
     }
 
     public ChatComponent getDisplayName() {
-        return (hasDisplayName() ? displayName : ChatComponent.fromString(name));
+        return (hasDisplayName() ? displayName : ChatComponent.valueOf(name));
     }
 
     public void setDisplayName(ChatComponent displayName) {

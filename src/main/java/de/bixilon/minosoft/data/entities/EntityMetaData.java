@@ -229,7 +229,7 @@ public class EntityMetaData {
         public ChatComponent getChatComponent(EntityMetaDataFields field) {
             Object object = get(field);
             if (object instanceof String string) {
-                return ChatComponent.fromString(string);
+                return ChatComponent.valueOf(string);
             }
             return (ChatComponent) object;
         }

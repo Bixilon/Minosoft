@@ -98,7 +98,7 @@ public class BaseComponent extends ChatComponent {
 
     @SuppressWarnings("unchecked")
     public BaseComponent(@Nullable TextComponent parent, JsonElement data) {
-        TextComponent thisTextComponent = null;
+        MultiChatComponent thisTextComponent = null;
         if (data instanceof JsonObject json) {
             if (json.has("text")) {
                 String text = json.get("text").getAsString();
@@ -143,7 +143,14 @@ public class BaseComponent extends ChatComponent {
                 if (json.has("obfuscated")) {
                     formattingCodes.addOrRemove(PreChatFormattingCodes.OBFUSCATED, json.get("obfuscated").getAsBoolean());
                 }
-                thisTextComponent = new TextComponent(text, color, formattingCodes);
+
+                thisTextComponent = new MultiChatComponent(text, color, formattingCodes);
+                if (json.has("clickEvent")) {
+                    thisTextComponent.setClickEvent(new ClickEvent(json.get("clickEvent").getAsJsonObject()));
+                }
+                if (json.has("hoverEvent")) {
+                    thisTextComponent.setHoverEvent(new HoverEvent(json.get("hoverEvent").getAsJsonObject()));
+                }
             }
 
             if (thisTextComponent != null) {

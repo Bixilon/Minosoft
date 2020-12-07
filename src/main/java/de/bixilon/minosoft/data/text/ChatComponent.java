@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.text;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -23,19 +24,29 @@ import javafx.scene.Node;
 import javax.annotation.Nullable;
 
 public abstract class ChatComponent {
-    public static ChatComponent fromString(String raw) {
-        return fromString(null, raw);
+    public static ChatComponent valueOf(Object raw) {
+        return valueOf(null, raw);
     }
 
-    public static ChatComponent fromString(@Nullable TextComponent parent, String raw) {
+    public static ChatComponent valueOf(@Nullable TextComponent parent, Object raw) {
         if (raw == null) {
             return new BaseComponent();
         }
+        if (raw instanceof JsonPrimitive primitive) {
+            raw = primitive.getAsString();
+        }
+
         JsonObject json;
-        try {
-            json = JsonParser.parseString(raw).getAsJsonObject();
-        } catch (JsonParseException | IllegalStateException ignored) {
-            return new BaseComponent(raw);
+        if (raw instanceof JsonObject) {
+            json = (JsonObject) raw;
+        } else if (raw instanceof String) {
+            try {
+                json = JsonParser.parseString((String) raw).getAsJsonObject();
+            } catch (JsonParseException | IllegalStateException ignored) {
+                return new BaseComponent((String) raw);
+            }
+        } else {
+            throw new IllegalArgumentException(String.format("%s is not a valid type here!", raw.getClass().getSimpleName()));
         }
         return new BaseComponent(parent, json);
     }

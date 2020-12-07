@@ -200,7 +200,7 @@ public class InByteBuffer {
     }
 
     public ChatComponent readTextComponent() {
-        return ChatComponent.fromString(readString());
+        return ChatComponent.valueOf(readString());
     }
 
     public int getLength() {

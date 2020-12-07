@@ -47,7 +47,7 @@ After pushing it, it is supported. Some versions are more complicated and need a
 Check out [wiki.vg](https://wiki.vg/Main_Page) for more information.
 
 ### Supported versions
-Almost all versions are supported, starting with 13w41b (pre 1.7 snapshot) and ending with the newest (1.16.4 as of writing this). I plan to maintain Minosoft to at least version 1.20, so stay tuned. 
+Almost all versions are supported, starting with 13w41b (pre 1.7 snapshot) and ending with the newest (1.16.4 as of writing this). I plan to maintain Minosoft to at least version 1.20, so stay tuned. Old versions are supported, but it is highly recommended using the latest stable release.
 
 ### Unsupported versions
 Sadly, we cannot support all versions. We will add support for all major versions (like 1.8.9, 1.9.4, 1.14.4, etc), but it is simply not possible to support all snapshots.
