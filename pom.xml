@@ -37,6 +37,7 @@
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
+        <javafx.version>16-ea+5</javafx.version>
     </properties>
 
     <dependencies>
@@ -58,13 +59,13 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>16-ea+4</version>
+            <version>${javafx.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>16-ea+4</version>
+            <version>${javafx.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>
