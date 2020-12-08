@@ -102,7 +102,7 @@ public class PacketMapData implements ClientboundPacket {
             byte direction = buffer.readByte();
             ChatComponent displayName = null;
             if (buffer.readBoolean()) {
-                displayName = buffer.readTextComponent();
+                displayName = buffer.readChatComponent();
             }
             pins.add(new MapPinSet(type, direction, x, z, displayName));
         }

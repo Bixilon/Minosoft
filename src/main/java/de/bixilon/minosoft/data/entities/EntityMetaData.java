@@ -48,7 +48,7 @@ public class EntityMetaData {
             case INT -> buffer.readInt();
             case FLOAT -> buffer.readFloat();
             case STRING -> buffer.readString();
-            case CHAT -> buffer.readTextComponent();
+            case CHAT -> buffer.readChatComponent();
             case BOOLEAN -> buffer.readBoolean();
             case VECTOR -> new Vector(buffer.readInt(), buffer.readInt(), buffer.readInt());
             case SLOT -> buffer.readSlot();
@@ -56,7 +56,7 @@ public class EntityMetaData {
             case POSITION -> buffer.readPosition();
             case OPT_CHAT -> {
                 if (buffer.readBoolean()) {
-                    yield buffer.readTextComponent();
+                    yield buffer.readChatComponent();
                 }
                 yield null;
             }

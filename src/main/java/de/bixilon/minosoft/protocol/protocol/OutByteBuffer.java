@@ -76,7 +76,7 @@ public class OutByteBuffer {
         writeBytes(buffer.array());
     }
 
-    public void writeTextComponent(ChatComponent chatComponent) {
+    public void writeChatComponent(ChatComponent chatComponent) {
         writeString(chatComponent.getMessage()); // ToDo: test if this should not be json
     }
 

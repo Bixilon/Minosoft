@@ -33,7 +33,7 @@ public class PacketOpenWindow implements ClientboundPacket {
         if (buffer.getVersionId() < 6) {
             this.windowId = buffer.readByte();
             this.type = InventoryTypes.byId(buffer.readUnsignedByte());
-            this.title = buffer.readTextComponent();
+            this.title = buffer.readChatComponent();
             slotCount = buffer.readByte();
             if (!buffer.readBoolean()) {
                 // no custom name
@@ -44,7 +44,7 @@ public class PacketOpenWindow implements ClientboundPacket {
         }
         this.windowId = buffer.readByte();
         this.type = InventoryTypes.byName(buffer.readString());
-        this.title = buffer.readTextComponent();
+        this.title = buffer.readChatComponent();
         if (buffer.getVersionId() < 452 || buffer.getVersionId() >= 464) {
             slotCount = buffer.readByte();
         }

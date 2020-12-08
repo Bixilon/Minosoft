@@ -29,12 +29,12 @@ public class PacketScoreboardObjective implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         name = buffer.readString();
         if (buffer.getVersionId() < 7) { // ToDo
-            value = buffer.readTextComponent();
+            value = buffer.readChatComponent();
         }
         action = ScoreboardObjectiveActions.byId(buffer.readUnsignedByte());
         if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
             if (buffer.getVersionId() >= 7) { // ToDo
-                value = buffer.readTextComponent();
+                value = buffer.readChatComponent();
             }
             if (buffer.getVersionId() >= 12) {
                 if (buffer.getVersionId() >= 346 && buffer.getVersionId() < 349) {

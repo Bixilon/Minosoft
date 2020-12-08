@@ -61,12 +61,12 @@ public class PacketPlayerListItem implements ClientboundPacket {
                     }
                     GameModes gameMode = GameModes.byId(buffer.readVarInt());
                     int ping = buffer.readVarInt();
-                    ChatComponent displayName = (buffer.readBoolean() ? buffer.readTextComponent() : null);
+                    ChatComponent displayName = (buffer.readBoolean() ? buffer.readChatComponent() : null);
                     listItemBulk = new PlayerListItemBulk(uuid, name, ping, gameMode, displayName, playerProperties, action);
                 }
                 case UPDATE_GAMEMODE -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, GameModes.byId(buffer.readVarInt()), null, null, action);
                 case UPDATE_LATENCY -> listItemBulk = new PlayerListItemBulk(uuid, null, buffer.readVarInt(), null, null, null, action);
-                case UPDATE_DISPLAY_NAME -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, (buffer.readBoolean() ? buffer.readTextComponent() : null), null, action);
+                case UPDATE_DISPLAY_NAME -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, (buffer.readBoolean() ? buffer.readChatComponent() : null), null, action);
                 case REMOVE_PLAYER -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, null, null, action);
                 default -> listItemBulk = null;
             }

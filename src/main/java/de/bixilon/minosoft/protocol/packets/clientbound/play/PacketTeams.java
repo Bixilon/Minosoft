@@ -40,10 +40,10 @@ public class PacketTeams implements ClientboundPacket {
         name = buffer.readString();
         action = TeamActions.byId(buffer.readUnsignedByte());
         if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {
-            displayName = buffer.readTextComponent();
+            displayName = buffer.readChatComponent();
             if (buffer.getVersionId() < 352) {
-                prefix = buffer.readTextComponent();
-                suffix = buffer.readTextComponent();
+                prefix = buffer.readChatComponent();
+                suffix = buffer.readChatComponent();
             }
             if (buffer.getVersionId() < 100) { // ToDo
                 setFriendlyFireByLegacy(buffer.readByte());
@@ -64,8 +64,8 @@ public class PacketTeams implements ClientboundPacket {
                 }
             }
             if (buffer.getVersionId() >= 375) {
-                prefix = buffer.readTextComponent();
-                suffix = buffer.readTextComponent();
+                prefix = buffer.readChatComponent();
+                suffix = buffer.readChatComponent();
             }
         }
         if (action == TeamActions.CREATE || action == TeamActions.PLAYER_ADD || action == TeamActions.PLAYER_REMOVE) {

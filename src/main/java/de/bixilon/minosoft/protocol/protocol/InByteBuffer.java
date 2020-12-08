@@ -199,7 +199,7 @@ public class InByteBuffer {
         return new BlockPosition(x, y, z);
     }
 
-    public ChatComponent readTextComponent() {
+    public ChatComponent readChatComponent() {
         return ChatComponent.valueOf(readString());
     }
 

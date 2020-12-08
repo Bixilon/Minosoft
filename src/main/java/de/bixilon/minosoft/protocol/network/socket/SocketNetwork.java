@@ -192,7 +192,7 @@ public class SocketNetwork implements Network {
                         packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
                         if (packet == null) {
                             disconnect();
-                            lastException = new UnknownPacketException(String.format("Server sent us a invalid packet (id=0x%x, length=%d, data=%s)", inPacketBuffer.getCommand(), length, inPacketBuffer.getBase64()));
+                            lastException = new UnknownPacketException(String.format("Server sent us an  invalid packet (id=0x%x, length=%d, data=%s)", inPacketBuffer.getCommand(), length, inPacketBuffer.getBase64()));
                             throw lastException;
                         }
                         Class<? extends ClientboundPacket> clazz = packet.getClazz();
@@ -234,7 +234,7 @@ public class SocketNetwork implements Network {
                 disconnect();
             } catch (IOException e) {
                 // Could not connect
-                Log.printException(e, LogLevels.DEBUG);
+                Log.printException(e, LogLevels.PROTOCOL);
                 if (socketSThread != null) {
                     socketSThread.interrupt();
                 }

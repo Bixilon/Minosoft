@@ -39,14 +39,14 @@ public class PacketBossBar implements ClientboundPacket {
         action = BossBarActions.byId(buffer.readVarInt());
         switch (action) {
             case ADD -> {
-                title = buffer.readTextComponent();
+                title = buffer.readChatComponent();
                 health = buffer.readFloat();
                 color = BossBarColors.byId(buffer.readVarInt());
                 divisions = BossBarDivisions.byId(buffer.readVarInt());
                 flags = buffer.readByte();
             }
             case UPDATE_HEALTH -> health = buffer.readFloat();
-            case UPDATE_TITLE -> title = buffer.readTextComponent();
+            case UPDATE_TITLE -> title = buffer.readChatComponent();
             case UPDATE_STYLE -> {
                 color = BossBarColors.byId(buffer.readVarInt());
                 divisions = BossBarDivisions.byId(buffer.readVarInt());

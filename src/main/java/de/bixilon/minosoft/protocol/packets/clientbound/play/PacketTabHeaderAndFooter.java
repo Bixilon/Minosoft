@@ -25,8 +25,8 @@ public class PacketTabHeaderAndFooter implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        header = buffer.readTextComponent();
-        footer = buffer.readTextComponent();
+        header = buffer.readChatComponent();
+        footer = buffer.readChatComponent();
         return true;
     }
 

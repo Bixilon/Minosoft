@@ -47,8 +47,8 @@ public class PacketAdvancements implements ClientboundPacket {
             }
             AdvancementDisplay display = null;
             if (buffer.readBoolean()) {
-                ChatComponent title = buffer.readTextComponent();
-                ChatComponent description = buffer.readTextComponent();
+                ChatComponent title = buffer.readChatComponent();
+                ChatComponent description = buffer.readChatComponent();
                 Slot icon = buffer.readSlot();
                 AdvancementDisplay.AdvancementFrameTypes frameType = AdvancementDisplay.AdvancementFrameTypes.byId(buffer.readVarInt());
                 int flags = buffer.readInt();

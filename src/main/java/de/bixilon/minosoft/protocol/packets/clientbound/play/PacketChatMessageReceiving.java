@@ -29,7 +29,7 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        message = buffer.readTextComponent();
+        message = buffer.readChatComponent();
         if (buffer.getVersionId() < 7) {
             position = ChatTextPositions.CHAT_BOX;
             return true;

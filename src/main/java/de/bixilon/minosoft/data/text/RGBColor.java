@@ -16,12 +16,16 @@ package de.bixilon.minosoft.data.text;
 public final class RGBColor implements ChatCode {
     private final int color;
 
-    public RGBColor(int color) {
-        this.color = color;
+    public RGBColor(int red, int green, int blue, int alpha) {
+        this.color = blue | (green << 8) | (red << 16) | (alpha << 24);
     }
 
     public RGBColor(int red, int green, int blue) {
         this.color = blue | (green << 8) | (red << 16);
+    }
+
+    public RGBColor(int color) {
+        this.color = color;
     }
 
     public RGBColor(String colorString) {
@@ -29,6 +33,10 @@ public final class RGBColor implements ChatCode {
             colorString = colorString.substring(1);
         }
         color = Integer.parseInt(colorString, 16);
+    }
+
+    public int getAlpha() {
+        return (color >> 24) & 0xFF;
     }
 
     public int getRed() {
@@ -63,6 +71,9 @@ public final class RGBColor implements ChatCode {
 
     @Override
     public String toString() {
+        if (getAlpha() > 0) {
+            return String.format("#%08X", color);
+        }
         return String.format("#%06X", (0xFFFFFF & color));
     }
 }

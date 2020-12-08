@@ -38,7 +38,7 @@ public class PacketCombatEvent implements ClientboundPacket {
             case ENTITY_DEAD -> {
                 playerId = buffer.readVarInt();
                 entityId = buffer.readInt();
-                message = buffer.readTextComponent();
+                message = buffer.readChatComponent();
             }
         }
         return true;
