@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.data.world.palette;
 
+import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.HashMap;
 
@@ -31,7 +34,24 @@ public class IndirectPalette implements Palette {
 
     @Override
     public Block byId(int id) {
-        return mapping.getBlockById(map.getOrDefault(id, id));
+        int blockId = map.getOrDefault(id, id);
+        Block block = mapping.getBlockById(blockId);
+        if (StaticConfiguration.DEBUG_MODE) {
+            if (block == null) {
+                if (blockId == ProtocolDefinition.NULL_BLOCK_ID) {
+                    return null;
+                }
+                String blockName;
+                if (versionId <= ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
+                    blockName = String.format("%d:%d", blockId >> 4, blockId & 0xF);
+                } else {
+                    blockName = String.valueOf(blockId);
+                }
+                Log.warn(String.format("Server sent unknown block: %s", blockName));
+                return null;
+            }
+        }
+        return block;
     }
 
     @Override

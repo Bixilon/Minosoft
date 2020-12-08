@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkSection;
 import de.bixilon.minosoft.data.world.InChunkSectionLocation;
 import de.bixilon.minosoft.data.world.palette.Palette;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
@@ -177,16 +176,6 @@ public final class ChunkUtil {
 
                         Block block = palette.byId(blockId);
                         if (block == null) {
-                            if (blockId == ProtocolDefinition.NULL_BLOCK_ID) {
-                                continue;
-                            }
-                            String blockName;
-                            if (buffer.getVersionId() <= ProtocolDefinition.FLATTING_VERSION_ID) {
-                                blockName = String.format("%d:%d", blockId >> 4, blockId & 0xF);
-                            } else {
-                                blockName = String.valueOf(blockId);
-                            }
-                            Log.warn(String.format("Server sent unknown block: %s", blockName));
                             continue;
                         }
                         blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), block);
