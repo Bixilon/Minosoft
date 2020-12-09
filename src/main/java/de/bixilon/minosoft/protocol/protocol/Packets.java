@@ -117,7 +117,7 @@ public class Packets {
         PLAY_CHAT_MESSAGE(PacketChatMessageReceiving.class),
         PLAY_MULTIBLOCK_CHANGE(PacketMultiBlockChange.class),
         PLAY_TAB_COMPLETE(PacketTabCompleteReceiving.class),
-        PLAY_DECLARE_COMMANDS(null),
+        PLAY_DECLARE_COMMANDS(PacketDeclareCommands.class),
         PLAY_WINDOW_CONFIRMATION(PacketConfirmTransactionReceiving.class),
         PLAY_CLOSE_WINDOW(PacketCloseWindowReceiving.class),
         PLAY_WINDOW_ITEMS(PacketWindowItems.class),

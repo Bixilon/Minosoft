@@ -13,33 +13,29 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.SoundCategories;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
-import de.bixilon.minosoft.util.BitByte;
 
-public class PacketStopSound implements ClientboundPacket {
-    SoundCategories category;
-    ModIdentifier soundIdentifier;
+public class PacketDeclareCommands implements ClientboundPacket {
+    private CommandNode[] nodes;
+    private CommandNode rootElement;
 
     @Override
-    public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 343) { // ToDo: these 2 values need to be switched in before 1.12.2
-            category = SoundCategories.valueOf(buffer.readString().toUpperCase());
-            soundIdentifier = buffer.readIdentifier();
-            return true;
-        }
-        byte flags = buffer.readByte();
-        if (BitByte.isBitMask(flags, 0x01)) {
-            category = SoundCategories.byId(buffer.readVarInt());
-        }
-        if (BitByte.isBitMask(flags, 0x02)) {
-            soundIdentifier = buffer.readIdentifier();
-        }
+    public boolean read(InByteBuffer buffer) throws Exception {
+        nodes = buffer.readCommandNodesArray();
+        rootElement = nodes[buffer.readVarInt()];
         return true;
+    }
+
+    public CommandNode[] getNodes() {
+        return nodes;
+    }
+
+    public CommandNode getRootElement() {
+        return rootElement;
     }
 
     @Override
@@ -49,14 +45,6 @@ public class PacketStopSound implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received stop sound (category=%s, soundIdentifier=%s)", category, soundIdentifier));
-    }
-
-    public SoundCategories getSoundId() {
-        return category;
-    }
-
-    public ModIdentifier getSoundIdentifier() {
-        return soundIdentifier;
+        Log.protocol("Received declare commands packets (nodes=%d)", nodes.length);
     }
 }

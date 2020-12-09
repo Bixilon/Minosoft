@@ -43,9 +43,13 @@ public class ModIdentifier {
         return identifier;
     }
 
+    public String getFullIdentifier() {
+        return String.format("%s:%s", mod, identifier);
+    }
+
     @Override
     public String toString() {
-        return String.format("%s:%s", mod, identifier);
+        return getFullIdentifier();
     }
 
     @Override

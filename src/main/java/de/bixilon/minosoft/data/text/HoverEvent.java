@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.text;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.util.Util;
 
@@ -27,10 +28,17 @@ public class HoverEvent {
 
     public HoverEvent(JsonObject json) {
         this.action = HoverEventActions.valueOf(json.get("action").getAsString().toUpperCase());
-        JsonElement data = json.get("value");
+        JsonElement data = null;
+        if (json.has("value")) {
+            data = json.get("value");
+        }
+        if (json.has("contents")) {
+            data = json.get("contents");
+        }
+        json.get("value");
         value = switch (action) { // ToDo
             case SHOW_TEXT -> ChatComponent.valueOf(data);
-            case SHOW_ENTITY -> EntityHoverData.deserialize(JsonParser.parseString(json.get("value").getAsString()).getAsJsonObject());
+            case SHOW_ENTITY -> EntityHoverData.deserialize(data);
             default -> null;
         };
     }
@@ -56,8 +64,14 @@ public class HoverEvent {
 
     public static record EntityHoverData(UUID uuid, ModIdentifier identifier, ChatComponent name) {
 
-        public static EntityHoverData deserialize(JsonObject json) {
-            return new EntityHoverData(Util.getUUIDFromString(json.get("id").getAsString()), new ModIdentifier(json.get("type").getAsString()), ChatComponent.valueOf(json.get("name").getAsString()));
+        public static EntityHoverData deserialize(JsonElement data) {
+            JsonObject json;
+            if (data instanceof JsonPrimitive) {
+                json = JsonParser.parseString(data.getAsString()).getAsJsonObject();
+            } else {
+                json = (JsonObject) data;
+            }
+            return new EntityHoverData(Util.getUUIDFromString(json.get("id").getAsString()), new ModIdentifier(json.get("type").getAsString()), ChatComponent.valueOf(json.get("name")));
         }
     }
 }

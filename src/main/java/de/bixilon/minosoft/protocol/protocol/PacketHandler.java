@@ -800,4 +800,7 @@ public class PacketHandler {
 
     public void handle(PacketVehicleMovement pkg) {
     }
+
+    public void handle(PacketDeclareCommands pkg) {
+    }
 }

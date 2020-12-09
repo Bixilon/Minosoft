@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.data.mappings.recipes.Ingredient;
 import de.bixilon.minosoft.data.mappings.recipes.Recipe;
 import de.bixilon.minosoft.data.mappings.recipes.RecipeTypes;
@@ -24,20 +25,20 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketDeclareRecipes implements ClientboundPacket {
-    final HashBiMap<String, Recipe> recipes = HashBiMap.create();
+    private final HashBiMap<ModIdentifier, Recipe> recipes = HashBiMap.create();
 
     @Override
     public boolean read(InByteBuffer buffer) {
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
             Recipe recipe;
-            String identifier;
+            ModIdentifier identifier;
             String typeName;
             if (buffer.getVersionId() >= 453) { // ToDo: find out version
                 typeName = buffer.readString();
-                identifier = buffer.readString();
+                identifier = buffer.readIdentifier();
             } else {
-                identifier = buffer.readString();
+                identifier = buffer.readIdentifier();
                 typeName = buffer.readString();
             }
             RecipeTypes type = RecipeTypes.byName(typeName);
@@ -93,7 +94,7 @@ public class PacketDeclareRecipes implements ClientboundPacket {
         Log.protocol(String.format("[IN] Received declare recipe packet (recipeLength=%d)", recipes.size()));
     }
 
-    public HashBiMap<String, Recipe> getRecipes() {
+    public HashBiMap<ModIdentifier, Recipe> getRecipes() {
         return recipes;
     }
 }

@@ -16,10 +16,15 @@ package de.bixilon.minosoft.protocol.protocol;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.data.Directions;
+import de.bixilon.minosoft.data.commands.CommandArgumentNode;
+import de.bixilon.minosoft.data.commands.CommandLiteralNode;
+import de.bixilon.minosoft.data.commands.CommandNode;
+import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.data.entities.EntityMetaData;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.Poses;
 import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData;
 import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData;
@@ -156,8 +161,7 @@ public class InByteBuffer {
         int byteCount = 0;
         int result = 0;
         byte read;
-        do
-        {
+        do {
             read = readByte();
             result |= (read & 0x7F) << (7 * byteCount);
             byteCount++;
@@ -436,6 +440,10 @@ public class InByteBuffer {
         return ret;
     }
 
+    public int[] readVarIntArray() {
+        return readVarIntArray(readVarInt());
+    }
+
     public Ingredient readIngredient() {
         return new Ingredient(readSlotArray(readVarInt()));
     }
@@ -465,5 +473,38 @@ public class InByteBuffer {
             return readInt();
         }
         return readVarInt();
+    }
+
+    public CommandNode[] readCommandNodesArray() {
+        CommandNode[] nodes = new CommandNode[readVarInt()];
+        for (int i = 0; i < nodes.length; i++) {
+            nodes[i] = readCommandNode();
+        }
+        // resole ids
+        for (CommandNode node : nodes) {
+            // redirect
+            if (node.getRedirectNodeId() != -1) {
+                node.setRedirectNode(nodes[node.getRedirectNodeId()]);
+            }
+            // children
+            for (int id : node.getChildrenIds()) {
+                node.getChildren().add(nodes[id]);
+            }
+
+        }
+        return nodes;
+    }
+
+    private CommandNode readCommandNode() {
+        byte flags = readByte();
+        return switch (CommandNode.NodeTypes.values()[flags & 0x03]) {
+            case ROOT -> new CommandRootNode(flags, this);
+            case LITERAL -> new CommandLiteralNode(flags, this);
+            case ARGUMENT -> new CommandArgumentNode(flags, this);
+        };
+    }
+
+    public ModIdentifier readIdentifier() {
+        return new ModIdentifier(readString());
     }
 }

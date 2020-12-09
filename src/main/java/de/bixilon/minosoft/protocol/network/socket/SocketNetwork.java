@@ -227,7 +227,7 @@ public class SocketNetwork implements Network {
                             e.printStackTrace();
                         }
                     } catch (Exception e) {
-                        Log.printException(e, LogLevels.DEBUG);
+                        Log.printException(e, LogLevels.VERBOSE);
                         Log.protocol(String.format("An error occurred while parsing a packet (%s): %s", packet, e));
                     }
                 }

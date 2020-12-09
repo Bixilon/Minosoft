@@ -57,7 +57,7 @@ public class PacketUnlockRecipes implements ClientboundPacket {
             if (buffer.getVersionId() < 348) {
                 listed[i] = Recipes.getRecipeById(buffer.readVarInt());
             } else {
-                listed[i] = Recipes.getRecipe(buffer.readString());
+                listed[i] = Recipes.getRecipe(buffer.readIdentifier());
             }
         }
         if (action == UnlockRecipeActions.INITIALIZE) {
@@ -66,7 +66,7 @@ public class PacketUnlockRecipes implements ClientboundPacket {
                 if (buffer.getVersionId() < 348) {
                     tagged[i] = Recipes.getRecipeById(buffer.readVarInt());
                 } else {
-                    tagged[i] = Recipes.getRecipe(buffer.readString());
+                    tagged[i] = Recipes.getRecipe(buffer.readIdentifier());
                 }
             }
         }

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.mappings.recipes;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,13 +24,13 @@ import java.util.HashSet;
 public class Recipes {
     final static ArrayList<Recipe> recipeList = new ArrayList<>();
     final static HashBiMap<Integer, Recipe> recipeIdMap = HashBiMap.create(); // ids for version <= VERSION_1_12_2
-    final static HashBiMap<String, Recipe> recipeNameMap = HashBiMap.create();
+    final static HashBiMap<ModIdentifier, Recipe> recipeNameMap = HashBiMap.create();
 
     public static Recipe getRecipeById(int id) {
         return recipeIdMap.get(id);
     }
 
-    public static Recipe getRecipe(String identifier) {
+    public static Recipe getRecipe(ModIdentifier identifier) {
         return recipeNameMap.get(identifier);
     }
 
@@ -56,7 +57,7 @@ public class Recipes {
         recipeNameMap.clear();
     }
 
-    public static void registerCustomRecipes(HashBiMap<String, Recipe> recipes) {
+    public static void registerCustomRecipes(HashBiMap<ModIdentifier, Recipe> recipes) {
         recipeNameMap.putAll(recipes);
     }
 }
