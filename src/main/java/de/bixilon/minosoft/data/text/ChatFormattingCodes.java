@@ -24,7 +24,6 @@ public final class ChatFormattingCodes {
     static {
         Arrays.stream(PreChatFormattingCodes.values()).forEach(chatFormattingCodes -> formattingCodes.put(chatFormattingCodes.getChar(), chatFormattingCodes));
         Arrays.stream(PostChatFormattingCodes.values()).forEach(chatFormattingCodes -> formattingCodes.put(chatFormattingCodes.getChar(), chatFormattingCodes));
-
     }
 
     public static ChatFormattingCode getChatFormattingCodeByChar(char nextFormattingChar) {

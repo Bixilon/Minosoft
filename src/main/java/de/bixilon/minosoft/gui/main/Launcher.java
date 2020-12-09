@@ -75,7 +75,7 @@ public class Launcher {
             }
 
             Stage stage = new Stage();
-            Scene scene = new Scene(root, 600, 800);
+            Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
             stage.setScene(scene);
 
             stage.setTitle(LocaleManager.translate(Strings.MAIN_WINDOW_TITLE));

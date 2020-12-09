@@ -17,61 +17,60 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.TextFlow?>
-<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="580" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="de.bixilon.minosoft.gui.main.ServerListCell" onMouseClicked="#clicked">
-    <columnConstraints>
-        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
-        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
-        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
-        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
-        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
-        <ColumnConstraints hgrow="ALWAYS" maxWidth="200.0" minWidth="10.0" prefWidth="150.0"/>
-    </columnConstraints>
-    <rowConstraints>
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
-    </rowConstraints>
-    <ImageView fx:id="faviconField" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowSpan="3" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS">
-    </ImageView>
-    <TextFlow fx:id="nameField" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3">
-        <GridPane.margin>
-            <Insets left="15.0"/>
-        </GridPane.margin>
-    </TextFlow>
-    <TextFlow fx:id="motdField" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.rowSpan="2">
-        <GridPane.margin>
-            <Insets left="15.0"/>
-        </GridPane.margin>
-    </TextFlow>
-    <Label fx:id="versionField" text="VERSION" textAlignment="RIGHT" GridPane.columnIndex="4" GridPane.halignment="RIGHT">
-        <GridPane.margin>
-            <Insets right="10.0"/>
-        </GridPane.margin>
-    </Label>
-    <Label fx:id="playersField" minHeight="-Infinity" minWidth="-Infinity" text="100000 / 100000" GridPane.columnIndex="5" GridPane.halignment="RIGHT">
-        <GridPane.margin>
-            <Insets right="15.0"/>
-        </GridPane.margin>
-    </Label>
-    <Label fx:id="brandField" text="BRAND" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
-        <GridPane.margin>
-            <Insets right="15.0"/>
-        </GridPane.margin>
-    </Label>
-    <MenuButton fx:id="optionsMenu" mnemonicParsing="false" text="⋮" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
-        <items>
-            <MenuItem fx:id="optionsConnect" disable="true" mnemonicParsing="false" onAction="#connect" text="-Connect-"/>
-            <MenuItem fx:id="optionsShowInfo" mnemonicParsing="false" onAction="#showInfo" text="-Info-"/>
-            <MenuItem fx:id="optionsEdit" mnemonicParsing="false" onAction="#editServer" text="-Edit-"/>
-            <MenuItem fx:id="optionsRefresh" mnemonicParsing="false" onAction="#refresh" text="-Refresh-"/>
-            <MenuItem fx:id="optionsSessions" disable="true" mnemonicParsing="false" onAction="#manageSessions" text="-Sessions-"/>
-            <MenuItem fx:id="optionsDelete" mnemonicParsing="false" onAction="#delete" style="-fx-text-fill: red" text="-Delete-"/>
-        </items>
-        <GridPane.margin>
-            <Insets right="15.0"/>
-        </GridPane.margin>
-    </MenuButton>
-    <padding>
-        <Insets bottom="10.0" top="10.0"/>
-    </padding>
-</GridPane>
+<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.60" fx:controller="de.bixilon.minosoft.gui.main.ServerListCell">
+    <GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" onMouseClicked="#clicked" HBox.hgrow="ALWAYS" gridLinesVisible="true">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="90" maxWidth="90"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="30" prefWidth="30"/>
+            <ColumnConstraints hgrow="ALWAYS" prefWidth="50" maxWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS" prefWidth="80" maxWidth="120"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
+        </rowConstraints>
+        <ImageView fx:id="faviconField" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowSpan="3" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS"/>
+        <TextFlow fx:id="nameField" GridPane.columnIndex="1">
+            <GridPane.margin>
+                <Insets left="15.0"/>
+            </GridPane.margin>
+        </TextFlow>
+        <TextFlow fx:id="motdField" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
+            <GridPane.margin>
+                <Insets left="15.0"/>
+            </GridPane.margin>
+        </TextFlow>
+        <Label fx:id="versionField" text="VERSION" textAlignment="RIGHT" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+            <GridPane.margin>
+                <Insets right="10.0"/>
+            </GridPane.margin>
+        </Label>
+        <Label fx:id="playersField" text="100000 / 100000" GridPane.columnIndex="3" GridPane.halignment="RIGHT">
+            <GridPane.margin>
+                <Insets right="15.0"/>
+            </GridPane.margin>
+        </Label>
+        <Label fx:id="brandField" text="BRAND" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+            <GridPane.margin>
+                <Insets right="15.0"/>
+            </GridPane.margin>
+        </Label>
+        <MenuButton fx:id="optionsMenu" mnemonicParsing="false" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+            <items>
+                <MenuItem fx:id="optionsConnect" disable="true" mnemonicParsing="false" onAction="#connect" text="-Connect-"/>
+                <MenuItem fx:id="optionsShowInfo" mnemonicParsing="false" onAction="#showInfo" text="-Info-"/>
+                <MenuItem fx:id="optionsEdit" mnemonicParsing="false" onAction="#editServer" text="-Edit-"/>
+                <MenuItem fx:id="optionsRefresh" mnemonicParsing="false" onAction="#refresh" text="-Refresh-"/>
+                <MenuItem fx:id="optionsSessions" disable="true" mnemonicParsing="false" onAction="#manageSessions" text="-Sessions-"/>
+                <MenuItem fx:id="optionsDelete" mnemonicParsing="false" onAction="#delete" style="-fx-text-fill: red" text="-Delete-"/>
+            </items>
+            <GridPane.margin>
+                <Insets right="15.0"/>
+            </GridPane.margin>
+        </MenuButton>
+        <padding>
+            <Insets bottom="10.0" top="10.0"/>
+        </padding>
+    </GridPane>
+</HBox>

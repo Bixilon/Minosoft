@@ -229,6 +229,13 @@ public class SocketNetwork implements Network {
                     } catch (Exception e) {
                         Log.printException(e, LogLevels.VERBOSE);
                         Log.protocol(String.format("An error occurred while parsing a packet (%s): %s", packet, e));
+                        if (connection.getConnectionState() == ConnectionStates.PLAY) {
+                            continue;
+                        }
+                        lastException = e;
+                        disconnect();
+                        connection.setConnectionState(ConnectionStates.FAILED);
+                        throw new RuntimeException(e);
                     }
                 }
                 disconnect();

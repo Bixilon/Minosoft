@@ -14,15 +14,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.*?>
-<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="640.0" fx:controller="de.bixilon.minosoft.gui.main.MainWindow">
+<VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" prefHeight="800.0" prefWidth="700.0" fx:controller="de.bixilon.minosoft.gui.main.MainWindow">
     <MenuBar VBox.vgrow="NEVER">
         <Menu fx:id="menuFile" mnemonicParsing="false" text="-_File-">
-            <MenuItem fx:id="menuFilePreferences" mnemonicParsing="false" onAction="#openSettings" text="-Preferences-" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="menuFileQuit" mnemonicParsing="false" onAction="#quit" text="-Quit-" />
+            <MenuItem fx:id="menuFilePreferences" mnemonicParsing="false" onAction="#openSettings" text="-Preferences-"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem fx:id="menuFileQuit" mnemonicParsing="false" onAction="#quit" text="-Quit-"/>
         </Menu>
         <Menu fx:id="menuServers" mnemonicParsing="false" text="-_Servers-">
-            <MenuItem fx:id="menuServersAdd" mnemonicParsing="false" onAction="#addServer" text="-Add-" />
+            <MenuItem fx:id="menuServersAdd" mnemonicParsing="false" onAction="#addServer" text="-Add-"/>
             <MenuItem fx:id="menuServerRefresh" mnemonicParsing="false" onAction="#refreshServers" text="-Refresh-">
                 <accelerator>
                     <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="UP" />
@@ -37,7 +37,7 @@
         </Menu>
     </MenuBar>
     <AnchorPane VBox.vgrow="ALWAYS" styleClass="anchor-pane">
-        <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="14.0" layoutY="14.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="14.0" layoutY="14.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <BorderPane fx:id="serversPane"/>
         </ScrollPane>
     </AnchorPane>

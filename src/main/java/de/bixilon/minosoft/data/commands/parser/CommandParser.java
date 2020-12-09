@@ -19,22 +19,22 @@ import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
 public abstract class CommandParser {
     @Deprecated
     private static final DummyParser DUMMY_PARSER = new DummyParser();
-    public static HashBiMap<ModIdentifier, CommandParser> COMMAND_PARSERS = HashBiMap.create();
 
-    static {
-        COMMAND_PARSERS.put(new ModIdentifier("brigadier:bool"), new BooleanParser());
-        COMMAND_PARSERS.put(new ModIdentifier("brigadier:double"), new DoubleParser());
-        COMMAND_PARSERS.put(new ModIdentifier("brigadier:float"), new FloatParser());
-        COMMAND_PARSERS.put(new ModIdentifier("brigadier:integer"), new IntegerParser());
-        COMMAND_PARSERS.put(new ModIdentifier("brigadier:string"), new StringParser());
-        COMMAND_PARSERS.put(new ModIdentifier("entity"), new EntityParser());
-        COMMAND_PARSERS.put(new ModIdentifier("score_holder"), new ScoreHolderParser());
-        COMMAND_PARSERS.put(new ModIdentifier("range"), new RangeParser());
-    }
+    public static HashBiMap<ModIdentifier, CommandParser> COMMAND_PARSERS = HashBiMap.create(Map.of(
+            new ModIdentifier("brigadier:bool"), new BooleanParser(),
+            new ModIdentifier("brigadier:double"), new DoubleParser(),
+            new ModIdentifier("brigadier:float"), new FloatParser(),
+            new ModIdentifier("brigadier:integer"), new IntegerParser(),
+            new ModIdentifier("brigadier:string"), new StringParser(),
+            new ModIdentifier("entity"), new EntityParser(),
+            new ModIdentifier("score_holder"), new ScoreHolderParser(),
+            new ModIdentifier("range"), new RangeParser()
+    ));
 
     public static CommandParser createInstance(ModIdentifier identifier) {
         return COMMAND_PARSERS.getOrDefault(identifier, DUMMY_PARSER);

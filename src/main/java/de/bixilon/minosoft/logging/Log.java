@@ -23,9 +23,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Log {
     public final static long MINOSOFT_START_TIME = System.currentTimeMillis();
-    final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    final static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>();
-    static LogLevels level = LogLevels.PROTOCOL;
+    private final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private final static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>();
+    private static LogLevels level = LogLevels.PROTOCOL;
 
     static {
         new Thread(() -> {
