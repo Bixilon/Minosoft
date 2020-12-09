@@ -31,7 +31,7 @@ public class PacketEntityTeleport implements ClientboundPacket {
         this.entityId = buffer.readEntityId();
 
         if (buffer.getVersionId() < 100) {
-            this.location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
+            this.location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             this.location = buffer.readLocation();
         }

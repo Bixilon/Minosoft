@@ -32,7 +32,7 @@ public class ChangeGameStateEvent extends CancelableEvent {
     public ChangeGameStateEvent(Connection connection, PacketChangeGameState pkg) {
         super(connection);
         this.reason = pkg.getReason();
-        this.value = pkg.getValue();
+        this.value = pkg.getFloatValue();
     }
 
     public PacketChangeGameState.Reason getReason() {

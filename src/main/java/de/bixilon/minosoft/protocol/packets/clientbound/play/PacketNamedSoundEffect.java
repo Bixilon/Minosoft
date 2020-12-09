@@ -47,7 +47,7 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
             category = SoundCategories.byId(buffer.readVarInt());
         }
         if (buffer.getVersionId() >= 95) {
-            location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
+            location = new Location(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
         }
         volume = buffer.readFloat();
         if (buffer.getVersionId() < 201) {

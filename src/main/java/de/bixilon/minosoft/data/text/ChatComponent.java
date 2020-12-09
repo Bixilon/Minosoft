@@ -46,7 +46,8 @@ public abstract class ChatComponent {
                 return new BaseComponent((String) raw);
             }
         } else {
-            throw new IllegalArgumentException(String.format("%s is not a valid type here!", raw.getClass().getSimpleName()));
+            return new BaseComponent(parent, raw.toString());
+            // throw new IllegalArgumentException(String.format("%s is not a valid type here!", raw.getClass().getSimpleName()));
         }
         return new BaseComponent(parent, json);
     }

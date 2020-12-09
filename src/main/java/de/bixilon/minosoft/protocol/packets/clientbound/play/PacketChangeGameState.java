@@ -45,8 +45,12 @@ public class PacketChangeGameState implements ClientboundPacket {
         return reason;
     }
 
-    public Float getValue() {
+    public float getFloatValue() {
         return value;
+    }
+
+    public int getIntValue() {
+        return (int) value;
     }
 
     public enum Reason {

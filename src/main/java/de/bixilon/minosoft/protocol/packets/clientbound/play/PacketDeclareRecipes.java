@@ -45,7 +45,7 @@ public class PacketDeclareRecipes implements ClientboundPacket {
             switch (type) {
                 case SHAPELESS -> {
                     String group = buffer.readString();
-                    Ingredient[] ingredients = buffer.readIngredientArray(buffer.readVarInt());
+                    Ingredient[] ingredients = buffer.readIngredientArray();
                     Slot result = buffer.readSlot();
                     recipe = new Recipe(type, group, ingredients, result);
                 }

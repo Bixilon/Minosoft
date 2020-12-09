@@ -38,7 +38,6 @@ import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.nbt.tag.*;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.UUID;
@@ -73,9 +72,7 @@ public class InByteBuffer {
     }
 
     public short readShort() {
-        ByteBuffer buffer = ByteBuffer.allocate(Short.BYTES);
-        buffer.put(readBytes(Short.BYTES));
-        return buffer.getShort(0);
+        return (short) (((readUnsignedByte()) << 8) | (readUnsignedByte()));
     }
 
     public int readUnsignedShort() {
@@ -83,9 +80,7 @@ public class InByteBuffer {
     }
 
     public int readInt() {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.put(readBytes(Integer.BYTES));
-        return buffer.getInt(0);
+        return ((readUnsignedByte() << 24) | (readUnsignedByte() << 16) | (readUnsignedByte() << 8) | (readUnsignedByte()));
     }
 
     public byte[] readBytes(int count) {
@@ -95,13 +90,11 @@ public class InByteBuffer {
         return ret;
     }
 
-    public Long readLong() {
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.put(readBytes(Long.BYTES));
-        return buffer.getLong(0);
+    public long readLong() {
+        return (((long) readUnsignedByte() << 56) | ((long) readUnsignedByte() << 48) | ((long) readUnsignedByte() << 40) | ((long) readUnsignedByte() << 32) | ((long) readUnsignedByte() << 24) | (readUnsignedByte() << 16) | (readUnsignedByte() << 8) | (readUnsignedByte()));
     }
 
-    public double readFixedPointNumberInteger() {
+    public double readFixedPointNumberInt() {
         return readInt() / 32.0D;
     }
 
@@ -135,8 +128,7 @@ public class InByteBuffer {
     public int[] readUnsignedLEShorts(int num) {
         int[] ret = new int[num];
         for (int i = 0; i < ret.length; i++) {
-            ret[i] = (short) (readByte() & 0xFF);
-            ret[i] |= (readByte() & 0xFF) << 8;
+            ret[i] = ((readUnsignedByte()) | (readUnsignedByte() << 8));
         }
         return ret;
     }
@@ -144,7 +136,7 @@ public class InByteBuffer {
     public String[] readStringArray(int length) {
         String[] ret = new String[length];
         for (int i = 0; i < length; i++) {
-            ret[i] = new String(readBytes(readVarInt()), StandardCharsets.UTF_8);
+            ret[i] = readString();
         }
         return ret;
     }
@@ -194,11 +186,11 @@ public class InByteBuffer {
         long raw = readLong();
         int x = (int) (raw >> 38);
         if (versionId < 440) {
-            short y = (short) ((raw >> 26) & 0xFFF);
+            int y = (int) ((raw >> 26) & 0xFFF);
             int z = (int) (raw & 0x3FFFFFF);
             return new BlockPosition(x, y, z);
         }
-        short y = (short) (raw & 0xFFF);
+        int y = (int) (raw & 0xFFF);
         int z = (int) (raw << 26 >> 38);
         return new BlockPosition(x, y, z);
     }
@@ -341,32 +333,28 @@ public class InByteBuffer {
         return new Location(readDouble(), readDouble(), readDouble());
     }
 
-    public Double readDouble() {
-        ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
-        buffer.put(readBytes(Double.BYTES));
-        return buffer.getDouble(0);
+    public double readDouble() {
+        return Double.longBitsToDouble(readLong());
     }
 
     public Location readSmallLocation() {
         return new Location(readFloat(), readFloat(), readFloat());
     }
 
-    public Float readFloat() {
-        ByteBuffer buffer = ByteBuffer.allocate(Float.BYTES);
-        buffer.put(readBytes(Float.BYTES));
-        return buffer.getFloat(0);
+    public float readFloat() {
+        return Float.intBitsToFloat(readInt());
     }
 
     public BlockPosition readBlockPosition() {
         return new BlockPosition(readInt(), readUnsignedByte(), readInt());
     }
 
-    public BlockPosition readBlockPositionInteger() {
-        return new BlockPosition(readInt(), (short) (readInt()), readInt());
-    }
-
     public BlockPosition readBlockPositionShort() {
         return new BlockPosition(readInt(), readShort(), readInt());
+    }
+
+    public BlockPosition readBlockPositionInteger() {
+        return new BlockPosition(readInt(), readInt(), readInt());
     }
 
     public byte[] readBytesLeft() {
@@ -398,26 +386,25 @@ public class InByteBuffer {
         EntityMetaData.MetaDataHashMap sets = metaData.getSets();
 
         if (versionId < 48) {
-            byte item = readByte();
+            short item = readUnsignedByte();
             while (item != 0x7F) {
                 byte index = (byte) (item & 0x1F);
                 EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId((item & 0xFF) >> 5, versionId);
                 sets.put((int) index, EntityMetaData.getData(type, this));
                 item = readByte();
             }
-        } else if (versionId < 107) {
-            byte index = readByte();
-            while (index != (byte) 0xFF) {
-                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId(readByte(), versionId);
-                sets.put((int) index, EntityMetaData.getData(type, this));
-                index = readByte();
-            }
         } else {
-            byte index = readByte();
-            while (index != (byte) 0xFF) {
-                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId(readVarInt(), versionId);
-                sets.put((int) index, EntityMetaData.getData(type, this));
-                index = readByte();
+            int index = readUnsignedByte();
+            while (index != 0xFF) {
+                int id;
+                if (versionId < 107) {
+                    id = readUnsignedByte();
+                } else {
+                    id = readVarInt();
+                }
+                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId(id, versionId);
+                sets.put(index, EntityMetaData.getData(type, this));
+                index = readUnsignedByte();
             }
         }
         return metaData;
@@ -445,7 +432,7 @@ public class InByteBuffer {
     }
 
     public Ingredient readIngredient() {
-        return new Ingredient(readSlotArray(readVarInt()));
+        return new Ingredient(readSlotArray());
     }
 
     public Ingredient[] readIngredientArray(int length) {
@@ -456,12 +443,20 @@ public class InByteBuffer {
         return ret;
     }
 
+    public Ingredient[] readIngredientArray() {
+        return readIngredientArray(readVarInt());
+    }
+
     public Slot[] readSlotArray(int length) {
         Slot[] res = new Slot[length];
         for (int i = 0; i < length; i++) {
             res[i] = readSlot();
         }
         return res;
+    }
+
+    public Slot[] readSlotArray() {
+        return readSlotArray(readVarInt());
     }
 
     public Connection getConnection() {

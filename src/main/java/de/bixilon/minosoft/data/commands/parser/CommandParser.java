@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 
 public abstract class CommandParser {
     @Deprecated
-    private static final DummyParser dummyParser = new DummyParser();
+    private static final DummyParser DUMMY_PARSER = new DummyParser();
     public static HashBiMap<ModIdentifier, CommandParser> COMMAND_PARSERS = HashBiMap.create();
 
     static {
@@ -37,7 +37,7 @@ public abstract class CommandParser {
     }
 
     public static CommandParser createInstance(ModIdentifier identifier) {
-        return COMMAND_PARSERS.getOrDefault(identifier, dummyParser);
+        return COMMAND_PARSERS.getOrDefault(identifier, DUMMY_PARSER);
     }
 
     @Nullable

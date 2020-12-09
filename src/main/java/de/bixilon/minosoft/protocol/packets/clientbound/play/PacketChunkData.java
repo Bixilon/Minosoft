@@ -89,7 +89,7 @@ public class PacketChunkData implements ClientboundPacket {
         }
         if (groundUpContinuous) {
             if (buffer.getVersionId() >= 740) {
-                biomes = buffer.readVarIntArray(buffer.readVarInt());
+                biomes = buffer.readVarIntArray();
             } else if (buffer.getVersionId() >= 552) {
                 biomes = buffer.readIntArray(1024);
             }

@@ -96,7 +96,7 @@ public class SocketNetwork implements Network {
                             ServerboundPacket packet = queue.take();
                             packet.log();
                             queue.remove(packet);
-                            byte[] data = packet.write(connection).getOutBytes();
+                            byte[] data = packet.write(connection).toByteArray();
                             if (compressionThreshold >= 0) {
                                 // compression is enabled
                                 // check if there is a need to compress it and if so, do it!
@@ -107,20 +107,20 @@ public class SocketNetwork implements Network {
                                     byte[] compressed = Util.compress(data);
                                     lengthPrefixedBuffer.writeVarInt(data.length); // uncompressed length
                                     lengthPrefixedBuffer.writeBytes(compressed);
-                                    outRawBuffer.prefixVarInt(lengthPrefixedBuffer.getOutBytes().length); // length of total data is uncompressed length + compressed data
-                                    outRawBuffer.writeBytes(lengthPrefixedBuffer.getOutBytes()); // write all bytes
+                                    outRawBuffer.prefixVarInt(lengthPrefixedBuffer.toByteArray().length); // length of total data is uncompressed length + compressed data
+                                    outRawBuffer.writeBytes(lengthPrefixedBuffer.toByteArray()); // write all bytes
                                 } else {
                                     outRawBuffer.writeVarInt(data.length + 1); // 1 for the compressed length (0)
                                     outRawBuffer.writeVarInt(0); // data is uncompressed, compressed size is 0
                                     outRawBuffer.writeBytes(data);
                                 }
-                                data = outRawBuffer.getOutBytes();
+                                data = outRawBuffer.toByteArray();
                             } else {
                                 // append packet length
                                 OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer(connection);
                                 bufferWithLengthPrefix.writeVarInt(data.length);
                                 bufferWithLengthPrefix.writeBytes(data);
-                                data = bufferWithLengthPrefix.getOutBytes();
+                                data = bufferWithLengthPrefix.toByteArray();
                             }
 
                             outputStream.write(data);

@@ -56,7 +56,7 @@ public class PacketSpawnObject implements ClientboundPacket {
 
         Location location;
         if (buffer.getVersionId() < 100) {
-            location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
+            location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             location = buffer.readLocation();
         }

@@ -42,7 +42,7 @@ public class PacketSoundEffect implements ClientboundPacket {
         if (buffer.getVersionId() >= 95 && (buffer.getVersionId() < 321 || buffer.getVersionId() >= 326)) {
             category = SoundCategories.byId(buffer.readVarInt());
         }
-        location = new Location(buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4, buffer.readFixedPointNumberInteger() * 4);
+        location = new Location(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
         volume = buffer.readFloat();
         if (buffer.getVersionId() < 201) {
             pitch = (buffer.readByte() * pitchCalc) / 100F;

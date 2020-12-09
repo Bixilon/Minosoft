@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.text.ChatComponent;
@@ -20,7 +21,6 @@ import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -52,36 +52,41 @@ public class OutByteBuffer {
         writeBytes(data);
     }
 
-    public void writeShort(short s) {
-        ByteBuffer buffer = ByteBuffer.allocate(Short.BYTES);
-        buffer.putShort(s);
-        writeBytes(buffer.array());
+    public void writeShort(short value) {
+        writeByte(value >>> 8);
+        writeByte(value);
     }
 
-    public void writeInt(int i) {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.putInt(i);
-        writeBytes(buffer.array());
+    public void writeInt(int value) {
+        writeByte(value >>> 24);
+        writeByte(value >>> 16);
+        writeByte(value >>> 8);
+        writeByte(value);
     }
 
-    public void writeBytes(byte[] b) {
-        for (byte value : b) {
-            bytes.add(value);
+    public void writeBytes(byte[] data) {
+        for (byte singleByte : data) {
+            bytes.add(singleByte);
         }
     }
 
-    public void writeLong(Long l) {
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.putLong(l);
-        writeBytes(buffer.array());
+    public void writeLong(long value) {
+        writeByte(value >>> 56);
+        writeByte(value >>> 48);
+        writeByte(value >>> 40);
+        writeByte(value >>> 32);
+        writeByte(value >>> 24);
+        writeByte(value >>> 16);
+        writeByte(value >>> 8);
+        writeByte(value);
     }
 
     public void writeChatComponent(ChatComponent chatComponent) {
-        writeString(chatComponent.getMessage()); // ToDo: test if this should not be json
+        writeString(chatComponent.getLegacyText()); // ToDo: test if this should not be json
     }
 
-    public void writeJSON(JsonObject j) {
-        writeString(j.toString());
+    public void writeJSON(JsonObject json) {
+        writeString(new Gson().toJson(json));
     }
 
     public void writeString(String string) {
@@ -103,29 +108,29 @@ public class OutByteBuffer {
         } while (value != 0);
     }
 
-    public void writeByte(byte b) {
-        bytes.add(b);
+    public void writeByte(byte value) {
+        bytes.add(value);
     }
 
-    public void writeFloat(Float f) {
-        ByteBuffer buffer = ByteBuffer.allocate(Float.BYTES);
-        buffer.putFloat(f);
-        for (byte b : buffer.array()) {
-            bytes.add(b);
-        }
+    public void writeByte(int value) {
+        bytes.add((byte) (value & 0xFF));
     }
 
-    public void writeDouble(Double d) {
-        ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
-        buffer.putDouble(d);
-        writeBytes(buffer.array());
+    public void writeByte(long value) {
+        bytes.add((byte) (value & 0xFF));
     }
 
-    public void writeUUID(UUID u) {
-        ByteBuffer buffer = ByteBuffer.allocate(16); // UUID.BYTES
-        buffer.putLong(u.getMostSignificantBits());
-        buffer.putLong(u.getLeastSignificantBits());
-        writeBytes(buffer.array());
+    public void writeFloat(float value) {
+        writeInt(Float.floatToIntBits(value));
+    }
+
+    public void writeDouble(double value) {
+        writeLong(Double.doubleToLongBits(value));
+    }
+
+    public void writeUUID(UUID uuid) {
+        writeLong(uuid.getMostSignificantBits());
+        writeLong(uuid.getLeastSignificantBits());
     }
 
     public void writeFixedPointNumberInt(double d) {
@@ -142,16 +147,15 @@ public class OutByteBuffer {
             return;
         }
         if (versionId < 440) {
-            writeLong((((long) position.getX() & 0x3FFFFFF) << 38) | (((long) position.getZ() & 0x3FFFFFF)) | ((long) position.getY() & 0xFFF) << 26);
+            writeLong((((long) position.x() & 0x3FFFFFF) << 38) | (((long) position.z() & 0x3FFFFFF)) | ((long) position.y() & 0xFFF) << 26);
             return;
         }
-        writeLong((((long) (position.getX() & 0x3FFFFFF) << 38) | ((long) (position.getZ() & 0x3FFFFFF) << 12) | (long) (position.getY() & 0xFFF)));
+        writeLong((((long) (position.x() & 0x3FFFFFF) << 38) | ((long) (position.z() & 0x3FFFFFF) << 12) | (long) (position.y() & 0xFFF)));
     }
 
     public void writeVarInt(int value) {
         // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
-        do
-        {
+        do {
             byte temp = (byte) (value & 0x7F);
             value >>>= 7;
             if (value != 0) {
@@ -164,8 +168,7 @@ public class OutByteBuffer {
     public void prefixVarInt(int value) {
         int count = 0;
         // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
-        do
-        {
+        do {
             byte temp = (byte) (value & 0x7F);
             value >>>= 7;
             if (value != 0) {
@@ -200,8 +203,8 @@ public class OutByteBuffer {
         nbt.writeBytes(this);
     }
 
-    public void writeBoolean(boolean b) {
-        bytes.add((byte) ((b) ? 0x01 : 0x00));
+    public void writeBoolean(boolean value) {
+        bytes.add((byte) ((value) ? 0x01 : 0x00));
     }
 
     public void writeStringNoLength(String string) {
@@ -209,12 +212,12 @@ public class OutByteBuffer {
     }
 
     public void writeBlockPositionByte(BlockPosition pos) {
-        writeInt(pos.getX());
-        writeByte((byte) pos.getY());
-        writeInt(pos.getZ());
+        writeInt(pos.x());
+        writeByte((byte) pos.y());
+        writeInt(pos.z());
     }
 
-    public byte[] getOutBytes() {
+    public byte[] toByteArray() {
         byte[] ret = new byte[bytes.size()];
         for (int i = 0; i < bytes.size(); i++) {
             ret[i] = bytes.get(i);

@@ -96,11 +96,11 @@ public class PacketSender {
     }
 
     public void sendPluginMessageData(String channel, OutByteBuffer toSend) {
-        connection.sendPacket(new PacketPluginMessageSending(channel, toSend.getOutBytes()));
+        connection.sendPacket(new PacketPluginMessageSending(channel, toSend.toByteArray()));
     }
 
     public void sendLoginPluginMessageResponse(int messageId, OutByteBuffer toSend) {
-        connection.sendPacket(new PacketLoginPluginResponse(messageId, toSend.getOutBytes()));
+        connection.sendPacket(new PacketLoginPluginResponse(messageId, toSend.toByteArray()));
     }
 
     public void setLocation(Location location, EntityRotation rotation, boolean onGround) {
