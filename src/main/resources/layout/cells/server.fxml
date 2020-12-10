@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.TextFlow?>
 <HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.60" fx:controller="de.bixilon.minosoft.gui.main.ServerListCell">
-    <GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" onMouseClicked="#clicked" HBox.hgrow="ALWAYS" gridLinesVisible="true">
+    <GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" onMouseClicked="#clicked" HBox.hgrow="ALWAYS">
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" minWidth="90" maxWidth="90"/>
             <ColumnConstraints hgrow="ALWAYS" minWidth="30" prefWidth="30"/>

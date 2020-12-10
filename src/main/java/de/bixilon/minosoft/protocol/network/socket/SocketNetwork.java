@@ -192,13 +192,13 @@ public class SocketNetwork implements Network {
                         packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
                         if (packet == null) {
                             disconnect();
-                            lastException = new UnknownPacketException(String.format("Server sent us an  invalid packet (id=0x%x, length=%d, data=%s)", inPacketBuffer.getCommand(), length, inPacketBuffer.getBase64()));
+                            lastException = new UnknownPacketException(String.format("Server sent us an unknown packet (id=0x%x, length=%d, data=%s)", inPacketBuffer.getCommand(), length, inPacketBuffer.getBase64()));
                             throw lastException;
                         }
                         Class<? extends ClientboundPacket> clazz = packet.getClazz();
 
                         if (clazz == null) {
-                            throw new UnknownPacketException(String.format("Unknown packet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), packet, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
+                            throw new UnknownPacketException(String.format("Packet not implemented yet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), packet, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
                         }
                         try {
                             ClientboundPacket packetInstance = clazz.getConstructor().newInstance();
@@ -227,9 +227,9 @@ public class SocketNetwork implements Network {
                             e.printStackTrace();
                         }
                     } catch (Exception e) {
-                        Log.printException(e, LogLevels.VERBOSE);
                         Log.protocol(String.format("An error occurred while parsing a packet (%s): %s", packet, e));
                         if (connection.getConnectionState() == ConnectionStates.PLAY) {
+                            Log.printException(e, LogLevels.PROTOCOL);
                             continue;
                         }
                         lastException = e;
@@ -256,8 +256,8 @@ public class SocketNetwork implements Network {
     }
 
     @Override
-    public void sendPacket(ServerboundPacket p) {
-        queue.add(p);
+    public void sendPacket(ServerboundPacket packet) {
+        queue.add(packet);
     }
 
     @Override

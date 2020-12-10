@@ -16,17 +16,27 @@ package de.bixilon.minosoft.data.commands.parser;
 import de.bixilon.minosoft.data.commands.parser.properties.DoubleParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-
-import javax.annotation.Nullable;
+import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class DoubleParser extends CommandParser {
+    public static final DoubleParser DOUBLE_PARSER = new DoubleParser();
+
     public boolean isValidValue(DoubleParserProperties properties, double value) {
         return value >= properties.getMinValue() && value <= properties.getMaxValue();
     }
 
     @Override
-    @Nullable
     public ParserProperties readParserProperties(InByteBuffer buffer) {
         return new DoubleParserProperties(buffer);
+    }
+
+    @Override
+    public boolean isParsable(ParserProperties properties, ImprovedStringReader stringReader) {
+        String argument = stringReader.readUntilNextCommandArgument();
+        try {
+            return isValidValue((DoubleParserProperties) properties, Double.parseDouble(argument));
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 }

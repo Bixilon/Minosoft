@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import java.net.InetAddress;
+import java.util.regex.Pattern;
 
 public final class ProtocolDefinition {
     public static final int STRING_MAX_LEN = 32767;
@@ -40,6 +41,13 @@ public final class ProtocolDefinition {
     public static final int DEFAULT_BUFFER_SIZE = 4096;
 
     public static final int NULL_BLOCK_ID = 0;
+
+
+    public static final String COMMAND_SEPARATOR = " ";
+
+    public static final int MINECRAFT_USERNAME_MINIMUM_LENGTH = 3;
+    public static final int MINECRAFT_USERNAME_MAXIMUM_LENGTH = 16;
+    public static final Pattern MINECRAFT_NAME_VALIDATOR = Pattern.compile("\\w{3,16}");
 
     static {
         // java does (why ever) not allow to directly assign a null

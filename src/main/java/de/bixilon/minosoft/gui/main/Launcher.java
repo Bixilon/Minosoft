@@ -66,12 +66,13 @@ public class Launcher {
             ServerListCell.listView.setItems(servers);
             LANServerListener.removeAll(); // remove all LAN Servers
 
-            VBox root = null;
+            VBox root;
             try {
                 root = new FXMLLoader(Launcher.class.getResource("/layout/main.fxml")).load();
             } catch (IOException e) {
                 e.printStackTrace();
                 System.exit(1);
+                return;
             }
 
             Stage stage = new Stage();

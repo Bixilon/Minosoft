@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.commands.parser.CommandParser;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
+import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 import javax.annotation.Nullable;
 
@@ -33,9 +34,10 @@ public class CommandArgumentNode extends CommandLiteralNode {
             String fullIdentifier = buffer.readIdentifier().getFullIdentifier();
             suggestionType = switch (fullIdentifier) {
                 case "minecraft:ask_server" -> CommandArgumentNode.SuggestionTypes.ASK_SERVER;
-                case "minecraft:all_recipes " -> CommandArgumentNode.SuggestionTypes.ALL_RECIPES;
-                case "minecraft:available_sounds " -> CommandArgumentNode.SuggestionTypes.AVAILABLE_SOUNDS;
-                case "minecraft:summonable_entities " -> CommandArgumentNode.SuggestionTypes.SUMMONABLE_ENTITIES;
+                case "minecraft:all_recipes" -> CommandArgumentNode.SuggestionTypes.ALL_RECIPES;
+                case "minecraft:available_sounds" -> CommandArgumentNode.SuggestionTypes.AVAILABLE_SOUNDS;
+                case "minecraft:summonable_entities" -> CommandArgumentNode.SuggestionTypes.SUMMONABLE_ENTITIES;
+                case "minecraft:available_biomes" -> CommandArgumentNode.SuggestionTypes.AVAILABLE_BIOMES;
                 default -> throw new IllegalStateException("Unexpected value: " + fullIdentifier);
             };
         } else {
@@ -56,10 +58,19 @@ public class CommandArgumentNode extends CommandLiteralNode {
         return suggestionType;
     }
 
+    @Override
+    public boolean isSyntaxCorrect(ImprovedStringReader stringReader) {
+        if (parser.isParsable(properties, stringReader)) {
+            return super.isSyntaxCorrect(stringReader);
+        }
+        return false;
+    }
+
     public enum SuggestionTypes {
         ASK_SERVER,
         ALL_RECIPES,
         AVAILABLE_SOUNDS,
-        SUMMONABLE_ENTITIES
+        SUMMONABLE_ENTITIES,
+        AVAILABLE_BIOMES
     }
 }

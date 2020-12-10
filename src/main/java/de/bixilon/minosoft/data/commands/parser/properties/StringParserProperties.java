@@ -17,13 +17,24 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 public class StringParserProperties implements ParserProperties {
     private final StringSettings setting;
+    private final boolean allowEmptyString;
 
     public StringParserProperties(InByteBuffer buffer) {
         setting = StringSettings.values()[buffer.readVarInt()];
+        allowEmptyString = false;
+    }
+
+    public StringParserProperties(StringSettings setting, boolean allowEmptyString) {
+        this.setting = setting;
+        this.allowEmptyString = allowEmptyString;
     }
 
     public StringSettings getSetting() {
         return setting;
+    }
+
+    public boolean isAllowEmptyString() {
+        return allowEmptyString;
     }
 
     public enum StringSettings {

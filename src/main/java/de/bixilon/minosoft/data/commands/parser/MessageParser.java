@@ -14,16 +14,24 @@
 package de.bixilon.minosoft.data.commands.parser;
 
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
+import de.bixilon.minosoft.data.commands.parser.properties.StringParserProperties;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 import javax.annotation.Nullable;
 
-@Deprecated
-public class DummyParser extends CommandParser {
-    public static final DummyParser DUMMY_PARSER = new DummyParser();
+public class MessageParser extends StringParser {
+    public static final MessageParser MESSAGE_PARSER = new MessageParser();
+    private static final StringParserProperties STRING_PARSER_PROPERTIES = new StringParserProperties(StringParserProperties.StringSettings.GREEDY_PHRASE, false);
+
+    @Override
+    @Nullable
+    public ParserProperties readParserProperties(InByteBuffer buffer) {
+        return null;
+    }
 
     @Override
     public boolean isParsable(@Nullable ParserProperties properties, ImprovedStringReader stringReader) {
-        return true;
+        return super.isParsable(STRING_PARSER_PROPERTIES, stringReader);
     }
 }

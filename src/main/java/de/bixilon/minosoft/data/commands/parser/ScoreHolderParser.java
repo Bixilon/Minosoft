@@ -16,13 +16,20 @@ package de.bixilon.minosoft.data.commands.parser;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ScoreHolderParserProperties;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 import javax.annotation.Nullable;
 
 public class ScoreHolderParser extends CommandParser {
+    public static final ScoreHolderParser SCORE_HOLDER_PARSER = new ScoreHolderParser();
+
     @Override
-    @Nullable
     public ParserProperties readParserProperties(InByteBuffer buffer) {
         return new ScoreHolderParserProperties(buffer);
+    }
+
+    @Override
+    public boolean isParsable(@Nullable ParserProperties properties, ImprovedStringReader stringReader) {
+        return false; // ToDo
     }
 }

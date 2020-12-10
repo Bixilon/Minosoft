@@ -483,7 +483,12 @@ public class InByteBuffer {
             }
             // children
             for (int id : node.getChildrenIds()) {
-                node.getChildren().add(nodes[id]);
+                CommandNode targetNode = nodes[id];
+                if (targetNode instanceof CommandArgumentNode argumentNode) {
+                    node.getArgumentsChildren().add(argumentNode);
+                } else if (targetNode instanceof CommandLiteralNode literalNode) {
+                    node.getLiteralChildren().put(literalNode.getName(), literalNode);
+                }
             }
 
         }

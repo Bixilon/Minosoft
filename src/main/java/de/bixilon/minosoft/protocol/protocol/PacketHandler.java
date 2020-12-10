@@ -802,5 +802,6 @@ public class PacketHandler {
     }
 
     public void handle(PacketDeclareCommands pkg) {
+        connection.setCommandRootNode(pkg.getRootNode());
     }
 }

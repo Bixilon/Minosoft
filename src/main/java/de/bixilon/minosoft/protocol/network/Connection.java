@@ -16,6 +16,7 @@ package de.bixilon.minosoft.protocol.network;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.Player;
 import de.bixilon.minosoft.data.VelocityHandler;
+import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.data.mappings.MappingsLoadingException;
 import de.bixilon.minosoft.data.mappings.recipes.Recipes;
 import de.bixilon.minosoft.data.mappings.versions.Version;
@@ -64,6 +65,7 @@ public class Connection {
     public ConnectionPing connectionStatusPing;
     ServerListPing lastPing;
     Exception lastException;
+    private CommandRootNode commandRootNode;
 
     public Connection(int connectionId, String hostname, Player player) {
         this.connectionId = connectionId;
@@ -382,5 +384,9 @@ public class Connection {
 
     public ServerListPing getLastPing() {
         return lastPing;
+    }
+
+    public void setCommandRootNode(CommandRootNode commandRootNode) {
+        this.commandRootNode = commandRootNode;
     }
 }

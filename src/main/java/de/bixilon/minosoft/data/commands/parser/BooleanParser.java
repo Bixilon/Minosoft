@@ -13,5 +13,17 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
+import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
+import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
+
+import javax.annotation.Nullable;
+
 public class BooleanParser extends CommandParser {
+    public static final BooleanParser BOOLEAN_PARSER = new BooleanParser();
+
+    @Override
+    public boolean isParsable(@Nullable ParserProperties properties, ImprovedStringReader stringReader) {
+        String argument = stringReader.readUntilNextCommandArgument();
+        return argument.equals("true") || argument.equals("false");
+    }
 }

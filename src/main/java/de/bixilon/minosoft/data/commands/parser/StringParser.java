@@ -16,13 +16,58 @@ package de.bixilon.minosoft.data.commands.parser;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.StringParserProperties;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-
-import javax.annotation.Nullable;
+import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class StringParser extends CommandParser {
+    public static final StringParser STRING_PARSER = new StringParser();
+
     @Override
-    @Nullable
     public ParserProperties readParserProperties(InByteBuffer buffer) {
         return new StringParserProperties(buffer);
+    }
+
+    @Override
+    public boolean isParsable(ParserProperties properties, ImprovedStringReader stringReader) {
+        // Why the hell can't I use yield here :?
+        StringParserProperties stringParserProperties = ((StringParserProperties) properties);
+        switch (stringParserProperties.getSetting()) {
+            case SINGLE_WORD -> {
+                String rest = stringReader.readUntilNextCommandArgument();
+                if (stringParserProperties.isAllowEmptyString()) {
+                    return true;
+                }
+                return !rest.isBlank();
+            }
+            case QUOTABLE_PHRASE -> {
+                if (stringReader.get(1).equals("\"")) {
+                    stringReader.skip(1);
+                    StringBuilder builder = new StringBuilder();
+                    builder.append(stringReader.readUntil("\"").key);
+                    String currentString = builder.toString();
+                    while (currentString.endsWith("\\") && !currentString.endsWith("\\\\")) {
+                        // quotes are escaped, continue
+                        builder.append("\"");
+                        builder.append(stringReader.readUntil("\""));
+                        currentString = builder.toString();
+                    }
+                    if (stringParserProperties.isAllowEmptyString()) {
+                        return true;
+                    }
+                    return currentString.isBlank();
+                }
+                if (stringParserProperties.isAllowEmptyString()) {
+                    return true;
+                }
+                return !stringReader.readUntilNextCommandArgument().isBlank();
+            }
+            case GREEDY_PHRASE -> {
+                String rest = stringReader.readRest();
+                if (stringParserProperties.isAllowEmptyString()) {
+                    return true;
+                }
+                return !rest.isBlank();
+            }
+        }
+        return false;
     }
 }

@@ -16,17 +16,27 @@ package de.bixilon.minosoft.data.commands.parser;
 import de.bixilon.minosoft.data.commands.parser.properties.FloatParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-
-import javax.annotation.Nullable;
+import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class FloatParser extends CommandParser {
+    public static final FloatParser FLOAT_PARSER = new FloatParser();
+
     public boolean isValidValue(FloatParserProperties properties, float value) {
         return value >= properties.getMinValue() && value <= properties.getMaxValue();
     }
 
     @Override
-    @Nullable
     public ParserProperties readParserProperties(InByteBuffer buffer) {
         return new FloatParserProperties(buffer);
+    }
+
+    @Override
+    public boolean isParsable(ParserProperties properties, ImprovedStringReader stringReader) {
+        String argument = stringReader.readUntilNextCommandArgument();
+        try {
+            return isValidValue((FloatParserProperties) properties, Float.parseFloat(argument));
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 }

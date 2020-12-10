@@ -17,32 +17,34 @@ import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 
 public abstract class CommandParser {
-    @Deprecated
-    private static final DummyParser DUMMY_PARSER = new DummyParser();
 
     public static HashBiMap<ModIdentifier, CommandParser> COMMAND_PARSERS = HashBiMap.create(Map.of(
-            new ModIdentifier("brigadier:bool"), new BooleanParser(),
-            new ModIdentifier("brigadier:double"), new DoubleParser(),
-            new ModIdentifier("brigadier:float"), new FloatParser(),
-            new ModIdentifier("brigadier:integer"), new IntegerParser(),
-            new ModIdentifier("brigadier:string"), new StringParser(),
-            new ModIdentifier("entity"), new EntityParser(),
-            new ModIdentifier("score_holder"), new ScoreHolderParser(),
-            new ModIdentifier("range"), new RangeParser()
+            new ModIdentifier("brigadier:bool"), BooleanParser.BOOLEAN_PARSER,
+            new ModIdentifier("brigadier:double"), DoubleParser.DOUBLE_PARSER,
+            new ModIdentifier("brigadier:float"), FloatParser.FLOAT_PARSER,
+            new ModIdentifier("brigadier:integer"), IntegerParser.INTEGER_PARSER,
+            new ModIdentifier("brigadier:string"), StringParser.STRING_PARSER,
+            new ModIdentifier("entity"), EntityParser.ENTITY_PARSER,
+            new ModIdentifier("score_holder"), ScoreHolderParser.SCORE_HOLDER_PARSER,
+            new ModIdentifier("range"), RangeParser.RANGE_PARSER,
+            new ModIdentifier("message"), MessageParser.MESSAGE_PARSER
     ));
 
     public static CommandParser createInstance(ModIdentifier identifier) {
-        return COMMAND_PARSERS.getOrDefault(identifier, DUMMY_PARSER);
+        return COMMAND_PARSERS.getOrDefault(identifier, DummyParser.DUMMY_PARSER);
     }
 
     @Nullable
     public ParserProperties readParserProperties(InByteBuffer buffer) {
         return null;
     }
+
+    public abstract boolean isParsable(@Nullable ParserProperties properties, ImprovedStringReader stringReader);
 
 }

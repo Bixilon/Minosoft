@@ -16,17 +16,27 @@ package de.bixilon.minosoft.data.commands.parser;
 import de.bixilon.minosoft.data.commands.parser.properties.IntegerParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-
-import javax.annotation.Nullable;
+import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class IntegerParser extends CommandParser {
+    public static final IntegerParser INTEGER_PARSER = new IntegerParser();
+
     public boolean isValidValue(IntegerParserProperties properties, int value) {
         return value >= properties.getMinValue() && value <= properties.getMaxValue();
     }
 
     @Override
-    @Nullable
     public ParserProperties readParserProperties(InByteBuffer buffer) {
         return new IntegerParserProperties(buffer);
+    }
+
+    @Override
+    public boolean isParsable(ParserProperties properties, ImprovedStringReader stringReader) {
+        String argument = stringReader.readUntilNextCommandArgument();
+        try {
+            return isValidValue((IntegerParserProperties) properties, Integer.parseInt(argument));
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 }

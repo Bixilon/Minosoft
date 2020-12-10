@@ -14,28 +14,24 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.commands.CommandNode;
+import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 public class PacketDeclareCommands implements ClientboundPacket {
-    private CommandNode[] nodes;
-    private CommandNode rootElement;
+    private CommandRootNode rootNode;
 
     @Override
     public boolean read(InByteBuffer buffer) throws Exception {
-        nodes = buffer.readCommandNodesArray();
-        rootElement = nodes[buffer.readVarInt()];
+        CommandNode[] nodes = buffer.readCommandNodesArray();
+        rootNode = (CommandRootNode) nodes[buffer.readVarInt()];
         return true;
     }
 
-    public CommandNode[] getNodes() {
-        return nodes;
-    }
-
-    public CommandNode getRootElement() {
-        return rootElement;
+    public CommandRootNode getRootNode() {
+        return rootNode;
     }
 
     @Override
@@ -45,6 +41,6 @@ public class PacketDeclareCommands implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol("Received declare commands packets (nodes=%d)", nodes.length);
+        Log.protocol("Received declare commands packets");
     }
 }

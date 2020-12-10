@@ -15,13 +15,17 @@ package de.bixilon.minosoft.data.commands;
 
 import com.google.errorprone.annotations.DoNotCall;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.BitByte;
+import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 public abstract class CommandNode {
     protected final boolean isExecutable;
-    protected final HashSet<CommandNode> children = new HashSet<>();
+    protected final HashSet<CommandArgumentNode> argumentsChildren = new HashSet<>();
+    protected final HashMap<String, CommandLiteralNode> literalChildren = new HashMap<>();
     protected final int[] childrenIds;
     protected final int redirectNodeId;
     protected CommandNode redirectNode;
@@ -40,8 +44,12 @@ public abstract class CommandNode {
         return isExecutable;
     }
 
-    public HashSet<CommandNode> getChildren() {
-        return children;
+    public HashMap<String, CommandLiteralNode> getLiteralChildren() {
+        return literalChildren;
+    }
+
+    public HashSet<CommandArgumentNode> getArgumentsChildren() {
+        return argumentsChildren;
     }
 
     public CommandNode getRedirectNode() {
@@ -64,6 +72,32 @@ public abstract class CommandNode {
     @DoNotCall
     public int[] getChildrenIds() {
         return childrenIds;
+    }
+
+    public boolean isSyntaxCorrect(ImprovedStringReader stringReader) {
+        String nextArgument = stringReader.getUntilNextCommandArgument();
+        if (nextArgument.length() == 0) {
+            return isExecutable;
+        }
+        if (literalChildren.containsKey(nextArgument)) {
+            stringReader.skip(nextArgument.length() + ProtocolDefinition.COMMAND_SEPARATOR.length());
+            return literalChildren.get(nextArgument).isSyntaxCorrect(stringReader);
+        }
+        for (CommandArgumentNode argumentNode : argumentsChildren) {
+            int currentPosition = stringReader.getPosition();
+            if (argumentNode.isSyntaxCorrect(stringReader)) {
+                return true;
+            }
+            stringReader.setPosition(currentPosition);
+        }
+        return false;
+    }
+
+    public boolean isSyntaxCorrect(String string) {
+        // replace multiple spaces with nothing
+        string = string.replaceAll("\\s{2,}", " ");
+        ImprovedStringReader stringReader = new ImprovedStringReader(string);
+        return isSyntaxCorrect(stringReader);
     }
 
     public enum NodeTypes {

@@ -11,19 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser;
+package de.bixilon.minosoft.data.commands.parser.entity;
 
-import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-import javax.annotation.Nullable;
+public interface EntitySelectorArgumentParser {
 
-@Deprecated
-public class DummyParser extends CommandParser {
-    public static final DummyParser DUMMY_PARSER = new DummyParser();
-
-    @Override
-    public boolean isParsable(@Nullable ParserProperties properties, ImprovedStringReader stringReader) {
-        return true;
-    }
+    boolean isParsable(ImprovedStringReader stringReader);
 }
