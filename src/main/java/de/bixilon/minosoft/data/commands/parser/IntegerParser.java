@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
+import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exception.number.IntegerCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exception.number.ValueOutOfRangeCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.IntegerParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -31,12 +34,16 @@ public class IntegerParser extends CommandParser {
     }
 
     @Override
-    public boolean isParsable(ParserProperties properties, ImprovedStringReader stringReader) {
+    public void isParsable(ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
         String argument = stringReader.readUntilNextCommandArgument();
         try {
-            return isValidValue((IntegerParserProperties) properties, Integer.parseInt(argument));
-        } catch (Exception ignored) {
-            return false;
+            int value = Integer.parseInt(argument);
+            IntegerParserProperties integerParserProperties = (IntegerParserProperties) properties;
+            if (value < integerParserProperties.getMinValue() && value > integerParserProperties.getMaxValue()) {
+                throw new ValueOutOfRangeCommandParseException(stringReader, integerParserProperties.getMinValue(), integerParserProperties.getMaxValue(), value);
+            }
+        } catch (NumberFormatException exception) {
+            throw new IntegerCommandParseException(stringReader, argument, exception);
         }
     }
 }

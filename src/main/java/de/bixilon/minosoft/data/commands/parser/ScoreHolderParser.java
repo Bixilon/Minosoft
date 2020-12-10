@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
+import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ScoreHolderParserProperties;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -29,7 +30,7 @@ public class ScoreHolderParser extends CommandParser {
     }
 
     @Override
-    public boolean isParsable(@Nullable ParserProperties properties, ImprovedStringReader stringReader) {
-        return false; // ToDo
+    public void isParsable(@Nullable ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+        // ToDo
     }
 }

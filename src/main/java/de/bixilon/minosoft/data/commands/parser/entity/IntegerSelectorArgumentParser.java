@@ -13,27 +13,26 @@
 
 package de.bixilon.minosoft.data.commands.parser.entity;
 
-import de.bixilon.minosoft.data.commands.parser.StringParser;
-import de.bixilon.minosoft.data.commands.parser.properties.StringParserProperties;
+import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exception.number.IntegerCommandParseException;
 import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public class NameEntitySelectorArgumentParser implements EntitySelectorArgumentParser {
-    public static final NameEntitySelectorArgumentParser NAME_ENTITY_SELECTOR_ARGUMENT_PARSER = new NameEntitySelectorArgumentParser();
-    private static final StringParserProperties STRING_PARSER_PROPERTIES = new StringParserProperties(StringParserProperties.StringSettings.QUOTABLE_PHRASE, true);
+public class IntegerSelectorArgumentParser implements EntitySelectorArgumentParser {
+    public static final IntegerSelectorArgumentParser INTEGER_SELECTOR_ARGUMENT_PARSER = new IntegerSelectorArgumentParser();
 
     @Override
-    public boolean isParsable(ImprovedStringReader stringReader) {
-        // if it starts with a quote, it will end with a quote
-        if (stringReader.get(1).equals("\"")) {
-            return StringParser.STRING_PARSER.isParsable(STRING_PARSER_PROPERTIES, stringReader);
-        }
+    public void isParsable(ImprovedStringReader stringReader) throws CommandParseException {
         // read until next space or comma
         Pair<String, String> match = stringReader.readUntil(",", " ", "]");
         if (!match.value.equals(" ")) {
             // set pointer to --
             stringReader.skip(-1);
         }
-        return true;
+        try {
+            Integer.parseInt(match.key);
+        } catch (Exception e) {
+            throw new IntegerCommandParseException(stringReader, match.key, e);
+        }
     }
 }

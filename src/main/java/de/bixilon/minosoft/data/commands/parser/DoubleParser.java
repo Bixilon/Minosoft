@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
+import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exception.number.DoubleCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exception.number.ValueOutOfRangeCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.DoubleParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -31,12 +34,16 @@ public class DoubleParser extends CommandParser {
     }
 
     @Override
-    public boolean isParsable(ParserProperties properties, ImprovedStringReader stringReader) {
+    public void isParsable(ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
         String argument = stringReader.readUntilNextCommandArgument();
         try {
-            return isValidValue((DoubleParserProperties) properties, Double.parseDouble(argument));
-        } catch (Exception ignored) {
-            return false;
+            double value = Double.parseDouble(argument);
+            DoubleParserProperties doubleParserProperties = (DoubleParserProperties) properties;
+            if (value < doubleParserProperties.getMinValue() && value > doubleParserProperties.getMaxValue()) {
+                throw new ValueOutOfRangeCommandParseException(stringReader, doubleParserProperties.getMinValue(), doubleParserProperties.getMaxValue(), value);
+            }
+        } catch (NumberFormatException exception) {
+            throw new DoubleCommandParseException(stringReader, argument, exception);
         }
     }
 }

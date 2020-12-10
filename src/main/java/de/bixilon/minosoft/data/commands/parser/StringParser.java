@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
+import de.bixilon.minosoft.data.commands.parser.exception.BlankStringCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.StringParserProperties;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -27,17 +29,10 @@ public class StringParser extends CommandParser {
     }
 
     @Override
-    public boolean isParsable(ParserProperties properties, ImprovedStringReader stringReader) {
-        // Why the hell can't I use yield here :?
+    public void isParsable(ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
         StringParserProperties stringParserProperties = ((StringParserProperties) properties);
-        switch (stringParserProperties.getSetting()) {
-            case SINGLE_WORD -> {
-                String rest = stringReader.readUntilNextCommandArgument();
-                if (stringParserProperties.isAllowEmptyString()) {
-                    return true;
-                }
-                return !rest.isBlank();
-            }
+        String string = switch (stringParserProperties.getSetting()) {
+            case SINGLE_WORD -> stringReader.readUntilNextCommandArgument();
             case QUOTABLE_PHRASE -> {
                 if (stringReader.get(1).equals("\"")) {
                     stringReader.skip(1);
@@ -50,24 +45,18 @@ public class StringParser extends CommandParser {
                         builder.append(stringReader.readUntil("\""));
                         currentString = builder.toString();
                     }
-                    if (stringParserProperties.isAllowEmptyString()) {
-                        return true;
-                    }
-                    return currentString.isBlank();
+                    yield currentString;
                 }
-                if (stringParserProperties.isAllowEmptyString()) {
-                    return true;
-                }
-                return !stringReader.readUntilNextCommandArgument().isBlank();
+                yield stringReader.readUntilNextCommandArgument();
             }
-            case GREEDY_PHRASE -> {
-                String rest = stringReader.readRest();
-                if (stringParserProperties.isAllowEmptyString()) {
-                    return true;
-                }
-                return !rest.isBlank();
-            }
+            case GREEDY_PHRASE -> stringReader.readRest();
+        };
+
+        if (stringParserProperties.isAllowEmptyString()) {
+            return;
         }
-        return false;
+        if (string.isBlank()) {
+            throw new BlankStringCommandParseException(stringReader, string);
+        }
     }
 }

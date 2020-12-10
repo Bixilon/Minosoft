@@ -14,7 +14,10 @@
 package de.bixilon.minosoft.data.commands.parser;
 
 import de.bixilon.minosoft.data.commands.parser.entity.EntitySelectorArgumentParser;
-import de.bixilon.minosoft.data.commands.parser.entity.NameEntitySelectorArgumentParser;
+import de.bixilon.minosoft.data.commands.parser.entity.IntegerSelectorArgumentParser;
+import de.bixilon.minosoft.data.commands.parser.entity.StringSelectorArgumentParser;
+import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exception.entity.*;
 import de.bixilon.minosoft.data.commands.parser.properties.EntityParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -39,17 +42,17 @@ public class EntityParser extends CommandParser {
         ENTITY_FILTER_PARAMETER_LIST.put("dz", null);
         ENTITY_FILTER_PARAMETER_LIST.put("gamemode", null);
         ENTITY_FILTER_PARAMETER_LIST.put("level", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("limit", null);
 
          */
-        ENTITY_FILTER_PARAMETER_LIST.put("name", NameEntitySelectorArgumentParser.NAME_ENTITY_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("name", StringSelectorArgumentParser.STRING_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("team", StringSelectorArgumentParser.STRING_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("limit", IntegerSelectorArgumentParser.INTEGER_SELECTOR_ARGUMENT_PARSER);
         /*
         ENTITY_FILTER_PARAMETER_LIST.put("nbt", null);
         ENTITY_FILTER_PARAMETER_LIST.put("predicate", null);
         ENTITY_FILTER_PARAMETER_LIST.put("scores", null);
         ENTITY_FILTER_PARAMETER_LIST.put("sort", null);
         ENTITY_FILTER_PARAMETER_LIST.put("tag", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("team", null);
         ENTITY_FILTER_PARAMETER_LIST.put("x", null);
         ENTITY_FILTER_PARAMETER_LIST.put("x_rotation", null);
         ENTITY_FILTER_PARAMETER_LIST.put("y", null);
@@ -65,17 +68,18 @@ public class EntityParser extends CommandParser {
     }
 
     @Override
-    public boolean isParsable(ParserProperties properties, ImprovedStringReader stringReader) {
+    public void isParsable(ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+        EntityParserProperties entityParserProperties = (EntityParserProperties) properties;
         if (stringReader.getChar().equals("@")) {
             // selector
-            if (((EntityParserProperties) properties).isOnlySingleEntity()) {
-                return false;
+            if (entityParserProperties.isOnlySingleEntity()) {
+                throw new SingleEntityOnlyEntityCommandParseException(stringReader, stringReader.getChar());
             }
             stringReader.skip(1); // skip @
             String selectorChar = stringReader.readChar();
             if (!selectorChar.equals("a") && !selectorChar.equals("e") && !selectorChar.equals("p") && !selectorChar.equals("r") && !selectorChar.equals("s")) {
                 // only @a, @e, @p, @r and @s possible
-                return false;
+                throw new UnknownMassSelectorEntityCommandParseException(stringReader, stringReader.getChar());
             }
 
             // parse entity selector
@@ -83,7 +87,7 @@ public class EntityParser extends CommandParser {
             // example: /msg @a[ name = "Bixilon" ] asd
             if (!stringReader.getChar().equals("[")) {
                 // no meta data given, valid
-                return true;
+                return;
             }
             stringReader.skip(1);
 
@@ -91,20 +95,19 @@ public class EntityParser extends CommandParser {
             HashSet<String> parameters = new HashSet<>();
             while (true) {
                 stringReader.skipSpaces();
-                String parameterName = stringReader.readUntil("=").key.replaceAll("\\s", "");
+                String parameterName = stringReader.readUntil("=").key.replaceAll("\\s", ""); // ToDo: only remove prefix and suffix spaces!
                 if (parameters.contains(parameterName)) {
-                    return false;
+                    throw new DuplicatedParameterEntityCommandParseException(stringReader, parameterName);
                 }
                 if (!ENTITY_FILTER_PARAMETER_LIST.containsKey(parameterName)) {
-                    return false;
+                    throw new UnknownParameterEntityCommandParseException(stringReader, parameterName);
                 }
 
                 stringReader.skipSpaces();
 
                 EntitySelectorArgumentParser parser = ENTITY_FILTER_PARAMETER_LIST.get(parameterName);
-                if (!parser.isParsable(stringReader)) {
-                    return false;
-                }
+                parser.isParsable(stringReader);
+
                 stringReader.skipSpaces();
                 parameters.add(parameterName);
                 String nextChar = stringReader.getChar();
@@ -117,20 +120,20 @@ public class EntityParser extends CommandParser {
                 }
             }
             stringReader.skipSpaces();
-            return true;
+            return;
         }
         String value = stringReader.readUntilNextCommandArgument();
         if (ProtocolDefinition.MINECRAFT_NAME_VALIDATOR.matcher(value).matches()) {
-            return true;
+            return;
         }
-        if (((EntityParserProperties) properties).isOnlyPlayers()) {
-            return false;
+        if (entityParserProperties.isOnlyPlayers()) {
+            throw new PlayerOnlyEntityCommandParseException(stringReader, value);
         }
         try {
             Util.getUUIDFromString(value);
-            return true;
+            return;
         } catch (Exception ignored) {
         }
-        return false;
+        throw new UnknownEntitySelectorCommandParseException(stringReader, value);
     }
 }

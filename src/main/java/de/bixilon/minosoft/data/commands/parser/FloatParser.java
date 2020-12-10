@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
+import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exception.number.FloatCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exception.number.ValueOutOfRangeCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.FloatParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -21,9 +24,6 @@ import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 public class FloatParser extends CommandParser {
     public static final FloatParser FLOAT_PARSER = new FloatParser();
 
-    public boolean isValidValue(FloatParserProperties properties, float value) {
-        return value >= properties.getMinValue() && value <= properties.getMaxValue();
-    }
 
     @Override
     public ParserProperties readParserProperties(InByteBuffer buffer) {
@@ -31,12 +31,16 @@ public class FloatParser extends CommandParser {
     }
 
     @Override
-    public boolean isParsable(ParserProperties properties, ImprovedStringReader stringReader) {
+    public void isParsable(ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
         String argument = stringReader.readUntilNextCommandArgument();
         try {
-            return isValidValue((FloatParserProperties) properties, Float.parseFloat(argument));
-        } catch (Exception ignored) {
-            return false;
+            float value = Float.parseFloat(argument);
+            FloatParserProperties floatParserProperties = (FloatParserProperties) properties;
+            if (value < floatParserProperties.getMinValue() && value > floatParserProperties.getMaxValue()) {
+                throw new ValueOutOfRangeCommandParseException(stringReader, floatParserProperties.getMinValue(), floatParserProperties.getMaxValue(), value);
+            }
+        } catch (NumberFormatException exception) {
+            throw new FloatCommandParseException(stringReader, argument, exception);
         }
     }
 }

@@ -11,19 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser;
+package de.bixilon.minosoft.data.commands.parser.exception;
 
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-import javax.annotation.Nullable;
+public class RequiresMoreArgumentsCommandParseException extends CommandParseException {
 
-@Deprecated
-public class DummyParser extends CommandParser {
-    public static final DummyParser DUMMY_PARSER = new DummyParser();
+    private static final String ERROR_MESSAGE = "Command requires more arguments!";
 
-    @Override
-    public void isParsable(@Nullable ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+    public RequiresMoreArgumentsCommandParseException(ImprovedStringReader command) {
+        super(ERROR_MESSAGE, command, command.getPosition());
+    }
+
+    public RequiresMoreArgumentsCommandParseException(ImprovedStringReader command, Throwable cause) {
+        super(ERROR_MESSAGE, command, command.getPosition(), cause);
     }
 }

@@ -11,19 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser;
+package de.bixilon.minosoft.data.commands.parser.exception.entity;
 
 import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-import javax.annotation.Nullable;
+public class SingleEntityOnlyEntityCommandParseException extends CommandParseException {
 
-@Deprecated
-public class DummyParser extends CommandParser {
-    public static final DummyParser DUMMY_PARSER = new DummyParser();
+    private static final String ERROR_MESSAGE = "Only 1 entity allowed!";
 
-    @Override
-    public void isParsable(@Nullable ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+    public SingleEntityOnlyEntityCommandParseException(ImprovedStringReader command, String currentArgument) {
+        super(ERROR_MESSAGE, command, currentArgument);
+    }
+
+    public SingleEntityOnlyEntityCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+        super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.commands.parser;
 
 import com.google.common.collect.HashBiMap;
+import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -45,6 +46,6 @@ public abstract class CommandParser {
         return null;
     }
 
-    public abstract boolean isParsable(@Nullable ParserProperties properties, ImprovedStringReader stringReader);
+    public abstract void isParsable(@Nullable ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException;
 
 }

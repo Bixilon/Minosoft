@@ -13,9 +13,10 @@
 
 package de.bixilon.minosoft.data.commands.parser.entity;
 
+import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public interface EntitySelectorArgumentParser {
 
-    boolean isParsable(ImprovedStringReader stringReader);
+    void isParsable(ImprovedStringReader stringReader) throws CommandParseException;
 }

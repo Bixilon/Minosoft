@@ -11,19 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser;
+package de.bixilon.minosoft.data.commands.parser.exception.number;
 
 import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-import javax.annotation.Nullable;
+public class ValueOutOfRangeCommandParseException extends CommandParseException {
 
-@Deprecated
-public class DummyParser extends CommandParser {
-    public static final DummyParser DUMMY_PARSER = new DummyParser();
+    private static final String ERROR_MESSAGE = "Value out of range (min=%s, max=%s!";
 
-    @Override
-    public void isParsable(@Nullable ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+    public ValueOutOfRangeCommandParseException(ImprovedStringReader command, Object minValue, Object maxValue, Object value) {
+        super(String.format(ERROR_MESSAGE, minValue, maxValue), command, value.toString());
     }
 }
