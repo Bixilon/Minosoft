@@ -11,23 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser.entity;
+package de.bixilon.minosoft.data.commands.parser.exception.number;
 
 import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
-import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public abstract class EntitySelectorArgumentParser {
-    private static final String[] ENTITY_VALUE_TERMINATORS = {",", " ", "]"};
+public class MinimumBiggerAsMaximumCommandParseException extends CommandParseException {
 
-    public abstract void isParsable(ImprovedStringReader stringReader) throws CommandParseException;
+    private static final String ERROR_MESSAGE = "Minimum bigger than maximum!";
 
-    protected Pair<String, String> readNextArgument(ImprovedStringReader stringReader) {
-        Pair<String, String> match = stringReader.readUntil(ENTITY_VALUE_TERMINATORS);
-        if (!match.value.equals(" ")) {
-            // set pointer to --
-            stringReader.skip(-1);
-        }
-        return match;
+    public MinimumBiggerAsMaximumCommandParseException(ImprovedStringReader command, String currentArgument) {
+        super(ERROR_MESSAGE, command, currentArgument);
+    }
+
+    public MinimumBiggerAsMaximumCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+        super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

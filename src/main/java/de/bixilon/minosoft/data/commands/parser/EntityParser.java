@@ -13,9 +13,7 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
-import de.bixilon.minosoft.data.commands.parser.entity.EntitySelectorArgumentParser;
-import de.bixilon.minosoft.data.commands.parser.entity.IntegerSelectorArgumentParser;
-import de.bixilon.minosoft.data.commands.parser.entity.StringSelectorArgumentParser;
+import de.bixilon.minosoft.data.commands.parser.entity.*;
 import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exception.entity.*;
 import de.bixilon.minosoft.data.commands.parser.properties.EntityParserProperties;
@@ -34,32 +32,25 @@ public class EntityParser extends CommandParser {
 
     static {
         // ToDo: add all parsers
-        /*
-        ENTITY_FILTER_PARAMETER_LIST.put("advancements", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("distance", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("dx", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("dy", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("dz", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("gamemode", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("level", null);
-
-         */
         ENTITY_FILTER_PARAMETER_LIST.put("name", StringSelectorArgumentParser.STRING_SELECTOR_ARGUMENT_PARSER);
         ENTITY_FILTER_PARAMETER_LIST.put("team", StringSelectorArgumentParser.STRING_SELECTOR_ARGUMENT_PARSER);
         ENTITY_FILTER_PARAMETER_LIST.put("limit", IntegerSelectorArgumentParser.INTEGER_SELECTOR_ARGUMENT_PARSER);
-        /*
-        ENTITY_FILTER_PARAMETER_LIST.put("nbt", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("predicate", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("scores", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("sort", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("tag", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("x", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("x_rotation", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("y", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("y_rotation", null);
-        ENTITY_FILTER_PARAMETER_LIST.put("z", null);
+        ENTITY_FILTER_PARAMETER_LIST.put("level", RangeSelectorArgumentParser.LEVEL_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("gamemode", ListSelectorArgumentParser.GAMEMODE_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("distance", RangeSelectorArgumentParser.DISTANCE_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("x", DoubleSelectorArgumentParser.DOUBLE_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("y", DoubleSelectorArgumentParser.DOUBLE_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("z", DoubleSelectorArgumentParser.DOUBLE_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("sort", ListSelectorArgumentParser.SORT_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("dx", DoubleSelectorArgumentParser.DOUBLE_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("dy", DoubleSelectorArgumentParser.DOUBLE_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("dz", DoubleSelectorArgumentParser.DOUBLE_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("predicate", StringSelectorArgumentParser.STRING_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("x_rotation", RangeSelectorArgumentParser.ROTATION_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("y_rotation", RangeSelectorArgumentParser.ROTATION_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("tag", StringSelectorArgumentParser.STRING_SELECTOR_ARGUMENT_PARSER);
 
-         */
+        // ToDo: advancements, nbt, type, scores
     }
 
     @Override
@@ -80,6 +71,9 @@ public class EntityParser extends CommandParser {
             if (!selectorChar.equals("a") && !selectorChar.equals("e") && !selectorChar.equals("p") && !selectorChar.equals("r") && !selectorChar.equals("s")) {
                 // only @a, @e, @p, @r and @s possible
                 throw new UnknownMassSelectorEntityCommandParseException(stringReader, stringReader.getChar());
+            }
+            if (selectorChar.equals("e") && entityParserProperties.isOnlyPlayers()) {
+                throw new PlayerOnlyEntityCommandParseException(stringReader, selectorChar);
             }
 
             // parse entity selector

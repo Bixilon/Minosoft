@@ -13,22 +13,21 @@
 
 package de.bixilon.minosoft.data.commands.parser.entity;
 
-import de.bixilon.minosoft.data.commands.parser.StringParser;
 import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.properties.StringParserProperties;
+import de.bixilon.minosoft.data.commands.parser.exception.number.DoubleCommandParseException;
+import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public class StringSelectorArgumentParser extends EntitySelectorArgumentParser {
-    public static final StringSelectorArgumentParser STRING_SELECTOR_ARGUMENT_PARSER = new StringSelectorArgumentParser();
-    private static final StringParserProperties STRING_PARSER_PROPERTIES = new StringParserProperties(StringParserProperties.StringSettings.QUOTABLE_PHRASE, true);
+public class DoubleSelectorArgumentParser extends EntitySelectorArgumentParser {
+    public static final DoubleSelectorArgumentParser DOUBLE_SELECTOR_ARGUMENT_PARSER = new DoubleSelectorArgumentParser();
 
     @Override
     public void isParsable(ImprovedStringReader stringReader) throws CommandParseException {
-        // if it starts with a quote, it will end with a quote
-        if (stringReader.get(1).equals("\"")) {
-            StringParser.STRING_PARSER.isParsable(STRING_PARSER_PROPERTIES, stringReader);
-            return;
+        Pair<String, String> match = readNextArgument(stringReader);
+        try {
+            Double.parseDouble(match.key);
+        } catch (Exception e) {
+            throw new DoubleCommandParseException(stringReader, match.key, e);
         }
-        readNextArgument(stringReader);
     }
 }

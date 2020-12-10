@@ -18,17 +18,12 @@ import de.bixilon.minosoft.data.commands.parser.exception.number.IntegerCommandP
 import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public class IntegerSelectorArgumentParser implements EntitySelectorArgumentParser {
+public class IntegerSelectorArgumentParser extends EntitySelectorArgumentParser {
     public static final IntegerSelectorArgumentParser INTEGER_SELECTOR_ARGUMENT_PARSER = new IntegerSelectorArgumentParser();
 
     @Override
     public void isParsable(ImprovedStringReader stringReader) throws CommandParseException {
-        // read until next space or comma
-        Pair<String, String> match = stringReader.readUntil(",", " ", "]");
-        if (!match.value.equals(" ")) {
-            // set pointer to --
-            stringReader.skip(-1);
-        }
+        Pair<String, String> match = readNextArgument(stringReader);
         try {
             Integer.parseInt(match.key);
         } catch (Exception e) {
