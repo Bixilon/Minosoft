@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.commands;
 import de.bixilon.minosoft.data.commands.parser.CommandParser;
 import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
@@ -60,9 +61,9 @@ public class CommandArgumentNode extends CommandLiteralNode {
     }
 
     @Override
-    public void isSyntaxCorrect(ImprovedStringReader stringReader) throws CommandParseException {
-        parser.isParsable(properties, stringReader);
-        super.isSyntaxCorrect(stringReader);
+    public void isSyntaxCorrect(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
+        parser.isParsable(connection, properties, stringReader);
+        super.isSyntaxCorrect(connection, stringReader);
     }
 
     public enum SuggestionTypes {

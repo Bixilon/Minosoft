@@ -11,27 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser;
+package de.bixilon.minosoft.data.commands.parser.exception.entity;
 
 import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
-import de.bixilon.minosoft.data.commands.parser.properties.RangeParserProperties;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-import javax.annotation.Nullable;
+public class UnknownEntityCommandParseException extends CommandParseException {
 
-public class RangeParser extends CommandParser {
-    public static final RangeParser RANGE_PARSER = new RangeParser();
+    private static final String ERROR_MESSAGE = "Unknown entity type!";
 
-    @Override
-    public ParserProperties readParserProperties(InByteBuffer buffer) {
-        return new RangeParserProperties(buffer);
+    public UnknownEntityCommandParseException(ImprovedStringReader command, String currentArgument) {
+        super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    @Override
-    public void isParsable(Connection connection, @Nullable ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
-        // ToDo
+    public UnknownEntityCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+        super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

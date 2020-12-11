@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exception.entity.*;
 import de.bixilon.minosoft.data.commands.parser.properties.EntityParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Util;
@@ -49,8 +50,9 @@ public class EntityParser extends CommandParser {
         ENTITY_FILTER_PARAMETER_LIST.put("x_rotation", RangeSelectorArgumentParser.ROTATION_SELECTOR_ARGUMENT_PARSER);
         ENTITY_FILTER_PARAMETER_LIST.put("y_rotation", RangeSelectorArgumentParser.ROTATION_SELECTOR_ARGUMENT_PARSER);
         ENTITY_FILTER_PARAMETER_LIST.put("tag", StringSelectorArgumentParser.STRING_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("type", IdentifierSelectorArgumentParser.ENTITY_TYPE_IDENTIFIER_SELECTOR_ARGUMENT_PARSER);
 
-        // ToDo: advancements, nbt, type, scores
+        // ToDo: advancements, nbt, scores
     }
 
     @Override
@@ -59,7 +61,7 @@ public class EntityParser extends CommandParser {
     }
 
     @Override
-    public void isParsable(ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+    public void isParsable(Connection connection, ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
         EntityParserProperties entityParserProperties = (EntityParserProperties) properties;
         if (stringReader.getChar().equals("@")) {
             // selector
@@ -100,7 +102,7 @@ public class EntityParser extends CommandParser {
                 stringReader.skipSpaces();
 
                 EntitySelectorArgumentParser parser = ENTITY_FILTER_PARAMETER_LIST.get(parameterName);
-                parser.isParsable(stringReader);
+                parser.isParsable(connection, stringReader);
 
                 stringReader.skipSpaces();
                 parameters.add(parameterName);

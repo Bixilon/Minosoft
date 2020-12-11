@@ -818,7 +818,7 @@ public class PacketHandler {
         };
         for (String command : commands) {
             try {
-                pkg.getRootNode().isSyntaxCorrect(command);
+                pkg.getRootNode().isSyntaxCorrect(connection, command);
                 Log.game("Command \"%s\" is valid", command);
             } catch (CommandParseException e) {
                 Log.game("Command \"%s\" is invalid, %s: %s", command, e.getClass().getSimpleName(), e.getErrorMessage());

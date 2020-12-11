@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.commands.parser.exception.BlankStringCommandPars
 import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.StringParserProperties;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
@@ -29,7 +30,7 @@ public class StringParser extends CommandParser {
     }
 
     @Override
-    public void isParsable(ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+    public void isParsable(Connection connection, ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
         StringParserProperties stringParserProperties = ((StringParserProperties) properties);
         String string = switch (stringParserProperties.getSetting()) {
             case SINGLE_WORD -> stringReader.readUntilNextCommandArgument();

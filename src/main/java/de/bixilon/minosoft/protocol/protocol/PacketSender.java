@@ -25,6 +25,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.play.*;
 import java.util.UUID;
 
 public class PacketSender {
+    public static final String[] ILLEGAL_CHAT_CHARS = new String[]{"§"};
     final Connection connection;
 
     public PacketSender(Connection connection) {
@@ -36,6 +37,11 @@ public class PacketSender {
     }
 
     public void sendChatMessage(String message) {
+        for (String illegalChar : ILLEGAL_CHAT_CHARS) {
+            if (message.contains(illegalChar)) {
+                throw new IllegalArgumentException(String.format("%s is not allowed in chat", illegalChar));
+            }
+        }
         ChatMessageSendingEvent event = new ChatMessageSendingEvent(connection, message);
         if (connection.fireEvent(event)) {
             return;

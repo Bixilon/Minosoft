@@ -17,6 +17,7 @@ import com.google.errorprone.annotations.DoNotCall;
 import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exception.RequiresMoreArgumentsCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exception.WrongArgumentCommandParseException;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.BitByte;
@@ -77,7 +78,7 @@ public abstract class CommandNode {
         return childrenIds;
     }
 
-    public void isSyntaxCorrect(ImprovedStringReader stringReader) throws CommandParseException {
+    public void isSyntaxCorrect(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
         String nextArgument = stringReader.getUntilNextCommandArgument();
         if (nextArgument.length() == 0) {
             if (isExecutable) {
@@ -87,14 +88,14 @@ public abstract class CommandNode {
         }
         if (literalChildren.containsKey(nextArgument)) {
             stringReader.skip(nextArgument.length() + ProtocolDefinition.COMMAND_SEPARATOR.length());
-            literalChildren.get(nextArgument).isSyntaxCorrect(stringReader);
+            literalChildren.get(nextArgument).isSyntaxCorrect(connection, stringReader);
             return;
         }
         CommandParseException lastException = null;
         for (CommandArgumentNode argumentNode : argumentsChildren) {
             int currentPosition = stringReader.getPosition();
             try {
-                argumentNode.isSyntaxCorrect(stringReader);
+                argumentNode.isSyntaxCorrect(connection, stringReader);
                 return;
             } catch (CommandParseException e) {
                 lastException = e;
@@ -108,11 +109,11 @@ public abstract class CommandNode {
         throw new WrongArgumentCommandParseException(stringReader, nextArgument);
     }
 
-    public void isSyntaxCorrect(String string) throws CommandParseException {
+    public void isSyntaxCorrect(Connection connection, String string) throws CommandParseException {
         // replace multiple spaces with nothing
         string = string.replaceAll("\\s{2,}", " ");
         ImprovedStringReader stringReader = new ImprovedStringReader(string);
-        isSyntaxCorrect(stringReader);
+        isSyntaxCorrect(connection, stringReader);
     }
 
     public enum NodeTypes {

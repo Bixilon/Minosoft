@@ -14,13 +14,14 @@
 package de.bixilon.minosoft.data.commands.parser.entity;
 
 import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public abstract class EntitySelectorArgumentParser {
     private static final String[] ENTITY_VALUE_TERMINATORS = {",", " ", "]"};
 
-    public abstract void isParsable(ImprovedStringReader stringReader) throws CommandParseException;
+    public abstract void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException;
 
     protected Pair<String, String> readNextArgument(ImprovedStringReader stringReader) {
         Pair<String, String> match = stringReader.readUntil(ENTITY_VALUE_TERMINATORS);

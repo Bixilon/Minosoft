@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.commands.parser;
 import de.bixilon.minosoft.data.commands.parser.exception.BooleanCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 import javax.annotation.Nullable;
@@ -24,7 +25,7 @@ public class BooleanParser extends CommandParser {
     public static final BooleanParser BOOLEAN_PARSER = new BooleanParser();
 
     @Override
-    public void isParsable(@Nullable ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+    public void isParsable(Connection connection, @Nullable ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
         String argument = stringReader.readUntilNextCommandArgument();
         if (!argument.equals("true") && !argument.equals("false")) {
             throw new BooleanCommandParseException(stringReader, argument);

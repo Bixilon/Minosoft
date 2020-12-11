@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.commands.parser.entity;
 
 import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exception.number.IntegerCommandParseException;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
@@ -22,7 +23,7 @@ public class IntegerSelectorArgumentParser extends EntitySelectorArgumentParser 
     public static final IntegerSelectorArgumentParser INTEGER_SELECTOR_ARGUMENT_PARSER = new IntegerSelectorArgumentParser();
 
     @Override
-    public void isParsable(ImprovedStringReader stringReader) throws CommandParseException {
+    public void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
         Pair<String, String> match = readNextArgument(stringReader);
         try {
             Integer.parseInt(match.key);
