@@ -51,6 +51,16 @@ public class Configuration {
         }
 
         JsonObject json = Util.readJsonFromFile(file.getAbsolutePath());
+
+
+        int configVersion = (int) getData(json, ConfigurationPaths.IntegerPaths.GENERAL_CONFIG_VERSION);
+        if (configVersion > LATEST_CONFIG_VERSION) {
+            throw new ConfigMigrationException(String.format("Configuration was migrated to newer config format (version=%d, expected=%d). Downgrading the config file is unsupported!", configVersion, LATEST_CONFIG_VERSION));
+        }
+        if (configVersion < LATEST_CONFIG_VERSION) {
+            migrateConfiguration();
+        }
+
         for (ConfigurationPaths.ConfigurationPath path : ConfigurationPaths.ALL_PATHS) {
             config.put(path, getData(json, path));
         }
@@ -64,14 +74,6 @@ public class Configuration {
         for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject("accounts").getAsJsonObject("entries").entrySet()) {
             MojangAccount account = MojangAccount.deserialize(entry.getValue().getAsJsonObject());
             accountList.put(account.getUserId(), account);
-        }
-
-        int configVersion = getInt(ConfigurationPaths.IntegerPaths.GENERAL_CONFIG_VERSION);
-        if (configVersion > LATEST_CONFIG_VERSION) {
-            throw new ConfigMigrationException(String.format("Configuration was migrated to newer config format (version=%d, expected=%d). Downgrading the config file is unsupported!", configVersion, LATEST_CONFIG_VERSION));
-        }
-        if (configVersion < LATEST_CONFIG_VERSION) {
-            migrateConfiguration();
         }
 
         final File finalFile = file;
