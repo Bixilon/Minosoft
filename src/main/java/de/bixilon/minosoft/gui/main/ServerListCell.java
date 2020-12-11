@@ -127,7 +127,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
         faviconField.setImage(favicon);
         if (server.isConnected()) {
-            setStyle("-fx-background-color: darkseagreen;");
+            getStyleClass().add("list-cell-connected");
             optionsSessions.setDisable(false);
         } else {
             optionsSessions.setDisable(true);
@@ -144,13 +144,13 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             resetCell();
 
             if (server.isConnected()) {
-                setStyle("-fx-background-color: darkseagreen;");
+                getStyleClass().add("list-cell-connected");
             }
             if (ping == null) {
                 // Offline
                 playersField.setText("");
                 versionField.setText(LocaleManager.translate(Strings.OFFLINE));
-                versionField.setStyle("-fx-text-fill: red;");
+                versionField.getStyleClass().add("version-error");
                 setErrorMotd(String.format("%s", server.getLastPing().getLastConnectionException()));
                 optionsConnect.setDisable(true);
                 canConnect = false;
@@ -208,11 +208,13 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     private void resetCell() {
         // clear all cells
         setStyle(null);
+        getStyleClass().remove("list-cell-connected");
         motdField.getChildren().clear();
         brandField.setText("");
         brandField.setTooltip(null);
         motdField.setStyle(null);
         versionField.setText(LocaleManager.translate(Strings.CONNECTING));
+        versionField.getStyleClass().remove("version-error");
         versionField.setStyle(null);
         playersField.setText("");
         optionsConnect.setDisable(true);
@@ -273,7 +275,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
         optionsConnect.setDisable(true);
         connection.connect(server.getLastPing().getAddress(), version);
-        connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
+        connection.registerEvent(new EventInvokerCallback<>(ConnectionStateChangeEvent.class, this::handleConnectionCallback));
         server.addConnection(connection);
 
     }
@@ -293,16 +295,15 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 // maybe we got disconnected
                 if (!server.isConnected()) {
                     setStyle(null);
+                    getStyleClass().remove("list-cell-connected");
                     optionsSessions.setDisable(true);
                     optionsConnect.setDisable(false);
+                    return;
                 }
-                return;
             }
 
-            if (Minosoft.getSelectedAccount() != connection.getPlayer().getAccount()) {
-                optionsConnect.setDisable(false);
-            }
-            setStyle("-fx-background-color: darkseagreen;");
+            optionsConnect.setDisable(Minosoft.getSelectedAccount() == connection.getPlayer().getAccount());
+            getStyleClass().add("list-cell-connected");
             optionsSessions.setDisable(false);
         });
     }

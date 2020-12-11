@@ -104,7 +104,7 @@
 }
 
 .menu-item:disabled {
-    -fx-opacity: 80%;
+    -fx-opacity: 60%;
 }
 
 .menu-button {
@@ -164,4 +164,12 @@
 
 .list-view {
     -fx-background-color: -secondary-color;
+}
+
+.version-error {
+    -fx-text-fill: red;
+}
+
+.list-cell-connected {
+    -fx-background-color: darkseagreen;
 }

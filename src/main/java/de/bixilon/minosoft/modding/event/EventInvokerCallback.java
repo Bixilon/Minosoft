@@ -33,10 +33,6 @@ public class EventInvokerCallback<V extends ConnectionEvent> extends EventInvoke
         this.eventType = eventType; // ToDo: how to get the class of V? seems to be impossible
     }
 
-    public EventInvokerCallback(InvokerCallback<V> callback) {
-        this(false, callback);
-    }
-
     @SuppressWarnings("unchecked")
     public void invoke(ConnectionEvent event) {
         if (eventType != event.getClass()) {

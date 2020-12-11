@@ -83,7 +83,7 @@ public class SessionListCell extends ListCell<Connection> implements Initializab
         }
         setStyle(null);
         this.connection = connection;
-        connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
+        connection.registerEvent(new EventInvokerCallback<>(ConnectionStateChangeEvent.class, this::handleConnectionCallback));
         connectionId.setText(String.format("#%d", connection.getConnectionId()));
         account.setText(connection.getPlayer().getAccount().getPlayerName());
     }
