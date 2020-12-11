@@ -17,15 +17,6 @@ package de.bixilon.minosoft.data.world;
  * Chunk X and Z location (block position / 16, rounded down)
  */
 public record ChunkLocation(int x, int z) {
-    @Deprecated
-    public int getX() {
-        return x;
-    }
-
-    @Deprecated
-    public int getZ() {
-        return z;
-    }
 
     @Override
     public String toString() {

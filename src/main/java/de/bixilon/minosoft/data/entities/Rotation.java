@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.entities;
 
 public record Rotation(int yaw, int pitch) {
+
     @Override
     public String toString() {
         return String.format("raw=%d, pitch=%d", yaw, pitch);

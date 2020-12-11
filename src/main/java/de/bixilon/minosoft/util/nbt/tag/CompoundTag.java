@@ -158,9 +158,9 @@ public class CompoundTag extends NBTTag {
         if (isFinal) {
             throw new IllegalArgumentException("This tag is marked as final!");
         }
-        data.put("x", new IntTag(position.getX()));
-        data.put("y", new IntTag(position.getY()));
-        data.put("z", new IntTag(position.getZ()));
+        data.put("x", new IntTag(position.x()));
+        data.put("y", new IntTag(position.y()));
+        data.put("z", new IntTag(position.z()));
     }
 
     @Override

@@ -16,20 +16,6 @@ package de.bixilon.minosoft.data.entities;
 import de.bixilon.minosoft.data.mappings.MobEffect;
 
 public record StatusEffect(MobEffect effect, int amplifier, int duration) {
-    @Deprecated
-    public int getAmplifier() {
-        return amplifier;
-    }
-
-    @Deprecated
-    public int getDuration() {
-        return duration;
-    }
-
-    @Deprecated
-    public MobEffect getEffect() {
-        return effect;
-    }
 
     @Override
     public String toString() {

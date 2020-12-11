@@ -14,20 +14,6 @@
 package de.bixilon.minosoft.data.entities;
 
 public record RelativeLocation(double x, double y, double z) {
-    @Deprecated
-    public double getX() {
-        return x;
-    }
-
-    @Deprecated
-    public double getY() {
-        return y;
-    }
-
-    @Deprecated
-    public double getZ() {
-        return z;
-    }
 
     @Override
     public String toString() {

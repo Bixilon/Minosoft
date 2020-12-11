@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.entities;
 
 public record EntityRotation(float yaw, float pitch, float headYaw) {
+
     @Override
     public String toString() {
         return String.format("raw=%s, pitch=%s, headYaw=%s", yaw, pitch, headYaw);

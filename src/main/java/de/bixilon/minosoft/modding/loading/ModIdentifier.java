@@ -19,6 +19,7 @@ import de.bixilon.minosoft.util.Util;
 import java.util.UUID;
 
 public record ModIdentifier(UUID uuid, int versionId) {
+
     public static ModIdentifier serialize(JsonObject json) {
         return new ModIdentifier(Util.getUUIDFromString(json.get("uuid").getAsString()), json.get("versionId").getAsInt());
     }

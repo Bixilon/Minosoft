@@ -32,8 +32,8 @@ public final class ChunkUtil {
             }
             // chunk
             byte sections = BitByte.getBitCount(sectionBitMask);
-            int totalBytes = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
-            int halfBytes = totalBytes / 2; // half bytes
+            int totalBytes = ProtocolDefinition.BLOCKS_PER_SECTION * sections;
+            int halfBytes = totalBytes >> 1;
 
             byte[] blockTypes = buffer.readBytes(totalBytes);
             byte[] meta = buffer.readBytes(halfBytes);
@@ -42,7 +42,7 @@ public final class ChunkUtil {
             if (containsSkyLight) {
                 skyLight = buffer.readBytes(halfBytes);
             }
-            byte[] addBlockTypes = buffer.readBytes(Integer.bitCount(addBitMask) * 2048); // 16 * 16 * 16 * addBlocks / 2
+            byte[] addBlockTypes = buffer.readBytes(Integer.bitCount(addBitMask) * (ProtocolDefinition.BLOCKS_PER_SECTION >> 1));
             if (groundUpContinuous) {
                 byte[] biomes = buffer.readBytes(256);
             }
@@ -50,13 +50,13 @@ public final class ChunkUtil {
             // parse data
             int arrayPos = 0;
             HashMap<Byte, ChunkSection> sectionMap = new HashMap<>();
-            for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
+            for (byte c = 0; c < ProtocolDefinition.SECTIONS_PER_CHUNK; c++) { // max sections per chunks in chunk column
                 if (BitByte.isBitSet(sectionBitMask, c)) {
                     HashMap<InChunkSectionLocation, Block> blockMap = new HashMap<>();
 
-                    for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
-                        for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
-                            for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
+                    for (int nibbleY = 0; nibbleY < ProtocolDefinition.SECTION_HEIGHT_Y; nibbleY++) {
+                        for (int nibbleZ = 0; nibbleZ < ProtocolDefinition.SECTION_WIDTH_Z; nibbleZ++) {
+                            for (int nibbleX = 0; nibbleX < ProtocolDefinition.SECTION_WIDTH_X; nibbleX++) {
                                 short singeBlockId = (short) (blockTypes[arrayPos] & 0xFF);
                                 byte singleMeta;
                                 // get block meta and shift and add (merge) id if needed
@@ -92,8 +92,8 @@ public final class ChunkUtil {
         }
         if (buffer.getVersionId() < 62) { // ToDo: was this really changed in 62?
             byte sections = BitByte.getBitCount(sectionBitMask);
-            int totalBlocks = 4096 * sections; // 16 * 16 * 16 * sections; Section Width * Section Height * Section Width * sections
-            int halfBytes = totalBlocks / 2; // half bytes
+            int totalBlocks = ProtocolDefinition.BLOCKS_PER_SECTION * sections;
+            int halfBytes = totalBlocks >> 1;
 
             int[] blockData = buffer.readUnsignedLEShorts(totalBlocks); // blocks >>> 4, data & 0xF
 
@@ -112,22 +112,17 @@ public final class ChunkUtil {
 
             int arrayPos = 0;
             HashMap<Byte, ChunkSection> sectionMap = new HashMap<>();
-            for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
+            for (byte c = 0; c < ProtocolDefinition.SECTIONS_PER_CHUNK; c++) { // max sections per chunks in chunk column
                 if (!BitByte.isBitSet(sectionBitMask, c)) {
                     continue;
                 }
                 HashMap<InChunkSectionLocation, Block> blockMap = new HashMap<>();
 
-                for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
-                    for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
-                        for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
+                for (int nibbleY = 0; nibbleY < ProtocolDefinition.SECTION_HEIGHT_Y; nibbleY++) {
+                    for (int nibbleZ = 0; nibbleZ < ProtocolDefinition.SECTION_WIDTH_Z; nibbleZ++) {
+                        for (int nibbleX = 0; nibbleX < ProtocolDefinition.SECTION_WIDTH_X; nibbleX++) {
                             int blockId = blockData[arrayPos];
                             Block block = buffer.getConnection().getMapping().getBlockById(blockId);
-                            /*
-                            if (blockId != 0 && block == null) {
-                                Log.warn("Unknown block: %d", blockId);
-                            }
-                             */
                             if (block == null) {
                                 arrayPos++;
                                 continue;
@@ -143,7 +138,7 @@ public final class ChunkUtil {
         }
         // really big thanks to: https://wiki.vg/index.php?title=Chunk_Format&oldid=13712
         HashMap<Byte, ChunkSection> sectionMap = new HashMap<>();
-        for (byte c = 0; c < 16; c++) { // max sections per chunks in chunk column
+        for (byte c = 0; c < ProtocolDefinition.SECTIONS_PER_CHUNK; c++) { // max sections per chunks in chunk column
             if (!BitByte.isBitSet(sectionBitMask, c)) {
                 continue;
             }
@@ -157,10 +152,10 @@ public final class ChunkUtil {
             long[] data = buffer.readLongArray(buffer.readVarInt());
 
             HashMap<InChunkSectionLocation, Block> blockMap = new HashMap<>();
-            for (int nibbleY = 0; nibbleY < 16; nibbleY++) {
-                for (int nibbleZ = 0; nibbleZ < 16; nibbleZ++) {
-                    for (int nibbleX = 0; nibbleX < 16; nibbleX++) {
-                        int blockNumber = (((nibbleY * 16) + nibbleZ) * 16) + nibbleX;
+            for (int nibbleY = 0; nibbleY < ProtocolDefinition.SECTION_HEIGHT_Y; nibbleY++) {
+                for (int nibbleZ = 0; nibbleZ < ProtocolDefinition.SECTION_WIDTH_Z; nibbleZ++) {
+                    for (int nibbleX = 0; nibbleX < ProtocolDefinition.SECTION_WIDTH_X; nibbleX++) {
+                        int blockNumber = (((nibbleY * ProtocolDefinition.SECTION_HEIGHT_Y) + nibbleZ) * ProtocolDefinition.SECTIONS_PER_CHUNK) + nibbleX;
                         int startLong = (blockNumber * palette.getBitsPerBlock()) / 64;
                         int startOffset = (blockNumber * palette.getBitsPerBlock()) % 64;
                         int endLong = ((blockNumber + 1) * palette.getBitsPerBlock() - 1) / 64;
@@ -184,9 +179,9 @@ public final class ChunkUtil {
             }
 
             if (buffer.getVersionId() < 440) {
-                byte[] light = buffer.readBytes(2048);
+                byte[] light = buffer.readBytes(ProtocolDefinition.BLOCKS_PER_SECTION >> 1);
                 if (containsSkyLight) {
-                    byte[] skyLight = buffer.readBytes(2048);
+                    byte[] skyLight = buffer.readBytes(ProtocolDefinition.BLOCKS_PER_SECTION >> 1);
                 }
             }
 

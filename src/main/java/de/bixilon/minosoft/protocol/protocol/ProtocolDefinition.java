@@ -42,12 +42,15 @@ public final class ProtocolDefinition {
 
     public static final int NULL_BLOCK_ID = 0;
 
-
     public static final String COMMAND_SEPARATOR = " ";
 
-    public static final int MINECRAFT_USERNAME_MINIMUM_LENGTH = 3;
-    public static final int MINECRAFT_USERNAME_MAXIMUM_LENGTH = 16;
     public static final Pattern MINECRAFT_NAME_VALIDATOR = Pattern.compile("\\w{3,16}");
+
+    public static final int SECTION_WIDTH_X = 16;
+    public static final int SECTION_WIDTH_Z = 16;
+    public static final int SECTION_HEIGHT_Y = 16;
+    public static final int SECTIONS_PER_CHUNK = 16;
+    public static final int BLOCKS_PER_SECTION = SECTION_WIDTH_X * SECTION_HEIGHT_Y * SECTION_WIDTH_X;
 
     static {
         // java does (why ever) not allow to directly assign a null

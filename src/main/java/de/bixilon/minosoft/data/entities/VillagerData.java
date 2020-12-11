@@ -17,23 +17,9 @@ import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
 
 public record VillagerData(VillagerTypes type, VillagerProfessions profession, VillagerLevels level) {
+
     public VillagerData(int type, int profession, int level, int versionId) {
         this(VillagerTypes.byId(type), VillagerProfessions.byId(profession, versionId), VillagerLevels.byId(level));
-    }
-
-    @Deprecated
-    public VillagerTypes getType() {
-        return type;
-    }
-
-    @Deprecated
-    public VillagerProfessions getProfession() {
-        return profession;
-    }
-
-    @Deprecated
-    public VillagerLevels getLevel() {
-        return level;
     }
 
     public enum VillagerProfessions {

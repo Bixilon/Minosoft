@@ -13,33 +13,12 @@
 
 package de.bixilon.minosoft.data.world;
 
-/**
- * Chunk X, Y and Z location (max 16x255x16)
- */
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+
 public record InChunkLocation(int x, int y, int z) {
-    public InChunkLocation {
-        if (x > 15 || y > 255 || z > 15 || x < 0 || y < 0 || z < 0) {
-            throw new IllegalArgumentException(String.format("Invalid chunk location %s %s %s", x, y, z));
-        }
-    }
-
-    @Deprecated
-    public int getX() {
-        return x;
-    }
-
-    @Deprecated
-    public int getY() {
-        return y;
-    }
-
-    @Deprecated
-    public int getZ() {
-        return z;
-    }
 
     public InChunkSectionLocation getInChunkSectionLocation() {
-        return new InChunkSectionLocation(x, y % 16, z);
+        return new InChunkSectionLocation(x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z);
     }
 
     @Override

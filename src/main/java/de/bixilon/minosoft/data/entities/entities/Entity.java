@@ -67,7 +67,7 @@ public abstract class Entity {
     }
 
     public void setLocation(RelativeLocation relativeLocation) {
-        location = new Location(location.getX() + relativeLocation.getX(), location.getY() + relativeLocation.getY(), location.getZ() + relativeLocation.getZ());
+        location = new Location(location.x() + relativeLocation.x(), location.y() + relativeLocation.y(), location.z() + relativeLocation.z());
     }
 
     public void setEquipment(HashMap<InventorySlots.EntityInventorySlots, Slot> slots) {
@@ -88,12 +88,12 @@ public abstract class Entity {
 
     public void addEffect(StatusEffect effect) {
         // effect already applied, maybe the duration or the amplifier changed?
-        effectList.removeIf(listEffect -> listEffect.getEffect() == effect.getEffect());
+        effectList.removeIf(listEffect -> listEffect.effect() == effect.effect());
         effectList.add(effect);
     }
 
     public void removeEffect(MobEffect effect) {
-        effectList.removeIf(listEffect -> listEffect.getEffect() == effect);
+        effectList.removeIf(listEffect -> listEffect.effect() == effect);
     }
 
     public void attachTo(int vehicleId) {

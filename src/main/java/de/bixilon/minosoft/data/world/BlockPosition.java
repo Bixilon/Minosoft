@@ -13,34 +13,22 @@
 
 package de.bixilon.minosoft.data.world;
 
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+
 public record BlockPosition(int x, int y, int z) {
+
     public ChunkLocation getChunkLocation() {
-        return new ChunkLocation(x / 16, z / 16);
-    }
-
-    @Deprecated
-    public int getX() {
-        return x;
-    }
-
-    @Deprecated
-    public int getY() {
-        return y;
-    }
-
-    @Deprecated
-    public int getZ() {
-        return z;
+        return new ChunkLocation(x / ProtocolDefinition.SECTION_WIDTH_X, z / ProtocolDefinition.SECTION_WIDTH_Z);
     }
 
     public InChunkLocation getInChunkLocation() {
-        int x = this.x % 16;
+        int x = this.x % ProtocolDefinition.SECTION_WIDTH_X;
         if (x < 0) {
-            x = 16 + x;
+            x = ProtocolDefinition.SECTION_WIDTH_X + x;
         }
-        int z = this.z % 16;
+        int z = this.z % ProtocolDefinition.SECTION_WIDTH_Z;
         if (z < 0) {
-            z = 16 + z;
+            z = ProtocolDefinition.SECTION_WIDTH_Z + z;
         }
         return new InChunkLocation(x, this.y, z);
     }
