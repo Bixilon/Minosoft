@@ -11,20 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser.exception.entity;
+package de.bixilon.minosoft.data.commands.parser.exceptions;
 
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public class UnknownEntitySelectorCommandParseException extends CommandParseException {
+public class BlankStringCommandParseException extends CommandParseException {
 
-    private static final String ERROR_MESSAGE = "Unknown entity selector!";
+    private static final String ERROR_MESSAGE = "String is blank!";
 
-    public UnknownEntitySelectorCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public BlankStringCommandParseException(ImprovedStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public UnknownEntitySelectorCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public BlankStringCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

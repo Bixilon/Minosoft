@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.commands.parser;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.network.Connection;

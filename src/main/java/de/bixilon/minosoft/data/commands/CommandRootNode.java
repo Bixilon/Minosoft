@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.commands;
 
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exception.UnknownCommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exception.WrongArgumentCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.WrongArgumentCommandParseException;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;

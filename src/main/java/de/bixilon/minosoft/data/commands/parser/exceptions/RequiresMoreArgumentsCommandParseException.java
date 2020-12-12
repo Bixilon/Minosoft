@@ -11,20 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser.exception.number;
+package de.bixilon.minosoft.data.commands.parser.exceptions;
 
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public class DoubleCommandParseException extends CommandParseException {
+public class RequiresMoreArgumentsCommandParseException extends CommandParseException {
 
-    private static final String ERROR_MESSAGE = "Unknown double value!";
+    private static final String ERROR_MESSAGE = "Command requires more arguments!";
 
-    public DoubleCommandParseException(ImprovedStringReader command, String currentArgument) {
-        super(ERROR_MESSAGE, command, currentArgument);
+    public RequiresMoreArgumentsCommandParseException(ImprovedStringReader command) {
+        super(ERROR_MESSAGE, command, command.getPosition());
     }
 
-    public DoubleCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
-        super(ERROR_MESSAGE, command, currentArgument, cause);
+    public RequiresMoreArgumentsCommandParseException(ImprovedStringReader command, Throwable cause) {
+        super(ERROR_MESSAGE, command, command.getPosition(), cause);
     }
 }

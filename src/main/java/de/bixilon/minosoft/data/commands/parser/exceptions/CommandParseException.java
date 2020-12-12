@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser.exception;
+package de.bixilon.minosoft.data.commands.parser.exceptions;
 
 
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;

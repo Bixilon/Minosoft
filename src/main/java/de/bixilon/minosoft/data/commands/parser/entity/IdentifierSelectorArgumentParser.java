@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.commands.parser.entity;
 
 import de.bixilon.minosoft.data.EntityClassMappings;
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exception.entity.UnknownEntityCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.entity.UnknownEntityCommandParseException;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.Pair;

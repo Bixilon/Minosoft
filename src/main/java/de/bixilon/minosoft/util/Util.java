@@ -273,4 +273,8 @@ public final class Util {
         String result = search.substring(search.indexOf(first) + first.length());
         return result.substring(0, result.indexOf(second));
     }
+
+    public static String readAsset(String path) throws IOException {
+        return Util.readFile(new BufferedReader(Util.readAsset(path, Util.class)), true);
+    }
 }

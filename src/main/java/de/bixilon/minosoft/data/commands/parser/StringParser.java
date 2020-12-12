@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
-import de.bixilon.minosoft.data.commands.parser.exception.BlankStringCommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.BlankStringCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.StringParserProperties;
 import de.bixilon.minosoft.protocol.network.Connection;

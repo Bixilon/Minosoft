@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exception.number.DoubleCommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exception.number.ValueOutOfRangeCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.number.DoubleCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.number.ValueOutOfRangeCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.DoubleParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.network.Connection;

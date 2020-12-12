@@ -11,16 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser.exception.number;
+package de.bixilon.minosoft.data.commands.parser.exceptions;
 
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public class ValueOutOfRangeCommandParseException extends CommandParseException {
+public class WrongArgumentCommandParseException extends CommandParseException {
 
-    private static final String ERROR_MESSAGE = "Value out of range (min=%s, max=%s!";
+    private static final String ERROR_MESSAGE = "Wrong argument given!";
 
-    public ValueOutOfRangeCommandParseException(ImprovedStringReader command, Object minValue, Object maxValue, Object value) {
-        super(String.format(ERROR_MESSAGE, minValue, maxValue), command, value.toString());
+    public WrongArgumentCommandParseException(ImprovedStringReader command, String currentArgument) {
+        super(ERROR_MESSAGE, command, currentArgument);
+    }
+
+    public WrongArgumentCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+        super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

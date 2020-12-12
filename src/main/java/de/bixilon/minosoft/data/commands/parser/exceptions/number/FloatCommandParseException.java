@@ -11,20 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser.exception.entity;
+package de.bixilon.minosoft.data.commands.parser.exceptions.number;
 
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public class DuplicatedParameterEntityCommandParseException extends CommandParseException {
+public class FloatCommandParseException extends CommandParseException {
 
-    private static final String ERROR_MESSAGE = "Entity parameter is duplicated!";
+    private static final String ERROR_MESSAGE = "Unknown float value!";
 
-    public DuplicatedParameterEntityCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public FloatCommandParseException(ImprovedStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public DuplicatedParameterEntityCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public FloatCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data.commands;
 
 import com.google.errorprone.annotations.DoNotCall;
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exception.RequiresMoreArgumentsCommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exception.WrongArgumentCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.RequiresMoreArgumentsCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.WrongArgumentCommandParseException;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;

@@ -11,9 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser.exception.number;
+package de.bixilon.minosoft.data.commands.parser.exceptions.number;
 
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class RangeBadFormatCommandParseException extends CommandParseException {

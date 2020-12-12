@@ -16,7 +16,6 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.data.GameModes;
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
 import de.bixilon.minosoft.data.mappings.recipes.Recipes;
@@ -804,26 +803,5 @@ public class PacketHandler {
 
     public void handle(PacketDeclareCommands pkg) {
         connection.setCommandRootNode(pkg.getRootNode());
-        // ToDo: Remove these dummy commands
-        String[] commands = {
-                "msg Bixilon TestReason 2Paramter 3 4 asd  asd",
-                "msg @a[name=Bixilon, level=23, gamemode=!survival] trest asd 12312 sad123123213",
-                "help",
-                "team list",
-                "tasdasda",
-                "msg @a[ name = \"Bixilon\" ] asd",
-                "msg    @a[ name =     Bixilon            ] asd asdsadasd",
-                "msg     @a[ name =     Bixilon    ,team=        ] asd asdsadasd",
-                "msg    @a[ name                = Bixilon    ,                      team   =!] asd asdsadasd",
-        };
-        for (String command : commands) {
-            try {
-                pkg.getRootNode().isSyntaxCorrect(connection, command);
-                Log.game("Command \"%s\" is valid", command);
-            } catch (CommandParseException e) {
-                Log.game("Command \"%s\" is invalid, %s: %s", command, e.getClass().getSimpleName(), e.getErrorMessage());
-                e.printStackTrace();
-            }
-        }
     }
 }

@@ -11,19 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser.exception;
+package de.bixilon.minosoft.data.commands.parser.exceptions.number;
 
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public class RequiresMoreArgumentsCommandParseException extends CommandParseException {
+public class MinimumBiggerAsMaximumCommandParseException extends CommandParseException {
 
-    private static final String ERROR_MESSAGE = "Command requires more arguments!";
+    private static final String ERROR_MESSAGE = "Minimum bigger than maximum!";
 
-    public RequiresMoreArgumentsCommandParseException(ImprovedStringReader command) {
-        super(ERROR_MESSAGE, command, command.getPosition());
+    public MinimumBiggerAsMaximumCommandParseException(ImprovedStringReader command, String currentArgument) {
+        super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public RequiresMoreArgumentsCommandParseException(ImprovedStringReader command, Throwable cause) {
-        super(ERROR_MESSAGE, command, command.getPosition(), cause);
+    public MinimumBiggerAsMaximumCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+        super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

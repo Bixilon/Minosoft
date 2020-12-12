@@ -11,19 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser.exception;
+package de.bixilon.minosoft.data.commands.parser.exceptions.number;
 
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public class BooleanCommandParseException extends CommandParseException {
+public class ValueOutOfRangeCommandParseException extends CommandParseException {
 
-    private static final String ERROR_MESSAGE = "Unknown boolean value!";
+    private static final String ERROR_MESSAGE = "Value out of range (min=%s, max=%s!";
 
-    public BooleanCommandParseException(ImprovedStringReader command, String currentArgument) {
-        super(ERROR_MESSAGE, command, currentArgument);
-    }
-
-    public BooleanCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
-        super(ERROR_MESSAGE, command, currentArgument, cause);
+    public ValueOutOfRangeCommandParseException(ImprovedStringReader command, Object minValue, Object maxValue, Object value) {
+        super(String.format(ERROR_MESSAGE, minValue, maxValue), command, value.toString());
     }
 }

@@ -11,19 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser.exception;
+package de.bixilon.minosoft.data.commands.parser.exceptions.number;
 
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public class BlankStringCommandParseException extends CommandParseException {
+public class NumberIsDecimalCommandParseException extends CommandParseException {
 
-    private static final String ERROR_MESSAGE = "String is blank!";
+    private static final String ERROR_MESSAGE = "Decimal values are not allowed!";
 
-    public BlankStringCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public NumberIsDecimalCommandParseException(ImprovedStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public BlankStringCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public NumberIsDecimalCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

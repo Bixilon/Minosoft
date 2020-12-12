@@ -11,20 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser.exception.number;
+package de.bixilon.minosoft.data.commands.parser.exceptions.entity;
 
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public class MinimumBiggerAsMaximumCommandParseException extends CommandParseException {
+public class PlayerOnlyEntityCommandParseException extends CommandParseException {
 
-    private static final String ERROR_MESSAGE = "Minimum bigger than maximum!";
+    private static final String ERROR_MESSAGE = "Only players allowed!";
 
-    public MinimumBiggerAsMaximumCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public PlayerOnlyEntityCommandParseException(ImprovedStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public MinimumBiggerAsMaximumCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public PlayerOnlyEntityCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

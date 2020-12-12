@@ -11,19 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser.exception;
+package de.bixilon.minosoft.data.commands.parser.exceptions.entity;
 
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public class WrongArgumentCommandParseException extends CommandParseException {
+public class UnknownMassSelectorEntityCommandParseException extends CommandParseException {
 
-    private static final String ERROR_MESSAGE = "Wrong argument given!";
+    private static final String ERROR_MESSAGE = "Unknown mass selector!";
 
-    public WrongArgumentCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public UnknownMassSelectorEntityCommandParseException(ImprovedStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public WrongArgumentCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public UnknownMassSelectorEntityCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

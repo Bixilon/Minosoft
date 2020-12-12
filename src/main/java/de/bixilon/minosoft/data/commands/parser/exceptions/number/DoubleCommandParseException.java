@@ -11,20 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.commands.parser.exception.number;
+package de.bixilon.minosoft.data.commands.parser.exceptions.number;
 
-import de.bixilon.minosoft.data.commands.parser.exception.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-public class FloatCommandParseException extends CommandParseException {
+public class DoubleCommandParseException extends CommandParseException {
 
-    private static final String ERROR_MESSAGE = "Unknown float value!";
+    private static final String ERROR_MESSAGE = "Unknown double value!";
 
-    public FloatCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public DoubleCommandParseException(ImprovedStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public FloatCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public DoubleCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }
