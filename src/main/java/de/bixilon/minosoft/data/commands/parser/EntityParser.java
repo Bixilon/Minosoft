@@ -63,25 +63,25 @@ public class EntityParser extends CommandParser {
     @Override
     public void isParsable(Connection connection, ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
         EntityParserProperties entityParserProperties = (EntityParserProperties) properties;
-        if (stringReader.getNextChar().equals("@")) {
+        if (stringReader.getNextChar() == '@') {
             // selector
             if (entityParserProperties.isOnlySingleEntity()) {
-                throw new SingleEntityOnlyEntityCommandParseException(stringReader, stringReader.getNextChar());
+                throw new SingleEntityOnlyEntityCommandParseException(stringReader, String.valueOf(stringReader.getNextChar()));
             }
             stringReader.skip(1); // skip @
-            String selectorChar = stringReader.readChar();
-            if (!selectorChar.equals("a") && !selectorChar.equals("e") && !selectorChar.equals("p") && !selectorChar.equals("r") && !selectorChar.equals("s")) {
+            char selectorChar = stringReader.readChar();
+            if (selectorChar != 'a' && selectorChar != 'e' && selectorChar != 'p' && selectorChar != 'r' && selectorChar != 's') {
                 // only @a, @e, @p, @r and @s possible
                 throw new UnknownMassSelectorEntityCommandParseException(stringReader, stringReader.getNextChar());
             }
-            if (selectorChar.equals("e") && entityParserProperties.isOnlyPlayers()) {
-                throw new PlayerOnlyEntityCommandParseException(stringReader, selectorChar);
+            if (selectorChar == 'e' && entityParserProperties.isOnlyPlayers()) {
+                throw new PlayerOnlyEntityCommandParseException(stringReader, String.valueOf(selectorChar));
             }
 
             // parse entity selector
 
             // example: /msg @a[ name = "Bixilon" ] asd
-            if (!stringReader.getNextChar().equals("[")) {
+            if (stringReader.getNextChar() != '[') {
                 // no meta data given, valid
                 return;
             }
@@ -91,7 +91,7 @@ public class EntityParser extends CommandParser {
             HashSet<String> parameters = new HashSet<>();
             while (true) {
                 stringReader.skipSpaces();
-                String parameterName = stringReader.readUntil("=").key.replaceAll("\\s", ""); // ToDo: only remove prefix and suffix spaces!
+                String parameterName = stringReader.readUntil("=").getKey().replaceAll("\\s", ""); // ToDo: only remove prefix and suffix spaces!
                 if (parameters.contains(parameterName)) {
                     throw new DuplicatedParameterEntityCommandParseException(stringReader, parameterName);
                 }
@@ -106,12 +106,12 @@ public class EntityParser extends CommandParser {
 
                 stringReader.skipSpaces();
                 parameters.add(parameterName);
-                String nextChar = stringReader.getNextChar();
-                if (nextChar.equals("]")) {
+                char nextChar = stringReader.getNextChar();
+                if (nextChar == ']') {
                     stringReader.skip(1);
                     break;
                 }
-                if (nextChar.equals(",")) {
+                if (nextChar == ',') {
                     stringReader.skip(1);
                 }
             }

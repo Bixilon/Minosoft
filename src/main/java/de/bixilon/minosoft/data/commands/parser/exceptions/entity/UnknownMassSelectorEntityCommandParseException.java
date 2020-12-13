@@ -20,8 +20,8 @@ public class UnknownMassSelectorEntityCommandParseException extends CommandParse
 
     private static final String ERROR_MESSAGE = "Unknown mass selector!";
 
-    public UnknownMassSelectorEntityCommandParseException(ImprovedStringReader command, String currentArgument) {
-        super(ERROR_MESSAGE, command, currentArgument);
+    public UnknownMassSelectorEntityCommandParseException(ImprovedStringReader command, char currentArgument) {
+        super(ERROR_MESSAGE, command, String.valueOf(currentArgument));
     }
 
     public UnknownMassSelectorEntityCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {

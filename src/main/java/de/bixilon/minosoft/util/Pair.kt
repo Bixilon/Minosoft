@@ -10,35 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.util
 
-package de.bixilon.minosoft.util;
-
-import java.util.Objects;
-
-public class Pair<K, V> {
-
-    public final K key;
-    public final V value;
-
-    public Pair(K key, V value) {
-        this.key = key;
-        this.value = value;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pair<?, ?> pair = (Pair<?, ?>) o;
-        return Objects.equals(key, pair.key) && Objects.equals(value, pair.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(key, value);
-    }
-
-    public String toString() {
-        return String.format("%s=%s", key, value);
+data class Pair<K, V>(
+    val key: K,
+    val value: V
+) {
+    override fun toString(): String {
+        return String.format("%s=%s", key, value)
     }
 }

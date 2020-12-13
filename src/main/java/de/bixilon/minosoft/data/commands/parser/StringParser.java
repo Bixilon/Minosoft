@@ -38,7 +38,7 @@ public class StringParser extends CommandParser {
                 if (stringReader.get(1).equals("\"")) {
                     stringReader.skip(1);
                     StringBuilder builder = new StringBuilder();
-                    builder.append(stringReader.readUntil("\"").key);
+                    builder.append(stringReader.readUntil("\"").getKey());
                     String currentString = builder.toString();
                     while (currentString.endsWith("\\") && !currentString.endsWith("\\\\")) {
                         // quotes are escaped, continue

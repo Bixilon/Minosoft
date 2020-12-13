@@ -27,7 +27,7 @@ class ItemStackParser : CommandParser() {
         if (!connection.mapping.doesItemExist(ModIdentifier(argument.key))) {
             throw ItemNotFoundCommandParseException(stringReader, argument.key)
         }
-        if (argument.value == "{" || stringReader.nextChar == "{") {
+        if (argument.value == "{" || stringReader.nextChar == '{') {
             throw TODO("NBT Data needs to be implemented")
         }
     }

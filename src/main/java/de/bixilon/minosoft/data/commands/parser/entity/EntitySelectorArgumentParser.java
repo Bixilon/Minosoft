@@ -25,7 +25,7 @@ public abstract class EntitySelectorArgumentParser {
 
     protected Pair<String, String> readNextArgument(ImprovedStringReader stringReader) {
         Pair<String, String> match = stringReader.readUntil(ENTITY_VALUE_TERMINATORS);
-        if (!match.value.equals(" ")) {
+        if (!match.getValue().equals(" ")) {
             // set pointer to --
             stringReader.skip(-1);
         }

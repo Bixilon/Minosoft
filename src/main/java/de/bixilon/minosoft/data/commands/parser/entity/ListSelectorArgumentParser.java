@@ -47,12 +47,12 @@ public class ListSelectorArgumentParser extends EntitySelectorArgumentParser {
     @Override
     public void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
         Pair<String, String> match = readNextArgument(stringReader);
-        String value = match.key;
-        if (match.key.startsWith("!")) {
+        String value = match.getKey();
+        if (match.getValue().startsWith("!")) {
             value = value.substring(1);
         }
         if (!this.values.contains(value)) {
-            throw new UnknownEnumValueCommandParseException(stringReader, match.key);
+            throw new UnknownEnumValueCommandParseException(stringReader, match.getKey());
         }
     }
 }

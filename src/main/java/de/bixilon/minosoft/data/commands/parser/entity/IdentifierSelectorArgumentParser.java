@@ -28,14 +28,14 @@ public class IdentifierSelectorArgumentParser extends EntitySelectorArgumentPars
     @Override
     public void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
         Pair<String, String> match = readNextArgument(stringReader);
-        String value = match.key;
-        if (match.key.startsWith("!")) {
+        String value = match.getKey();
+        if (match.getKey().startsWith("!")) {
             value = value.substring(1);
         }
         ModIdentifier identifier = new ModIdentifier(value);
         if (this == ENTITY_TYPE_IDENTIFIER_SELECTOR_ARGUMENT_PARSER) {
             if (EntityClassMappings.INSTANCE.getByIdentifier(identifier) == null) {
-                throw new UnknownEntityCommandParseException(stringReader, match.key);
+                throw new UnknownEntityCommandParseException(stringReader, match.getKey());
             }
             return;
         }

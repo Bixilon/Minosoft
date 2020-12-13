@@ -50,35 +50,35 @@ public class RangeSelectorArgumentParser extends EntitySelectorArgumentParser {
     public void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
         Pair<String, String> match = readNextArgument(stringReader);
 
-        if (match.key.contains("..")) {
+        if (match.getKey().contains("..")) {
             // range
-            String[] split = match.key.split("\\.\\.");
+            String[] split = match.getKey().split("\\.\\.");
             if (split.length != 2) {
-                throw new RangeBadFormatCommandParseException(stringReader, match.key);
+                throw new RangeBadFormatCommandParseException(stringReader, match.getKey());
             }
             double min;
             double max;
             if (split[0].isBlank()) {
                 min = getMinValue();
             } else {
-                min = parseValue(stringReader, match.key, split[0]);
+                min = parseValue(stringReader, match.getKey(), split[0]);
             }
             if (split[1].isBlank()) {
                 max = getMaxValue();
             } else {
-                max = parseValue(stringReader, match.key, split[1]);
+                max = parseValue(stringReader, match.getKey(), split[1]);
             }
 
             if (min < getMinValue() || max > getMaxValue()) {
-                throw new ValueOutOfRangeCommandParseException(stringReader, minValue, maxValue, match.key);
+                throw new ValueOutOfRangeCommandParseException(stringReader, minValue, maxValue, match.getKey());
             }
             if (min > max) {
-                throw new MinimumBiggerAsMaximumCommandParseException(stringReader, match.key);
+                throw new MinimumBiggerAsMaximumCommandParseException(stringReader, match.getKey());
             }
             return;
         }
 
-        parseValue(stringReader, match.key, match.key);
+        parseValue(stringReader, match.getKey(), match.getKey());
     }
 
     private double parseValue(ImprovedStringReader stringReader, String match, String value) throws CommandParseException {

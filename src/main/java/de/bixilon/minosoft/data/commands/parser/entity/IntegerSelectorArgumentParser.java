@@ -26,9 +26,9 @@ public class IntegerSelectorArgumentParser extends EntitySelectorArgumentParser 
     public void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
         Pair<String, String> match = readNextArgument(stringReader);
         try {
-            Integer.parseInt(match.key);
+            Integer.parseInt(match.getKey());
         } catch (Exception e) {
-            throw new IntegerCommandParseException(stringReader, match.key, e);
+            throw new IntegerCommandParseException(stringReader, match.getKey(), e);
         }
     }
 }

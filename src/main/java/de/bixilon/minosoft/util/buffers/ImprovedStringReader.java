@@ -16,8 +16,6 @@ package de.bixilon.minosoft.util.buffers;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Pair;
 
-import javax.annotation.Nullable;
-
 public class ImprovedStringReader {
     private final String string;
     private int position;
@@ -28,7 +26,7 @@ public class ImprovedStringReader {
 
     public Pair<String, String> readUntil(String... search) {
         Pair<String, String> ret = getUntil(search);
-        position += ret.key.length() + ret.value.length();
+        position += ret.getKey().length() + ret.getValue().length();
         return ret;
     }
 
@@ -57,11 +55,11 @@ public class ImprovedStringReader {
     }
 
     public String readUntilNextCommandArgument() {
-        return readUntil(ProtocolDefinition.COMMAND_SEPARATOR).key;
+        return readUntil(ProtocolDefinition.COMMAND_SEPARATOR).getKey();
     }
 
     public String getUntilNextCommandArgument() {
-        return getUntil(ProtocolDefinition.COMMAND_SEPARATOR).key;
+        return getUntil(ProtocolDefinition.COMMAND_SEPARATOR).getKey();
     }
 
     public String getString() {
@@ -80,19 +78,18 @@ public class ImprovedStringReader {
         return string.length() - position;
     }
 
-    public String readChar() {
+    public char readChar() {
         if (getRemainingChars() == 0) {
-            return null;
+            return 0;
         }
-        return String.valueOf(string.charAt(position++));
+        return string.charAt(position++);
     }
 
-    @Nullable
-    public String getNextChar() {
+    public char getNextChar() {
         if (getRemainingChars() == 0) {
-            return null;
+            return 0;
         }
-        return String.valueOf(string.charAt(position));
+        return string.charAt(position);
     }
 
     public String getRest() {
@@ -128,8 +125,8 @@ public class ImprovedStringReader {
 
     public int skipSpaces() {
         int skipped = 0;
-        String nextChar = getNextChar();
-        while (nextChar != null && getNextChar().equals(" ")) {
+        char nextChar = getNextChar();
+        while (getNextChar() == ' ') {
             skip(1);
             skipped++;
         }

@@ -26,9 +26,9 @@ public class DoubleSelectorArgumentParser extends EntitySelectorArgumentParser {
     public void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
         Pair<String, String> match = readNextArgument(stringReader);
         try {
-            Double.parseDouble(match.key);
+            Double.parseDouble(match.getKey());
         } catch (Exception e) {
-            throw new DoubleCommandParseException(stringReader, match.key, e);
+            throw new DoubleCommandParseException(stringReader, match.getKey(), e);
         }
     }
 }
