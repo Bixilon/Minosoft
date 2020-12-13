@@ -175,7 +175,7 @@ public class Log {
         Log.level = level;
     }
 
-    public static boolean printException(Exception exception, LogLevels minimumLogLevel) {
+    public static boolean printException(Throwable exception, LogLevels minimumLogLevel) {
         // ToDo: log to file, print also exceptions that are not printed with this method
         if (Log.getLevel().ordinal() >= minimumLogLevel.ordinal()) {
             exception.printStackTrace();

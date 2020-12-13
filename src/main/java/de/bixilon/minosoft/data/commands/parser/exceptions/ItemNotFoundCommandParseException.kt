@@ -10,24 +10,16 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.commands.parser.exceptions
 
-package de.bixilon.minosoft.data.commands.parser;
+import de.bixilon.minosoft.util.buffers.ImprovedStringReader
 
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
+class ItemNotFoundCommandParseException : CommandParseException {
+    constructor(command: ImprovedStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
 
-import javax.annotation.Nullable;
+    constructor(command: ImprovedStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
 
-public abstract class CommandParser {
-
-    @Nullable
-    public ParserProperties readParserProperties(InByteBuffer buffer) {
-        return null;
+    companion object {
+        private const val ERROR_MESSAGE = "Wrong argument given!"
     }
-
-    public abstract void isParsable(Connection connection, @Nullable ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException;
-
 }

@@ -28,5 +28,5 @@ public interface Network {
 
     void disconnect();
 
-    Exception getLastException();
+    Throwable getLastException();
 }

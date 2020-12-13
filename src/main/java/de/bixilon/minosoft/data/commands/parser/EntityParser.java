@@ -63,16 +63,16 @@ public class EntityParser extends CommandParser {
     @Override
     public void isParsable(Connection connection, ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
         EntityParserProperties entityParserProperties = (EntityParserProperties) properties;
-        if (stringReader.getChar().equals("@")) {
+        if (stringReader.getNextChar().equals("@")) {
             // selector
             if (entityParserProperties.isOnlySingleEntity()) {
-                throw new SingleEntityOnlyEntityCommandParseException(stringReader, stringReader.getChar());
+                throw new SingleEntityOnlyEntityCommandParseException(stringReader, stringReader.getNextChar());
             }
             stringReader.skip(1); // skip @
             String selectorChar = stringReader.readChar();
             if (!selectorChar.equals("a") && !selectorChar.equals("e") && !selectorChar.equals("p") && !selectorChar.equals("r") && !selectorChar.equals("s")) {
                 // only @a, @e, @p, @r and @s possible
-                throw new UnknownMassSelectorEntityCommandParseException(stringReader, stringReader.getChar());
+                throw new UnknownMassSelectorEntityCommandParseException(stringReader, stringReader.getNextChar());
             }
             if (selectorChar.equals("e") && entityParserProperties.isOnlyPlayers()) {
                 throw new PlayerOnlyEntityCommandParseException(stringReader, selectorChar);
@@ -81,7 +81,7 @@ public class EntityParser extends CommandParser {
             // parse entity selector
 
             // example: /msg @a[ name = "Bixilon" ] asd
-            if (!stringReader.getChar().equals("[")) {
+            if (!stringReader.getNextChar().equals("[")) {
                 // no meta data given, valid
                 return;
             }
@@ -106,7 +106,7 @@ public class EntityParser extends CommandParser {
 
                 stringReader.skipSpaces();
                 parameters.add(parameterName);
-                String nextChar = stringReader.getChar();
+                String nextChar = stringReader.getNextChar();
                 if (nextChar.equals("]")) {
                     stringReader.skip(1);
                     break;

@@ -49,7 +49,7 @@ public class SocketNetwork implements Network {
     Socket socket;
     OutputStream outputStream;
     InputStream inputStream;
-    Exception lastException;
+    Throwable lastException;
 
     public SocketNetwork(Connection connection) {
         this.connection = connection;
@@ -226,7 +226,7 @@ public class SocketNetwork implements Network {
                             // safety first, but will not occur
                             e.printStackTrace();
                         }
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         Log.protocol(String.format("An error occurred while parsing a packet (%s): %s", packet, e));
                         if (connection.getConnectionState() == ConnectionStates.PLAY) {
                             Log.printException(e, LogLevels.PROTOCOL);
@@ -274,7 +274,7 @@ public class SocketNetwork implements Network {
     }
 
     @Override
-    public Exception getLastException() {
+    public Throwable getLastException() {
         return lastException;
     }
 

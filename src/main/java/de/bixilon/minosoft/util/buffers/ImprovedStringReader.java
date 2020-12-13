@@ -16,6 +16,8 @@ package de.bixilon.minosoft.util.buffers;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Pair;
 
+import javax.annotation.Nullable;
+
 public class ImprovedStringReader {
     private final String string;
     private int position;
@@ -79,10 +81,17 @@ public class ImprovedStringReader {
     }
 
     public String readChar() {
+        if (getRemainingChars() == 0) {
+            return null;
+        }
         return String.valueOf(string.charAt(position++));
     }
 
-    public String getChar() {
+    @Nullable
+    public String getNextChar() {
+        if (getRemainingChars() == 0) {
+            return null;
+        }
         return String.valueOf(string.charAt(position));
     }
 
@@ -119,11 +128,17 @@ public class ImprovedStringReader {
 
     public int skipSpaces() {
         int skipped = 0;
-        while (getChar().equals(" ")) {
+        String nextChar = getNextChar();
+        while (nextChar != null && getNextChar().equals(" ")) {
             skip(1);
             skipped++;
         }
         return skipped;
+    }
+
+    public int getRemainingChars() {
+        int difference = string.length() - position;
+        return Math.max(difference, 0);
     }
 
     @Override

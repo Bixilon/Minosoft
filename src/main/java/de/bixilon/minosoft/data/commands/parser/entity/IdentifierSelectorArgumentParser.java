@@ -34,7 +34,7 @@ public class IdentifierSelectorArgumentParser extends EntitySelectorArgumentPars
         }
         ModIdentifier identifier = new ModIdentifier(value);
         if (this == ENTITY_TYPE_IDENTIFIER_SELECTOR_ARGUMENT_PARSER) {
-            if (!EntityClassMappings.ENTITY_CLASS_MAPPINGS.containsValue(identifier)) {
+            if (EntityClassMappings.INSTANCE.getByIdentifier(identifier) == null) {
                 throw new UnknownEntityCommandParseException(stringReader, match.key);
             }
             return;

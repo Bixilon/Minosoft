@@ -393,7 +393,7 @@ public class VersionMapping {
 
     private void loadEntityMapping(String mod, String identifier, JsonObject fullModData) {
         JsonObject data = fullModData.getAsJsonObject(identifier);
-        Class<? extends Entity> clazz = EntityClassMappings.getByIdentifier(mod, identifier);
+        Class<? extends Entity> clazz = EntityClassMappings.INSTANCE.getByIdentifier(mod, identifier);
         EntityInformation information = EntityInformation.deserialize(mod, identifier, data);
         if (information != null) {
             // not abstract, has id and attributes
@@ -485,5 +485,14 @@ public class VersionMapping {
 
     public HashSet<Mappings> getAvailableFeatures() {
         return loaded;
+    }
+
+    public boolean doesItemExist(ModIdentifier identifier) {
+        if (parentMapping != null) {
+            if (parentMapping.doesItemExist(identifier)) {
+                return true;
+            }
+        }
+        return itemMap.containsValue(new Item(identifier.getFullIdentifier()));
     }
 }

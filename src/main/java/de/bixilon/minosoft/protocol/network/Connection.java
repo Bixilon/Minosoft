@@ -213,7 +213,7 @@ public class Connection {
                         continue;
                     }
                     packet.handle(getHandler());
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     Log.printException(e, LogLevels.PROTOCOL);
                 }
             }
@@ -378,7 +378,7 @@ public class Connection {
         }
     }
 
-    public Exception getLastConnectionException() {
+    public Throwable getLastConnectionException() {
         return (lastException != null) ? lastException : network.getLastException();
     }
 
