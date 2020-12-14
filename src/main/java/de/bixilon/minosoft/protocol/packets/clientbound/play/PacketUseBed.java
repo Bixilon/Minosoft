@@ -17,9 +17,8 @@ import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketUseBed implements ClientboundPacket {
+public class PacketUseBed extends ClientboundPacket {
     int entityId;
     BlockPosition position;
 
@@ -32,11 +31,6 @@ public class PacketUseBed implements ClientboundPacket {
             this.position = buffer.readPosition();
         }
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

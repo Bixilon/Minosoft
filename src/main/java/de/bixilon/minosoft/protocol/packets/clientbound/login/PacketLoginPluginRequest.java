@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.LoginPluginMessageRequestEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketLoginPluginRequest implements ClientboundPacket {
+public class PacketLoginPluginRequest extends ClientboundPacket {
     int messageId;
     String channel;
     byte[] data;
@@ -35,8 +35,8 @@ public class PacketLoginPluginRequest implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new LoginPluginMessageRequestEvent(this.connection, this));
     }
 
     @Override

@@ -15,12 +15,13 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketDeclareCommands implements ClientboundPacket {
+public class PacketDeclareCommands extends ClientboundPacket {
     private CommandRootNode rootNode;
 
     @Override
@@ -35,8 +36,31 @@ public class PacketDeclareCommands implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.setCommandRootNode(getRootNode());
+        // ToDo: Remove these dummy commands
+        String[] commands = {
+                "msg Bixilon TestReason 2Paramter 3 4 asd  asd",
+                "msg @a[name=Bixilon, level=23, gamemode=!survival] trest asd 12312 sad123123213",
+                "help",
+                "team list",
+                "tasdasda",
+                "msg @a[ name = \"Bixilon\" ] asd",
+                "msg    @a[ name =     Bixilon            ] asd asdsadasd",
+                "msg     @a[ name =     Bixilon    ,team=        ] asd asdsadasd",
+                "msg    @a[ name                = Bixilon    ,                      team   =!] asd asdsadasd",
+                "give Bixilon minecraft:acacia_boat",
+                "give Bixilon minecraft:acacia_boat{asd:12}",
+        };
+        for (String command : commands) {
+            try {
+                getRootNode().isSyntaxCorrect(connection, command);
+                Log.game("Command \"%s\" is valid", command);
+            } catch (CommandParseException e) {
+                Log.game("Command \"%s\" is invalid, %s: %s", command, e.getClass().getSimpleName(), e.getErrorMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

@@ -18,10 +18,9 @@ import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
-public class PacketSoundEffect implements ClientboundPacket {
+public class PacketSoundEffect extends ClientboundPacket {
     Location location;
     SoundCategories category;
     int soundId;
@@ -50,11 +49,6 @@ public class PacketSoundEffect implements ClientboundPacket {
             this.pitch = buffer.readFloat();
         }
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

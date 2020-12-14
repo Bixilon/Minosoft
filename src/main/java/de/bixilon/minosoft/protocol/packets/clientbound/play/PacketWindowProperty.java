@@ -16,9 +16,8 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketWindowProperty implements ClientboundPacket {
+public class PacketWindowProperty extends ClientboundPacket {
     byte windowId;
     short property;
     short value;
@@ -29,11 +28,6 @@ public class PacketWindowProperty implements ClientboundPacket {
         this.property = buffer.readShort();
         this.value = buffer.readShort();
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

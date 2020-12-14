@@ -14,12 +14,13 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.RelativeLocation;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketEntityMovementAndRotation implements ClientboundPacket {
+public class PacketEntityMovementAndRotation extends ClientboundPacket {
     int entityId;
     RelativeLocation location;
     short yaw;
@@ -44,8 +45,14 @@ public class PacketEntityMovementAndRotation implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        Entity entity = connection.getPlayer().getWorld().getEntity(getEntityId());
+        if (entity == null) {
+            // thanks mojang
+            return;
+        }
+        entity.setLocation(getRelativeLocation());
+        entity.setRotation(getYaw(), getPitch());
     }
 
     @Override

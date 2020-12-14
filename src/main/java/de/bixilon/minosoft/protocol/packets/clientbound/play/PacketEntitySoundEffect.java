@@ -17,9 +17,8 @@ import de.bixilon.minosoft.data.SoundCategories;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketEntitySoundEffect implements ClientboundPacket {
+public class PacketEntitySoundEffect extends ClientboundPacket {
     int soundId;
     SoundCategories category;
     int entityId;
@@ -34,11 +33,6 @@ public class PacketEntitySoundEffect implements ClientboundPacket {
         this.volume = buffer.readFloat();
         this.pitch = buffer.readFloat();
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

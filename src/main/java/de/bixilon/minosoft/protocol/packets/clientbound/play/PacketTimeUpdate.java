@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.TimeChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketTimeUpdate implements ClientboundPacket {
+public class PacketTimeUpdate extends ClientboundPacket {
     long worldAge;
     long timeOfDay;
 
@@ -30,8 +31,10 @@ public class PacketTimeUpdate implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        if (connection.fireEvent(new TimeChangeEvent(connection, this))) {
+            return;
+        }
     }
 
     @Override

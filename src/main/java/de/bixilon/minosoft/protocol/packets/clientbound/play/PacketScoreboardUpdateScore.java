@@ -13,12 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective;
+import de.bixilon.minosoft.data.scoreboard.ScoreboardScore;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketScoreboardUpdateScore implements ClientboundPacket {
+public class PacketScoreboardUpdateScore extends ClientboundPacket {
     String itemName;
     ScoreboardUpdateScoreActions action;
     String scoreName;
@@ -48,8 +50,17 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        switch (getAction()) {
+            case CREATE_UPDATE -> connection.getPlayer().getScoreboardManager().getObjective(getScoreName()).addScore(new ScoreboardScore(getItemName(), getScoreName(), getScoreValue()));
+            case REMOVE -> {
+                ScoreboardObjective objective = connection.getPlayer().getScoreboardManager().getObjective(getScoreName());
+                if (objective != null) {
+                    // thanks mojang
+                    objective.removeScore(getItemName());
+                }
+            }
+        }
     }
 
     @Override

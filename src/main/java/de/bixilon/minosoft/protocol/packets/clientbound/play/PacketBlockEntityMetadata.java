@@ -18,12 +18,13 @@ import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
-public class PacketBlockEntityMetadata implements ClientboundPacket {
+public class PacketBlockEntityMetadata extends ClientboundPacket {
     BlockPosition position;
     BlockEntityActions action;
     BlockEntityMetaData data;
@@ -43,8 +44,9 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new BlockEntityMetaDataChangeEvent(connection, this));
+        connection.getPlayer().getWorld().setBlockEntityData(getPosition(), getData());
     }
 
     @Override

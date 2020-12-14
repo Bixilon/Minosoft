@@ -14,12 +14,13 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketKeepAlive implements ClientboundPacket {
-    long id;
+public class PacketKeepAlive extends ClientboundPacket {
+    private long id;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -36,8 +37,8 @@ public class PacketKeepAlive implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.sendPacket(new PacketKeepAliveResponse(getId()));
     }
 
     @Override

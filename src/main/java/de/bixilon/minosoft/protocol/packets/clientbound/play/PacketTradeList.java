@@ -19,9 +19,8 @@ import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketTradeList implements ClientboundPacket {
+public class PacketTradeList extends ClientboundPacket {
     int windowId;
     Trade[] trades;
     VillagerData.VillagerLevels level;
@@ -59,11 +58,6 @@ public class PacketTradeList implements ClientboundPacket {
             this.canRestock = buffer.readBoolean();
         }
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

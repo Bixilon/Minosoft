@@ -15,12 +15,14 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.world.BlockPosition;
+import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.BlockChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketBlockChange implements ClientboundPacket {
+public class PacketBlockChange extends ClientboundPacket {
     BlockPosition position;
     Block block;
 
@@ -38,8 +40,15 @@ public class PacketBlockChange implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        Chunk chunk = connection.getPlayer().getWorld().getChunk(getPosition().getChunkLocation());
+        if (chunk == null) {
+            // thanks mojang
+            return;
+        }
+        connection.fireEvent(new BlockChangeEvent(connection, this));
+
+        chunk.setBlock(getPosition().getInChunkLocation(), getBlock());
     }
 
     @Override

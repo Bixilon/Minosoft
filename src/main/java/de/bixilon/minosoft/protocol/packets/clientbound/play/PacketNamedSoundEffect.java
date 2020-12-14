@@ -18,10 +18,9 @@ import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
-public class PacketNamedSoundEffect implements ClientboundPacket {
+public class PacketNamedSoundEffect extends ClientboundPacket {
     Location location;
     String sound;
     float volume;
@@ -58,10 +57,6 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
         return true;
     }
 
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
 
     @Override
     public void log() {

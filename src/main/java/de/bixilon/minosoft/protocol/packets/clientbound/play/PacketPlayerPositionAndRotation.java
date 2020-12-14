@@ -16,11 +16,13 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketConfirmTeleport;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketPlayerPositionAndRotation implements ClientboundPacket {
+public class PacketPlayerPositionAndRotation extends ClientboundPacket {
     Location location;
     EntityRotation rotation;
     boolean onGround;
@@ -45,8 +47,14 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        // ToDo: GUI should do this
+        connection.getPlayer().getEntity().setLocation(getLocation());
+        if (connection.getVersion().getVersionId() >= 79) {
+            connection.sendPacket(new PacketConfirmTeleport(getTeleportId()));
+        } else {
+            connection.sendPacket(new PacketPlayerPositionAndRotationSending(getLocation(), getRotation(), isOnGround()));
+        }
     }
 
     @Override

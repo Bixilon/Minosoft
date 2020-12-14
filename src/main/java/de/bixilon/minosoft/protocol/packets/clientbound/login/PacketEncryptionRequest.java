@@ -14,11 +14,17 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
+import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketEncryptionRequest implements ClientboundPacket {
+import javax.crypto.SecretKey;
+import java.math.BigInteger;
+import java.security.PublicKey;
+
+public class PacketEncryptionRequest extends ClientboundPacket {
 
     String serverId; // normally empty
     byte[] publicKey;
@@ -33,8 +39,12 @@ public class PacketEncryptionRequest implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        SecretKey secretKey = CryptManager.createNewSharedKey();
+        PublicKey publicKey = CryptManager.decodePublicKey(getPublicKey());
+        String serverHash = new BigInteger(CryptManager.getServerHash(getServerId(), publicKey, secretKey)).toString(16);
+        connection.getPlayer().getAccount().join(serverHash);
+        connection.sendPacket(new PacketEncryptionResponse(secretKey, getVerifyToken(), publicKey));
     }
 
     @Override

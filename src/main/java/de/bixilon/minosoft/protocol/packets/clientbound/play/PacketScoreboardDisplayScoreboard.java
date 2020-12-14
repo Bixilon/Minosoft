@@ -16,9 +16,8 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
+public class PacketScoreboardDisplayScoreboard extends ClientboundPacket {
     ScoreboardAnimations action;
     String scoreName;
 
@@ -27,11 +26,6 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
         this.action = ScoreboardAnimations.byId(buffer.readUnsignedByte());
         this.scoreName = buffer.readString();
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

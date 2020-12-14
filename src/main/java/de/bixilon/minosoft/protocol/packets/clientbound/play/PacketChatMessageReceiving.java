@@ -16,13 +16,14 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.ChatTextPositions;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.UUID;
 
-public class PacketChatMessageReceiving implements ClientboundPacket {
+public class PacketChatMessageReceiving extends ClientboundPacket {
     ChatComponent message;
     ChatTextPositions position;
     UUID sender;
@@ -42,8 +43,16 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        ChatMessageReceivingEvent event = new ChatMessageReceivingEvent(connection, this);
+        if (connection.fireEvent(event)) {
+            return;
+        }
+        Log.game(switch (getPosition()) {
+            case SYSTEM_MESSAGE -> "[SYSTEM] ";
+            case ABOVE_HOTBAR -> "[HOTBAR] ";
+            default -> "[CHAT] ";
+        } + event.getMessage());
     }
 
     @Override

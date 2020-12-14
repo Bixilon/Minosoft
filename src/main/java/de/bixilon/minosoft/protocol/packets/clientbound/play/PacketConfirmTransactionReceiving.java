@@ -16,9 +16,8 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketConfirmTransactionReceiving implements ClientboundPacket {
+public class PacketConfirmTransactionReceiving extends ClientboundPacket {
     byte windowId;
     short actionNumber;
     boolean accepted;
@@ -29,11 +28,6 @@ public class PacketConfirmTransactionReceiving implements ClientboundPacket {
         this.actionNumber = buffer.readShort();
         this.accepted = buffer.readBoolean();
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

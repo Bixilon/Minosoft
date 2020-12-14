@@ -13,12 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.status;
 
+import de.bixilon.minosoft.data.player.PingBars;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.StatusPongEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.ConnectionPing;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketStatusPong implements ClientboundPacket {
+public class PacketStatusPong extends ClientboundPacket {
     long id;
 
     @Override
@@ -28,8 +31,24 @@ public class PacketStatusPong implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new StatusPongEvent(connection, this));
+
+        ConnectionPing ping = connection.getConnectionStatusPing();
+        if (ping.getPingId() != getID()) {
+            Log.warn(String.format("Server sent unknown ping answer (pingId=%d, expected=%d)", getID(), ping.getPingId()));
+            return;
+        }
+        long pingDifference = System.currentTimeMillis() - ping.getSendingTime();
+        Log.debug(String.format("Pong received (ping=%dms, pingBars=%s)", pingDifference, PingBars.byPing(pingDifference)));
+        switch (connection.getReason()) {
+            case PING -> connection.disconnect();// pong arrived, closing connection
+            case GET_VERSION -> {
+                // reconnect...
+                connection.disconnect();
+                Log.info(String.format("Server is running on version %s (versionId=%d, protocolId=%d), reconnecting...", connection.getVersion().getVersionName(), connection.getVersion().getVersionId(), connection.getVersion().getProtocolId()));
+            }
+        }
     }
 
     @Override

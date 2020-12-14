@@ -16,9 +16,8 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketEntityEvent implements ClientboundPacket {
+public class PacketEntityEvent extends ClientboundPacket {
     int entityId;
     byte eventId;
 
@@ -27,11 +26,6 @@ public class PacketEntityEvent implements ClientboundPacket {
         this.entityId = buffer.readInt();
         this.eventId = buffer.readByte();
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

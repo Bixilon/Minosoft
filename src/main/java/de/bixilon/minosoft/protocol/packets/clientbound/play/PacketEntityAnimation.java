@@ -18,9 +18,8 @@ import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketEntityAnimation implements ClientboundPacket {
+public class PacketEntityAnimation extends ClientboundPacket {
     int entityId;
     EntityAnimations animation;
 
@@ -29,11 +28,6 @@ public class PacketEntityAnimation implements ClientboundPacket {
         this.entityId = buffer.readVarInt();
         this.animation = EntityAnimations.byId(buffer.readByte(), buffer.getVersionId());
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

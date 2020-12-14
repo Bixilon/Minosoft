@@ -16,15 +16,16 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.ChunkUtil;
 import de.bixilon.minosoft.util.Util;
 
 import java.util.HashMap;
 
-public class PacketChunkBulk implements ClientboundPacket {
+public class PacketChunkBulk extends ClientboundPacket {
     final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
 
     @Override
@@ -73,8 +74,10 @@ public class PacketChunkBulk implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        getChunks().forEach(((location, chunk) -> connection.fireEvent(new ChunkDataChangeEvent(connection, location, chunk))));
+
+        connection.getPlayer().getWorld().setChunks(getChunks());
     }
 
     @Override

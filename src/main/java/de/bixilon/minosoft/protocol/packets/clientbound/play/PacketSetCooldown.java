@@ -16,9 +16,8 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketSetCooldown implements ClientboundPacket {
+public class PacketSetCooldown extends ClientboundPacket {
 
     int item;
     int cooldownTicks;
@@ -28,11 +27,6 @@ public class PacketSetCooldown implements ClientboundPacket {
         this.item = buffer.readVarInt();
         this.cooldownTicks = buffer.readVarInt();
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

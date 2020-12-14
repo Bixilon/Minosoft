@@ -15,6 +15,6 @@ package de.bixilon.minosoft.protocol.packets.clientbound.interfaces;
 
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 
-public interface PacketCompressionInterface extends ClientboundPacket {
-    int getThreshold();
+public abstract class CompressionThresholdChange extends ClientboundPacket {
+    public abstract int getThreshold();
 }

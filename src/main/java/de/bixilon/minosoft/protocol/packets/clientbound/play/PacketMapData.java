@@ -17,11 +17,10 @@ import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.ArrayList;
 
-public class PacketMapData implements ClientboundPacket {
+public class PacketMapData extends ClientboundPacket {
     int mapId;
     PacketMapDataDataActions dataData;
 
@@ -117,11 +116,6 @@ public class PacketMapData implements ClientboundPacket {
             this.data = buffer.readBytes(dataLength);
         }
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

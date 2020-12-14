@@ -15,11 +15,12 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.BlockBreakAnimationEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketBlockBreakAnimation implements ClientboundPacket {
+public class PacketBlockBreakAnimation extends ClientboundPacket {
     int entityId;
     BlockPosition position;
     byte stage;
@@ -38,8 +39,11 @@ public class PacketBlockBreakAnimation implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        BlockBreakAnimationEvent event = new BlockBreakAnimationEvent(connection, this);
+        if (connection.fireEvent(event)) {
+            return;
+        }
     }
 
     @Override

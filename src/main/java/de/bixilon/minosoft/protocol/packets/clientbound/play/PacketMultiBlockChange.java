@@ -14,16 +14,18 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.data.world.InChunkLocation;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.MultiBlockChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.HashMap;
 
-public class PacketMultiBlockChange implements ClientboundPacket {
+public class PacketMultiBlockChange extends ClientboundPacket {
     final HashMap<InChunkLocation, Block> blocks = new HashMap<>();
     ChunkLocation location;
 
@@ -74,8 +76,14 @@ public class PacketMultiBlockChange implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        Chunk chunk = connection.getPlayer().getWorld().getChunk(getLocation());
+        if (chunk == null) {
+            // thanks mojang
+            return;
+        }
+        connection.fireEvent(new MultiBlockChangeEvent(connection, this));
+        chunk.setBlocks(getBlocks());
     }
 
     @Override

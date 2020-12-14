@@ -14,22 +14,16 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.PacketCompressionInterface;
+import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.CompressionThresholdChange;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketLoginSetCompression implements PacketCompressionInterface {
+public class PacketLoginSetCompression extends CompressionThresholdChange {
     int threshold;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.threshold = buffer.readVarInt();
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.network.Network;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.PacketCompressionInterface;
+import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.CompressionThresholdChange;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
@@ -210,7 +210,7 @@ public class SocketNetwork implements Network {
                             // set special settings to avoid miss timing issues
                             if (packetInstance instanceof PacketLoginSuccess) {
                                 this.connection.setConnectionState(ConnectionStates.PLAY);
-                            } else if (packetInstance instanceof PacketCompressionInterface compressionPacket) {
+                            } else if (packetInstance instanceof CompressionThresholdChange compressionPacket) {
                                 this.compressionThreshold = compressionPacket.getThreshold();
                             } else if (packetInstance instanceof PacketEncryptionRequest) {
                                 // wait until response is ready

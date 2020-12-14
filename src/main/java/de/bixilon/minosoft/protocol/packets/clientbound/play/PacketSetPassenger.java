@@ -16,9 +16,8 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketSetPassenger implements ClientboundPacket {
+public class PacketSetPassenger extends ClientboundPacket {
     int vehicleId;
     int[] entityIds;
 
@@ -30,11 +29,6 @@ public class PacketSetPassenger implements ClientboundPacket {
             this.entityIds[i] = buffer.readVarInt();
         }
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

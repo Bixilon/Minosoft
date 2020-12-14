@@ -16,11 +16,13 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.util.nbt.tag.StringTag;
 
-public class PacketUpdateSignReceiving implements ClientboundPacket {
+public class PacketUpdateSignReceiving extends ClientboundPacket {
     final ChatComponent[] lines = new ChatComponent[4];
     BlockPosition position;
 
@@ -38,8 +40,14 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        CompoundTag nbt = new CompoundTag();
+        nbt.writeBlockPosition(getPosition());
+        nbt.writeTag("id", new StringTag("minecraft:sign"));
+        for (int i = 0; i < 4; i++) {
+            nbt.writeTag(String.format("Text%d", (i + 1)), new StringTag(getLines()[i].getLegacyText()));
+        }
+        // ToDo: handle sign updates
     }
 
     @Override

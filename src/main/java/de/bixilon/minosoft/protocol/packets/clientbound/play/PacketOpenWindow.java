@@ -17,11 +17,11 @@ import de.bixilon.minosoft.data.inventory.InventoryProperties;
 import de.bixilon.minosoft.data.inventory.InventoryTypes;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketOpenWindow implements ClientboundPacket {
+public class PacketOpenWindow extends ClientboundPacket {
     byte windowId;
     InventoryTypes type;
     ChatComponent title;
@@ -55,8 +55,8 @@ public class PacketOpenWindow implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.getPlayer().createInventory(getInventoryProperties());
     }
 
     @Override

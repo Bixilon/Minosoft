@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketScoreboardObjective implements ClientboundPacket {
+public class PacketScoreboardObjective extends ClientboundPacket {
     String name;
     ChatComponent value;
     ScoreboardObjectiveActions action;
@@ -52,8 +53,12 @@ public class PacketScoreboardObjective implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        switch (getAction()) {
+            case CREATE -> connection.getPlayer().getScoreboardManager().addObjective(new ScoreboardObjective(getName(), getValue()));
+            case UPDATE -> connection.getPlayer().getScoreboardManager().getObjective(getName()).setValue(getValue());
+            case REMOVE -> connection.getPlayer().getScoreboardManager().removeObjective(getName());
+        }
     }
 
     @Override

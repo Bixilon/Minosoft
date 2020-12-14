@@ -13,13 +13,17 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.channels.DefaultPluginChannels;
+import de.bixilon.minosoft.modding.event.events.PluginMessageReceiveEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-public class PacketPluginMessageReceiving implements ClientboundPacket {
+public class PacketPluginMessageReceiving extends ClientboundPacket {
     String channel;
     byte[] data;
     Connection connection;
@@ -39,8 +43,37 @@ public class PacketPluginMessageReceiving implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        if (getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getVersionId()))) {
+            InByteBuffer data = getDataAsBuffer();
+            String serverVersion;
+            String clientVersion = (Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
+            OutByteBuffer toSend = new OutByteBuffer(connection);
+            if (connection.getVersion().getVersionId() < 29) {
+                // no length prefix
+                serverVersion = new String(data.getBytes());
+                toSend.writeBytes(clientVersion.getBytes());
+            } else {
+                // length prefix
+                serverVersion = data.readString();
+                toSend.writeString(clientVersion);
+            }
+            Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, connection.getVersion().getVersionName()));
+
+            connection.getSender().sendPluginMessageData(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getVersionId()), toSend);
+            return;
+        }
+
+        // MC|StopSound
+        if (getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getVersionId()))) {
+            // it is basically a packet, handle it like a packet:
+            PacketStopSound packet = new PacketStopSound();
+            packet.read(getDataAsBuffer());
+            packet.handle(connection);
+            return;
+        }
+
+        connection.fireEvent(new PluginMessageReceiveEvent(connection, this));
     }
 
     @Override

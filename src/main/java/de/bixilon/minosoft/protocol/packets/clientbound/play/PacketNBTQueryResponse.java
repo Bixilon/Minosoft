@@ -16,10 +16,9 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
-public class PacketNBTQueryResponse implements ClientboundPacket {
+public class PacketNBTQueryResponse extends ClientboundPacket {
     int transactionId;
     CompoundTag tag;
 
@@ -28,11 +27,6 @@ public class PacketNBTQueryResponse implements ClientboundPacket {
         this.transactionId = buffer.readVarInt();
         this.tag = (CompoundTag) buffer.readNBT();
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

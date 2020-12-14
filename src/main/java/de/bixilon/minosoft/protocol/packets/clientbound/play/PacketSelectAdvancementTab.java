@@ -17,9 +17,8 @@ import de.bixilon.minosoft.data.ChangeableIdentifier;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketSelectAdvancementTab implements ClientboundPacket {
+public class PacketSelectAdvancementTab extends ClientboundPacket {
     AdvancementTabs tab;
 
     @Override
@@ -28,11 +27,6 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
             this.tab = AdvancementTabs.byName(buffer.readString(), buffer.getVersionId());
         }
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

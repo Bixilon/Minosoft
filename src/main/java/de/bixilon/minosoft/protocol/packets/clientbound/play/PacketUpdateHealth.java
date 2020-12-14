@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.UpdateHealthEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketUpdateHealth implements ClientboundPacket {
+public class PacketUpdateHealth extends ClientboundPacket {
     float health;
     int food;
     float saturation;
@@ -36,8 +37,16 @@ public class PacketUpdateHealth implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new UpdateHealthEvent(connection, this));
+
+        connection.getPlayer().setFood(getFood());
+        connection.getPlayer().setHealth(getHealth());
+        connection.getPlayer().setSaturation(getSaturation());
+        if (getHealth() <= 0.0F) {
+            // do respawn
+            connection.getSender().respawn();
+        }
     }
 
     @Override

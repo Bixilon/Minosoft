@@ -17,9 +17,8 @@ import de.bixilon.minosoft.data.Tag;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketTags implements ClientboundPacket {
+public class PacketTags extends ClientboundPacket {
     Tag[] blockTags;
     Tag[] itemTags;
     Tag[] fluidTags;
@@ -42,11 +41,6 @@ public class PacketTags implements ClientboundPacket {
             ret[i] = new Tag(buffer.readString(), buffer.readVarIntArray());
         }
         return ret;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

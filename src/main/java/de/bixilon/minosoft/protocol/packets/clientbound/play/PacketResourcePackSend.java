@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.ResourcePackChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketResourcePackSend implements ClientboundPacket {
+public class PacketResourcePackSend extends ClientboundPacket {
     String url;
     String hash;
     boolean forced;
@@ -34,8 +35,11 @@ public class PacketResourcePackSend implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        ResourcePackChangeEvent event = new ResourcePackChangeEvent(connection, this);
+        if (connection.fireEvent(event)) {
+            return;
+        }
     }
 
     @Override

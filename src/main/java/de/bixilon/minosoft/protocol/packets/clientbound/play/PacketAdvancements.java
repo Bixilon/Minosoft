@@ -22,13 +22,12 @@ import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.BitByte;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PacketAdvancements implements ClientboundPacket {
+public class PacketAdvancements extends ClientboundPacket {
     final HashMap<String, Advancement> advancements = new HashMap<>();
     final HashMap<String, AdvancementProgress> progresses = new HashMap<>();
     boolean reset;
@@ -99,11 +98,6 @@ public class PacketAdvancements implements ClientboundPacket {
         }
 
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

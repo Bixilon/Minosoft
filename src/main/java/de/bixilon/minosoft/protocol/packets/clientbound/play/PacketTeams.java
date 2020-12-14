@@ -13,16 +13,19 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.scoreboard.Team;
 import de.bixilon.minosoft.data.text.ChatCode;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.BitByte;
 
-public class PacketTeams implements ClientboundPacket {
+import java.util.Arrays;
+
+public class PacketTeams extends ClientboundPacket {
     String name;
     TeamActions action;
     ChatComponent displayName;
@@ -84,8 +87,14 @@ public class PacketTeams implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        switch (getAction()) {
+            case CREATE -> connection.getPlayer().getScoreboardManager().addTeam(new Team(getName(), getDisplayName(), getPrefix(), getSuffix(), isFriendlyFireEnabled(), isSeeingFriendlyInvisibles(), getPlayerNames()));
+            case INFORMATION_UPDATE -> connection.getPlayer().getScoreboardManager().getTeam(getName()).updateInformation(getDisplayName(), getPrefix(), getSuffix(), isFriendlyFireEnabled(), isSeeingFriendlyInvisibles());
+            case REMOVE -> connection.getPlayer().getScoreboardManager().removeTeam(getName());
+            case PLAYER_ADD -> connection.getPlayer().getScoreboardManager().getTeam(getName()).addPlayers(Arrays.asList(getPlayerNames()));
+            case PLAYER_REMOVE -> connection.getPlayer().getScoreboardManager().getTeam(getName()).removePlayers(Arrays.asList(getPlayerNames()));
+        }
     }
 
     private void setFriendlyFireByLegacy(byte raw) {

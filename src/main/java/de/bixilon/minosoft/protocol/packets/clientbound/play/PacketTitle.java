@@ -18,11 +18,12 @@ import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.TitleChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketTitle implements ClientboundPacket {
+public class PacketTitle extends ClientboundPacket {
     TitleActions action;
 
     // fields depend on action
@@ -48,8 +49,10 @@ public class PacketTitle implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        if (connection.fireEvent(new TitleChangeEvent(connection, this))) {
+            return;
+        }
     }
 
     @Override

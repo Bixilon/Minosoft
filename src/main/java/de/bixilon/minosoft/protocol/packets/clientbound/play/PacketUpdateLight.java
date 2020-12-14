@@ -17,10 +17,9 @@ import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.ChunkUtil;
 
-public class PacketUpdateLight implements ClientboundPacket {
+public class PacketUpdateLight extends ClientboundPacket {
     ChunkLocation location;
 
     @Override
@@ -36,11 +35,6 @@ public class PacketUpdateLight implements ClientboundPacket {
         long emptySkyLightMask = buffer.readVarLong();
         ChunkUtil.readSkyLightPacket(buffer, skyLightMask, blockLightMask, emptyBlockLightMask, emptySkyLightMask);
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

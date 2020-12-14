@@ -17,9 +17,8 @@ import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketFacePlayer implements ClientboundPacket {
+public class PacketFacePlayer extends ClientboundPacket {
     PlayerFaces face;
     Location location;
     int entityId = -1;
@@ -35,11 +34,6 @@ public class PacketFacePlayer implements ClientboundPacket {
             this.entityFace = PlayerFaces.byId(buffer.readVarInt());
         }
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

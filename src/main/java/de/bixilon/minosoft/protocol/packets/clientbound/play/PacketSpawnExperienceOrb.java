@@ -16,11 +16,12 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.entities.ExperienceOrb;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketSpawnExperienceOrb implements ClientboundPacket {
+public class PacketSpawnExperienceOrb extends ClientboundPacket {
     ExperienceOrb entity;
 
     @Override
@@ -38,8 +39,10 @@ public class PacketSpawnExperienceOrb implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new EntitySpawnEvent(connection, this));
+
+        connection.getPlayer().getWorld().addEntity(getEntity());
     }
 
     @Override

@@ -17,11 +17,13 @@ import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.Difficulties;
 import de.bixilon.minosoft.data.GameModes;
 import de.bixilon.minosoft.data.LevelTypes;
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.JoinGameEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
@@ -30,7 +32,7 @@ import de.bixilon.minosoft.util.nbt.tag.NBTTag;
 
 import java.util.HashMap;
 
-public class PacketJoinGame implements ClientboundPacket {
+public class PacketJoinGame extends ClientboundPacket {
     int entityId;
     boolean hardcore;
     GameModes gameMode;
@@ -140,8 +142,19 @@ public class PacketJoinGame implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        if (connection.fireEvent(new JoinGameEvent(connection, this))) {
+            return;
+        }
+
+        connection.getPlayer().setGameMode(getGameMode());
+        connection.getPlayer().getWorld().setHardcore(isHardcore());
+        connection.getMapping().setDimensions(getDimensions());
+        connection.getPlayer().getWorld().setDimension(getDimension());
+        PlayerEntity entity = new PlayerEntity(connection, getEntityId(), connection.getPlayer().getPlayerUUID(), null, null, connection.getPlayer().getPlayerName(), null, null);
+        connection.getPlayer().setEntity(entity);
+        connection.getPlayer().getWorld().addEntity(entity);
+        connection.getSender().sendChatMessage("I am alive! ~ Minosoft");
     }
 
     private HashMap<String, HashBiMap<String, Dimension>> parseDimensionCodec(NBTTag nbt, int versionId) {

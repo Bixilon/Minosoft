@@ -17,9 +17,8 @@ import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketOpenBook implements ClientboundPacket {
+public class PacketOpenBook extends ClientboundPacket {
     Hands hand;
 
     @Override
@@ -30,11 +29,6 @@ public class PacketOpenBook implements ClientboundPacket {
         }
         this.hand = Hands.OFF_HAND;
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

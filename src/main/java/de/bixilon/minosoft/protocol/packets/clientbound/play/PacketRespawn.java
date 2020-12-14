@@ -18,12 +18,13 @@ import de.bixilon.minosoft.data.GameModes;
 import de.bixilon.minosoft.data.LevelTypes;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.RespawnEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
-public class PacketRespawn implements ClientboundPacket {
+public class PacketRespawn extends ClientboundPacket {
     Dimension dimension;
     Difficulties difficulty;
     GameModes gameMode;
@@ -76,8 +77,16 @@ public class PacketRespawn implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        if (connection.fireEvent(new RespawnEvent(connection, this))) {
+            return;
+        }
+
+        // clear all chunks
+        connection.getPlayer().getWorld().getAllChunks().clear();
+        connection.getPlayer().getWorld().setDimension(getDimension());
+        connection.getPlayer().setSpawnConfirmed(false);
+        connection.getPlayer().setGameMode(getGameMode());
     }
 
     @Override

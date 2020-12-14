@@ -18,11 +18,10 @@ import de.bixilon.minosoft.data.mappings.statistics.StatisticCategories;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.HashMap;
 
-public class PacketStatistics implements ClientboundPacket {
+public class PacketStatistics extends ClientboundPacket {
     final HashMap<Statistic, Integer> statistics = new HashMap<>();
 
     @Override
@@ -37,11 +36,6 @@ public class PacketStatistics implements ClientboundPacket {
             }
         }
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

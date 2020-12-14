@@ -18,12 +18,11 @@ import de.bixilon.minosoft.data.entities.EntityPropertyKeys;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class PacketEntityProperties implements ClientboundPacket {
+public class PacketEntityProperties extends ClientboundPacket {
     final HashMap<EntityPropertyKeys, EntityProperty> properties = new HashMap<>();
     int entityId;
 
@@ -60,11 +59,6 @@ public class PacketEntityProperties implements ClientboundPacket {
             this.properties.put(key, new EntityProperty(value));
         }
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

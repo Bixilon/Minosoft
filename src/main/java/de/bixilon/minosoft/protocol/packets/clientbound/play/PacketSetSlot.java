@@ -15,11 +15,12 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.SingleSlotChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketSetSlot implements ClientboundPacket {
+public class PacketSetSlot extends ClientboundPacket {
     byte windowId;
     short slotId;
     Slot slot; // ToDo use enum Slots
@@ -33,8 +34,15 @@ public class PacketSetSlot implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new SingleSlotChangeEvent(connection, this));
+
+        if (getWindowId() == -1) {
+            // thanks mojang
+            // ToDo: what is windowId -1
+            return;
+        }
+        connection.getPlayer().setSlot(getWindowId(), getSlotId(), getSlot());
     }
 
     @Override

@@ -17,11 +17,12 @@ import de.bixilon.minosoft.data.mappings.BlockId;
 import de.bixilon.minosoft.data.mappings.blocks.actions.*;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.BlockActionEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketBlockAction implements ClientboundPacket {
+public class PacketBlockAction extends ClientboundPacket {
     BlockPosition position;
     BlockAction data;
 
@@ -58,8 +59,11 @@ public class PacketBlockAction implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        BlockActionEvent event = new BlockActionEvent(connection, this);
+        if (connection.fireEvent(event)) {
+            return;
+        }
     }
 
     @Override

@@ -16,10 +16,9 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.BitByte;
 
-public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
+public class PacketPlayerAbilitiesReceiving extends ClientboundPacket {
     boolean creative; // is this needed? receiving the gameMode in change Game state
     boolean flying;
     boolean canFly;
@@ -47,11 +46,6 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
         this.flyingSpeed = buffer.readFloat();
         this.walkingSpeed = buffer.readFloat();
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

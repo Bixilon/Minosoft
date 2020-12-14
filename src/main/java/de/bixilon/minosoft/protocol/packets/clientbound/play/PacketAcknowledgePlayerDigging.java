@@ -19,9 +19,8 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerDigging;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketAcknowledgePlayerDigging implements ClientboundPacket {
+public class PacketAcknowledgePlayerDigging extends ClientboundPacket {
     BlockPosition position;
     Block block;
     PacketPlayerDigging.DiggingStatus status;
@@ -34,11 +33,6 @@ public class PacketAcknowledgePlayerDigging implements ClientboundPacket {
         this.status = PacketPlayerDigging.DiggingStatus.byId(buffer.readVarInt());
         this.successful = buffer.readBoolean();
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

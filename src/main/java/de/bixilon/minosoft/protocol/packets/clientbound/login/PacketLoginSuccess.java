@@ -16,12 +16,11 @@ package de.bixilon.minosoft.protocol.packets.clientbound.login;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.Util;
 
 import java.util.UUID;
 
-public class PacketLoginSuccess implements ClientboundPacket {
+public class PacketLoginSuccess extends ClientboundPacket {
     UUID uuid;
     String username;
 
@@ -35,11 +34,6 @@ public class PacketLoginSuccess implements ClientboundPacket {
         this.uuid = buffer.readUUID();
         this.username = buffer.readString();
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override

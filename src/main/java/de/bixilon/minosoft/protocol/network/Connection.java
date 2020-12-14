@@ -45,7 +45,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Connection {
     public static int lastConnectionId;
     private final Network network = Network.getNetworkInstance(this);
-    private final PacketHandler handler = new PacketHandler(this);
     private final PacketSender sender = new PacketSender(this);
     private final LinkedBlockingQueue<ClientboundPacket> handlingQueue = new LinkedBlockingQueue<>();
     private final VelocityHandler velocityHandler = new VelocityHandler(this);
@@ -159,10 +158,6 @@ public class Connection {
         }
     }
 
-    public PacketHandler getHandler() {
-        return this.handler;
-    }
-
     public void handle(ClientboundPacket p) {
         this.handlingQueue.add(p);
     }
@@ -213,7 +208,7 @@ public class Connection {
                     if (fireEvent(event)) {
                         continue;
                     }
-                    packet.handle(getHandler());
+                    packet.handle(this);
                 } catch (Throwable e) {
                     Log.printException(e, LogLevels.PROTOCOL);
                 }

@@ -17,9 +17,8 @@ import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketVehicleMovement implements ClientboundPacket {
+public class PacketVehicleMovement extends ClientboundPacket {
     Location location;
     float yaw;
     float pitch;
@@ -30,11 +29,6 @@ public class PacketVehicleMovement implements ClientboundPacket {
         this.yaw = buffer.readFloat();
         this.pitch = buffer.readFloat();
         return true;
-    }
-
-    @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
     }
 
     @Override
