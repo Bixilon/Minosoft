@@ -26,7 +26,7 @@ public class PacketEntityMetadata implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
-        entityMetaData = buffer.readMetaData();
+        this.entityMetaData = buffer.readMetaData();
         return true;
     }
 
@@ -37,14 +37,14 @@ public class PacketEntityMetadata implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received entity metadata (entityId=%d)", entityId));
+        Log.protocol(String.format("[IN] Received entity metadata (entityId=%d)", this.entityId));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public EntityMetaData getEntityData() {
-        return entityMetaData;
+        return this.entityMetaData;
     }
 }

@@ -67,14 +67,14 @@ public enum InventoryActions {
     }
 
     public byte getButton() {
-        return button;
+        return this.button;
     }
 
     public byte getMode() {
-        return mode;
+        return this.mode;
     }
 
     public boolean hasSlot() {
-        return hasSlot;
+        return this.hasSlot;
     }
 }

@@ -29,14 +29,14 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        message = buffer.readChatComponent();
+        this.message = buffer.readChatComponent();
         if (buffer.getVersionId() < 7) {
-            position = ChatTextPositions.CHAT_BOX;
+            this.position = ChatTextPositions.CHAT_BOX;
             return true;
         }
-        position = ChatTextPositions.byId(buffer.readUnsignedByte());
+        this.position = ChatTextPositions.byId(buffer.readUnsignedByte());
         if (buffer.getVersionId() >= 718) {
-            sender = buffer.readUUID();
+            this.sender = buffer.readUUID();
         }
         return true;
     }
@@ -48,18 +48,18 @@ public class PacketChatMessageReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received chat message (message=\"%s\")", message.getMessage()));
+        Log.protocol(String.format("[IN] Received chat message (message=\"%s\")", this.message.getMessage()));
     }
 
     public ChatComponent getMessage() {
-        return message;
+        return this.message;
     }
 
     public ChatTextPositions getPosition() {
-        return position;
+        return this.position;
     }
 
     public UUID getSender() {
-        return sender;
+        return this.sender;
     }
 }

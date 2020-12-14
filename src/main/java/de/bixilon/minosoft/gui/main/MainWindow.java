@@ -124,7 +124,6 @@ public class MainWindow implements Initializable {
         JFXAlert<?> dialog = new JFXAlert<>();
         GUITools.initializePane(dialog.getDialogPane());
 
-
         JFXDialogLayout layout = new JFXDialogLayout();
 
         GridPane gridPane = new GridPane();
@@ -132,7 +131,6 @@ public class MainWindow implements Initializable {
         gridPane.setHgap(50);
 
         JFXButton submitButton;
-
 
         JFXTextField serverNameField = new JFXTextField();
         serverNameField.setPromptText(LocaleManager.translate(Strings.SERVER_NAME));
@@ -149,7 +147,6 @@ public class MainWindow implements Initializable {
         });
 
         GUITools.VERSION_COMBO_BOX.getSelectionModel().select(Versions.LOWEST_VERSION_SUPPORTED);
-
 
         if (server == null) {
             // add
@@ -181,13 +178,11 @@ public class MainWindow implements Initializable {
         gridPane.add(new Label(LocaleManager.translate(Strings.VERSION) + ":"), 0, 2);
         gridPane.add(GUITools.VERSION_COMBO_BOX, 1, 2);
 
-
         layout.setBody(gridPane);
         JFXButton closeButton = new JFXButton(ButtonType.CLOSE.getText());
         closeButton.setOnAction((actionEvent -> dialog.hide()));
         closeButton.setButtonType(JFXButton.ButtonType.RAISED);
         layout.setActions(closeButton, submitButton);
-
 
         serverAddressField.textProperty().addListener((observable, oldValue, newValue) -> submitButton.setDisable(newValue.trim().isEmpty()));
         submitButton.setDisable(serverAddressField.getText().isBlank());
@@ -204,7 +199,7 @@ public class MainWindow implements Initializable {
             if (server1 == null) {
                 server1 = new Server(Server.getNextServerId(), serverName, serverAddress, desiredVersionId);
                 Minosoft.getConfig().putServer(server1);
-                ServerListCell.listView.getItems().add(server1);
+                ServerListCell.SERVER_LIST_VIEW.getItems().add(server1);
             } else {
                 server1.setName(serverName);
                 server1.setAddress(serverAddress);
@@ -232,18 +227,18 @@ public class MainWindow implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        serversPane.setCenter(ServerListCell.listView);
+        this.serversPane.setCenter(ServerListCell.SERVER_LIST_VIEW);
 
-        menuAccount2 = menuAccount;
-        menuFile.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE));
-        menuFilePreferences.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_PREFERENCES));
-        menuFileQuit.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_QUIT));
-        menuServers.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS));
-        menuServersAdd.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ADD));
-        menuServerRefresh.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_REFRESH));
-        menuHelp.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP));
-        menuHelpAbout.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP_ABOUT));
-        menuAccountManage.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_MANAGE));
+        menuAccount2 = this.menuAccount;
+        this.menuFile.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE));
+        this.menuFilePreferences.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_PREFERENCES));
+        this.menuFileQuit.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_QUIT));
+        this.menuServers.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS));
+        this.menuServersAdd.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ADD));
+        this.menuServerRefresh.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_REFRESH));
+        this.menuHelp.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP));
+        this.menuHelpAbout.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP_ABOUT));
+        this.menuAccountManage.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_MANAGE));
         selectAccount();
     }
 
@@ -260,16 +255,16 @@ public class MainWindow implements Initializable {
     public void refreshServers() {
         Log.info("Refreshing server list");
         // remove all lan servers
-        ServerListCell.listView.getItems().removeAll(LANServerListener.getServers().values());
+        ServerListCell.SERVER_LIST_VIEW.getItems().removeAll(LANServerListener.getServerMap().values());
         LANServerListener.removeAll();
 
-        for (Server server : ServerListCell.listView.getItems()) {
+        for (Server server : ServerListCell.SERVER_LIST_VIEW.getItems()) {
             if (server.getLastPing() == null) {
                 // server was not pinged, don't even try, only costs memory and cpu
                 continue;
             }
             server.ping();
-            ServerListCell.listView.refresh();
+            ServerListCell.SERVER_LIST_VIEW.refresh();
         }
     }
 

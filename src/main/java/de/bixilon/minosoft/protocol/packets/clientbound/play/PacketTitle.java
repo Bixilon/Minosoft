@@ -33,14 +33,14 @@ public class PacketTitle implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        action = TitleActions.byId(buffer.readVarInt(), buffer.getVersionId());
-        switch (action) {
-            case SET_TITLE -> text = buffer.readChatComponent();
-            case SET_SUBTITLE -> subText = buffer.readChatComponent();
+        this.action = TitleActions.byId(buffer.readVarInt(), buffer.getVersionId());
+        switch (this.action) {
+            case SET_TITLE -> this.text = buffer.readChatComponent();
+            case SET_SUBTITLE -> this.subText = buffer.readChatComponent();
             case SET_TIMES_AND_DISPLAY -> {
-                fadeInTime = buffer.readInt();
-                stayTime = buffer.readInt();
-                fadeOutTime = buffer.readInt();
+                this.fadeInTime = buffer.readInt();
+                this.stayTime = buffer.readInt();
+                this.fadeOutTime = buffer.readInt();
             }
         }
         return true;
@@ -53,36 +53,36 @@ public class PacketTitle implements ClientboundPacket {
 
     @Override
     public void log() {
-        switch (action) {
-            case SET_TITLE -> Log.protocol(String.format("[IN] Received title (action=%s, text=%s)", action, text.getANSIColoredMessage()));
-            case SET_SUBTITLE -> Log.protocol(String.format("[IN] Received title (action=%s, subText=%s)", action, subText.getANSIColoredMessage()));
-            case SET_TIMES_AND_DISPLAY -> Log.protocol(String.format("[IN] Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", action, fadeInTime, stayTime, fadeOutTime));
-            case HIDE, RESET -> Log.protocol(String.format("[IN] Received title (action=%s)", action));
+        switch (this.action) {
+            case SET_TITLE -> Log.protocol(String.format("[IN] Received title (action=%s, text=%s)", this.action, this.text.getANSIColoredMessage()));
+            case SET_SUBTITLE -> Log.protocol(String.format("[IN] Received title (action=%s, subText=%s)", this.action, this.subText.getANSIColoredMessage()));
+            case SET_TIMES_AND_DISPLAY -> Log.protocol(String.format("[IN] Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", this.action, this.fadeInTime, this.stayTime, this.fadeOutTime));
+            case HIDE, RESET -> Log.protocol(String.format("[IN] Received title (action=%s)", this.action));
         }
     }
 
     public int getFadeInTime() {
-        return fadeInTime;
+        return this.fadeInTime;
     }
 
     public int getFadeOutTime() {
-        return fadeOutTime;
+        return this.fadeOutTime;
     }
 
     public int getStayTime() {
-        return stayTime;
+        return this.stayTime;
     }
 
     public ChatComponent getSubText() {
-        return subText;
+        return this.subText;
     }
 
     public ChatComponent getText() {
-        return text;
+        return this.text;
     }
 
     public TitleActions getAction() {
-        return action;
+        return this.action;
     }
 
     public enum TitleActions {
@@ -96,11 +96,11 @@ public class PacketTitle implements ClientboundPacket {
         final VersionValueMap<Integer> valueMap;
 
         TitleActions(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values, true);
         }
 
         TitleActions(int id) {
-            valueMap = new VersionValueMap<>(id);
+            this.valueMap = new VersionValueMap<>(id);
         }
 
         public static TitleActions byId(int id, int versionId) {
@@ -113,7 +113,7 @@ public class PacketTitle implements ClientboundPacket {
         }
 
         public int getId(int versionId) {
-            Integer ret = valueMap.get(versionId);
+            Integer ret = this.valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

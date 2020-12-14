@@ -32,15 +32,15 @@ public class PacketResourcePackStatus implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_RESOURCE_PACK_STATUS);
         if (buffer.getVersionId() < 204) {
-            buffer.writeString(hash);
+            buffer.writeString(this.hash);
         }
-        buffer.writeVarInt(status.ordinal());
+        buffer.writeVarInt(this.status.ordinal());
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending resource pack status (status=%s, hash=%s)", status, hash));
+        Log.protocol(String.format("[OUT] Sending resource pack status (status=%s, hash=%s)", this.status, this.hash));
     }
 
     public enum ResourcePackStates {

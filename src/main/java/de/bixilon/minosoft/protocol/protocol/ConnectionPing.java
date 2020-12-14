@@ -21,14 +21,14 @@ public class ConnectionPing {
 
     public ConnectionPing() {
         this.pingId = ThreadLocalRandom.current().nextLong();
-        sendingTime = System.currentTimeMillis();
+        this.sendingTime = System.currentTimeMillis();
     }
 
     public long getPingId() {
-        return pingId;
+        return this.pingId;
     }
 
     public long getSendingTime() {
-        return sendingTime;
+        return this.sendingTime;
     }
 }

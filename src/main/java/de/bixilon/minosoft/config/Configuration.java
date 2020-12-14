@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class Configuration {
     public static final int LATEST_CONFIG_VERSION = 1;
-    private final static JsonObject DEFAULT_CONFIGURATION = JsonParser.parseReader(new InputStreamReader(Configuration.class.getResourceAsStream("/config/" + StaticConfiguration.CONFIG_FILENAME))).getAsJsonObject();
+    private static final JsonObject DEFAULT_CONFIGURATION = JsonParser.parseReader(new InputStreamReader(Configuration.class.getResourceAsStream("/config/" + StaticConfiguration.CONFIG_FILENAME))).getAsJsonObject();
     private final HashMap<ConfigurationPaths.ConfigurationPath, Object> config = new HashMap<>();
     private final HashBiMap<String, MojangAccount> accountList = HashBiMap.create();
     private final HashBiMap<Integer, Server> serverList = HashBiMap.create();
@@ -52,7 +52,6 @@ public class Configuration {
 
         JsonObject json = Util.readJsonFromFile(file.getAbsolutePath());
 
-
         int configVersion = (int) getData(json, ConfigurationPaths.IntegerPaths.GENERAL_CONFIG_VERSION);
         if (configVersion > LATEST_CONFIG_VERSION) {
             throw new ConfigMigrationException(String.format("Configuration was migrated to newer config format (version=%d, expected=%d). Downgrading the config file is unsupported!", configVersion, LATEST_CONFIG_VERSION));
@@ -62,27 +61,27 @@ public class Configuration {
         }
 
         for (ConfigurationPaths.ConfigurationPath path : ConfigurationPaths.ALL_PATHS) {
-            config.put(path, getData(json, path));
+            this.config.put(path, getData(json, path));
         }
 
         // servers
         for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject("servers").getAsJsonObject("entries").entrySet()) {
-            serverList.put(Integer.parseInt(entry.getKey()), Server.deserialize(entry.getValue().getAsJsonObject()));
+            this.serverList.put(Integer.parseInt(entry.getKey()), Server.deserialize(entry.getValue().getAsJsonObject()));
         }
 
         // accounts
         for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject("accounts").getAsJsonObject("entries").entrySet()) {
             MojangAccount account = MojangAccount.deserialize(entry.getValue().getAsJsonObject());
-            accountList.put(account.getUserId(), account);
+            this.accountList.put(account.getUserId(), account);
         }
 
         final File finalFile = file;
         new Thread(() -> {
             while (true) {
                 // wait for interrupt
-                synchronized (lock) {
+                synchronized (this.lock) {
                     try {
-                        lock.wait();
+                        this.lock.wait();
                     } catch (InterruptedException ignored) {
                     }
                 }
@@ -97,23 +96,23 @@ public class Configuration {
                     return;
                 }
                 JsonObject jsonObject = DEFAULT_CONFIGURATION.deepCopy();
-                synchronized (config) {
+                synchronized (this.config) {
 
                     // accounts
                     JsonObject accountsEntriesJson = jsonObject.getAsJsonObject("servers").getAsJsonObject("entries");
-                    for (Map.Entry<Integer, Server> entry : serverList.entrySet()) {
+                    for (Map.Entry<Integer, Server> entry : this.serverList.entrySet()) {
                         accountsEntriesJson.add(String.valueOf(entry.getKey()), entry.getValue().serialize());
                     }
 
                     // servers
                     JsonObject serversEntriesJson = jsonObject.getAsJsonObject("accounts").getAsJsonObject("entries");
-                    for (Map.Entry<String, MojangAccount> entry : accountList.entrySet()) {
+                    for (Map.Entry<String, MojangAccount> entry : this.accountList.entrySet()) {
                         serversEntriesJson.add(entry.getKey(), entry.getValue().serialize());
                     }
 
                     // rest of data
                     for (ConfigurationPaths.ConfigurationPath path : ConfigurationPaths.ALL_PATHS) {
-                        saveData(jsonObject, path, config.get(path));
+                        saveData(jsonObject, path, this.config.get(path));
                     }
                 }
                 gson.toJson(jsonObject, writer);
@@ -137,57 +136,57 @@ public class Configuration {
     }
 
     public boolean getBoolean(ConfigurationPaths.BooleanPaths path) {
-        return (boolean) config.get(path);
+        return (boolean) this.config.get(path);
     }
 
     public void putBoolean(ConfigurationPaths.BooleanPaths path, boolean value) {
-        config.put(path, value);
+        this.config.put(path, value);
     }
 
     public int getInt(ConfigurationPaths.IntegerPaths path) {
-        return (int) config.get(path);
+        return (int) this.config.get(path);
     }
 
     public void putInt(ConfigurationPaths.IntegerPaths path, int value) {
-        config.put(path, value);
+        this.config.put(path, value);
     }
 
     public String getString(ConfigurationPaths.StringPaths path) {
-        return (String) config.get(path);
+        return (String) this.config.get(path);
     }
 
     public void putString(ConfigurationPaths.StringPaths path, String value) {
-        config.put(path, value);
+        this.config.put(path, value);
     }
 
     public void putMojangAccount(MojangAccount account) {
-        accountList.put(account.getUserId(), account);
+        this.accountList.put(account.getUserId(), account);
     }
 
     public void putServer(Server server) {
-        serverList.put(server.getId(), server);
+        this.serverList.put(server.getId(), server);
     }
 
     public void removeServer(Server server) {
-        serverList.remove(server.getId());
+        this.serverList.remove(server.getId());
     }
 
     public void saveToFile() {
-        synchronized (lock) {
-            lock.notifyAll();
+        synchronized (this.lock) {
+            this.lock.notifyAll();
         }
     }
 
     public void removeAccount(MojangAccount account) {
-        accountList.remove(account.getUserId());
+        this.accountList.remove(account.getUserId());
     }
 
     public HashBiMap<Integer, Server> getServerList() {
-        return serverList;
+        return this.serverList;
     }
 
     public HashBiMap<String, MojangAccount> getAccountList() {
-        return accountList;
+        return this.accountList;
     }
 
     private void migrateConfiguration() throws ConfigMigrationException {

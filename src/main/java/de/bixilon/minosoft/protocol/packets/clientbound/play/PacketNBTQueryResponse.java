@@ -25,8 +25,8 @@ public class PacketNBTQueryResponse implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        transactionId = buffer.readVarInt();
-        tag = (CompoundTag) buffer.readNBT();
+        this.transactionId = buffer.readVarInt();
+        this.tag = (CompoundTag) buffer.readNBT();
         return true;
     }
 
@@ -37,14 +37,14 @@ public class PacketNBTQueryResponse implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received nbt response (transactionId=%d, nbt=%s)", transactionId, tag.toString()));
+        Log.protocol(String.format("[IN] Received nbt response (transactionId=%d, nbt=%s)", this.transactionId, this.tag.toString()));
     }
 
     public int getTransactionId() {
-        return transactionId;
+        return this.transactionId;
     }
 
     public CompoundTag getTag() {
-        return tag;
+        return this.tag;
     }
 }

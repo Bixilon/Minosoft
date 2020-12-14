@@ -88,7 +88,7 @@ public class Packets {
         }
 
         public ConnectionStates getState() {
-            return state;
+            return this.state;
         }
     }
 
@@ -209,11 +209,11 @@ public class Packets {
         }
 
         public ConnectionStates getState() {
-            return state;
+            return this.state;
         }
 
         public Class<? extends ClientboundPacket> getClazz() {
-            return clazz;
+            return this.clazz;
         }
     }
 }

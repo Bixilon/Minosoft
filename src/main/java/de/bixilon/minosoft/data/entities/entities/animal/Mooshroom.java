@@ -29,6 +29,6 @@ public class Mooshroom extends Cow {
 
     @EntityMetaDataFunction(identifier = "variant")
     public String getVariant() {
-        return metaData.getSets().getString(EntityMetaDataFields.MOOSHROOM_VARIANT);
+        return this.metaData.getSets().getString(EntityMetaDataFields.MOOSHROOM_VARIANT);
     }
 }

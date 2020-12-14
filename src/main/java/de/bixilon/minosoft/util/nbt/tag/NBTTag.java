@@ -16,14 +16,14 @@ package de.bixilon.minosoft.util.nbt.tag;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 public abstract class NBTTag {
-    boolean isFinal = false;
+    boolean isFinal;
 
     abstract TagTypes getType();
 
     abstract void writeBytes(OutByteBuffer buffer);
 
     public boolean isFinal() {
-        return isFinal;
+        return this.isFinal;
     }
 
     public void setFinal() {

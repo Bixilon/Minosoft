@@ -36,14 +36,14 @@ public class ExperienceChangeEvent extends CancelableEvent {
     }
 
     public float getBar() {
-        return bar;
+        return this.bar;
     }
 
     public int getLevel() {
-        return level;
+        return this.level;
     }
 
     public int getTotal() {
-        return total;
+        return this.total;
     }
 }

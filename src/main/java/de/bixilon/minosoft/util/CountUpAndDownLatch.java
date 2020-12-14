@@ -20,71 +20,71 @@ public class CountUpAndDownLatch {
     private long total;
 
     public CountUpAndDownLatch(int count) {
-        total = count;
+        this.total = count;
         this.count = count;
     }
 
     public void waitUntilZero() throws InterruptedException {
-        synchronized (lock) {
-            while (count > 0) {
-                lock.wait();
+        synchronized (this.lock) {
+            while (this.count > 0) {
+                this.lock.wait();
             }
         }
     }
 
     public void countUp() {
-        synchronized (lock) {
-            total++;
-            count++;
-            lock.notifyAll();
+        synchronized (this.lock) {
+            this.total++;
+            this.count++;
+            this.lock.notifyAll();
         }
     }
 
     public void countDown() {
-        synchronized (lock) {
-            count--;
-            lock.notifyAll();
+        synchronized (this.lock) {
+            this.count--;
+            this.lock.notifyAll();
         }
     }
 
     public long getCount() {
-        synchronized (lock) {
-            return count;
+        synchronized (this.lock) {
+            return this.count;
         }
     }
 
     public void setCount(int value) {
-        synchronized (lock) {
-            total += value;
-            count = value;
-            lock.notifyAll();
+        synchronized (this.lock) {
+            this.total += value;
+            this.count = value;
+            this.lock.notifyAll();
         }
     }
 
     public void addCount(int count) {
-        synchronized (lock) {
-            total += count;
+        synchronized (this.lock) {
+            this.total += count;
             this.count += count;
-            lock.notifyAll();
+            this.lock.notifyAll();
         }
     }
 
     public long getTotal() {
-        return total;
+        return this.total;
     }
 
     public void waitForChange() throws InterruptedException {
-        long latestCount = count;
+        long latestCount = this.count;
         long latestTotal = this.total;
-        synchronized (lock) {
-            while (latestCount == count && latestTotal == total) {
-                lock.wait();
+        synchronized (this.lock) {
+            while (latestCount == this.count && latestTotal == this.total) {
+                this.lock.wait();
             }
         }
     }
 
     @Override
     public String toString() {
-        return String.format("%d / %d", count, total);
+        return String.format("%d / %d", this.count, this.total);
     }
 }

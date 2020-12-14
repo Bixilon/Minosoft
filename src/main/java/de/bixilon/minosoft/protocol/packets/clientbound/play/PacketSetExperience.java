@@ -25,14 +25,14 @@ public class PacketSetExperience implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        bar = buffer.readFloat();
+        this.bar = buffer.readFloat();
         if (buffer.getVersionId() < 7) {
-            level = buffer.readUnsignedShort();
-            total = buffer.readUnsignedShort();
+            this.level = buffer.readUnsignedShort();
+            this.total = buffer.readUnsignedShort();
             return true;
         }
-        level = buffer.readVarInt();
-        total = buffer.readVarInt();
+        this.level = buffer.readVarInt();
+        this.total = buffer.readVarInt();
         return true;
     }
 
@@ -43,18 +43,18 @@ public class PacketSetExperience implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Level update received. Now at %d levels, totally %d exp", level, total));
+        Log.protocol(String.format("[IN] Level update received. Now at %d levels, totally %d exp", this.level, this.total));
     }
 
     public float getBar() {
-        return bar;
+        return this.bar;
     }
 
     public int getLevel() {
-        return level;
+        return this.level;
     }
 
     public int getTotal() {
-        return total;
+        return this.total;
     }
 }

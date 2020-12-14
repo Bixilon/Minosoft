@@ -23,7 +23,7 @@ public class PacketLoginSetCompression implements PacketCompressionInterface {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        threshold = buffer.readVarInt();
+        this.threshold = buffer.readVarInt();
         return true;
     }
 
@@ -34,11 +34,11 @@ public class PacketLoginSetCompression implements PacketCompressionInterface {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received set compression packet (threshold=%d)", threshold));
+        Log.protocol(String.format("[IN] Received set compression packet (threshold=%d)", this.threshold));
     }
 
     @Override
     public int getThreshold() {
-        return threshold;
+        return this.threshold;
     }
 }

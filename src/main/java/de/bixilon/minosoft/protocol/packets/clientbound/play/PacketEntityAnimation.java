@@ -26,8 +26,8 @@ public class PacketEntityAnimation implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        entityId = buffer.readVarInt();
-        animation = EntityAnimations.byId(buffer.readByte(), buffer.getVersionId());
+        this.entityId = buffer.readVarInt();
+        this.animation = EntityAnimations.byId(buffer.readByte(), buffer.getVersionId());
         return true;
     }
 
@@ -38,7 +38,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Play entity animation (entityId=%d, animation=%s)", entityId, animation));
+        Log.protocol(String.format("[IN] Play entity animation (entityId=%d, animation=%s)", this.entityId, this.animation));
     }
 
     public enum EntityAnimations {
@@ -57,7 +57,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
         final VersionValueMap<Integer> valueMap;
 
         EntityAnimations(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values, true);
         }
 
         public static EntityAnimations byId(int id, int versionId) {
@@ -70,7 +70,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
         }
 
         public int getId(Integer versionId) {
-            Integer ret = valueMap.get(versionId);
+            Integer ret = this.valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

@@ -32,10 +32,10 @@ public class ThrownPotion extends ThrowableItemProjectile {
     @EntityMetaDataFunction(identifier = "item")
     @Override
     public Slot getItem() {
-        if (versionId > 704) {
+        if (this.versionId > 704) {
             return super.getItem();
         }
-        Slot slot = metaData.getSets().getSlot(EntityMetaDataFields.THROWN_POTION_ITEM);
+        Slot slot = this.metaData.getSets().getSlot(EntityMetaDataFields.THROWN_POTION_ITEM);
         if (slot == null) {
             return getDefaultItem();
         }

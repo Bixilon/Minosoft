@@ -42,7 +42,7 @@ public class PacketEntityProperties implements ClientboundPacket {
                     ModifierActions operation = ModifierActions.byId(buffer.readUnsignedByte());
                     // ToDo: modifiers
                 }
-                properties.put(key, new EntityProperty(value));
+                this.properties.put(key, new EntityProperty(value));
             }
             return true;
         }
@@ -57,7 +57,7 @@ public class PacketEntityProperties implements ClientboundPacket {
                 ModifierActions operation = ModifierActions.byId(buffer.readUnsignedByte());
                 // ToDo: modifiers
             }
-            properties.put(key, new EntityProperty(value));
+            this.properties.put(key, new EntityProperty(value));
         }
         return true;
     }
@@ -69,11 +69,11 @@ public class PacketEntityProperties implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received entity properties (entityId=%d)", entityId));
+        Log.protocol(String.format("[IN] Received entity properties (entityId=%d)", this.entityId));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public enum ModifierActions {
@@ -81,8 +81,10 @@ public class PacketEntityProperties implements ClientboundPacket {
         ADD_PERCENT,
         MULTIPLY;
 
+        private static final ModifierActions[] MODIFIER_ACTIONS = values();
+
         public static ModifierActions byId(int id) {
-            return values()[id];
+            return MODIFIER_ACTIONS[id];
         }
     }
 }

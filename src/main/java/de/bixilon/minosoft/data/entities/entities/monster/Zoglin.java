@@ -29,6 +29,6 @@ public class Zoglin extends Monster {
 
     @EntityMetaDataFunction(identifier = "isBaby")
     public boolean isBaby() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.ZOGLIN_IS_BABY);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.ZOGLIN_IS_BABY);
     }
 }

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.GameModes;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
-import de.bixilon.minosoft.data.mappings.recipes.Recipes;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.data.player.PingBars;
@@ -53,20 +52,20 @@ import java.util.Arrays;
 import java.util.UUID;
 
 public class PacketHandler {
-    final Connection connection;
+    private final Connection connection;
 
     public PacketHandler(Connection connection) {
         this.connection = connection;
     }
 
     public void handle(PacketStatusResponse pkg) {
-        connection.fireEvent(new StatusResponseEvent(connection, pkg));
+        this.connection.fireEvent(new StatusResponseEvent(this.connection, pkg));
 
         // now we know the version, set it, if the config allows it
         Version version;
         int protocolId = -1;
-        if (connection.getDesiredVersionNumber() != -1) {
-            protocolId = Versions.getVersionById(connection.getDesiredVersionNumber()).getProtocolId();
+        if (this.connection.getDesiredVersionNumber() != -1) {
+            protocolId = Versions.getVersionById(this.connection.getDesiredVersionNumber()).getProtocolId();
         }
         if (protocolId == -1) {
             protocolId = pkg.getResponse().getProtocolId();
@@ -75,30 +74,30 @@ public class PacketHandler {
         if (version == null) {
             Log.fatal(String.format("Server is running on unknown version or a invalid version was forced (protocolId=%d, brand=\"%s\")", protocolId, pkg.getResponse().getServerBrand()));
         } else {
-            connection.setVersion(version);
+            this.connection.setVersion(version);
         }
         Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", pkg.getResponse().getPlayerOnline(), pkg.getResponse().getMaxPlayers(), pkg.getResponse().getMotd().getANSIColoredMessage()));
-        connection.handlePingCallbacks(pkg.getResponse());
-        connection.connectionStatusPing = new ConnectionPing();
-        connection.sendPacket(new PacketStatusPing(connection.connectionStatusPing));
+        this.connection.handlePingCallbacks(pkg.getResponse());
+        this.connection.setConnectionStatusPing(new ConnectionPing());
+        this.connection.sendPacket(new PacketStatusPing(this.connection.getConnectionStatusPing()));
     }
 
     public void handle(PacketStatusPong pkg) {
-        connection.fireEvent(new StatusPongEvent(connection, pkg));
+        this.connection.fireEvent(new StatusPongEvent(this.connection, pkg));
 
-        ConnectionPing ping = connection.getConnectionStatusPing();
+        ConnectionPing ping = this.connection.getConnectionStatusPing();
         if (ping.getPingId() != pkg.getID()) {
             Log.warn(String.format("Server sent unknown ping answer (pingId=%d, expected=%d)", pkg.getID(), ping.getPingId()));
             return;
         }
         long pingDifference = System.currentTimeMillis() - ping.getSendingTime();
         Log.debug(String.format("Pong received (ping=%dms, pingBars=%s)", pingDifference, PingBars.byPing(pingDifference)));
-        switch (connection.getReason()) {
-            case PING -> connection.disconnect();// pong arrived, closing connection
+        switch (this.connection.getReason()) {
+            case PING -> this.connection.disconnect();// pong arrived, closing connection
             case GET_VERSION -> {
                 // reconnect...
-                connection.disconnect();
-                Log.info(String.format("Server is running on version %s (versionId=%d, protocolId=%d), reconnecting...", connection.getVersion().getVersionName(), connection.getVersion().getVersionId(), connection.getVersion().getProtocolId()));
+                this.connection.disconnect();
+                Log.info(String.format("Server is running on version %s (versionId=%d, protocolId=%d), reconnecting...", this.connection.getVersion().getVersionName(), this.connection.getVersion().getVersionId(), this.connection.getVersion().getProtocolId()));
             }
         }
     }
@@ -107,60 +106,60 @@ public class PacketHandler {
         SecretKey secretKey = CryptManager.createNewSharedKey();
         PublicKey publicKey = CryptManager.decodePublicKey(pkg.getPublicKey());
         String serverHash = new BigInteger(CryptManager.getServerHash(pkg.getServerId(), publicKey, secretKey)).toString(16);
-        connection.getPlayer().getAccount().join(serverHash);
-        connection.sendPacket(new PacketEncryptionResponse(secretKey, pkg.getVerifyToken(), publicKey));
+        this.connection.getPlayer().getAccount().join(serverHash);
+        this.connection.sendPacket(new PacketEncryptionResponse(secretKey, pkg.getVerifyToken(), publicKey));
     }
 
     public void handle(PacketLoginSuccess pkg) {
     }
 
     public void handle(PacketJoinGame pkg) {
-        if (connection.fireEvent(new JoinGameEvent(connection, pkg))) {
+        if (this.connection.fireEvent(new JoinGameEvent(this.connection, pkg))) {
             return;
         }
 
-        connection.getPlayer().setGameMode(pkg.getGameMode());
-        connection.getPlayer().getWorld().setHardcore(pkg.isHardcore());
-        connection.getMapping().setDimensions(pkg.getDimensions());
-        connection.getPlayer().getWorld().setDimension(pkg.getDimension());
-        PlayerEntity entity = new PlayerEntity(connection, pkg.getEntityId(), connection.getPlayer().getPlayerUUID(), null, null, connection.getPlayer().getPlayerName(), null, null);
-        connection.getPlayer().setEntity(entity);
-        connection.getPlayer().getWorld().addEntity(entity);
-        connection.getSender().sendChatMessage("I am alive! ~ Minosoft");
+        this.connection.getPlayer().setGameMode(pkg.getGameMode());
+        this.connection.getPlayer().getWorld().setHardcore(pkg.isHardcore());
+        this.connection.getMapping().setDimensions(pkg.getDimensions());
+        this.connection.getPlayer().getWorld().setDimension(pkg.getDimension());
+        PlayerEntity entity = new PlayerEntity(this.connection, pkg.getEntityId(), this.connection.getPlayer().getPlayerUUID(), null, null, this.connection.getPlayer().getPlayerName(), null, null);
+        this.connection.getPlayer().setEntity(entity);
+        this.connection.getPlayer().getWorld().addEntity(entity);
+        this.connection.getSender().sendChatMessage("I am alive! ~ Minosoft");
     }
 
     public void handle(PacketLoginDisconnect pkg) {
-        connection.fireEvent(new LoginDisconnectEvent(connection, pkg.getReason()));
+        this.connection.fireEvent(new LoginDisconnectEvent(this.connection, pkg.getReason()));
         Log.info(String.format("Disconnecting from server (reason=%s)", pkg.getReason().getANSIColoredMessage()));
-        connection.disconnect();
+        this.connection.disconnect();
     }
 
     public void handle(PacketPlayerListItem pkg) {
-        if (connection.fireEvent(new PlayerListItemChangeEvent(connection, pkg))) {
+        if (this.connection.fireEvent(new PlayerListItemChangeEvent(this.connection, pkg))) {
             return;
         }
         for (PlayerListItemBulk bulk : pkg.getPlayerList()) {
-            PlayerListItem item = connection.getPlayer().getPlayerList().get(bulk.getUUID());
+            PlayerListItem item = this.connection.getPlayer().getPlayerList().get(bulk.getUUID());
             if (item == null && !bulk.isLegacy()) {
                 // Aaaaah. Fuck this shit. The server sends us bullshit!
                 continue;
             }
             switch (bulk.getAction()) {
-                case ADD -> connection.getPlayer().getPlayerList().put(bulk.getUUID(), new PlayerListItem(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGameMode(), bulk.getDisplayName(), bulk.getProperties()));
+                case ADD -> this.connection.getPlayer().getPlayerList().put(bulk.getUUID(), new PlayerListItem(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGameMode(), bulk.getDisplayName(), bulk.getProperties()));
                 case UPDATE_LATENCY -> {
                     if (bulk.isLegacy()) {
                         // add or update
                         if (item == null) {
                             // create
                             UUID uuid = UUID.randomUUID();
-                            connection.getPlayer().getPlayerList().put(uuid, new PlayerListItem(uuid, bulk.getName(), bulk.getPing()));
+                            this.connection.getPlayer().getPlayerList().put(uuid, new PlayerListItem(uuid, bulk.getName(), bulk.getPing()));
                         } else {
                             // update ping
                             item.setPing(bulk.getPing());
                         }
                         continue;
                     }
-                    connection.getPlayer().getPlayerList().get(bulk.getUUID()).setPing(bulk.getPing());
+                    this.connection.getPlayer().getPlayerList().get(bulk.getUUID()).setPing(bulk.getPing());
                 }
                 case REMOVE_PLAYER -> {
                     if (bulk.isLegacy()) {
@@ -168,10 +167,10 @@ public class PacketHandler {
                             // not initialized yet
                             continue;
                         }
-                        connection.getPlayer().getPlayerList().remove(connection.getPlayer().getPlayerListItem(bulk.getName()).getUUID());
+                        this.connection.getPlayer().getPlayerList().remove(this.connection.getPlayer().getPlayerListItem(bulk.getName()).getUUID());
                         continue;
                     }
-                    connection.getPlayer().getPlayerList().remove(bulk.getUUID());
+                    this.connection.getPlayer().getPlayerList().remove(bulk.getUUID());
                 }
                 case UPDATE_GAMEMODE -> item.setGameMode(bulk.getGameMode());
                 case UPDATE_DISPLAY_NAME -> item.setDisplayName(bulk.getDisplayName());
@@ -180,40 +179,40 @@ public class PacketHandler {
     }
 
     public void handle(PacketTimeUpdate pkg) {
-        if (connection.fireEvent(new TimeChangeEvent(connection, pkg))) {
+        if (this.connection.fireEvent(new TimeChangeEvent(this.connection, pkg))) {
             return;
         }
     }
 
     public void handle(PacketKeepAlive pkg) {
-        connection.sendPacket(new PacketKeepAliveResponse(pkg.getId()));
+        this.connection.sendPacket(new PacketKeepAliveResponse(pkg.getId()));
     }
 
     public void handle(PacketChunkBulk pkg) {
-        pkg.getChunks().forEach(((location, chunk) -> connection.fireEvent(new ChunkDataChangeEvent(connection, location, chunk))));
+        pkg.getChunks().forEach(((location, chunk) -> this.connection.fireEvent(new ChunkDataChangeEvent(this.connection, location, chunk))));
 
-        connection.getPlayer().getWorld().setChunks(pkg.getChunks());
+        this.connection.getPlayer().getWorld().setChunks(pkg.getChunks());
     }
 
     public void handle(PacketUpdateHealth pkg) {
-        connection.fireEvent(new UpdateHealthEvent(connection, pkg));
+        this.connection.fireEvent(new UpdateHealthEvent(this.connection, pkg));
 
-        connection.getPlayer().setFood(pkg.getFood());
-        connection.getPlayer().setHealth(pkg.getHealth());
-        connection.getPlayer().setSaturation(pkg.getSaturation());
+        this.connection.getPlayer().setFood(pkg.getFood());
+        this.connection.getPlayer().setHealth(pkg.getHealth());
+        this.connection.getPlayer().setSaturation(pkg.getSaturation());
         if (pkg.getHealth() <= 0.0F) {
             // do respawn
-            connection.getSender().respawn();
+            this.connection.getSender().respawn();
         }
     }
 
     public void handle(PacketPluginMessageReceiving pkg) {
-        if (pkg.getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getVersionId()))) {
+        if (pkg.getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(this.connection.getVersion().getVersionId()))) {
             InByteBuffer data = pkg.getDataAsBuffer();
             String serverVersion;
             String clientVersion = (Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
-            OutByteBuffer toSend = new OutByteBuffer(connection);
-            if (connection.getVersion().getVersionId() < 29) {
+            OutByteBuffer toSend = new OutByteBuffer(this.connection);
+            if (this.connection.getVersion().getVersionId() < 29) {
                 // no length prefix
                 serverVersion = new String(data.getBytes());
                 toSend.writeBytes(clientVersion.getBytes());
@@ -222,14 +221,14 @@ public class PacketHandler {
                 serverVersion = data.readString();
                 toSend.writeString(clientVersion);
             }
-            Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, connection.getVersion().getVersionName()));
+            Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, this.connection.getVersion().getVersionName()));
 
-            connection.getSender().sendPluginMessageData(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getVersionId()), toSend);
+            this.connection.getSender().sendPluginMessageData(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(this.connection.getVersion().getVersionId()), toSend);
             return;
         }
 
         // MC|StopSound
-        if (pkg.getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getVersionId()))) {
+        if (pkg.getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(this.connection.getVersion().getVersionId()))) {
             // it is basically a packet, handle it like a packet:
             PacketStopSound packet = new PacketStopSound();
             packet.read(pkg.getDataAsBuffer());
@@ -237,17 +236,17 @@ public class PacketHandler {
             return;
         }
 
-        connection.fireEvent(new PluginMessageReceiveEvent(connection, pkg));
+        this.connection.fireEvent(new PluginMessageReceiveEvent(this.connection, pkg));
     }
 
     public void handle(PacketSpawnLocation pkg) {
-        connection.fireEvent(new SpawnLocationChangeEvent(connection, pkg));
-        connection.getPlayer().setSpawnLocation(pkg.getSpawnLocation());
+        this.connection.fireEvent(new SpawnLocationChangeEvent(this.connection, pkg));
+        this.connection.getPlayer().setSpawnLocation(pkg.getSpawnLocation());
     }
 
     public void handle(PacketChatMessageReceiving pkg) {
-        ChatMessageReceivingEvent event = new ChatMessageReceivingEvent(connection, pkg);
-        if (connection.fireEvent(event)) {
+        ChatMessageReceivingEvent event = new ChatMessageReceivingEvent(this.connection, pkg);
+        if (this.connection.fireEvent(event)) {
             return;
         }
         Log.game(switch (pkg.getPosition()) {
@@ -258,27 +257,27 @@ public class PacketHandler {
     }
 
     public void handle(PacketDisconnect pkg) {
-        connection.fireEvent(new LoginDisconnectEvent(connection, pkg));
+        this.connection.fireEvent(new LoginDisconnectEvent(this.connection, pkg));
         // got kicked
-        connection.disconnect();
+        this.connection.disconnect();
     }
 
     public void handle(PacketHeldItemChangeReceiving pkg) {
-        connection.getPlayer().setSelectedSlot(pkg.getSlot());
+        this.connection.getPlayer().setSelectedSlot(pkg.getSlot());
     }
 
     public void handle(PacketSetExperience pkg) {
-        if (connection.fireEvent(new ExperienceChangeEvent(connection, pkg))) {
+        if (this.connection.fireEvent(new ExperienceChangeEvent(this.connection, pkg))) {
             return;
         }
 
-        connection.getPlayer().setLevel(pkg.getLevel());
-        connection.getPlayer().setTotalExperience(pkg.getTotal());
+        this.connection.getPlayer().setLevel(pkg.getLevel());
+        this.connection.getPlayer().setTotalExperience(pkg.getTotal());
     }
 
     public void handle(PacketChangeGameState pkg) {
-        ChangeGameStateEvent event = new ChangeGameStateEvent(connection, pkg);
-        if (connection.fireEvent(event)) {
+        ChangeGameStateEvent event = new ChangeGameStateEvent(this.connection, pkg);
+        if (this.connection.fireEvent(event)) {
             return;
         }
 
@@ -290,21 +289,21 @@ public class PacketHandler {
         });
 
         switch (pkg.getReason()) {
-            case STOP_RAINING -> connection.getPlayer().getWorld().setRaining(false);
-            case START_RAINING -> connection.getPlayer().getWorld().setRaining(true);
-            case CHANGE_GAMEMODE -> connection.getPlayer().setGameMode(GameModes.byId(pkg.getIntValue()));
+            case STOP_RAINING -> this.connection.getPlayer().getWorld().setRaining(false);
+            case START_RAINING -> this.connection.getPlayer().getWorld().setRaining(true);
+            case CHANGE_GAMEMODE -> this.connection.getPlayer().setGameMode(GameModes.byId(pkg.getIntValue()));
         }
     }
 
     public void handle(PacketSpawnMob pkg) {
-        connection.fireEvent(new EntitySpawnEvent(connection, pkg));
+        this.connection.fireEvent(new EntitySpawnEvent(this.connection, pkg));
 
-        connection.getPlayer().getWorld().addEntity(pkg.getEntity());
-        connection.getVelocityHandler().handleVelocity(pkg.getEntity(), pkg.getVelocity());
+        this.connection.getPlayer().getWorld().addEntity(pkg.getEntity());
+        this.connection.getVelocityHandler().handleVelocity(pkg.getEntity(), pkg.getVelocity());
     }
 
     public void handle(PacketEntityMovementAndRotation pkg) {
-        Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        Entity entity = this.connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
         if (entity == null) {
             // thanks mojang
             return;
@@ -314,7 +313,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityMovement pkg) {
-        Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        Entity entity = this.connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
         if (entity == null) {
             // thanks mojang
             return;
@@ -323,7 +322,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityRotation pkg) {
-        Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        Entity entity = this.connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
         if (entity == null) {
             // thanks mojang
             return;
@@ -332,32 +331,32 @@ public class PacketHandler {
     }
 
     public void handle(PacketDestroyEntity pkg) {
-        connection.fireEvent(new EntityDespawnEvent(connection, pkg));
+        this.connection.fireEvent(new EntityDespawnEvent(this.connection, pkg));
 
         for (int entityId : pkg.getEntityIds()) {
-            connection.getPlayer().getWorld().removeEntity(entityId);
+            this.connection.getPlayer().getWorld().removeEntity(entityId);
         }
     }
 
     public void handle(PacketEntityVelocity pkg) {
-        Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        Entity entity = this.connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
 
         if (entity == null) {
             // thanks mojang
             return;
         }
-        connection.getVelocityHandler().handleVelocity(entity, pkg.getVelocity());
+        this.connection.getVelocityHandler().handleVelocity(entity, pkg.getVelocity());
     }
 
     public void handle(PacketSpawnPlayer pkg) {
-        connection.fireEvent(new EntitySpawnEvent(connection, pkg));
+        this.connection.fireEvent(new EntitySpawnEvent(this.connection, pkg));
 
-        connection.getPlayer().getWorld().addEntity(pkg.getEntity());
-        connection.getVelocityHandler().handleVelocity(pkg.getEntity(), pkg.getVelocity());
+        this.connection.getPlayer().getWorld().addEntity(pkg.getEntity());
+        this.connection.getVelocityHandler().handleVelocity(pkg.getEntity(), pkg.getVelocity());
     }
 
     public void handle(PacketEntityTeleport pkg) {
-        Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        Entity entity = this.connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
         if (entity == null) {
             // thanks mojang
             return;
@@ -367,7 +366,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityHeadRotation pkg) {
-        Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        Entity entity = this.connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
         if (entity == null) {
             // thanks mojang
             return;
@@ -376,13 +375,13 @@ public class PacketHandler {
     }
 
     public void handle(PacketWindowItems pkg) {
-        connection.fireEvent(new MultiSlotChangeEvent(connection, pkg));
+        this.connection.fireEvent(new MultiSlotChangeEvent(this.connection, pkg));
 
-        connection.getPlayer().setInventory(pkg.getWindowId(), pkg.getData());
+        this.connection.getPlayer().setInventory(pkg.getWindowId(), pkg.getData());
     }
 
     public void handle(PacketEntityMetadata pkg) {
-        Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        Entity entity = this.connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
         if (entity == null) {
             // thanks mojang
             return;
@@ -391,9 +390,9 @@ public class PacketHandler {
     }
 
     public void handle(PacketEntityEquipment pkg) {
-        connection.fireEvent(new EntityEquipmentChangeEvent(connection, pkg));
+        this.connection.fireEvent(new EntityEquipmentChangeEvent(this.connection, pkg));
 
-        Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        Entity entity = this.connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
         if (entity == null) {
             // thanks mojang
             return;
@@ -402,73 +401,73 @@ public class PacketHandler {
     }
 
     public void handle(PacketBlockChange pkg) {
-        Chunk chunk = connection.getPlayer().getWorld().getChunk(pkg.getPosition().getChunkLocation());
+        Chunk chunk = this.connection.getPlayer().getWorld().getChunk(pkg.getPosition().getChunkLocation());
         if (chunk == null) {
             // thanks mojang
             return;
         }
-        connection.fireEvent(new BlockChangeEvent(connection, pkg));
+        this.connection.fireEvent(new BlockChangeEvent(this.connection, pkg));
 
         chunk.setBlock(pkg.getPosition().getInChunkLocation(), pkg.getBlock());
     }
 
     public void handle(PacketMultiBlockChange pkg) {
-        Chunk chunk = connection.getPlayer().getWorld().getChunk(pkg.getLocation());
+        Chunk chunk = this.connection.getPlayer().getWorld().getChunk(pkg.getLocation());
         if (chunk == null) {
             // thanks mojang
             return;
         }
-        connection.fireEvent(new MultiBlockChangeEvent(connection, pkg));
+        this.connection.fireEvent(new MultiBlockChangeEvent(this.connection, pkg));
         chunk.setBlocks(pkg.getBlocks());
     }
 
     public void handle(PacketRespawn pkg) {
-        if (connection.fireEvent(new RespawnEvent(connection, pkg))) {
+        if (this.connection.fireEvent(new RespawnEvent(this.connection, pkg))) {
             return;
         }
 
         // clear all chunks
-        connection.getPlayer().getWorld().getAllChunks().clear();
-        connection.getPlayer().getWorld().setDimension(pkg.getDimension());
-        connection.getPlayer().setSpawnConfirmed(false);
-        connection.getPlayer().setGameMode(pkg.getGameMode());
+        this.connection.getPlayer().getWorld().getAllChunks().clear();
+        this.connection.getPlayer().getWorld().setDimension(pkg.getDimension());
+        this.connection.getPlayer().setSpawnConfirmed(false);
+        this.connection.getPlayer().setGameMode(pkg.getGameMode());
     }
 
     public void handle(PacketOpenSignEditor pkg) {
-        OpenSignEditorEvent event = new OpenSignEditorEvent(connection, pkg);
-        if (connection.fireEvent(event)) {
+        OpenSignEditorEvent event = new OpenSignEditorEvent(this.connection, pkg);
+        if (this.connection.fireEvent(event)) {
             return;
         }
     }
 
     public void handle(PacketSpawnObject pkg) {
-        connection.fireEvent(new EntitySpawnEvent(connection, pkg));
+        this.connection.fireEvent(new EntitySpawnEvent(this.connection, pkg));
 
-        connection.getPlayer().getWorld().addEntity(pkg.getEntity());
-        connection.getVelocityHandler().handleVelocity(pkg.getEntity(), pkg.getVelocity());
+        this.connection.getPlayer().getWorld().addEntity(pkg.getEntity());
+        this.connection.getVelocityHandler().handleVelocity(pkg.getEntity(), pkg.getVelocity());
     }
 
     public void handle(PacketSpawnExperienceOrb pkg) {
-        connection.fireEvent(new EntitySpawnEvent(connection, pkg));
+        this.connection.fireEvent(new EntitySpawnEvent(this.connection, pkg));
 
-        connection.getPlayer().getWorld().addEntity(pkg.getEntity());
+        this.connection.getPlayer().getWorld().addEntity(pkg.getEntity());
     }
 
     public void handle(PacketSpawnWeatherEntity pkg) {
-        connection.fireEvent(new EntitySpawnEvent(connection, pkg));
-        connection.fireEvent(new LightningBoltSpawnEvent(connection, pkg));
+        this.connection.fireEvent(new EntitySpawnEvent(this.connection, pkg));
+        this.connection.fireEvent(new LightningBoltSpawnEvent(this.connection, pkg));
     }
 
     public void handle(PacketChunkData pkg) {
-        pkg.getBlockEntities().forEach(((position, compoundTag) -> connection.fireEvent(new BlockEntityMetaDataChangeEvent(connection, position, null, compoundTag))));
-        connection.fireEvent(new ChunkDataChangeEvent(connection, pkg));
+        pkg.getBlockEntities().forEach(((position, compoundTag) -> this.connection.fireEvent(new BlockEntityMetaDataChangeEvent(this.connection, position, null, compoundTag))));
+        this.connection.fireEvent(new ChunkDataChangeEvent(this.connection, pkg));
 
-        connection.getPlayer().getWorld().setChunk(pkg.getLocation(), pkg.getChunk());
-        connection.getPlayer().getWorld().setBlockEntityData(pkg.getBlockEntities());
+        this.connection.getPlayer().getWorld().setChunk(pkg.getLocation(), pkg.getChunk());
+        this.connection.getPlayer().getWorld().setBlockEntityData(pkg.getBlockEntities());
     }
 
     public void handle(PacketEntityEffect pkg) {
-        Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        Entity entity = this.connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
         if (entity == null) {
             // thanks mojang
             return;
@@ -477,7 +476,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketRemoveEntityEffect pkg) {
-        Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        Entity entity = this.connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
         if (entity == null) {
             // thanks mojang
             return;
@@ -513,16 +512,16 @@ public class PacketHandler {
 
     public void handle(PacketPlayerPositionAndRotation pkg) {
         // ToDo: GUI should do this
-        connection.getPlayer().getEntity().setLocation(pkg.getLocation());
-        if (connection.getVersion().getVersionId() >= 79) {
-            connection.sendPacket(new PacketConfirmTeleport(pkg.getTeleportId()));
+        this.connection.getPlayer().getEntity().setLocation(pkg.getLocation());
+        if (this.connection.getVersion().getVersionId() >= 79) {
+            this.connection.sendPacket(new PacketConfirmTeleport(pkg.getTeleportId()));
         } else {
-            connection.sendPacket(new PacketPlayerPositionAndRotationSending(pkg.getLocation(), pkg.getRotation(), pkg.isOnGround()));
+            this.connection.sendPacket(new PacketPlayerPositionAndRotationSending(pkg.getLocation(), pkg.getRotation(), pkg.isOnGround()));
         }
     }
 
     public void handle(PacketAttachEntity pkg) {
-        Entity entity = connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
+        Entity entity = this.connection.getPlayer().getWorld().getEntity(pkg.getEntityId());
         if (entity == null) {
             // thanks mojang
             return;
@@ -535,20 +534,20 @@ public class PacketHandler {
     }
 
     public void handle(PacketBlockEntityMetadata pkg) {
-        connection.fireEvent(new BlockEntityMetaDataChangeEvent(connection, pkg));
-        connection.getPlayer().getWorld().setBlockEntityData(pkg.getPosition(), pkg.getData());
+        this.connection.fireEvent(new BlockEntityMetaDataChangeEvent(this.connection, pkg));
+        this.connection.getPlayer().getWorld().setBlockEntityData(pkg.getPosition(), pkg.getData());
     }
 
     public void handle(PacketBlockBreakAnimation pkg) {
-        BlockBreakAnimationEvent event = new BlockBreakAnimationEvent(connection, pkg);
-        if (connection.fireEvent(event)) {
+        BlockBreakAnimationEvent event = new BlockBreakAnimationEvent(this.connection, pkg);
+        if (this.connection.fireEvent(event)) {
             return;
         }
     }
 
     public void handle(PacketBlockAction pkg) {
-        BlockActionEvent event = new BlockActionEvent(connection, pkg);
-        if (connection.fireEvent(event)) {
+        BlockActionEvent event = new BlockActionEvent(this.connection, pkg);
+        if (this.connection.fireEvent(event)) {
             return;
         }
     }
@@ -560,40 +559,40 @@ public class PacketHandler {
             int y = ((int) pkg.getLocation().getY()) + record[1];
             int z = ((int) pkg.getLocation().getZ()) + record[2];
             BlockPosition blockPosition = new BlockPosition(x, (short) y, z);
-            connection.getPlayer().getWorld().setBlock(blockPosition, null);
+            this.connection.getPlayer().getWorld().setBlock(blockPosition, null);
         }
         // ToDo: motion support
     }
 
     public void handle(PacketCollectItem pkg) {
-        if (connection.fireEvent(new CollectItemAnimationEvent(connection, pkg))) {
+        if (this.connection.fireEvent(new CollectItemAnimationEvent(this.connection, pkg))) {
             return;
         }
         // ToDo
     }
 
     public void handle(PacketOpenWindow pkg) {
-        connection.getPlayer().createInventory(pkg.getInventoryProperties());
+        this.connection.getPlayer().createInventory(pkg.getInventoryProperties());
     }
 
     public void handle(PacketCloseWindowReceiving pkg) {
-        CloseWindowEvent event = new CloseWindowEvent(connection, pkg);
-        if (connection.fireEvent(event)) {
+        CloseWindowEvent event = new CloseWindowEvent(this.connection, pkg);
+        if (this.connection.fireEvent(event)) {
             return;
         }
 
-        connection.getPlayer().deleteInventory(pkg.getWindowId());
+        this.connection.getPlayer().deleteInventory(pkg.getWindowId());
     }
 
     public void handle(PacketSetSlot pkg) {
-        connection.fireEvent(new SingleSlotChangeEvent(connection, pkg));
+        this.connection.fireEvent(new SingleSlotChangeEvent(this.connection, pkg));
 
         if (pkg.getWindowId() == -1) {
             // thanks mojang
             // ToDo: what is windowId -1
             return;
         }
-        connection.getPlayer().setSlot(pkg.getWindowId(), pkg.getSlotId(), pkg.getSlot());
+        this.connection.getPlayer().setSlot(pkg.getWindowId(), pkg.getSlotId(), pkg.getSlot());
     }
 
     public void handle(PacketWindowProperty pkg) {
@@ -613,36 +612,36 @@ public class PacketHandler {
     }
 
     public void handle(PacketSpawnPainting pkg) {
-        connection.fireEvent(new EntitySpawnEvent(connection, pkg));
+        this.connection.fireEvent(new EntitySpawnEvent(this.connection, pkg));
 
-        connection.getPlayer().getWorld().addEntity(pkg.getEntity());
+        this.connection.getPlayer().getWorld().addEntity(pkg.getEntity());
     }
 
     public void handle(PacketParticle pkg) {
-        if (connection.fireEvent(new ParticleSpawnEvent(connection, pkg))) {
+        if (this.connection.fireEvent(new ParticleSpawnEvent(this.connection, pkg))) {
             return;
         }
     }
 
     public void handle(PacketEffect pkg) {
-        if (connection.fireEvent(new EffectEvent(connection, pkg))) {
+        if (this.connection.fireEvent(new EffectEvent(this.connection, pkg))) {
             return;
         }
     }
 
     public void handle(PacketScoreboardObjective pkg) {
         switch (pkg.getAction()) {
-            case CREATE -> connection.getPlayer().getScoreboardManager().addObjective(new ScoreboardObjective(pkg.getName(), pkg.getValue()));
-            case UPDATE -> connection.getPlayer().getScoreboardManager().getObjective(pkg.getName()).setValue(pkg.getValue());
-            case REMOVE -> connection.getPlayer().getScoreboardManager().removeObjective(pkg.getName());
+            case CREATE -> this.connection.getPlayer().getScoreboardManager().addObjective(new ScoreboardObjective(pkg.getName(), pkg.getValue()));
+            case UPDATE -> this.connection.getPlayer().getScoreboardManager().getObjective(pkg.getName()).setValue(pkg.getValue());
+            case REMOVE -> this.connection.getPlayer().getScoreboardManager().removeObjective(pkg.getName());
         }
     }
 
     public void handle(PacketScoreboardUpdateScore pkg) {
         switch (pkg.getAction()) {
-            case CREATE_UPDATE -> connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName()).addScore(new ScoreboardScore(pkg.getItemName(), pkg.getScoreName(), pkg.getScoreValue()));
+            case CREATE_UPDATE -> this.connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName()).addScore(new ScoreboardScore(pkg.getItemName(), pkg.getScoreName(), pkg.getScoreValue()));
             case REMOVE -> {
-                ScoreboardObjective objective = connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName());
+                ScoreboardObjective objective = this.connection.getPlayer().getScoreboardManager().getObjective(pkg.getScoreName());
                 if (objective != null) {
                     // thanks mojang
                     objective.removeScore(pkg.getItemName());
@@ -657,11 +656,11 @@ public class PacketHandler {
 
     public void handle(PacketTeams pkg) {
         switch (pkg.getAction()) {
-            case CREATE -> connection.getPlayer().getScoreboardManager().addTeam(new Team(pkg.getName(), pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.isFriendlyFireEnabled(), pkg.isSeeingFriendlyInvisibles(), pkg.getPlayerNames()));
-            case INFORMATION_UPDATE -> connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).updateInformation(pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.isFriendlyFireEnabled(), pkg.isSeeingFriendlyInvisibles());
-            case REMOVE -> connection.getPlayer().getScoreboardManager().removeTeam(pkg.getName());
-            case PLAYER_ADD -> connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).addPlayers(Arrays.asList(pkg.getPlayerNames()));
-            case PLAYER_REMOVE -> connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).removePlayers(Arrays.asList(pkg.getPlayerNames()));
+            case CREATE -> this.connection.getPlayer().getScoreboardManager().addTeam(new Team(pkg.getName(), pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.isFriendlyFireEnabled(), pkg.isSeeingFriendlyInvisibles(), pkg.getPlayerNames()));
+            case INFORMATION_UPDATE -> this.connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).updateInformation(pkg.getDisplayName(), pkg.getPrefix(), pkg.getSuffix(), pkg.isFriendlyFireEnabled(), pkg.isSeeingFriendlyInvisibles());
+            case REMOVE -> this.connection.getPlayer().getScoreboardManager().removeTeam(pkg.getName());
+            case PLAYER_ADD -> this.connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).addPlayers(Arrays.asList(pkg.getPlayerNames()));
+            case PLAYER_REMOVE -> this.connection.getPlayer().getScoreboardManager().getTeam(pkg.getName()).removePlayers(Arrays.asList(pkg.getPlayerNames()));
         }
     }
 
@@ -676,17 +675,17 @@ public class PacketHandler {
     }
 
     public void handle(PacketTabHeaderAndFooter pkg) {
-        if (connection.fireEvent(new PlayerListInfoChangeEvent(connection, pkg))) {
+        if (this.connection.fireEvent(new PlayerListInfoChangeEvent(this.connection, pkg))) {
             return;
         }
 
-        connection.getPlayer().setTabHeader(pkg.getHeader());
-        connection.getPlayer().setTabFooter(pkg.getFooter());
+        this.connection.getPlayer().setTabHeader(pkg.getHeader());
+        this.connection.getPlayer().setTabFooter(pkg.getFooter());
     }
 
     public void handle(PacketResourcePackSend pkg) {
-        ResourcePackChangeEvent event = new ResourcePackChangeEvent(connection, pkg);
-        if (connection.fireEvent(event)) {
+        ResourcePackChangeEvent event = new ResourcePackChangeEvent(this.connection, pkg);
+        if (this.connection.fireEvent(event)) {
             return;
         }
     }
@@ -700,7 +699,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketTitle pkg) {
-        if (connection.fireEvent(new TitleChangeEvent(connection, pkg))) {
+        if (this.connection.fireEvent(new TitleChangeEvent(this.connection, pkg))) {
             return;
         }
 
@@ -715,7 +714,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketUnloadChunk pkg) {
-        connection.getPlayer().getWorld().unloadChunk(pkg.getLocation());
+        this.connection.getPlayer().getWorld().unloadChunk(pkg.getLocation());
     }
 
     public void handle(PacketSoundEffect pkg) {
@@ -723,8 +722,8 @@ public class PacketHandler {
     }
 
     public void handle(PacketBossBar pkg) {
-        BossBarChangeEvent event = new BossBarChangeEvent(connection, pkg);
-        if (connection.fireEvent(event)) {
+        BossBarChangeEvent event = new BossBarChangeEvent(this.connection, pkg);
+        if (this.connection.fireEvent(event)) {
             return;
         }
     }
@@ -759,7 +758,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketDeclareRecipes pkg) {
-        Recipes.registerCustomRecipes(pkg.getRecipes());
+        this.connection.getRecipes().registerCustomRecipes(pkg.getRecipes());
     }
 
     public void handle(PacketStopSound pkg) {
@@ -787,7 +786,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketLoginPluginRequest pkg) {
-        connection.fireEvent(new LoginPluginMessageRequestEvent(connection, pkg));
+        this.connection.fireEvent(new LoginPluginMessageRequestEvent(this.connection, pkg));
     }
 
     public void handle(PacketEntitySoundEffect pkg) {
@@ -803,7 +802,7 @@ public class PacketHandler {
     }
 
     public void handle(PacketDeclareCommands pkg) {
-        connection.setCommandRootNode(pkg.getRootNode());
+        this.connection.setCommandRootNode(pkg.getRootNode());
         // ToDo: Remove these dummy commands
         String[] commands = {
                 "msg Bixilon TestReason 2Paramter 3 4 asd  asd",
@@ -820,7 +819,7 @@ public class PacketHandler {
         };
         for (String command : commands) {
             try {
-                pkg.getRootNode().isSyntaxCorrect(connection, command);
+                pkg.getRootNode().isSyntaxCorrect(this.connection, command);
                 Log.game("Command \"%s\" is valid", command);
             } catch (CommandParseException e) {
                 Log.game("Command \"%s\" is invalid, %s: %s", command, e.getClass().getSimpleName(), e.getErrorMessage());

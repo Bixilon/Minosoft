@@ -28,15 +28,15 @@ public class BedEntityMetaData extends BlockEntityMetaData {
 
     public BedEntityMetaData(NBTTag nbt) {
         if (nbt == null) {
-            color = ChatColors.RED;
+            this.color = ChatColors.RED;
             return;
         }
         if (nbt instanceof StringTag stringTag) {
             // yes, we support bed rgb colors :D
-            color = new RGBColor(stringTag.getValue());
+            this.color = new RGBColor(stringTag.getValue());
             return;
         }
-        color = switch (((IntTag) nbt).getValue()) {
+        this.color = switch (((IntTag) nbt).getValue()) {
             case 0 -> new RGBColor(255, 255, 255); // white
             case 1 -> new RGBColor(234, 103, 3); // orange
             case 2 -> new RGBColor(199, 78, 189); // magenta
@@ -58,6 +58,6 @@ public class BedEntityMetaData extends BlockEntityMetaData {
     }
 
     public RGBColor getColor() {
-        return color;
+        return this.color;
     }
 }

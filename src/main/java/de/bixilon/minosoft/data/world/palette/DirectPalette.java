@@ -23,12 +23,12 @@ public class DirectPalette implements Palette {
 
     @Override
     public Block byId(int id) {
-        return mapping.getBlockById(id);
+        return this.mapping.getBlockById(id);
     }
 
     @Override
     public byte getBitsPerBlock() {
-        if (versionId < 367) {
+        if (this.versionId < 367) {
             return 13;
         }
         return 14;
@@ -37,7 +37,7 @@ public class DirectPalette implements Palette {
     @Override
     public void read(InByteBuffer buffer) {
         this.versionId = buffer.getVersionId();
-        mapping = buffer.getConnection().getMapping();
+        this.mapping = buffer.getConnection().getMapping();
         if (buffer.getVersionId() < 346) {
             buffer.readVarInt();
         }

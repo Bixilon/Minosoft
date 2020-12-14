@@ -23,15 +23,15 @@ public class ServerModItem {
     }
 
     public String getModId() {
-        return modId;
+        return this.modId;
     }
 
     public String getModVersion() {
-        return modVersion;
+        return this.modVersion;
     }
 
     @Override
     public String toString() {
-        return String.format("%s (%s)", modId, modVersion);
+        return String.format("%s (%s)", this.modId, this.modVersion);
     }
 }

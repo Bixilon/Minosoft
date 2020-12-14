@@ -27,12 +27,12 @@ public class PacketBlockChange implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 6) {
-            position = buffer.readBlockPosition();
-            block = buffer.getConnection().getMapping().getBlockById((buffer.readVarInt() << 4) | buffer.readByte()); // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
+            this.position = buffer.readBlockPosition();
+            this.block = buffer.getConnection().getMapping().getBlockById((buffer.readVarInt() << 4) | buffer.readByte()); // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
             return true;
         }
-        position = buffer.readPosition();
-        block = buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
+        this.position = buffer.readPosition();
+        this.block = buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
         return true;
 
     }
@@ -44,14 +44,14 @@ public class PacketBlockChange implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Block change received at %s (block=%s)", position, block));
+        Log.protocol(String.format("[IN] Block change received at %s (block=%s)", this.position, this.block));
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public Block getBlock() {
-        return block;
+        return this.block;
     }
 }

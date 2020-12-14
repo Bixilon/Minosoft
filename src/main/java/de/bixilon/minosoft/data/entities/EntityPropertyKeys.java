@@ -24,11 +24,11 @@ public enum EntityPropertyKeys {
     HORSE_JUMP_STRENGTH("horse.jumpStrength"),
     ZOMBIE_SPAWN_REINFORCEMENT("zombie.spawnReinforcements");
 
-    final static HashBiMap<String, EntityPropertyKeys> keys = HashBiMap.create();
+    private static final HashBiMap<String, EntityPropertyKeys> KEYS = HashBiMap.create();
 
     static {
         for (EntityPropertyKeys key : values()) {
-            keys.put(key.getIdentifier(), key);
+            KEYS.put(key.getIdentifier(), key);
         }
     }
 
@@ -39,10 +39,10 @@ public enum EntityPropertyKeys {
     }
 
     public static EntityPropertyKeys byName(String name) {
-        return keys.get(name);
+        return KEYS.get(name);
     }
 
     public String getIdentifier() {
-        return identifier;
+        return this.identifier;
     }
 }

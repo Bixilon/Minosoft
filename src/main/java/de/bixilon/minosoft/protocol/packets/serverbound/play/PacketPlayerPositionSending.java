@@ -45,18 +45,18 @@ public class PacketPlayerPositionSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_POSITION);
-        buffer.writeDouble(x);
-        buffer.writeDouble(feetY);
+        buffer.writeDouble(this.x);
+        buffer.writeDouble(this.feetY);
         if (buffer.getVersionId() < 10) {
-            buffer.writeDouble(headY);
+            buffer.writeDouble(this.headY);
         }
-        buffer.writeDouble(z);
-        buffer.writeBoolean(onGround);
+        buffer.writeDouble(this.z);
+        buffer.writeBoolean(this.onGround);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending player position: %s %s %s", x, headY, z));
+        Log.protocol(String.format("[OUT] Sending player position: %s %s %s", this.x, this.headY, this.z));
     }
 }

@@ -31,12 +31,12 @@ public class PacketEffect implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.effect = EffectEffects.byId(buffer.readInt(), buffer.getVersionId());
         if (buffer.getVersionId() < 6) {
-            position = buffer.readBlockPosition();
+            this.position = buffer.readBlockPosition();
         } else {
-            position = buffer.readPosition();
+            this.position = buffer.readPosition();
         }
-        data = buffer.readInt();
-        disableRelativeVolume = buffer.readBoolean();
+        this.data = buffer.readInt();
+        this.disableRelativeVolume = buffer.readBoolean();
         return true;
     }
 
@@ -47,31 +47,31 @@ public class PacketEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received effect packet at %s (effect=%s, data=%d, disableRelativeVolume=%s)", position, effect, data, disableRelativeVolume));
+        Log.protocol(String.format("[IN] Received effect packet at %s (effect=%s, data=%d, disableRelativeVolume=%s)", this.position, this.effect, this.data, this.disableRelativeVolume));
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public EffectEffects getEffect() {
-        return effect;
+        return this.effect;
     }
 
     public int getData() {
-        return data;
+        return this.data;
     }
 
     public SmokeDirections getSmokeDirection() {
-        if (effect == EffectEffects.PARTICLE_10_SMOKE) {
-            return SmokeDirections.byId(data);
+        if (this.effect == EffectEffects.PARTICLE_10_SMOKE) {
+            return SmokeDirections.byId(this.data);
         }
         return null;
     }
     // ToDo all other dataTypes
 
     public boolean isDisableRelativeVolume() {
-        return disableRelativeVolume;
+        return this.disableRelativeVolume;
     }
 
     public enum EffectEffects {
@@ -150,7 +150,7 @@ public class PacketEffect implements ClientboundPacket {
         final VersionValueMap<Integer> valueMap;
 
         EffectEffects(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values, true);
         }
 
         public static EffectEffects byId(int id, int versionId) {
@@ -163,7 +163,7 @@ public class PacketEffect implements ClientboundPacket {
         }
 
         public int getId(Integer versionId) {
-            Integer ret = valueMap.get(versionId);
+            Integer ret = this.valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }
@@ -182,8 +182,10 @@ public class PacketEffect implements ClientboundPacket {
         NORTH,
         NORTH_WEST;
 
+        private static final SmokeDirections[] SMOKE_DIRECTIONS = values();
+
         public static SmokeDirections byId(int id) {
-            return values()[id];
+            return SMOKE_DIRECTIONS[id];
         }
     }
 }

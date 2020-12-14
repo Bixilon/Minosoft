@@ -23,10 +23,10 @@ public class CriterionProgress {
     }
 
     public boolean isArchived() {
-        return archived;
+        return this.archived;
     }
 
     public Long getArchiveTime() {
-        return archiveTime;
+        return this.archiveTime;
     }
 }

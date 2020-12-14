@@ -25,7 +25,9 @@ public enum SoundCategories {
     AMBIENT,
     VOICE;
 
+    private static final SoundCategories[] SOUND_CATEGORIES = values();
+
     public static SoundCategories byId(int id) {
-        return values()[id];
+        return SOUND_CATEGORIES[id];
     }
 }

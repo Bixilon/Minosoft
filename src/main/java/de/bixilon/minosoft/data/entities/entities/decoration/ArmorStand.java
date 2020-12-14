@@ -29,7 +29,7 @@ public class ArmorStand extends LivingEntity {
     }
 
     private boolean getArmorStandFlag(int bitMask) {
-        return metaData.getSets().getBitMask(EntityMetaDataFields.ARMOR_STAND_FLAGS, bitMask);
+        return this.metaData.getSets().getBitMask(EntityMetaDataFields.ARMOR_STAND_FLAGS, bitMask);
     }
 
     @EntityMetaDataFunction(identifier = "isSmall")
@@ -54,32 +54,32 @@ public class ArmorStand extends LivingEntity {
 
     @EntityMetaDataFunction(identifier = "headRotation")
     public EntityRotation getHeadRotation() {
-        return metaData.getSets().getRotation(EntityMetaDataFields.ARMOR_STAND_HEAD_ROTATION);
+        return this.metaData.getSets().getRotation(EntityMetaDataFields.ARMOR_STAND_HEAD_ROTATION);
     }
 
     @EntityMetaDataFunction(identifier = "bodyRotation")
     public EntityRotation getBodyRotation() {
-        return metaData.getSets().getRotation(EntityMetaDataFields.ARMOR_STAND_BODY_ROTATION);
+        return this.metaData.getSets().getRotation(EntityMetaDataFields.ARMOR_STAND_BODY_ROTATION);
     }
 
     @EntityMetaDataFunction(identifier = "leftArmRotation")
     public EntityRotation getLeftArmRotation() {
-        return metaData.getSets().getRotation(EntityMetaDataFields.ARMOR_STAND_LEFT_ARM_ROTATION);
+        return this.metaData.getSets().getRotation(EntityMetaDataFields.ARMOR_STAND_LEFT_ARM_ROTATION);
     }
 
     @EntityMetaDataFunction(identifier = "rightArmRotation")
     public EntityRotation getRightArmRotation() {
-        return metaData.getSets().getRotation(EntityMetaDataFields.ARMOR_STAND_RIGHT_ARM_ROTATION);
+        return this.metaData.getSets().getRotation(EntityMetaDataFields.ARMOR_STAND_RIGHT_ARM_ROTATION);
     }
 
     @EntityMetaDataFunction(identifier = "leftLegRotation")
     public EntityRotation getLeftLegRotation() {
-        return metaData.getSets().getRotation(EntityMetaDataFields.ARMOR_STAND_LEFT_LAG_ROTATION);
+        return this.metaData.getSets().getRotation(EntityMetaDataFields.ARMOR_STAND_LEFT_LAG_ROTATION);
     }
 
     @EntityMetaDataFunction(identifier = "leftRightRotation")
     public EntityRotation getRightLegRotation() {
-        return metaData.getSets().getRotation(EntityMetaDataFields.ARMOR_STAND_RIGHT_LAG_ROTATION);
+        return this.metaData.getSets().getRotation(EntityMetaDataFields.ARMOR_STAND_RIGHT_LAG_ROTATION);
     }
 }
 

@@ -24,8 +24,8 @@ public class PacketEntityEvent implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        entityId = buffer.readInt();
-        eventId = buffer.readByte();
+        this.entityId = buffer.readInt();
+        this.eventId = buffer.readByte();
         return true;
     }
 
@@ -36,6 +36,6 @@ public class PacketEntityEvent implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity status: (entityId=%d, eventId=%s)", entityId, eventId));
+        Log.protocol(String.format("[IN] Entity status: (entityId=%d, eventId=%s)", this.entityId, this.eventId));
     }
 }

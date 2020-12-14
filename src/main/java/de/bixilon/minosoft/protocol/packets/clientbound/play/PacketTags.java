@@ -27,11 +27,11 @@ public class PacketTags implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        blockTags = readTags(buffer);
-        itemTags = readTags(buffer);
-        fluidTags = readTags(buffer); // ToDo: when was this added? Was not available in 18w01
+        this.blockTags = readTags(buffer);
+        this.itemTags = readTags(buffer);
+        this.fluidTags = readTags(buffer); // ToDo: when was this added? Was not available in 18w01
         if (buffer.getVersionId() >= 440) {
-            entityTags = readTags(buffer);
+            this.entityTags = readTags(buffer);
         }
         return true;
     }
@@ -51,6 +51,6 @@ public class PacketTags implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received tags (blockLength=%d, itemLength=%d, fluidLength=%d, entityLength=%d)", blockTags.length, itemTags.length, fluidTags.length, ((entityTags == null) ? 0 : entityTags.length)));
+        Log.protocol(String.format("[IN] Received tags (blockLength=%d, itemLength=%d, fluidLength=%d, entityLength=%d)", this.blockTags.length, this.itemTags.length, this.fluidTags.length, ((this.entityTags == null) ? 0 : this.entityTags.length)));
     }
 }

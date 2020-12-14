@@ -28,12 +28,12 @@ public class PacketLoginSuccess implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 707) {
-            uuid = Util.getUUIDFromString(buffer.readString());
-            username = buffer.readString();
+            this.uuid = Util.getUUIDFromString(buffer.readString());
+            this.username = buffer.readString();
             return true;
         }
-        uuid = buffer.readUUID();
-        username = buffer.readString();
+        this.uuid = buffer.readUUID();
+        this.username = buffer.readString();
         return true;
     }
 
@@ -44,14 +44,14 @@ public class PacketLoginSuccess implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving login success packet (username=%s, UUID=%s)", username, uuid));
+        Log.protocol(String.format("[IN] Receiving login success packet (username=%s, UUID=%s)", this.username, this.uuid));
     }
 
     public UUID getUUID() {
-        return uuid;
+        return this.uuid;
     }
 
     public String getUsername() {
-        return username;
+        return this.username;
     }
 }

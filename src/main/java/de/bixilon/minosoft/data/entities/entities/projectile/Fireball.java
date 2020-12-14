@@ -31,7 +31,7 @@ public abstract class Fireball extends AbstractHurtingProjectile {
     @EntityMetaDataFunction(identifier = "item")
     @Nullable
     private Slot getItem() {
-        Slot slot = metaData.getSets().getSlot(EntityMetaDataFields.FIREBALL_ITEM);
+        Slot slot = this.metaData.getSets().getSlot(EntityMetaDataFields.FIREBALL_ITEM);
         if (slot == null) {
             return getDefaultItem();
         }

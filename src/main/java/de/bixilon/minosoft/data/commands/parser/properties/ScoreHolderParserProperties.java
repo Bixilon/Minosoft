@@ -20,10 +20,10 @@ public class ScoreHolderParserProperties implements ParserProperties {
     private final boolean allowMultiple;
 
     public ScoreHolderParserProperties(InByteBuffer buffer) {
-        allowMultiple = BitByte.isBitMask(buffer.readByte(), 0x01);
+        this.allowMultiple = BitByte.isBitMask(buffer.readByte(), 0x01);
     }
 
     public boolean isAllowMultiple() {
-        return allowMultiple;
+        return this.allowMultiple;
     }
 }

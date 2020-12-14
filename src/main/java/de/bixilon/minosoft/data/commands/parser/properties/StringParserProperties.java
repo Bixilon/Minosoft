@@ -20,8 +20,8 @@ public class StringParserProperties implements ParserProperties {
     private final boolean allowEmptyString;
 
     public StringParserProperties(InByteBuffer buffer) {
-        setting = StringSettings.values()[buffer.readVarInt()];
-        allowEmptyString = false;
+        this.setting = StringSettings.byId(buffer.readVarInt());
+        this.allowEmptyString = false;
     }
 
     public StringParserProperties(StringSettings setting, boolean allowEmptyString) {
@@ -30,16 +30,22 @@ public class StringParserProperties implements ParserProperties {
     }
 
     public StringSettings getSetting() {
-        return setting;
+        return this.setting;
     }
 
     public boolean isAllowEmptyString() {
-        return allowEmptyString;
+        return this.allowEmptyString;
     }
 
     public enum StringSettings {
         SINGLE_WORD,
         QUOTABLE_PHRASE,
-        GREEDY_PHRASE
+        GREEDY_PHRASE;
+
+        private static final StringSettings[] STRING_SETTINGS = values();
+
+        public static StringSettings byId(int id) {
+            return STRING_SETTINGS[id];
+        }
     }
 }

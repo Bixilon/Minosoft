@@ -38,7 +38,7 @@ public class MultiChatComponent extends TextComponent {
     }
 
     public ClickEvent getClickEvent() {
-        return clickEvent;
+        return this.clickEvent;
     }
 
     public void setClickEvent(ClickEvent clickEvent) {
@@ -46,7 +46,7 @@ public class MultiChatComponent extends TextComponent {
     }
 
     public HoverEvent getHoverEvent() {
-        return hoverEvent;
+        return this.hoverEvent;
     }
 
     public void setHoverEvent(HoverEvent hoverEvent) {

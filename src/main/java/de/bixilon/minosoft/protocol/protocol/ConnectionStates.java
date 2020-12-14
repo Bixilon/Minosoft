@@ -24,7 +24,9 @@ public enum ConnectionStates {
     FAILED,
     FAILED_NO_RETRY;
 
+    private static final ConnectionStates[] CONNECTION_STATES = values();
+
     public static ConnectionStates byId(int id) {
-        return values()[id];
+        return CONNECTION_STATES[id];
     }
 }

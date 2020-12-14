@@ -26,11 +26,11 @@ public enum MojangURLs {
     }
 
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     @Override
     public String toString() {
-        return url;
+        return this.url;
     }
 }

@@ -65,10 +65,10 @@ public class PacketSpawnObject implements ClientboundPacket {
 
         if (buffer.getVersionId() < 49) {
             if (data != 0) {
-                velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+                this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
             }
         } else {
-            velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+            this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
         }
 
         if (buffer.getVersionId() <= 47) { // ToDo
@@ -80,7 +80,7 @@ public class PacketSpawnObject implements ClientboundPacket {
         }
 
         try {
-            entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Location.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, location, rotation);
+            this.entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Location.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, location, rotation);
             return true;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
             e.printStackTrace();
@@ -95,15 +95,15 @@ public class PacketSpawnObject implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Object spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity));
+        Log.protocol(String.format("[IN] Object spawned at %s (entityId=%d, type=%s)", this.entity.getLocation().toString(), this.entity.getEntityId(), this.entity));
     }
 
     public Entity getEntity() {
-        return entity;
+        return this.entity;
     }
 
     public Velocity getVelocity() {
-        return velocity;
+        return this.velocity;
     }
 
 }

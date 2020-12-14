@@ -30,12 +30,12 @@ public class PacketChatMessageSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CHAT_MESSAGE);
-        buffer.writeString(message);
+        buffer.writeString(this.message);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending Chat message: %s", message));
+        Log.protocol(String.format("[OUT] Sending Chat message: %s", this.message));
     }
 }

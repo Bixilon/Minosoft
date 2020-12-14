@@ -22,15 +22,15 @@ public class EntityParserProperties implements ParserProperties {
 
     public EntityParserProperties(InByteBuffer buffer) {
         byte flags = buffer.readByte();
-        onlySingleEntity = BitByte.isBitMask(flags, 0x01);
-        onlyPlayers = BitByte.isBitMask(flags, 0x02);
+        this.onlySingleEntity = BitByte.isBitMask(flags, 0x01);
+        this.onlyPlayers = BitByte.isBitMask(flags, 0x02);
     }
 
     public boolean isOnlySingleEntity() {
-        return onlySingleEntity;
+        return this.onlySingleEntity;
     }
 
     public boolean isOnlyPlayers() {
-        return onlyPlayers;
+        return this.onlyPlayers;
     }
 }

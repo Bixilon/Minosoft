@@ -34,10 +34,10 @@ public class PlayerListInfoChangeEvent extends CancelableEvent {
     }
 
     public ChatComponent getHeader() {
-        return header;
+        return this.header;
     }
 
     public ChatComponent getFooter() {
-        return footer;
+        return this.footer;
     }
 }

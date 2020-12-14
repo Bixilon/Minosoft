@@ -29,10 +29,10 @@ public class PacketAcknowledgePlayerDigging implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        position = buffer.readPosition();
-        block = buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
-        status = PacketPlayerDigging.DiggingStatus.byId(buffer.readVarInt());
-        successful = buffer.readBoolean();
+        this.position = buffer.readPosition();
+        this.block = buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
+        this.status = PacketPlayerDigging.DiggingStatus.byId(buffer.readVarInt());
+        this.successful = buffer.readBoolean();
         return true;
     }
 
@@ -43,22 +43,22 @@ public class PacketAcknowledgePlayerDigging implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received acknowledge digging packet (position=%s, block=%s, status=%s, successful=%s)", position, block, status, successful));
+        Log.protocol(String.format("[IN] Received acknowledge digging packet (position=%s, block=%s, status=%s, successful=%s)", this.position, this.block, this.status, this.successful));
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public Block getBlock() {
-        return block;
+        return this.block;
     }
 
     public PacketPlayerDigging.DiggingStatus getStatus() {
-        return status;
+        return this.status;
     }
 
     public boolean isSuccessful() {
-        return successful;
+        return this.successful;
     }
 }

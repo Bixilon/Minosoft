@@ -29,48 +29,48 @@ public class PacketRespawn implements ClientboundPacket {
     GameModes gameMode;
     LevelTypes levelType;
     long hashedSeed;
-    boolean isDebug = false;
-    boolean isFlat = false;
-    boolean copyMetaData = false;
+    boolean isDebug;
+    boolean isFlat;
+    boolean copyMetaData;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 718) {
             if (buffer.getVersionId() < 47) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
-                dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
+                this.dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
             } else {
-                dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
+                this.dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
             }
         } else if (buffer.getVersionId() < 748) {
-            dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(buffer.readString());
+            this.dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(buffer.readString());
         } else {
             CompoundTag tag = (CompoundTag) buffer.readNBT();
-            dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(tag.getStringTag("effects").getValue()); // ToDo
+            this.dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(tag.getStringTag("effects").getValue()); // ToDo
         }
         if (buffer.getVersionId() < 464) {
-            difficulty = Difficulties.byId(buffer.readUnsignedByte());
+            this.difficulty = Difficulties.byId(buffer.readUnsignedByte());
         }
 
         if (buffer.getVersionId() >= 719) {
             buffer.readString(); // world
         }
         if (buffer.getVersionId() >= 552) {
-            hashedSeed = buffer.readLong();
+            this.hashedSeed = buffer.readLong();
         }
-        gameMode = GameModes.byId(buffer.readUnsignedByte());
+        this.gameMode = GameModes.byId(buffer.readUnsignedByte());
 
         if (buffer.getVersionId() >= 730) {
             buffer.readByte(); // previous game mode
         }
         if (buffer.getVersionId() >= 1 && buffer.getVersionId() < 716) {
-            levelType = LevelTypes.byType(buffer.readString());
+            this.levelType = LevelTypes.byType(buffer.readString());
         }
         if (buffer.getVersionId() >= 716) {
-            isDebug = buffer.readBoolean();
-            isFlat = buffer.readBoolean();
+            this.isDebug = buffer.readBoolean();
+            this.isFlat = buffer.readBoolean();
         }
         if (buffer.getVersionId() >= 714) {
-            copyMetaData = buffer.readBoolean();
+            this.copyMetaData = buffer.readBoolean();
         }
         return true;
     }
@@ -82,22 +82,22 @@ public class PacketRespawn implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Respawn packet received (dimension=%s, difficulty=%s, gamemode=%s, levelType=%s)", dimension, difficulty, gameMode, levelType));
+        Log.protocol(String.format("[IN] Respawn packet received (dimension=%s, difficulty=%s, gamemode=%s, levelType=%s)", this.dimension, this.difficulty, this.gameMode, this.levelType));
     }
 
     public Dimension getDimension() {
-        return dimension;
+        return this.dimension;
     }
 
     public Difficulties getDifficulty() {
-        return difficulty;
+        return this.difficulty;
     }
 
     public GameModes getGameMode() {
-        return gameMode;
+        return this.gameMode;
     }
 
     public LevelTypes getLevelType() {
-        return levelType;
+        return this.levelType;
     }
 }

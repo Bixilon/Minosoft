@@ -31,13 +31,13 @@ public class PacketAnimation implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ANIMATION);
         if (buffer.getVersionId() >= 49) {
-            buffer.writeVarInt(hand.ordinal());
+            buffer.writeVarInt(this.hand.ordinal());
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending hand animation (hand=%s)", hand));
+        Log.protocol(String.format("[OUT] Sending hand animation (hand=%s)", this.hand));
     }
 }

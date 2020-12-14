@@ -31,9 +31,9 @@ public class PacketMultiBlockChange implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 25) {
             if (buffer.getVersionId() < 4) {
-                location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
+                this.location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
             } else {
-                location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+                this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             }
             short count = buffer.readShort();
             int dataSize = buffer.readInt(); // should be count * 4
@@ -44,23 +44,23 @@ public class PacketMultiBlockChange implements ClientboundPacket {
                 byte y = (byte) ((raw & 0xFF_00_00) >>> 16);
                 byte z = (byte) ((raw & 0x0F_00_00_00) >>> 24);
                 byte x = (byte) ((raw & 0xF0_00_00_00) >>> 28);
-                blocks.put(new InChunkLocation(x, y, z), buffer.getConnection().getMapping().getBlockById((blockId << 4) | meta));
+                this.blocks.put(new InChunkLocation(x, y, z), buffer.getConnection().getMapping().getBlockById((blockId << 4) | meta));
             }
             return true;
         }
         if (buffer.getVersionId() < 740) {
-            location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+            this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             int count = buffer.readVarInt();
             for (int i = 0; i < count; i++) {
                 byte pos = buffer.readByte();
                 byte y = buffer.readByte();
                 int blockId = buffer.readVarInt();
-                blocks.put(new InChunkLocation((pos & 0xF0 >>> 4) & 0xF, y, pos & 0xF), buffer.getConnection().getMapping().getBlockById(blockId));
+                this.blocks.put(new InChunkLocation((pos & 0xF0 >>> 4) & 0xF, y, pos & 0xF), buffer.getConnection().getMapping().getBlockById(blockId));
             }
             return true;
         }
         long rawPos = buffer.readLong();
-        location = new ChunkLocation((int) (rawPos >> 42), (int) (rawPos << 22 >> 42));
+        this.location = new ChunkLocation((int) (rawPos >> 42), (int) (rawPos << 22 >> 42));
         int yOffset = ((int) rawPos & 0xFFFFF) * 16;
         if (buffer.getVersionId() > 748) {
             buffer.readBoolean(); // ToDo
@@ -68,7 +68,7 @@ public class PacketMultiBlockChange implements ClientboundPacket {
         int count = buffer.readVarInt();
         for (int i = 0; i < count; i++) {
             long data = buffer.readVarLong();
-            blocks.put(new InChunkLocation((int) ((data >> 8) & 0xF), yOffset + (int) ((data >> 4) & 0xF), (int) (data & 0xF)), buffer.getConnection().getMapping().getBlockById(((int) (data >>> 12))));
+            this.blocks.put(new InChunkLocation((int) ((data >> 8) & 0xF), yOffset + (int) ((data >> 4) & 0xF), (int) (data & 0xF)), buffer.getConnection().getMapping().getBlockById(((int) (data >>> 12))));
         }
         return true;
     }
@@ -80,14 +80,14 @@ public class PacketMultiBlockChange implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Multi block change received at %s (size=%d)", location, blocks.size()));
+        Log.protocol(String.format("[IN] Multi block change received at %s (size=%d)", this.location, this.blocks.size()));
     }
 
     public ChunkLocation getLocation() {
-        return location;
+        return this.location;
     }
 
     public HashMap<InChunkLocation, Block> getBlocks() {
-        return blocks;
+        return this.blocks;
     }
 }

@@ -24,7 +24,7 @@ public class PacketUnloadChunk implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+        this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
         return true;
     }
 
@@ -35,10 +35,10 @@ public class PacketUnloadChunk implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received unload chunk packet (location=%s)", location));
+        Log.protocol(String.format("[IN] Received unload chunk packet (location=%s)", this.location));
     }
 
     public ChunkLocation getLocation() {
-        return location;
+        return this.location;
     }
 }

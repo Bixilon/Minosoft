@@ -35,17 +35,17 @@ public class PacketKeepAliveResponse implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_KEEP_ALIVE);
         if (buffer.getVersionId() < 32) {
-            buffer.writeInt((int) id);
+            buffer.writeInt((int) this.id);
         } else if (buffer.getVersionId() < 339) {
-            buffer.writeVarInt((int) id);
+            buffer.writeVarInt((int) this.id);
         } else {
-            buffer.writeLong(id);
+            buffer.writeLong(this.id);
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending keep alive back (%d)", id));
+        Log.protocol(String.format("[OUT] Sending keep alive back (%d)", this.id));
     }
 }

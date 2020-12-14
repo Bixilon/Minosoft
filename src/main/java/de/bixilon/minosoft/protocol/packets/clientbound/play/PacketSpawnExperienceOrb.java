@@ -33,7 +33,7 @@ public class PacketSpawnExperienceOrb implements ClientboundPacket {
             location = buffer.readLocation();
         }
         int count = buffer.readUnsignedShort();
-        entity = new ExperienceOrb(buffer.getConnection(), entityId, location, count);
+        this.entity = new ExperienceOrb(buffer.getConnection(), entityId, location, count);
         return true;
     }
 
@@ -44,10 +44,10 @@ public class PacketSpawnExperienceOrb implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Experience orb spawned at %s(entityId=%d, count=%d)", entity.getLocation().toString(), entity.getEntityId(), entity.getCount()));
+        Log.protocol(String.format("[IN] Experience orb spawned at %s(entityId=%d, count=%d)", this.entity.getLocation().toString(), this.entity.getEntityId(), this.entity.getCount()));
     }
 
     public ExperienceOrb getEntity() {
-        return entity;
+        return this.entity;
     }
 }

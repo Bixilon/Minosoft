@@ -30,7 +30,7 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_ABILITIES);
         byte flags = 0;
-        if (flying) {
+        if (this.flying) {
             flags |= 0b10;
         }
         buffer.writeByte(flags);
@@ -44,6 +44,6 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending player abilities packet: (flying=%s)", flying));
+        Log.protocol(String.format("[OUT] Sending player abilities packet: (flying=%s)", this.flying));
     }
 }

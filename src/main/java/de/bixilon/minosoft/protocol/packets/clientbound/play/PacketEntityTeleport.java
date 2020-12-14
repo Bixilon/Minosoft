@@ -51,22 +51,22 @@ public class PacketEntityTeleport implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity %d moved to %s (yaw=%s, pitch=%s)", entityId, location, yaw, pitch));
+        Log.protocol(String.format("[IN] Entity %d moved to %s (yaw=%s, pitch=%s)", this.entityId, this.location, this.yaw, this.pitch));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public Location getRelativeLocation() {
-        return location;
+        return this.location;
     }
 
     public short getYaw() {
-        return yaw;
+        return this.yaw;
     }
 
     public short getPitch() {
-        return pitch;
+        return this.pitch;
     }
 }

@@ -32,20 +32,20 @@ public class PacketPluginMessageSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLUGIN_MESSAGE);
-        buffer.writeString(channel);
+        buffer.writeString(this.channel);
 
         if (buffer.getVersionId() < 29) {
-            buffer.writeShort((short) data.length);
+            buffer.writeShort((short) this.data.length);
         } else if (buffer.getVersionId() < 32) {
-            buffer.writeVarInt(data.length);
+            buffer.writeVarInt(this.data.length);
         }
 
-        buffer.writeBytes(data);
+        buffer.writeBytes(this.data);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending data in plugin channel \"%s\" with a length of %d bytes", channel, data.length));
+        Log.protocol(String.format("[OUT] Sending data in plugin channel \"%s\" with a length of %d bytes", this.channel, this.data.length));
     }
 }

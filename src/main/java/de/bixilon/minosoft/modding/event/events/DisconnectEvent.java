@@ -31,6 +31,6 @@ public class DisconnectEvent extends ConnectionEvent {
     }
 
     public ChatComponent getReason() {
-        return reason;
+        return this.reason;
     }
 }

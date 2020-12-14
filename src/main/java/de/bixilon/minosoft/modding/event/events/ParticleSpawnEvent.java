@@ -61,15 +61,15 @@ public class ParticleSpawnEvent extends CancelableEvent {
     }
 
     public Particle getParticleType() {
-        return particleType;
+        return this.particleType;
     }
 
     public ParticleData getParticleData() {
-        return particleData;
+        return this.particleData;
     }
 
     public boolean isLongDistance() {
-        return longDistance;
+        return this.longDistance;
     }
 
     public void setLongDistance(boolean longDistance) {
@@ -77,11 +77,11 @@ public class ParticleSpawnEvent extends CancelableEvent {
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
     public float getOffsetX() {
-        return offsetX;
+        return this.offsetX;
     }
 
     public void setOffsetX(float offsetX) {
@@ -89,7 +89,7 @@ public class ParticleSpawnEvent extends CancelableEvent {
     }
 
     public float getOffsetY() {
-        return offsetY;
+        return this.offsetY;
     }
 
     public void setOffsetY(float offsetY) {
@@ -97,7 +97,7 @@ public class ParticleSpawnEvent extends CancelableEvent {
     }
 
     public float getOffsetZ() {
-        return offsetZ;
+        return this.offsetZ;
     }
 
     public void setOffsetZ(float offsetZ) {
@@ -105,7 +105,7 @@ public class ParticleSpawnEvent extends CancelableEvent {
     }
 
     public int getCount() {
-        return count;
+        return this.count;
     }
 
     public void setCount(int count) {

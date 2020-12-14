@@ -39,15 +39,15 @@ public class CollectItemAnimationEvent extends CancelableEvent {
     }
 
     public ItemEntity getItem() {
-        return item;
+        return this.item;
     }
 
     public Entity getCollector() {
-        return collector;
+        return this.collector;
     }
 
     @MinimumProtocolVersion(versionId = 301)
     public int getCount() {
-        return count;
+        return this.count;
     }
 }

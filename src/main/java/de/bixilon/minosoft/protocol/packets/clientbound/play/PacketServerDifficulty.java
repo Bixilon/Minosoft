@@ -25,9 +25,9 @@ public class PacketServerDifficulty implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        difficulty = Difficulties.byId(buffer.readUnsignedByte());
+        this.difficulty = Difficulties.byId(buffer.readUnsignedByte());
         if (buffer.getVersionId() > 464) {
-            locked = buffer.readBoolean();
+            this.locked = buffer.readBoolean();
         }
         return true;
     }
@@ -39,10 +39,10 @@ public class PacketServerDifficulty implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received server difficulty (difficulty=%s)", difficulty));
+        Log.protocol(String.format("[IN] Received server difficulty (difficulty=%s)", this.difficulty));
     }
 
     public Difficulties getDifficulty() {
-        return difficulty;
+        return this.difficulty;
     }
 }

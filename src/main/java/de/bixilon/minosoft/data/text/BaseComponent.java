@@ -29,7 +29,7 @@ import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 
 public class BaseComponent extends ChatComponent {
-    private final static String LEGACY_RESET_SUFFIX = String.valueOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) + PostChatFormattingCodes.RESET.getChar();
+    private static final String LEGACY_RESET_SUFFIX = String.valueOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) + PostChatFormattingCodes.RESET.getChar();
     private final ArrayList<ChatComponent> parts = new ArrayList<>();
 
     public BaseComponent() {
@@ -58,8 +58,8 @@ public class BaseComponent extends ChatComponent {
             RGBColor nextColor = ChatColors.getColorByFormattingChar(nextFormattingChar);
             if (nextColor != null) {
                 // color change, add text part
-                if (currentText.length() > 0) {
-                    parts.add(new TextComponent(currentText.toString(), color, formattingCodes));
+                if (!currentText.isEmpty()) {
+                    this.parts.add(new TextComponent(currentText.toString(), color, formattingCodes));
                     currentText = new StringBuilder();
                 }
                 color = nextColor;
@@ -68,8 +68,8 @@ public class BaseComponent extends ChatComponent {
             }
             ChatFormattingCode nextFormattingCode = ChatFormattingCodes.getChatFormattingCodeByChar(nextFormattingChar);
             if (nextFormattingCode != null) {
-                if (currentText.length() > 0) {
-                    parts.add(new TextComponent(currentText.toString(), color, formattingCodes));
+                if (!currentText.isEmpty()) {
+                    this.parts.add(new TextComponent(currentText.toString(), color, formattingCodes));
                     currentText = new StringBuilder();
                     color = null;
                     formattingCodes = new BetterHashSet<>();
@@ -77,9 +77,9 @@ public class BaseComponent extends ChatComponent {
                 formattingCodes.add(nextFormattingCode);
                 if (nextFormattingCode == PostChatFormattingCodes.RESET) {
                     // special rule here
-                    if (currentText.length() > 0) {
+                    if (!currentText.isEmpty()) {
                         // color change, add text part
-                        parts.add(new TextComponent(currentText.toString(), color, formattingCodes));
+                        this.parts.add(new TextComponent(currentText.toString(), color, formattingCodes));
                         currentText = new StringBuilder();
                     }
                     color = null;
@@ -87,8 +87,8 @@ public class BaseComponent extends ChatComponent {
                 }
             }
         }
-        if (currentText.length() > 0) {
-            parts.add(new TextComponent(currentText.toString(), color, formattingCodes));
+        if (!currentText.isEmpty()) {
+            this.parts.add(new TextComponent(currentText.toString(), color, formattingCodes));
         }
     }
 
@@ -104,7 +104,7 @@ public class BaseComponent extends ChatComponent {
                 String text = json.get("text").getAsString();
                 if (text.contains(String.valueOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR))) {
                     // legacy text component
-                    parts.add(new BaseComponent(text));
+                    this.parts.add(new BaseComponent(text));
                     return;
                 }
                 RGBColor color;
@@ -154,20 +154,20 @@ public class BaseComponent extends ChatComponent {
             }
 
             if (thisTextComponent != null) {
-                parts.add(thisTextComponent);
+                this.parts.add(thisTextComponent);
             }
 
             final TextComponent parentParameter = thisTextComponent == null ? parent : thisTextComponent;
             if (json.has("extra")) {
                 JsonArray extras = json.getAsJsonArray("extra");
-                extras.forEach((extra -> parts.add(new BaseComponent(parentParameter, extra))));
+                extras.forEach((extra -> this.parts.add(new BaseComponent(parentParameter, extra))));
             }
 
             if (json.has("translate")) {
-                parts.add(new TranslatableComponent(parentParameter, json.get("translate").getAsString(), json.getAsJsonArray("with")));
+                this.parts.add(new TranslatableComponent(parentParameter, json.get("translate").getAsString(), json.getAsJsonArray("with")));
             }
         } else if (data instanceof JsonPrimitive primitive) {
-            parts.add(new BaseComponent(parent, primitive.getAsString()));
+            this.parts.add(new BaseComponent(parent, primitive.getAsString()));
         }
     }
 
@@ -179,14 +179,14 @@ public class BaseComponent extends ChatComponent {
     @Override
     public String getANSIColoredMessage() {
         StringBuilder builder = new StringBuilder();
-        parts.forEach((chatPart -> builder.append(chatPart.getANSIColoredMessage())));
+        this.parts.forEach((chatPart -> builder.append(chatPart.getANSIColoredMessage())));
         return builder.toString();
     }
 
     @Override
     public String getLegacyText() {
         StringBuilder builder = new StringBuilder();
-        parts.forEach((chatPart -> builder.append(chatPart.getLegacyText())));
+        this.parts.forEach((chatPart -> builder.append(chatPart.getLegacyText())));
         String string = builder.toString();
         if (string.endsWith(LEGACY_RESET_SUFFIX)) {
             string = string.substring(0, string.length() - LEGACY_RESET_SUFFIX.length());
@@ -197,32 +197,32 @@ public class BaseComponent extends ChatComponent {
     @Override
     public String getMessage() {
         StringBuilder builder = new StringBuilder();
-        parts.forEach((chatPart -> builder.append(chatPart.getMessage())));
+        this.parts.forEach((chatPart -> builder.append(chatPart.getMessage())));
         return builder.toString();
     }
 
     @Override
     public ObservableList<Node> getJavaFXText(ObservableList<Node> nodes) {
-        parts.forEach((chatPart) -> chatPart.getJavaFXText(nodes));
+        this.parts.forEach((chatPart) -> chatPart.getJavaFXText(nodes));
         return nodes;
     }
 
     @Unsafe
     public ArrayList<ChatComponent> getParts() {
-        return parts;
+        return this.parts;
     }
 
     public BaseComponent append(ChatComponent component) {
-        parts.add(component);
+        this.parts.add(component);
         return this;
     }
 
     public BaseComponent append(String message) {
-        parts.add(new BaseComponent(message));
+        this.parts.add(new BaseComponent(message));
         return this;
     }
 
     public boolean isEmpty() {
-        return parts.isEmpty();
+        return this.parts.isEmpty();
     }
 }

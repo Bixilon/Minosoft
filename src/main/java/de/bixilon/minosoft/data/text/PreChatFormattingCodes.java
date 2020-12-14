@@ -20,7 +20,6 @@ public enum PreChatFormattingCodes implements ChatFormattingCode {
     UNDERLINED('n', "\u001b[4m"),
     ITALIC('o', "\u001b[3m");
 
-
     final char c;
     final String ansi;
 
@@ -30,17 +29,16 @@ public enum PreChatFormattingCodes implements ChatFormattingCode {
     }
 
     public char getChar() {
-        return c;
+        return this.c;
     }
 
+    public String getANSI() {
+        return this.ansi;
+    }
 
     @Override
     public String toString() {
         return getANSI();
-    }
-
-    public String getANSI() {
-        return ansi;
     }
 }
 

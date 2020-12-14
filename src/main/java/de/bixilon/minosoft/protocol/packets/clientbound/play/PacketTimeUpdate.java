@@ -24,8 +24,8 @@ public class PacketTimeUpdate implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        worldAge = buffer.readLong();
-        timeOfDay = buffer.readLong();
+        this.worldAge = buffer.readLong();
+        this.timeOfDay = buffer.readLong();
         return true;
     }
 
@@ -36,14 +36,14 @@ public class PacketTimeUpdate implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Time Update packet received. Time is now %st (total %st, moving=%s)", Math.abs(timeOfDay), worldAge, timeOfDay > 0));
+        Log.protocol(String.format("[IN] Time Update packet received. Time is now %st (total %st, moving=%s)", Math.abs(this.timeOfDay), this.worldAge, this.timeOfDay > 0));
     }
 
     public long getWorldAge() {
-        return worldAge;
+        return this.worldAge;
     }
 
     public long getTimeOfDay() {
-        return timeOfDay;
+        return this.timeOfDay;
     }
 }

@@ -34,20 +34,20 @@ public class LongTag extends NumberTag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeLong(value);
+        buffer.writeLong(this.value);
     }
 
     public long getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
     public String toString() {
-        return value + "l";
+        return this.value + "l";
     }
 
     @Override
     public long getAsLong() {
-        return value;
+        return this.value;
     }
 }

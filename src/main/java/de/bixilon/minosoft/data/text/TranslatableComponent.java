@@ -76,15 +76,15 @@ public class TranslatableComponent extends ChatComponent {
             for (int i = 0; i < this.data.size(); i++) {
                 data[i] = this.data.get(i).getClass().getMethod(methodName).invoke(this.data.get(i));
             }
-            if (parent != null) {
+            if (this.parent != null) {
                 StringBuilder builder = new StringBuilder();
                 if (methodName.equals("getANSIColoredMessage")) {
-                    builder.append(ChatColors.getANSIColorByRGBColor(parent.getColor()));
+                    builder.append(ChatColors.getANSIColorByRGBColor(this.parent.getColor()));
                 } else if (methodName.equals("getLegacyText")) {
-                    builder.append(ChatColors.getColorChar(parent.getColor()));
+                    builder.append(ChatColors.getColorChar(this.parent.getColor()));
 
                 }
-                for (ChatFormattingCode code : parent.getFormatting()) {
+                for (ChatFormattingCode code : this.parent.getFormatting()) {
                     if (code instanceof PreChatFormattingCodes preCode) {
                         builder.append(switch (methodName) {
                             case "getANSIColoredMessage" -> preCode.getANSI();
@@ -93,8 +93,8 @@ public class TranslatableComponent extends ChatComponent {
                         });
                     }
                 }
-                builder.append(MinecraftLocaleManager.translate(key, data));
-                for (ChatFormattingCode code : parent.getFormatting()) {
+                builder.append(MinecraftLocaleManager.translate(this.key, data));
+                for (ChatFormattingCode code : this.parent.getFormatting()) {
                     if (code instanceof PostChatFormattingCodes postCode) {
                         builder.append(switch (methodName) {
                             case "getANSIColoredMessage" -> postCode.getANSI();
@@ -105,7 +105,7 @@ public class TranslatableComponent extends ChatComponent {
                 }
                 return builder.toString();
             }
-            return MinecraftLocaleManager.translate(key, data);
+            return MinecraftLocaleManager.translate(this.key, data);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

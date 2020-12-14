@@ -36,7 +36,7 @@ public class PacketAdvancements implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        reset = buffer.readBoolean();
+        this.reset = buffer.readBoolean();
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
             String advancementKey = buffer.readString();
@@ -74,11 +74,11 @@ public class PacketAdvancements implements ClientboundPacket {
                 }
                 requirements.add(requirement);
             }
-            advancements.put(advancementKey, new Advancement(parentName, display, criteria, requirements));
+            this.advancements.put(advancementKey, new Advancement(parentName, display, criteria, requirements));
         }
-        toRemove = new String[buffer.readVarInt()];
-        for (int i = 0; i < toRemove.length; i++) {
-            toRemove[i] = buffer.readString();
+        this.toRemove = new String[buffer.readVarInt()];
+        for (int i = 0; i < this.toRemove.length; i++) {
+            this.toRemove[i] = buffer.readString();
         }
         int progressesLength = buffer.readVarInt();
         for (int i = 0; i < progressesLength; i++) {
@@ -95,7 +95,7 @@ public class PacketAdvancements implements ClientboundPacket {
                 CriterionProgress criterionProgress = new CriterionProgress(archived, archiveTime);
                 progress.put(criterionName, criterionProgress);
             }
-            progresses.put(progressName, new AdvancementProgress(progress));
+            this.progresses.put(progressName, new AdvancementProgress(progress));
         }
 
         return true;
@@ -108,18 +108,18 @@ public class PacketAdvancements implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving advancements (reset=%s, advancements=%s, progresses=%s)", reset, advancements.size(), progresses.size()));
+        Log.protocol(String.format("[IN] Receiving advancements (reset=%s, advancements=%s, progresses=%s)", this.reset, this.advancements.size(), this.progresses.size()));
     }
 
     public boolean isReset() {
-        return reset;
+        return this.reset;
     }
 
     public HashMap<String, Advancement> getAdvancements() {
-        return advancements;
+        return this.advancements;
     }
 
     public HashMap<String, AdvancementProgress> getProgresses() {
-        return progresses;
+        return this.progresses;
     }
 }

@@ -36,28 +36,28 @@ public abstract class CommandNode {
 
     public CommandNode(byte flags, InByteBuffer buffer) {
         this.isExecutable = BitByte.isBitMask(flags, 0x04);
-        childrenIds = buffer.readVarIntArray();
+        this.childrenIds = buffer.readVarIntArray();
         if (BitByte.isBitMask(flags, 0x08)) {
-            redirectNodeId = buffer.readVarInt();
+            this.redirectNodeId = buffer.readVarInt();
         } else {
-            redirectNodeId = -1;
+            this.redirectNodeId = -1;
         }
     }
 
     public boolean isExecutable() {
-        return isExecutable;
+        return this.isExecutable;
     }
 
     public HashMap<String, CommandLiteralNode> getLiteralChildren() {
-        return literalChildren;
+        return this.literalChildren;
     }
 
     public HashSet<CommandArgumentNode> getArgumentsChildren() {
-        return argumentsChildren;
+        return this.argumentsChildren;
     }
 
     public CommandNode getRedirectNode() {
-        return redirectNode;
+        return this.redirectNode;
     }
 
     @DoNotCall
@@ -70,29 +70,29 @@ public abstract class CommandNode {
 
     @DoNotCall
     public int getRedirectNodeId() {
-        return redirectNodeId;
+        return this.redirectNodeId;
     }
 
     @DoNotCall
     public int[] getChildrenIds() {
-        return childrenIds;
+        return this.childrenIds;
     }
 
     public void isSyntaxCorrect(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
         String nextArgument = stringReader.getUntilNextCommandArgument();
-        if (nextArgument.length() == 0) {
-            if (isExecutable) {
+        if (nextArgument.isEmpty()) {
+            if (this.isExecutable) {
                 return;
             }
             throw new RequiresMoreArgumentsCommandParseException(stringReader);
         }
-        if (literalChildren.containsKey(nextArgument)) {
+        if (this.literalChildren.containsKey(nextArgument)) {
             stringReader.skip(nextArgument.length() + ProtocolDefinition.COMMAND_SEPARATOR.length());
-            literalChildren.get(nextArgument).isSyntaxCorrect(connection, stringReader);
+            this.literalChildren.get(nextArgument).isSyntaxCorrect(connection, stringReader);
             return;
         }
         CommandParseException lastException = null;
-        for (CommandArgumentNode argumentNode : argumentsChildren) {
+        for (CommandArgumentNode argumentNode : this.argumentsChildren) {
             int currentPosition = stringReader.getPosition();
             try {
                 argumentNode.isSyntaxCorrect(connection, stringReader);
@@ -119,6 +119,12 @@ public abstract class CommandNode {
     public enum NodeTypes {
         ROOT,
         LITERAL,
-        ARGUMENT
+        ARGUMENT;
+
+        private static final NodeTypes[] NODE_TYPES = values();
+
+        public static NodeTypes byId(int id) {
+            return NODE_TYPES[id];
+        }
     }
 }

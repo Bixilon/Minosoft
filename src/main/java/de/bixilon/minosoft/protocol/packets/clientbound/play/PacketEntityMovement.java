@@ -45,14 +45,14 @@ public class PacketEntityMovement implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity %d moved relative %s", entityId, location));
+        Log.protocol(String.format("[IN] Entity %d moved relative %s", this.entityId, this.location));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public RelativeLocation getRelativeLocation() {
-        return location;
+        return this.location;
     }
 }

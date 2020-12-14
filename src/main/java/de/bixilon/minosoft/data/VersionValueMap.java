@@ -26,16 +26,16 @@ public class VersionValueMap<V> {
 
     public VersionValueMap(MapSet<Integer, V>[] sets, boolean unused) {
         for (MapSet<Integer, V> set : sets) {
-            values.put(set.getKey(), set.getValue());
+            this.values.put(set.getKey(), set.getValue());
         }
     }
 
     public VersionValueMap(V value) {
-        values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), value);
+        this.values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), value);
     }
 
     public V get(int versionId) {
-        Map.Entry<Integer, V> value = values.lowerEntry(versionId);
+        Map.Entry<Integer, V> value = this.values.lowerEntry(versionId);
         if (value == null) {
             return null;
         }
@@ -53,6 +53,6 @@ public class VersionValueMap<V> {
     }
 
     public TreeMap<Integer, V> getAll() {
-        return values;
+        return this.values;
     }
 }

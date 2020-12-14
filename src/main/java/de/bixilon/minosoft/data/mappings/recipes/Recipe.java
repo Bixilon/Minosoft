@@ -16,14 +16,14 @@ package de.bixilon.minosoft.data.mappings.recipes;
 import de.bixilon.minosoft.data.inventory.Slot;
 
 public class Recipe {
-    final RecipeTypes type;
-    Slot result;
-    String group;
-    Ingredient[] ingredients;
-    int height;
-    int width;
-    float experience;
-    int cookingTime;
+    private final RecipeTypes type;
+    private Slot result;
+    private String group;
+    private Ingredient[] ingredients;
+    private int height;
+    private int width;
+    private float experience;
+    private int cookingTime;
 
     public Recipe(RecipeTypes type, String group, Ingredient[] ingredients, Slot result) {
         this.type = type;
@@ -68,34 +68,34 @@ public class Recipe {
     }
 
     public RecipeTypes getType() {
-        return type;
+        return this.type;
     }
 
     public Slot getResult() {
-        return result;
+        return this.result;
     }
 
     public String getGroup() {
-        return group;
+        return this.group;
     }
 
     public Ingredient[] getIngredients() {
-        return ingredients;
+        return this.ingredients;
     }
 
     public int getWidth() {
-        return width;
+        return this.width;
     }
 
     public int getHeight() {
-        return height;
+        return this.height;
     }
 
     public float getExperience() {
-        return experience;
+        return this.experience;
     }
 
     public int getCookingTime() {
-        return cookingTime;
+        return this.cookingTime;
     }
 }

@@ -38,20 +38,20 @@ public class ByteTag extends NumberTag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeByte(value);
+        buffer.writeByte(this.value);
     }
 
     public byte getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
     public String toString() {
-        return value + "b";
+        return this.value + "b";
     }
 
     @Override
     public long getAsLong() {
-        return value;
+        return this.value;
     }
 }

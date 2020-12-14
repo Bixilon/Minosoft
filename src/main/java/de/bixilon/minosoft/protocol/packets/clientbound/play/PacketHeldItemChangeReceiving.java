@@ -23,7 +23,7 @@ public class PacketHeldItemChangeReceiving implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        slot = buffer.readByte();
+        this.slot = buffer.readByte();
         return true;
     }
 
@@ -34,10 +34,10 @@ public class PacketHeldItemChangeReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Slot change received. Now on slot %s", slot));
+        Log.protocol(String.format("[IN] Slot change received. Now on slot %s", this.slot));
     }
 
     public byte getSlot() {
-        return slot;
+        return this.slot;
     }
 }

@@ -19,9 +19,9 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 public class PacketNamedSoundEffect implements ClientboundPacket {
-    static final float pitchCalc = 100.0F / 63.0F;
     Location location;
     String sound;
     float volume;
@@ -32,28 +32,28 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() >= 321 && buffer.getVersionId() < 326) {
             // category was moved to the top
-            category = SoundCategories.byId(buffer.readVarInt());
+            this.category = SoundCategories.byId(buffer.readVarInt());
         }
-        sound = buffer.readString();
+        this.sound = buffer.readString();
 
         if (buffer.getVersionId() >= 321 && buffer.getVersionId() < 326) {
             buffer.readString(); // parrot entity type
         }
         if (buffer.getVersionId() < 95) {
-            location = new Location(buffer.readInt() * 8, buffer.readInt() * 8, buffer.readInt() * 8); // ToDo: check if it is not * 4
+            this.location = new Location(buffer.readInt() * 8, buffer.readInt() * 8, buffer.readInt() * 8); // ToDo: check if it is not * 4
         }
 
         if (buffer.getVersionId() >= 95 && (buffer.getVersionId() < 321 || buffer.getVersionId() >= 326)) {
-            category = SoundCategories.byId(buffer.readVarInt());
+            this.category = SoundCategories.byId(buffer.readVarInt());
         }
         if (buffer.getVersionId() >= 95) {
-            location = new Location(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
+            this.location = new Location(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
         }
-        volume = buffer.readFloat();
+        this.volume = buffer.readFloat();
         if (buffer.getVersionId() < 201) {
-            pitch = (buffer.readByte() * pitchCalc) / 100F;
+            this.pitch = (buffer.readByte() * ProtocolDefinition.PITCH_CALCULATION_CONSTANT) / 100F;
         } else {
-            pitch = buffer.readFloat();
+            this.pitch = buffer.readFloat();
         }
         return true;
     }
@@ -65,29 +65,29 @@ public class PacketNamedSoundEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Play sound effect (sound=%s, category=%s, volume=%s, pitch=%s, location=%s)", sound, category, volume, pitch, location));
+        Log.protocol(String.format("[IN] Play sound effect (sound=%s, category=%s, volume=%s, pitch=%s, location=%s)", this.sound, this.category, this.volume, this.pitch, this.location));
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
     /**
      * @return Pitch in Percent
      */
     public float getPitch() {
-        return pitch;
+        return this.pitch;
     }
 
     public String getSound() {
-        return sound;
+        return this.sound;
     }
 
     public float getVolume() {
-        return volume;
+        return this.volume;
     }
 
     public SoundCategories getCategory() {
-        return category;
+        return this.category;
     }
 }

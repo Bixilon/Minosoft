@@ -37,14 +37,14 @@ public class PacketEntityHeadRotation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity %d moved head (yaw=%s)", entityId, headYaw));
+        Log.protocol(String.format("[IN] Entity %d moved head (yaw=%s)", this.entityId, this.headYaw));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public short getHeadYaw() {
-        return headYaw;
+        return this.headYaw;
     }
 }

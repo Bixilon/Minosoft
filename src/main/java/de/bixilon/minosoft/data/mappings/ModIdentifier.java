@@ -36,15 +36,15 @@ public class ModIdentifier {
     }
 
     public String getMod() {
-        return mod;
+        return this.mod;
     }
 
     public String getIdentifier() {
-        return identifier;
+        return this.identifier;
     }
 
     public String getFullIdentifier() {
-        return String.format("%s:%s", mod, identifier);
+        return String.format("%s:%s", this.mod, this.identifier);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ModIdentifier {
 
     @Override
     public int hashCode() {
-        return mod.hashCode() * identifier.hashCode();
+        return this.mod.hashCode() * this.identifier.hashCode();
     }
 
     @Override

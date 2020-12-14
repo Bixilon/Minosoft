@@ -36,11 +36,11 @@ public class ClickEvent {
     }
 
     public ClickEventActions getAction() {
-        return action;
+        return this.action;
     }
 
     public Object getValue() {
-        return value;
+        return this.value;
     }
 
     public enum ClickEventActions {

@@ -30,16 +30,16 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        location = buffer.readLocation();
-        rotation = new EntityRotation(buffer.readFloat(), buffer.readFloat(), 0);
+        this.location = buffer.readLocation();
+        this.rotation = new EntityRotation(buffer.readFloat(), buffer.readFloat(), 0);
         if (buffer.getVersionId() < 6) {
-            onGround = buffer.readBoolean();
+            this.onGround = buffer.readBoolean();
             return true;
         } else {
-            flags = buffer.readByte();
+            this.flags = buffer.readByte();
         }
         if (buffer.getVersionId() >= 79) {
-            teleportId = buffer.readVarInt();
+            this.teleportId = buffer.readVarInt();
         }
         return true;
     }
@@ -51,23 +51,23 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received player location: (location=%s, rotation=%s, onGround=%b)", location, rotation, onGround));
+        Log.protocol(String.format("[IN] Received player location: (location=%s, rotation=%s, onGround=%b)", this.location, this.rotation, this.onGround));
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
     public EntityRotation getRotation() {
-        return rotation;
+        return this.rotation;
     }
 
     public boolean isOnGround() {
-        return onGround;
+        return this.onGround;
     }
 
     public int getTeleportId() {
-        return teleportId;
+        return this.teleportId;
     }
 
 }

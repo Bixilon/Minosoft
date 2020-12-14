@@ -23,7 +23,7 @@ public class PacketEntityInitialisation implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        entityId = buffer.readEntityId();
+        this.entityId = buffer.readEntityId();
         return true;
     }
 
@@ -34,10 +34,10 @@ public class PacketEntityInitialisation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Initialising entity (entityId=%d)", entityId));
+        Log.protocol(String.format("[IN] Initialising entity (entityId=%d)", this.entityId));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 }

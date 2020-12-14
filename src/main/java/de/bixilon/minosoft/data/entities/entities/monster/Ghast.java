@@ -30,6 +30,6 @@ public class Ghast extends FlyingMob {
 
     @EntityMetaDataFunction(identifier = "isAttacking")
     public boolean isAttacking() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.GHAST_IS_ATTACKING);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.GHAST_IS_ATTACKING);
     }
 }

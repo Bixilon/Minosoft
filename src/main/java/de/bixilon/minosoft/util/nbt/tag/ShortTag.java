@@ -34,20 +34,20 @@ public class ShortTag extends NumberTag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeShort(value);
+        buffer.writeShort(this.value);
     }
 
     public short getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
     public String toString() {
-        return value + "s";
+        return this.value + "s";
     }
 
     @Override
     public long getAsLong() {
-        return value;
+        return this.value;
     }
 }

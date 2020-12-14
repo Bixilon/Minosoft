@@ -63,9 +63,27 @@ data class VillagerData(val type: VillagerTypes, val profession: VillagerProfess
 
     enum class VillagerTypes {
         DESSERT, JUNGLE, PLAINS, SAVANNA, SNOW, SWAMP, TAIGA;
+
+        companion object {
+            private val VILLAGER_TYPES: Array<VillagerTypes> = values()
+
+            @JvmStatic
+            fun byId(id: Int): VillagerTypes {
+                return VILLAGER_TYPES[id]
+            }
+        }
     }
 
     enum class VillagerLevels {
         NOVICE, APPRENTICE, JOURNEYMAN, EXPERT, MASTER;
+
+        companion object {
+            private val VILLAGER_LEVELS: Array<VillagerLevels> = values()
+
+            @JvmStatic
+            fun byId(id: Int): VillagerLevels {
+                return VILLAGER_LEVELS[id]
+            }
+        }
     }
 }

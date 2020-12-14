@@ -25,8 +25,8 @@ public class PacketSetCooldown implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        item = buffer.readVarInt();
-        cooldownTicks = buffer.readVarInt();
+        this.item = buffer.readVarInt();
+        this.cooldownTicks = buffer.readVarInt();
         return true;
     }
 
@@ -37,14 +37,14 @@ public class PacketSetCooldown implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving item cooldown (item=%s, coolDown=%dt)", item, cooldownTicks));
+        Log.protocol(String.format("[IN] Receiving item cooldown (item=%s, coolDown=%dt)", this.item, this.cooldownTicks));
     }
 
     public int getItem() {
-        return item;
+        return this.item;
     }
 
     public int getCooldownTicks() {
-        return cooldownTicks;
+        return this.cooldownTicks;
     }
 }

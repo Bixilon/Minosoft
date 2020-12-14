@@ -41,18 +41,18 @@ public class PacketUpdateCommandBlock implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_COMMAND_BLOCK);
-        buffer.writePosition(position);
-        buffer.writeString(command);
-        buffer.writeVarInt(type.ordinal());
+        buffer.writePosition(this.position);
+        buffer.writeString(this.command);
+        buffer.writeVarInt(this.type.ordinal());
 
         byte flags = 0x00;
-        if (trackOutput) {
+        if (this.trackOutput) {
             flags |= 0x01;
         }
-        if (isConditional) {
+        if (this.isConditional) {
             flags |= 0x02;
         }
-        if (isAutomatic) {
+        if (this.isAutomatic) {
             flags |= 0x04;
         }
 
@@ -62,7 +62,7 @@ public class PacketUpdateCommandBlock implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending update command block packet at %s (command=\"%s\", type=%s, trackOutput=%s, isConditional=%s, isAutomatic=%s)", position, command, type, trackOutput, isConditional, isAutomatic));
+        Log.protocol(String.format("[OUT] Sending update command block packet at %s (command=\"%s\", type=%s, trackOutput=%s, isConditional=%s, isAutomatic=%s)", this.position, this.command, this.type, this.trackOutput, this.isConditional, this.isAutomatic));
     }
 
     public enum CommandBlockType {
@@ -70,8 +70,10 @@ public class PacketUpdateCommandBlock implements ServerboundPacket {
         AUTO,
         REDSTONE;
 
+        private static final CommandBlockType[] COMMAND_BLOCK_TYPES = values();
+
         public static CommandBlockType byId(int id) {
-            return values()[id];
+            return COMMAND_BLOCK_TYPES[id];
         }
     }
 }

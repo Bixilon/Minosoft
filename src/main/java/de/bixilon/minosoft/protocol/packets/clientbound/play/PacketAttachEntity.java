@@ -42,18 +42,18 @@ public class PacketAttachEntity implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Attaching entity %d to entity %d (leash=%s)", entityId, vehicleId, leash));
+        Log.protocol(String.format("[IN] Attaching entity %d to entity %d (leash=%s)", this.entityId, this.vehicleId, this.leash));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public int getVehicleId() {
-        return vehicleId;
+        return this.vehicleId;
     }
 
     public boolean isLeash() {
-        return leash;
+        return this.leash;
     }
 }

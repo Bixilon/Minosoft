@@ -44,7 +44,7 @@ public class OutByteBuffer {
     }
 
     public void writeByteArray(byte[] data) {
-        if (versionId < 19) {
+        if (this.versionId < 19) {
             writeShort((short) data.length);
         } else {
             writeVarInt(data.length);
@@ -66,7 +66,7 @@ public class OutByteBuffer {
 
     public void writeBytes(byte[] data) {
         for (byte singleByte : data) {
-            bytes.add(singleByte);
+            this.bytes.add(singleByte);
         }
     }
 
@@ -109,15 +109,15 @@ public class OutByteBuffer {
     }
 
     public void writeByte(byte value) {
-        bytes.add(value);
+        this.bytes.add(value);
     }
 
     public void writeByte(int value) {
-        bytes.add((byte) (value & 0xFF));
+        this.bytes.add((byte) (value & 0xFF));
     }
 
     public void writeByte(long value) {
-        bytes.add((byte) (value & 0xFF));
+        this.bytes.add((byte) (value & 0xFF));
     }
 
     public void writeFloat(float value) {
@@ -138,7 +138,7 @@ public class OutByteBuffer {
     }
 
     public ArrayList<Byte> getBytes() {
-        return bytes;
+        return this.bytes;
     }
 
     public void writePosition(BlockPosition position) {
@@ -146,7 +146,7 @@ public class OutByteBuffer {
             writeLong(0L);
             return;
         }
-        if (versionId < 440) {
+        if (this.versionId < 440) {
             writeLong((((long) position.getX() & 0x3FFFFFF) << 38) | (((long) position.getZ() & 0x3FFFFFF)) | ((long) position.getY() & 0xFFF) << 26);
             return;
         }
@@ -174,28 +174,28 @@ public class OutByteBuffer {
             if (value != 0) {
                 temp |= 0x80;
             }
-            bytes.add(count++, temp);
+            this.bytes.add(count++, temp);
         } while (value != 0);
     }
 
     public void writeSlot(Slot slot) {
-        if (versionId < 402) {
+        if (this.versionId < 402) {
             if (slot == null) {
                 writeShort((short) -1);
                 return;
             }
-            writeShort((short) (int) connection.getMapping().getItemId(slot.getItem()));
+            writeShort((short) (int) this.connection.getMapping().getItemId(slot.getItem()));
             writeByte((byte) slot.getItemCount());
             writeShort(slot.getItemMetadata());
-            writeNBT(slot.getNbt(connection.getMapping()));
+            writeNBT(slot.getNbt(this.connection.getMapping()));
         }
         if (slot == null) {
             writeBoolean(false);
             return;
         }
-        writeVarInt(connection.getMapping().getItemId(slot.getItem()));
+        writeVarInt(this.connection.getMapping().getItemId(slot.getItem()));
         writeByte((byte) slot.getItemCount());
-        writeNBT(slot.getNbt(connection.getMapping()));
+        writeNBT(slot.getNbt(this.connection.getMapping()));
     }
 
     void writeNBT(CompoundTag nbt) {
@@ -204,7 +204,7 @@ public class OutByteBuffer {
     }
 
     public void writeBoolean(boolean value) {
-        bytes.add((byte) ((value) ? 0x01 : 0x00));
+        this.bytes.add((byte) ((value) ? 0x01 : 0x00));
     }
 
     public void writeStringNoLength(String string) {
@@ -218,9 +218,9 @@ public class OutByteBuffer {
     }
 
     public byte[] toByteArray() {
-        byte[] ret = new byte[bytes.size()];
-        for (int i = 0; i < bytes.size(); i++) {
-            ret[i] = bytes.get(i);
+        byte[] ret = new byte[this.bytes.size()];
+        for (int i = 0; i < this.bytes.size(); i++) {
+            ret[i] = this.bytes.get(i);
         }
         return ret;
     }
@@ -238,11 +238,11 @@ public class OutByteBuffer {
     }
 
     public int getVersionId() {
-        return versionId;
+        return this.versionId;
     }
 
     public void writeEntityId(int entityId) {
-        if (versionId < 7) {
+        if (this.versionId < 7) {
             writeInt(entityId);
         } else {
             writeVarInt(entityId);
@@ -250,6 +250,6 @@ public class OutByteBuffer {
     }
 
     public Connection getConnection() {
-        return connection;
+        return this.connection;
     }
 }

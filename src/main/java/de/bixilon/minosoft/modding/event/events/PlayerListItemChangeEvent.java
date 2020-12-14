@@ -33,6 +33,6 @@ public class PlayerListItemChangeEvent extends CancelableEvent {
     }
 
     public ArrayList<PlayerListItemBulk> getPlayerList() {
-        return playerList;
+        return this.playerList;
     }
 }

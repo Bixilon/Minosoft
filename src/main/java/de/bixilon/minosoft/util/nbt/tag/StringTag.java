@@ -24,7 +24,7 @@ public class StringTag extends NBTTag {
     }
 
     public StringTag(InByteBuffer buffer) {
-        value = buffer.readString(new ShortTag(buffer).getValue());
+        this.value = buffer.readString(new ShortTag(buffer).getValue());
     }
 
     @Override
@@ -34,16 +34,16 @@ public class StringTag extends NBTTag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeShort((short) value.length());
-        buffer.writeStringNoLength(value);
+        buffer.writeShort((short) this.value.length());
+        buffer.writeStringNoLength(this.value);
     }
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
     public String toString() {
-        return String.format("\"%s\"", value);
+        return String.format("\"%s\"", this.value);
     }
 }

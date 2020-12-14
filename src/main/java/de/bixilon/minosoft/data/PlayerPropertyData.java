@@ -29,11 +29,11 @@ public class PlayerPropertyData {
     }
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public String getSignature() {
-        return signature;
+        return this.signature;
     }
 
     @Override

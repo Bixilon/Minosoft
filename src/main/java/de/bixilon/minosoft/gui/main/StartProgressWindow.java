@@ -30,11 +30,11 @@ import javafx.stage.Stage;
 import java.util.concurrent.CountDownLatch;
 
 public class StartProgressWindow extends Application {
-    public final static CountDownLatch toolkitLatch = new CountDownLatch(2); // 2 if not started, 1 if started, 2 if loaded
+    public static final CountDownLatch TOOLKIT_LATCH = new CountDownLatch(2); // 2 if not started, 1 if started, 2 if loaded
     public static JFXAlert<Boolean> progressDialog;
     private static JFXProgressBar progressBar;
     private static Label progressLabel;
-    private static boolean exit = false;
+    private static boolean exit;
 
     public static void show(CountUpAndDownLatch progress) {
         if (exit) {
@@ -52,7 +52,6 @@ public class StartProgressWindow extends Application {
                 JFXDialogLayout layout = new JFXDialogLayout();
                 layout.setHeading(new Label(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_HEADER)));
 
-
                 progressBar = new JFXProgressBar();
                 progressBar.setPrefHeight(50);
 
@@ -62,7 +61,6 @@ public class StartProgressWindow extends Application {
                 gridPane.setHgap(20);
                 gridPane.add(progressBar, 0, 0);
                 gridPane.add(progressLabel, 1, 0);
-
 
                 layout.setBody(gridPane);
                 progressDialog.setContent(layout);
@@ -93,9 +91,9 @@ public class StartProgressWindow extends Application {
 
     public static void start() throws InterruptedException {
         Log.debug("Initializing JavaFX Toolkit...");
-        toolkitLatch.countDown();
+        TOOLKIT_LATCH.countDown();
         new Thread(Application::launch).start();
-        toolkitLatch.await();
+        TOOLKIT_LATCH.await();
         Log.debug("Initialized JavaFX Toolkit!");
     }
 
@@ -113,6 +111,6 @@ public class StartProgressWindow extends Application {
     @Override
     public void start(Stage stage) {
         Platform.setImplicitExit(false);
-        toolkitLatch.countDown();
+        TOOLKIT_LATCH.countDown();
     }
 }

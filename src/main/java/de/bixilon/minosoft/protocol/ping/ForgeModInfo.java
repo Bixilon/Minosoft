@@ -27,10 +27,10 @@ public class ForgeModInfo implements ServerModInfo {
     public ForgeModInfo(JsonObject modInfo) {
         this.modInfo = modInfo;
         JsonArray mods = modInfo.getAsJsonArray("modList");
-        info = String.format("Modded server, %d mods present", mods.size());
+        this.info = String.format("Modded server, %d mods present", mods.size());
         for (JsonElement mod : mods) {
             JsonObject mod2 = (JsonObject) mod;
-            modList.add(new ServerModItem(mod2.get("modid").getAsString(), mod2.get("version").getAsString()));
+            this.modList.add(new ServerModItem(mod2.get("modid").getAsString(), mod2.get("version").getAsString()));
         }
     }
 
@@ -41,7 +41,7 @@ public class ForgeModInfo implements ServerModInfo {
 
     @Override
     public String getInfo() {
-        return info;
+        return this.info;
     }
 
     @Override
@@ -50,6 +50,6 @@ public class ForgeModInfo implements ServerModInfo {
     }
 
     public ArrayList<ServerModItem> getModList() {
-        return modList;
+        return this.modList;
     }
 }

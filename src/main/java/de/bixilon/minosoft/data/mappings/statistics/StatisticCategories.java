@@ -53,10 +53,10 @@ public enum StatisticCategories {
     }
 
     public ChangeableIdentifier getChangeableIdentifier() {
-        return changeableIdentifier;
+        return this.changeableIdentifier;
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 }

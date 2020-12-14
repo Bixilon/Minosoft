@@ -25,7 +25,6 @@ import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 public class FloatParser extends CommandParser {
     public static final FloatParser FLOAT_PARSER = new FloatParser();
 
-
     @Override
     public ParserProperties readParserProperties(InByteBuffer buffer) {
         return new FloatParserProperties(buffer);

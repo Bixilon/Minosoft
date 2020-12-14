@@ -37,14 +37,14 @@ public class SingleSlotChangeEvent extends ConnectionEvent {
     }
 
     public byte getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     public short getSlotId() {
-        return slotId;
+        return this.slotId;
     }
 
     public Slot getSlot() {
-        return slot;
+        return this.slot;
     }
 }

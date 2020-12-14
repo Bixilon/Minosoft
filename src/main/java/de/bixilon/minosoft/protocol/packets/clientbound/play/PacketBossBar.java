@@ -35,23 +35,23 @@ public class PacketBossBar implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        uuid = buffer.readUUID();
-        action = BossBarActions.byId(buffer.readVarInt());
-        switch (action) {
+        this.uuid = buffer.readUUID();
+        this.action = BossBarActions.byId(buffer.readVarInt());
+        switch (this.action) {
             case ADD -> {
-                title = buffer.readChatComponent();
-                health = buffer.readFloat();
-                color = BossBarColors.byId(buffer.readVarInt());
-                divisions = BossBarDivisions.byId(buffer.readVarInt());
-                flags = buffer.readByte();
+                this.title = buffer.readChatComponent();
+                this.health = buffer.readFloat();
+                this.color = BossBarColors.byId(buffer.readVarInt());
+                this.divisions = BossBarDivisions.byId(buffer.readVarInt());
+                this.flags = buffer.readByte();
             }
-            case UPDATE_HEALTH -> health = buffer.readFloat();
-            case UPDATE_TITLE -> title = buffer.readChatComponent();
+            case UPDATE_HEALTH -> this.health = buffer.readFloat();
+            case UPDATE_TITLE -> this.title = buffer.readChatComponent();
             case UPDATE_STYLE -> {
-                color = BossBarColors.byId(buffer.readVarInt());
-                divisions = BossBarDivisions.byId(buffer.readVarInt());
+                this.color = BossBarColors.byId(buffer.readVarInt());
+                this.divisions = BossBarDivisions.byId(buffer.readVarInt());
             }
-            case UPDATE_FLAGS -> flags = buffer.readByte();
+            case UPDATE_FLAGS -> this.flags = buffer.readByte();
         }
         return true;
     }
@@ -63,54 +63,54 @@ public class PacketBossBar implements ClientboundPacket {
 
     @Override
     public void log() {
-        switch (action) {
-            case ADD -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, title=\"%s\", health=%s, color=%s, divisions=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), title.getANSIColoredMessage(), health, color, divisions, isDragonBar(), shouldDarkenSky()));
-            case REMOVE -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s)", action, uuid.toString()));
-            case UPDATE_HEALTH -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, health=%s)", action, uuid.toString(), health));
-            case UPDATE_TITLE -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, title=\"%s\")", action, uuid.toString(), title.getANSIColoredMessage()));
-            case UPDATE_STYLE -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, color=%s, divisions=%s)", action, uuid.toString(), color, divisions));
-            case UPDATE_FLAGS -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, dragonBar=%s, darkenSky=%s)", action, uuid.toString(), isDragonBar(), shouldDarkenSky()));
+        switch (this.action) {
+            case ADD -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, title=\"%s\", health=%s, color=%s, divisions=%s, dragonBar=%s, darkenSky=%s)", this.action, this.uuid.toString(), this.title.getANSIColoredMessage(), this.health, this.color, this.divisions, isDragonBar(), shouldDarkenSky()));
+            case REMOVE -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s)", this.action, this.uuid.toString()));
+            case UPDATE_HEALTH -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, health=%s)", this.action, this.uuid.toString(), this.health));
+            case UPDATE_TITLE -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, title=\"%s\")", this.action, this.uuid.toString(), this.title.getANSIColoredMessage()));
+            case UPDATE_STYLE -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, color=%s, divisions=%s)", this.action, this.uuid.toString(), this.color, this.divisions));
+            case UPDATE_FLAGS -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, dragonBar=%s, darkenSky=%s)", this.action, this.uuid.toString(), isDragonBar(), shouldDarkenSky()));
         }
     }
 
     public boolean isDragonBar() {
-        return BitByte.isBitMask(flags, 0x02);
+        return BitByte.isBitMask(this.flags, 0x02);
     }
 
     public boolean shouldDarkenSky() {
-        return BitByte.isBitMask(flags, 0x01);
+        return BitByte.isBitMask(this.flags, 0x01);
     }
 
     public UUID getUUID() {
-        return uuid;
+        return this.uuid;
     }
 
     public BossBarActions getAction() {
-        return action;
+        return this.action;
     }
 
     public BossBarDivisions getDivisions() {
-        return divisions;
+        return this.divisions;
     }
 
     public BossBarColors getColor() {
-        return color;
+        return this.color;
     }
 
     public float getHealth() {
-        return health;
+        return this.health;
     }
 
     public ChatComponent getTitle() {
-        return title;
+        return this.title;
     }
 
     public byte getFlags() {
-        return flags;
+        return this.flags;
     }
 
     public boolean createFog() {
-        return BitByte.isBitMask(flags, 0x04);
+        return BitByte.isBitMask(this.flags, 0x04);
     }
 
     public enum BossBarActions {
@@ -121,8 +121,10 @@ public class PacketBossBar implements ClientboundPacket {
         UPDATE_STYLE,
         UPDATE_FLAGS;
 
+        private static final BossBarActions[] BOSS_BAR_ACTIONS = values();
+
         public static BossBarActions byId(int id) {
-            return values()[id];
+            return BOSS_BAR_ACTIONS[id];
         }
     }
 
@@ -135,8 +137,10 @@ public class PacketBossBar implements ClientboundPacket {
         PURPLE,
         WHITE;
 
+        private static final BossBarColors[] BOSS_BAR_COLORS = values();
+
         public static BossBarColors byId(int id) {
-            return values()[id];
+            return BOSS_BAR_COLORS[id];
         }
     }
 
@@ -147,8 +151,10 @@ public class PacketBossBar implements ClientboundPacket {
         NOTCHES_12,
         NOTCHES_20;
 
+        private static final BossBarDivisions[] BOSS_BAR_DIVISIONS = values();
+
         public static BossBarDivisions byId(int id) {
-            return values()[id];
+            return BOSS_BAR_DIVISIONS[id];
         }
     }
 }

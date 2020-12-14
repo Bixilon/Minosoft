@@ -25,7 +25,7 @@ public class PacketAdvancementTab implements ServerboundPacket {
 
     public PacketAdvancementTab(AdvancementTabStatus action) {
         this.action = action;
-        tabToOpen = null;
+        this.tabToOpen = null;
     }
 
     public PacketAdvancementTab(AdvancementTabStatus action, String tabToOpen) {
@@ -36,24 +36,26 @@ public class PacketAdvancementTab implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ADVANCEMENT_TAB);
-        buffer.writeVarInt(action.ordinal());
-        if (action == AdvancementTabStatus.OPEN_TAB) {
-            buffer.writeString(tabToOpen);
+        buffer.writeVarInt(this.action.ordinal());
+        if (this.action == AdvancementTabStatus.OPEN_TAB) {
+            buffer.writeString(this.tabToOpen);
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending advancement tab packet (action=%s, tabToOpen=%s)", action, tabToOpen));
+        Log.protocol(String.format("[OUT] Sending advancement tab packet (action=%s, tabToOpen=%s)", this.action, this.tabToOpen));
     }
 
     public enum AdvancementTabStatus {
         OPEN_TAB,
         CLOSE_TAB;
 
+        private static final AdvancementTabStatus[] ADVANCEMENT_TAB_STATUSES = values();
+
         public static AdvancementTabStatus byId(int id) {
-            return values()[id];
+            return ADVANCEMENT_TAB_STATUSES[id];
         }
     }
 }

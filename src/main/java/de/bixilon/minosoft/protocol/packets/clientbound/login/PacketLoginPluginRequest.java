@@ -28,9 +28,9 @@ public class PacketLoginPluginRequest implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.connection = buffer.getConnection();
-        messageId = buffer.readVarInt();
-        channel = buffer.readString();
-        data = buffer.readBytesLeft();
+        this.messageId = buffer.readVarInt();
+        this.channel = buffer.readString();
+        this.data = buffer.readBytesLeft();
         return true;
     }
 
@@ -41,22 +41,22 @@ public class PacketLoginPluginRequest implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received login plugin request in channel \"%s\" with %s bytes of data (messageId=%d)", channel, data.length, messageId));
+        Log.protocol(String.format("[IN] Received login plugin request in channel \"%s\" with %s bytes of data (messageId=%d)", this.channel, this.data.length, this.messageId));
     }
 
     public int getMessageId() {
-        return messageId;
+        return this.messageId;
     }
 
     public String getChannel() {
-        return channel;
+        return this.channel;
     }
 
     public byte[] getData() {
-        return data;
+        return this.data;
     }
 
     public InByteBuffer getDataAsBuffer() {
-        return new InByteBuffer(data, connection);
+        return new InByteBuffer(this.data, this.connection);
     }
 }

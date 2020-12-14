@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.commands.parser.exceptions;
 
-
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class CommandParseException extends Exception {
@@ -47,18 +46,18 @@ public class CommandParseException extends Exception {
     }
 
     public String getErrorMessage() {
-        return errorMessage;
+        return this.errorMessage;
     }
 
     public ImprovedStringReader getCommand() {
-        return command;
+        return this.command;
     }
 
     public int getStartIndex() {
-        return startIndex;
+        return this.startIndex;
     }
 
     public int getEndIndex() {
-        return endIndex;
+        return this.endIndex;
     }
 }

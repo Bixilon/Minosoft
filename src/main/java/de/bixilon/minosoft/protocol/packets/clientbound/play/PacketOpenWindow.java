@@ -34,21 +34,21 @@ public class PacketOpenWindow implements ClientboundPacket {
             this.windowId = buffer.readByte();
             this.type = InventoryTypes.byId(buffer.readUnsignedByte());
             this.title = buffer.readChatComponent();
-            slotCount = buffer.readByte();
+            this.slotCount = buffer.readByte();
             if (!buffer.readBoolean()) {
                 // no custom name
-                title = null;
+                this.title = null;
             }
             this.entityId = buffer.readInt();
             return true;
         }
         this.windowId = buffer.readByte();
-        this.type = InventoryTypes.byName(buffer.readString());
+        this.type = InventoryTypes.byIdentifier(buffer.readIdentifier());
         this.title = buffer.readChatComponent();
         if (buffer.getVersionId() < 452 || buffer.getVersionId() >= 464) {
-            slotCount = buffer.readByte();
+            this.slotCount = buffer.readByte();
         }
-        if (type == InventoryTypes.HORSE) {
+        if (this.type == InventoryTypes.HORSE) {
             this.entityId = buffer.readInt();
         }
         return true;
@@ -61,30 +61,30 @@ public class PacketOpenWindow implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received inventory open packet (windowId=%d, type=%s, title=%s, entityId=%d, slotCount=%d)", windowId, type, title, entityId, slotCount));
+        Log.protocol(String.format("[IN] Received inventory open packet (windowId=%d, type=%s, title=%s, entityId=%d, slotCount=%d)", this.windowId, this.type, this.title, this.entityId, this.slotCount));
     }
 
     public byte getSlotCount() {
-        return slotCount;
+        return this.slotCount;
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public ChatComponent getTitle() {
-        return title;
+        return this.title;
     }
 
     public InventoryProperties getInventoryProperties() {
-        return new InventoryProperties(getWindowId(), getType(), title, slotCount);
+        return new InventoryProperties(getWindowId(), getType(), this.title, this.slotCount);
     }
 
     public byte getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     public InventoryTypes getType() {
-        return type;
+        return this.type;
     }
 }

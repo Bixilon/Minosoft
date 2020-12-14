@@ -29,13 +29,13 @@ public class PacketEntityEquipment implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        entityId = buffer.readEntityId();
+        this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < 49) {
-            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getVersionId()), buffer.readSlot());
+            this.slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getVersionId()), buffer.readSlot());
             return true;
         }
         if (buffer.getVersionId() < 732) {
-            slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readVarInt(), buffer.getVersionId()), buffer.readSlot());
+            this.slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readVarInt(), buffer.getVersionId()), buffer.readSlot());
             return true;
         }
         boolean slotAvailable = true;
@@ -45,7 +45,7 @@ public class PacketEntityEquipment implements ClientboundPacket {
                 slotAvailable = false;
             }
             slotId &= 0x7F;
-            slots.put(InventorySlots.EntityInventorySlots.byId(slotId, buffer.getVersionId()), buffer.readSlot());
+            this.slots.put(InventorySlots.EntityInventorySlots.byId(slotId, buffer.getVersionId()), buffer.readSlot());
         }
         return true;
     }
@@ -57,23 +57,23 @@ public class PacketEntityEquipment implements ClientboundPacket {
 
     @Override
     public void log() {
-        if (slots.size() == 1) {
-            Map.Entry<InventorySlots.EntityInventorySlots, Slot> set = slots.entrySet().iterator().next();
+        if (this.slots.size() == 1) {
+            Map.Entry<InventorySlots.EntityInventorySlots, Slot> set = this.slots.entrySet().iterator().next();
             if (set.getValue() == null) {
-                Log.protocol(String.format("[IN] Entity equipment changed (entityId=%d, slot=%s): AIR", entityId, set.getKey()));
+                Log.protocol(String.format("[IN] Entity equipment changed (entityId=%d, slot=%s): AIR", this.entityId, set.getKey()));
                 return;
             }
-            Log.protocol(String.format("[IN] Entity equipment changed (entityId=%d, slot=%s, item=%s): %dx %s", entityId, set.getKey(), set.getValue().getItem(), set.getValue().getItemCount(), set.getValue().getDisplayName()));
+            Log.protocol(String.format("[IN] Entity equipment changed (entityId=%d, slot=%s, item=%s): %dx %s", this.entityId, set.getKey(), set.getValue().getItem(), set.getValue().getItemCount(), set.getValue().getDisplayName()));
         } else {
-            Log.protocol(String.format("[IN] Entity equipment changed (entityId=%d, slotCount=%d)", entityId, slots.size()));
+            Log.protocol(String.format("[IN] Entity equipment changed (entityId=%d, slotCount=%d)", this.entityId, this.slots.size()));
         }
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public HashMap<InventorySlots.EntityInventorySlots, Slot> getSlots() {
-        return slots;
+        return this.slots;
     }
 }

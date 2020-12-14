@@ -32,10 +32,10 @@ public class ConnectionStateChangeEvent extends ConnectionEvent {
     }
 
     public ConnectionStates getPreviousState() {
-        return previousState;
+        return this.previousState;
     }
 
     public ConnectionStates getCurrentState() {
-        return currentState;
+        return this.currentState;
     }
 }

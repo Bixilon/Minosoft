@@ -32,13 +32,13 @@ public class PacketSetBeaconEffect implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_SET_BEACON_EFFECT);
-        buffer.writeVarInt(primaryEffectId);
-        buffer.writeVarInt(secondaryEffectId);
+        buffer.writeVarInt(this.primaryEffectId);
+        buffer.writeVarInt(this.secondaryEffectId);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending beacon effect select packet (primaryEffectId=%d, secondaryEffectId=%d)", primaryEffectId, secondaryEffectId));
+        Log.protocol(String.format("[OUT] Sending beacon effect select packet (primaryEffectId=%d, secondaryEffectId=%d)", this.primaryEffectId, this.secondaryEffectId));
     }
 }

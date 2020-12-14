@@ -21,7 +21,13 @@ public enum Priorities {
     HIGHEST,
     ULTRA_HIGH; // this priority is even higher. Do not use in normal case!
 
+    private static final Priorities[] PRIORITIES = values();
+
+    public static Priorities byId(int id) {
+        return PRIORITIES[id];
+    }
+
     public static Priorities getHigherPriority(Priorities priority) {
-        return Priorities.values()[priority.ordinal() + 1];
+        return byId(priority.ordinal() + 1);
     }
 }

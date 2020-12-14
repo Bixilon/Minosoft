@@ -26,7 +26,7 @@ public class ImprovedStringReader {
 
     public Pair<String, String> readUntil(String... search) {
         Pair<String, String> ret = getUntil(search);
-        position += ret.getKey().length() + ret.getValue().length();
+        this.position += ret.getKey().length() + ret.getValue().length();
         return ret;
     }
 
@@ -63,11 +63,11 @@ public class ImprovedStringReader {
     }
 
     public String getString() {
-        return string;
+        return this.string;
     }
 
     public int getPosition() {
-        return position;
+        return this.position;
     }
 
     public void setPosition(int position) {
@@ -75,52 +75,52 @@ public class ImprovedStringReader {
     }
 
     public int getAvailableChars() {
-        return string.length() - position;
+        return this.string.length() - this.position;
     }
 
     public char readChar() {
         if (getRemainingChars() == 0) {
             return 0;
         }
-        return string.charAt(position++);
+        return this.string.charAt(this.position++);
     }
 
     public char getNextChar() {
         if (getRemainingChars() == 0) {
             return 0;
         }
-        return string.charAt(position);
+        return this.string.charAt(this.position);
     }
 
     public String getRest() {
-        if (position > string.length()) {
+        if (this.position > this.string.length()) {
             return "";
         }
-        return string.substring(position);
+        return this.string.substring(this.position);
     }
 
     public String readRest() {
         String ret = getRest();
-        position = string.length();
+        this.position = this.string.length();
         return ret;
     }
 
     public String read(int length) {
         String ret = get(length);
-        position += length;
+        this.position += length;
         return ret;
     }
 
     public String get(int length) {
-        return string.substring(position, position + length);
+        return this.string.substring(this.position, this.position + length);
     }
 
     public void skip(int length) {
-        position += length;
+        this.position += length;
     }
 
     public void skipChar() {
-        position++;
+        this.position++;
     }
 
     public int skipSpaces() {
@@ -133,12 +133,12 @@ public class ImprovedStringReader {
     }
 
     public int getRemainingChars() {
-        int difference = string.length() - position;
+        int difference = this.string.length() - this.position;
         return Math.max(difference, 0);
     }
 
     @Override
     public String toString() {
-        return String.format("position=%d/%d: \"%s\"", position, string.length(), getRest());
+        return String.format("position=%d/%d: \"%s\"", this.position, this.string.length(), getRest());
     }
 }

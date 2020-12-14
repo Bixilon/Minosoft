@@ -30,11 +30,11 @@ public class MinecartCommandBlock extends AbstractMinecart {
 
     @EntityMetaDataFunction(identifier = "command")
     public String getCommand() {
-        return metaData.getSets().getString(EntityMetaDataFields.MINECART_COMMAND_BLOCK_COMMAND);
+        return this.metaData.getSets().getString(EntityMetaDataFields.MINECART_COMMAND_BLOCK_COMMAND);
     }
 
     @EntityMetaDataFunction(identifier = "lastOutput")
     public ChatComponent getLastOutput() {
-        return metaData.getSets().getChatComponent(EntityMetaDataFields.MINECART_COMMAND_BLOCK_LAST_OUTPUT);
+        return this.metaData.getSets().getChatComponent(EntityMetaDataFields.MINECART_COMMAND_BLOCK_LAST_OUTPUT);
     }
 }

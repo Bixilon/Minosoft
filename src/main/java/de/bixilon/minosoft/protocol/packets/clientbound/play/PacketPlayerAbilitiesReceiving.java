@@ -31,21 +31,21 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 6) { // ToDo
             byte flags = buffer.readByte();
-            creative = BitByte.isBitSet(flags, 0);
-            flying = BitByte.isBitSet(flags, 1);
-            canFly = BitByte.isBitSet(flags, 2);
-            godMode = BitByte.isBitSet(flags, 3);
-            flyingSpeed = buffer.readFloat();
-            walkingSpeed = buffer.readFloat();
+            this.creative = BitByte.isBitSet(flags, 0);
+            this.flying = BitByte.isBitSet(flags, 1);
+            this.canFly = BitByte.isBitSet(flags, 2);
+            this.godMode = BitByte.isBitSet(flags, 3);
+            this.flyingSpeed = buffer.readFloat();
+            this.walkingSpeed = buffer.readFloat();
             return true;
         }
         byte flags = buffer.readByte();
-        godMode = BitByte.isBitSet(flags, 0);
-        flying = BitByte.isBitSet(flags, 1);
-        canFly = BitByte.isBitSet(flags, 2);
-        creative = BitByte.isBitSet(flags, 3);
-        flyingSpeed = buffer.readFloat();
-        walkingSpeed = buffer.readFloat();
+        this.godMode = BitByte.isBitSet(flags, 0);
+        this.flying = BitByte.isBitSet(flags, 1);
+        this.canFly = BitByte.isBitSet(flags, 2);
+        this.creative = BitByte.isBitSet(flags, 3);
+        this.flyingSpeed = buffer.readFloat();
+        this.walkingSpeed = buffer.readFloat();
         return true;
     }
 
@@ -56,22 +56,22 @@ public class PacketPlayerAbilitiesReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received player abilities packet: (creative=%s, flying=%s, canFly=%s, godMode=%s, flyingSpeed=%s, walkingSpeed=%s)", creative, flying, canFly, godMode, flyingSpeed, walkingSpeed));
+        Log.protocol(String.format("[IN] Received player abilities packet: (creative=%s, flying=%s, canFly=%s, godMode=%s, flyingSpeed=%s, walkingSpeed=%s)", this.creative, this.flying, this.canFly, this.godMode, this.flyingSpeed, this.walkingSpeed));
     }
 
     public boolean canFly() {
-        return canFly;
+        return this.canFly;
     }
 
     public boolean isCreative() {
-        return creative;
+        return this.creative;
     }
 
     public boolean isGodMode() {
-        return godMode;
+        return this.godMode;
     }
 
     public boolean isFlying() {
-        return flying;
+        return this.flying;
     }
 }

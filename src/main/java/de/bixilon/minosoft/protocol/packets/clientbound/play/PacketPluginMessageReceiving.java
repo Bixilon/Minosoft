@@ -27,14 +27,14 @@ public class PacketPluginMessageReceiving implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.connection = buffer.getConnection();
-        channel = buffer.readString();
+        this.channel = buffer.readString();
         // "read" length prefix
         if (buffer.getVersionId() < 29) {
             buffer.readShort();
         } else if (buffer.getVersionId() < 32) {
             buffer.readVarInt();
         }
-        data = buffer.readBytesLeft();
+        this.data = buffer.readBytesLeft();
         return true;
     }
 
@@ -45,18 +45,18 @@ public class PacketPluginMessageReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Plugin message received in channel \"%s\" with %s bytes of data", channel, data.length));
+        Log.protocol(String.format("[IN] Plugin message received in channel \"%s\" with %s bytes of data", this.channel, this.data.length));
     }
 
     public String getChannel() {
-        return channel;
+        return this.channel;
     }
 
     public byte[] getData() {
-        return data;
+        return this.data;
     }
 
     public InByteBuffer getDataAsBuffer() {
-        return new InByteBuffer(getData(), connection);
+        return new InByteBuffer(getData(), this.connection);
     }
 }

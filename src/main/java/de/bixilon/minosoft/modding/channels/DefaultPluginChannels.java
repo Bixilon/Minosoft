@@ -38,6 +38,6 @@ public enum DefaultPluginChannels {
     }
 
     public ChangeableIdentifier getChangeableIdentifier() {
-        return changeableIdentifier;
+        return this.changeableIdentifier;
     }
 }

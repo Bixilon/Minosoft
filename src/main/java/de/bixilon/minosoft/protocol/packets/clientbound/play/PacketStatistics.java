@@ -30,10 +30,10 @@ public class PacketStatistics implements ClientboundPacket {
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
             if (buffer.getVersionId() < 346) { // ToDo
-                statistics.put(buffer.getConnection().getMapping().getStatisticByIdentifier(buffer.readString()), buffer.readVarInt());
+                this.statistics.put(buffer.getConnection().getMapping().getStatisticByIdentifier(buffer.readString()), buffer.readVarInt());
             } else {
                 StatisticCategories category = StatisticCategories.byId(buffer.readVarInt());
-                statistics.put(buffer.getConnection().getMapping().getStatisticById(buffer.readVarInt()), buffer.readVarInt());
+                this.statistics.put(buffer.getConnection().getMapping().getStatisticById(buffer.readVarInt()), buffer.readVarInt());
             }
         }
         return true;
@@ -46,10 +46,10 @@ public class PacketStatistics implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received player statistics (count=%d)", statistics.size()));
+        Log.protocol(String.format("[IN] Received player statistics (count=%d)", this.statistics.size()));
     }
 
     public HashMap<Statistic, Integer> getStatistics() {
-        return statistics;
+        return this.statistics;
     }
 }

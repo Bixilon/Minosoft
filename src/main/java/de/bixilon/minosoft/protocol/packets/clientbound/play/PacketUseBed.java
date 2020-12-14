@@ -25,11 +25,11 @@ public class PacketUseBed implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        entityId = buffer.readInt();
+        this.entityId = buffer.readInt();
         if (buffer.getVersionId() < 7) {
-            position = buffer.readBlockPosition();
+            this.position = buffer.readBlockPosition();
         } else {
-            position = buffer.readPosition();
+            this.position = buffer.readPosition();
         }
         return true;
     }
@@ -41,14 +41,14 @@ public class PacketUseBed implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity used bed at %s (entityId=%d)", position, entityId));
+        Log.protocol(String.format("[IN] Entity used bed at %s (entityId=%d)", this.position, this.entityId));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 }

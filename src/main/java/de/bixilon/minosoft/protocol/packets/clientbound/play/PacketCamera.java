@@ -23,7 +23,7 @@ public class PacketCamera implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        entityId = buffer.readVarInt();
+        this.entityId = buffer.readVarInt();
         return true;
     }
 
@@ -34,10 +34,10 @@ public class PacketCamera implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving camera packet (entityId=%d)", entityId));
+        Log.protocol(String.format("[IN] Receiving camera packet (entityId=%d)", this.entityId));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 }

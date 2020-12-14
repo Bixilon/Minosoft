@@ -24,7 +24,6 @@ import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 public class IdentifierSelectorArgumentParser extends EntitySelectorArgumentParser {
     public static final IdentifierSelectorArgumentParser ENTITY_TYPE_IDENTIFIER_SELECTOR_ARGUMENT_PARSER = new IdentifierSelectorArgumentParser();
 
-
     @Override
     public void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
         Pair<String, String> match = readNextArgument(stringReader);

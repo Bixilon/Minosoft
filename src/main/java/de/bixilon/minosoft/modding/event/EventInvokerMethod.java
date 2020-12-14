@@ -29,7 +29,7 @@ public class EventInvokerMethod extends EventInvoker {
     public EventInvokerMethod(boolean ignoreCancelled, Priorities priority, EventListener listener, Method method) {
         super(ignoreCancelled, priority, listener);
         this.method = method;
-        eventType = (Class<? extends ConnectionEvent>) method.getParameters()[0].getType();
+        this.eventType = (Class<? extends ConnectionEvent>) method.getParameters()[0].getType();
     }
 
     public EventInvokerMethod(EventHandler annotation, EventListener listener, Method method) {
@@ -37,24 +37,24 @@ public class EventInvokerMethod extends EventInvoker {
     }
 
     public Method getMethod() {
-        return method;
+        return this.method;
     }
 
     public void invoke(ConnectionEvent event) {
-        if (!method.getParameters()[0].getType().isAssignableFrom(event.getClass())) {
+        if (!this.method.getParameters()[0].getType().isAssignableFrom(event.getClass())) {
             return;
         }
-        if (!ignoreCancelled && event instanceof CancelableEvent cancelableEvent && cancelableEvent.isCancelled()) {
+        if (!this.ignoreCancelled && event instanceof CancelableEvent cancelableEvent && cancelableEvent.isCancelled()) {
             return;
         }
         try {
-            method.invoke(listener, event);
+            this.method.invoke(this.listener, event);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
 
     public Class<? extends ConnectionEvent> getEventType() {
-        return eventType;
+        return this.eventType;
     }
 }

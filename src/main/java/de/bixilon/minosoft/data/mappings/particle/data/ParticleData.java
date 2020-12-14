@@ -23,7 +23,7 @@ public class ParticleData {
     }
 
     public Particle getType() {
-        return type;
+        return this.type;
     }
 
     @Override

@@ -58,7 +58,6 @@ public enum EntityMetaDataFields {
     ABSTRACT_ARROW_PIERCE_LEVEL((byte) 0),
     ABSTRACT_ARROW_OWNER_UUID,
 
-
     FISHING_HOOK_HOOKED_ENTITY(0),
     FISHING_HOOK_CATCHABLE(false),
 
@@ -66,7 +65,6 @@ public enum EntityMetaDataFields {
 
     THROWN_TRIDENT_LOYALTY_LEVEL(0),
     THROWN_TRIDENT_FOIL(false),
-
 
     BOAT_HURT(0),
     BOAT_HURT_DIRECTION(1),
@@ -267,7 +265,6 @@ public enum EntityMetaDataFields {
 
     THROWN_EYE_OF_ENDER_ITEM,
 
-
     // pretty old stuff here. 1.8 mostly (or even after, I don't know and I don't care)
     LEGACY_SKELETON_TYPE((byte) 0),
     LEGACY_ENDERMAN_CARRIED_BLOCK(0),
@@ -287,7 +284,7 @@ public enum EntityMetaDataFields {
     private final Object defaultValue;
 
     EntityMetaDataFields() {
-        defaultValue = null;
+        this.defaultValue = null;
     }
 
     EntityMetaDataFields(Object defaultValue) {
@@ -296,6 +293,6 @@ public enum EntityMetaDataFields {
 
     @SuppressWarnings("unchecked")
     public <K> K getDefaultValue() {
-        return (K) defaultValue;
+        return (K) this.defaultValue;
     }
 }

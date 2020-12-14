@@ -79,7 +79,7 @@ public class PacketDeclareRecipes implements ClientboundPacket {
                 }
                 default -> recipe = new Recipe(type);
             }
-            recipes.put(identifier, recipe);
+            this.recipes.put(identifier, recipe);
         }
         return true;
     }
@@ -91,10 +91,10 @@ public class PacketDeclareRecipes implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received declare recipe packet (recipeLength=%d)", recipes.size()));
+        Log.protocol(String.format("[IN] Received declare recipe packet (recipeLength=%d)", this.recipes.size()));
     }
 
     public HashBiMap<ModIdentifier, Recipe> getRecipes() {
-        return recipes;
+        return this.recipes;
     }
 }

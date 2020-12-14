@@ -24,28 +24,28 @@ public class PacketEntityEffect implements ClientboundPacket {
     int entityId;
     StatusEffect effect;
     boolean isAmbient;
-    boolean hideParticles = false;
+    boolean hideParticles;
     boolean showIcon = true;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < 7) {
-            effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readShort());
+            this.effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readShort());
             return true;
         }
-        effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readVarInt());
+        this.effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readVarInt());
         if (buffer.getVersionId() < 110) { // ToDo
             if (buffer.getVersionId() >= 10) {
-                hideParticles = buffer.readBoolean();
+                this.hideParticles = buffer.readBoolean();
                 return true;
             }
         }
         byte flags = buffer.readByte();
-        isAmbient = BitByte.isBitMask(flags, 0x01);
-        hideParticles = !BitByte.isBitMask(flags, 0x02);
+        this.isAmbient = BitByte.isBitMask(flags, 0x01);
+        this.hideParticles = !BitByte.isBitMask(flags, 0x02);
         if (buffer.getVersionId() >= 498) { // ToDo
-            showIcon = BitByte.isBitMask(flags, 0x04);
+            this.showIcon = BitByte.isBitMask(flags, 0x04);
         }
         return true;
     }
@@ -57,26 +57,26 @@ public class PacketEntityEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity effect added: %d %s", entityId, effect.toString()));
+        Log.protocol(String.format("[IN] Entity effect added: %d %s", this.entityId, this.effect.toString()));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public StatusEffect getEffect() {
-        return effect;
+        return this.effect;
     }
 
     public boolean hideParticles() {
-        return hideParticles;
+        return this.hideParticles;
     }
 
     public boolean showIcon() {
-        return showIcon;
+        return this.showIcon;
     }
 
     public boolean isAmbient() {
-        return isAmbient;
+        return this.isAmbient;
     }
 }

@@ -34,14 +34,14 @@ public class PacketConfirmTransactionSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_WINDOW_CONFIRMATION);
-        buffer.writeByte(windowId);
-        buffer.writeShort(actionNumber);
-        buffer.writeBoolean(accepted);
+        buffer.writeByte(this.windowId);
+        buffer.writeShort(this.actionNumber);
+        buffer.writeBoolean(this.accepted);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending confirm transaction packet (windowId=%d, actionNumber=%d, accepted=%s)", windowId, actionNumber, accepted));
+        Log.protocol(String.format("[OUT] Sending confirm transaction packet (windowId=%d, actionNumber=%d, accepted=%s)", this.windowId, this.actionNumber, this.accepted));
     }
 }

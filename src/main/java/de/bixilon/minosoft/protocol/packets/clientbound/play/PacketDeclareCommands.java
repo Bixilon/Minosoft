@@ -26,12 +26,12 @@ public class PacketDeclareCommands implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) throws Exception {
         CommandNode[] nodes = buffer.readCommandNodesArray();
-        rootNode = (CommandRootNode) nodes[buffer.readVarInt()];
+        this.rootNode = (CommandRootNode) nodes[buffer.readVarInt()];
         return true;
     }
 
     public CommandRootNode getRootNode() {
-        return rootNode;
+        return this.rootNode;
     }
 
     @Override

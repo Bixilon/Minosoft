@@ -25,7 +25,7 @@ public class PacketLoginStart implements ServerboundPacket {
     final String username;
 
     public PacketLoginStart(Player p) {
-        username = p.getPlayerName();
+        this.username = p.getPlayerName();
     }
 
     public PacketLoginStart(String username) {
@@ -35,12 +35,12 @@ public class PacketLoginStart implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.LOGIN_LOGIN_START);
-        buffer.writeString(username);
+        buffer.writeString(this.username);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending login start (username=%s)", username));
+        Log.protocol(String.format("[OUT] Sending login start (username=%s)", this.username));
     }
 }

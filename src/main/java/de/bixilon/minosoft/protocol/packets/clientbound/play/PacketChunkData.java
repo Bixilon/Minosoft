@@ -52,7 +52,7 @@ public class PacketChunkData implements ClientboundPacket {
                 decompressed = buffer;
             }
 
-            chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, containsSkyLight);
+            this.chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, containsSkyLight);
             return true;
         }
         if (buffer.getVersionId() < 62) { // ToDo: was this really changed in 62?
@@ -66,7 +66,7 @@ public class PacketChunkData implements ClientboundPacket {
             }
             int size = buffer.readVarInt();
             int lastPos = buffer.getPosition();
-            chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, 0, groundUpContinuous, containsSkyLight);
+            this.chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, 0, groundUpContinuous, containsSkyLight);
             buffer.setPosition(size + lastPos);
             return true;
         }
@@ -85,20 +85,20 @@ public class PacketChunkData implements ClientboundPacket {
             sectionBitMask = buffer.readVarInt();
         }
         if (buffer.getVersionId() >= 443) {
-            heightMap = (CompoundTag) buffer.readNBT();
+            this.heightMap = (CompoundTag) buffer.readNBT();
         }
         if (groundUpContinuous) {
             if (buffer.getVersionId() >= 740) {
-                biomes = buffer.readVarIntArray();
+                this.biomes = buffer.readVarIntArray();
             } else if (buffer.getVersionId() >= 552) {
-                biomes = buffer.readIntArray(1024);
+                this.biomes = buffer.readIntArray(1024);
             }
         }
         int size = buffer.readVarInt();
         int lastPos = buffer.getPosition();
 
         if (size > 0) {
-            chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, 0, groundUpContinuous, containsSkyLight);
+            this.chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, 0, groundUpContinuous, containsSkyLight);
             // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
             buffer.setPosition(size + lastPos);
         }
@@ -110,7 +110,7 @@ public class PacketChunkData implements ClientboundPacket {
                 if (data == null) {
                     continue;
                 }
-                blockEntities.put(new BlockPosition(tag.getIntTag("x").getValue(), (short) tag.getIntTag("y").getValue(), tag.getIntTag("z").getValue()), data);
+                this.blockEntities.put(new BlockPosition(tag.getIntTag("x").getValue(), (short) tag.getIntTag("y").getValue(), tag.getIntTag("z").getValue()), data);
             }
         }
         return true;
@@ -123,22 +123,22 @@ public class PacketChunkData implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Chunk packet received (chunk: %s)", location));
+        Log.protocol(String.format("[IN] Chunk packet received (chunk: %s)", this.location));
     }
 
     public ChunkLocation getLocation() {
-        return location;
+        return this.location;
     }
 
     public Chunk getChunk() {
-        return chunk;
+        return this.chunk;
     }
 
     public HashMap<BlockPosition, BlockEntityMetaData> getBlockEntities() {
-        return blockEntities;
+        return this.blockEntities;
     }
 
     public CompoundTag getHeightMap() {
-        return heightMap;
+        return this.heightMap;
     }
 }

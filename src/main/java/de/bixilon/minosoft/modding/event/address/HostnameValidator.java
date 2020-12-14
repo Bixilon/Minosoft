@@ -36,16 +36,16 @@ public class HostnameValidator implements ServerAddressValidator {
     }
 
     public HashSet<String> getHostnames() {
-        return hostnames;
+        return this.hostnames;
     }
 
     @Override
     public int hashCode() {
-        return hostnames.hashCode();
+        return this.hostnames.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return hostnames.equals(obj);
+        return this.hostnames.equals(obj);
     }
 }

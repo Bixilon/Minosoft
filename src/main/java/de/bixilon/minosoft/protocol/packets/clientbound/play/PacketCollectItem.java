@@ -25,14 +25,14 @@ public class PacketCollectItem implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        itemEntityId = buffer.readEntityId();
+        this.itemEntityId = buffer.readEntityId();
         if (buffer.getVersionId() < 7) {
-            collectorEntityId = buffer.readInt();
+            this.collectorEntityId = buffer.readInt();
             return true;
         }
-        collectorEntityId = buffer.readVarInt();
+        this.collectorEntityId = buffer.readVarInt();
         if (buffer.getVersionId() >= 301) {
-            count = buffer.readVarInt();
+            this.count = buffer.readVarInt();
         }
         return true;
     }
@@ -44,18 +44,18 @@ public class PacketCollectItem implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Item %d was collected by %d (count=%s)", itemEntityId, collectorEntityId, ((count == 0) ? "?" : count)));
+        Log.protocol(String.format("[IN] Item %d was collected by %d (count=%s)", this.itemEntityId, this.collectorEntityId, ((this.count == 0) ? "?" : this.count)));
     }
 
     public int getItemEntityId() {
-        return itemEntityId;
+        return this.itemEntityId;
     }
 
     public int getCollectorEntityId() {
-        return collectorEntityId;
+        return this.collectorEntityId;
     }
 
     public int getCount() {
-        return count;
+        return this.count;
     }
 }

@@ -48,23 +48,23 @@ public class PacketUpdateJigsawBlock implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_JIGSAW_BLOCK);
-        buffer.writePosition(position);
+        buffer.writePosition(this.position);
         if (buffer.getVersionId() < 708) {
-            buffer.writeString(attachmentType);
-            buffer.writeString(targetPool);
-            buffer.writeString(finalState);
+            buffer.writeString(this.attachmentType);
+            buffer.writeString(this.targetPool);
+            buffer.writeString(this.finalState);
         } else {
-            buffer.writeString(name);
-            buffer.writeString(target);
-            buffer.writeString(targetPool);
-            buffer.writeString(finalState);
-            buffer.writeString(jointType);
+            buffer.writeString(this.name);
+            buffer.writeString(this.target);
+            buffer.writeString(this.targetPool);
+            buffer.writeString(this.finalState);
+            buffer.writeString(this.jointType);
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Updating jigsaw block (position=%s, attachmentType=%s, targetPool=%s, finalState=%s)", position, attachmentType, targetPool, finalState));
+        Log.protocol(String.format("[OUT] Updating jigsaw block (position=%s, attachmentType=%s, targetPool=%s, finalState=%s)", this.position, this.attachmentType, this.targetPool, this.finalState));
     }
 }

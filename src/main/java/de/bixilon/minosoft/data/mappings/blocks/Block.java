@@ -52,31 +52,31 @@ public class Block extends ModIdentifier {
     }
 
     public BlockRotations getRotation() {
-        return rotation;
+        return this.rotation;
     }
 
     public HashSet<BlockProperties> getProperties() {
-        return properties;
+        return this.properties;
     }
 
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
-        if (rotation != BlockRotations.NONE) {
+        if (this.rotation != BlockRotations.NONE) {
             out.append(" (");
             out.append("rotation=");
             out.append(getRotation());
         }
-        if (properties.size() > 0) {
-            if (out.length() > 0) {
+        if (!this.properties.isEmpty()) {
+            if (!out.isEmpty()) {
                 out.append(", ");
             } else {
                 out.append(" (");
             }
             out.append("properties=");
-            out.append(properties);
+            out.append(this.properties);
         }
-        if (out.length() > 0) {
+        if (!out.isEmpty()) {
             out.append(")");
         }
         return String.format("%s:%s%s", getMod(), getIdentifier(), out);
@@ -84,9 +84,9 @@ public class Block extends ModIdentifier {
 
     @Override
     public int hashCode() {
-        int ret = mod.hashCode() * identifier.hashCode() * rotation.hashCode();
-        if (properties.size() > 0) {
-            ret *= properties.hashCode();
+        int ret = this.mod.hashCode() * this.identifier.hashCode() * this.rotation.hashCode();
+        if (!this.properties.isEmpty()) {
+            ret *= this.properties.hashCode();
         }
         return ret;
     }

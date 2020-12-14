@@ -27,14 +27,14 @@ public class PacketTabCompleteSending implements ServerboundPacket {
 
     public PacketTabCompleteSending(String text) {
         this.text = text;
-        position = null;
-        assumeCommand = false;
+        this.position = null;
+        this.assumeCommand = false;
     }
 
     public PacketTabCompleteSending(String text, BlockPosition position) {
         this.text = text;
         this.position = position;
-        assumeCommand = false;
+        this.assumeCommand = false;
     }
 
     public PacketTabCompleteSending(String text, boolean assumeCommand, BlockPosition position) {
@@ -46,16 +46,16 @@ public class PacketTabCompleteSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_TAB_COMPLETE);
-        buffer.writeString(text);
+        buffer.writeString(this.text);
         if (buffer.getVersionId() >= 59) {
-            buffer.writeBoolean(assumeCommand);
+            buffer.writeBoolean(this.assumeCommand);
         }
         if (buffer.getVersionId() >= 37) {
-            if (position == null) {
+            if (this.position == null) {
                 buffer.writeBoolean(false);
             } else {
                 buffer.writeBoolean(true);
-                buffer.writePosition(position);
+                buffer.writePosition(this.position);
             }
         }
         return buffer;
@@ -63,6 +63,6 @@ public class PacketTabCompleteSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending tab complete for message=\"%s\"", text.replace("\"", "\\\"")));
+        Log.protocol(String.format("[OUT] Sending tab complete for message=\"%s\"", this.text.replace("\"", "\\\"")));
     }
 }

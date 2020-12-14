@@ -36,16 +36,16 @@ public class IntArrayTag extends NBTTag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        new IntTag(value.length).writeBytes(buffer);
-        buffer.writeInts(value);
+        new IntTag(this.value.length).writeBytes(buffer);
+        buffer.writeInts(this.value);
     }
 
     public int[] getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
     public String toString() {
-        return Arrays.toString(value);
+        return Arrays.toString(this.value);
     }
 }

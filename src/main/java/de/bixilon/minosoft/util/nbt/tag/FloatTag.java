@@ -34,15 +34,15 @@ public class FloatTag extends NBTTag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeFloat(value);
+        buffer.writeFloat(this.value);
     }
 
     public float getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
     public String toString() {
-        return value + "F";
+        return this.value + "F";
     }
 }

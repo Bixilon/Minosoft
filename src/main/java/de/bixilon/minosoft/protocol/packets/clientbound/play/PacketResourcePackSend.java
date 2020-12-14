@@ -21,14 +21,14 @@ import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 public class PacketResourcePackSend implements ClientboundPacket {
     String url;
     String hash;
-    boolean forced = false;
+    boolean forced;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        url = buffer.readString();
-        hash = buffer.readString();
+        this.url = buffer.readString();
+        this.hash = buffer.readString();
         if (buffer.getVersionId() >= 758) {
-            forced = buffer.readBoolean();
+            this.forced = buffer.readBoolean();
         }
         return true;
     }
@@ -40,18 +40,18 @@ public class PacketResourcePackSend implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received resource pack send (url=\"%s\", hash=%s", url, hash));
+        Log.protocol(String.format("[IN] Received resource pack send (url=\"%s\", hash=%s", this.url, this.hash));
     }
 
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     public String getHash() {
-        return hash;
+        return this.hash;
     }
 
     public boolean isForced() {
-        return forced;
+        return this.forced;
     }
 }

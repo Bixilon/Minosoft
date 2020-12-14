@@ -60,26 +60,26 @@ public class ModDependency {
     }
 
     public UUID getUUID() {
-        return uuid;
+        return this.uuid;
     }
 
     public Integer getVersionMinimum() {
-        return versionMinimum;
+        return this.versionMinimum;
     }
 
     public Integer getVersionMaximum() {
-        return versionMaximum;
+        return this.versionMaximum;
     }
 
     @Override
     public int hashCode() {
-        int result = uuid.hashCode();
-        if (versionMinimum != null && versionMinimum > 0) {
-            result *= versionMinimum;
+        int result = this.uuid.hashCode();
+        if (this.versionMinimum != null && this.versionMinimum > 0) {
+            result *= this.versionMinimum;
         }
 
-        if (versionMaximum != null && versionMaximum > 0) {
-            result *= versionMaximum;
+        if (this.versionMaximum != null && this.versionMaximum > 0) {
+            result *= this.versionMaximum;
         }
         return result;
     }
@@ -98,12 +98,12 @@ public class ModDependency {
 
     @Override
     public String toString() {
-        String result = uuid.toString();
-        if (versionMinimum != null) {
-            result += " >" + versionMinimum;
+        String result = this.uuid.toString();
+        if (this.versionMinimum != null) {
+            result += " >" + this.versionMinimum;
         }
-        if (versionMaximum != null) {
-            result += " <" + versionMaximum;
+        if (this.versionMaximum != null) {
+            result += " <" + this.versionMaximum;
         }
         return result;
     }

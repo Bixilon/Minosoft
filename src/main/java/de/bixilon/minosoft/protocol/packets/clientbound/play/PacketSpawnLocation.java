@@ -25,10 +25,10 @@ public class PacketSpawnLocation implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 6) {
-            location = buffer.readBlockPositionInteger();
+            this.location = buffer.readBlockPositionInteger();
             return true;
         }
-        location = buffer.readPosition();
+        this.location = buffer.readPosition();
         return true;
     }
 
@@ -39,10 +39,10 @@ public class PacketSpawnLocation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received spawn location %s", location));
+        Log.protocol(String.format("[IN] Received spawn location %s", this.location));
     }
 
     public BlockPosition getSpawnLocation() {
-        return location;
+        return this.location;
     }
 }

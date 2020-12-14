@@ -31,6 +31,6 @@ public class LightningBoltSpawnEvent extends ConnectionEvent {
     }
 
     public LightningBolt getEntity() {
-        return entity;
+        return this.entity;
     }
 }

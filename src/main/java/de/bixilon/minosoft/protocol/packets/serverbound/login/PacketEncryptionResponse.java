@@ -36,14 +36,14 @@ public class PacketEncryptionResponse implements ServerboundPacket {
     }
 
     public SecretKey getSecretKey() {
-        return secretKey;
+        return this.secretKey;
     }
 
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.LOGIN_ENCRYPTION_RESPONSE);
-        buffer.writeByteArray(secret);
-        buffer.writeByteArray(token);
+        buffer.writeByteArray(this.secret);
+        buffer.writeByteArray(this.token);
         return buffer;
     }
 

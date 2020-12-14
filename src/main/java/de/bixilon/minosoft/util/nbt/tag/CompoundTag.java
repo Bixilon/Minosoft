@@ -44,19 +44,19 @@ public class CompoundTag extends NBTTag {
         this.data = new HashMap<>();
         while (true) {
             byte tag = buffer.readByte();
-            TagTypes tagType = TagTypes.getById(tag);
+            TagTypes tagType = TagTypes.byId(tag);
             if (tagType == TagTypes.END) {
                 // end tag
                 break;
             }
             String tagName = buffer.readString(buffer.readUnsignedShort()); // length
-            data.put(tagName, buffer.readNBT(tagType));
+            this.data.put(tagName, buffer.readNBT(tagType));
         }
     }
 
     public CompoundTag() {
-        name = null;
-        data = new HashMap<>();
+        this.name = null;
+        this.data = new HashMap<>();
     }
 
     @Override
@@ -67,14 +67,14 @@ public class CompoundTag extends NBTTag {
     @Override
     public void writeBytes(OutByteBuffer buffer) {
         buffer.writeByte((byte) TagTypes.COMPOUND.ordinal());
-        buffer.writeShort((short) name.length());
-        buffer.writeStringNoLength(name);
+        buffer.writeShort((short) this.name.length());
+        buffer.writeStringNoLength(this.name);
         // now with prefixed name, etc it is technically the same as a subtag
         writeBytesSubTag(buffer);
     }
 
     public void writeBytesSubTag(OutByteBuffer buffer) {
-        for (Map.Entry<String, NBTTag> set : data.entrySet()) {
+        for (Map.Entry<String, NBTTag> set : this.data.entrySet()) {
             buffer.writeByte((byte) set.getValue().getType().ordinal());
             buffer.writeShort((short) set.getKey().length());
             buffer.writeStringNoLength(set.getKey());
@@ -90,92 +90,92 @@ public class CompoundTag extends NBTTag {
     }
 
     public boolean containsKey(String key) {
-        return data.containsKey(key);
+        return this.data.containsKey(key);
     }
 
     public ByteTag getByteTag(String key) {
-        return (ByteTag) data.get(key);
+        return (ByteTag) this.data.get(key);
     }
 
     public ShortTag getShortTag(String key) {
-        return (ShortTag) data.get(key);
+        return (ShortTag) this.data.get(key);
     }
 
     public IntTag getIntTag(String key) {
-        return (IntTag) data.get(key);
+        return (IntTag) this.data.get(key);
     }
 
     public LongTag getLongTag(String key) {
-        return (LongTag) data.get(key);
+        return (LongTag) this.data.get(key);
     }
 
     public FloatTag getFloatTag(String key) {
-        return (FloatTag) data.get(key);
+        return (FloatTag) this.data.get(key);
     }
 
     public DoubleTag getDoubleTag(String key) {
-        return (DoubleTag) data.get(key);
+        return (DoubleTag) this.data.get(key);
     }
 
     public ByteArrayTag getByteArrayTag(String key) {
-        return (ByteArrayTag) data.get(key);
+        return (ByteArrayTag) this.data.get(key);
     }
 
     public StringTag getStringTag(String key) {
-        return (StringTag) data.get(key);
+        return (StringTag) this.data.get(key);
     }
 
     public ListTag getListTag(String key) {
-        return (ListTag) data.get(key);
+        return (ListTag) this.data.get(key);
     }
 
     public CompoundTag getCompoundTag(String key) {
-        return (CompoundTag) data.get(key);
+        return (CompoundTag) this.data.get(key);
     }
 
     public NumberTag getNumberTag(String key) {
-        return (NumberTag) data.get(key);
+        return (NumberTag) this.data.get(key);
     }
 
     public NBTTag getTag(String key) {
-        return data.get(key);
+        return this.data.get(key);
     }
 
     public void writeTag(String name, NBTTag tag) {
-        if (isFinal) {
+        if (this.isFinal) {
             throw new IllegalArgumentException("This tag is marked as final!");
         }
-        data.put(name, tag);
+        this.data.put(name, tag);
     }
 
     public int size() {
-        return data.size();
+        return this.data.size();
     }
 
     // abstract functions
 
     public void writeBlockPosition(BlockPosition position) {
-        if (isFinal) {
+        if (this.isFinal) {
             throw new IllegalArgumentException("This tag is marked as final!");
         }
-        data.put("x", new IntTag(position.getX()));
-        data.put("y", new IntTag(position.getY()));
-        data.put("z", new IntTag(position.getZ()));
+        this.data.put("x", new IntTag(position.getX()));
+        this.data.put("y", new IntTag(position.getY()));
+        this.data.put("z", new IntTag(position.getZ()));
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        if (name != null) {
-            builder.append(name);
+        if (this.name != null) {
+            builder.append(this.name);
         }
         builder.append('{');
         AtomicInteger i = new AtomicInteger();
-        data.forEach((key, value) -> {
+        this.data.forEach((key, value) -> {
             builder.append(key);
             builder.append(": ");
             builder.append(value);
-            if (i.get() == data.size() - 1) {
+            if (i.get() == this.data.size() - 1) {
                 return;
             }
             builder.append(", ");

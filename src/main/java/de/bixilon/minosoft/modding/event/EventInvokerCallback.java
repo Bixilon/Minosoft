@@ -26,7 +26,6 @@ public class EventInvokerCallback<V extends ConnectionEvent> extends EventInvoke
         this.callback = callback;
     }
 
-
     // if you need instant fireing support
     public EventInvokerCallback(Class<? extends ConnectionEvent> eventType, InvokerCallback<V> callback) {
         this(false, callback);
@@ -35,14 +34,14 @@ public class EventInvokerCallback<V extends ConnectionEvent> extends EventInvoke
 
     @SuppressWarnings("unchecked")
     public void invoke(ConnectionEvent event) {
-        if (eventType != event.getClass()) {
+        if (this.eventType != event.getClass()) {
             return;
         }
-        callback.handle((V) event);
+        this.callback.handle((V) event);
     }
 
     public Class<? extends ConnectionEvent> getEventType() {
-        return eventType;
+        return this.eventType;
     }
 
     public interface InvokerCallback<V> {

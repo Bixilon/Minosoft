@@ -24,7 +24,7 @@ public class LoadingInfo {
     }
 
     public Priorities getLoadingPriority() {
-        return loadingPriority;
+        return this.loadingPriority;
     }
 
     public void setLoadingPriority(Priorities loadingPriority) {

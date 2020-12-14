@@ -29,7 +29,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AccountListCell extends ListCell<MojangAccount> implements Initializable {
-    public static final ListView<MojangAccount> listView = new ListView<>();
+    public static final ListView<MojangAccount> MOJANG_ACCOUNT_LIST_VIEW = new ListView<>();
 
     public MenuButton optionsMenu;
     public Label playerName;
@@ -54,23 +54,23 @@ public class AccountListCell extends ListCell<MojangAccount> implements Initiali
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         updateSelected(false);
-        setGraphic(root);
+        setGraphic(this.root);
 
         // change locale
-        optionsSelect.setText(LocaleManager.translate(Strings.ACCOUNTS_ACTION_SELECT));
-        optionsDelete.setText(LocaleManager.translate(Strings.ACCOUNTS_ACTION_DELETE));
+        this.optionsSelect.setText(LocaleManager.translate(Strings.ACCOUNTS_ACTION_SELECT));
+        this.optionsDelete.setText(LocaleManager.translate(Strings.ACCOUNTS_ACTION_DELETE));
 
     }
 
     public AnchorPane getRoot() {
-        return root;
+        return this.root;
     }
 
     @Override
     protected void updateItem(MojangAccount account, boolean empty) {
         super.updateItem(account, empty);
 
-        root.setVisible(!empty);
+        this.root.setVisible(!empty);
         if (empty) {
             return;
         }
@@ -85,32 +85,32 @@ public class AccountListCell extends ListCell<MojangAccount> implements Initiali
         resetCell();
 
         this.account = account;
-        playerName.setText(account.getPlayerName());
-        email.setText(account.getMojangUserName());
+        this.playerName.setText(account.getPlayerName());
+        this.email.setText(account.getMojangUserName());
         if (Minosoft.getSelectedAccount() == account) {
             setStyle("-fx-background-color: darkseagreen;");
-            optionsSelect.setDisable(true);
+            this.optionsSelect.setDisable(true);
         }
     }
 
     private void resetCell() {
         // clear all cells
         setStyle(null);
-        optionsSelect.setDisable(false);
+        this.optionsSelect.setDisable(false);
     }
 
     public void delete() {
-        account.delete();
-        if (Minosoft.getSelectedAccount() == account) {
+        this.account.delete();
+        if (Minosoft.getSelectedAccount() == this.account) {
             if (Minosoft.getConfig().getAccountList().isEmpty()) {
                 Minosoft.selectAccount(null);
             } else {
                 Minosoft.selectAccount(Minosoft.getConfig().getAccountList().values().iterator().next());
             }
-            listView.refresh();
+            MOJANG_ACCOUNT_LIST_VIEW.refresh();
         }
-        Log.info(String.format("Deleted account (email=\"%s\", playerName=\"%s\")", account.getMojangUserName(), account.getPlayerName()));
-        listView.getItems().remove(account);
+        Log.info(String.format("Deleted account (email=\"%s\", playerName=\"%s\")", this.account.getMojangUserName(), this.account.getPlayerName()));
+        MOJANG_ACCOUNT_LIST_VIEW.getItems().remove(this.account);
     }
 
     public void clicked(MouseEvent e) {
@@ -120,13 +120,13 @@ public class AccountListCell extends ListCell<MojangAccount> implements Initiali
                     select();
                 }
             }
-            case SECONDARY -> optionsMenu.fire();
+            case SECONDARY -> this.optionsMenu.fire();
         }
     }
 
     public void select() {
-        Minosoft.selectAccount(account);
-        listView.refresh();
-        ServerListCell.listView.refresh();
+        Minosoft.selectAccount(this.account);
+        MOJANG_ACCOUNT_LIST_VIEW.refresh();
+        ServerListCell.SERVER_LIST_VIEW.refresh();
     }
 }

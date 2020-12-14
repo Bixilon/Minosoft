@@ -38,18 +38,18 @@ public class PacketConfirmTransactionReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Closing inventory (windowId=%d)", windowId));
+        Log.protocol(String.format("[IN] Closing inventory (windowId=%d)", this.windowId));
     }
 
     public byte getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     public boolean wasAccepted() {
-        return accepted;
+        return this.accepted;
     }
 
     public short getActionNumber() {
-        return actionNumber;
+        return this.actionNumber;
     }
 }

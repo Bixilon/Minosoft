@@ -38,7 +38,7 @@ public class PacketEntityMovementAndRotation implements ClientboundPacket {
         this.yaw = buffer.readAngle();
         this.pitch = buffer.readAngle();
         if (buffer.getVersionId() >= 22) {
-            onGround = buffer.readBoolean();
+            this.onGround = buffer.readBoolean();
         }
         return true;
     }
@@ -50,22 +50,22 @@ public class PacketEntityMovementAndRotation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity %d moved relative %s (yaw=%s, pitch=%s)", entityId, location, yaw, pitch));
+        Log.protocol(String.format("[IN] Entity %d moved relative %s (yaw=%s, pitch=%s)", this.entityId, this.location, this.yaw, this.pitch));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public RelativeLocation getRelativeLocation() {
-        return location;
+        return this.location;
     }
 
     public short getYaw() {
-        return yaw;
+        return this.yaw;
     }
 
     public short getPitch() {
-        return pitch;
+        return this.pitch;
     }
 }

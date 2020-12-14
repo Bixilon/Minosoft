@@ -35,15 +35,15 @@ public class RangeSelectorArgumentParser extends EntitySelectorArgumentParser {
     }
 
     public int getMinValue() {
-        return minValue;
+        return this.minValue;
     }
 
     public int getMaxValue() {
-        return maxValue;
+        return this.maxValue;
     }
 
     public boolean isDecimal() {
-        return decimal;
+        return this.decimal;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class RangeSelectorArgumentParser extends EntitySelectorArgumentParser {
             }
 
             if (min < getMinValue() || max > getMaxValue()) {
-                throw new ValueOutOfRangeCommandParseException(stringReader, minValue, maxValue, match.getKey());
+                throw new ValueOutOfRangeCommandParseException(stringReader, this.minValue, this.maxValue, match.getKey());
             }
             if (min > max) {
                 throw new MinimumBiggerAsMaximumCommandParseException(stringReader, match.getKey());

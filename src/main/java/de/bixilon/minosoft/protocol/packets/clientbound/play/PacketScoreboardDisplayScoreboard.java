@@ -24,8 +24,8 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        action = ScoreboardAnimations.byId(buffer.readUnsignedByte());
-        scoreName = buffer.readString();
+        this.action = ScoreboardAnimations.byId(buffer.readUnsignedByte());
+        this.scoreName = buffer.readString();
         return true;
     }
 
@@ -36,7 +36,7 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received display scoreboard packet (position=%s, scoreName=\"%s\"", action, scoreName));
+        Log.protocol(String.format("[IN] Received display scoreboard packet (position=%s, scoreName=\"%s\"", this.action, this.scoreName));
     }
 
     public enum ScoreboardAnimations {
@@ -60,8 +60,10 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
         TEAM_YELLOW,
         TEAM_WHITE;
 
+        private static final ScoreboardAnimations[] SCOREBOARD_ANIMATIONS = values();
+
         public static ScoreboardAnimations byId(int id) {
-            return values()[id];
+            return SCOREBOARD_ANIMATIONS[id];
         }
     }
 }

@@ -78,7 +78,7 @@ public class EntityMetaData {
             case POSE -> buffer.readPose();
             case BLOCK_ID -> buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
             case OPT_VAR_INT -> buffer.readVarInt() - 1;
-            case VILLAGER_DATA -> new VillagerData(VillagerData.VillagerTypes.values()[buffer.readVarInt()], VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getVersionId()), VillagerData.VillagerLevels.values()[buffer.readVarInt()]);
+            case VILLAGER_DATA -> new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getVersionId()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
             case OPT_BLOCK_ID -> {
                 int blockId = buffer.readVarInt();
                 if (blockId == 0) {
@@ -90,7 +90,7 @@ public class EntityMetaData {
     }
 
     public MetaDataHashMap getSets() {
-        return sets;
+        return this.sets;
     }
 
     public enum EntityMetaDataValueTypes {
@@ -121,11 +121,11 @@ public class EntityMetaData {
         final VersionValueMap<Integer> valueMap;
 
         EntityMetaDataValueTypes(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values, true);
         }
 
         EntityMetaDataValueTypes(int id) {
-            valueMap = new VersionValueMap<>(id);
+            this.valueMap = new VersionValueMap<>(id);
         }
 
         public static EntityMetaDataValueTypes byId(int id, int versionId) {
@@ -138,7 +138,7 @@ public class EntityMetaData {
         }
 
         public int getId(Integer versionId) {
-            Integer ret = valueMap.get(versionId);
+            Integer ret = this.valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }
@@ -206,7 +206,7 @@ public class EntityMetaData {
 
         @SuppressWarnings("unchecked")
         public <K> K get(EntityMetaDataFields field) {
-            Integer index = connection.getMapping().getEntityMetaDataIndex(field);
+            Integer index = EntityMetaData.this.connection.getMapping().getEntityMetaDataIndex(field);
             if (index == null) {
                 // ups, index not found. Index not available in this version?, mappings broken or mappings not available
                 return field.getDefaultValue();

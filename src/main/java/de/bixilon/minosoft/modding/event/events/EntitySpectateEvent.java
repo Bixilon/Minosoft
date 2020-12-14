@@ -33,6 +33,6 @@ public class EntitySpectateEvent extends ConnectionEvent {
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 }

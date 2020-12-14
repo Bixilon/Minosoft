@@ -27,7 +27,7 @@ public class PacketRemoveEntityEffect implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
-        effect = buffer.getConnection().getMapping().getMobEffectById(buffer.readByte());
+        this.effect = buffer.getConnection().getMapping().getMobEffectById(buffer.readByte());
         return true;
     }
 
@@ -38,14 +38,14 @@ public class PacketRemoveEntityEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity effect removed (entityId=%d, effect=%s)", entityId, effect));
+        Log.protocol(String.format("[IN] Entity effect removed (entityId=%d, effect=%s)", this.entityId, this.effect));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public MobEffect getEffect() {
-        return effect;
+        return this.effect;
     }
 }

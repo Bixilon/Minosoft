@@ -34,12 +34,12 @@ public class PacketHeldItemChangeSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_HELD_ITEM_CHANGE);
-        buffer.writeShort(slot);
+        buffer.writeShort(this.slot);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending slot selection: (%s)", slot));
+        Log.protocol(String.format("[OUT] Sending slot selection: (%s)", this.slot));
     }
 }

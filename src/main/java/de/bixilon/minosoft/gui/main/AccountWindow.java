@@ -44,13 +44,13 @@ public class AccountWindow implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        AccountListCell.listView.setCellFactory((lv) -> AccountListCell.newInstance());
+        AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.setCellFactory((lv) -> AccountListCell.newInstance());
 
         ObservableList<MojangAccount> accounts = FXCollections.observableArrayList(Minosoft.getConfig().getAccountList().values());
-        AccountListCell.listView.setItems(accounts);
-        accountPane.setCenter(AccountListCell.listView);
+        AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.setItems(accounts);
+        this.accountPane.setCenter(AccountListCell.MOJANG_ACCOUNT_LIST_VIEW);
 
-        menuAddAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_ACCOUNT));
+        this.menuAddAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_ACCOUNT));
     }
 
     @FXML
@@ -93,7 +93,7 @@ public class AccountWindow implements Initializable {
                 MojangAccount account = attempt.getAccount();
                 Minosoft.getConfig().putMojangAccount(account);
                 account.saveToConfig();
-                AccountListCell.listView.getItems().add(account);
+                AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.getItems().add(account);
                 Log.info(String.format("Added and saved account (playerName=%s, email=%s, uuid=%s)", account.getPlayerName(), account.getMojangUserName(), account.getUUID()));
                 dialog.close();
                 return;
@@ -110,7 +110,6 @@ public class AccountWindow implements Initializable {
 
         Window window = dialog.getDialogPane().getScene().getWindow();
         window.setOnCloseRequest(windowEvent -> window.hide());
-
 
         dialog.getDialogPane().setOnKeyReleased(keyEvent -> {
             if (keyEvent.getCode() != KeyCode.ENTER) {

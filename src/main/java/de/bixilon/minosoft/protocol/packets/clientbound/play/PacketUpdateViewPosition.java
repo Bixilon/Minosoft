@@ -24,7 +24,7 @@ public class PacketUpdateViewPosition implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
+        this.location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
         return true;
     }
 
@@ -35,6 +35,6 @@ public class PacketUpdateViewPosition implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received view position update (location=%s)", location));
+        Log.protocol(String.format("[IN] Received view position update (location=%s)", this.location));
     }
 }

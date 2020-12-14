@@ -58,11 +58,11 @@ public enum Objects {
     DRAGON_FIREBALL(93, DragonFireball.class),
     TRIDENT(94, ThrownTrident.class);
 
-    final static HashBiMap<Integer, Objects> objects = HashBiMap.create();
+    private static final HashBiMap<Integer, Objects> ID_OBJECT_MAP = HashBiMap.create();
 
     static {
         for (Objects object : values()) {
-            objects.put(object.getId(), object);
+            ID_OBJECT_MAP.put(object.getId(), object);
         }
     }
 
@@ -75,14 +75,14 @@ public enum Objects {
     }
 
     public static Objects byId(int id) {
-        return objects.get(id);
+        return ID_OBJECT_MAP.get(id);
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public Class<? extends Entity> getClazz() {
-        return clazz;
+        return this.clazz;
     }
 }

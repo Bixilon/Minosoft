@@ -30,12 +30,12 @@ public class PacketUseItem implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_USE_ITEM);
-        buffer.writeVarInt(hand.ordinal());
+        buffer.writeVarInt(this.hand.ordinal());
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Use hand (hand=%s)", hand));
+        Log.protocol(String.format("[OUT] Use hand (hand=%s)", this.hand));
     }
 }

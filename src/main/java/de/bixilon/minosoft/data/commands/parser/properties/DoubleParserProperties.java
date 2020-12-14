@@ -23,22 +23,22 @@ public class DoubleParserProperties implements ParserProperties {
     public DoubleParserProperties(InByteBuffer buffer) {
         byte flags = buffer.readByte();
         if (BitByte.isBitMask(flags, 0x01)) {
-            minValue = buffer.readDouble();
+            this.minValue = buffer.readDouble();
         } else {
-            minValue = Double.MIN_VALUE;
+            this.minValue = Double.MIN_VALUE;
         }
         if (BitByte.isBitMask(flags, 0x02)) {
-            maxValue = buffer.readDouble();
+            this.maxValue = buffer.readDouble();
         } else {
-            maxValue = Double.MAX_VALUE;
+            this.maxValue = Double.MAX_VALUE;
         }
     }
 
     public double getMinValue() {
-        return minValue;
+        return this.minValue;
     }
 
     public double getMaxValue() {
-        return maxValue;
+        return this.maxValue;
     }
 }

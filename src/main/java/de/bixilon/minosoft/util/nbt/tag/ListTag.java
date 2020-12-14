@@ -34,21 +34,21 @@ public class ListTag extends NBTTag {
     }
 
     public ListTag(InByteBuffer buffer) {
-        this.type = TagTypes.getById(new ByteTag(buffer).getValue());
+        this.type = TagTypes.byId(new ByteTag(buffer).getValue());
         int length = new IntTag(buffer).getValue();
-        list = new ArrayList<>();
+        this.list = new ArrayList<>();
         for (int i = 0; i < length; i++) {
-            switch (type) {
-                case BYTE -> list.add(new ByteTag(buffer));
-                case SHORT -> list.add(new ShortTag(buffer));
-                case INT -> list.add(new IntTag(buffer));
-                case LONG -> list.add(new LongTag(buffer));
-                case FLOAT -> list.add(new FloatTag(buffer));
-                case DOUBLE -> list.add(new DoubleTag(buffer));
-                case BYTE_ARRAY -> list.add(new ByteArrayTag(buffer));
-                case STRING -> list.add(new StringTag(buffer));
-                case LIST -> list.add(new ListTag(buffer));
-                case COMPOUND -> list.add(new CompoundTag(true, buffer));
+            switch (this.type) {
+                case BYTE -> this.list.add(new ByteTag(buffer));
+                case SHORT -> this.list.add(new ShortTag(buffer));
+                case INT -> this.list.add(new IntTag(buffer));
+                case LONG -> this.list.add(new LongTag(buffer));
+                case FLOAT -> this.list.add(new FloatTag(buffer));
+                case DOUBLE -> this.list.add(new DoubleTag(buffer));
+                case BYTE_ARRAY -> this.list.add(new ByteArrayTag(buffer));
+                case STRING -> this.list.add(new StringTag(buffer));
+                case LIST -> this.list.add(new ListTag(buffer));
+                case COMPOUND -> this.list.add(new CompoundTag(true, buffer));
             }
         }
     }
@@ -60,22 +60,22 @@ public class ListTag extends NBTTag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        new ByteTag((byte) type.ordinal()).writeBytes(buffer);
+        new ByteTag((byte) this.type.ordinal()).writeBytes(buffer);
 
-        new IntTag(list.size()).writeBytes(buffer);
+        new IntTag(this.list.size()).writeBytes(buffer);
 
-        for (NBTTag NBTTag : list) {
+        for (NBTTag NBTTag : this.list) {
             NBTTag.writeBytes(buffer);
         }
     }
 
     @SuppressWarnings("unchecked")
     public <K extends NBTTag> ArrayList<K> getValue() {
-        return (ArrayList<K>) list;
+        return (ArrayList<K>) this.list;
     }
 
     @Override
     public String toString() {
-        return list.toString();
+        return this.list.toString();
     }
 }

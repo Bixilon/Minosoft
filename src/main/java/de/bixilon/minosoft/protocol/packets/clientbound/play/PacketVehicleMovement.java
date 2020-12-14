@@ -26,9 +26,9 @@ public class PacketVehicleMovement implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        location = buffer.readLocation();
-        yaw = buffer.readFloat();
-        pitch = buffer.readFloat();
+        this.location = buffer.readLocation();
+        this.yaw = buffer.readFloat();
+        this.pitch = buffer.readFloat();
         return true;
     }
 
@@ -39,18 +39,18 @@ public class PacketVehicleMovement implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received vehicle movement (location=%s, yaw=%s, pitch=%s)", location, yaw, pitch));
+        Log.protocol(String.format("[IN] Received vehicle movement (location=%s, yaw=%s, pitch=%s)", this.location, this.yaw, this.pitch));
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
     public float getYaw() {
-        return yaw;
+        return this.yaw;
     }
 
     public float getPitch() {
-        return pitch;
+        return this.pitch;
     }
 }

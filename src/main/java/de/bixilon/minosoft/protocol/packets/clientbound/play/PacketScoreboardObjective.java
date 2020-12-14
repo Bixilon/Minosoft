@@ -27,14 +27,14 @@ public class PacketScoreboardObjective implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        name = buffer.readString();
+        this.name = buffer.readString();
         if (buffer.getVersionId() < 7) { // ToDo
-            value = buffer.readChatComponent();
+            this.value = buffer.readChatComponent();
         }
-        action = ScoreboardObjectiveActions.byId(buffer.readUnsignedByte());
-        if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
+        this.action = ScoreboardObjectiveActions.byId(buffer.readUnsignedByte());
+        if (this.action == ScoreboardObjectiveActions.CREATE || this.action == ScoreboardObjectiveActions.UPDATE) {
             if (buffer.getVersionId() >= 7) { // ToDo
-                value = buffer.readChatComponent();
+                this.value = buffer.readChatComponent();
             }
             if (buffer.getVersionId() >= 12) {
                 if (buffer.getVersionId() >= 346 && buffer.getVersionId() < 349) {
@@ -42,9 +42,9 @@ public class PacketScoreboardObjective implements ClientboundPacket {
                     return true;
                 }
                 if (buffer.getVersionId() < 349) {
-                    type = ScoreboardObjectiveTypes.byName(buffer.readString());
+                    this.type = ScoreboardObjectiveTypes.byName(buffer.readString());
                 } else {
-                    type = ScoreboardObjectiveTypes.byId(buffer.readVarInt());
+                    this.type = ScoreboardObjectiveTypes.byId(buffer.readVarInt());
                 }
             }
         }
@@ -58,23 +58,23 @@ public class PacketScoreboardObjective implements ClientboundPacket {
 
     @Override
     public void log() {
-        if (action == ScoreboardObjectiveActions.CREATE || action == ScoreboardObjectiveActions.UPDATE) {
-            Log.protocol(String.format("[IN] Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\", type=%s)", action, name, value.getANSIColoredMessage(), type));
+        if (this.action == ScoreboardObjectiveActions.CREATE || this.action == ScoreboardObjectiveActions.UPDATE) {
+            Log.protocol(String.format("[IN] Received scoreboard objective action (action=%s, name=\"%s\", value=\"%s\", type=%s)", this.action, this.name, this.value.getANSIColoredMessage(), this.type));
         } else {
-            Log.protocol(String.format("[IN] Received scoreboard objective action (action=%s, name=\"%s\")", action, name));
+            Log.protocol(String.format("[IN] Received scoreboard objective action (action=%s, name=\"%s\")", this.action, this.name));
         }
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public ChatComponent getValue() {
-        return value;
+        return this.value;
     }
 
     public ScoreboardObjectiveActions getAction() {
-        return action;
+        return this.action;
     }
 
     public enum ScoreboardObjectiveActions {
@@ -82,8 +82,10 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         REMOVE,
         UPDATE;
 
+        private static final ScoreboardObjectiveActions[] SCOREBOARD_OBJECTIVE_ACTIONS = values();
+
         public static ScoreboardObjectiveActions byId(int id) {
-            return values()[id];
+            return SCOREBOARD_OBJECTIVE_ACTIONS[id];
         }
     }
 
@@ -91,6 +93,7 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         INTEGER("integer"),
         HEARTS("hearts");
 
+        private static final ScoreboardObjectiveTypes[] SCOREBOARD_OBJECTIVE_TYPES = values();
         final String name;
 
         ScoreboardObjectiveTypes(String name) {
@@ -107,11 +110,11 @@ public class PacketScoreboardObjective implements ClientboundPacket {
         }
 
         public static ScoreboardObjectiveTypes byId(int id) {
-            return values()[id];
+            return SCOREBOARD_OBJECTIVE_TYPES[id];
         }
 
         public String getName() {
-            return name;
+            return this.name;
         }
     }
 }

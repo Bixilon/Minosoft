@@ -26,9 +26,9 @@ public class PacketEncryptionRequest implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        serverId = buffer.readString();
-        publicKey = buffer.readByteArray();
-        verifyToken = buffer.readByteArray();
+        this.serverId = buffer.readString();
+        this.publicKey = buffer.readByteArray();
+        this.verifyToken = buffer.readByteArray();
         return true;
     }
 
@@ -43,14 +43,14 @@ public class PacketEncryptionRequest implements ClientboundPacket {
     }
 
     public byte[] getPublicKey() {
-        return publicKey;
+        return this.publicKey;
     }
 
     public byte[] getVerifyToken() {
-        return verifyToken;
+        return this.verifyToken;
     }
 
     public String getServerId() {
-        return serverId;
+        return this.serverId;
     }
 }

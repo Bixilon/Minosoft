@@ -36,14 +36,14 @@ public class UpdateHealthEvent extends ConnectionEvent {
     }
 
     public float getHealth() {
-        return health;
+        return this.health;
     }
 
     public int getFood() {
-        return food;
+        return this.food;
     }
 
     public float getSaturation() {
-        return saturation;
+        return this.saturation;
     }
 }

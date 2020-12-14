@@ -28,17 +28,17 @@ public class SimpleAddressValidator implements ServerAddressValidator {
     }
 
     public ServerAddress getAddress() {
-        return address;
+        return this.address;
     }
 
     @Override
     public int hashCode() {
-        return address.hashCode();
+        return this.address.hashCode();
     }
 
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object obj) {
-        return address.equals(obj);
+        return this.address.equals(obj);
     }
 }

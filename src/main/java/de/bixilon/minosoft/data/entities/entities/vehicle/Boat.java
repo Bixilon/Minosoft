@@ -45,7 +45,7 @@ public class Boat extends Entity {
 
     @EntityMetaDataFunction(identifier = "material")
     public BoatMaterials getMaterial() {
-        return BoatMaterials.values()[getMetaData().getSets().getInt(EntityMetaDataFields.BOAT_MATERIAL)];
+        return BoatMaterials.byId(getMetaData().getSets().getInt(EntityMetaDataFields.BOAT_MATERIAL));
     }
 
     @EntityMetaDataFunction(identifier = "leftPaddleTurning")
@@ -69,7 +69,13 @@ public class Boat extends Entity {
         BIRCH,
         JUNGLE,
         ACACIA,
-        DARK_OAK
+        DARK_OAK;
+
+        private static final BoatMaterials[] BOAT_MATERIALS = values();
+
+        public static BoatMaterials byId(int id) {
+            return BOAT_MATERIALS[id];
+        }
     }
 }
 

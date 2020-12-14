@@ -39,6 +39,6 @@ public enum LevelTypes {
     }
 
     public String getId() {
-        return type;
+        return this.type;
     }
 }

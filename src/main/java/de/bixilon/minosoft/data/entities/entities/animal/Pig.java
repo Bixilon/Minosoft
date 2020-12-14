@@ -29,11 +29,11 @@ public class Pig extends Animal {
 
     @EntityMetaDataFunction(identifier = "hasSaddle")
     public boolean hasSaddle() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.PIG_HAS_SADDLE);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.PIG_HAS_SADDLE);
     }
 
     @EntityMetaDataFunction(identifier = "boostTime")
     public int getBoostTime() {
-        return metaData.getSets().getInt(EntityMetaDataFields.PIG_BOOST_TIME);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.PIG_BOOST_TIME);
     }
 }

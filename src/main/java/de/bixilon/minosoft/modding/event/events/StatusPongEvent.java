@@ -33,6 +33,6 @@ public class StatusPongEvent extends ConnectionEvent {
     }
 
     public long getPongId() {
-        return pongId;
+        return this.pongId;
     }
 }

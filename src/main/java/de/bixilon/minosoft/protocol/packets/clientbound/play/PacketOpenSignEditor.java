@@ -25,10 +25,10 @@ public class PacketOpenSignEditor implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 6) {
-            position = buffer.readBlockPositionInteger();
+            this.position = buffer.readBlockPositionInteger();
             return true;
         }
-        position = buffer.readPosition();
+        this.position = buffer.readPosition();
         return true;
     }
 
@@ -39,10 +39,10 @@ public class PacketOpenSignEditor implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Opening sign editor: %s", position));
+        Log.protocol(String.format("[IN] Opening sign editor: %s", this.position));
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 }

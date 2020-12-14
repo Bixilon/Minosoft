@@ -28,7 +28,7 @@ public class Blaze extends Monster {
     }
 
     private boolean getFlag(int bitMask) {
-        return metaData.getSets().getBitMask(EntityMetaDataFields.BLAZE_FLAGS, bitMask);
+        return this.metaData.getSets().getBitMask(EntityMetaDataFields.BLAZE_FLAGS, bitMask);
     }
 
     @EntityMetaDataFunction(identifier = "isBurning")

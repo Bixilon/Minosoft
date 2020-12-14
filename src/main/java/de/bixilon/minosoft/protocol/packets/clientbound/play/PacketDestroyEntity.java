@@ -31,8 +31,8 @@ public class PacketDestroyEntity implements ClientboundPacket {
             this.entityIds = new int[buffer.readVarInt()];
         }
 
-        for (int i = 0; i < entityIds.length; i++) {
-            entityIds[i] = buffer.readEntityId();
+        for (int i = 0; i < this.entityIds.length; i++) {
+            this.entityIds[i] = buffer.readEntityId();
         }
         return true;
     }
@@ -44,10 +44,10 @@ public class PacketDestroyEntity implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Despawning the following entities: %s", Arrays.toString(entityIds)));
+        Log.protocol(String.format("[IN] Despawning the following entities: %s", Arrays.toString(this.entityIds)));
     }
 
     public int[] getEntityIds() {
-        return entityIds;
+        return this.entityIds;
     }
 }

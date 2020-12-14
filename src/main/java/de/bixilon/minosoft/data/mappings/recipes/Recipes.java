@@ -17,31 +17,13 @@ import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
 public class Recipes {
-    final static ArrayList<Recipe> recipeList = new ArrayList<>();
-    final static HashBiMap<Integer, Recipe> recipeIdMap = HashBiMap.create(); // ids for version <= VERSION_1_12_2
-    final static HashBiMap<ModIdentifier, Recipe> recipeNameMap = HashBiMap.create();
-
-    public static Recipe getRecipeById(int id) {
-        return recipeIdMap.get(id);
-    }
-
-    public static Recipe getRecipe(ModIdentifier identifier) {
-        return recipeNameMap.get(identifier);
-    }
-
-    public static Recipe getRecipe(RecipeTypes property, Slot result, String group, Ingredient[] ingredients) {
-        for (Recipe recipe : recipeList) {
-            if (recipe.getType() == property && recipe.getResult().equals(result) && recipe.getGroup().equals(group) && ingredientsEquals(recipe.getIngredients(), ingredients)) {
-                return recipe;
-            }
-        }
-        return null;
-    }
+    private final HashSet<Recipe> recipeList = new HashSet<>();
+    private final HashBiMap<Integer, Recipe> recipeIdMap = HashBiMap.create(); // ids for version <= VERSION_1_12_2
+    private final HashBiMap<ModIdentifier, Recipe> recipeNameMap = HashBiMap.create();
 
     public static boolean ingredientsEquals(Ingredient[] one, Ingredient[] two) {
         if (one.length != two.length) {
@@ -53,11 +35,28 @@ public class Recipes {
     }
 
     // we don't want that recipes from 1 server will appear on an other. You must call this function before reconnecting do avoid issues
-    public static void removeCustomRecipes() {
-        recipeNameMap.clear();
+    public void removeCustomRecipes() {
+        this.recipeNameMap.clear();
     }
 
-    public static void registerCustomRecipes(HashBiMap<ModIdentifier, Recipe> recipes) {
-        recipeNameMap.putAll(recipes);
+    public void registerCustomRecipes(HashBiMap<ModIdentifier, Recipe> recipes) {
+        this.recipeNameMap.putAll(recipes);
+    }
+
+    public Recipe getRecipeById(int id) {
+        return this.recipeIdMap.get(id);
+    }
+
+    public Recipe getRecipe(ModIdentifier identifier) {
+        return this.recipeNameMap.get(identifier);
+    }
+
+    public Recipe getRecipe(RecipeTypes property, Slot result, String group, Ingredient[] ingredients) {
+        for (Recipe recipe : this.recipeList) {
+            if (recipe.getType() == property && recipe.getResult().equals(result) && recipe.getGroup().equals(group) && ingredientsEquals(recipe.getIngredients(), ingredients)) {
+                return recipe;
+            }
+        }
+        return null;
     }
 }

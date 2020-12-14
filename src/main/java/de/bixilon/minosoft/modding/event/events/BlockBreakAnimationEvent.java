@@ -39,14 +39,14 @@ public class BlockBreakAnimationEvent extends CancelableEvent {
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public byte getStage() {
-        return stage;
+        return this.stage;
     }
 }

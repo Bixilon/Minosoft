@@ -32,28 +32,28 @@ public class Wolf extends TamableAnimal {
 
     @EntityMetaDataFunction(identifier = "isBegging")
     public boolean isBegging() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.WOLF_IS_BEGGING);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.WOLF_IS_BEGGING);
     }
 
     @EntityMetaDataFunction(identifier = "collarColor")
     public RGBColor getCollarColor() {
-        return ChatColors.getColorById(metaData.getSets().getInt(EntityMetaDataFields.WOLF_COLLAR_COLOR));
+        return ChatColors.getColorById(this.metaData.getSets().getInt(EntityMetaDataFields.WOLF_COLLAR_COLOR));
     }
 
     @EntityMetaDataFunction(identifier = "angerTime")
     public int getAngerTime() {
-        if (versionId <= 47) {// ToDo
-            return metaData.getSets().getBitMask(EntityMetaDataFields.TAMABLE_ENTITY_FLAGS, 0x02) ? 1 : 0;
+        if (this.versionId <= 47) {// ToDo
+            return this.metaData.getSets().getBitMask(EntityMetaDataFields.TAMABLE_ENTITY_FLAGS, 0x02) ? 1 : 0;
         }
-        return metaData.getSets().getInt(EntityMetaDataFields.WOLF_ANGER_TIME);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.WOLF_ANGER_TIME);
     }
 
     @EntityMetaDataFunction(identifier = "health")
     @Override
     public float getHealth() {
-        if (versionId > 562) {
+        if (this.versionId > 562) {
             return super.getHealth();
         }
-        return metaData.getSets().getFloat(EntityMetaDataFields.WOLF_HEALTH);
+        return this.metaData.getSets().getFloat(EntityMetaDataFields.WOLF_HEALTH);
     }
 }

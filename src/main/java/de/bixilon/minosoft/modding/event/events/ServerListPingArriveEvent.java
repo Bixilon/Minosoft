@@ -31,6 +31,6 @@ public class ServerListPingArriveEvent extends ConnectionEvent {
 
     @Nullable
     public ServerListPing getServerListPing() {
-        return serverListPing;
+        return this.serverListPing;
     }
 }

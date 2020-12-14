@@ -38,10 +38,10 @@ public class BlockChangeEvent extends ConnectionEvent {
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public Block getBlock() {
-        return block;
+        return this.block;
     }
 }

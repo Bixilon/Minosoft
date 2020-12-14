@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public abstract class ConfigurationPaths {
-    static HashSet<ConfigurationPath> ALL_PATHS = new HashSet<>();
+    public static final HashSet<ConfigurationPath> ALL_PATHS = new HashSet<>();
 
     static {
         ALL_PATHS.addAll(Arrays.asList(StringPaths.values()));

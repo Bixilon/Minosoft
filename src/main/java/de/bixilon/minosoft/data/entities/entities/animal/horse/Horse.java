@@ -33,11 +33,11 @@ public class Horse extends AbstractHorse {
     }
 
     private boolean getAbstractHorseFlag(int bitMask) {
-        return metaData.getSets().getBitMask(EntityMetaDataFields.ABSTRACT_HORSE_FLAGS, bitMask);
+        return this.metaData.getSets().getBitMask(EntityMetaDataFields.ABSTRACT_HORSE_FLAGS, bitMask);
     }
 
     private int getVariant() {
-        return metaData.getSets().getInt(EntityMetaDataFields.HORSE_VARIANT);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.HORSE_VARIANT);
     }
 
     @EntityMetaDataFunction(identifier = "color")
@@ -53,10 +53,10 @@ public class Horse extends AbstractHorse {
     @EntityMetaDataFunction(identifier = "armor")
     @Nullable
     public Item getArmor() {
-        if (versionId <= 47) { // ToDo
+        if (this.versionId <= 47) { // ToDo
             return null;
         }
-        return switch (metaData.getSets().getInt(EntityMetaDataFields.LEGACY_HORSE_ARMOR)) {
+        return switch (this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_HORSE_ARMOR)) {
             default -> null;
             case 1 -> LEGACY_IRON_ARMOR;
             case 2 -> LEGACY_GOLD_ARMOR;
@@ -73,8 +73,10 @@ public class Horse extends AbstractHorse {
         GRAY,
         DARK_BROWN;
 
+        private static final HorseColors[] HORSE_COLORS = values();
+
         public static HorseColors byId(int id) {
-            return values()[id];
+            return HORSE_COLORS[id];
         }
     }
 
@@ -85,8 +87,10 @@ public class Horse extends AbstractHorse {
         WHITE_DOTS,
         BLACK_DOTS;
 
+        private static final HorseDots[] HORSE_DOTS = values();
+
         public static HorseDots byId(int id) {
-            return values()[id];
+            return HORSE_DOTS[id];
         }
     }
 

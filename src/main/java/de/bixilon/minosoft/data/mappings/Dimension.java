@@ -22,7 +22,7 @@ public class Dimension extends ModIdentifier {
     }
 
     public boolean hasSkyLight() {
-        return hasSkyLight;
+        return this.hasSkyLight;
     }
 
     @Override

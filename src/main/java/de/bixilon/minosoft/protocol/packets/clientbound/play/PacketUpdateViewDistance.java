@@ -23,7 +23,7 @@ public class PacketUpdateViewDistance implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        viewDistance = buffer.readVarInt();
+        this.viewDistance = buffer.readVarInt();
         return true;
     }
 
@@ -34,6 +34,6 @@ public class PacketUpdateViewDistance implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received view distance update (viewDistance=%s)", viewDistance));
+        Log.protocol(String.format("[IN] Received view distance update (viewDistance=%s)", this.viewDistance));
     }
 }

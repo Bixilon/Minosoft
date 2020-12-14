@@ -39,38 +39,38 @@ public class Trade {
     }
 
     public Slot getInput1() {
-        return input1;
+        return this.input1;
     }
 
     public Slot getInput2() {
-        return input2;
+        return this.input2;
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return this.enabled;
     }
 
     public int getUsages() {
-        return usages;
+        return this.usages;
     }
 
     public int getMaxUsages() {
-        return maxUsages;
+        return this.maxUsages;
     }
 
     public int getXp() {
-        return xp;
+        return this.xp;
     }
 
     public int getSpecialPrice() {
-        return specialPrice;
+        return this.specialPrice;
     }
 
     public float getPriceMultiplier() {
-        return priceMultiplier;
+        return this.priceMultiplier;
     }
 
     public int getDemand() {
-        return demand;
+        return this.demand;
     }
 }

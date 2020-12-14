@@ -49,38 +49,38 @@ public class PacketJoinGame implements ClientboundPacket {
         if (buffer.getVersionId() < 108) {
             this.entityId = buffer.readInt();
             byte gameModeRaw = buffer.readByte();
-            hardcore = BitByte.isBitSet(gameModeRaw, 3);
+            this.hardcore = BitByte.isBitSet(gameModeRaw, 3);
             // remove hardcore bit and get gamemode
             gameModeRaw &= ~0x8;
-            gameMode = GameModes.byId(gameModeRaw);
+            this.gameMode = GameModes.byId(gameModeRaw);
 
             if (buffer.getVersionId() < 108) {
-                dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
+                this.dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
             } else {
-                dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
+                this.dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
             }
-            difficulty = Difficulties.byId(buffer.readUnsignedByte());
-            maxPlayers = buffer.readByte();
+            this.difficulty = Difficulties.byId(buffer.readUnsignedByte());
+            this.maxPlayers = buffer.readByte();
             if (buffer.getVersionId() >= 1) {
-                levelType = LevelTypes.byType(buffer.readString());
+                this.levelType = LevelTypes.byType(buffer.readString());
             }
 
             if (buffer.getVersionId() < 29) {
                 return true;
             }
-            reducedDebugScreen = buffer.readBoolean();
+            this.reducedDebugScreen = buffer.readBoolean();
             return true;
         }
         this.entityId = buffer.readInt();
         if (buffer.getVersionId() < 738) {
             byte gameModeRaw = buffer.readByte();
-            hardcore = BitByte.isBitSet(gameModeRaw, 3);
+            this.hardcore = BitByte.isBitSet(gameModeRaw, 3);
             // remove hardcore bit and get gamemode
             gameModeRaw &= ~0x8;
-            gameMode = GameModes.byId(gameModeRaw);
+            this.gameMode = GameModes.byId(gameModeRaw);
         } else {
-            hardcore = buffer.readBoolean();
-            gameMode = GameModes.byId(buffer.readUnsignedByte());
+            this.hardcore = buffer.readBoolean();
+            this.gameMode = GameModes.byId(buffer.readUnsignedByte());
         }
         if (buffer.getVersionId() >= 730) {
             buffer.readByte(); // previous game mode
@@ -89,19 +89,19 @@ public class PacketJoinGame implements ClientboundPacket {
             String[] worlds = buffer.readStringArray(buffer.readVarInt());
         }
         if (buffer.getVersionId() < 718) {
-            dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
+            this.dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
         } else {
             NBTTag dimensionCodec = buffer.readNBT();
-            dimensions = parseDimensionCodec(dimensionCodec, buffer.getVersionId());
+            this.dimensions = parseDimensionCodec(dimensionCodec, buffer.getVersionId());
             if (buffer.getVersionId() < 748) {
                 String[] currentDimensionSplit = buffer.readString().split(":", 2);
-                dimension = dimensions.get(currentDimensionSplit[0]).get(currentDimensionSplit[1]);
+                this.dimension = this.dimensions.get(currentDimensionSplit[0]).get(currentDimensionSplit[1]);
             } else {
                 CompoundTag tag = (CompoundTag) buffer.readNBT();
                 if (tag.getByteTag("has_skylight").getValue() == 0x01) { // ToDo: this is just for not messing up the skylight
-                    dimension = dimensions.get(ProtocolDefinition.DEFAULT_MOD).get("overworld");
+                    this.dimension = this.dimensions.get(ProtocolDefinition.DEFAULT_MOD).get("overworld");
                 } else {
-                    dimension = dimensions.get(ProtocolDefinition.DEFAULT_MOD).get("the_nether");
+                    this.dimension = this.dimensions.get(ProtocolDefinition.DEFAULT_MOD).get("the_nether");
                 }
             }
         }
@@ -110,31 +110,31 @@ public class PacketJoinGame implements ClientboundPacket {
             buffer.readString(); // world
         }
         if (buffer.getVersionId() >= 552) {
-            hashedSeed = buffer.readLong();
+            this.hashedSeed = buffer.readLong();
         }
         if (buffer.getVersionId() < 464) {
-            difficulty = Difficulties.byId(buffer.readUnsignedByte());
+            this.difficulty = Difficulties.byId(buffer.readUnsignedByte());
         }
         if (buffer.getVersionId() < 749) {
-            maxPlayers = buffer.readByte();
+            this.maxPlayers = buffer.readByte();
         } else {
-            maxPlayers = buffer.readVarInt();
+            this.maxPlayers = buffer.readVarInt();
         }
         if (buffer.getVersionId() < 716) {
-            levelType = LevelTypes.byType(buffer.readString());
+            this.levelType = LevelTypes.byType(buffer.readString());
         }
         if (buffer.getVersionId() >= 468) {
-            viewDistance = buffer.readVarInt();
+            this.viewDistance = buffer.readVarInt();
         }
         if (buffer.getVersionId() >= 716) {
             boolean isDebug = buffer.readBoolean();
             if (buffer.readBoolean()) {
-                levelType = LevelTypes.FLAT;
+                this.levelType = LevelTypes.FLAT;
             }
         }
-        reducedDebugScreen = buffer.readBoolean();
+        this.reducedDebugScreen = buffer.readBoolean();
         if (buffer.getVersionId() >= 552) {
-            enableRespawnScreen = buffer.readBoolean();
+            this.enableRespawnScreen = buffer.readBoolean();
         }
         return true;
     }
@@ -177,54 +177,54 @@ public class PacketJoinGame implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", entityId, gameMode, dimension, difficulty, hardcore, viewDistance));
+        Log.protocol(String.format("[IN] Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", this.entityId, this.gameMode, this.dimension, this.difficulty, this.hardcore, this.viewDistance));
     }
 
     public boolean isHardcore() {
-        return hardcore;
+        return this.hardcore;
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public GameModes getGameMode() {
-        return gameMode;
+        return this.gameMode;
     }
 
     public int getMaxPlayers() {
-        return maxPlayers;
+        return this.maxPlayers;
     }
 
     public LevelTypes getLevelType() {
-        return levelType;
+        return this.levelType;
     }
 
     public Difficulties getDifficulty() {
-        return difficulty;
+        return this.difficulty;
     }
 
     public Dimension getDimension() {
-        return dimension;
+        return this.dimension;
     }
 
     public int getViewDistance() {
-        return viewDistance;
+        return this.viewDistance;
     }
 
     public HashMap<String, HashBiMap<String, Dimension>> getDimensions() {
-        return dimensions;
+        return this.dimensions;
     }
 
     public boolean isReducedDebugScreen() {
-        return reducedDebugScreen;
+        return this.reducedDebugScreen;
     }
 
     public boolean isEnableRespawnScreen() {
-        return enableRespawnScreen;
+        return this.enableRespawnScreen;
     }
 
     public long getHashedSeed() {
-        return hashedSeed;
+        return this.hashedSeed;
     }
 }

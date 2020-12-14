@@ -31,19 +31,19 @@ public class PlayerProperty {
     }
 
     public PlayerProperties getProperty() {
-        return property;
+        return this.property;
     }
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public boolean isSigned() {
         // ToDo check signature
-        return signature != null;
+        return this.signature != null;
     }
 
     public String getSignature() {
-        return signature;
+        return this.signature;
     }
 }

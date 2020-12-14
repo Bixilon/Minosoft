@@ -55,11 +55,11 @@ public abstract class Entity {
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
     public void setLocation(Location location) {
@@ -67,33 +67,33 @@ public abstract class Entity {
     }
 
     public void setLocation(RelativeLocation relativeLocation) {
-        location = new Location(location.getX() + relativeLocation.getX(), location.getY() + relativeLocation.getY(), location.getZ() + relativeLocation.getZ());
+        this.location = new Location(this.location.getX() + relativeLocation.getX(), this.location.getY() + relativeLocation.getY(), this.location.getZ() + relativeLocation.getZ());
     }
 
     public void setEquipment(HashMap<InventorySlots.EntityInventorySlots, Slot> slots) {
-        equipment.putAll(slots);
+        this.equipment.putAll(slots);
     }
 
     public Slot getEquipment(InventorySlots.EntityInventorySlots slot) {
-        return equipment.get(slot);
+        return this.equipment.get(slot);
     }
 
     public UUID getUUID() {
-        return uuid;
+        return this.uuid;
     }
 
     public HashSet<StatusEffect> getEffectList() {
-        return effectList;
+        return this.effectList;
     }
 
     public void addEffect(StatusEffect effect) {
         // effect already applied, maybe the duration or the amplifier changed?
-        effectList.removeIf(listEffect -> listEffect.getEffect() == effect.getEffect());
-        effectList.add(effect);
+        this.effectList.removeIf(listEffect -> listEffect.getEffect() == effect.getEffect());
+        this.effectList.add(effect);
     }
 
     public void removeEffect(MobEffect effect) {
-        effectList.removeIf(listEffect -> listEffect.getEffect() == effect);
+        this.effectList.removeIf(listEffect -> listEffect.getEffect() == effect);
     }
 
     public void attachTo(int vehicleId) {
@@ -101,19 +101,19 @@ public abstract class Entity {
     }
 
     public boolean isAttached() {
-        return attachedTo != -1;
+        return this.attachedTo != -1;
     }
 
     public int getAttachedEntity() {
-        return attachedTo;
+        return this.attachedTo;
     }
 
     public void detach() {
-        attachedTo = -1;
+        this.attachedTo = -1;
     }
 
     public EntityRotation getRotation() {
-        return rotation;
+        return this.rotation;
     }
 
     public void setRotation(EntityRotation rotation) {
@@ -121,7 +121,7 @@ public abstract class Entity {
     }
 
     public void setRotation(int yaw, int pitch) {
-        this.rotation = new EntityRotation(yaw, pitch, rotation.getHeadYaw());
+        this.rotation = new EntityRotation(yaw, pitch, this.rotation.getHeadYaw());
     }
 
     public void setRotation(int yaw, int pitch, int headYaw) {
@@ -129,12 +129,12 @@ public abstract class Entity {
     }
 
     public void setHeadRotation(int headYaw) {
-        this.rotation = new EntityRotation(rotation.getYaw(), rotation.getPitch(), headYaw);
+        this.rotation = new EntityRotation(this.rotation.getYaw(), this.rotation.getPitch(), headYaw);
     }
 
     @Unsafe
     public EntityMetaData getMetaData() {
-        return metaData;
+        return this.metaData;
     }
 
     @Unsafe
@@ -146,11 +146,11 @@ public abstract class Entity {
     }
 
     public EntityInformation getEntityInformation() {
-        return information;
+        return this.information;
     }
 
     private boolean getEntityFlag(int bitMask) {
-        return metaData.getSets().getBitMask(EntityMetaDataFields.ENTITY_FLAGS, bitMask);
+        return this.metaData.getSets().getBitMask(EntityMetaDataFields.ENTITY_FLAGS, bitMask);
     }
 
     @EntityMetaDataFunction(identifier = "onFire")
@@ -187,28 +187,28 @@ public abstract class Entity {
 
     @EntityMetaDataFunction(identifier = "airSupply")
     private int getAirSupply() {
-        return metaData.getSets().getInt(EntityMetaDataFields.ENTITY_AIR_SUPPLY);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.ENTITY_AIR_SUPPLY);
     }
 
     @EntityMetaDataFunction(identifier = "customName")
     @Nullable
     private ChatComponent getCustomName() {
-        return metaData.getSets().getChatComponent(EntityMetaDataFields.ENTITY_CUSTOM_NAME);
+        return this.metaData.getSets().getChatComponent(EntityMetaDataFields.ENTITY_CUSTOM_NAME);
     }
 
     @EntityMetaDataFunction(identifier = "customNameVisible")
     public boolean isCustomNameVisible() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_CUSTOM_NAME_VISIBLE);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_CUSTOM_NAME_VISIBLE);
     }
 
     @EntityMetaDataFunction(identifier = "isSilent")
     public boolean isSilent() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_SILENT);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_SILENT);
     }
 
     @EntityMetaDataFunction(identifier = "hasNoGravity")
     public boolean hasNoGravity() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_NO_GRAVITY);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_NO_GRAVITY);
     }
 
     @EntityMetaDataFunction(identifier = "pose")
@@ -222,20 +222,20 @@ public abstract class Entity {
         if (isFlyingWithElytra()) {
             return Poses.FLYING;
         }
-        return metaData.getSets().getPose(EntityMetaDataFields.ENTITY_POSE);
+        return this.metaData.getSets().getPose(EntityMetaDataFields.ENTITY_POSE);
     }
 
     @EntityMetaDataFunction(identifier = "ticksFrozen")
     public int getTicksFrozen() {
-        return metaData.getSets().getInt(EntityMetaDataFields.ENTITY_TICKS_FROZEN);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.ENTITY_TICKS_FROZEN);
     }
 
     @Override
     public String toString() {
-        if (information == null) {
+        if (this.information == null) {
             return this.getClass().getCanonicalName();
         }
-        return String.format("%s:%s", information.getMod(), information.getIdentifier());
+        return String.format("%s:%s", this.information.getMod(), this.information.getIdentifier());
     }
 
     public String getEntityMetaDataAsString() {

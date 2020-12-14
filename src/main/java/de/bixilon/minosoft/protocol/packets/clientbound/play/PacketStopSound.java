@@ -28,16 +28,16 @@ public class PacketStopSound implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 343) { // ToDo: these 2 values need to be switched in before 1.12.2
-            category = SoundCategories.valueOf(buffer.readString().toUpperCase());
-            soundIdentifier = buffer.readIdentifier();
+            this.category = SoundCategories.valueOf(buffer.readString().toUpperCase());
+            this.soundIdentifier = buffer.readIdentifier();
             return true;
         }
         byte flags = buffer.readByte();
         if (BitByte.isBitMask(flags, 0x01)) {
-            category = SoundCategories.byId(buffer.readVarInt());
+            this.category = SoundCategories.byId(buffer.readVarInt());
         }
         if (BitByte.isBitMask(flags, 0x02)) {
-            soundIdentifier = buffer.readIdentifier();
+            this.soundIdentifier = buffer.readIdentifier();
         }
         return true;
     }
@@ -49,14 +49,14 @@ public class PacketStopSound implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received stop sound (category=%s, soundIdentifier=%s)", category, soundIdentifier));
+        Log.protocol(String.format("[IN] Received stop sound (category=%s, soundIdentifier=%s)", this.category, this.soundIdentifier));
     }
 
     public SoundCategories getSoundId() {
-        return category;
+        return this.category;
     }
 
     public ModIdentifier getSoundIdentifier() {
-        return soundIdentifier;
+        return this.soundIdentifier;
     }
 }

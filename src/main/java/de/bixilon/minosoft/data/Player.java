@@ -45,7 +45,7 @@ public class Player {
     int level;
     int totalExperience;
     PlayerEntity entity;
-    boolean spawnConfirmed = false;
+    boolean spawnConfirmed;
 
     ChatComponent tabHeader;
     ChatComponent tabFooter;
@@ -53,15 +53,15 @@ public class Player {
     public Player(MojangAccount account) {
         this.account = account;
         // create our own inventory without any properties
-        inventories.put(PLAYER_INVENTORY_ID, new Inventory(null));
+        this.inventories.put(PLAYER_INVENTORY_ID, new Inventory(null));
     }
 
     public String getPlayerName() {
-        return account.getPlayerName();
+        return this.account.getPlayerName();
     }
 
     public UUID getPlayerUUID() {
-        return account.getUUID();
+        return this.account.getUUID();
     }
 
     public MojangAccount getAccount() {
@@ -69,7 +69,7 @@ public class Player {
     }
 
     public float getHealth() {
-        return health;
+        return this.health;
     }
 
     public void setHealth(float health) {
@@ -77,7 +77,7 @@ public class Player {
     }
 
     public int getFood() {
-        return food;
+        return this.food;
     }
 
     public void setFood(int food) {
@@ -85,7 +85,7 @@ public class Player {
     }
 
     public float getSaturation() {
-        return saturation;
+        return this.saturation;
     }
 
     public void setSaturation(float saturation) {
@@ -93,7 +93,7 @@ public class Player {
     }
 
     public BlockPosition getSpawnLocation() {
-        return spawnLocation;
+        return this.spawnLocation;
     }
 
     public void setSpawnLocation(BlockPosition spawnLocation) {
@@ -101,7 +101,7 @@ public class Player {
     }
 
     public GameModes getGameMode() {
-        return gameMode;
+        return this.gameMode;
     }
 
     public void setGameMode(GameModes gameMode) {
@@ -109,11 +109,11 @@ public class Player {
     }
 
     public World getWorld() {
-        return world;
+        return this.world;
     }
 
     public byte getSelectedSlot() {
-        return selectedSlot;
+        return this.selectedSlot;
     }
 
     public void setSelectedSlot(byte selectedSlot) {
@@ -121,7 +121,7 @@ public class Player {
     }
 
     public int getLevel() {
-        return level;
+        return this.level;
     }
 
     public void setLevel(int level) {
@@ -129,7 +129,7 @@ public class Player {
     }
 
     public int getTotalExperience() {
-        return totalExperience;
+        return this.totalExperience;
     }
 
     public void setTotalExperience(int totalExperience) {
@@ -151,11 +151,11 @@ public class Player {
     }
 
     public void setSlot(int windowId, int slot, Slot data) {
-        inventories.get(windowId).setSlot(slot, data);
+        this.inventories.get(windowId).setSlot(slot, data);
     }
 
     public Inventory getInventory(int id) {
-        return inventories.get(id);
+        return this.inventories.get(id);
     }
 
     public Slot getSlot(int windowId, InventorySlots.InventoryInterface slot, int versionId) {
@@ -163,7 +163,7 @@ public class Player {
     }
 
     public Slot getSlot(int windowId, int slot) {
-        return inventories.get(windowId).getSlot(slot);
+        return this.inventories.get(windowId).getSlot(slot);
     }
 
     public void setSlot(int windowId, InventorySlots.InventoryInterface slot, int versionId, Slot data) {
@@ -171,15 +171,15 @@ public class Player {
     }
 
     public void createInventory(InventoryProperties properties) {
-        inventories.put(properties.getWindowId(), new Inventory(properties));
+        this.inventories.put(properties.getWindowId(), new Inventory(properties));
     }
 
     public void deleteInventory(int windowId) {
-        inventories.remove(windowId);
+        this.inventories.remove(windowId);
     }
 
     public boolean isSpawnConfirmed() {
-        return spawnConfirmed;
+        return this.spawnConfirmed;
     }
 
     public void setSpawnConfirmed(boolean spawnConfirmed) {
@@ -187,16 +187,16 @@ public class Player {
     }
 
     public ScoreboardManager getScoreboardManager() {
-        return scoreboardManager;
+        return this.scoreboardManager;
     }
 
     public HashMap<UUID, PlayerListItem> getPlayerList() {
-        return playerList;
+        return this.playerList;
     }
 
     public PlayerListItem getPlayerListItem(String name) {
         // only legacy
-        for (PlayerListItem listItem : playerList.values()) {
+        for (PlayerListItem listItem : this.playerList.values()) {
             if (listItem.getName().equals(name)) {
                 return listItem;
             }
@@ -205,7 +205,7 @@ public class Player {
     }
 
     public ChatComponent getTabHeader() {
-        return tabHeader;
+        return this.tabHeader;
     }
 
     public void setTabHeader(ChatComponent tabHeader) {
@@ -213,7 +213,7 @@ public class Player {
     }
 
     public ChatComponent getTabFooter() {
-        return tabFooter;
+        return this.tabFooter;
     }
 
     public void setTabFooter(ChatComponent tabFooter) {
@@ -221,7 +221,7 @@ public class Player {
     }
 
     public PlayerEntity getEntity() {
-        return entity;
+        return this.entity;
     }
 
     public void setEntity(PlayerEntity entity) {

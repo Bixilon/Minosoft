@@ -30,12 +30,12 @@ public class PacketNameItem implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_NAME_ITEM);
-        buffer.writeString(name);
+        buffer.writeString(this.name);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending name item packet (name=\"%s\")", name));
+        Log.protocol(String.format("[OUT] Sending name item packet (name=\"%s\")", this.name));
     }
 }

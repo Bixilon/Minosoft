@@ -34,15 +34,15 @@ public class IndirectPalette implements Palette {
 
     @Override
     public Block byId(int id) {
-        int blockId = map.getOrDefault(id, id);
-        Block block = mapping.getBlockById(blockId);
+        int blockId = this.map.getOrDefault(id, id);
+        Block block = this.mapping.getBlockById(blockId);
         if (StaticConfiguration.DEBUG_MODE) {
             if (block == null) {
                 if (blockId == ProtocolDefinition.NULL_BLOCK_ID) {
                     return null;
                 }
                 String blockName;
-                if (versionId <= ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
+                if (this.versionId <= ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
                     blockName = String.format("%d:%d", blockId >> 4, blockId & 0xF);
                 } else {
                     blockName = String.valueOf(blockId);
@@ -56,7 +56,7 @@ public class IndirectPalette implements Palette {
 
     @Override
     public byte getBitsPerBlock() {
-        return bitsPerBlock;
+        return this.bitsPerBlock;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class IndirectPalette implements Palette {
         this.mapping = buffer.getConnection().getMapping();
         int paletteLength = buffer.readVarInt();
         for (int i = 0; i < paletteLength; i++) {
-            map.put(i, buffer.readVarInt());
+            this.map.put(i, buffer.readVarInt());
         }
     }
 }

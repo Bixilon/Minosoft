@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.play.*;
 import java.util.UUID;
 
 public class PacketSender {
-    public static final String[] ILLEGAL_CHAT_CHARS = new String[]{"§"};
+    public static final String[] ILLEGAL_CHAT_CHARS = {"§"};
     final Connection connection;
 
     public PacketSender(Connection connection) {
@@ -33,7 +33,7 @@ public class PacketSender {
     }
 
     public void setFlyStatus(boolean flying) {
-        connection.sendPacket(new PacketPlayerAbilitiesSending(flying));
+        this.connection.sendPacket(new PacketPlayerAbilitiesSending(flying));
     }
 
     public void sendChatMessage(String message) {
@@ -42,55 +42,55 @@ public class PacketSender {
                 throw new IllegalArgumentException(String.format("%s is not allowed in chat", illegalChar));
             }
         }
-        ChatMessageSendingEvent event = new ChatMessageSendingEvent(connection, message);
-        if (connection.fireEvent(event)) {
+        ChatMessageSendingEvent event = new ChatMessageSendingEvent(this.connection, message);
+        if (this.connection.fireEvent(event)) {
             return;
         }
-        connection.sendPacket(new PacketChatMessageSending(event.getMessage()));
+        this.connection.sendPacket(new PacketChatMessageSending(event.getMessage()));
     }
 
     public void spectateEntity(UUID entityUUID) {
-        connection.sendPacket(new PacketSpectate(entityUUID));
+        this.connection.sendPacket(new PacketSpectate(entityUUID));
     }
 
     public void setSlot(int slotId) {
-        connection.sendPacket(new PacketHeldItemChangeSending(slotId));
+        this.connection.sendPacket(new PacketHeldItemChangeSending(slotId));
     }
 
     public void swingArm(Hands hand) {
-        connection.sendPacket(new PacketAnimation(hand));
+        this.connection.sendPacket(new PacketAnimation(hand));
     }
 
     public void swingArm() {
-        connection.sendPacket(new PacketAnimation(Hands.MAIN_HAND));
+        this.connection.sendPacket(new PacketAnimation(Hands.MAIN_HAND));
     }
 
     public void sendAction(PacketEntityAction.EntityActions action) {
-        connection.sendPacket(new PacketEntityAction(connection.getPlayer().getEntity().getEntityId(), action));
+        this.connection.sendPacket(new PacketEntityAction(this.connection.getPlayer().getEntity().getEntityId(), action));
     }
 
     public void jumpWithHorse(int jumpBoost) {
-        connection.sendPacket(new PacketEntityAction(connection.getPlayer().getEntity().getEntityId(), PacketEntityAction.EntityActions.START_HORSE_JUMP, jumpBoost));
+        this.connection.sendPacket(new PacketEntityAction(this.connection.getPlayer().getEntity().getEntityId(), PacketEntityAction.EntityActions.START_HORSE_JUMP, jumpBoost));
     }
 
     public void dropItem() {
-        connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.DROP_ITEM, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
+        this.connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.DROP_ITEM, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
     }
 
     public void dropItemStack() {
-        connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.DROP_ITEM_STACK, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
+        this.connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.DROP_ITEM_STACK, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
     }
 
     public void swapItemInHand() {
-        connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.SWAP_ITEMS_IN_HAND, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
+        this.connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.SWAP_ITEMS_IN_HAND, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
     }
 
     public void closeWindow(byte windowId) {
-        CloseWindowEvent event = new CloseWindowEvent(connection, windowId, CloseWindowEvent.Initiators.CLIENT);
-        if (connection.fireEvent(event)) {
+        CloseWindowEvent event = new CloseWindowEvent(this.connection, windowId, CloseWindowEvent.Initiators.CLIENT);
+        if (this.connection.fireEvent(event)) {
             return;
         }
-        connection.sendPacket(new PacketCloseWindowSending(windowId));
+        this.connection.sendPacket(new PacketCloseWindowSending(windowId));
     }
 
     public void respawn() {
@@ -98,20 +98,20 @@ public class PacketSender {
     }
 
     public void sendClientStatus(PacketClientStatus.ClientStates status) {
-        connection.sendPacket(new PacketClientStatus(status));
+        this.connection.sendPacket(new PacketClientStatus(status));
     }
 
     public void sendPluginMessageData(String channel, OutByteBuffer toSend) {
-        connection.sendPacket(new PacketPluginMessageSending(channel, toSend.toByteArray()));
+        this.connection.sendPacket(new PacketPluginMessageSending(channel, toSend.toByteArray()));
     }
 
     public void sendLoginPluginMessageResponse(int messageId, OutByteBuffer toSend) {
-        connection.sendPacket(new PacketLoginPluginResponse(messageId, toSend.toByteArray()));
+        this.connection.sendPacket(new PacketLoginPluginResponse(messageId, toSend.toByteArray()));
     }
 
     public void setLocation(Location location, EntityRotation rotation, boolean onGround) {
-        connection.sendPacket(new PacketPlayerPositionAndRotationSending(location, rotation, onGround));
-        connection.getPlayer().getEntity().setLocation(location);
-        connection.getPlayer().getEntity().setRotation(rotation);
+        this.connection.sendPacket(new PacketPlayerPositionAndRotationSending(location, rotation, onGround));
+        this.connection.getPlayer().getEntity().setLocation(location);
+        this.connection.getPlayer().getEntity().setRotation(rotation);
     }
 }

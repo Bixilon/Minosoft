@@ -13,40 +13,47 @@
 
 package de.bixilon.minosoft.data.inventory;
 
+import com.google.common.collect.HashBiMap;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
+
 public enum InventoryTypes {
-    CHEST("minecraft:chest"),
-    WORKBENCH("minecraft:crafting_table"),
-    FURNACE("minecraft:furnace"),
-    DISPENSER("minecraft:dispenser "),
-    ENCHANTMENT_TABLE("minecraft:enchanting_table "),
-    BREWING_STAND("minecraft:brewing_stand "),
-    NPC_TRACE("minecraft:villager "),
-    BEACON("minecraft:beacon "),
-    ANVIL("minecraft:anvil "),
-    HOPPER("minecraft:hopper "),
-    DROPPER("minecraft:dropper "),
-    HORSE("EntityHorse");
+    CHEST(new ModIdentifier("minecraft:chest")),
+    WORKBENCH(new ModIdentifier("minecraft:crafting_table")),
+    FURNACE(new ModIdentifier("minecraft:furnace")),
+    DISPENSER(new ModIdentifier("minecraft:dispenser")),
+    ENCHANTMENT_TABLE(new ModIdentifier("minecraft:enchanting_table")),
+    BREWING_STAND(new ModIdentifier("minecraft:brewing_stand")),
+    NPC_TRACE(new ModIdentifier("minecraft:villager")),
+    BEACON(new ModIdentifier("minecraft:beacon")),
+    ANVIL(new ModIdentifier("minecraft:anvil")),
+    HOPPER(new ModIdentifier("minecraft:hopper")),
+    DROPPER(new ModIdentifier("minecraft:dropper")),
+    HORSE(new ModIdentifier("EntityHorse"));
 
-    final String name;
+    private static final InventoryTypes[] INVENTORY_TYPES = values();
+    private static final HashBiMap<ModIdentifier, InventoryTypes> IDENTIFIER_TYPE_MAP = HashBiMap.create();
 
-    InventoryTypes(String name) {
-        this.name = name;
+    static {
+        for (InventoryTypes type : INVENTORY_TYPES) {
+            IDENTIFIER_TYPE_MAP.put(type.getIdentifier(), type);
+        }
+    }
+
+    private final ModIdentifier identifier;
+
+    InventoryTypes(ModIdentifier identifier) {
+        this.identifier = identifier;
     }
 
     public static InventoryTypes byId(int id) {
-        return values()[id];
+        return INVENTORY_TYPES[id];
     }
 
-    public static InventoryTypes byName(String name) {
-        for (InventoryTypes type : values()) {
-            if (type.getName().equals(name)) {
-                return type;
-            }
-        }
-        return null;
+    public static InventoryTypes byIdentifier(ModIdentifier identifier) {
+        return IDENTIFIER_TYPE_MAP.get(identifier);
     }
 
-    public String getName() {
-        return name;
+    public ModIdentifier getIdentifier() {
+        return this.identifier;
     }
 }

@@ -18,7 +18,9 @@ public enum ChatTextPositions {
     SYSTEM_MESSAGE,
     ABOVE_HOTBAR;
 
+    private static final ChatTextPositions[] CHAT_TEXT_POSITIONS = values();
+
     public static ChatTextPositions byId(int id) {
-        return values()[id];
+        return CHAT_TEXT_POSITIONS[id];
     }
 }

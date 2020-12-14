@@ -34,22 +34,22 @@ public class ByteArrayTag extends NBTTag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        new IntTag(value.length).writeBytes(buffer);
-        buffer.writeBytes(value);
+        new IntTag(this.value.length).writeBytes(buffer);
+        buffer.writeBytes(this.value);
     }
 
     public byte[] getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append('[');
-        for (int i = 0; i < value.length; i++) {
-            builder.append(value[i]);
+        for (int i = 0; i < this.value.length; i++) {
+            builder.append(this.value[i]);
             builder.append("b");
-            if (i == value.length - 1) {
+            if (i == this.value.length - 1) {
                 break;
             }
             builder.append(", ");

@@ -25,13 +25,13 @@ public class PacketUpdateHealth implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        health = buffer.readFloat();
+        this.health = buffer.readFloat();
         if (buffer.getVersionId() < 7) {
-            food = buffer.readUnsignedShort();
+            this.food = buffer.readUnsignedShort();
         } else {
-            food = buffer.readVarInt();
+            this.food = buffer.readVarInt();
         }
-        saturation = buffer.readFloat();
+        this.saturation = buffer.readFloat();
         return true;
     }
 
@@ -42,18 +42,18 @@ public class PacketUpdateHealth implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Health update. Now at %s hearts and %s food level and %s saturation", health, food, saturation));
+        Log.protocol(String.format("[IN] Health update. Now at %s hearts and %s food level and %s saturation", this.health, this.food, this.saturation));
     }
 
     public int getFood() {
-        return food;
+        return this.food;
     }
 
     public float getHealth() {
-        return health;
+        return this.health;
     }
 
     public float getSaturation() {
-        return saturation;
+        return this.saturation;
     }
 }

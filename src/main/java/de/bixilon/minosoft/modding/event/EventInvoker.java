@@ -28,11 +28,11 @@ public abstract class EventInvoker {
     }
 
     public boolean isIgnoreCancelled() {
-        return ignoreCancelled;
+        return this.ignoreCancelled;
     }
 
     public Priorities getPriority() {
-        return priority;
+        return this.priority;
     }
 
     public abstract void invoke(ConnectionEvent event);

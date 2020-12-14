@@ -23,10 +23,10 @@ public class Tag {
     }
 
     public String getIdentifier() {
-        return identifier;
+        return this.identifier;
     }
 
     public int[] getIdList() {
-        return idList;
+        return this.idList;
     }
 }

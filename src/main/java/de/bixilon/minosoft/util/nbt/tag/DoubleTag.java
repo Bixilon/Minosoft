@@ -34,15 +34,15 @@ public class DoubleTag extends NBTTag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeDouble(value);
+        buffer.writeDouble(this.value);
     }
 
     public double getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
     public String toString() {
-        return value + "D";
+        return this.value + "D";
     }
 }

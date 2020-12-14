@@ -25,10 +25,10 @@ public class EntityProperty {
     }
 
     public double getValue() {
-        return value;
+        return this.value;
     }
 
     public HashMap<UUID, EntityPropertyModifier> getModifiers() {
-        return modifiers;
+        return this.modifiers;
     }
 }

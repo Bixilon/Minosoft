@@ -53,11 +53,11 @@ public class MojangAccount {
 
     public JsonObject serialize() {
         JsonObject json = new JsonObject();
-        json.addProperty("accessToken", accessToken);
-        json.addProperty("userId", userId);
-        json.addProperty("uuid", uuid.toString());
-        json.addProperty("playerName", playerName);
-        json.addProperty("userName", mojangUserName);
+        json.addProperty("accessToken", this.accessToken);
+        json.addProperty("userId", this.userId);
+        json.addProperty("uuid", this.uuid.toString());
+        json.addProperty("playerName", this.playerName);
+        json.addProperty("userName", this.mojangUserName);
         return json;
     }
 
@@ -66,21 +66,21 @@ public class MojangAccount {
     }
 
     public RefreshStates refreshToken() {
-        if (lastRefreshStatus != null) {
-            return lastRefreshStatus;
+        if (this.lastRefreshStatus != null) {
+            return this.lastRefreshStatus;
         }
         String accessToken = MojangAuthentication.refresh(this.accessToken);
         if (accessToken == null) {
-            lastRefreshStatus = RefreshStates.FAILED;
-            return lastRefreshStatus;
+            this.lastRefreshStatus = RefreshStates.FAILED;
+            return this.lastRefreshStatus;
         }
         if (accessToken.isBlank()) {
-            lastRefreshStatus = RefreshStates.ERROR;
-            return lastRefreshStatus;
+            this.lastRefreshStatus = RefreshStates.ERROR;
+            return this.lastRefreshStatus;
         }
         this.accessToken = accessToken;
-        lastRefreshStatus = RefreshStates.SUCCESSFUL;
-        return lastRefreshStatus;
+        this.lastRefreshStatus = RefreshStates.SUCCESSFUL;
+        return this.lastRefreshStatus;
     }
 
     public UUID getUUID() {
@@ -92,11 +92,11 @@ public class MojangAccount {
     }
 
     public String getAccessToken() {
-        return accessToken;
+        return this.accessToken;
     }
 
     public String getMojangUserName() {
-        return mojangUserName;
+        return this.mojangUserName;
     }
 
     public void saveToConfig() {
@@ -115,12 +115,12 @@ public class MojangAccount {
     }
 
     public String getUserId() {
-        return userId;
+        return this.userId;
     }
 
     @Override
     public int hashCode() {
-        return userId.hashCode();
+        return this.userId.hashCode();
     }
 
     @Override

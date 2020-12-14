@@ -21,7 +21,9 @@ public enum Directions {
     WEST,
     EAST;
 
+    private static final Directions[] DIRECTIONS = values();
+
     public static Directions byId(int id) {
-        return values()[id];
+        return DIRECTIONS[id];
     }
 }

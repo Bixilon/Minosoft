@@ -26,24 +26,24 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        itemName = buffer.readString();
-        action = ScoreboardUpdateScoreActions.byId(buffer.readUnsignedByte());
+        this.itemName = buffer.readString();
+        this.action = ScoreboardUpdateScoreActions.byId(buffer.readUnsignedByte());
         if (buffer.getVersionId() < 7) { // ToDo
-            if (action == ScoreboardUpdateScoreActions.REMOVE) {
+            if (this.action == ScoreboardUpdateScoreActions.REMOVE) {
                 return true;
             }
             // not present id action == REMOVE
-            scoreName = buffer.readString();
-            scoreValue = buffer.readInt();
+            this.scoreName = buffer.readString();
+            this.scoreValue = buffer.readInt();
             return true;
         }
-        scoreName = buffer.readString();
+        this.scoreName = buffer.readString();
 
-        if (action == ScoreboardUpdateScoreActions.REMOVE) {
+        if (this.action == ScoreboardUpdateScoreActions.REMOVE) {
             return true;
         }
         // not present id action == REMOVE
-        scoreValue = buffer.readVarInt();
+        this.scoreValue = buffer.readVarInt();
         return true;
     }
 
@@ -54,31 +54,33 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received scoreboard score update (itemName=\"%s\", action=%s, scoreName=\"%s\", scoreValue=%d", itemName, action, scoreName, scoreValue));
+        Log.protocol(String.format("[IN] Received scoreboard score update (itemName=\"%s\", action=%s, scoreName=\"%s\", scoreValue=%d", this.itemName, this.action, this.scoreName, this.scoreValue));
     }
 
     public String getItemName() {
-        return itemName;
+        return this.itemName;
     }
 
     public ScoreboardUpdateScoreActions getAction() {
-        return action;
+        return this.action;
     }
 
     public String getScoreName() {
-        return scoreName;
+        return this.scoreName;
     }
 
     public int getScoreValue() {
-        return scoreValue;
+        return this.scoreValue;
     }
 
     public enum ScoreboardUpdateScoreActions {
         CREATE_UPDATE,
         REMOVE;
 
+        private static final ScoreboardUpdateScoreActions[] SCOREBOARD_UPDATE_SCORE_ACTIONS = values();
+
         public static ScoreboardUpdateScoreActions byId(int id) {
-            return values()[id];
+            return SCOREBOARD_UPDATE_SCORE_ACTIONS[id];
         }
     }
 }

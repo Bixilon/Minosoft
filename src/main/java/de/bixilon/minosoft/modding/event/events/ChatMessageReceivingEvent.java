@@ -41,11 +41,11 @@ public class ChatMessageReceivingEvent extends CancelableEvent {
     }
 
     public ChatComponent getMessage() {
-        return message;
+        return this.message;
     }
 
     public ChatTextPositions getPosition() {
-        return position;
+        return this.position;
     }
 
     /**

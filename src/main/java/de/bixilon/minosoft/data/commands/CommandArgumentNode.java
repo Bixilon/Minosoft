@@ -31,11 +31,11 @@ public class CommandArgumentNode extends CommandLiteralNode {
 
     public CommandArgumentNode(byte flags, InByteBuffer buffer) {
         super(flags, buffer);
-        parser = CommandParsers.INSTANCE.getParserInstance(buffer.readIdentifier());
-        properties = parser.readParserProperties(buffer);
+        this.parser = CommandParsers.INSTANCE.getParserInstance(buffer.readIdentifier());
+        this.properties = this.parser.readParserProperties(buffer);
         if (BitByte.isBitMask(flags, 0x10)) {
             String fullIdentifier = buffer.readIdentifier().getFullIdentifier();
-            suggestionType = switch (fullIdentifier) {
+            this.suggestionType = switch (fullIdentifier) {
                 case "minecraft:ask_server" -> CommandArgumentNode.SuggestionTypes.ASK_SERVER;
                 case "minecraft:all_recipes" -> CommandArgumentNode.SuggestionTypes.ALL_RECIPES;
                 case "minecraft:available_sounds" -> CommandArgumentNode.SuggestionTypes.AVAILABLE_SOUNDS;
@@ -44,26 +44,26 @@ public class CommandArgumentNode extends CommandLiteralNode {
                 default -> throw new IllegalStateException("Unexpected value: " + fullIdentifier);
             };
         } else {
-            suggestionType = null;
+            this.suggestionType = null;
         }
     }
 
     public CommandParser getParser() {
-        return parser;
+        return this.parser;
     }
 
     @Nullable
     public ParserProperties getProperties() {
-        return properties;
+        return this.properties;
     }
 
     public SuggestionTypes getSuggestionType() {
-        return suggestionType;
+        return this.suggestionType;
     }
 
     @Override
     public void isSyntaxCorrect(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
-        parser.isParsable(connection, properties, stringReader);
+        this.parser.isParsable(connection, this.properties, stringReader);
         super.isSyntaxCorrect(connection, stringReader);
     }
 

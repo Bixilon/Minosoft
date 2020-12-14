@@ -24,7 +24,7 @@ public class PacketStatusResponse implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        response = new ServerListPing(buffer.readJSON());
+        this.response = new ServerListPing(buffer.readJSON());
         return true;
     }
 
@@ -35,7 +35,7 @@ public class PacketStatusResponse implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving status response packet (online=%d, maxPlayers=%d, protocolId=%d)", response.getPlayerOnline(), response.getMaxPlayers(), response.getProtocolId()));
+        Log.protocol(String.format("[IN] Receiving status response packet (online=%d, maxPlayers=%d, protocolId=%d)", this.response.getPlayerOnline(), this.response.getMaxPlayers(), this.response.getProtocolId()));
     }
 
     public ServerListPing getResponse() {

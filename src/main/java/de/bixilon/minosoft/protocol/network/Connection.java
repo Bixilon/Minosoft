@@ -44,28 +44,29 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Connection {
     public static int lastConnectionId;
-    final Network network = Network.getNetworkInstance(this);
-    final PacketHandler handler = new PacketHandler(this);
-    final PacketSender sender = new PacketSender(this);
-    final LinkedBlockingQueue<ClientboundPacket> handlingQueue = new LinkedBlockingQueue<>();
-    final VelocityHandler velocityHandler = new VelocityHandler(this);
-    final LinkedList<EventInvoker> eventListeners = new LinkedList<>();
-    final int connectionId;
-    final Player player;
-    final String hostname;
-    LinkedList<ServerAddress> addresses;
-    int desiredVersionNumber = -1;
-    ServerAddress address;
-    Thread handleThread;
-    Version version = Versions.LOWEST_VERSION_SUPPORTED; // default
-    final VersionMapping customMapping = new VersionMapping(version);
-    ConnectionStates state = ConnectionStates.DISCONNECTED;
-    ConnectionReasons reason;
-    ConnectionReasons nextReason;
-    public ConnectionPing connectionStatusPing;
-    ServerListPing lastPing;
-    Exception lastException;
+    private final Network network = Network.getNetworkInstance(this);
+    private final PacketHandler handler = new PacketHandler(this);
+    private final PacketSender sender = new PacketSender(this);
+    private final LinkedBlockingQueue<ClientboundPacket> handlingQueue = new LinkedBlockingQueue<>();
+    private final VelocityHandler velocityHandler = new VelocityHandler(this);
+    private final LinkedList<EventInvoker> eventListeners = new LinkedList<>();
+    private final int connectionId;
+    private final Player player;
+    private final String hostname;
+    private final Recipes recipes = new Recipes();
+    private LinkedList<ServerAddress> addresses;
+    private int desiredVersionNumber = -1;
+    private ServerAddress address;
+    private Thread handleThread;
+    private Version version = Versions.LOWEST_VERSION_SUPPORTED; // default
+    private final VersionMapping customMapping = new VersionMapping(this.version);
+    private ConnectionStates state = ConnectionStates.DISCONNECTED;
+    private ConnectionReasons reason;
+    private ConnectionReasons nextReason;
+    private ServerListPing lastPing;
+    private Exception lastException;
     private CommandRootNode commandRootNode;
+    private ConnectionPing connectionStatusPing;
 
     public Connection(int connectionId, String hostname, Player player) {
         this.connectionId = connectionId;
@@ -74,31 +75,31 @@ public class Connection {
     }
 
     public void resolve(ConnectionReasons reason, int versionId) {
-        lastException = null;
+        this.lastException = null;
         this.desiredVersionNumber = versionId;
 
         Thread resolveThread = new Thread(() -> {
-            if (desiredVersionNumber != -1) {
-                setVersion(Versions.getVersionById(desiredVersionNumber));
+            if (this.desiredVersionNumber != -1) {
+                setVersion(Versions.getVersionById(this.desiredVersionNumber));
             }
-            if (addresses == null) {
+            if (this.addresses == null) {
                 try {
-                    addresses = DNSUtil.getServerAddresses(hostname);
+                    this.addresses = DNSUtil.getServerAddresses(this.hostname);
                 } catch (TextParseException e) {
                     setConnectionState(ConnectionStates.FAILED_NO_RETRY);
-                    lastException = e;
+                    this.lastException = e;
                     e.printStackTrace();
                     return;
                 }
             }
-            address = addresses.getFirst();
+            this.address = this.addresses.getFirst();
             this.nextReason = reason;
-            Log.info(String.format("Trying to connect to %s", address));
+            Log.info(String.format("Trying to connect to %s", this.address));
             if (versionId != -1) {
                 setVersion(Versions.getVersionById(versionId));
             }
-            resolve(address);
-        }, String.format("%d/Resolving", connectionId));
+            resolve(this.address);
+        }, String.format("%d/Resolving", this.connectionId));
         resolveThread.start();
     }
 
@@ -107,17 +108,17 @@ public class Connection {
     }
 
     public void resolve(ServerAddress address) {
-        reason = ConnectionReasons.DNS;
-        network.connect(address);
+        this.reason = ConnectionReasons.DNS;
+        this.network.connect(address);
     }
 
     private void connect() {
-        Log.info(String.format("Connecting to server: %s", address));
-        if (reason == null || reason == ConnectionReasons.DNS) {
+        Log.info(String.format("Connecting to server: %s", this.address));
+        if (this.reason == null || this.reason == ConnectionReasons.DNS) {
             // first get version, then login
-            reason = ConnectionReasons.GET_VERSION;
+            this.reason = ConnectionReasons.GET_VERSION;
         }
-        network.connect(address);
+        this.network.connect(this.address);
     }
 
     public void connect(ServerAddress address, Version version) {
@@ -125,19 +126,19 @@ public class Connection {
         this.reason = ConnectionReasons.CONNECT;
         setVersion(version);
         Log.info(String.format("Connecting to server: %s", address));
-        network.connect(address);
+        this.network.connect(address);
     }
 
     public ServerAddress getAddress() {
-        return address;
+        return this.address;
     }
 
     public LinkedList<ServerAddress> getAvailableAddresses() {
-        return addresses;
+        return this.addresses;
     }
 
     public Version getVersion() {
-        return version;
+        return this.version;
     }
 
     public void setVersion(Version version) {
@@ -148,12 +149,12 @@ public class Connection {
         this.version = version;
         try {
             Versions.loadVersionMappings(version);
-            customMapping.setVersion(version);
+            this.customMapping.setVersion(version);
             this.customMapping.setParentMapping(version.getMapping());
         } catch (Exception e) {
             Log.printException(e, LogLevels.DEBUG);
             Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
-            lastException = new MappingsLoadingException("Mappings could not be loaded", e);
+            this.lastException = new MappingsLoadingException("Mappings could not be loaded", e);
             setConnectionState(ConnectionStates.FAILED_NO_RETRY);
         }
     }
@@ -163,17 +164,17 @@ public class Connection {
     }
 
     public void handle(ClientboundPacket p) {
-        handlingQueue.add(p);
+        this.handlingQueue.add(p);
     }
 
     public void disconnect() {
         setConnectionState(ConnectionStates.DISCONNECTING);
-        network.disconnect();
-        handleThread.interrupt();
+        this.network.disconnect();
+        this.handleThread.interrupt();
     }
 
     public Player getPlayer() {
-        return player;
+        return this.player;
     }
 
     public void sendPacket(ServerboundPacket packet) {
@@ -181,7 +182,7 @@ public class Connection {
         if (fireEvent(event)) {
             return;
         }
-        network.sendPacket(packet);
+        this.network.sendPacket(packet);
     }
 
     /**
@@ -189,8 +190,8 @@ public class Connection {
      * @return if the event has been cancelled or not
      */
     public boolean fireEvent(ConnectionEvent connectionEvent) {
-        Minosoft.eventManagers.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach((method) -> method.invoke(connectionEvent))));
-        eventListeners.forEach((method -> method.invoke(connectionEvent)));
+        Minosoft.EVENT_MANAGERS.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach((method) -> method.invoke(connectionEvent))));
+        this.eventListeners.forEach((method -> method.invoke(connectionEvent)));
         if (connectionEvent instanceof CancelableEvent cancelableEvent) {
             return cancelableEvent.isCancelled();
         }
@@ -198,11 +199,11 @@ public class Connection {
     }
 
     private void startHandlingThread() {
-        handleThread = new Thread(() -> {
+        this.handleThread = new Thread(() -> {
             while (isConnected()) {
                 ClientboundPacket packet;
                 try {
-                    packet = handlingQueue.take();
+                    packet = this.handlingQueue.take();
                 } catch (InterruptedException e) {
                     continue;
                 }
@@ -217,30 +218,34 @@ public class Connection {
                     Log.printException(e, LogLevels.PROTOCOL);
                 }
             }
-        }, String.format("%d/Handling", connectionId));
-        handleThread.start();
+        }, String.format("%d/Handling", this.connectionId));
+        this.handleThread.start();
     }
 
     public boolean isConnected() {
-        return state != ConnectionStates.FAILED && state != ConnectionStates.FAILED_NO_RETRY && state != ConnectionStates.DISCONNECTING && state != ConnectionStates.DISCONNECTED && state != ConnectionStates.CONNECTING;
+        return this.state != ConnectionStates.FAILED && this.state != ConnectionStates.FAILED_NO_RETRY && this.state != ConnectionStates.DISCONNECTING && this.state != ConnectionStates.DISCONNECTED && this.state != ConnectionStates.CONNECTING;
     }
 
     public PacketSender getSender() {
-        return sender;
+        return this.sender;
     }
 
     public ConnectionPing getConnectionStatusPing() {
-        return connectionStatusPing;
+        return this.connectionStatusPing;
+    }
+
+    public void setConnectionStatusPing(ConnectionPing connectionStatusPing) {
+        this.connectionStatusPing = connectionStatusPing;
     }
 
     public VersionMapping getMapping() {
-        return customMapping;
+        return this.customMapping;
     }
 
     public int getPacketCommand(Packets.Serverbound packet) {
         Integer command = null;
         if (getReason() == ConnectionReasons.CONNECT) {
-            command = version.getCommandByPacket(packet);
+            command = this.version.getCommandByPacket(packet);
         }
         if (command == null) {
             return Protocol.getPacketCommand(packet);
@@ -248,18 +253,18 @@ public class Connection {
         return command;
     }
 
-    public ConnectionReasons getReason() {
-        return reason;
-    }
-
     public void setReason(ConnectionReasons reason) {
         this.reason = reason;
+    }
+
+    public ConnectionReasons getReason() {
+        return this.reason;
     }
 
     public Packets.Clientbound getPacketByCommand(ConnectionStates state, int command) {
         Packets.Clientbound packet = null;
         if (getReason() == ConnectionReasons.CONNECT) {
-            packet = version.getPacketByCommand(state, command);
+            packet = this.version.getPacketByCommand(state, command);
         }
         if (packet == null) {
             return Protocol.getPacketByCommand(state, command);
@@ -268,15 +273,15 @@ public class Connection {
     }
 
     public VelocityHandler getVelocityHandler() {
-        return velocityHandler;
+        return this.velocityHandler;
     }
 
     public int getConnectionId() {
-        return connectionId;
+        return this.connectionId;
     }
 
     public ConnectionStates getConnectionState() {
-        return state;
+        return this.state;
     }
 
     public void setConnectionState(ConnectionStates state) {
@@ -289,18 +294,18 @@ public class Connection {
         switch (state) {
             case HANDSHAKING -> {
                 // get and add all events, that are connection specific
-                Minosoft.eventManagers.forEach((eventManagers -> eventManagers.getSpecificEventListeners().forEach((serverAddresses, listener) -> {
+                Minosoft.EVENT_MANAGERS.forEach((eventManagers -> eventManagers.getSpecificEventListeners().forEach((serverAddresses, listener) -> {
                     AtomicBoolean isValid = new AtomicBoolean(false);
                     serverAddresses.forEach((validator) -> {
-                        if (validator.check(address)) {
+                        if (validator.check(this.address)) {
                             isValid.set(true);
                         }
                     });
                     if (isValid.get()) {
-                        eventListeners.addAll(listener);
+                        this.eventListeners.addAll(listener);
                     }
                 })));
-                eventListeners.sort((a, b) -> {
+                this.eventListeners.sort((a, b) -> {
                     if (a == null || b == null) {
                         return 0;
                     }
@@ -308,28 +313,28 @@ public class Connection {
                 });
                 // connection established, starting threads and logging in
                 startHandlingThread();
-                ConnectionStates next = ((reason == ConnectionReasons.CONNECT) ? ConnectionStates.LOGIN : ConnectionStates.STATUS);
-                if (reason == ConnectionReasons.DNS) {
+                ConnectionStates next = ((this.reason == ConnectionReasons.CONNECT) ? ConnectionStates.LOGIN : ConnectionStates.STATUS);
+                if (this.reason == ConnectionReasons.DNS) {
                     // valid hostname found
-                    reason = nextReason;
-                    Log.info(String.format("Connection to %s seems to be okay, connecting...", address));
+                    this.reason = this.nextReason;
+                    Log.info(String.format("Connection to %s seems to be okay, connecting...", this.address));
                 }
-                network.sendPacket(new PacketHandshake(address, next, (next == ConnectionStates.STATUS) ? -1 : getVersion().getProtocolId()));
+                this.network.sendPacket(new PacketHandshake(this.address, next, (next == ConnectionStates.STATUS) ? -1 : getVersion().getProtocolId()));
                 // after sending it, switch to next state
                 setConnectionState(next);
             }
             case STATUS -> {
                 // send status request
-                network.sendPacket(new PacketStatusRequest());
+                this.network.sendPacket(new PacketStatusRequest());
             }
-            case LOGIN -> network.sendPacket(new PacketLoginStart(player));
+            case LOGIN -> this.network.sendPacket(new PacketLoginStart(this.player));
             case DISCONNECTED -> {
-                if (reason == ConnectionReasons.GET_VERSION) {
+                if (this.reason == ConnectionReasons.GET_VERSION) {
                     setReason(ConnectionReasons.CONNECT);
                     connect();
                 } else {
                     // unregister all custom recipes
-                    Recipes.removeCustomRecipes();
+                    this.recipes.removeCustomRecipes();
                 }
             }
             case FAILED -> {
@@ -338,12 +343,12 @@ public class Connection {
                     // connection was good, do not reconnect
                     break;
                 }
-                int nextIndex = addresses.indexOf(address) + 1;
-                if (addresses.size() > nextIndex) {
-                    ServerAddress nextAddress = addresses.get(nextIndex);
-                    Log.warn(String.format("Could not connect to %s, trying next hostname: %s", address, nextAddress));
+                int nextIndex = this.addresses.indexOf(this.address) + 1;
+                if (this.addresses.size() > nextIndex) {
+                    ServerAddress nextAddress = this.addresses.get(nextIndex);
+                    Log.warn(String.format("Could not connect to %s, trying next hostname: %s", this.address, nextAddress));
                     this.address = nextAddress;
-                    resolve(address);
+                    resolve(this.address);
                 } else {
                     // no connection and no servers available anymore... sorry, but you can not play today :(
                     handlePingCallbacks(null);
@@ -355,10 +360,6 @@ public class Connection {
         fireEvent(new ConnectionStateChangeEvent(this, previousState, state));
     }
 
-    public int getDesiredVersionNumber() {
-        return desiredVersionNumber;
-    }
-
     public void setDesiredVersionNumber(int desiredVersionNumber) {
         this.desiredVersionNumber = desiredVersionNumber;
     }
@@ -368,25 +369,37 @@ public class Connection {
         fireEvent(new ServerListPingArriveEvent(this, ping));
     }
 
+    public int getDesiredVersionNumber() {
+        return this.desiredVersionNumber;
+    }
+
     public void registerEvent(EventInvoker method) {
-        eventListeners.add(method);
+        this.eventListeners.add(method);
         if (method.getEventType() == ServerListPingArriveEvent.class) {
-            if (getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || lastPing != null) {
+            if (getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || this.lastPing != null) {
                 // ping done
-                method.invoke(new ServerListPingArriveEvent(this, lastPing));
+                method.invoke(new ServerListPingArriveEvent(this, this.lastPing));
             }
         }
     }
 
     public Throwable getLastConnectionException() {
-        return (lastException != null) ? lastException : network.getLastException();
+        return (this.lastException != null) ? this.lastException : this.network.getLastException();
     }
 
     public ServerListPing getLastPing() {
-        return lastPing;
+        return this.lastPing;
+    }
+
+    public Recipes getRecipes() {
+        return this.recipes;
     }
 
     public void setCommandRootNode(CommandRootNode commandRootNode) {
         this.commandRootNode = commandRootNode;
+    }
+
+    public CommandRootNode getCommandRootNode() {
+        return this.commandRootNode;
     }
 }

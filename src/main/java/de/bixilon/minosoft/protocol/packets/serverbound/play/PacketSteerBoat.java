@@ -32,13 +32,13 @@ public class PacketSteerBoat implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_STEER_BOAT);
-        buffer.writeBoolean(leftPaddle);
-        buffer.writeBoolean(rightPaddle);
+        buffer.writeBoolean(this.leftPaddle);
+        buffer.writeBoolean(this.rightPaddle);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Steering boat: (leftPaddle=%s, rightPaddle=%s)", leftPaddle, rightPaddle));
+        Log.protocol(String.format("[OUT] Steering boat: (leftPaddle=%s, rightPaddle=%s)", this.leftPaddle, this.rightPaddle));
     }
 }

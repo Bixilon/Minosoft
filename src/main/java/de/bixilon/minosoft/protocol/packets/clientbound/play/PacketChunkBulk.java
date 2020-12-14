@@ -49,7 +49,7 @@ public class PacketChunkBulk implements ClientboundPacket {
                 int sectionBitMask = buffer.readUnsignedShort();
                 int addBitMask = buffer.readUnsignedShort();
 
-                chunks.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
+                this.chunks.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
             }
             return true;
         }
@@ -67,7 +67,7 @@ public class PacketChunkBulk implements ClientboundPacket {
             sectionBitMask[i] = buffer.readUnsignedShort();
         }
         for (int i = 0; i < chunkCount; i++) {
-            chunks.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
+            this.chunks.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
         }
         return true;
     }
@@ -79,10 +79,10 @@ public class PacketChunkBulk implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Chunk bulk packet received (chunks=%s)", chunks.size()));
+        Log.protocol(String.format("[IN] Chunk bulk packet received (chunks=%s)", this.chunks.size()));
     }
 
     public HashMap<ChunkLocation, Chunk> getChunks() {
-        return chunks;
+        return this.chunks;
     }
 }

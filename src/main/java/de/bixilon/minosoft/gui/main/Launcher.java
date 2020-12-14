@@ -35,7 +35,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class Launcher {
     private static Stage stage;
-    private static boolean exit = false;
+    private static boolean exit;
 
     public static void start() {
         Log.info("Starting launcher...");
@@ -59,11 +59,11 @@ public class Launcher {
                     };
                 }
             });
-            ServerListCell.listView.setCellFactory((lv) -> ServerListCell.newInstance());
+            ServerListCell.SERVER_LIST_VIEW.setCellFactory((lv) -> ServerListCell.newInstance());
 
             ObservableList<Server> servers = FXCollections.observableArrayList();
             servers.addAll(Minosoft.getConfig().getServerList().values());
-            ServerListCell.listView.setItems(servers);
+            ServerListCell.SERVER_LIST_VIEW.setItems(servers);
             LANServerListener.removeAll(); // remove all LAN Servers
 
             VBox root;

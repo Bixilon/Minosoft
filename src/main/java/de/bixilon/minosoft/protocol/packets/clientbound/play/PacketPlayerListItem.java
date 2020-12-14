@@ -41,7 +41,7 @@ public class PacketPlayerListItem implements ClientboundPacket {
                 ping = buffer.readVarInt();
             }
             PlayerListItemActions action = (buffer.readBoolean() ? PlayerListItemActions.UPDATE_LATENCY : PlayerListItemActions.REMOVE_PLAYER);
-            playerList.add(new PlayerListItemBulk(name, ping, action));
+            this.playerList.add(new PlayerListItemBulk(name, ping, action));
             return true;
         }
         PlayerListItemActions action = PlayerListItemActions.byId(buffer.readVarInt());
@@ -70,7 +70,7 @@ public class PacketPlayerListItem implements ClientboundPacket {
                 case REMOVE_PLAYER -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, null, null, action);
                 default -> listItemBulk = null;
             }
-            playerList.add(listItemBulk);
+            this.playerList.add(listItemBulk);
         }
         return true;
     }
@@ -82,13 +82,13 @@ public class PacketPlayerListItem implements ClientboundPacket {
 
     @Override
     public void log() {
-        for (PlayerListItemBulk property : playerList) {
+        for (PlayerListItemBulk property : this.playerList) {
             Log.protocol(String.format("[IN] Received player list item bulk (%s)", property));
         }
     }
 
     public ArrayList<PlayerListItemBulk> getPlayerList() {
-        return playerList;
+        return this.playerList;
     }
 
     public enum PlayerListItemActions {
@@ -98,8 +98,10 @@ public class PacketPlayerListItem implements ClientboundPacket {
         UPDATE_DISPLAY_NAME,
         REMOVE_PLAYER;
 
+        private static final PlayerListItemActions[] PLAYER_LIST_ITEM_ACTIONS = values();
+
         public static PlayerListItemActions byId(int id) {
-            return values()[id];
+            return PLAYER_LIST_ITEM_ACTIONS[id];
         }
     }
 }

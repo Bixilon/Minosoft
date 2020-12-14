@@ -22,7 +22,7 @@ public class PortValidator implements ServerAddressValidator {
 
     public PortValidator(int port) {
         this.ports = new HashSet<>();
-        ports.add(port);
+        this.ports.add(port);
     }
 
     public PortValidator(HashSet<Integer> ports) {
@@ -31,12 +31,12 @@ public class PortValidator implements ServerAddressValidator {
 
     @Override
     public boolean check(ServerAddress address) {
-        return ports.contains(address.getPort());
+        return this.ports.contains(address.getPort());
     }
 
     @Override
     public int hashCode() {
-        return ports.hashCode();
+        return this.ports.hashCode();
     }
 
     @Override
@@ -48,10 +48,10 @@ public class PortValidator implements ServerAddressValidator {
             return false;
         }
         PortValidator their = (PortValidator) obj;
-        return ports.equals(their.getPorts());
+        return this.ports.equals(their.getPorts());
     }
 
     public HashSet<Integer> getPorts() {
-        return ports;
+        return this.ports;
     }
 }

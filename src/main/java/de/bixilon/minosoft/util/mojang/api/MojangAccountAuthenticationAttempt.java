@@ -28,14 +28,14 @@ public class MojangAccountAuthenticationAttempt {
     }
 
     public String getError() {
-        return error;
+        return this.error;
     }
 
     public MojangAccount getAccount() {
-        return account;
+        return this.account;
     }
 
     public boolean succeeded() {
-        return account != null;
+        return this.account != null;
     }
 }

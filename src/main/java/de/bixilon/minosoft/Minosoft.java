@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft;
 
-import com.google.common.collect.HashBiMap;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXDialogLayout;
 import de.bixilon.minosoft.config.Configuration;
@@ -43,13 +42,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 
 public final class Minosoft {
-    public static final HashSet<EventManager> eventManagers = new HashSet<>();
-    private static final CountUpAndDownLatch startStatusLatch = new CountUpAndDownLatch(1);
+    public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
+    private static final CountUpAndDownLatch START_STATUS_LATCH = new CountUpAndDownLatch(1);
     public static MojangAccount selectedAccount;
     public static Configuration config;
 
@@ -65,10 +63,10 @@ public final class Minosoft {
                 return;
             }
             try {
-                if (StartProgressWindow.toolkitLatch.getCount() == 2) {
+                if (StartProgressWindow.TOOLKIT_LATCH.getCount() == 2) {
                     StartProgressWindow.start();
                 }
-                StartProgressWindow.toolkitLatch.await();
+                StartProgressWindow.TOOLKIT_LATCH.await();
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 System.exit(1);
@@ -116,20 +114,6 @@ public final class Minosoft {
             Log.info(String.format("Logging info with level: %s", Log.getLevel()));
             progress.countDown();
         }, "Configuration", String.format("Load config file (%s)", StaticConfiguration.CONFIG_FILENAME), Priorities.HIGHEST, TaskImportance.REQUIRED));
-
-        taskWorker.addTask(new Task((progress) -> {
-            if (StaticConfiguration.HEADLESS_MODE) {
-                return;
-            }
-            StartProgressWindow.start();
-        }, "JavaFX Toolkit", "Initialize JavaFX", Priorities.HIGHEST));
-
-        taskWorker.addTask(new Task((progress) -> {
-            if (StaticConfiguration.HEADLESS_MODE) {
-                return;
-            }
-            StartProgressWindow.show(startStatusLatch);
-        }, "Progress Window", "Display progress window", Priorities.HIGH, TaskImportance.OPTIONAL, "JavaFX Toolkit", "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
@@ -179,9 +163,14 @@ public final class Minosoft {
             progress.countDown();
         }, "LAN Server Listener", "Listener for LAN Servers", Priorities.LOWEST, TaskImportance.OPTIONAL, "Configuration"));
 
-        taskWorker.work(startStatusLatch);
+        if (!StaticConfiguration.HEADLESS_MODE) {
+            taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFX Toolkit", "Initialize JavaFX", Priorities.HIGHEST));
+
+            taskWorker.addTask(new Task((progress) -> StartProgressWindow.show(START_STATUS_LATCH), "Progress Window", "Display progress window", Priorities.HIGH, TaskImportance.OPTIONAL, "JavaFX Toolkit", "Configuration"));
+        }
+        taskWorker.work(START_STATUS_LATCH);
         try {
-            startStatusLatch.waitUntilZero();
+            START_STATUS_LATCH.waitUntilZero();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -209,7 +198,7 @@ public final class Minosoft {
         MojangAccount.RefreshStates refreshState = account.refreshToken();
         if (refreshState == MojangAccount.RefreshStates.ERROR) {
             account.delete();
-            AccountListCell.listView.getItems().remove(account);
+            AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.getItems().remove(account);
             selectedAccount = null;
             return;
         }
@@ -232,13 +221,13 @@ public final class Minosoft {
      */
     public static void waitForStartup() {
         try {
-            startStatusLatch.waitUntilZero();
+            START_STATUS_LATCH.waitUntilZero();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     public static CountUpAndDownLatch getStartStatusLatch() {
-        return startStatusLatch;
+        return START_STATUS_LATCH;
     }
 }

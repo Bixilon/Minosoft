@@ -49,7 +49,7 @@ public class PacketSpawnPainting implements ClientboundPacket {
             position = buffer.readPosition();
             direction = Directions.byId(buffer.readUnsignedByte());
         }
-        entity = new Painting(buffer.getConnection(), entityId, uuid, position, direction, motive);
+        this.entity = new Painting(buffer.getConnection(), entityId, uuid, position, direction, motive);
         return true;
     }
 
@@ -60,11 +60,11 @@ public class PacketSpawnPainting implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Spawning painting at %s (entityId=%d, motive=%s, direction=%s)", entity.getLocation(), entity.getEntityId(), entity.getMotive(), entity.getDirection()));
+        Log.protocol(String.format("[IN] Spawning painting at %s (entityId=%d, motive=%s, direction=%s)", this.entity.getLocation(), this.entity.getEntityId(), this.entity.getMotive(), this.entity.getDirection()));
     }
 
     public Painting getEntity() {
-        return entity;
+        return this.entity;
     }
 }
 

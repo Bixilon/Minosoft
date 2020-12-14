@@ -36,10 +36,10 @@ public class ChangeGameStateEvent extends CancelableEvent {
     }
 
     public PacketChangeGameState.Reason getReason() {
-        return reason;
+        return this.reason;
     }
 
     public float getValue() {
-        return value;
+        return this.value;
     }
 }

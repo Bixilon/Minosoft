@@ -56,6 +56,6 @@ public enum RecipeTypes {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 }

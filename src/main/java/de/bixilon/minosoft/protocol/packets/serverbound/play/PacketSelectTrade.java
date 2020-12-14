@@ -30,12 +30,12 @@ public class PacketSelectTrade implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_SELECT_TRADE);
-        buffer.writeVarInt(id);
+        buffer.writeVarInt(this.id);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending select trade packet (id=%d)", id));
+        Log.protocol(String.format("[OUT] Sending select trade packet (id=%d)", this.id));
     }
 }

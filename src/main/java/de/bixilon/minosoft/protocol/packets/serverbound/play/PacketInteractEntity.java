@@ -63,32 +63,32 @@ public class PacketInteractEntity implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_INTERACT_ENTITY);
-        buffer.writeEntityId(entityId);
+        buffer.writeEntityId(this.entityId);
         if (buffer.getVersionId() < 33) {
-            if (click == EntityInteractionClicks.INTERACT_AT) {
-                click = EntityInteractionClicks.INTERACT;
+            if (this.click == EntityInteractionClicks.INTERACT_AT) {
+                this.click = EntityInteractionClicks.INTERACT;
             }
         }
-        buffer.writeByte((byte) click.ordinal());
+        buffer.writeByte((byte) this.click.ordinal());
         if (buffer.getVersionId() >= 33) {
-            if (click == EntityInteractionClicks.INTERACT_AT) {
+            if (this.click == EntityInteractionClicks.INTERACT_AT) {
                 // position
-                buffer.writeFloat((float) location.getX());
-                buffer.writeFloat((float) location.getY());
-                buffer.writeFloat((float) location.getZ());
+                buffer.writeFloat((float) this.location.getX());
+                buffer.writeFloat((float) this.location.getY());
+                buffer.writeFloat((float) this.location.getZ());
             }
 
-            if (click == EntityInteractionClicks.INTERACT_AT || click == EntityInteractionClicks.INTERACT) {
+            if (this.click == EntityInteractionClicks.INTERACT_AT || this.click == EntityInteractionClicks.INTERACT) {
                 if (buffer.getVersionId() >= 49) {
-                    buffer.writeVarInt(hand.ordinal());
+                    buffer.writeVarInt(this.hand.ordinal());
                 }
 
                 if (buffer.getVersionId() >= 725 && buffer.getVersionId() < 729) {
-                    buffer.writeBoolean(sneaking);
+                    buffer.writeBoolean(this.sneaking);
                 }
             }
             if (buffer.getVersionId() <= 729) {
-                buffer.writeBoolean(sneaking);
+                buffer.writeBoolean(this.sneaking);
             }
         }
         return buffer;
@@ -96,7 +96,7 @@ public class PacketInteractEntity implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Interacting with entity (entityId=%d, click=%s)", entityId, click));
+        Log.protocol(String.format("[OUT] Interacting with entity (entityId=%d, click=%s)", this.entityId, this.click));
     }
 
     public enum EntityInteractionClicks {

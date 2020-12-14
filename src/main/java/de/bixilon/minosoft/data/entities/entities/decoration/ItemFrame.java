@@ -29,16 +29,15 @@ public class ItemFrame extends HangingEntity {
         super(connection, entityId, uuid, location, rotation);
     }
 
-
     @EntityMetaDataFunction(identifier = "item")
     @Nullable
     public Slot getItem() {
-        return metaData.getSets().getSlot(EntityMetaDataFields.ITEM_FRAME_ITEM);
+        return this.metaData.getSets().getSlot(EntityMetaDataFields.ITEM_FRAME_ITEM);
     }
 
     @EntityMetaDataFunction(identifier = "itemRotationLevel")
     public int get() {
-        return metaData.getSets().getInt(EntityMetaDataFields.ITEM_FRAME_ROTATION);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.ITEM_FRAME_ROTATION);
     }
 
 }

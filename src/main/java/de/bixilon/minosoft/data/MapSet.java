@@ -26,12 +26,12 @@ public class MapSet<K, V> implements Map.Entry<K, V> {
 
     @Override
     public K getKey() {
-        return key;
+        return this.key;
     }
 
     @Override
     public V getValue() {
-        return value;
+        return this.value;
     }
 
     @Override

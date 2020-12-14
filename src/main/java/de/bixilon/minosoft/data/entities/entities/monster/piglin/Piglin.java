@@ -30,26 +30,25 @@ public class Piglin extends AbstractPiglin {
     @EntityMetaDataFunction(identifier = "isImmuneToZombification")
     @Override
     public boolean isImmuneToZombification() {
-        if (versionId < 738) {
+        if (this.versionId < 738) {
             return super.isImmuneToZombification();
         }
-        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IMMUNE_TO_ZOMBIFICATION);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IMMUNE_TO_ZOMBIFICATION);
     }
 
     @EntityMetaDataFunction(identifier = "isBaby")
     public boolean isBaby() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_BABY);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_BABY);
     }
 
     @EntityMetaDataFunction(identifier = "isChargingCrossbow")
     public boolean isChargingCrossbow() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_CHARGING_CROSSBOW);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_CHARGING_CROSSBOW);
     }
 
     @EntityMetaDataFunction(identifier = "isDancing")
     public boolean isDancing() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_DANCING);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_DANCING);
     }
-
 
 }

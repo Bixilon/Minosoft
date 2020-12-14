@@ -77,26 +77,26 @@ public class Task {
     }
 
     public TaskCallable getTask() {
-        return task;
+        return this.task;
     }
 
     public String getTaskName() {
-        return taskName;
+        return this.taskName;
     }
 
     public String getTaskDescription() {
-        return taskDescription;
+        return this.taskDescription;
     }
 
     public Priorities getPriority() {
-        return priority;
+        return this.priority;
     }
 
     public TaskImportance getImportance() {
-        return importance;
+        return this.importance;
     }
 
     public Set<String> getDependsOns() {
-        return dependsOns;
+        return this.dependsOns;
     }
 }

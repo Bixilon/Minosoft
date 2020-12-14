@@ -33,7 +33,7 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
         } else {
             location = buffer.readLocation();
         }
-        entity = new LightningBolt(buffer.getConnection(), entityId, location);
+        this.entity = new LightningBolt(buffer.getConnection(), entityId, location);
         return true;
     }
 
@@ -44,10 +44,10 @@ public class PacketSpawnWeatherEntity implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Thunderbolt spawned at %s (entityId=%d)", entity.getLocation(), entity.getEntityId()));
+        Log.protocol(String.format("[IN] Thunderbolt spawned at %s (entityId=%d)", this.entity.getLocation(), this.entity.getEntityId()));
     }
 
     public LightningBolt getEntity() {
-        return entity;
+        return this.entity;
     }
 }

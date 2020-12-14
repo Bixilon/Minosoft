@@ -34,10 +34,10 @@ public class PluginMessageReceiveEvent extends CancelableEvent {
     }
 
     public String getChannel() {
-        return channel;
+        return this.channel;
     }
 
     public InByteBuffer getData() {
-        return data;
+        return this.data;
     }
 }

@@ -29,18 +29,18 @@ public class Advancement {
     }
 
     public String getParentName() {
-        return parentName;
+        return this.parentName;
     }
 
     public AdvancementDisplay getDisplay() {
-        return display;
+        return this.display;
     }
 
     public ArrayList<String> getCriteria() {
-        return criteria;
+        return this.criteria;
     }
 
     public ArrayList<String[]> getRequirements() {
-        return requirements;
+        return this.requirements;
     }
 }

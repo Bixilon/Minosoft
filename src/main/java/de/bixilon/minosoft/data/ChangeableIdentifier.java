@@ -22,13 +22,13 @@ public class ChangeableIdentifier extends VersionValueMap<String> {
     String mod = ProtocolDefinition.DEFAULT_MOD;
 
     public ChangeableIdentifier(String legacy, String water) {
-        values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), legacy);
-        values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
+        this.values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), legacy);
+        this.values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
     }
 
     public ChangeableIdentifier(String legacy, String water, String mod) {
-        values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), legacy);
-        values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
+        this.values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), legacy);
+        this.values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
         this.mod = mod;
     }
 
@@ -48,7 +48,7 @@ public class ChangeableIdentifier extends VersionValueMap<String> {
         name = name.toLowerCase();
         if (name.indexOf(":") != 0) {
             String[] splitName = name.split(":", 2);
-            if (!mod.equals(splitName[0])) {
+            if (!this.mod.equals(splitName[0])) {
                 // mod is not correct
                 return false;
             }

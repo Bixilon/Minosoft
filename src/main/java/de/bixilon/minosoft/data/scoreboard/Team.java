@@ -47,46 +47,46 @@ public class Team {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public ChatComponent getDisplayName() {
-        return displayName;
+        return this.displayName;
     }
 
     public ChatComponent getPrefix() {
-        return prefix;
+        return this.prefix;
     }
 
     public ChatComponent getSuffix() {
-        return suffix;
+        return this.suffix;
     }
 
     public boolean isFriendlyFireEnabled() {
-        return friendlyFire;
+        return this.friendlyFire;
     }
 
     public boolean isSeeingFriendlyInvisibles() {
-        return seeFriendlyInvisibles;
+        return this.seeFriendlyInvisibles;
     }
 
     public void addPlayers(List<String> list) {
-        players.addAll(list);
+        this.players.addAll(list);
     }
 
     public void addPlayer(String name) {
-        players.add(name);
+        this.players.add(name);
     }
 
     public void removePlayers(List<String> list) {
-        players.removeAll(list);
+        this.players.removeAll(list);
     }
 
     public void removePlayer(String name) {
-        players.remove(name);
+        this.players.remove(name);
     }
 
     public ArrayList<String> getPlayers() {
-        return players;
+        return this.players;
     }
 }

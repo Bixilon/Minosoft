@@ -31,6 +31,6 @@ public class SpawnLocationChangeEvent extends ConnectionEvent {
     }
 
     public BlockPosition getSpawnLocation() {
-        return location;
+        return this.location;
     }
 }

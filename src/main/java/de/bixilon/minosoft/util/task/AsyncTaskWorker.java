@@ -49,30 +49,30 @@ public class AsyncTaskWorker {
     }
 
     public LinkedList<Task> getTasks() {
-        return tasks;
+        return this.tasks;
     }
 
     public void addTask(Task task) {
-        tasks.add(task);
+        this.tasks.add(task);
     }
 
     public void work(CountUpAndDownLatch progress) {
-        tasks.sort((a, b) -> {
+        this.tasks.sort((a, b) -> {
             if (a == null || b == null) {
                 return 0;
             }
             return -(a.getPriority().ordinal() - b.getPriority().ordinal());
         });
-        ConcurrentLinkedQueue<Task> doing = new ConcurrentLinkedQueue<>(tasks);
+        ConcurrentLinkedQueue<Task> doing = new ConcurrentLinkedQueue<>(this.tasks);
         CountUpAndDownLatch latch = new CountUpAndDownLatch(doing.size());
-        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Util.getThreadFactory(name));
-        while (doing.size() > 0) {
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Util.getThreadFactory(this.name));
+        while (!doing.isEmpty()) {
             doing.forEach((task -> {
                 AtomicBoolean canStart = new AtomicBoolean(false);
                 while (!canStart.get()) {
                     canStart.set(true);
                     task.getDependsOns().forEach((dependency) -> {
-                        if (!jobsDone.contains(dependency)) {
+                        if (!this.jobsDone.contains(dependency)) {
                             canStart.set(false);
                         }
                     });
@@ -86,13 +86,13 @@ public class AsyncTaskWorker {
                             e.printStackTrace();
                             if (task.getImportance() == TaskImportance.REQUIRED) {
                                 Log.fatal(String.format("Task %s (%s) failed: %s", task.getTaskName(), task.getTaskDescription(), e.getMessage()));
-                                if (exceptionRunnable != null) {
-                                    exceptionRunnable.onFatal(e);
+                                if (this.exceptionRunnable != null) {
+                                    this.exceptionRunnable.onFatal(e);
                                 }
                                 throw new RuntimeException(e);
                             }
                         }
-                        jobsDone.add(task.getTaskName());
+                        this.jobsDone.add(task.getTaskName());
                         latch.countDown();
                     });
                     doing.remove(task);
@@ -108,7 +108,7 @@ public class AsyncTaskWorker {
     }
 
     public boolean isJobDone(String name) {
-        return jobsDone.contains(name);
+        return this.jobsDone.contains(name);
     }
 
     public void setFatalError(ExceptionRunnable exceptionRunnable) {
@@ -116,7 +116,7 @@ public class AsyncTaskWorker {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {

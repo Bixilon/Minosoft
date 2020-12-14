@@ -33,7 +33,7 @@ public class ItemEntity extends Entity {
     @EntityMetaDataFunction(identifier = "item")
     @Nullable
     public Slot getItem() {
-        return metaData.getSets().getSlot(EntityMetaDataFields.ITEM_ITEM);
+        return this.metaData.getSets().getSlot(EntityMetaDataFields.ITEM_ITEM);
     }
 }
 

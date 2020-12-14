@@ -25,10 +25,10 @@ public class PacketOpenBook implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.readVarInt() == 0) {
-            hand = Hands.MAIN_HAND;
+            this.hand = Hands.MAIN_HAND;
             return true;
         }
-        hand = Hands.OFF_HAND;
+        this.hand = Hands.OFF_HAND;
         return true;
     }
 
@@ -39,10 +39,10 @@ public class PacketOpenBook implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received open book packet (hand=%s)", hand));
+        Log.protocol(String.format("[IN] Received open book packet (hand=%s)", this.hand));
     }
 
     public Hands getHand() {
-        return hand;
+        return this.hand;
     }
 }

@@ -27,12 +27,12 @@ public class PacketFacePlayer implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        face = PlayerFaces.byId(buffer.readVarInt());
-        location = buffer.readLocation();
+        this.face = PlayerFaces.byId(buffer.readVarInt());
+        this.location = buffer.readLocation();
         if (buffer.readBoolean()) {
             // entity present
-            entityId = buffer.readVarInt();
-            entityFace = PlayerFaces.byId(buffer.readVarInt());
+            this.entityId = buffer.readVarInt();
+            this.entityFace = PlayerFaces.byId(buffer.readVarInt());
         }
         return true;
     }
@@ -44,31 +44,33 @@ public class PacketFacePlayer implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received face player packet (face=%s, location=%s, entityId=%d, entityFace=%s)", face, location, entityId, entityFace));
+        Log.protocol(String.format("[IN] Received face player packet (face=%s, location=%s, entityId=%d, entityFace=%s)", this.face, this.location, this.entityId, this.entityFace));
     }
 
     public PlayerFaces getFace() {
-        return face;
+        return this.face;
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public PlayerFaces getEntityFace() {
-        return entityFace;
+        return this.entityFace;
     }
 
     public enum PlayerFaces {
         FEET,
         EYES;
 
+        private static final PlayerFaces[] PLAYER_FACES = values();
+
         public static PlayerFaces byId(int id) {
-            return values()[id];
+            return PLAYER_FACES[id];
         }
     }
 }

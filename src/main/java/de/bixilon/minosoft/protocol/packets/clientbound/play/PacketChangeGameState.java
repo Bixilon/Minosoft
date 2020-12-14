@@ -26,8 +26,8 @@ public class PacketChangeGameState implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        reason = Reason.byId(buffer.readByte(), buffer.getVersionId());
-        value = buffer.readFloat();
+        this.reason = Reason.byId(buffer.readByte(), buffer.getVersionId());
+        this.value = buffer.readFloat();
         return true;
     }
 
@@ -42,15 +42,15 @@ public class PacketChangeGameState implements ClientboundPacket {
     }
 
     public Reason getReason() {
-        return reason;
+        return this.reason;
     }
 
     public float getFloatValue() {
-        return value;
+        return this.value;
     }
 
     public int getIntValue() {
-        return (int) value;
+        return (int) this.value;
     }
 
     public enum Reason {
@@ -70,7 +70,7 @@ public class PacketChangeGameState implements ClientboundPacket {
         final VersionValueMap<Integer> valueMap;
 
         Reason(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values, true);
         }
 
         public static Reason byId(int id, int versionId) {
@@ -83,7 +83,7 @@ public class PacketChangeGameState implements ClientboundPacket {
         }
 
         public int getId(Integer versionId) {
-            Integer ret = valueMap.get(versionId);
+            Integer ret = this.valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

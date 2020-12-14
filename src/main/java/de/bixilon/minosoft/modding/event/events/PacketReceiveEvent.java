@@ -27,6 +27,6 @@ public class PacketReceiveEvent extends ConnectionEvent {
     }
 
     public ClientboundPacket getPacket() {
-        return packet;
+        return this.packet;
     }
 }

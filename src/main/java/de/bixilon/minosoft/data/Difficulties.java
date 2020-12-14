@@ -19,7 +19,9 @@ public enum Difficulties {
     NORMAL,
     HARD;
 
+    private static final Difficulties[] DIFFICULTIES = values();
+
     public static Difficulties byId(int id) {
-        return values()[id];
+        return DIFFICULTIES[id];
     }
 }

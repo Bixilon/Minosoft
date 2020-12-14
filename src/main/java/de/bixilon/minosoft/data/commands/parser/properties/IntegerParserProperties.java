@@ -23,23 +23,23 @@ public class IntegerParserProperties implements ParserProperties {
     public IntegerParserProperties(InByteBuffer buffer) {
         byte flags = buffer.readByte();
         if (BitByte.isBitMask(flags, 0x01)) {
-            minValue = buffer.readInt();
+            this.minValue = buffer.readInt();
         } else {
-            minValue = Integer.MIN_VALUE;
+            this.minValue = Integer.MIN_VALUE;
         }
         if (BitByte.isBitMask(flags, 0x02)) {
-            maxValue = buffer.readInt();
+            this.maxValue = buffer.readInt();
         } else {
-            maxValue = Integer.MAX_VALUE;
+            this.maxValue = Integer.MAX_VALUE;
         }
     }
 
     public int getMinValue() {
-        return minValue;
+        return this.minValue;
     }
 
     public int getMaxValue() {
-        return maxValue;
+        return this.maxValue;
     }
 
 }

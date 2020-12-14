@@ -29,16 +29,16 @@ import java.util.Arrays;
 import java.util.Base64;
 
 public class GUITools {
-    public final static Image MINOSOFT_LOGO = new Image(GUITools.class.getResourceAsStream("/icons/windowIcon.png"));
-    public final static ObservableList<Version> VERSIONS = FXCollections.observableArrayList();
-    public final static JFXComboBox<Version> VERSION_COMBO_BOX = new JFXComboBox<>(GUITools.VERSIONS);
-    public final static ObservableList<LogLevels> LOG_LEVELS = FXCollections.observableList(Arrays.asList(LogLevels.values().clone()));
+    public static final Image MINOSOFT_LOGO = new Image(GUITools.class.getResourceAsStream("/icons/windowIcon.png"));
+    public static final ObservableList<Version> VERSIONS = FXCollections.observableArrayList();
+    public static final JFXComboBox<Version> VERSION_COMBO_BOX = new JFXComboBox<>(VERSIONS);
+    public static final ObservableList<LogLevels> LOG_LEVELS = FXCollections.observableList(Arrays.asList(LogLevels.values().clone()));
 
     static {
-        GUITools.VERSIONS.add(Versions.LOWEST_VERSION_SUPPORTED);
-        Versions.getVersionIdMap().forEach((key, value) -> GUITools.VERSIONS.add(value));
+        VERSIONS.add(Versions.LOWEST_VERSION_SUPPORTED);
+        Versions.getVersionIdMap().forEach((key, value) -> VERSIONS.add(value));
 
-        GUITools.VERSIONS.sort((a, b) -> {
+        VERSIONS.sort((a, b) -> {
             if (a.getVersionId() == -1) {
                 return -Integer.MAX_VALUE;
             }
@@ -73,7 +73,7 @@ public class GUITools {
     public static Scene initializeScene(Scene scene) {
         scene.getStylesheets().add("/layout/style.css");
         if (scene.getWindow() instanceof Stage stage) {
-            stage.getIcons().add(GUITools.MINOSOFT_LOGO);
+            stage.getIcons().add(MINOSOFT_LOGO);
         }
         return scene;
     }

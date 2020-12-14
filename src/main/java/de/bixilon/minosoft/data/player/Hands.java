@@ -17,7 +17,9 @@ public enum Hands {
     OFF_HAND, // left
     MAIN_HAND; // right
 
+    private static final Hands[] HANDS = values();
+
     public static Hands byId(int id) {
-        return values()[id];
+        return HANDS[id];
     }
 }

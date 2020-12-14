@@ -33,6 +33,6 @@ public enum PlayerProperties {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 }

@@ -33,15 +33,15 @@ public class PacketRecipeBookState implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_SET_RECIPE_BOOK_STATE);
-        buffer.writeVarInt(book.ordinal());
-        buffer.writeBoolean(bookOpen);
-        buffer.writeBoolean(filterActive);
+        buffer.writeVarInt(this.book.ordinal());
+        buffer.writeBoolean(this.bookOpen);
+        buffer.writeBoolean(this.filterActive);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending recipe book state (book=%s, bookOpen=%s, filterActive=%s)", book, bookOpen, filterActive));
+        Log.protocol(String.format("[OUT] Sending recipe book state (book=%s, bookOpen=%s, filterActive=%s)", this.book, this.bookOpen, this.filterActive));
     }
 
     public enum RecipeBooks {
@@ -50,8 +50,10 @@ public class PacketRecipeBookState implements ServerboundPacket {
         BLAST_FURNACE,
         SMOKER;
 
+        private static final RecipeBooks[] RECIPE_BOOKS = values();
+
         public static RecipeBooks byId(int id) {
-            return values()[id];
+            return RECIPE_BOOKS[id];
         }
     }
 }

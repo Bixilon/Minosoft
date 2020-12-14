@@ -31,6 +31,6 @@ public class OutPacketBuffer extends OutByteBuffer {
     }
 
     public int getCommand() {
-        return command;
+        return this.command;
     }
 }

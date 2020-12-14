@@ -26,12 +26,12 @@ public class PacketCraftRecipeResponse implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 346) { // ToDo: was this really in 346?
-            windowId = buffer.readByte();
-            recipeId = buffer.readVarInt();
+            this.windowId = buffer.readByte();
+            this.recipeId = buffer.readVarInt();
             return true;
         }
-        windowId = buffer.readByte();
-        recipeName = buffer.readString();
+        this.windowId = buffer.readByte();
+        this.recipeName = buffer.readString();
         return true;
     }
 
@@ -42,14 +42,14 @@ public class PacketCraftRecipeResponse implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received Crafting recipe response (windowId=%d, recipeId=%d)", windowId, recipeId));
+        Log.protocol(String.format("[IN] Received Crafting recipe response (windowId=%d, recipeId=%d)", this.windowId, this.recipeId));
     }
 
     public byte getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     public int getRecipeId() {
-        return recipeId;
+        return this.recipeId;
     }
 }

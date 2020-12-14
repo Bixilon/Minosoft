@@ -25,9 +25,9 @@ public class PacketSetPassenger implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.vehicleId = buffer.readVarInt();
-        entityIds = new int[buffer.readVarInt()];
-        for (int i = 0; i < entityIds.length; i++) {
-            entityIds[i] = buffer.readVarInt();
+        this.entityIds = new int[buffer.readVarInt()];
+        for (int i = 0; i < this.entityIds.length; i++) {
+            this.entityIds[i] = buffer.readVarInt();
         }
         return true;
     }
@@ -39,14 +39,14 @@ public class PacketSetPassenger implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Attaching %d entities (vehicleId=%d)", entityIds.length, vehicleId));
+        Log.protocol(String.format("[IN] Attaching %d entities (vehicleId=%d)", this.entityIds.length, this.vehicleId));
     }
 
     public int getVehicleId() {
-        return vehicleId;
+        return this.vehicleId;
     }
 
     public int[] getEntityIds() {
-        return entityIds;
+        return this.entityIds;
     }
 }

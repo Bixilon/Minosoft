@@ -29,31 +29,31 @@ public class Panda extends Animal {
 
     @EntityMetaDataFunction(identifier = "unhappyTimer")
     public int getUnhappyTimer() {
-        return metaData.getSets().getInt(EntityMetaDataFields.PANDA_UNHAPPY_TIMER);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_UNHAPPY_TIMER);
     }
 
     @EntityMetaDataFunction(identifier = "sneezeTimer")
     public int getSneezeTimer() {
-        return metaData.getSets().getInt(EntityMetaDataFields.PANDA_SNEEZE_TIMER);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_SNEEZE_TIMER);
     }
 
     @EntityMetaDataFunction(identifier = "eatTimer")
     public int getEatTimer() {
-        return metaData.getSets().getInt(EntityMetaDataFields.PANDA_EAT_TIMER);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_EAT_TIMER);
     }
 
     @EntityMetaDataFunction(identifier = "mainGene")
     public Genes getMainGene() {
-        return Genes.values()[metaData.getSets().getInt(EntityMetaDataFields.PANDA_MAIN_GENE)];
+        return Genes.byId(this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_MAIN_GENE));
     }
 
     @EntityMetaDataFunction(identifier = "hiddenGene")
     public Genes getHiddenGene() {
-        return Genes.values()[metaData.getSets().getInt(EntityMetaDataFields.PANDA_HIDDEN_GAME)];
+        return Genes.byId(this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_HIDDEN_GAME));
     }
 
     private boolean getPandaFlag(int bitMask) {
-        return metaData.getSets().getBitMask(EntityMetaDataFields.PANDA_FLAGS, bitMask);
+        return this.metaData.getSets().getBitMask(EntityMetaDataFields.PANDA_FLAGS, bitMask);
     }
 
     @EntityMetaDataFunction(identifier = "isSneezing")
@@ -83,6 +83,11 @@ public class Panda extends Animal {
         PLAYFUL,
         BROWN,
         WEAK,
-        AGGRESSIVE
+        AGGRESSIVE;
+        private static final Genes[] GENES = values();
+
+        public static Genes byId(int id) {
+            return GENES[id];
+        }
     }
 }

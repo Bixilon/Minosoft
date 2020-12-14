@@ -36,7 +36,7 @@ public class ResourcePackChangeEvent extends CancelableEvent {
     }
 
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     public void setUrl(String url) {
@@ -45,7 +45,7 @@ public class ResourcePackChangeEvent extends CancelableEvent {
 
     @MaximumProtocolVersion(versionId = 204)
     public String getHash() {
-        return hash;
+        return this.hash;
     }
 
     @MaximumProtocolVersion(versionId = 204)

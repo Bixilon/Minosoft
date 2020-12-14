@@ -24,7 +24,7 @@ public abstract class MinosoftMod {
     private Logger logger;
 
     public boolean isEnabled() {
-        return enabled;
+        return this.enabled;
     }
 
     public void setEnabled(boolean enabled) {
@@ -32,7 +32,7 @@ public abstract class MinosoftMod {
     }
 
     public ModInfo getInfo() {
-        return info;
+        return this.info;
     }
 
     public void setInfo(ModInfo info) {
@@ -44,11 +44,11 @@ public abstract class MinosoftMod {
     }
 
     public EventManager getEventManager() {
-        return eventManager;
+        return this.eventManager;
     }
 
     public Logger getLogger() {
-        return logger;
+        return this.logger;
     }
 
     /**

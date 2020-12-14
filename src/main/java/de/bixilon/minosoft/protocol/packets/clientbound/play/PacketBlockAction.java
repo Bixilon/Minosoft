@@ -29,15 +29,15 @@ public class PacketBlockAction implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         // that's the only difference here
         if (buffer.getVersionId() < 6) {
-            position = buffer.readBlockPositionShort();
+            this.position = buffer.readBlockPositionShort();
         } else {
-            position = buffer.readPosition();
+            this.position = buffer.readPosition();
         }
         short byte1 = buffer.readUnsignedByte();
         short byte2 = buffer.readUnsignedByte();
         BlockId blockId = buffer.getConnection().getMapping().getBlockIdById(buffer.readVarInt());
 
-        data = switch (blockId.getIdentifier()) {
+        this.data = switch (blockId.getIdentifier()) {
             case "noteblock" -> new NoteBlockAction(byte1, byte2); // ToDo: was replaced in 17w47a (346) with the block id
             case "sticky_piston", "piston" -> new PistonAction(byte1, byte2);
             case "chest", "ender_chest", "trapped_chest", "white_shulker_box", "shulker_box", "orange_shulker_box", "magenta_shulker_box", "light_blue_shulker_box", "yellow_shulker_box", "lime_shulker_box", "pink_shulker_box", "gray_shulker_box", "silver_shulker_box", "cyan_shulker_box", "purple_shulker_box", "blue_shulker_box", "brown_shulker_box", "green_shulker_box", "red_shulker_box", "black_shulker_box" -> new ChestAction(byte1, byte2);
@@ -50,11 +50,11 @@ public class PacketBlockAction implements ClientboundPacket {
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public BlockAction getData() {
-        return data;
+        return this.data;
     }
 
     @Override
@@ -64,6 +64,6 @@ public class PacketBlockAction implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Block action received %s at %s", data, position));
+        Log.protocol(String.format("[IN] Block action received %s at %s", this.data, this.position));
     }
 }

@@ -25,7 +25,7 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.readBoolean()) {
-            tab = AdvancementTabs.byName(buffer.readString(), buffer.getVersionId());
+            this.tab = AdvancementTabs.byName(buffer.readString(), buffer.getVersionId());
         }
         return true;
     }
@@ -37,11 +37,11 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received select advancement tab (tab=%s)", tab));
+        Log.protocol(String.format("[IN] Received select advancement tab (tab=%s)", this.tab));
     }
 
     public AdvancementTabs getTab() {
-        return tab;
+        return this.tab;
     }
 
     public enum AdvancementTabs {
@@ -67,7 +67,7 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
         }
 
         public ChangeableIdentifier getChangeableIdentifier() {
-            return changeableIdentifier;
+            return this.changeableIdentifier;
         }
     }
 }

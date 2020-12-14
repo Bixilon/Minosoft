@@ -37,47 +37,47 @@ public class PacketTeams implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        name = buffer.readString();
-        action = TeamActions.byId(buffer.readUnsignedByte());
-        if (action == TeamActions.CREATE || action == TeamActions.INFORMATION_UPDATE) {
-            displayName = buffer.readChatComponent();
+        this.name = buffer.readString();
+        this.action = TeamActions.byId(buffer.readUnsignedByte());
+        if (this.action == TeamActions.CREATE || this.action == TeamActions.INFORMATION_UPDATE) {
+            this.displayName = buffer.readChatComponent();
             if (buffer.getVersionId() < 352) {
-                prefix = buffer.readChatComponent();
-                suffix = buffer.readChatComponent();
+                this.prefix = buffer.readChatComponent();
+                this.suffix = buffer.readChatComponent();
             }
             if (buffer.getVersionId() < 100) { // ToDo
                 setFriendlyFireByLegacy(buffer.readByte());
             } else {
                 byte friendlyFireRaw = buffer.readByte();
-                friendlyFire = BitByte.isBitMask(friendlyFireRaw, 0x01);
-                seeFriendlyInvisibles = BitByte.isBitMask(friendlyFireRaw, 0x02);
+                this.friendlyFire = BitByte.isBitMask(friendlyFireRaw, 0x01);
+                this.seeFriendlyInvisibles = BitByte.isBitMask(friendlyFireRaw, 0x02);
             }
             if (buffer.getVersionId() >= 11) {
-                nameTagVisibility = TeamNameTagVisibilities.byName(buffer.readString());
+                this.nameTagVisibility = TeamNameTagVisibilities.byName(buffer.readString());
                 if (buffer.getVersionId() >= 100) { // ToDo
-                    collisionRule = TeamCollisionRules.byName(buffer.readString());
+                    this.collisionRule = TeamCollisionRules.byName(buffer.readString());
                 }
                 if (buffer.getVersionId() < 352) {
-                    formattingCode = ChatColors.getFormattingById(buffer.readByte());
+                    this.formattingCode = ChatColors.getFormattingById(buffer.readByte());
                 } else {
-                    formattingCode = ChatColors.getFormattingById(buffer.readVarInt());
+                    this.formattingCode = ChatColors.getFormattingById(buffer.readVarInt());
                 }
             }
             if (buffer.getVersionId() >= 375) {
-                prefix = buffer.readChatComponent();
-                suffix = buffer.readChatComponent();
+                this.prefix = buffer.readChatComponent();
+                this.suffix = buffer.readChatComponent();
             }
         }
-        if (action == TeamActions.CREATE || action == TeamActions.PLAYER_ADD || action == TeamActions.PLAYER_REMOVE) {
+        if (this.action == TeamActions.CREATE || this.action == TeamActions.PLAYER_ADD || this.action == TeamActions.PLAYER_REMOVE) {
             int playerCount;
             if (buffer.getVersionId() < 7) {
                 playerCount = buffer.readUnsignedShort();
             } else {
                 playerCount = buffer.readVarInt();
             }
-            playerNames = new String[playerCount];
+            this.playerNames = new String[playerCount];
             for (int i = 0; i < playerCount; i++) {
-                playerNames[i] = buffer.readString();
+                this.playerNames[i] = buffer.readString();
             }
         }
         return true;
@@ -90,11 +90,11 @@ public class PacketTeams implements ClientboundPacket {
 
     private void setFriendlyFireByLegacy(byte raw) {
         switch (raw) {
-            case 0 -> friendlyFire = false;
-            case 1 -> friendlyFire = true;
+            case 0 -> this.friendlyFire = false;
+            case 1 -> this.friendlyFire = true;
             case 2 -> {
-                friendlyFire = false;
-                seeFriendlyInvisibles = true;
+                this.friendlyFire = false;
+                this.seeFriendlyInvisibles = true;
             }
         }
         // ToDo: seeFriendlyInvisibles for case 0 and 1
@@ -102,51 +102,51 @@ public class PacketTeams implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, seeFriendlyInvisibiles=%s, playerCount=%s)", name, action, displayName, prefix, suffix, friendlyFire, seeFriendlyInvisibles, ((playerNames == null) ? null : playerNames.length)));
+        Log.protocol(String.format("[IN] Received scoreboard Team update (name=\"%s\", action=%s, displayName=\"%s\", prefix=\"%s\", suffix=\"%s\", friendlyFire=%s, seeFriendlyInvisibiles=%s, playerCount=%s)", this.name, this.action, this.displayName, this.prefix, this.suffix, this.friendlyFire, this.seeFriendlyInvisibles, ((this.playerNames == null) ? null : this.playerNames.length)));
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public TeamActions getAction() {
-        return action;
+        return this.action;
     }
 
     public ChatComponent getDisplayName() {
-        return displayName;
+        return this.displayName;
     }
 
     public ChatComponent getPrefix() {
-        return prefix;
+        return this.prefix;
     }
 
     public ChatComponent getSuffix() {
-        return suffix;
+        return this.suffix;
     }
 
     public boolean isFriendlyFireEnabled() {
-        return friendlyFire;
+        return this.friendlyFire;
     }
 
     public boolean isSeeingFriendlyInvisibles() {
-        return seeFriendlyInvisibles;
+        return this.seeFriendlyInvisibles;
     }
 
     public ChatCode getFormattingCode() {
-        return formattingCode;
+        return this.formattingCode;
     }
 
     public TeamCollisionRules getCollisionRule() {
-        return collisionRule;
+        return this.collisionRule;
     }
 
     public TeamNameTagVisibilities getNameTagVisibility() {
-        return nameTagVisibility;
+        return this.nameTagVisibility;
     }
 
     public String[] getPlayerNames() {
-        return playerNames;
+        return this.playerNames;
     }
 
     public enum TeamActions {
@@ -156,8 +156,10 @@ public class PacketTeams implements ClientboundPacket {
         PLAYER_ADD,
         PLAYER_REMOVE;
 
+        private static final TeamActions[] TEAM_ACTIONS = values();
+
         public static TeamActions byId(int id) {
-            return values()[id];
+            return TEAM_ACTIONS[id];
         }
     }
 
@@ -183,7 +185,7 @@ public class PacketTeams implements ClientboundPacket {
         }
 
         public String getName() {
-            return name;
+            return this.name;
         }
     }
 
@@ -209,7 +211,7 @@ public class PacketTeams implements ClientboundPacket {
         }
 
         public String getName() {
-            return name;
+            return this.name;
         }
     }
 }

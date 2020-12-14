@@ -41,20 +41,20 @@ public class PacketEntityAction implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ENTITY_ACTION);
-        buffer.writeEntityId(entityId);
+        buffer.writeEntityId(this.entityId);
         if (buffer.getVersionId() < 7) {
-            buffer.writeByte((byte) action.getId(buffer.getVersionId()));
-            buffer.writeInt(parameter);
+            buffer.writeByte((byte) this.action.getId(buffer.getVersionId()));
+            buffer.writeInt(this.parameter);
         } else {
-            buffer.writeVarInt(action.getId(buffer.getVersionId()));
-            buffer.writeVarInt(parameter);
+            buffer.writeVarInt(this.action.getId(buffer.getVersionId()));
+            buffer.writeVarInt(this.parameter);
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending entity action packet (entityId=%d, action=%s, parameter=%d)", entityId, action, parameter));
+        Log.protocol(String.format("[OUT] Sending entity action packet (entityId=%d, action=%s, parameter=%d)", this.entityId, this.action, this.parameter));
     }
 
     public enum EntityActions {
@@ -71,7 +71,7 @@ public class PacketEntityAction implements ServerboundPacket {
         final VersionValueMap<Integer> valueMap;
 
         EntityActions(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values, true);
         }
 
         public static EntityActions byId(int id, int versionId) {
@@ -84,7 +84,7 @@ public class PacketEntityAction implements ServerboundPacket {
         }
 
         public int getId(int versionId) {
-            Integer ret = valueMap.get(versionId);
+            Integer ret = this.valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

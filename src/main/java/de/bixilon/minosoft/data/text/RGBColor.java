@@ -32,28 +32,28 @@ public final class RGBColor implements ChatCode {
         if (colorString.startsWith("#")) {
             colorString = colorString.substring(1);
         }
-        color = Integer.parseInt(colorString, 16);
+        this.color = Integer.parseInt(colorString, 16);
     }
 
     public int getAlpha() {
-        return (color >> 24) & 0xFF;
+        return (this.color >> 24) & 0xFF;
     }
 
     public int getRed() {
-        return (color >> 16) & 0xFF;
+        return (this.color >> 16) & 0xFF;
     }
 
     public int getGreen() {
-        return (color >> 8) & 0xFF;
+        return (this.color >> 8) & 0xFF;
     }
 
     public int getBlue() {
-        return color & 0xFF;
+        return this.color & 0xFF;
     }
 
     @Override
     public int hashCode() {
-        return color;
+        return this.color;
     }
 
     @Override
@@ -65,15 +65,15 @@ public final class RGBColor implements ChatCode {
         return getColor() == their.getColor();
     }
 
-    public int getColor() {
-        return color;
-    }
-
     @Override
     public String toString() {
         if (getAlpha() > 0) {
-            return String.format("#%08X", color);
+            return String.format("#%08X", this.color);
         }
-        return String.format("#%06X", (0xFFFFFF & color));
+        return String.format("#%06X", (0xFFFFFF & this.color));
+    }
+
+    public int getColor() {
+        return this.color;
     }
 }

@@ -65,41 +65,41 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_BLOCK_PLACEMENT);
         if (buffer.getVersionId() >= 453) {
-            buffer.writeVarInt(hand.ordinal());
+            buffer.writeVarInt(this.hand.ordinal());
         }
         if (buffer.getVersionId() < 7) {
-            buffer.writeBlockPositionByte(position);
+            buffer.writeBlockPositionByte(this.position);
         } else {
-            buffer.writePosition(position);
+            buffer.writePosition(this.position);
         }
         if (buffer.getVersionId() < 49) {
-            buffer.writeByte(direction);
-            buffer.writeSlot(item);
+            buffer.writeByte(this.direction);
+            buffer.writeSlot(this.item);
         } else {
-            buffer.writeVarInt(direction);
+            buffer.writeVarInt(this.direction);
             if (buffer.getVersionId() < 453) {
-                buffer.writeVarInt(hand.ordinal());
+                buffer.writeVarInt(this.hand.ordinal());
             }
         }
 
         if (buffer.getVersionId() >= 453) {
-            buffer.writeBoolean(insideBlock);
+            buffer.writeBoolean(this.insideBlock);
         }
 
         if (buffer.getVersionId() < 309) {
-            buffer.writeByte((byte) (cursorX * 15.0F));
-            buffer.writeByte((byte) (cursorY * 15.0F));
-            buffer.writeByte((byte) (cursorZ * 15.0F));
+            buffer.writeByte((byte) (this.cursorX * 15.0F));
+            buffer.writeByte((byte) (this.cursorY * 15.0F));
+            buffer.writeByte((byte) (this.cursorZ * 15.0F));
         } else {
-            buffer.writeFloat(cursorX);
-            buffer.writeFloat(cursorY);
-            buffer.writeFloat(cursorZ);
+            buffer.writeFloat(this.cursorX);
+            buffer.writeFloat(this.cursorY);
+            buffer.writeFloat(this.cursorZ);
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Send player block placement (position=%s, direction=%d, item=%s, cursor=%s %s %s)", position, direction, item, cursorX, cursorY, cursorZ));
+        Log.protocol(String.format("[OUT] Send player block placement (position=%s, direction=%d, item=%s, cursor=%s %s %s)", this.position, this.direction, this.item, this.cursorX, this.cursorY, this.cursorZ));
     }
 }

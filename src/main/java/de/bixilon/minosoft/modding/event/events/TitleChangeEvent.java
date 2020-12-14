@@ -48,26 +48,26 @@ public class TitleChangeEvent extends CancelableEvent {
     }
 
     public PacketTitle.TitleActions getAction() {
-        return action;
+        return this.action;
     }
 
     public ChatComponent getText() {
-        return text;
+        return this.text;
     }
 
     public ChatComponent getSubText() {
-        return subText;
+        return this.subText;
     }
 
     public int getFadeInTime() {
-        return fadeInTime;
+        return this.fadeInTime;
     }
 
     public int getStayTime() {
-        return stayTime;
+        return this.stayTime;
     }
 
     public int getFadeOutTime() {
-        return fadeOutTime;
+        return this.fadeOutTime;
     }
 }

@@ -27,12 +27,12 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 7) {
-            position = buffer.readBlockPositionShort();
+            this.position = buffer.readBlockPositionShort();
         } else {
-            position = buffer.readPosition();
+            this.position = buffer.readPosition();
         }
         for (byte i = 0; i < 4; i++) {
-            lines[i] = buffer.readChatComponent();
+            this.lines[i] = buffer.readChatComponent();
         }
         return true;
     }
@@ -44,14 +44,14 @@ public class PacketUpdateSignReceiving implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Sign data received at: %s", position));
+        Log.protocol(String.format("[IN] Sign data received at: %s", this.position));
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public ChatComponent[] getLines() {
-        return lines;
+        return this.lines;
     }
 }

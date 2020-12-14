@@ -24,7 +24,7 @@ public class PacketDisconnect implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        reason = buffer.readChatComponent();
+        this.reason = buffer.readChatComponent();
         return true;
     }
 
@@ -35,10 +35,10 @@ public class PacketDisconnect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received disconnect packet (reason=\"%s\")", reason.getANSIColoredMessage()));
+        Log.protocol(String.format("[IN] Received disconnect packet (reason=\"%s\")", this.reason.getANSIColoredMessage()));
     }
 
     public ChatComponent getReason() {
-        return reason;
+        return this.reason;
     }
 }

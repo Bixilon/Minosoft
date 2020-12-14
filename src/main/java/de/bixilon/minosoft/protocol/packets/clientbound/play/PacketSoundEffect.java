@@ -19,9 +19,9 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 public class PacketSoundEffect implements ClientboundPacket {
-    static final float pitchCalc = 100.0F / 63.0F;
     Location location;
     SoundCategories category;
     int soundId;
@@ -32,22 +32,22 @@ public class PacketSoundEffect implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() >= 321 && buffer.getVersionId() < 326) {
             // category was moved to the top
-            category = SoundCategories.byId(buffer.readVarInt());
+            this.category = SoundCategories.byId(buffer.readVarInt());
         }
-        soundId = buffer.readVarInt();
+        this.soundId = buffer.readVarInt();
 
         if (buffer.getVersionId() >= 321 && buffer.getVersionId() < 326) {
             buffer.readString(); // parrot entity type
         }
         if (buffer.getVersionId() >= 95 && (buffer.getVersionId() < 321 || buffer.getVersionId() >= 326)) {
-            category = SoundCategories.byId(buffer.readVarInt());
+            this.category = SoundCategories.byId(buffer.readVarInt());
         }
-        location = new Location(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
-        volume = buffer.readFloat();
+        this.location = new Location(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
+        this.volume = buffer.readFloat();
         if (buffer.getVersionId() < 201) {
-            pitch = (buffer.readByte() * pitchCalc) / 100F;
+            this.pitch = (buffer.readByte() * ProtocolDefinition.PITCH_CALCULATION_CONSTANT) / 100F;
         } else {
-            pitch = buffer.readFloat();
+            this.pitch = buffer.readFloat();
         }
         return true;
     }
@@ -59,29 +59,29 @@ public class PacketSoundEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Play sound effect (soundId=%d, category=%s, volume=%s, pitch=%s, location=%s)", soundId, category, volume, pitch, location));
+        Log.protocol(String.format("[IN] Play sound effect (soundId=%d, category=%s, volume=%s, pitch=%s, location=%s)", this.soundId, this.category, this.volume, this.pitch, this.location));
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
     /**
      * @return Pitch in Percent
      */
     public float getPitch() {
-        return pitch;
+        return this.pitch;
     }
 
     public int getSoundId() {
-        return soundId;
+        return this.soundId;
     }
 
     public float getVolume() {
-        return volume;
+        return this.volume;
     }
 
     public SoundCategories getCategory() {
-        return category;
+        return this.category;
     }
 }

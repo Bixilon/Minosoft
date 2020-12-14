@@ -20,40 +20,40 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 
 public class MinosoftCommandLineArguments {
-    private static final HashMap<Option, CommandLineArgumentHandler> optionHashMap = new HashMap<>();
-    private static final Options options = new Options();
-    private static final HelpFormatter formatter = new HelpFormatter();
+    private static final HashMap<Option, CommandLineArgumentHandler> OPTION_HASH_MAP = new HashMap<>();
+    private static final Options OPTIONS = new Options();
+    private static final HelpFormatter HELP_FORMATTER = new HelpFormatter();
 
     static {
         registerDefaultArguments();
     }
 
     public static void parseCommandLineArguments(String[] args) {
-        MinosoftCommandLineArguments.optionHashMap.forEach((option, commandLineArgumentHandler) -> options.addOption(option));
+        OPTION_HASH_MAP.forEach((option, commandLineArgumentHandler) -> OPTIONS.addOption(option));
 
         try {
-            CommandLine commandLine = new DefaultParser().parse(options, args);
+            CommandLine commandLine = new DefaultParser().parse(OPTIONS, args);
 
             for (Option option : commandLine.getOptions()) {
-                if (!MinosoftCommandLineArguments.optionHashMap.containsKey(option)) {
+                if (!OPTION_HASH_MAP.containsKey(option)) {
                     continue;
                 }
-                MinosoftCommandLineArguments.optionHashMap.get(option).handle(option.getValue());
+                OPTION_HASH_MAP.get(option).handle(option.getValue());
             }
         } catch (ParseException e) {
             System.out.println(e.getMessage());
-            formatter.printHelp("java -jar Minosoft.jar", options);
+            HELP_FORMATTER.printHelp("java -jar Minosoft.jar", OPTIONS);
             System.exit(1);
         }
     }
 
     public static void registerCommandLineOption(Option option, CommandLineArgumentHandler handler) {
-        optionHashMap.put(option, handler);
+        OPTION_HASH_MAP.put(option, handler);
     }
 
     private static void registerDefaultArguments() {
         registerCommandLineOption(new Option("?", "help", false, "Displays this help"), (value -> {
-            formatter.printHelp("java -jar Minosoft.jar", options);
+            HELP_FORMATTER.printHelp("java -jar Minosoft.jar", OPTIONS);
             System.exit(1);
         }));
         registerCommandLineOption(new Option("home_folder", true, "Home of Minosoft"), (value -> StaticConfiguration.HOME_DIRECTORY = value + "/"));

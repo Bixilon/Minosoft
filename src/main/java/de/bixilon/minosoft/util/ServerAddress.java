@@ -24,7 +24,7 @@ public class ServerAddress {
 
     @Override
     public int hashCode() {
-        return hostname.hashCode() * port;
+        return this.hostname.hashCode() * this.port;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ServerAddress {
             return true;
         }
         ServerAddress their = (ServerAddress) obj;
-        return hostname.equals(their.getHostname()) && port == their.getPort();
+        return this.hostname.equals(their.getHostname()) && this.port == their.getPort();
     }
 
     @Override
@@ -42,10 +42,10 @@ public class ServerAddress {
     }
 
     public String getHostname() {
-        return hostname;
+        return this.hostname;
     }
 
     public int getPort() {
-        return port;
+        return this.port;
     }
 }

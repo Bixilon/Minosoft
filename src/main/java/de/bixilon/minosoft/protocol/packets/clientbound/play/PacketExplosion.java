@@ -29,22 +29,22 @@ public class PacketExplosion implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        location = new Location(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-        radius = buffer.readFloat();
-        if (radius > 100.0F) {
+        this.location = new Location(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        this.radius = buffer.readFloat();
+        if (this.radius > 100.0F) {
             // maybe somebody tries to make bullshit?
             // Sorry, Maximilian Rosenmüller
-            throw new IllegalArgumentException(String.format("Explosion to big %s > 100.0F", radius));
+            throw new IllegalArgumentException(String.format("Explosion to big %s > 100.0F", this.radius));
         }
         int recordCount = buffer.readInt();
-        records = new byte[recordCount][3];
+        this.records = new byte[recordCount][3];
         for (int i = 0; i < recordCount; i++) {
-            records[i] = buffer.readBytes(3);
+            this.records[i] = buffer.readBytes(3);
         }
 
-        motionX = buffer.readFloat();
-        motionY = buffer.readFloat();
-        motionZ = buffer.readFloat();
+        this.motionX = buffer.readFloat();
+        this.motionY = buffer.readFloat();
+        this.motionZ = buffer.readFloat();
         return true;
     }
 
@@ -55,30 +55,30 @@ public class PacketExplosion implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Explosion packet received at %s (recordCount=%d, radius=%s)", location, records.length, radius));
+        Log.protocol(String.format("[IN] Explosion packet received at %s (recordCount=%d, radius=%s)", this.location, this.records.length, this.radius));
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
     public float getMotionX() {
-        return motionX;
+        return this.motionX;
     }
 
     public float getMotionY() {
-        return motionY;
+        return this.motionY;
     }
 
     public float getMotionZ() {
-        return motionZ;
+        return this.motionZ;
     }
 
     public byte[][] getRecords() {
-        return records;
+        return this.records;
     }
 
     public float getRadius() {
-        return radius;
+        return this.radius;
     }
 }

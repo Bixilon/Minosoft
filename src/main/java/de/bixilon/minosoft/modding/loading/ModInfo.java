@@ -40,9 +40,9 @@ public class ModInfo {
         this.authors = new String[authors.size()];
         AtomicInteger i = new AtomicInteger();
         authors.forEach((authorElement) -> this.authors[i.getAndIncrement()] = authorElement.getAsString());
-        moddingAPIVersion = json.get("moddingAPIVersion").getAsInt();
-        if (moddingAPIVersion > ModLoader.CURRENT_MODDING_API_VERSION) {
-            throw new ModLoadingException(String.format("Mod was written with for a newer version of minosoft (moddingAPIVersion=%d, expected=%d)", moddingAPIVersion, ModLoader.CURRENT_MODDING_API_VERSION));
+        this.moddingAPIVersion = json.get("moddingAPIVersion").getAsInt();
+        if (this.moddingAPIVersion > ModLoader.CURRENT_MODDING_API_VERSION) {
+            throw new ModLoadingException(String.format("Mod was written with for a newer version of minosoft (moddingAPIVersion=%d, expected=%d)", this.moddingAPIVersion, ModLoader.CURRENT_MODDING_API_VERSION));
         }
         this.identifier = json.get("identifier").getAsString();
         this.mainClass = json.get("mainClass").getAsString();
@@ -56,58 +56,58 @@ public class ModInfo {
         if (json.has("dependencies")) {
             JsonObject dependencies = json.getAsJsonObject("dependencies");
             if (dependencies.has("hard")) {
-                hardDependencies.addAll(ModDependency.serializeDependencyArray(dependencies.getAsJsonArray("hard")));
+                this.hardDependencies.addAll(ModDependency.serializeDependencyArray(dependencies.getAsJsonArray("hard")));
             }
             if (dependencies.has("soft")) {
-                softDependencies.addAll(ModDependency.serializeDependencyArray(dependencies.getAsJsonArray("soft")));
+                this.softDependencies.addAll(ModDependency.serializeDependencyArray(dependencies.getAsJsonArray("soft")));
             }
         }
     }
 
     public String[] getAuthors() {
-        return authors;
+        return this.authors;
     }
 
     public String getIdentifier() {
-        return identifier;
+        return this.identifier;
     }
 
     public String getMainClass() {
-        return mainClass;
+        return this.mainClass;
     }
 
     public LoadingInfo getLoadingInfo() {
-        return loadingInfo;
+        return this.loadingInfo;
     }
 
     @Deprecated
     public UUID getUUID() {
-        return modVersionIdentifier.getUUID();
+        return this.modVersionIdentifier.getUUID();
     }
 
     @Deprecated
     public int getVersionId() {
-        return modVersionIdentifier.getVersionId();
+        return this.modVersionIdentifier.getVersionId();
     }
 
     public ModVersionIdentifier getModIdentifier() {
-        return modVersionIdentifier;
+        return this.modVersionIdentifier;
     }
 
     public String getVersionName() {
-        return versionName;
+        return this.versionName;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public HashSet<ModDependency> getHardDependencies() {
-        return hardDependencies;
+        return this.hardDependencies;
     }
 
     public HashSet<ModDependency> getSoftDependencies() {
-        return softDependencies;
+        return this.softDependencies;
     }
 
     @Override

@@ -23,22 +23,22 @@ public class FloatParserProperties implements ParserProperties {
     public FloatParserProperties(InByteBuffer buffer) {
         byte flags = buffer.readByte();
         if (BitByte.isBitMask(flags, 0x01)) {
-            minValue = buffer.readFloat();
+            this.minValue = buffer.readFloat();
         } else {
-            minValue = Float.MIN_VALUE;
+            this.minValue = Float.MIN_VALUE;
         }
         if (BitByte.isBitMask(flags, 0x02)) {
-            maxValue = buffer.readFloat();
+            this.maxValue = buffer.readFloat();
         } else {
-            maxValue = Float.MAX_VALUE;
+            this.maxValue = Float.MAX_VALUE;
         }
     }
 
     public float getMinValue() {
-        return minValue;
+        return this.minValue;
     }
 
     public float getMaxValue() {
-        return maxValue;
+        return this.maxValue;
     }
 }

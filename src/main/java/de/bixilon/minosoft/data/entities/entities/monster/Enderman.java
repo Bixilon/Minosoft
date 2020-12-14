@@ -32,19 +32,19 @@ public class Enderman extends AbstractSkeleton {
     @EntityMetaDataFunction(identifier = "carriedBlock")
     @Nullable
     public Block getCarriedBlock() {
-        if (versionId <= 47) { // ToDo: No clue here
-            return connection.getMapping().getBlockById(metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK) << 4 | metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK_DATA));
+        if (this.versionId <= 47) { // ToDo: No clue here
+            return this.connection.getMapping().getBlockById(this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK) << 4 | this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK_DATA));
         }
-        return metaData.getSets().getBlock(EntityMetaDataFields.ENDERMAN_CARRIED_BLOCK);
+        return this.metaData.getSets().getBlock(EntityMetaDataFields.ENDERMAN_CARRIED_BLOCK);
     }
 
     @EntityMetaDataFunction(identifier = "isScreaming")
     public boolean isScreaming() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_SCREAMING);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_SCREAMING);
     }
 
     @EntityMetaDataFunction(identifier = "isStarring")
     public boolean isStarring() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_STARRING);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_STARRING);
     }
 }

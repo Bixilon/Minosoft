@@ -48,49 +48,49 @@ public class PlayerEntity extends LivingEntity {
 
     @EntityMetaDataFunction(identifier = "absorptionHearts")
     public float getPlayerAbsorptionHearts() {
-        return metaData.getSets().getFloat(EntityMetaDataFields.PLAYER_ABSORPTION_HEARTS);
+        return this.metaData.getSets().getFloat(EntityMetaDataFields.PLAYER_ABSORPTION_HEARTS);
     }
 
     @EntityMetaDataFunction(identifier = "score")
     public int getScore() {
-        return metaData.getSets().getInt(EntityMetaDataFields.PLAYER_SCORE);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.PLAYER_SCORE);
     }
 
     private boolean getSkinPartsFlag(int bitMask) {
-        return metaData.getSets().getBitMask(EntityMetaDataFields.PLAYER_SKIN_PARTS_FLAGS, bitMask);
+        return this.metaData.getSets().getBitMask(EntityMetaDataFields.PLAYER_SKIN_PARTS_FLAGS, bitMask);
     }
 
     @EntityMetaDataFunction(identifier = "mainHand")
     public Hands getMainHand() {
-        return metaData.getSets().getByte(EntityMetaDataFields.PLAYER_SKIN_MAIN_HAND) == 0x01 ? Hands.OFF_HAND : Hands.MAIN_HAND;
+        return this.metaData.getSets().getByte(EntityMetaDataFields.PLAYER_SKIN_MAIN_HAND) == 0x01 ? Hands.OFF_HAND : Hands.MAIN_HAND;
     }
 
     @EntityMetaDataFunction(identifier = "leftShoulderEntityData")
     @Nullable
     public CompoundTag getLeftShoulderData() {
-        return metaData.getSets().getNBT(EntityMetaDataFields.PLAYER_LEFT_SHOULDER_DATA);
+        return this.metaData.getSets().getNBT(EntityMetaDataFields.PLAYER_LEFT_SHOULDER_DATA);
     }
 
     @EntityMetaDataFunction(identifier = "rightShoulderEntityData")
     @Nullable
     public CompoundTag getRightShoulderData() {
-        return metaData.getSets().getNBT(EntityMetaDataFields.PLAYER_RIGHT_SHOULDER_DATA);
+        return this.metaData.getSets().getNBT(EntityMetaDataFields.PLAYER_RIGHT_SHOULDER_DATA);
     }
 
     @EntityMetaDataFunction(identifier = "name")
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @EntityMetaDataFunction(identifier = "properties")
     @Nullable
     public HashSet<PlayerPropertyData> getProperties() {
-        return properties;
+        return this.properties;
     }
 
     @Deprecated
     public Item getCurrentItem() {
-        return currentItem;
+        return this.currentItem;
     }
 }
 

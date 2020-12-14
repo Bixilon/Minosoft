@@ -28,11 +28,11 @@ public class PacketEntitySoundEffect implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        soundId = buffer.readVarInt();
-        category = SoundCategories.byId(buffer.readVarInt());
-        entityId = buffer.readVarInt();
-        volume = buffer.readFloat();
-        pitch = buffer.readFloat();
+        this.soundId = buffer.readVarInt();
+        this.category = SoundCategories.byId(buffer.readVarInt());
+        this.entityId = buffer.readVarInt();
+        this.volume = buffer.readFloat();
+        this.pitch = buffer.readFloat();
         return true;
     }
 
@@ -43,26 +43,26 @@ public class PacketEntitySoundEffect implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Play sound entity effect (soundId=%d, category=%s, entityId=%d, volume=%s, pitch=%s)", soundId, category, entityId, volume, pitch));
+        Log.protocol(String.format("[IN] Play sound entity effect (soundId=%d, category=%s, entityId=%d, volume=%s, pitch=%s)", this.soundId, this.category, this.entityId, this.volume, this.pitch));
     }
 
     public int getSoundId() {
-        return soundId;
+        return this.soundId;
     }
 
     public SoundCategories getCategory() {
-        return category;
+        return this.category;
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public float getVolume() {
-        return volume;
+        return this.volume;
     }
 
     public float getPitch() {
-        return pitch;
+        return this.pitch;
     }
 }

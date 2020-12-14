@@ -25,10 +25,10 @@ public class PacketWindowItems implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        windowId = buffer.readByte();
-        data = new Slot[buffer.readUnsignedShort()];
-        for (int i = 0; i < data.length; i++) {
-            data[i] = buffer.readSlot();
+        this.windowId = buffer.readByte();
+        this.data = new Slot[buffer.readUnsignedShort()];
+        for (int i = 0; i < this.data.length; i++) {
+            this.data[i] = buffer.readSlot();
         }
         return true;
     }
@@ -40,14 +40,14 @@ public class PacketWindowItems implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Inventory slot change: %d", data.length));
+        Log.protocol(String.format("[IN] Inventory slot change: %d", this.data.length));
     }
 
     public byte getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     public Slot[] getData() {
-        return data;
+        return this.data;
     }
 }

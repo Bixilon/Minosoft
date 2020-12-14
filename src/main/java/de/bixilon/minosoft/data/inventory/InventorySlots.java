@@ -67,12 +67,14 @@ public class InventorySlots {
         HOTBAR_9,
         OFF_HAND;
 
-        public static PlayerInventorySlots byId(int id, int versionId) {
-            return values()[id];
-        }
+        private static final PlayerInventorySlots[] INVENTORY_SLOTS = values();
 
         public static PlayerInventorySlots byId(int id) {
-            return values()[id];
+            return INVENTORY_SLOTS[id];
+        }
+
+        public static PlayerInventorySlots byId(int id, int versionId) {
+            return byId(id);
         }
 
         @Override
@@ -92,11 +94,11 @@ public class InventorySlots {
         final VersionValueMap<Integer> valueMap;
 
         EntityInventorySlots(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values, true);
         }
 
         EntityInventorySlots(int id) {
-            valueMap = new VersionValueMap<>(id);
+            this.valueMap = new VersionValueMap<>(id);
         }
 
         public static EntityInventorySlots byId(int id, int versionId) {
@@ -110,7 +112,7 @@ public class InventorySlots {
 
         @Override
         public int getId(int versionId) {
-            Integer value = valueMap.get(versionId);
+            Integer value = this.valueMap.get(versionId);
             if (value == null) {
                 return Integer.MIN_VALUE;
             }

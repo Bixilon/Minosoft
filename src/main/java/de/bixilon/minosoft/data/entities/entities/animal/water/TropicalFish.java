@@ -29,6 +29,6 @@ public class TropicalFish extends AbstractSchoolingFish {
 
     @EntityMetaDataFunction(identifier = "variant")
     public int getVariant() {
-        return metaData.getSets().getInt(EntityMetaDataFields.TROPICAL_FISH_VARIANT);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.TROPICAL_FISH_VARIANT);
     }
 }

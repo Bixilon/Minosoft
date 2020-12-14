@@ -25,8 +25,8 @@ public class PacketTabHeaderAndFooter implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        header = buffer.readChatComponent();
-        footer = buffer.readChatComponent();
+        this.header = buffer.readChatComponent();
+        this.footer = buffer.readChatComponent();
         return true;
     }
 
@@ -37,15 +37,15 @@ public class PacketTabHeaderAndFooter implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received tab list header: %s", header.getANSIColoredMessage()));
-        Log.protocol(String.format("[IN] Received tab list footer: %s", footer.getANSIColoredMessage()));
+        Log.protocol(String.format("[IN] Received tab list header: %s", this.header.getANSIColoredMessage()));
+        Log.protocol(String.format("[IN] Received tab list footer: %s", this.footer.getANSIColoredMessage()));
     }
 
     public ChatComponent getHeader() {
-        return header;
+        return this.header;
     }
 
     public ChatComponent getFooter() {
-        return footer;
+        return this.footer;
     }
 }

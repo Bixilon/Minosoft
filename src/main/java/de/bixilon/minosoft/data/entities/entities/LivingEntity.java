@@ -29,7 +29,7 @@ public abstract class LivingEntity extends Entity {
     }
 
     private boolean getLivingEntityFlag(int bitMask) {
-        return metaData.getSets().getBitMask(EntityMetaDataFields.LIVING_ENTITY_FLAGS, bitMask);
+        return this.metaData.getSets().getBitMask(EntityMetaDataFields.LIVING_ENTITY_FLAGS, bitMask);
     }
 
     // = isUsingItem
@@ -50,33 +50,33 @@ public abstract class LivingEntity extends Entity {
 
     @EntityMetaDataFunction(identifier = "health")
     public float getHealth() {
-        return metaData.getSets().getFloat(EntityMetaDataFields.LIVING_ENTITY_HEALTH);
+        return this.metaData.getSets().getFloat(EntityMetaDataFields.LIVING_ENTITY_HEALTH);
     }
 
     @EntityMetaDataFunction(identifier = "effectColor")
     public int getEffectColor() {
-        return metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_EFFECT_COLOR);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_EFFECT_COLOR);
     }
 
     @EntityMetaDataFunction(identifier = "isEffectAmbient")
     public boolean getEffectAmbient() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.LIVING_ENTITY_EFFECT_AMBIENCE);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.LIVING_ENTITY_EFFECT_AMBIENCE);
     }
 
     @EntityMetaDataFunction(identifier = "arrowsInEntity")
     public int getArrowCount() {
-        return metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ARROW_COUNT);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ARROW_COUNT);
     }
 
     @EntityMetaDataFunction(identifier = "absorptionHearts")
     public int getAbsorptionHearts() {
-        return metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ABSORPTION_HEARTS);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ABSORPTION_HEARTS);
     }
 
     @EntityMetaDataFunction(identifier = "bedLocation")
     @Nullable
     public BlockPosition getBedLocation() {
-        return metaData.getSets().getPosition(EntityMetaDataFields.LIVING_ENTITY_BED_POSITION);
+        return this.metaData.getSets().getPosition(EntityMetaDataFields.LIVING_ENTITY_BED_POSITION);
     }
 
 }

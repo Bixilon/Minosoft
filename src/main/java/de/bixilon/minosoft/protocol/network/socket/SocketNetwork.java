@@ -57,9 +57,9 @@ public class SocketNetwork implements Network {
 
     @Override
     public void connect(ServerAddress address) {
-        lastException = null;
+        this.lastException = null;
         // check if we are already connected or try to connect
-        if (connection.isConnected() || connection.getConnectionState() == ConnectionStates.CONNECTING) {
+        if (this.connection.isConnected() || this.connection.getConnectionState() == ConnectionStates.CONNECTING) {
             return;
         }
         // wait for data or send until it should disconnect
@@ -69,41 +69,41 @@ public class SocketNetwork implements Network {
         // everything sent for now, waiting for data
         // add to queue
         // Could not connect
-        socketRThread = new Thread(() -> {
+        this.socketRThread = new Thread(() -> {
             try {
-                socket = new Socket();
-                socket.setSoTimeout(ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
-                socket.connect(new InetSocketAddress(address.getHostname(), address.getPort()), ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
+                this.socket = new Socket();
+                this.socket.setSoTimeout(ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
+                this.socket.connect(new InetSocketAddress(address.getHostname(), address.getPort()), ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
                 // connected, use minecraft timeout
-                socket.setSoTimeout(ProtocolDefinition.SOCKET_TIMEOUT);
-                connection.setConnectionState(ConnectionStates.HANDSHAKING);
-                socket.setKeepAlive(true);
-                outputStream = socket.getOutputStream();
-                inputStream = socket.getInputStream();
+                this.socket.setSoTimeout(ProtocolDefinition.SOCKET_TIMEOUT);
+                this.connection.setConnectionState(ConnectionStates.HANDSHAKING);
+                this.socket.setKeepAlive(true);
+                this.outputStream = this.socket.getOutputStream();
+                this.inputStream = this.socket.getInputStream();
 
-                socketRThread.setName(String.format("%d/SocketR", connection.getConnectionId()));
+                this.socketRThread.setName(String.format("%d/SocketR", this.connection.getConnectionId()));
 
-                socketSThread = new Thread(() -> {
+                this.socketSThread = new Thread(() -> {
                     try {
-                        while (connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
+                        while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
                             // wait for data or send until it should disconnect
 
                             // check if still connected
-                            if (!socket.isConnected() || socket.isClosed()) {
+                            if (!this.socket.isConnected() || this.socket.isClosed()) {
                                 break;
                             }
 
-                            ServerboundPacket packet = queue.take();
+                            ServerboundPacket packet = this.queue.take();
                             packet.log();
-                            queue.remove(packet);
-                            byte[] data = packet.write(connection).toByteArray();
-                            if (compressionThreshold >= 0) {
+                            this.queue.remove(packet);
+                            byte[] data = packet.write(this.connection).toByteArray();
+                            if (this.compressionThreshold >= 0) {
                                 // compression is enabled
                                 // check if there is a need to compress it and if so, do it!
-                                OutByteBuffer outRawBuffer = new OutByteBuffer(connection);
-                                if (data.length >= compressionThreshold) {
+                                OutByteBuffer outRawBuffer = new OutByteBuffer(this.connection);
+                                if (data.length >= this.compressionThreshold) {
                                     // compress it
-                                    OutByteBuffer lengthPrefixedBuffer = new OutByteBuffer(connection);
+                                    OutByteBuffer lengthPrefixedBuffer = new OutByteBuffer(this.connection);
                                     byte[] compressed = Util.compress(data);
                                     lengthPrefixedBuffer.writeVarInt(data.length); // uncompressed length
                                     lengthPrefixedBuffer.writeBytes(compressed);
@@ -117,32 +117,32 @@ public class SocketNetwork implements Network {
                                 data = outRawBuffer.toByteArray();
                             } else {
                                 // append packet length
-                                OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer(connection);
+                                OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer(this.connection);
                                 bufferWithLengthPrefix.writeVarInt(data.length);
                                 bufferWithLengthPrefix.writeBytes(data);
                                 data = bufferWithLengthPrefix.toByteArray();
                             }
 
-                            outputStream.write(data);
-                            outputStream.flush();
+                            this.outputStream.write(data);
+                            this.outputStream.flush();
                             if (packet instanceof PacketEncryptionResponse packetEncryptionResponse) {
                                 // enable encryption
                                 enableEncryption(packetEncryptionResponse.getSecretKey());
                                 // wake up other thread
-                                socketRThread.interrupt();
+                                this.socketRThread.interrupt();
                             }
                         }
                     } catch (IOException | InterruptedException ignored) {
                     }
-                }, String.format("%d/SocketS", connection.getConnectionId()));
-                socketSThread.start();
+                }, String.format("%d/SocketS", this.connection.getConnectionId()));
+                this.socketSThread.start();
 
-                while (connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
+                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
                     // wait for data or send until it should disconnect
                     // first send, then receive
 
                     // check if still connected
-                    if (!socket.isConnected() || socket.isClosed()) {
+                    if (!this.socket.isConnected() || this.socket.isClosed()) {
                         break;
                     }
 
@@ -151,7 +151,7 @@ public class SocketNetwork implements Network {
                     int length = 0;
                     int read;
                     do {
-                        read = inputStream.read();
+                        read = this.inputStream.read();
                         if (read == -1) {
                             disconnect();
                             return;
@@ -166,15 +166,15 @@ public class SocketNetwork implements Network {
                     } while ((read & 0x80) != 0);
                     if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
                         Log.protocol(String.format("Server sent us a to big packet (%d bytes > %d bytes)", length, ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE));
-                        inputStream.skip(length);
+                        this.inputStream.skip(length);
                         continue;
                     }
-                    byte[] data = inputStream.readNBytes(length);
+                    byte[] data = this.inputStream.readNBytes(length);
 
-                    if (compressionThreshold >= 0) {
+                    if (this.compressionThreshold >= 0) {
                         // compression is enabled
                         // check if there is a need to decompress it and if so, do it!
-                        InByteBuffer rawBuffer = new InByteBuffer(data, connection);
+                        InByteBuffer rawBuffer = new InByteBuffer(data, this.connection);
                         int packetSize = rawBuffer.readVarInt();
                         byte[] left = rawBuffer.readBytesLeft();
                         if (packetSize == 0) {
@@ -182,23 +182,23 @@ public class SocketNetwork implements Network {
                             data = left;
                         } else {
                             // need to decompress data
-                            data = Util.decompress(left, connection).readBytesLeft();
+                            data = Util.decompress(left, this.connection).readBytesLeft();
                         }
                     }
 
-                    InPacketBuffer inPacketBuffer = new InPacketBuffer(data, connection);
+                    InPacketBuffer inPacketBuffer = new InPacketBuffer(data, this.connection);
                     Packets.Clientbound packet = null;
                     try {
-                        packet = connection.getPacketByCommand(connection.getConnectionState(), inPacketBuffer.getCommand());
+                        packet = this.connection.getPacketByCommand(this.connection.getConnectionState(), inPacketBuffer.getCommand());
                         if (packet == null) {
                             disconnect();
-                            lastException = new UnknownPacketException(String.format("Server sent us an unknown packet (id=0x%x, length=%d, data=%s)", inPacketBuffer.getCommand(), length, inPacketBuffer.getBase64()));
-                            throw lastException;
+                            this.lastException = new UnknownPacketException(String.format("Server sent us an unknown packet (id=0x%x, length=%d, data=%s)", inPacketBuffer.getCommand(), length, inPacketBuffer.getBase64()));
+                            throw this.lastException;
                         }
                         Class<? extends ClientboundPacket> clazz = packet.getClazz();
 
                         if (clazz == null) {
-                            throw new UnknownPacketException(String.format("Packet not implemented yet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), packet, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
+                            throw new UnknownPacketException(String.format("Packet not implemented yet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", inPacketBuffer.getCommand(), packet, inPacketBuffer.getLength(), inPacketBuffer.getBytesLeft(), this.connection.getVersion(), this.connection.getConnectionState()));
                         }
                         try {
                             ClientboundPacket packetInstance = clazz.getConstructor().newInstance();
@@ -209,32 +209,32 @@ public class SocketNetwork implements Network {
 
                             // set special settings to avoid miss timing issues
                             if (packetInstance instanceof PacketLoginSuccess) {
-                                connection.setConnectionState(ConnectionStates.PLAY);
+                                this.connection.setConnectionState(ConnectionStates.PLAY);
                             } else if (packetInstance instanceof PacketCompressionInterface compressionPacket) {
-                                compressionThreshold = compressionPacket.getThreshold();
+                                this.compressionThreshold = compressionPacket.getThreshold();
                             } else if (packetInstance instanceof PacketEncryptionRequest) {
                                 // wait until response is ready
-                                connection.handle(packetInstance);
+                                this.connection.handle(packetInstance);
                                 try {
                                     Thread.sleep(Integer.MAX_VALUE);
                                 } catch (InterruptedException ignored) {
                                 }
                                 continue;
                             }
-                            connection.handle(packetInstance);
+                            this.connection.handle(packetInstance);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                             // safety first, but will not occur
                             e.printStackTrace();
                         }
                     } catch (Throwable e) {
                         Log.protocol(String.format("An error occurred while parsing a packet (%s): %s", packet, e));
-                        if (connection.getConnectionState() == ConnectionStates.PLAY) {
+                        if (this.connection.getConnectionState() == ConnectionStates.PLAY) {
                             Log.printException(e, LogLevels.PROTOCOL);
                             continue;
                         }
-                        lastException = e;
+                        this.lastException = e;
                         disconnect();
-                        connection.setConnectionState(ConnectionStates.FAILED);
+                        this.connection.setConnectionState(ConnectionStates.FAILED);
                         throw new RuntimeException(e);
                     }
                 }
@@ -242,47 +242,47 @@ public class SocketNetwork implements Network {
             } catch (IOException e) {
                 // Could not connect
                 Log.printException(e, LogLevels.PROTOCOL);
-                if (socketSThread != null) {
-                    socketSThread.interrupt();
+                if (this.socketSThread != null) {
+                    this.socketSThread.interrupt();
                 }
                 if (e instanceof SocketException && e.getMessage().equals("Socket closed")) {
                     return;
                 }
-                lastException = e;
-                connection.setConnectionState(ConnectionStates.FAILED);
+                this.lastException = e;
+                this.connection.setConnectionState(ConnectionStates.FAILED);
             }
-        }, String.format("%d/Socket", connection.getConnectionId()));
-        socketRThread.start();
+        }, String.format("%d/Socket", this.connection.getConnectionId()));
+        this.socketRThread.start();
     }
 
     @Override
     public void sendPacket(ServerboundPacket packet) {
-        queue.add(packet);
+        this.queue.add(packet);
     }
 
     @Override
     public void disconnect() {
-        connection.setConnectionState(ConnectionStates.DISCONNECTING);
+        this.connection.setConnectionState(ConnectionStates.DISCONNECTING);
         try {
-            socket.close();
+            this.socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        socketRThread.interrupt();
-        socketSThread.interrupt();
-        connection.setConnectionState(ConnectionStates.DISCONNECTED);
+        this.socketRThread.interrupt();
+        this.socketSThread.interrupt();
+        this.connection.setConnectionState(ConnectionStates.DISCONNECTED);
     }
 
     @Override
     public Throwable getLastException() {
-        return lastException;
+        return this.lastException;
     }
 
     private void enableEncryption(SecretKey secretKey) {
         Cipher cipherEncrypt = CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey);
         Cipher cipherDecrypt = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey);
-        inputStream = new CipherInputStream(inputStream, cipherDecrypt);
-        outputStream = new CipherOutputStream(outputStream, cipherEncrypt);
+        this.inputStream = new CipherInputStream(this.inputStream, cipherDecrypt);
+        this.outputStream = new CipherOutputStream(this.outputStream, cipherEncrypt);
         Log.debug("Encryption enabled!");
     }
 }

@@ -26,13 +26,13 @@ public class PacketBlockBreakAnimation implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        entityId = buffer.readVarInt();
+        this.entityId = buffer.readVarInt();
         if (buffer.getVersionId() < 6) {
-            position = buffer.readBlockPositionInteger();
+            this.position = buffer.readBlockPositionInteger();
         } else {
-            position = buffer.readPosition();
+            this.position = buffer.readPosition();
         }
-        stage = buffer.readByte();
+        this.stage = buffer.readByte();
 
         return true;
     }
@@ -44,19 +44,19 @@ public class PacketBlockBreakAnimation implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving block break packet (entityId=%d, stage=%d) at %s", entityId, stage, position));
+        Log.protocol(String.format("[IN] Receiving block break packet (entityId=%d, stage=%d) at %s", this.entityId, this.stage, this.position));
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public byte getStage() {
-        return stage;
+        return this.stage;
     }
 }
 

@@ -42,8 +42,8 @@ public class PacketClientSettings implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CLIENT_SETTINGS);
-        buffer.writeString(locale); // locale
-        buffer.writeByte(renderDistance); // render Distance
+        buffer.writeString(this.locale); // locale
+        buffer.writeByte(this.renderDistance); // render Distance
         buffer.writeByte((byte) 0x00); // chat settings (nobody uses them)
         buffer.writeBoolean(true); // chat colors
         if (buffer.getVersionId() < 6) {
@@ -53,13 +53,13 @@ public class PacketClientSettings implements ServerboundPacket {
             buffer.writeByte((byte) 0b01111111); // ToDo: skin parts
         }
         if (buffer.getVersionId() >= 49) {
-            buffer.writeVarInt(mainHand.ordinal());
+            buffer.writeVarInt(this.mainHand.ordinal());
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending settings (locale=%s, renderDistance=%d)", locale, renderDistance));
+        Log.protocol(String.format("[OUT] Sending settings (locale=%s, renderDistance=%d)", this.locale, this.renderDistance));
     }
 }

@@ -39,7 +39,7 @@ public final class Util {
     public static final Pattern UUID_FIX = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
     public static final String RANDOM_STRING_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static final Random random = ThreadLocalRandom.current();
+    private static final Random THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
 
     public static UUID getUUIDFromString(String uuid) {
         if (uuid.length() == 36) {
@@ -264,7 +264,7 @@ public final class Util {
     public static String generateRandomString(int length) {
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
-            sb.append(RANDOM_STRING_CHARS.charAt(random.nextInt(RANDOM_STRING_CHARS.length())));
+            sb.append(RANDOM_STRING_CHARS.charAt(THREAD_LOCAL_RANDOM.nextInt(RANDOM_STRING_CHARS.length())));
         }
         return sb.toString();
     }
@@ -275,6 +275,6 @@ public final class Util {
     }
 
     public static String readAsset(String path) throws IOException {
-        return Util.readFile(new BufferedReader(Util.readAsset(path, Util.class)), true);
+        return readFile(new BufferedReader(readAsset(path, Util.class)), true);
     }
 }

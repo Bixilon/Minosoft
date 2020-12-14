@@ -20,10 +20,10 @@ public class CommandLiteralNode extends CommandNode {
 
     public CommandLiteralNode(byte flags, InByteBuffer buffer) {
         super(flags, buffer);
-        name = buffer.readString();
+        this.name = buffer.readString();
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 }

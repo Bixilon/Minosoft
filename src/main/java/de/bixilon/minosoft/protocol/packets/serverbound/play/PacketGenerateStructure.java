@@ -34,16 +34,16 @@ public class PacketGenerateStructure implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_GENERATE_STRUCTURE);
-        buffer.writePosition(position);
-        buffer.writeVarInt(levels);
+        buffer.writePosition(this.position);
+        buffer.writeVarInt(this.levels);
         if (buffer.getVersionId() <= 719) {
-            buffer.writeBoolean(keepJigsaw);
+            buffer.writeBoolean(this.keepJigsaw);
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending generate structure packet (position=%s, levels=%d, keepJigsaw=%s)", position, levels, keepJigsaw));
+        Log.protocol(String.format("[OUT] Sending generate structure packet (position=%s, levels=%d, keepJigsaw=%s)", this.position, this.levels, this.keepJigsaw));
     }
 }

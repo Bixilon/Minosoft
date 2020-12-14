@@ -23,15 +23,15 @@ public class MinecraftLanguage {
 
     protected MinecraftLanguage(String language, JsonObject json) {
         this.language = language;
-        json.keySet().forEach((key) -> data.put(key.toLowerCase(), json.get(key).getAsString()));
+        json.keySet().forEach((key) -> this.data.put(key.toLowerCase(), json.get(key).getAsString()));
     }
 
     public String getLanguage() {
-        return language;
+        return this.language;
     }
 
     public boolean canTranslate(String key) {
-        return data.containsKey(key);
+        return this.data.containsKey(key);
     }
 
     public String translate(String key, Object... data) {
@@ -40,6 +40,6 @@ public class MinecraftLanguage {
 
     @Override
     public String toString() {
-        return language;
+        return this.language;
     }
 }

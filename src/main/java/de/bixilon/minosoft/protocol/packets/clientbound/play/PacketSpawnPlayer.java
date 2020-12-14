@@ -68,7 +68,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
         }
         this.entity = new PlayerEntity(buffer.getConnection(), entityId, uuid, location, new EntityRotation(yaw, pitch, 0), name, properties, currentItem);
         if (metaData != null) {
-            entity.setMetaData(metaData);
+            this.entity.setMetaData(metaData);
         }
         return true;
     }
@@ -80,15 +80,15 @@ public class PacketSpawnPlayer implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Player spawned at %s (entityId=%d, name=%s, uuid=%s)", entity.getLocation(), entity.getEntityId(), entity.getName(), entity.getUUID()));
+        Log.protocol(String.format("[IN] Player spawned at %s (entityId=%d, name=%s, uuid=%s)", this.entity.getLocation(), this.entity.getEntityId(), this.entity.getName(), this.entity.getUUID()));
     }
 
     public PlayerEntity getEntity() {
-        return entity;
+        return this.entity;
     }
 
     public Velocity getVelocity() {
-        return velocity;
+        return this.velocity;
     }
 
 }

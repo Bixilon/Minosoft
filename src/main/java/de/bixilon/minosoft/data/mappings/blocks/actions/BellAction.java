@@ -13,21 +13,21 @@
 
 package de.bixilon.minosoft.data.mappings.blocks.actions;
 
-import com.sun.javafx.scene.traversal.Direction;
+import de.bixilon.minosoft.data.Directions;
 
 public class BellAction implements BlockAction {
-    private final Direction direction;
+    private final Directions direction;
 
     public BellAction(short unused, short direction) {
-        this.direction = Direction.values()[direction];
+        this.direction = Directions.byId(direction);
     }
 
-    public Direction getDirection() {
-        return direction;
+    public Directions getDirection() {
+        return this.direction;
     }
 
     @Override
     public String toString() {
-        return String.format("BELL_HIT_%s", direction);
+        return String.format("BELL_HIT_%s", this.direction);
     }
 }

@@ -24,14 +24,14 @@ public class PacketKeepAlive implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 32) {
-            id = buffer.readInt();
+            this.id = buffer.readInt();
             return true;
         }
         if (buffer.getVersionId() < 339) {
-            id = buffer.readVarInt();
+            this.id = buffer.readVarInt();
             return true;
         }
-        id = buffer.readLong();
+        this.id = buffer.readLong();
         return true;
     }
 
@@ -42,10 +42,10 @@ public class PacketKeepAlive implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Keep alive packet received (%d)", id));
+        Log.protocol(String.format("[IN] Keep alive packet received (%d)", this.id));
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 }

@@ -28,7 +28,7 @@ public abstract class AbstractFish extends WaterAnimal {
 
     @EntityMetaDataFunction(identifier = "isFromBucket")
     public boolean isFromBucket() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.ABSTRACT_FISH_FROM_BUCKET);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.ABSTRACT_FISH_FROM_BUCKET);
     }
 }
 

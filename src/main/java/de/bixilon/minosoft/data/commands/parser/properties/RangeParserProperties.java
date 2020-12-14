@@ -20,10 +20,10 @@ public class RangeParserProperties implements ParserProperties {
     private final boolean allowDecimals;
 
     public RangeParserProperties(InByteBuffer buffer) {
-        allowDecimals = BitByte.isBitMask(buffer.readByte(), 0x01);
+        this.allowDecimals = BitByte.isBitMask(buffer.readByte(), 0x01);
     }
 
     public boolean isAllowDecimals() {
-        return allowDecimals;
+        return this.allowDecimals;
     }
 }

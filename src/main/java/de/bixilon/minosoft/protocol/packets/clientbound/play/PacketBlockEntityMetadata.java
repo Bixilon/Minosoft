@@ -31,14 +31,14 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 6) {
-            position = buffer.readBlockPositionShort();
-            action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
-            data = BlockEntityMetaData.getData(action, (CompoundTag) buffer.readNBT(true));
+            this.position = buffer.readBlockPositionShort();
+            this.action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
+            this.data = BlockEntityMetaData.getData(this.action, (CompoundTag) buffer.readNBT(true));
             return true;
         }
-        position = buffer.readPosition();
-        action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
-        data = BlockEntityMetaData.getData(action, (CompoundTag) buffer.readNBT());
+        this.position = buffer.readPosition();
+        this.action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
+        this.data = BlockEntityMetaData.getData(this.action, (CompoundTag) buffer.readNBT());
         return true;
     }
 
@@ -49,19 +49,19 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving blockEntityMeta (position=%s, action=%s)", position, action));
+        Log.protocol(String.format("[IN] Receiving blockEntityMeta (position=%s, action=%s)", this.position, this.action));
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public BlockEntityActions getAction() {
-        return action;
+        return this.action;
     }
 
     public BlockEntityMetaData getData() {
-        return data;
+        return this.data;
     }
 
     public enum BlockEntityActions {
@@ -84,7 +84,7 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         final VersionValueMap<Integer> valueMap;
 
         BlockEntityActions(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values, true);
         }
 
         public static BlockEntityActions byId(int id, int versionId) {
@@ -97,7 +97,7 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         }
 
         public int getId(int versionId) {
-            Integer ret = valueMap.get(versionId);
+            Integer ret = this.valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

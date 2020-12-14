@@ -30,23 +30,23 @@ public class DustParticleData extends ParticleData {
     }
 
     public float getRed() {
-        return red;
+        return this.red;
     }
 
     public float getGreen() {
-        return green;
+        return this.green;
     }
 
     public float getBlue() {
-        return blue;
+        return this.blue;
     }
 
     public float getScale() {
-        return scale;
+        return this.scale;
     }
 
     @Override
     public String toString() {
-        return String.format("{red=%s, green=%s, blue=%s, scale=%s)", red, green, blue, scale);
+        return String.format("{red=%s, green=%s, blue=%s, scale=%s)", this.red, this.green, this.blue, this.scale);
     }
 }

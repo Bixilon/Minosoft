@@ -36,7 +36,7 @@ public class HoverEvent {
             data = json.get("contents");
         }
         json.get("value");
-        value = switch (action) { // ToDo
+        this.value = switch (this.action) { // ToDo
             case SHOW_TEXT -> ChatComponent.valueOf(data);
             case SHOW_ENTITY -> EntityHoverData.deserialize(data);
             default -> null;
@@ -52,7 +52,7 @@ public class HoverEvent {
     }
 
     public Object getValue() {
-        return value;
+        return this.value;
     }
 
     public enum HoverEventActions {

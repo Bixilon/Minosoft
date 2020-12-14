@@ -54,7 +54,7 @@ public class PacketSpawnMob implements ClientboundPacket {
             location = buffer.readLocation();
         }
         EntityRotation rotation = new EntityRotation(buffer.readAngle(), buffer.readAngle(), buffer.readAngle());
-        velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+        this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
 
         EntityMetaData metaData = null;
         if (buffer.getVersionId() < 550) {
@@ -67,9 +67,9 @@ public class PacketSpawnMob implements ClientboundPacket {
         }
 
         try {
-            entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Location.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, location, rotation);
+            this.entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Location.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, location, rotation);
             if (metaData != null) {
-                entity.setMetaData(metaData);
+                this.entity.setMetaData(metaData);
             }
             return true;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
@@ -85,15 +85,15 @@ public class PacketSpawnMob implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Mob spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity));
+        Log.protocol(String.format("[IN] Mob spawned at %s (entityId=%d, type=%s)", this.entity.getLocation().toString(), this.entity.getEntityId(), this.entity));
     }
 
     public Entity getEntity() {
-        return entity;
+        return this.entity;
     }
 
     public Velocity getVelocity() {
-        return velocity;
+        return this.velocity;
     }
 
 }

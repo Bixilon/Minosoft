@@ -19,7 +19,9 @@ public enum GameModes {
     ADVENTURE,
     SPECTATOR;
 
+    private static final GameModes[] GAME_MODES = values();
+
     public static GameModes byId(int id) {
-        return values()[id];
+        return GAME_MODES[id];
     }
 }
