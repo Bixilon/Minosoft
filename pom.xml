@@ -135,7 +135,7 @@
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline</artifactId>
-            <version>3.17.1</version>
+            <version>3.18.0</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
