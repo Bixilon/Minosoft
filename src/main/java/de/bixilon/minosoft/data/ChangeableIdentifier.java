@@ -37,11 +37,11 @@ public class ChangeableIdentifier extends VersionValueMap<String> {
     }
 
     public ChangeableIdentifier(IdentifierSet... sets) {
-        super(sets, true);
+        super(sets);
     }
 
     public ChangeableIdentifier(String name) {
-        super(name);
+        super(new MapSet<>(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), name));
     }
 
     public boolean isValidName(String name, int versionId) {

@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.data;
 
-import de.bixilon.minosoft.data.mappings.versions.Versions;
-
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -24,14 +22,14 @@ public class VersionValueMap<V> {
     public VersionValueMap() {
     }
 
-    public VersionValueMap(MapSet<Integer, V>[] sets, boolean unused) {
+    public VersionValueMap(MapSet<Integer, V>[] sets) {
         for (MapSet<Integer, V> set : sets) {
             this.values.put(set.getKey(), set.getValue());
         }
     }
 
-    public VersionValueMap(V value) {
-        this.values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), value);
+    public VersionValueMap(MapSet<Integer, V> set) {
+        this.values.put(set.getKey(), set.getValue());
     }
 
     public V get(int versionId) {

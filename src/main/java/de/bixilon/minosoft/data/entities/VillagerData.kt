@@ -40,7 +40,7 @@ data class VillagerData(val type: VillagerTypes, val profession: VillagerProfess
         ZOMBIE(arrayOf(MapSet(204, -1), MapSet(315, -100)));
 
         // used earlier (ZombieVillagerMeta)
-        private val valueMap = VersionValueMap(values as Array<out MapSet<Int, Int>>, true)
+        private val valueMap = VersionValueMap(values as Array<out MapSet<Int, Int>>)
 
 
         fun getId(versionId: Int): Int {

@@ -150,7 +150,7 @@ public class PacketEffect implements ClientboundPacket {
         final VersionValueMap<Integer> valueMap;
 
         EffectEffects(MapSet<Integer, Integer>[] values) {
-            this.valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         public static EffectEffects byId(int id, int versionId) {

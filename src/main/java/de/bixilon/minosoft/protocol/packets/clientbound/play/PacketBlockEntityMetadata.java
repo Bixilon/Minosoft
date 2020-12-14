@@ -84,7 +84,7 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         final VersionValueMap<Integer> valueMap;
 
         BlockEntityActions(MapSet<Integer, Integer>[] values) {
-            this.valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         public static BlockEntityActions byId(int id, int versionId) {

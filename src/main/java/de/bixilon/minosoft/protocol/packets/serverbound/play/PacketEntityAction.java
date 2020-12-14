@@ -71,7 +71,7 @@ public class PacketEntityAction implements ServerboundPacket {
         final VersionValueMap<Integer> valueMap;
 
         EntityActions(MapSet<Integer, Integer>[] values) {
-            this.valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         public static EntityActions byId(int id, int versionId) {

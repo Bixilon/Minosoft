@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
+import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
@@ -118,14 +119,14 @@ public class EntityMetaData {
         OPT_VAR_INT(new MapSet[]{new MapSet<>(459, 17)}),
         POSE(new MapSet[]{new MapSet<>(461, 18)});
 
-        final VersionValueMap<Integer> valueMap;
+        private final VersionValueMap<Integer> valueMap;
 
         EntityMetaDataValueTypes(MapSet<Integer, Integer>[] values) {
-            this.valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         EntityMetaDataValueTypes(int id) {
-            this.valueMap = new VersionValueMap<>(id);
+            this.valueMap = new VersionValueMap<>(new MapSet<>(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), id));
         }
 
         public static EntityMetaDataValueTypes byId(int id, int versionId) {

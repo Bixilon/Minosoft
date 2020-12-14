@@ -57,7 +57,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
         final VersionValueMap<Integer> valueMap;
 
         EntityAnimations(MapSet<Integer, Integer>[] values) {
-            this.valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         public static EntityAnimations byId(int id, int versionId) {

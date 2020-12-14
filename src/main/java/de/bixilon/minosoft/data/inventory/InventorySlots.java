@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.inventory;
 
 import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
+import de.bixilon.minosoft.data.mappings.versions.Versions;
 
 public class InventorySlots {
     public enum PlayerInventorySlots implements InventoryInterface {
@@ -94,11 +95,11 @@ public class InventorySlots {
         final VersionValueMap<Integer> valueMap;
 
         EntityInventorySlots(MapSet<Integer, Integer>[] values) {
-            this.valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         EntityInventorySlots(int id) {
-            this.valueMap = new VersionValueMap<>(id);
+            this.valueMap = new VersionValueMap<>(new MapSet<>(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), id));
         }
 
         public static EntityInventorySlots byId(int id, int versionId) {

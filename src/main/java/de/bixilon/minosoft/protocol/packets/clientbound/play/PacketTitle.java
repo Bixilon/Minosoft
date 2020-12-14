@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
+import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -93,14 +94,14 @@ public class PacketTitle implements ClientboundPacket {
         HIDE(new MapSet[]{new MapSet<>(18, 3), new MapSet<>(302, 4)}),
         RESET(new MapSet[]{new MapSet<>(18, 4), new MapSet<>(302, 5)});
 
-        final VersionValueMap<Integer> valueMap;
+        private final VersionValueMap<Integer> valueMap;
 
         TitleActions(MapSet<Integer, Integer>[] values) {
-            this.valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         TitleActions(int id) {
-            this.valueMap = new VersionValueMap<>(id);
+            this.valueMap = new VersionValueMap<>(new MapSet<>(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), id));
         }
 
         public static TitleActions byId(int id, int versionId) {

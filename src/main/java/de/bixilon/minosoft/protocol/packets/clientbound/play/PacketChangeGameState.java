@@ -70,7 +70,7 @@ public class PacketChangeGameState implements ClientboundPacket {
         final VersionValueMap<Integer> valueMap;
 
         Reason(MapSet<Integer, Integer>[] values) {
-            this.valueMap = new VersionValueMap<>(values, true);
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         public static Reason byId(int id, int versionId) {

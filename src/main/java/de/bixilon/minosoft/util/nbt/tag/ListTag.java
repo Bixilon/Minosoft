@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ListTag extends NBTTag {
-    final TagTypes type;
-    final ArrayList<NBTTag> list;
+    private final TagTypes type;
+    private final ArrayList<NBTTag> list;
 
     public ListTag(TagTypes type, ArrayList<NBTTag> list) {
         this.type = type;
@@ -30,7 +30,7 @@ public class ListTag extends NBTTag {
 
     public ListTag(TagTypes type, NBTTag[] list) {
         this.type = type;
-        this.list = (ArrayList<NBTTag>) Arrays.asList(list);
+        this.list = new ArrayList<>(Arrays.asList(list));
     }
 
     public ListTag(InByteBuffer buffer) {
