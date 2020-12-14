@@ -48,7 +48,7 @@ public class ListSelectorArgumentParser extends EntitySelectorArgumentParser {
     public void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
         Pair<String, String> match = readNextArgument(stringReader);
         String value = match.getKey();
-        if (match.getValue().startsWith("!")) {
+        if (value.startsWith("!")) {
             value = value.substring(1);
         }
         if (!this.values.contains(value)) {

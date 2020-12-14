@@ -10,16 +10,14 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
-package de.bixilon.minosoft.data.world;
+package de.bixilon.minosoft.data.world
 
 /**
  * Chunk X and Z location (block position / 16, rounded down)
  */
-public record ChunkLocation(int x, int z) {
+data class ChunkLocation(val x: Int, val z: Int) {
 
-    @Override
-    public String toString() {
-        return String.format("%d %d", x, z);
+    override fun toString(): String {
+        return String.format("%d %d", x, z)
     }
 }

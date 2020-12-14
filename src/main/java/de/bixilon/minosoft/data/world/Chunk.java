@@ -29,7 +29,7 @@ public class Chunk {
     }
 
     public Block getBlock(InChunkLocation location) {
-        return getBlock(location.x(), location.y(), location.z());
+        return getBlock(location.getX(), location.getY(), location.getZ());
     }
 
     public Block getBlock(int x, int y, int z) {
@@ -61,14 +61,14 @@ public class Chunk {
     }
 
     public void setBlock(InChunkLocation location, Block block) {
-        byte section = (byte) (location.y() / 16);
+        byte section = (byte) (location.getY() / 16);
         createSection(section);
         sections.get(section).setBlock(location.getInChunkSectionLocation(), block);
     }
 
 
     public void setBlockEntityData(InChunkLocation position, BlockEntityMetaData data) {
-        ChunkSection section = sections.get((byte) (position.y() / 16));
+        ChunkSection section = sections.get((byte) (position.getY() / 16));
         if (section == null) {
             return;
         }
@@ -76,7 +76,7 @@ public class Chunk {
     }
 
     public BlockEntityMetaData getBlockEntityData(InChunkLocation position) {
-        ChunkSection section = sections.get((byte) (position.y() / 16));
+        ChunkSection section = sections.get((byte) (position.getY() / 16));
         if (section == null) {
             return null;
         }

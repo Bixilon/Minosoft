@@ -10,15 +10,23 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.mappings.recipes
 
-package de.bixilon.minosoft.data.entities;
+import de.bixilon.minosoft.data.inventory.Slot
 
-import de.bixilon.minosoft.data.mappings.MobEffect;
+data class Ingredient(val slots: Array<Slot>) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
-public record StatusEffect(MobEffect effect, int amplifier, int duration) {
+        other as Ingredient
 
-    @Override
-    public String toString() {
-        return String.format("%s (amplifier: %d, duration: %d)", effect, amplifier, duration);
+        if (!slots.contentEquals(other.slots)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return slots.contentHashCode()
     }
 }

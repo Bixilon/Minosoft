@@ -10,13 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities
 
-package de.bixilon.minosoft.data.entities;
+import de.bixilon.minosoft.data.world.BlockPosition
 
-public record Rotation(int yaw, int pitch) {
 
-    @Override
-    public String toString() {
-        return String.format("raw=%d, pitch=%d", yaw, pitch);
+data class Location(val x: Double, val y: Double, val z: Double) {
+
+    override fun toString(): String {
+        return String.format("%s %s %s", x, y, z)
+    }
+
+    companion object {
+        @JvmStatic
+        fun fromPosition(position: BlockPosition): Location {
+            return Location(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
+        }
     }
 }

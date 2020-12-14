@@ -125,7 +125,6 @@ public class ImprovedStringReader {
 
     public int skipSpaces() {
         int skipped = 0;
-        char nextChar = getNextChar();
         while (getNextChar() == ' ') {
             skip(1);
             skipped++;

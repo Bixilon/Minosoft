@@ -556,9 +556,9 @@ public class PacketHandler {
     public void handle(PacketExplosion pkg) {
         // remove all blocks set by explosion
         for (byte[] record : pkg.getRecords()) {
-            int x = ((int) pkg.getLocation().x()) + record[0];
-            int y = ((int) pkg.getLocation().y()) + record[1];
-            int z = ((int) pkg.getLocation().z()) + record[2];
+            int x = ((int) pkg.getLocation().getX()) + record[0];
+            int y = ((int) pkg.getLocation().getY()) + record[1];
+            int z = ((int) pkg.getLocation().getZ()) + record[2];
             BlockPosition blockPosition = new BlockPosition(x, (short) y, z);
             connection.getPlayer().getWorld().setBlock(blockPosition, null);
         }

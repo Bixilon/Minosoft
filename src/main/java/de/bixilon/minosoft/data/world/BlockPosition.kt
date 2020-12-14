@@ -10,31 +10,29 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.world
 
-package de.bixilon.minosoft.data.world;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+data class BlockPosition(val x: Int, val y: Int, val z: Int) {
 
-public record BlockPosition(int x, int y, int z) {
-
-    public ChunkLocation getChunkLocation() {
-        return new ChunkLocation(x / ProtocolDefinition.SECTION_WIDTH_X, z / ProtocolDefinition.SECTION_WIDTH_Z);
+    fun getChunkLocation(): ChunkLocation {
+        return ChunkLocation(this.x / ProtocolDefinition.SECTION_WIDTH_X, this.z / ProtocolDefinition.SECTION_WIDTH_Z)
     }
 
-    public InChunkLocation getInChunkLocation() {
-        int x = this.x % ProtocolDefinition.SECTION_WIDTH_X;
+    fun getInChunkLocation(): InChunkLocation {
+        var x: Int = this.x % ProtocolDefinition.SECTION_WIDTH_X
         if (x < 0) {
-            x = ProtocolDefinition.SECTION_WIDTH_X + x;
+            x += ProtocolDefinition.SECTION_WIDTH_X
         }
-        int z = this.z % ProtocolDefinition.SECTION_WIDTH_Z;
+        var z: Int = this.z % ProtocolDefinition.SECTION_WIDTH_Z
         if (z < 0) {
-            z = ProtocolDefinition.SECTION_WIDTH_Z + z;
+            z += ProtocolDefinition.SECTION_WIDTH_Z
         }
-        return new InChunkLocation(x, this.y, z);
+        return InChunkLocation(x, this.y, z)
     }
 
-    @Override
-    public String toString() {
-        return String.format("%d %d %d", x, y, z);
+    override fun toString(): String {
+        return String.format("%d %d %d", x, y, z)
     }
 }

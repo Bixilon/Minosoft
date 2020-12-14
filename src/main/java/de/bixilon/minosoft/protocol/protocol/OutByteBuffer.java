@@ -147,10 +147,10 @@ public class OutByteBuffer {
             return;
         }
         if (versionId < 440) {
-            writeLong((((long) position.x() & 0x3FFFFFF) << 38) | (((long) position.z() & 0x3FFFFFF)) | ((long) position.y() & 0xFFF) << 26);
+            writeLong((((long) position.getX() & 0x3FFFFFF) << 38) | (((long) position.getZ() & 0x3FFFFFF)) | ((long) position.getY() & 0xFFF) << 26);
             return;
         }
-        writeLong((((long) (position.x() & 0x3FFFFFF) << 38) | ((long) (position.z() & 0x3FFFFFF) << 12) | (long) (position.y() & 0xFFF)));
+        writeLong((((long) (position.getX() & 0x3FFFFFF) << 38) | ((long) (position.getZ() & 0x3FFFFFF) << 12) | (long) (position.getY() & 0xFFF)));
     }
 
     public void writeVarInt(int value) {
@@ -212,9 +212,9 @@ public class OutByteBuffer {
     }
 
     public void writeBlockPositionByte(BlockPosition pos) {
-        writeInt(pos.x());
-        writeByte((byte) pos.y());
-        writeInt(pos.z());
+        writeInt(pos.getX());
+        writeByte((byte) pos.getY());
+        writeInt(pos.getZ());
     }
 
     public byte[] toByteArray() {

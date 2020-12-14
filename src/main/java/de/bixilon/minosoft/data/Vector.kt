@@ -10,11 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data
 
-package de.bixilon.minosoft.data.mappings.recipes;
-
-import de.bixilon.minosoft.data.inventory.Slot;
-
-public record Ingredient(Slot[] slot) {
-
+data class Vector(val x: Int, val y: Int, val z: Int) {
+    override fun toString(): String {
+        return String.format("%s %s %s", x, y, z)
+    }
 }

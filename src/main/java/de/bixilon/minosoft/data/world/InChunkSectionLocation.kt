@@ -10,19 +10,14 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.world
 
-package de.bixilon.minosoft.data.world;
+/**
+ * Chunk X, Y and Z location (max 16x16x16)
+ */
+data class InChunkSectionLocation(val x: Int, val y: Int, val z: Int) {
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
-
-public record InChunkLocation(int x, int y, int z) {
-
-    public InChunkSectionLocation getInChunkSectionLocation() {
-        return new InChunkSectionLocation(x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%d %d %d", x, y, z);
+    override fun toString(): String {
+        return String.format("%d %d %d", x, y, z)
     }
 }

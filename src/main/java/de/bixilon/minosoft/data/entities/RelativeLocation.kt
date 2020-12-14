@@ -10,13 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities
 
-package de.bixilon.minosoft.data;
+data class RelativeLocation(val x: Double, val y: Double, val z: Double) {
 
-public record Vector(int x, int y, int z) {
-
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", x, y, z);
+    override fun toString(): String {
+        return String.format("%s %s %s", x, y, z)
     }
 }

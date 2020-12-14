@@ -78,7 +78,7 @@ public class EntityMetaData {
             case POSE -> buffer.readPose();
             case BLOCK_ID -> buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
             case OPT_VAR_INT -> buffer.readVarInt() - 1;
-            case VILLAGER_DATA -> new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getVersionId()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
+            case VILLAGER_DATA -> new VillagerData(VillagerData.VillagerTypes.values()[buffer.readVarInt()], VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getVersionId()), VillagerData.VillagerLevels.values()[buffer.readVarInt()]);
             case OPT_BLOCK_ID -> {
                 int blockId = buffer.readVarInt();
                 if (blockId == 0) {

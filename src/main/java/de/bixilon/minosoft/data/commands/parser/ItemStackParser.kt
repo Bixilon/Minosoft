@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader
 
 class ItemStackParser : CommandParser() {
+
     @Throws(CommandParseException::class)
     override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: ImprovedStringReader) {
         val argument = stringReader.readUntil(ProtocolDefinition.COMMAND_SEPARATOR, "{")

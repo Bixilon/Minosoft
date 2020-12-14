@@ -10,22 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities
 
-package de.bixilon.minosoft.modding.loading;
+data class EntityRotation(val yaw: Float, val pitch: Float, val headYaw: Float) {
 
-import com.google.gson.JsonObject;
-import de.bixilon.minosoft.util.Util;
-
-import java.util.UUID;
-
-public record ModIdentifier(UUID uuid, int versionId) {
-
-    public static ModIdentifier serialize(JsonObject json) {
-        return new ModIdentifier(Util.getUUIDFromString(json.get("uuid").getAsString()), json.get("versionId").getAsInt());
-    }
-
-    @Override
-    public String toString() {
-        return String.format("uuid=%s, versionId=%d", uuid, versionId);
+    override fun toString(): String {
+        return String.format("raw=%s, pitch=%s, headYaw=%s", yaw, pitch, headYaw)
     }
 }

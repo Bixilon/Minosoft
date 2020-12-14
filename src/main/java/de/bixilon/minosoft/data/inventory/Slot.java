@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.inventory;
 
+import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.data.mappings.Enchantment;
 import de.bixilon.minosoft.data.mappings.Item;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
@@ -191,7 +192,18 @@ public class Slot {
         if (customName != null) {
             return customName.getANSIColoredMessage();
         }
-        return (item == null ? "AIR" : item.toString()); // ToDo display name per Item (from language file)
+        return (item == null ? "AIR" : getLanguageName());
+    }
+
+    public String getLanguageName() {
+        // ToDo: What if an item identifier changed between versions? oOo
+        String[] keys = new String[]{String.format("item.%s.%s", item.getMod(), item.getIdentifier()), String.format("block.%s.%s", item.getMod(), item.getIdentifier())};
+        for (String key : keys) {
+            if (MinecraftLocaleManager.getLanguage().canTranslate(key)) {
+                return MinecraftLocaleManager.translate(key);
+            }
+        }
+        return item.getFullIdentifier();
     }
 
     @Nullable

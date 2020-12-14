@@ -10,19 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities
 
-package de.bixilon.minosoft.data.entities;
+import de.bixilon.minosoft.data.mappings.MobEffect
 
-import de.bixilon.minosoft.data.world.BlockPosition;
+data class StatusEffect(val effect: MobEffect, val amplifier: Int, val duration: Int) {
 
-public record Location(double x, double y, double z) {
-
-    public static Location fromPosition(BlockPosition position) {
-        return new Location(position.x(), position.y(), position.z());
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", x, y, z);
+    override fun toString(): String {
+        return String.format("%s (amplifier: %d, duration: %d)", effect, amplifier, duration)
     }
 }

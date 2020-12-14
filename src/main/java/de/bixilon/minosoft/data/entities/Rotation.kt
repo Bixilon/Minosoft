@@ -10,16 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities
 
-package de.bixilon.minosoft.data.world;
+class Rotation(val yaw: Int, val pitch: Int) {
 
-/**
- * Chunk X, Y and Z location (max 16x16x16)
- */
-public record InChunkSectionLocation(int x, int y, int z) {
-
-    @Override
-    public String toString() {
-        return String.format("%d %d %d", x, y, z);
+    override fun toString(): String {
+        return String.format("raw=%d, pitch=%d", yaw, pitch)
     }
 }

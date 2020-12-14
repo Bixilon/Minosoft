@@ -10,13 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.loading
 
-package de.bixilon.minosoft.data.entities;
+import com.google.gson.JsonObject
+import de.bixilon.minosoft.util.Util
+import java.util.*
 
-public record Velocity(short x, short y, short z) {
+data class ModVersionIdentifier(val uUID: UUID, val versionId: Int) {
 
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", x, y, z);
+    override fun toString(): String {
+        return String.format("uuid=%s, versionId=%d", uUID, versionId)
+    }
+
+    companion object {
+        @JvmStatic
+        fun serialize(json: JsonObject): ModVersionIdentifier {
+            return ModVersionIdentifier(Util.getUUIDFromString(json["uuid"].asString), json["versionId"].asInt)
+        }
     }
 }

@@ -54,13 +54,8 @@ public class ChunkSection {
     }
 
     public void setBlock(InChunkSectionLocation location, Block block) {
-        Block current = blocks.get(location);
         if (block == null) {
             blocks.remove(location);
-            blockEntityMeta.remove(location);
-            return;
-        }
-        if (current.equals(block)) {
             blockEntityMeta.remove(location);
             return;
         }

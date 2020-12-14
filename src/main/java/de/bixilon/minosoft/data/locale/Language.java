@@ -38,4 +38,9 @@ public class Language {
     public String translate(Strings key, Object... data) {
         return MessageFormat.format(this.data.get(key), data);
     }
+
+    @Override
+    public String toString() {
+        return language;
+    }
 }

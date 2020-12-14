@@ -10,13 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.world
 
-package de.bixilon.minosoft.data.entities;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-public record RelativeLocation(double x, double y, double z) {
+data class InChunkLocation(val x: Int, val y: Int, val z: Int) {
 
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", x, y, z);
+    fun getInChunkSectionLocation(): InChunkSectionLocation {
+        return InChunkSectionLocation(x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z)
+    }
+
+    override fun toString(): String {
+        return String.format("%d %d %d", x, y, z)
     }
 }

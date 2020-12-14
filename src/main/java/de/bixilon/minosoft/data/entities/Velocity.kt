@@ -10,13 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities
 
-package de.bixilon.minosoft.data.entities;
+data class Velocity(val x: Short, val y: Short, val z: Short) {
 
-public record EntityRotation(float yaw, float pitch, float headYaw) {
-
-    @Override
-    public String toString() {
-        return String.format("raw=%s, pitch=%s, headYaw=%s", yaw, pitch, headYaw);
+    override fun toString(): String {
+        return String.format("%s %s %s", x, y, z)
     }
 }

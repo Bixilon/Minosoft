@@ -52,7 +52,7 @@ public class PacketTradeList implements ClientboundPacket {
             }
             trades[i] = new Trade(input1, input2, enabled, usages, maxUsages, xp, specialPrice, priceMultiplier, demand);
         }
-        level = VillagerData.VillagerLevels.byId(buffer.readVarInt());
+        level = VillagerData.VillagerLevels.values()[buffer.readVarInt()];
         experience = buffer.readVarInt();
         isRegularVillager = buffer.readBoolean();
         if (buffer.getVersionId() >= 486) {

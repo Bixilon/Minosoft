@@ -73,9 +73,9 @@ public class PacketInteractEntity implements ServerboundPacket {
         if (buffer.getVersionId() >= 33) {
             if (click == EntityInteractionClicks.INTERACT_AT) {
                 // position
-                buffer.writeFloat((float) location.x());
-                buffer.writeFloat((float) location.y());
-                buffer.writeFloat((float) location.z());
+                buffer.writeFloat((float) location.getX());
+                buffer.writeFloat((float) location.getY());
+                buffer.writeFloat((float) location.getZ());
             }
 
             if (click == EntityInteractionClicks.INTERACT_AT || click == EntityInteractionClicks.INTERACT) {

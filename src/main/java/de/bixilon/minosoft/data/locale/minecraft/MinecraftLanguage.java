@@ -37,4 +37,9 @@ public class MinecraftLanguage {
     public String translate(String key, Object... data) {
         return String.format(this.data.get(key), data);
     }
+
+    @Override
+    public String toString() {
+        return language;
+    }
 }

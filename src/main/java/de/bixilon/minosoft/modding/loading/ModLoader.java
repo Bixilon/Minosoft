@@ -59,7 +59,7 @@ public class ModLoader {
             executor.execute(() -> {
                 MinosoftMod mod = loadMod(progress, modFile);
                 if (mod != null) {
-                    mods.put(mod.getInfo().getModIdentifier().uuid(), mod);
+                    mods.put(mod.getInfo().getModIdentifier().getUUID(), mod);
                 }
                 latch.countDown();
             });
@@ -86,12 +86,12 @@ public class ModLoader {
                     mods.remove(modEntry.getKey());
                     continue modLoop;
                 }
-                if (dependency.getVersionMinimum() < info.getModIdentifier().versionId()) {
+                if (dependency.getVersionMinimum() < info.getModIdentifier().getVersionId()) {
                     Log.warn("Could not satisfy mod dependency for mod %s (Requires %s version > %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMinimum());
                     mods.remove(modEntry.getKey());
                     continue modLoop;
                 }
-                if (dependency.getVersionMaximum() > info.getModIdentifier().versionId()) {
+                if (dependency.getVersionMaximum() > info.getModIdentifier().getVersionId()) {
                     Log.warn("Could not satisfy mod dependency for mod %s (Requires %s version < %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMaximum());
                     mods.remove(modEntry.getKey());
                     continue modLoop;
@@ -103,11 +103,11 @@ public class ModLoader {
                     Log.warn("Could not satisfy mod soft dependency for mod %s (Requires %s)", modEntry.getValue().getInfo(), dependency.getUUID());
                     continue;
                 }
-                if (dependency.getVersionMinimum() < info.getModIdentifier().versionId()) {
+                if (dependency.getVersionMinimum() < info.getModIdentifier().getVersionId()) {
                     Log.warn("Could not satisfy mod dependency for mod %s (Requires %s version > %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMinimum());
                     continue;
                 }
-                if (dependency.getVersionMaximum() > info.getModIdentifier().versionId()) {
+                if (dependency.getVersionMaximum() > info.getModIdentifier().getVersionId()) {
                     Log.warn("Could not satisfy mod soft dependency for mod %s (Requires %s version < %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMaximum());
                 }
             }
@@ -197,7 +197,7 @@ public class ModLoader {
     }
 
     public static boolean isModLoaded(ModInfo info) {
-        return mods.containsKey(info.getModIdentifier().uuid());
+        return mods.containsKey(info.getModIdentifier().getUUID());
     }
 
     @Nullable

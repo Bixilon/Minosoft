@@ -67,7 +67,7 @@ public abstract class Entity {
     }
 
     public void setLocation(RelativeLocation relativeLocation) {
-        location = new Location(location.x() + relativeLocation.x(), location.y() + relativeLocation.y(), location.z() + relativeLocation.z());
+        location = new Location(location.getX() + relativeLocation.getX(), location.getY() + relativeLocation.getY(), location.getZ() + relativeLocation.getZ());
     }
 
     public void setEquipment(HashMap<InventorySlots.EntityInventorySlots, Slot> slots) {
@@ -88,12 +88,12 @@ public abstract class Entity {
 
     public void addEffect(StatusEffect effect) {
         // effect already applied, maybe the duration or the amplifier changed?
-        effectList.removeIf(listEffect -> listEffect.effect() == effect.effect());
+        effectList.removeIf(listEffect -> listEffect.getEffect() == effect.getEffect());
         effectList.add(effect);
     }
 
     public void removeEffect(MobEffect effect) {
-        effectList.removeIf(listEffect -> listEffect.effect() == effect);
+        effectList.removeIf(listEffect -> listEffect.getEffect() == effect);
     }
 
     public void attachTo(int vehicleId) {
@@ -121,7 +121,7 @@ public abstract class Entity {
     }
 
     public void setRotation(int yaw, int pitch) {
-        this.rotation = new EntityRotation(yaw, pitch, rotation.headYaw());
+        this.rotation = new EntityRotation(yaw, pitch, rotation.getHeadYaw());
     }
 
     public void setRotation(int yaw, int pitch, int headYaw) {
@@ -129,7 +129,7 @@ public abstract class Entity {
     }
 
     public void setHeadRotation(int headYaw) {
-        this.rotation = new EntityRotation(rotation.yaw(), rotation.pitch(), headYaw);
+        this.rotation = new EntityRotation(rotation.getYaw(), rotation.getPitch(), headYaw);
     }
 
     @Unsafe

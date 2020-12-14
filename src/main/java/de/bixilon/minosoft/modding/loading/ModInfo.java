@@ -29,11 +29,11 @@ public class ModInfo {
     final String mainClass;
     final HashSet<ModDependency> hardDependencies = new HashSet<>();
     final HashSet<ModDependency> softDependencies = new HashSet<>();
-    private final ModIdentifier modIdentifier;
+    private final ModVersionIdentifier modVersionIdentifier;
     LoadingInfo loadingInfo;
 
     public ModInfo(JsonObject json) throws ModLoadingException {
-        this.modIdentifier = ModIdentifier.serialize(json);
+        this.modVersionIdentifier = ModVersionIdentifier.serialize(json);
         this.versionName = json.get("versionName").getAsString();
         this.name = json.get("name").getAsString();
         JsonArray authors = json.get("authors").getAsJsonArray();
@@ -82,16 +82,16 @@ public class ModInfo {
 
     @Deprecated
     public UUID getUUID() {
-        return modIdentifier.uuid();
+        return modVersionIdentifier.getUUID();
     }
 
     @Deprecated
     public int getVersionId() {
-        return modIdentifier.versionId();
+        return modVersionIdentifier.getVersionId();
     }
 
-    public ModIdentifier getModIdentifier() {
-        return modIdentifier;
+    public ModVersionIdentifier getModIdentifier() {
+        return modVersionIdentifier;
     }
 
     public String getVersionName() {
