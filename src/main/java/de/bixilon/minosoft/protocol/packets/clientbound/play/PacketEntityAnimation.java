@@ -26,7 +26,7 @@ public class PacketEntityAnimation extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readVarInt();
-        this.animation = EntityAnimations.byId(buffer.readByte(), buffer.getVersionId());
+        this.animation = EntityAnimations.byId(buffer.readUnsignedByte(), buffer.getVersionId());
         return true;
     }
 

@@ -17,6 +17,6 @@ data class Pair<K, V>(
     val value: V
 ) {
     override fun toString(): String {
-        return String.format("%s=%s", key, value)
+        return "$key=$value"
     }
 }

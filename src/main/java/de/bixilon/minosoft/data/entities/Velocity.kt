@@ -15,6 +15,6 @@ package de.bixilon.minosoft.data.entities
 data class Velocity(val x: Short, val y: Short, val z: Short) {
 
     override fun toString(): String {
-        return String.format("%s %s %s", x, y, z)
+        return "($x $y $z)"
     }
 }

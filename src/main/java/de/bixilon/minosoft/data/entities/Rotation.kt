@@ -15,6 +15,6 @@ package de.bixilon.minosoft.data.entities
 data class Rotation(val yaw: Int, val pitch: Int) {
 
     override fun toString(): String {
-        return String.format("raw=%d, pitch=%d", yaw, pitch)
+        return "(yaw=$yaw, pitch=$pitch)"
     }
 }

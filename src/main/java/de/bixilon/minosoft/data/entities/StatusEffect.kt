@@ -17,6 +17,6 @@ import de.bixilon.minosoft.data.mappings.MobEffect
 data class StatusEffect(val effect: MobEffect, val amplifier: Int, val duration: Int) {
 
     override fun toString(): String {
-        return String.format("%s (amplifier: %d, duration: %d)", effect, amplifier, duration)
+        return "$effect (amplifier: $amplifier, duration: $duration)"
     }
 }

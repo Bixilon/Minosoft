@@ -28,17 +28,16 @@ public class PacketLoginSuccess extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < 707) {
             this.uuid = Util.getUUIDFromString(buffer.readString());
-            this.username = buffer.readString();
-            return true;
+        } else {
+            this.uuid = buffer.readUUID();
         }
-        this.uuid = buffer.readUUID();
         this.username = buffer.readString();
         return true;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving login success packet (username=%s, UUID=%s)", this.username, this.uuid));
+        Log.protocol(String.format("[IN] Receiving login success packet (username=%s, uuid=%s)", this.username, this.uuid));
     }
 
     public UUID getUUID() {

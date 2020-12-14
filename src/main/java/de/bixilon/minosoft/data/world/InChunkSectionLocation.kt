@@ -18,6 +18,6 @@ package de.bixilon.minosoft.data.world
 data class InChunkSectionLocation(val x: Int, val y: Int, val z: Int) {
 
     override fun toString(): String {
-        return String.format("%d %d %d", x, y, z)
+        return "($x $y $z)"
     }
 }

@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.world.BlockPosition
 data class Location(val x: Double, val y: Double, val z: Double) {
 
     override fun toString(): String {
-        return String.format("%s %s %s", x, y, z)
+        return "($x $y $z)"
     }
 
     companion object {

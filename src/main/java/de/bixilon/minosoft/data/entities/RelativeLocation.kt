@@ -15,6 +15,6 @@ package de.bixilon.minosoft.data.entities
 data class RelativeLocation(val x: Double, val y: Double, val z: Double) {
 
     override fun toString(): String {
-        return String.format("%s %s %s", x, y, z)
+        return "($x $y $z)"
     }
 }
