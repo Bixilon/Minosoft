@@ -11,23 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol;
+package de.bixilon.minosoft.protocol.exceptions;
 
 public class PacketParseException extends Exception {
 
-    public PacketParseException() {
+    public PacketParseException(Throwable cause) {
+        super(cause);
     }
 
     public PacketParseException(String message) {
         super(message);
     }
 
-    public PacketParseException(String message, Throwable cause) {
-        super(message, cause);
+    public PacketParseException() {
     }
 
-    public PacketParseException(Throwable cause) {
-        super(cause);
+    public PacketParseException(String message, Throwable cause) {
+        super(message, cause);
     }
 
     public PacketParseException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {

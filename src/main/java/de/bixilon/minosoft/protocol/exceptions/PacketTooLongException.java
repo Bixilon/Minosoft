@@ -11,26 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol;
+package de.bixilon.minosoft.protocol.exceptions;
 
-public class UnknownPacketException extends Exception {
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
-    public UnknownPacketException() {
-    }
+public class PacketTooLongException extends PacketParseException {
 
-    public UnknownPacketException(String message) {
-        super(message);
-    }
-
-    public UnknownPacketException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public UnknownPacketException(Throwable cause) {
-        super(cause);
-    }
-
-    public UnknownPacketException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public PacketTooLongException(int length) {
+        super(String.format("Server sent us a to big packet (%d bytes > %d bytes)", length, ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE));
     }
 }
