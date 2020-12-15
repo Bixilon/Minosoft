@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.text;
 
+import org.checkerframework.common.value.qual.IntRange;
+
 public final class RGBColor implements ChatCode {
     private final int color;
 
@@ -35,18 +37,22 @@ public final class RGBColor implements ChatCode {
         this.color = Integer.parseInt(colorString, 16);
     }
 
+    @IntRange(from = 0, to = 255)
     public int getAlpha() {
         return (this.color >> 24) & 0xFF;
     }
 
+    @IntRange(from = 0, to = 255)
     public int getRed() {
         return (this.color >> 16) & 0xFF;
     }
 
+    @IntRange(from = 0, to = 255)
     public int getGreen() {
         return (this.color >> 8) & 0xFF;
     }
 
+    @IntRange(from = 0, to = 255)
     public int getBlue() {
         return this.color & 0xFF;
     }

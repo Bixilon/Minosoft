@@ -22,7 +22,7 @@ import java.util.HashMap;
  * Collection of 16 chunks sections
  */
 public class Chunk {
-    final HashMap<Byte, ChunkSection> sections;
+    private final HashMap<Byte, ChunkSection> sections;
 
     public Chunk(HashMap<Byte, ChunkSection> sections) {
         this.sections = sections;
@@ -33,9 +33,6 @@ public class Chunk {
     }
 
     public Block getBlock(int x, int y, int z) {
-        if (x > 15 || y > 255 || z > 15 || x < 0 || y < 0 || z < 0) {
-            throw new IllegalArgumentException(String.format("Invalid chunk location %s %s %s", x, y, z));
-        }
         byte section = (byte) (y / 16);
         if (!this.sections.containsKey(section)) {
             return null;

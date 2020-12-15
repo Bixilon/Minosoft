@@ -27,6 +27,9 @@ public class PacketUpdateHealth extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.health = buffer.readFloat();
+        if (this.health < 0.0F) {
+            this.health = 0.0F;
+        }
         if (buffer.getVersionId() < 7) {
             this.food = buffer.readUnsignedShort();
         } else {

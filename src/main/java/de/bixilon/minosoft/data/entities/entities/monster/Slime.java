@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.Mob;
 import de.bixilon.minosoft.protocol.network.Connection;
+import org.checkerframework.common.value.qual.IntRange;
 
 import java.util.UUID;
 
@@ -28,6 +29,7 @@ public class Slime extends Mob {
         super(connection, entityId, uuid, location, rotation);
     }
 
+    @IntRange(from = 0)
     @EntityMetaDataFunction(identifier = "size")
     public int getSize() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.SLIME_SIZE);

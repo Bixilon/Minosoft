@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data;
 
 import de.bixilon.minosoft.data.inventory.Slot;
+import org.checkerframework.common.value.qual.IntRange;
 
 public class Trade {
     final Slot input1;
@@ -50,6 +51,7 @@ public class Trade {
         return this.enabled;
     }
 
+    @IntRange(from = 0)
     public int getUsages() {
         return this.usages;
     }

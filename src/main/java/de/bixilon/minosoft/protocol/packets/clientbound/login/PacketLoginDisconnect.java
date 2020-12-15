@@ -31,8 +31,8 @@ public class PacketLoginDisconnect extends ClientboundPacket {
 
     @Override
     public void handle(Connection connection) {
-        connection.fireEvent(new LoginDisconnectEvent(connection, getReason()));
-        Log.info(String.format("Disconnecting from server (reason=%s)", getReason().getANSIColoredMessage()));
+        connection.fireEvent(new LoginDisconnectEvent(connection, this));
+        Log.info(String.format("Kicked while logging in to %s (reason=%s)", connection.getAddress(), getReason().getANSIColoredMessage()));
         connection.disconnect();
     }
 

@@ -36,6 +36,7 @@ import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.nbt.tag.*;
+import org.checkerframework.common.value.qual.IntRange;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -199,6 +200,7 @@ public class InByteBuffer {
         return ChatComponent.valueOf(readString());
     }
 
+    @IntRange(from = 0)
     public int getLength() {
         return this.bytes.length;
     }
@@ -307,6 +309,7 @@ public class InByteBuffer {
         return new String(Base64.getEncoder().encode(readBytes(pos, length)));
     }
 
+    @IntRange(from = 0, to = ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE)
     public int getPosition() {
         return this.position;
     }
@@ -315,6 +318,7 @@ public class InByteBuffer {
         this.position = pos;
     }
 
+    @IntRange(from = 0)
     public int getBytesLeft() {
         return this.bytes.length - this.position;
     }

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.text;
 
 import com.google.common.collect.HashBiMap;
+import org.checkerframework.common.value.qual.IntRange;
 
 public final class ChatColors {
     public static final RGBColor BLACK = new RGBColor(0, 0, 0);
@@ -54,7 +55,7 @@ public final class ChatColors {
         return getColorById(Character.digit(c, 16));
     }
 
-    public static ChatCode getFormattingById(int id) {
+    public static ChatCode getFormattingById(@IntRange(from = 0, to = 21) int id) {
         if (id <= 15) {
             return getColorById(id);
         }
@@ -69,7 +70,7 @@ public final class ChatColors {
         };
     }
 
-    public static RGBColor getColorById(int id) {
+    public static RGBColor getColorById(@IntRange(from = 0, to = 15) int id) {
         if (id < 0) {
             return null;
         }

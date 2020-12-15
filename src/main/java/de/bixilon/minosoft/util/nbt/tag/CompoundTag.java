@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util.nbt.tag;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
+import org.checkerframework.common.value.qual.IntRange;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -148,6 +149,7 @@ public class CompoundTag extends NBTTag {
         this.data.put(name, tag);
     }
 
+    @IntRange(from = 0)
     public int size() {
         return this.data.size();
     }

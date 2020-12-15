@@ -224,9 +224,10 @@ public class SocketNetwork implements Network {
             // compression is enabled
             InByteBuffer rawData = new InByteBuffer(bytes, this.connection);
             int packetSize = rawData.readVarInt();
+            bytes = rawData.readBytesLeft();
             if (packetSize > 0) {
                 // need to decompress data
-                bytes = Util.decompress(rawData.readBytesLeft());
+                bytes = Util.decompress(bytes);
             }
         }
         InPacketBuffer data = new InPacketBuffer(bytes, this.connection);

@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.nbt.tag.*;
+import org.checkerframework.common.value.qual.IntRange;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -166,6 +167,7 @@ public class Slot {
         return this.item;
     }
 
+    @IntRange(from = 0, to = 64)
     public int getItemCount() {
         return this.itemCount;
     }
