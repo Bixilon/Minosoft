@@ -36,7 +36,9 @@ public abstract class ConfigurationPaths {
     public enum BooleanPaths implements ConfigurationPath {
         NETWORK_FAKE_CLIENT_BRAND,
         NETWORK_SHOW_LAN_SERVERS,
-        DEBUG_VERIFY_ASSETS
+        DEBUG_VERIFY_ASSETS,
+        CHAT_COLORED,
+        CHAT_OBFUSCATED
     }
 
     public enum IntegerPaths implements ConfigurationPath {

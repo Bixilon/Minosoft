@@ -198,3 +198,7 @@
 .ping-no-connection {
     -fx-text-fill: red;
 }
+
+.obfuscated {
+    -fx-font-family: "Hack";
+}

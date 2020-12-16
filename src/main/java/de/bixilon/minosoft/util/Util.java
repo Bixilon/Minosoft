@@ -37,7 +37,7 @@ import java.util.zip.*;
 
 public final class Util {
     public static final Pattern UUID_FIX = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
-    public static final String RANDOM_STRING_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    public static final char[] RANDOM_STRING_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final Random THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
 
@@ -264,9 +264,17 @@ public final class Util {
     public static String generateRandomString(int length) {
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
-            sb.append(RANDOM_STRING_CHARS.charAt(THREAD_LOCAL_RANDOM.nextInt(RANDOM_STRING_CHARS.length())));
+            sb.append(getRandomChar(RANDOM_STRING_CHARS));
         }
         return sb.toString();
+    }
+
+    public static char getRandomChar(char[] chars) {
+        return chars[(THREAD_LOCAL_RANDOM.nextInt(chars.length))];
+    }
+
+    public static char getRandomChar() {
+        return (char) THREAD_LOCAL_RANDOM.nextInt();
     }
 
     public static String getStringBetween(String search, String first, String second) {

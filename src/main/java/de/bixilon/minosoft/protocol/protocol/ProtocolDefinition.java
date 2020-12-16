@@ -54,6 +54,9 @@ public final class ProtocolDefinition {
     public static final int SECTIONS_PER_CHUNK = 16;
     public static final int BLOCKS_PER_SECTION = SECTION_WIDTH_X * SECTION_HEIGHT_Y * SECTION_WIDTH_X;
 
+
+    public static final char[] OBFUSCATED_CHARS = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".toCharArray();
+
     static {
         // java does (why ever) not allow to directly assign a null
         InetAddress temp;

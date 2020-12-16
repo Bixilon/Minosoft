@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.data.text;
 
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.hash.BetterHashSet;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -162,18 +165,30 @@ public class TextComponent extends ChatComponent {
     @Override
     public ObservableList<Node> getJavaFXText(ObservableList<Node> nodes) {
         Text text = new Text(this.text);
-        if (this.color == null) {
-            text.setFill(Color.WHITE);
-        } else {
+        text.setFill(Color.WHITE);
+        if (Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.CHAT_COLORED) && this.color != null) {
             text.setFill(Color.web(this.color.toString()));
         }
         this.formatting.forEach((chatFormattingCode -> {
             if (chatFormattingCode instanceof PreChatFormattingCodes code) {
                 switch (code) {
                     case OBFUSCATED -> {
-                        Timeline flasher = new Timeline(new KeyFrame(Duration.seconds(1), e -> text.setVisible(false)), new KeyFrame(Duration.seconds(2), e -> text.setVisible(true)));
-                        flasher.setCycleCount(Animation.INDEFINITE);
-                        flasher.play();
+                        // ToDo: potential memory leak: Stop timeline, when TextComponent isn't shown anymore
+                        Timeline obfuscatedTimeline;
+                        if (Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.CHAT_OBFUSCATED)) {
+                            obfuscatedTimeline = new Timeline(new KeyFrame(Duration.millis(50), e -> {
+                                char[] chars = text.getText().toCharArray();
+                                for (int i = 0; i < chars.length; i++) {
+                                    chars[i] = Util.getRandomChar(ProtocolDefinition.OBFUSCATED_CHARS);
+                                }
+                                text.setText(new String(chars));
+                            }));
+                        } else {
+                            obfuscatedTimeline = new Timeline(new KeyFrame(Duration.millis(500), e -> text.setVisible(false)), new KeyFrame(Duration.millis(1000), e -> text.setVisible(true)));
+                        }
+                        obfuscatedTimeline.setCycleCount(Animation.INDEFINITE);
+                        obfuscatedTimeline.play();
+                        text.getStyleClass().add("obfuscated");
                     }
                     case BOLD -> text.setStyle("-fx-font-weight: bold;");
                     case STRIKETHROUGH -> text.setStyle("-fx-strikethrough: true;");

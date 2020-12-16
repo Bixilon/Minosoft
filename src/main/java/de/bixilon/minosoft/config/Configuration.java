@@ -214,6 +214,8 @@ public class Configuration {
                 case NETWORK_FAKE_CLIENT_BRAND -> json.getAsJsonObject("network").get("fake-network-brand").getAsBoolean();
                 case NETWORK_SHOW_LAN_SERVERS -> json.getAsJsonObject("network").get("show-lan-servers").getAsBoolean();
                 case DEBUG_VERIFY_ASSETS -> json.getAsJsonObject("debug").get("verify-assets").getAsBoolean();
+                case CHAT_COLORED -> json.getAsJsonObject("chat").get("colored").getAsBoolean();
+                case CHAT_OBFUSCATED -> json.getAsJsonObject("chat").get("obfuscated").getAsBoolean();
             };
         }
         if (path instanceof ConfigurationPaths.IntegerPaths integerPath) {
@@ -240,6 +242,8 @@ public class Configuration {
                 case NETWORK_FAKE_CLIENT_BRAND -> input.getAsJsonObject("network").addProperty("fake-network-brand", bool);
                 case NETWORK_SHOW_LAN_SERVERS -> input.getAsJsonObject("network").addProperty("show-lan-servers", bool);
                 case DEBUG_VERIFY_ASSETS -> input.getAsJsonObject("debug").addProperty("verify-assets", bool);
+                case CHAT_COLORED -> input.getAsJsonObject("chat").addProperty("colored", bool);
+                case CHAT_OBFUSCATED -> input.getAsJsonObject("chat").addProperty("obfuscated", bool);
             }
         } else if (data instanceof Integer integer) {
             switch ((ConfigurationPaths.IntegerPaths) path) {
