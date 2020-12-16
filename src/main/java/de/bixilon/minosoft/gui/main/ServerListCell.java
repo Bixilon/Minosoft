@@ -256,11 +256,11 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     }
 
     public void refresh() {
-        Log.info(String.format("Refreshing server status (serverName=\"%s\", address=\"%s\")", this.server.getName().getLegacyText(), this.server.getAddress()));
         if (this.server.getLastPing() == null) {
             // server was not pinged, don't even try, only costs memory and cpu
             return;
         }
+        Log.info(String.format("Refreshing server status (serverName=\"%s\", address=\"%s\")", this.server.getName().getLegacyText(), this.server.getAddress()));
         resetCell();
         this.server.ping();
     }
