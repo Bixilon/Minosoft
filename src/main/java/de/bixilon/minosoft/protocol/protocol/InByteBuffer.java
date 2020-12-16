@@ -78,6 +78,7 @@ public class InByteBuffer {
         return (short) (((readUnsignedByte()) << 8) | (readUnsignedByte()));
     }
 
+    @IntRange(from = 0, to = ((int) Short.MAX_VALUE) * 2)
     public int readUnsignedShort() {
         return readShort() & 0xFFFF;
     }
@@ -180,6 +181,7 @@ public class InByteBuffer {
         return this.bytes[this.position++];
     }
 
+    @IntRange(from = 0, to = ((int) Byte.MAX_VALUE) * 2)
     public short readUnsignedByte() {
         return (short) (this.bytes[this.position++] & 0xFF);
     }
@@ -239,7 +241,7 @@ public class InByteBuffer {
 
     public NBTTag readNBT(boolean compressed) {
         if (compressed) {
-            int length = readUnsignedShort();
+            int length = readShort();
             if (length == -1) {
                 // no nbt data here...
                 return new CompoundTag();

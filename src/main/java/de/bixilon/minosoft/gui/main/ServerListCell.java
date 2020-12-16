@@ -22,11 +22,13 @@ import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
+import de.bixilon.minosoft.data.player.PingBars;
 import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.EventInvokerCallback;
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
-import de.bixilon.minosoft.modding.event.events.ServerListPingArriveEvent;
+import de.bixilon.minosoft.modding.event.events.ServerListPongEvent;
+import de.bixilon.minosoft.modding.event.events.ServerListStatusArriveEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.ping.ForgeModInfo;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
@@ -71,6 +73,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public MenuItem optionsSessions;
     public MenuItem optionsDelete;
     public MenuButton optionsMenu;
+    public Label pingField;
 
     boolean canConnect;
     private Server server;
@@ -136,7 +139,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (server.getLastPing() == null) {
             server.ping();
         }
-        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListPingArriveEvent>(ServerListPingArriveEvent.class, event -> Platform.runLater(() -> {
+        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListStatusArriveEvent>(ServerListStatusArriveEvent.class, event -> Platform.runLater(() -> {
             ServerListPing ping = event.getServerListPing();
             if (server != this.server) {
                 // cell does not contains us anymore
@@ -197,6 +200,17 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 setErrorMotd(String.format("%s: %s", server.getLastPing().getLastConnectionException().getClass().getCanonicalName(), server.getLastPing().getLastConnectionException().getMessage()));
             }
         })));
+        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListPongEvent>(ServerListPongEvent.class, event -> Platform.runLater(() -> {
+            this.pingField.setText(String.format("%dms", event.getLatency()));
+            switch (PingBars.byPing(event.getLatency())) {
+                case BARS_5 -> this.pingField.getStyleClass().add("ping-5-bars");
+                case BARS_4 -> this.pingField.getStyleClass().add("ping-4-bars");
+                case BARS_3 -> this.pingField.getStyleClass().add("ping-3-bars");
+                case BARS_2 -> this.pingField.getStyleClass().add("ping-2-bars");
+                case BARS_1 -> this.pingField.getStyleClass().add("ping-1-bars");
+                case NO_CONNECTION -> this.pingField.getStyleClass().add("ping-no-connection");
+            }
+        })));
     }
 
     public void setName(BaseComponent name) {
@@ -218,6 +232,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         this.versionField.getStyleClass().remove("version-error");
         this.versionField.setStyle(null);
         this.playersField.setText("");
+        this.pingField.setText("");
+        this.pingField.getStyleClass().removeIf((s -> s.startsWith("ping")));
         this.optionsConnect.setDisable(true);
         this.optionsEdit.setDisable(false);
         this.optionsDelete.setDisable(false);
@@ -245,6 +261,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             // server was not pinged, don't even try, only costs memory and cpu
             return;
         }
+        resetCell();
         this.server.ping();
     }
 

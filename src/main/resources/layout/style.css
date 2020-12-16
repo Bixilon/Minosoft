@@ -173,3 +173,28 @@
 .list-cell-connected {
     -fx-background-color: darkseagreen;
 }
+
+
+.ping-5-bars {
+    -fx-text-fill: greenyellow;
+}
+
+.ping-4-bars {
+    -fx-text-fill: yellowgreen;
+}
+
+.ping-3-bars {
+    -fx-text-fill: yellow;
+}
+
+.ping-2-bars {
+    -fx-text-fill: orange;
+}
+
+.ping-1-bars {
+    -fx-text-fill: orangered;
+}
+
+.ping-no-connection {
+    -fx-text-fill: red;
+}

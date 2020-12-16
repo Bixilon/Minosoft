@@ -80,10 +80,11 @@ public class SocketNetwork implements Network {
 
     @Override
     public void connect(ServerAddress address) {
-        this.lastException = null;
         if (this.connection.isConnected() || this.connection.getConnectionState() == ConnectionStates.CONNECTING) {
             return;
         }
+        this.lastException = null;
+        this.connection.setConnectionState(ConnectionStates.CONNECTING);
         this.socketReceiveThread = new Thread(() -> {
             try {
                 this.socket = new Socket();
@@ -113,7 +114,7 @@ public class SocketNetwork implements Network {
                     }
                 }
                 disconnect();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 // Could not connect
                 if (this.socketSendThread != null) {
                     this.socketSendThread.interrupt();

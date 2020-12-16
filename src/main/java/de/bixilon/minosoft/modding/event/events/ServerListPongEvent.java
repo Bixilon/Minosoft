@@ -11,32 +11,28 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player;
+package de.bixilon.minosoft.modding.event.events;
 
-public enum PingBars {
-    NO_CONNECTION,
-    BARS_5,
-    BARS_4,
-    BARS_3,
-    BARS_2,
-    BARS_1;
+import de.bixilon.minosoft.protocol.network.Connection;
 
-    public static PingBars byPing(long ping) {
-        if (ping < 0) {
-            return NO_CONNECTION;
-        }
-        if (ping < 150) {
-            return BARS_5;
-        }
-        if (ping < 300) {
-            return BARS_4;
-        }
-        if (ping < 600) {
-            return BARS_3;
-        }
-        if (ping < 1000) {
-            return BARS_2;
-        }
-        return BARS_1;
+/**
+ * Fired when a pong is received from the server or the pong has already arrived and the event got registered too late
+ */
+public class ServerListPongEvent extends ConnectionEvent {
+    private final long pingId;
+    private final long latency;
+
+    public ServerListPongEvent(Connection connection, long pingId, long latency) {
+        super(connection);
+        this.pingId = pingId;
+        this.latency = latency;
+    }
+
+    public long getPingId() {
+        return this.pingId;
+    }
+
+    public long getLatency() {
+        return this.latency;
     }
 }

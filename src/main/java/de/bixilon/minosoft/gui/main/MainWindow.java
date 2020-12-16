@@ -263,8 +263,9 @@ public class MainWindow implements Initializable {
                 // server was not pinged, don't even try, only costs memory and cpu
                 continue;
             }
-            server.ping();
-            ServerListCell.SERVER_LIST_VIEW.refresh();
+            if (server.getCell() != null) {
+                server.getCell().refresh();
+            }
         }
     }
 

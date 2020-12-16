@@ -19,12 +19,12 @@ import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import javax.annotation.Nullable;
 
 /**
- * Fired when a ping arrives from the server or the ping already arrived and the event got registered to late
+ * Fired when the status arrives from the server or the status already arrived and the event got registered too late
  */
-public class ServerListPingArriveEvent extends ConnectionEvent {
+public class ServerListStatusArriveEvent extends ConnectionEvent {
     private final ServerListPing serverListPing;
 
-    public ServerListPingArriveEvent(Connection connection, ServerListPing serverListPing) {
+    public ServerListStatusArriveEvent(Connection connection, ServerListPing serverListPing) {
         super(connection);
         this.serverListPing = serverListPing;
     }

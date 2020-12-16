@@ -73,14 +73,8 @@ public class OutByteBuffer {
     }
 
     public void writeLong(long value) {
-        writeByte(value >>> 56);
-        writeByte(value >>> 48);
-        writeByte(value >>> 40);
-        writeByte(value >>> 32);
-        writeByte(value >>> 24);
-        writeByte(value >>> 16);
-        writeByte(value >>> 8);
-        writeByte(value);
+        writeInt((int) (value >> 32));
+        writeInt((int) (value));
     }
 
     public void writeChatComponent(ChatComponent chatComponent) {

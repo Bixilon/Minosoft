@@ -361,7 +361,7 @@ public class Connection {
 
     public void handlePingCallbacks(@Nullable ServerListPing ping) {
         this.lastPing = ping;
-        fireEvent(new ServerListPingArriveEvent(this, ping));
+        fireEvent(new ServerListStatusArriveEvent(this, ping));
     }
 
     public int getDesiredVersionNumber() {
@@ -370,10 +370,10 @@ public class Connection {
 
     public void registerEvent(EventInvoker method) {
         this.eventListeners.add(method);
-        if (method.getEventType() == ServerListPingArriveEvent.class) {
+        if (method.getEventType() == ServerListStatusArriveEvent.class) {
             if (getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || this.lastPing != null) {
                 // ping done
-                method.invoke(new ServerListPingArriveEvent(this, this.lastPing));
+                method.invoke(new ServerListStatusArriveEvent(this, this.lastPing));
             }
         }
     }

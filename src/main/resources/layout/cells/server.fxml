@@ -46,6 +46,11 @@
                 <Insets right="10.0"/>
             </GridPane.margin>
         </Label>
+        <Label fx:id="pingField" text="PING" textAlignment="RIGHT" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.halignment="RIGHT">
+            <GridPane.margin>
+                <Insets right="10.0"/>
+            </GridPane.margin>
+        </Label>
         <Label fx:id="playersField" text="100000 / 100000" GridPane.columnIndex="3" GridPane.halignment="RIGHT">
             <GridPane.margin>
                 <Insets right="15.0"/>
