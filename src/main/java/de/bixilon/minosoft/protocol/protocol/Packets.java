@@ -198,7 +198,8 @@ public class Packets {
         PLAY_TITLE(PacketTitle.class),
         PLAY_ENTITY_INITIALISATION(PacketEntityInitialisation.class),
         PLAY_SET_COMPRESSION(PacketSetCompression.class),
-        PLAY_ADVANCEMENT_PROGRESS(null);
+        PLAY_ADVANCEMENT_PROGRESS(null),
+        PLAY_SCULK_VIBRATION_SIGNAL(PacketSculkVibrationSignal.class);
 
         final ConnectionStates state;
         final Class<? extends ClientboundPacket> clazz;

@@ -32,7 +32,7 @@ public class PacketOpenWindow extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < V_15W41A3B) {
+        if (buffer.getVersionId() < V_14W03B) {
             this.windowId = buffer.readByte();
             this.type = InventoryTypes.byId(buffer.readUnsignedByte());
             this.title = buffer.readChatComponent();

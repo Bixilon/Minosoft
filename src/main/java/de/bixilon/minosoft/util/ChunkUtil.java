@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.world.palette.Palette;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
+import java.util.BitSet;
 import java.util.HashMap;
 
 import static de.bixilon.minosoft.protocol.protocol.Versions.*;
@@ -195,19 +196,23 @@ public final class ChunkUtil {
         return new Chunk(sectionMap);
     }
 
-    public static void readSkyLightPacket(InByteBuffer buffer, long skyLightMask, long blockLightMask, long emptyBlockLightMask, long emptySkyLightMask) {
-        for (byte c = 0; c < 18; c++) { // light sections
-            if (!BitByte.isBitSet(skyLightMask, c)) {
-                continue;
-            }
-            byte[] skyLight = buffer.readBytes(buffer.readVarInt());
-        }
-        for (byte c = 0; c < 18; c++) { // light sections
-            if (!BitByte.isBitSet(blockLightMask, c)) {
-                continue;
-            }
-            byte[] blockLight = buffer.readBytes(buffer.readVarInt());
-        }
+    public static void readSkyLightPacket(InByteBuffer buffer, long[] skyLightMask, long[] blockLightMask, long[] emptyBlockLightMask, long[] emptySkyLightMask) {
+        readLightArray(buffer, BitSet.valueOf(skyLightMask));
+        readLightArray(buffer, BitSet.valueOf(blockLightMask));
         // ToDo
+    }
+
+    private static void readLightArray(InByteBuffer buffer, BitSet lightMask) {
+        int highestSectionIndex = ProtocolDefinition.SECTIONS_PER_CHUNK + 2;
+        if (buffer.getVersionId() >= V_20W49A) {
+            buffer.readVarInt(); // section count
+            highestSectionIndex = lightMask.length();
+        }
+        for (int c = 0; c < highestSectionIndex; c++) { // light sections
+            if (!lightMask.get(c)) {
+                continue;
+            }
+            byte[] light = buffer.readBytes(buffer.readVarInt());
+        }
     }
 }

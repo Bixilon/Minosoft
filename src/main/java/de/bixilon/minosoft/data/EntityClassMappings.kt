@@ -45,10 +45,12 @@ import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.data.mappings.ModIdentifier
 
 object EntityClassMappings {
-    private val ENTITY_CLASS_MAPPINGS: HashBiMap<Class<out Entity>, ModIdentifier> = HashBiMap.create(mapOf(
+    private val ENTITY_CLASS_MAPPINGS: HashBiMap<Class<out Entity>, ModIdentifier> = HashBiMap.create(
+        mapOf(
             AreaEffectCloud::class.java to ModIdentifier("area_effect_cloud"),
             ArmorStand::class.java to ModIdentifier("armor_stand"),
             Arrow::class.java to ModIdentifier("arrow"),
+            Axolotl::class.java to ModIdentifier("axolotl"),
             Bat::class.java to ModIdentifier("bat"),
             Bee::class.java to ModIdentifier("bee"),
             Blaze::class.java to ModIdentifier("blaze"),
@@ -155,7 +157,8 @@ object EntityClassMappings {
             ZombifiedPiglin::class.java to ModIdentifier("zombified_piglin"),
             PlayerEntity::class.java to ModIdentifier("player"),
             FishingHook::class.java to ModIdentifier("fishing_bobber")
-    ))
+        )
+    )
 
     fun getByIdentifier(mod: String, identifier: String): Class<out Entity>? {
         return ENTITY_CLASS_MAPPINGS.inverse()[ModIdentifier(mod, identifier)]

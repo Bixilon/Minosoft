@@ -353,7 +353,7 @@ public class InByteBuffer {
         return Float.intBitsToFloat(readInt());
     }
 
-    public BlockPosition readBlockPosition() {
+    public BlockPosition readBlockPositionByte() {
         return new BlockPosition(readInt(), readUnsignedByte(), readInt());
     }
 
@@ -383,6 +383,10 @@ public class InByteBuffer {
             ret[i] = readLong();
         }
         return ret;
+    }
+
+    public long[] readLongArray() {
+        return readLongArray(readVarInt());
     }
 
     public int getVersionId() {

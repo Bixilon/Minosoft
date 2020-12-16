@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 public class Versions {
+    public static final int V_20W51A = 762;
+    public static final int V_20W49A = 761;
     public static final int V_20W48A = 760;
     public static final int V_20W46A = 759;
     public static final int V_20W45A = 758;
@@ -363,7 +365,7 @@ public class Versions {
     public static final int V_14W05B = 9;
     public static final int V_14W04B = 8;
     public static final int V_14W04A = 7;
-    public static final int V_15W41A3B = 6; // ToDo: lol. strange name
+    public static final int V_14W03B = 6;
     public static final int V_1_7_10 = 5;
     public static final int V_1_7_5 = 4;
     public static final int V_1_7_1_PRE = 3;

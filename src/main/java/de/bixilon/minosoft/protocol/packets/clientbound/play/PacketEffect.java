@@ -33,8 +33,8 @@ public class PacketEffect extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.effect = EffectEffects.byId(buffer.readInt(), buffer.getVersionId());
-        if (buffer.getVersionId() < V_15W41A3B) {
-            this.position = buffer.readBlockPosition();
+        if (buffer.getVersionId() < V_14W03B) {
+            this.position = buffer.readBlockPositionByte();
         } else {
             this.position = buffer.readPosition();
         }

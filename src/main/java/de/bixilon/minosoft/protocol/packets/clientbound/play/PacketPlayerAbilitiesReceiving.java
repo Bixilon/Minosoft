@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W41A3B;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W03B;
 
 public class PacketPlayerAbilitiesReceiving extends ClientboundPacket {
     boolean creative; // is this needed? receiving the gameMode in change Game state
@@ -31,7 +31,7 @@ public class PacketPlayerAbilitiesReceiving extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         byte flags = buffer.readByte();
-        if (buffer.getVersionId() < V_15W41A3B) { // ToDo
+        if (buffer.getVersionId() < V_14W03B) { // ToDo
             this.creative = BitByte.isBitSet(flags, 0);
             this.flying = BitByte.isBitSet(flags, 1);
             this.canFly = BitByte.isBitSet(flags, 2);

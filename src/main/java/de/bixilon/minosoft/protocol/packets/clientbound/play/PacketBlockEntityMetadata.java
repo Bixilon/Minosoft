@@ -33,7 +33,7 @@ public class PacketBlockEntityMetadata extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < V_15W41A3B) {
+        if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionShort();
             this.action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
             this.data = BlockEntityMetaData.getData(this.action, (CompoundTag) buffer.readNBT(true));

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.entities;
 
 import de.bixilon.minosoft.data.Directions;
+import de.bixilon.minosoft.data.entities.entities.animal.Axolotl;
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
@@ -264,6 +265,10 @@ public enum EntityMetaDataFields {
     PILLAGER_IS_CHARGING_CROSSBOW(false),
 
     THROWN_EYE_OF_ENDER_ITEM,
+
+    AXOLOTL_VARIANT(Axolotl.AxolotlVariants.LUCY.ordinal()),
+    AXOLOTL_PLAYING_DEAD(false),
+    AXOLOTL_FROM_BUCKET(false),
 
     // pretty old stuff here. 1.8 mostly (or even after, I don't know and I don't care)
     LEGACY_SKELETON_TYPE((byte) 0),

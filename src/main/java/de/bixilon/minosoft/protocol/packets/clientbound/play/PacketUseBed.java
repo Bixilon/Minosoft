@@ -28,7 +28,7 @@ public class PacketUseBed extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readInt();
         if (buffer.getVersionId() < V_14W04A) {
-            this.position = buffer.readBlockPosition();
+            this.position = buffer.readBlockPositionByte();
         } else {
             this.position = buffer.readPosition();
         }

@@ -20,6 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.ChunkUtil;
 
 import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_16_PRE3;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_20W49A;
 
 public class PacketUpdateLight extends ClientboundPacket {
     ChunkLocation location;
@@ -30,11 +31,23 @@ public class PacketUpdateLight extends ClientboundPacket {
         if (buffer.getVersionId() >= V_1_16_PRE3) {
             boolean trustEdges = buffer.readBoolean();
         }
-        // was a varInt before 20w45a, should we change this?
-        long skyLightMask = buffer.readVarLong();
-        long blockLightMask = buffer.readVarLong();
-        long emptyBlockLightMask = buffer.readVarLong();
-        long emptySkyLightMask = buffer.readVarLong();
+
+        long[] skyLightMask;
+        long[] blockLightMask;
+        long[] emptySkyLightMask;
+        long[] emptyBlockLightMask;
+        if (buffer.getVersionId() < V_20W49A) {
+            // was a varInt before 20w45a, should we change this?
+            skyLightMask = new long[]{buffer.readVarLong()};
+            blockLightMask = new long[]{buffer.readVarLong()};
+            emptyBlockLightMask = new long[]{buffer.readVarLong()};
+            emptySkyLightMask = new long[]{buffer.readVarLong()};
+        } else {
+            skyLightMask = buffer.readLongArray();
+            blockLightMask = buffer.readLongArray();
+            emptySkyLightMask = buffer.readLongArray();
+            emptyBlockLightMask = buffer.readLongArray();
+        }
         ChunkUtil.readSkyLightPacket(buffer, skyLightMask, blockLightMask, emptyBlockLightMask, emptySkyLightMask);
         return true;
     }

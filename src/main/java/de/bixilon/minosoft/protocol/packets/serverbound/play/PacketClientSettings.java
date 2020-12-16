@@ -21,8 +21,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W03B;
 import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W31A;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W41A3B;
 
 public class PacketClientSettings implements ServerboundPacket {
 
@@ -49,7 +49,7 @@ public class PacketClientSettings implements ServerboundPacket {
         buffer.writeByte(this.renderDistance); // render Distance
         buffer.writeByte((byte) 0x00); // chat settings (nobody uses them)
         buffer.writeBoolean(true); // chat colors
-        if (buffer.getVersionId() < V_15W41A3B) {
+        if (buffer.getVersionId() < V_14W03B) {
             buffer.writeByte((byte) Difficulties.NORMAL.ordinal()); // difficulty
             buffer.writeBoolean(true); // cape
         } else {

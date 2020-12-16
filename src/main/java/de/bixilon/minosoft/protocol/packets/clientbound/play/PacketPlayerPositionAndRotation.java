@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketConfirmTelepo
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W41A3B;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W03B;
 import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W42A;
 
 public class PacketPlayerPositionAndRotation extends ClientboundPacket {
@@ -37,7 +37,7 @@ public class PacketPlayerPositionAndRotation extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.location = buffer.readLocation();
         this.rotation = new EntityRotation(buffer.readFloat(), buffer.readFloat(), 0);
-        if (buffer.getVersionId() < V_15W41A3B) {
+        if (buffer.getVersionId() < V_14W03B) {
             this.onGround = buffer.readBoolean();
             return true;
         } else {
