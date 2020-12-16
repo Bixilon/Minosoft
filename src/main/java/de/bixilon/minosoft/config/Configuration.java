@@ -233,7 +233,7 @@ public class Configuration {
                 case CLIENT_TOKEN -> json.getAsJsonObject("accounts").get("client-token").getAsString();
             };
         }
-        throw new RuntimeException();
+        throw new IllegalArgumentException();
     }
 
     private void saveData(JsonObject input, ConfigurationPaths.ConfigurationPath path, Object data) {
@@ -258,6 +258,8 @@ public class Configuration {
                 case RESOURCES_URL -> input.getAsJsonObject("download").getAsJsonObject("urls").addProperty("resources", string);
                 case CLIENT_TOKEN -> input.getAsJsonObject("accounts").addProperty("client-token", string);
             }
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 }
