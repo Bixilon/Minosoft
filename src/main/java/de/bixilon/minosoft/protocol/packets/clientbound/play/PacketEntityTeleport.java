@@ -20,6 +20,9 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W25B;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_16W06A;
+
 public class PacketEntityTeleport extends ClientboundPacket {
     int entityId;
     Location location;
@@ -31,7 +34,7 @@ public class PacketEntityTeleport extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
-        if (buffer.getVersionId() < 100) {
+        if (buffer.getVersionId() < V_16W06A) {
             this.location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             this.location = buffer.readLocation();
@@ -39,7 +42,7 @@ public class PacketEntityTeleport extends ClientboundPacket {
         this.yaw = buffer.readAngle();
         this.pitch = buffer.readAngle();
 
-        if (buffer.getVersionId() >= 22) {
+        if (buffer.getVersionId() >= V_14W25B) {
             this.onGround = buffer.readBoolean();
         }
         return true;

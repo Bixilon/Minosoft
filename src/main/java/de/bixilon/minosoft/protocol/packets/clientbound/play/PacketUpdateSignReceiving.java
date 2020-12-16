@@ -22,13 +22,15 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.util.nbt.tag.StringTag;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
+
 public class PacketUpdateSignReceiving extends ClientboundPacket {
     final ChatComponent[] lines = new ChatComponent[4];
     BlockPosition position;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             this.position = buffer.readBlockPositionShort();
         } else {
             this.position = buffer.readPosition();

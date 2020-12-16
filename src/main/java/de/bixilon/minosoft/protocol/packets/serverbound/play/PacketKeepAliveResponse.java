@@ -19,6 +19,9 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W31A;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_12_2_PRE2;
+
 public class PacketKeepAliveResponse implements ServerboundPacket {
 
     final long id;
@@ -34,9 +37,9 @@ public class PacketKeepAliveResponse implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_KEEP_ALIVE);
-        if (buffer.getVersionId() < 32) {
+        if (buffer.getVersionId() < V_14W31A) {
             buffer.writeInt((int) this.id);
-        } else if (buffer.getVersionId() < 339) {
+        } else if (buffer.getVersionId() < V_1_12_2_PRE2) {
             buffer.writeVarInt((int) this.id);
         } else {
             buffer.writeLong(this.id);

@@ -20,6 +20,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
+
 public class PacketScoreboardUpdateScore extends ClientboundPacket {
     String itemName;
     ScoreboardUpdateScoreActions action;
@@ -30,7 +32,7 @@ public class PacketScoreboardUpdateScore extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.itemName = buffer.readString();
         this.action = ScoreboardUpdateScoreActions.byId(buffer.readUnsignedByte());
-        if (buffer.getVersionId() < 7) { // ToDo
+        if (buffer.getVersionId() < V_14W04A) { // ToDo
             if (this.action == ScoreboardUpdateScoreActions.REMOVE) {
                 return true;
             }

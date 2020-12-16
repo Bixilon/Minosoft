@@ -17,18 +17,21 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W33A;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_17W45A;
+
 public class PacketTabCompleteReceiving extends ClientboundPacket {
     int count;
     String[] match;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 37) {
+        if (buffer.getVersionId() < V_14W33A) {
             this.count = buffer.readVarInt();
             this.match = new String[]{buffer.readString()};
             return true;
         }
-        if (buffer.getVersionId() < 343) {
+        if (buffer.getVersionId() < V_17W45A) {
             this.count = buffer.readVarInt();
             this.match = new String[this.count];
             for (int i = 0; i < this.count; i++) {

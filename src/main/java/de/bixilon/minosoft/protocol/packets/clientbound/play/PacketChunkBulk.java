@@ -25,19 +25,22 @@ import de.bixilon.minosoft.util.Util;
 
 import java.util.HashMap;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W26A;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W28A;
+
 public class PacketChunkBulk extends ClientboundPacket {
     final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 23) {
+        if (buffer.getVersionId() < V_14W26A) {
             int chunkCount = buffer.readUnsignedShort();
             int dataLen = buffer.readInt();
             boolean containsSkyLight = buffer.readBoolean();
 
             // decompress chunk data
             InByteBuffer decompressed;
-            if (buffer.getVersionId() < 27) {
+            if (buffer.getVersionId() < V_14W28A) {
                 decompressed = Util.decompress(buffer.readBytes(dataLen), buffer.getConnection());
             } else {
                 decompressed = buffer;

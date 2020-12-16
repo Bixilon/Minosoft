@@ -18,6 +18,8 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketUnlockRecipes extends ClientboundPacket {
     private UnlockRecipeActions action;
     private boolean isCraftingBookOpen;
@@ -33,18 +35,18 @@ public class PacketUnlockRecipes extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 333) {
+        if (buffer.getVersionId() < V_1_12) {
             this.action = UnlockRecipeActions.byId(buffer.readInt());
         } else {
             this.action = UnlockRecipeActions.byId(buffer.readVarInt());
         }
         this.isCraftingBookOpen = buffer.readBoolean();
         this.isCraftingFilteringActive = buffer.readBoolean();
-        if (buffer.getVersionId() >= 348) { // ToDo
+        if (buffer.getVersionId() >= V_17W48A) { // ToDo
             this.isSmeltingBookOpen = buffer.readBoolean();
             this.isSmeltingFilteringActive = buffer.readBoolean();
         }
-        if (buffer.getVersionId() >= 738) {
+        if (buffer.getVersionId() >= V_20W27A) {
             this.isBlastFurnaceBookOpen = buffer.readBoolean();
             this.isBlastFurnaceFilteringActive = buffer.readBoolean();
             this.isSmokerBookOpen = buffer.readBoolean();
@@ -52,7 +54,7 @@ public class PacketUnlockRecipes extends ClientboundPacket {
         }
         this.listed = new Recipe[buffer.readVarInt()];
         for (int i = 0; i < this.listed.length; i++) {
-            if (buffer.getVersionId() < 348) {
+            if (buffer.getVersionId() < V_17W48A) {
                 this.listed[i] = buffer.getConnection().getRecipes().getRecipeById(buffer.readVarInt());
             } else {
                 this.listed[i] = buffer.getConnection().getRecipes().getRecipe(buffer.readIdentifier());
@@ -61,7 +63,7 @@ public class PacketUnlockRecipes extends ClientboundPacket {
         if (this.action == UnlockRecipeActions.INITIALIZE) {
             this.tagged = new Recipe[buffer.readVarInt()];
             for (int i = 0; i < this.tagged.length; i++) {
-                if (buffer.getVersionId() < 348) {
+                if (buffer.getVersionId() < V_17W48A) {
                     this.tagged[i] = buffer.getConnection().getRecipes().getRecipeById(buffer.readVarInt());
                 } else {
                     this.tagged[i] = buffer.getConnection().getRecipes().getRecipe(buffer.readIdentifier());

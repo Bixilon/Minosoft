@@ -23,6 +23,9 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W29A;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W31A;
+
 public class PacketPluginMessageReceiving extends ClientboundPacket {
     String channel;
     byte[] data;
@@ -33,9 +36,9 @@ public class PacketPluginMessageReceiving extends ClientboundPacket {
         this.connection = buffer.getConnection();
         this.channel = buffer.readString();
         // "read" length prefix
-        if (buffer.getVersionId() < 29) {
+        if (buffer.getVersionId() < V_14W29A) {
             buffer.readShort();
-        } else if (buffer.getVersionId() < 32) {
+        } else if (buffer.getVersionId() < V_14W31A) {
             buffer.readVarInt();
         }
         this.data = buffer.readBytesLeft();
@@ -49,7 +52,7 @@ public class PacketPluginMessageReceiving extends ClientboundPacket {
             String serverVersion;
             String clientVersion = (Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
             OutByteBuffer toSend = new OutByteBuffer(connection);
-            if (connection.getVersion().getVersionId() < 29) {
+            if (connection.getVersion().getVersionId() < V_14W29A) {
                 // no length prefix
                 serverVersion = new String(data.getBytes());
                 toSend.writeBytes(clientVersion.getBytes());

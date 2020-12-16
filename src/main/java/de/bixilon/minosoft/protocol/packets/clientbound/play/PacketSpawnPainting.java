@@ -25,6 +25,8 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketSpawnPainting extends ClientboundPacket {
     Painting entity;
 
@@ -32,18 +34,18 @@ public class PacketSpawnPainting extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         int entityId = buffer.readVarInt();
         UUID uuid = null;
-        if (buffer.getVersionId() >= 95) {
+        if (buffer.getVersionId() >= V_16W02A) {
             uuid = buffer.readUUID();
         }
         Motive motive;
-        if (buffer.getVersionId() < 353) {
+        if (buffer.getVersionId() < V_18W02A) {
             motive = buffer.getConnection().getMapping().getMotiveByIdentifier(buffer.readString());
         } else {
             motive = buffer.getConnection().getMapping().getMotiveById(buffer.readVarInt());
         }
         BlockPosition position;
         Directions direction;
-        if (buffer.getVersionId() < 8) {
+        if (buffer.getVersionId() < V_14W04B) {
             position = buffer.readBlockPositionInteger();
             direction = Directions.byId(buffer.readInt());
         } else {

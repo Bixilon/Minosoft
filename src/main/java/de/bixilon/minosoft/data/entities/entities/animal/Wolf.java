@@ -24,6 +24,9 @@ import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_19W45B;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_8_9;
+
 public class Wolf extends TamableAnimal {
 
     public Wolf(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
@@ -42,7 +45,7 @@ public class Wolf extends TamableAnimal {
 
     @EntityMetaDataFunction(identifier = "angerTime")
     public int getAngerTime() {
-        if (this.versionId <= 47) {// ToDo
+        if (this.versionId <= V_1_8_9) {// ToDo
             return this.metaData.getSets().getBitMask(EntityMetaDataFields.TAMABLE_ENTITY_FLAGS, 0x02) ? 1 : 0;
         }
         return this.metaData.getSets().getInt(EntityMetaDataFields.WOLF_ANGER_TIME);
@@ -51,7 +54,7 @@ public class Wolf extends TamableAnimal {
     @EntityMetaDataFunction(identifier = "health")
     @Override
     public float getHealth() {
-        if (this.versionId > 562) {
+        if (this.versionId > V_19W45B) {
             return super.getHealth();
         }
         return this.metaData.getSets().getFloat(EntityMetaDataFields.WOLF_HEALTH);

@@ -21,6 +21,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_20W27A;
+
 public class Piglin extends AbstractPiglin {
 
     public Piglin(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
@@ -30,7 +32,7 @@ public class Piglin extends AbstractPiglin {
     @EntityMetaDataFunction(identifier = "isImmuneToZombification")
     @Override
     public boolean isImmuneToZombification() {
-        if (this.versionId < 738) {
+        if (this.versionId < V_20W27A) {
             return super.isImmuneToZombification();
         }
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IMMUNE_TO_ZOMBIFICATION);

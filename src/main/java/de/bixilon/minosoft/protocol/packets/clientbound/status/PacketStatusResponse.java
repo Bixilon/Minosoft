@@ -23,6 +23,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.protocol.ConnectionPing;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 public class PacketStatusResponse extends ClientboundPacket {
     ServerListPing response;
@@ -39,11 +40,11 @@ public class PacketStatusResponse extends ClientboundPacket {
 
         // now we know the version, set it, if the config allows it
         Version version;
-        int protocolId = -1;
-        if (connection.getDesiredVersionNumber() != -1) {
+        int protocolId = ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID;
+        if (connection.getDesiredVersionNumber() != ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
             protocolId = Versions.getVersionById(connection.getDesiredVersionNumber()).getProtocolId();
         }
-        if (protocolId == -1) {
+        if (protocolId == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
             protocolId = getResponse().getProtocolId();
         }
         version = Versions.getVersionByProtocolId(protocolId);

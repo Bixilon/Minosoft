@@ -19,16 +19,19 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W31A;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_12_2_PRE2;
+
 public class PacketKeepAlive extends ClientboundPacket {
     private long id;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 32) {
+        if (buffer.getVersionId() < V_14W31A) {
             this.id = buffer.readInt();
             return true;
         }
-        if (buffer.getVersionId() < 339) {
+        if (buffer.getVersionId() < V_1_12_2_PRE2) {
             this.id = buffer.readVarInt();
             return true;
         }

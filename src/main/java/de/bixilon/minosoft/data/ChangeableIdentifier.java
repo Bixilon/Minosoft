@@ -13,21 +13,22 @@
 
 package de.bixilon.minosoft.data;
 
-import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.TreeMap;
+
+import static de.bixilon.minosoft.protocol.protocol.Versions.LOWEST_VERSION_SUPPORTED;
 
 public class ChangeableIdentifier extends VersionValueMap<String> {
     String mod = ProtocolDefinition.DEFAULT_MOD;
 
     public ChangeableIdentifier(String legacy, String water) {
-        this.values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), legacy);
+        this.values.put(LOWEST_VERSION_SUPPORTED, legacy);
         this.values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
     }
 
     public ChangeableIdentifier(String legacy, String water, String mod) {
-        this.values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), legacy);
+        this.values.put(LOWEST_VERSION_SUPPORTED, legacy);
         this.values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
         this.mod = mod;
     }
@@ -41,7 +42,7 @@ public class ChangeableIdentifier extends VersionValueMap<String> {
     }
 
     public ChangeableIdentifier(String name) {
-        super(new MapSet<>(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), name));
+        super(new MapSet<>(LOWEST_VERSION_SUPPORTED, name));
     }
 
     public boolean isValidName(String name, int versionId) {

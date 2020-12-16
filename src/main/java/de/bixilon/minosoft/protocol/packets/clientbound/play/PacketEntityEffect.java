@@ -21,6 +21,8 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketEntityEffect extends ClientboundPacket {
     int entityId;
     StatusEffect effect;
@@ -31,13 +33,13 @@ public class PacketEntityEffect extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             this.effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readShort());
             return true;
         }
         this.effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readVarInt());
-        if (buffer.getVersionId() < 110) { // ToDo
-            if (buffer.getVersionId() >= 10) {
+        if (buffer.getVersionId() < V_1_9_4) { // ToDo
+            if (buffer.getVersionId() >= V_14W06B) {
                 this.hideParticles = buffer.readBoolean();
                 return true;
             }
@@ -45,7 +47,7 @@ public class PacketEntityEffect extends ClientboundPacket {
         byte flags = buffer.readByte();
         this.isAmbient = BitByte.isBitMask(flags, 0x01);
         this.hideParticles = !BitByte.isBitMask(flags, 0x02);
-        if (buffer.getVersionId() >= 498) { // ToDo
+        if (buffer.getVersionId() >= V_1_14_4) { // ToDo
             this.showIcon = BitByte.isBitMask(flags, 0x04);
         }
         return true;

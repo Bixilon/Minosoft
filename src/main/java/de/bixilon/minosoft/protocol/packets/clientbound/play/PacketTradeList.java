@@ -20,6 +20,9 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_14_3_PRE1;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_14_4_PRE5;
+
 public class PacketTradeList extends ClientboundPacket {
     int windowId;
     Trade[] trades;
@@ -46,7 +49,7 @@ public class PacketTradeList extends ClientboundPacket {
             int specialPrice = buffer.readInt();
             float priceMultiplier = buffer.readFloat();
             int demand = 0;
-            if (buffer.getVersionId() >= 495) {
+            if (buffer.getVersionId() >= V_1_14_4_PRE5) {
                 demand = buffer.readInt();
             }
             this.trades[i] = new Trade(input1, input2, enabled, usages, maxUsages, xp, specialPrice, priceMultiplier, demand);
@@ -54,7 +57,7 @@ public class PacketTradeList extends ClientboundPacket {
         this.level = VillagerData.VillagerLevels.byId(buffer.readVarInt());
         this.experience = buffer.readVarInt();
         this.isRegularVillager = buffer.readBoolean();
-        if (buffer.getVersionId() >= 486) {
+        if (buffer.getVersionId() >= V_1_14_3_PRE1) {
             this.canRestock = buffer.readBoolean();
         }
         return true;

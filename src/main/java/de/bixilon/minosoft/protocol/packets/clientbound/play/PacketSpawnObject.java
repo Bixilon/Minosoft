@@ -29,6 +29,8 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketSpawnObject extends ClientboundPacket {
     Entity entity;
     Velocity velocity;
@@ -37,25 +39,25 @@ public class PacketSpawnObject extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) throws Exception {
         int entityId = buffer.readVarInt();
         UUID uuid = null;
-        if (buffer.getVersionId() >= 49) {
+        if (buffer.getVersionId() >= V_15W31A) {
             uuid = buffer.readUUID();
         }
 
         int type;
-        if (buffer.getVersionId() < 301) {
+        if (buffer.getVersionId() < V_16W32A) {
             type = buffer.readByte();
         } else {
             type = buffer.readVarInt();
         }
         Class<? extends Entity> typeClass;
-        if (buffer.getVersionId() < 458) {
+        if (buffer.getVersionId() < V_19W05A) {
             typeClass = Objects.byId(type).getClazz();
         } else {
             typeClass = buffer.getConnection().getMapping().getEntityClassById(type);
         }
 
         Location location;
-        if (buffer.getVersionId() < 100) {
+        if (buffer.getVersionId() < V_16W06A) {
             location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             location = buffer.readLocation();
@@ -63,7 +65,7 @@ public class PacketSpawnObject extends ClientboundPacket {
         EntityRotation rotation = new EntityRotation(buffer.readAngle(), buffer.readAngle(), 0);
         int data = buffer.readInt();
 
-        if (buffer.getVersionId() < 49) {
+        if (buffer.getVersionId() < V_15W31A) {
             if (data != 0) {
                 this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
             }
@@ -71,7 +73,7 @@ public class PacketSpawnObject extends ClientboundPacket {
             this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
         }
 
-        if (buffer.getVersionId() <= 47) { // ToDo
+        if (buffer.getVersionId() <= V_1_8_9) { // ToDo
             typeClass = VersionTweaker.getRealEntityObjectClass(typeClass, data, buffer.getVersionId());
         }
 

@@ -25,6 +25,9 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W31A;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_16_PRE7;
+
 public class PacketEntityEquipment extends ClientboundPacket {
     final HashMap<InventorySlots.EntityInventorySlots, Slot> slots = new HashMap<>();
     int entityId;
@@ -32,11 +35,11 @@ public class PacketEntityEquipment extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
-        if (buffer.getVersionId() < 49) {
+        if (buffer.getVersionId() < V_15W31A) {
             this.slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readShort(), buffer.getVersionId()), buffer.readSlot());
             return true;
         }
-        if (buffer.getVersionId() < 732) {
+        if (buffer.getVersionId() < V_1_16_PRE7) {
             this.slots.put(InventorySlots.EntityInventorySlots.byId(buffer.readVarInt(), buffer.getVersionId()), buffer.readSlot());
             return true;
         }

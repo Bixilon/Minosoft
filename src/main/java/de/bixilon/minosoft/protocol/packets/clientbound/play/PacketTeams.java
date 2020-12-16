@@ -25,6 +25,8 @@ import de.bixilon.minosoft.util.BitByte;
 
 import java.util.Arrays;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketTeams extends ClientboundPacket {
     String name;
     TeamActions action;
@@ -44,36 +46,36 @@ public class PacketTeams extends ClientboundPacket {
         this.action = TeamActions.byId(buffer.readUnsignedByte());
         if (this.action == TeamActions.CREATE || this.action == TeamActions.INFORMATION_UPDATE) {
             this.displayName = buffer.readChatComponent();
-            if (buffer.getVersionId() < 352) {
+            if (buffer.getVersionId() < V_18W01A) {
                 this.prefix = buffer.readChatComponent();
                 this.suffix = buffer.readChatComponent();
             }
-            if (buffer.getVersionId() < 100) { // ToDo
+            if (buffer.getVersionId() < V_16W06A) { // ToDo
                 setFriendlyFireByLegacy(buffer.readByte());
             } else {
                 byte friendlyFireRaw = buffer.readByte();
                 this.friendlyFire = BitByte.isBitMask(friendlyFireRaw, 0x01);
                 this.seeFriendlyInvisibles = BitByte.isBitMask(friendlyFireRaw, 0x02);
             }
-            if (buffer.getVersionId() >= 11) {
+            if (buffer.getVersionId() >= V_14W07A) {
                 this.nameTagVisibility = TeamNameTagVisibilities.byName(buffer.readString());
-                if (buffer.getVersionId() >= 100) { // ToDo
+                if (buffer.getVersionId() >= V_16W06A) { // ToDo
                     this.collisionRule = TeamCollisionRules.byName(buffer.readString());
                 }
-                if (buffer.getVersionId() < 352) {
+                if (buffer.getVersionId() < V_18W01A) {
                     this.formattingCode = ChatColors.getFormattingById(buffer.readByte());
                 } else {
                     this.formattingCode = ChatColors.getFormattingById(buffer.readVarInt());
                 }
             }
-            if (buffer.getVersionId() >= 375) {
+            if (buffer.getVersionId() >= V_18W20A) {
                 this.prefix = buffer.readChatComponent();
                 this.suffix = buffer.readChatComponent();
             }
         }
         if (this.action == TeamActions.CREATE || this.action == TeamActions.PLAYER_ADD || this.action == TeamActions.PLAYER_REMOVE) {
             int playerCount;
-            if (buffer.getVersionId() < 7) {
+            if (buffer.getVersionId() < V_14W04A) {
                 playerCount = buffer.readUnsignedShort();
             } else {
                 playerCount = buffer.readVarInt();

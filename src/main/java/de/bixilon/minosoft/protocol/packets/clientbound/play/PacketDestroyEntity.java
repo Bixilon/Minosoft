@@ -21,12 +21,14 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 import java.util.Arrays;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
+
 public class PacketDestroyEntity extends ClientboundPacket {
     int[] entityIds;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             this.entityIds = new int[buffer.readByte()];
         } else {
             this.entityIds = new int[buffer.readVarInt()];

@@ -22,6 +22,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketPlayerBlockPlacement implements ServerboundPacket {
     final BlockPosition position;
     final byte direction;
@@ -64,29 +66,29 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_BLOCK_PLACEMENT);
-        if (buffer.getVersionId() >= 453) {
+        if (buffer.getVersionId() >= V_19W03A) {
             buffer.writeVarInt(this.hand.ordinal());
         }
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             buffer.writeBlockPositionByte(this.position);
         } else {
             buffer.writePosition(this.position);
         }
-        if (buffer.getVersionId() < 49) {
+        if (buffer.getVersionId() < V_15W31A) {
             buffer.writeByte(this.direction);
             buffer.writeSlot(this.item);
         } else {
             buffer.writeVarInt(this.direction);
-            if (buffer.getVersionId() < 453) {
+            if (buffer.getVersionId() < V_19W03A) {
                 buffer.writeVarInt(this.hand.ordinal());
             }
         }
 
-        if (buffer.getVersionId() >= 453) {
+        if (buffer.getVersionId() >= V_19W03A) {
             buffer.writeBoolean(this.insideBlock);
         }
 
-        if (buffer.getVersionId() < 309) {
+        if (buffer.getVersionId() < V_16W39C) {
             buffer.writeByte((byte) (this.cursorX * 15.0F));
             buffer.writeByte((byte) (this.cursorY * 15.0F));
             buffer.writeByte((byte) (this.cursorZ * 15.0F));

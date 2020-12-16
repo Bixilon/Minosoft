@@ -19,6 +19,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_16_PRE4;
+
 public class PacketPlayerAbilitiesSending implements ServerboundPacket {
     final boolean flying;
 
@@ -34,7 +36,7 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
             flags |= 0b10;
         }
         buffer.writeByte(flags);
-        if (buffer.getVersionId() < 727) {
+        if (buffer.getVersionId() < V_1_16_PRE4) {
             // only fly matters, everything else ignored
             buffer.writeFloat(0.0F);
             buffer.writeFloat(0.0F);

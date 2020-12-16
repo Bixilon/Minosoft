@@ -21,6 +21,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketEntityAction implements ServerboundPacket {
     final int entityId;
     final EntityActions action;
@@ -42,7 +44,7 @@ public class PacketEntityAction implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ENTITY_ACTION);
         buffer.writeEntityId(this.entityId);
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             buffer.writeByte((byte) this.action.getId(buffer.getVersionId()));
             buffer.writeInt(this.parameter);
         } else {
@@ -58,15 +60,15 @@ public class PacketEntityAction implements ServerboundPacket {
     }
 
     public enum EntityActions {
-        SNEAK(new MapSet[]{new MapSet<>(0, 0)}),
-        UN_SNEAK(new MapSet[]{new MapSet<>(0, 1)}),
-        LEAVE_BED(new MapSet[]{new MapSet<>(0, 2)}),
-        START_SPRINTING(new MapSet[]{new MapSet<>(0, 3)}),
-        STOP_SPRINTING(new MapSet[]{new MapSet<>(0, 4)}),
-        START_HORSE_JUMP(new MapSet[]{new MapSet<>(0, 5)}),
-        STOP_HORSE_JUMP(new MapSet[]{new MapSet<>(77, 6)}), // ToDo: when did they change? really in 77?
-        OPEN_HORSE_INVENTORY(new MapSet[]{new MapSet<>(0, 6), new MapSet<>(77, 7)}),
-        START_ELYTRA_FLYING(new MapSet[]{new MapSet<>(77, 8)});
+        SNEAK(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 0)}),
+        UN_SNEAK(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 1)}),
+        LEAVE_BED(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 2)}),
+        START_SPRINTING(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 3)}),
+        STOP_SPRINTING(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 4)}),
+        START_HORSE_JUMP(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 5)}),
+        STOP_HORSE_JUMP(new MapSet[]{new MapSet<>(V_15W41A, 6)}), // ToDo: when did they change? really in 77?
+        OPEN_HORSE_INVENTORY(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 6), new MapSet<>(V_15W41A, 7)}),
+        START_ELYTRA_FLYING(new MapSet[]{new MapSet<>(V_15W41A, 8)});
 
         final VersionValueMap<Integer> valueMap;
 

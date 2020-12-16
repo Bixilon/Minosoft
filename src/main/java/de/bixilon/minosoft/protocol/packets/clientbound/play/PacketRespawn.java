@@ -24,6 +24,8 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketRespawn extends ClientboundPacket {
     Dimension dimension;
     Difficulties difficulty;
@@ -36,41 +38,41 @@ public class PacketRespawn extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 718) {
-            if (buffer.getVersionId() < 47) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
+        if (buffer.getVersionId() < V_20W21A) {
+            if (buffer.getVersionId() < V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
                 this.dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
             } else {
                 this.dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
             }
-        } else if (buffer.getVersionId() < 748) {
+        } else if (buffer.getVersionId() < V_1_16_2_PRE3) {
             this.dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(buffer.readString());
         } else {
             CompoundTag tag = (CompoundTag) buffer.readNBT();
             this.dimension = buffer.getConnection().getMapping().getDimensionByIdentifier(tag.getStringTag("effects").getValue()); // ToDo
         }
-        if (buffer.getVersionId() < 464) {
+        if (buffer.getVersionId() < V_19W11A) {
             this.difficulty = Difficulties.byId(buffer.readUnsignedByte());
         }
 
-        if (buffer.getVersionId() >= 719) {
+        if (buffer.getVersionId() >= V_20W22A) {
             buffer.readString(); // world
         }
-        if (buffer.getVersionId() >= 552) {
+        if (buffer.getVersionId() >= V_19W36A) {
             this.hashedSeed = buffer.readLong();
         }
         this.gameMode = GameModes.byId(buffer.readUnsignedByte());
 
-        if (buffer.getVersionId() >= 730) {
+        if (buffer.getVersionId() >= V_1_16_PRE6) {
             buffer.readByte(); // previous game mode
         }
-        if (buffer.getVersionId() >= 1 && buffer.getVersionId() < 716) {
+        if (buffer.getVersionId() >= V_13W42B && buffer.getVersionId() < V_20W20A) {
             this.levelType = LevelTypes.byType(buffer.readString());
         }
-        if (buffer.getVersionId() >= 716) {
+        if (buffer.getVersionId() >= V_20W20A) {
             this.isDebug = buffer.readBoolean();
             this.isFlat = buffer.readBoolean();
         }
-        if (buffer.getVersionId() >= 714) {
+        if (buffer.getVersionId() >= V_20W18A) {
             this.copyMetaData = buffer.readBoolean();
         }
         return true;

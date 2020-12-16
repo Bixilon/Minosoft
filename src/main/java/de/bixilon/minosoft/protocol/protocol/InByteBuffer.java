@@ -43,6 +43,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class InByteBuffer {
     final Connection connection;
     final int versionId;
@@ -64,7 +66,7 @@ public class InByteBuffer {
 
     public byte[] readByteArray() {
         int count;
-        if (this.versionId < 19) {
+        if (this.versionId < V_14W21A) {
             count = readUnsignedShort();
         } else {
             count = readVarInt();
@@ -186,7 +188,7 @@ public class InByteBuffer {
         // ToDo: protocol id 7
         long raw = readLong();
         int x = (int) (raw >> 38);
-        if (this.versionId < 440) {
+        if (this.versionId < V_18W43A) {
             int y = (int) ((raw >> 26) & 0xFFF);
             int z = (int) (raw & 0x3FFFFFF);
             return new BlockPosition(x, y, z);
@@ -219,7 +221,7 @@ public class InByteBuffer {
     }
 
     public ParticleData readParticleData(Particle type) {
-        if (this.versionId < 343) {
+        if (this.versionId < V_17W45A) {
             // old particle format
             return switch (type.getIdentifier()) {
                 case "iconcrack" -> new ItemParticleData(new Slot(this.connection.getMapping().getItemByLegacy(readVarInt(), readVarInt())), type);
@@ -281,7 +283,7 @@ public class InByteBuffer {
     }
 
     public Slot readSlot() {
-        if (this.versionId < 402) {
+        if (this.versionId < V_1_13_2_PRE1) {
             short id = readShort();
             if (id == -1) {
                 return null;
@@ -292,7 +294,7 @@ public class InByteBuffer {
             if (this.versionId < ProtocolDefinition.FLATTING_VERSION_ID) {
                 metaData = readShort();
             }
-            CompoundTag nbt = (CompoundTag) readNBT(this.versionId < 28);
+            CompoundTag nbt = (CompoundTag) readNBT(this.versionId < V_14W28B);
             return new Slot(this.connection.getMapping(), this.connection.getMapping().getItemByLegacy(id, metaData), count, metaData, nbt);
         }
         if (readBoolean()) {
@@ -389,7 +391,7 @@ public class InByteBuffer {
         EntityMetaData metaData = new EntityMetaData(this.connection);
         EntityMetaData.MetaDataHashMap sets = metaData.getSets();
 
-        if (this.versionId < 48) {
+        if (this.versionId < V_15W31A) { // ToDo: This version was 48, but this one does not exist!
             short item = readUnsignedByte();
             while (item != 0x7F) {
                 byte index = (byte) (item & 0x1F);
@@ -401,7 +403,7 @@ public class InByteBuffer {
             int index = readUnsignedByte();
             while (index != 0xFF) {
                 int id;
-                if (this.versionId < 107) {
+                if (this.versionId < V_1_9_1_PRE1) {
                     id = readUnsignedByte();
                 } else {
                     id = readVarInt();
@@ -468,7 +470,7 @@ public class InByteBuffer {
     }
 
     public int readEntityId() {
-        if (this.versionId < 7) {
+        if (this.versionId < V_14W04A) {
             return readInt();
         }
         return readVarInt();

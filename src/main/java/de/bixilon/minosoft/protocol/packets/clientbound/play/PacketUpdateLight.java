@@ -19,13 +19,15 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.ChunkUtil;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_16_PRE3;
+
 public class PacketUpdateLight extends ClientboundPacket {
     ChunkLocation location;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
-        if (buffer.getVersionId() >= 725) {
+        if (buffer.getVersionId() >= V_1_16_PRE3) {
             boolean trustEdges = buffer.readBoolean();
         }
         // was a varInt before 20w45a, should we change this?

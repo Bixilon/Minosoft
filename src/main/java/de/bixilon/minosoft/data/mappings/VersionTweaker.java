@@ -20,34 +20,36 @@ import de.bixilon.minosoft.data.entities.entities.animal.horse.*;
 import de.bixilon.minosoft.data.entities.entities.monster.*;
 import de.bixilon.minosoft.data.entities.entities.vehicle.*;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_8_9;
+
 public class VersionTweaker {
     // some data was packed in mata data in early versions (1.8). This function converts it to the real identifier
     public static Class<? extends Entity> getRealEntityClass(Class<? extends Entity> fakeClass, EntityMetaData metaData, int versionId) {
         if (fakeClass == ZombiePigman.class) {
             return ZombifiedPiglin.class;
         } else if (fakeClass == Zombie.class) {
-            if (versionId > 47) { // ToDo: No clue here
+            if (versionId > V_1_8_9) { // ToDo: No clue here
                 return fakeClass;
             }
             if (metaData.getSets().getInt(EntityMetaDataFields.ZOMBIE_SPECIAL_TYPE) == 1) {
                 return ZombieVillager.class;
             }
         } else if (fakeClass == Skeleton.class) {
-            if (versionId > 47) { // ToDo: No clue here
+            if (versionId > V_1_8_9) { // ToDo: No clue here
                 return fakeClass;
             }
             if (metaData.getSets().getInt(EntityMetaDataFields.LEGACY_SKELETON_TYPE) == 1) {
                 return WitherSkeleton.class;
             }
         } else if (fakeClass == Guardian.class) {
-            if (versionId > 47) { // ToDo: No clue here
+            if (versionId > V_1_8_9) { // ToDo: No clue here
                 return fakeClass;
             }
             if (metaData.getSets().getBitMask(EntityMetaDataFields.LEGACY_GUARDIAN_FLAGS, 0x02)) {
                 return ElderGuardian.class;
             }
         } else if (fakeClass == Horse.class) {
-            if (versionId > 47) { // ToDo: No clue here
+            if (versionId > V_1_8_9) { // ToDo: No clue here
                 return fakeClass;
             }
             return switch (metaData.getSets().getByte(EntityMetaDataFields.LEGACY_HORSE_SPECIAL_TYPE)) {
@@ -64,7 +66,7 @@ public class VersionTweaker {
 
     public static Class<? extends Entity> getRealEntityObjectClass(Class<? extends Entity> fakeClass, int data, int versionId) {
         if (fakeClass == Minecart.class) {
-            if (versionId > 47) { // ToDo: No clue here
+            if (versionId > V_1_8_9) { // ToDo: No clue here
                 return fakeClass;
             }
             return switch (data) {

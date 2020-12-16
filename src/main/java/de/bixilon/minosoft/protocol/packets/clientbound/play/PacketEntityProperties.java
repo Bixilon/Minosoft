@@ -22,6 +22,8 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
+
 public class PacketEntityProperties extends ClientboundPacket {
     final HashMap<EntityPropertyKeys, EntityProperty> properties = new HashMap<>();
     int entityId;
@@ -29,7 +31,7 @@ public class PacketEntityProperties extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             int count = buffer.readInt();
             for (int i = 0; i < count; i++) {
                 EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString());

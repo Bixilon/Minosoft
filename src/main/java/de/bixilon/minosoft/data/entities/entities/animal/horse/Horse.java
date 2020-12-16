@@ -23,6 +23,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_8_9;
+
 public class Horse extends AbstractHorse {
     private static final Item LEGACY_IRON_ARMOR = new Item("iron_horse_armor");
     private static final Item LEGACY_GOLD_ARMOR = new Item("golden_horse_armor");
@@ -53,7 +55,7 @@ public class Horse extends AbstractHorse {
     @EntityMetaDataFunction(identifier = "armor")
     @Nullable
     public Item getArmor() {
-        if (this.versionId <= 47) { // ToDo
+        if (this.versionId <= V_1_8_9) { // ToDo
             return null;
         }
         return switch (this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_HORSE_ARMOR)) {

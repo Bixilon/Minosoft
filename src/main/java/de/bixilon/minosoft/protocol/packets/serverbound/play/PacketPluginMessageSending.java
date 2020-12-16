@@ -19,6 +19,9 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W29A;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W31A;
+
 public class PacketPluginMessageSending implements ServerboundPacket {
 
     public final String channel;
@@ -34,9 +37,9 @@ public class PacketPluginMessageSending implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLUGIN_MESSAGE);
         buffer.writeString(this.channel);
 
-        if (buffer.getVersionId() < 29) {
+        if (buffer.getVersionId() < V_14W29A) {
             buffer.writeShort((short) this.data.length);
-        } else if (buffer.getVersionId() < 32) {
+        } else if (buffer.getVersionId() < V_14W31A) {
             buffer.writeVarInt(this.data.length);
         }
 

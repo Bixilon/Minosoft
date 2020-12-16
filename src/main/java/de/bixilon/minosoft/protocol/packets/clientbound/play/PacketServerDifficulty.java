@@ -18,6 +18,8 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_19W11A;
+
 public class PacketServerDifficulty extends ClientboundPacket {
     Difficulties difficulty;
     boolean locked;
@@ -25,7 +27,7 @@ public class PacketServerDifficulty extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.difficulty = Difficulties.byId(buffer.readUnsignedByte());
-        if (buffer.getVersionId() > 464) {
+        if (buffer.getVersionId() > V_19W11A) {
             this.locked = buffer.readBoolean();
         }
         return true;

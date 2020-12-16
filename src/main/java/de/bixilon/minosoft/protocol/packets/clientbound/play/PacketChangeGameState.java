@@ -22,6 +22,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketChangeGameState extends ClientboundPacket {
     Reason reason;
     float value;
@@ -72,18 +74,18 @@ public class PacketChangeGameState extends ClientboundPacket {
     }
 
     public enum Reason {
-        NO_RESPAWN_BLOCK_AVAILABLE(new MapSet[]{new MapSet<>(0, 0)}),
-        START_RAINING(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(498, 2), new MapSet<>(578, 1)}), // ToDo: when exactly did these 2 switch?
-        STOP_RAINING(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(498, 1), new MapSet<>(578, 2)}),
-        CHANGE_GAMEMODE(new MapSet[]{new MapSet<>(0, 3)}),
-        ENTER_CREDITS(new MapSet[]{new MapSet<>(0, 4)}),
-        DEMO_MESSAGES(new MapSet[]{new MapSet<>(0, 5)}),
-        ARROW_HITTING_PLAYER(new MapSet[]{new MapSet<>(0, 6)}),
-        RAIN_LEVEL_CHANGE(new MapSet[]{new MapSet<>(0, 7)}),
-        THUNDER_LEVEL_CHANGE(new MapSet[]{new MapSet<>(0, 8)}),
-        PUFFERFISH_STING(new MapSet[]{new MapSet<>(0, 9)}),
-        GUARDIAN_ELDER_EFFECT(new MapSet[]{new MapSet<>(0, 10)}),
-        IMMEDIATE_RESPAWN(new MapSet[]{new MapSet<>(552, 11)});
+        NO_RESPAWN_BLOCK_AVAILABLE(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 0)}),
+        START_RAINING(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 1), new MapSet<>(V_1_14_4, 2), new MapSet<>(V_1_15_2, 1)}), // ToDo: when exactly did these 2 switch?
+        STOP_RAINING(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 2), new MapSet<>(V_1_14_4, 1), new MapSet<>(V_1_15_2, 2)}),
+        CHANGE_GAMEMODE(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 3)}),
+        ENTER_CREDITS(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 4)}),
+        DEMO_MESSAGES(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 5)}),
+        ARROW_HITTING_PLAYER(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 6)}),
+        RAIN_LEVEL_CHANGE(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 7)}),
+        THUNDER_LEVEL_CHANGE(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 8)}),
+        PUFFERFISH_STING(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 9)}),
+        GUARDIAN_ELDER_EFFECT(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 10)}),
+        IMMEDIATE_RESPAWN(new MapSet[]{new MapSet<>(V_19W36A, 11)});
 
         final VersionValueMap<Integer> valueMap;
 

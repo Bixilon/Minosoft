@@ -20,6 +20,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W31A;
+
 public class PacketAnimation implements ServerboundPacket {
     final Hands hand;
 
@@ -30,7 +32,7 @@ public class PacketAnimation implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ANIMATION);
-        if (buffer.getVersionId() >= 49) {
+        if (buffer.getVersionId() >= V_15W31A) {
             buffer.writeVarInt(this.hand.ordinal());
         }
         return buffer;

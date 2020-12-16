@@ -24,6 +24,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_19W03A;
+
 public class PacketDeclareRecipes extends ClientboundPacket {
     private final HashBiMap<ModIdentifier, Recipe> recipes = HashBiMap.create();
 
@@ -34,7 +36,7 @@ public class PacketDeclareRecipes extends ClientboundPacket {
             Recipe recipe;
             ModIdentifier identifier;
             String typeName;
-            if (buffer.getVersionId() >= 453) { // ToDo: find out version
+            if (buffer.getVersionId() >= V_19W03A) { // ToDo: find out version
                 typeName = buffer.readString();
                 identifier = buffer.readIdentifier();
             } else {

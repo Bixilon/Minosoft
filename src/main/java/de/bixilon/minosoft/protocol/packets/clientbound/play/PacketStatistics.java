@@ -21,6 +21,8 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 import java.util.HashMap;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_17W47A;
+
 public class PacketStatistics extends ClientboundPacket {
     final HashMap<Statistic, Integer> statistics = new HashMap<>();
 
@@ -28,7 +30,7 @@ public class PacketStatistics extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
-            if (buffer.getVersionId() < 346) { // ToDo
+            if (buffer.getVersionId() < V_17W47A) { // ToDo
                 this.statistics.put(buffer.getConnection().getMapping().getStatisticByIdentifier(buffer.readString()), buffer.readVarInt());
             } else {
                 StatisticCategories category = StatisticCategories.byId(buffer.readVarInt());

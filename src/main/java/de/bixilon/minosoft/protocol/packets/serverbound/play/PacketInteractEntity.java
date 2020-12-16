@@ -22,6 +22,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketInteractEntity implements ServerboundPacket {
     final int entityId;
     Location location;
@@ -64,13 +66,13 @@ public class PacketInteractEntity implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_INTERACT_ENTITY);
         buffer.writeEntityId(this.entityId);
-        if (buffer.getVersionId() < 33) {
+        if (buffer.getVersionId() < V_14W32A) {
             if (this.click == EntityInteractionClicks.INTERACT_AT) {
                 this.click = EntityInteractionClicks.INTERACT;
             }
         }
         buffer.writeByte((byte) this.click.ordinal());
-        if (buffer.getVersionId() >= 33) {
+        if (buffer.getVersionId() >= V_14W32A) {
             if (this.click == EntityInteractionClicks.INTERACT_AT) {
                 // position
                 buffer.writeFloat((float) this.location.getX());
@@ -79,15 +81,15 @@ public class PacketInteractEntity implements ServerboundPacket {
             }
 
             if (this.click == EntityInteractionClicks.INTERACT_AT || this.click == EntityInteractionClicks.INTERACT) {
-                if (buffer.getVersionId() >= 49) {
+                if (buffer.getVersionId() >= V_15W31A) {
                     buffer.writeVarInt(this.hand.ordinal());
                 }
 
-                if (buffer.getVersionId() >= 725 && buffer.getVersionId() < 729) {
+                if (buffer.getVersionId() >= V_1_16_PRE3 && buffer.getVersionId() < V_1_16_PRE5) {
                     buffer.writeBoolean(this.sneaking);
                 }
             }
-            if (buffer.getVersionId() <= 729) {
+            if (buffer.getVersionId() <= V_1_16_PRE5) {
                 buffer.writeBoolean(this.sneaking);
             }
         }

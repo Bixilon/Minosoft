@@ -29,6 +29,8 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketSpawnMob extends ClientboundPacket {
     Entity entity;
     Velocity velocity;
@@ -37,18 +39,18 @@ public class PacketSpawnMob extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) throws Exception {
         int entityId = buffer.readVarInt();
         UUID uuid = null;
-        if (buffer.getVersionId() >= 49) {
+        if (buffer.getVersionId() >= V_15W31A) {
             uuid = buffer.readUUID();
         }
         int type;
-        if (buffer.getVersionId() < 301) {
+        if (buffer.getVersionId() < V_16W32A) {
             type = buffer.readByte();
         } else {
             type = buffer.readVarInt();
         }
         Class<? extends Entity> typeClass = buffer.getConnection().getMapping().getEntityClassById(type);
         Location location;
-        if (buffer.getVersionId() < 100) {
+        if (buffer.getVersionId() < V_16W06A) {
             location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             location = buffer.readLocation();
@@ -57,7 +59,7 @@ public class PacketSpawnMob extends ClientboundPacket {
         this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
 
         EntityMetaData metaData = null;
-        if (buffer.getVersionId() < 550) {
+        if (buffer.getVersionId() < V_19W34A) {
             metaData = buffer.readMetaData();
             // we have meta data, check if we need to correct the class
             typeClass = VersionTweaker.getRealEntityClass(typeClass, metaData, buffer.getVersionId());

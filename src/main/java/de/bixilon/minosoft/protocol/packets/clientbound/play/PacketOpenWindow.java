@@ -21,6 +21,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketOpenWindow extends ClientboundPacket {
     byte windowId;
     InventoryTypes type;
@@ -30,7 +32,7 @@ public class PacketOpenWindow extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 6) {
+        if (buffer.getVersionId() < V_15W41A3B) {
             this.windowId = buffer.readByte();
             this.type = InventoryTypes.byId(buffer.readUnsignedByte());
             this.title = buffer.readChatComponent();
@@ -45,7 +47,7 @@ public class PacketOpenWindow extends ClientboundPacket {
         this.windowId = buffer.readByte();
         this.type = InventoryTypes.byIdentifier(buffer.readIdentifier());
         this.title = buffer.readChatComponent();
-        if (buffer.getVersionId() < 452 || buffer.getVersionId() >= 464) {
+        if (buffer.getVersionId() < V_19W02A || buffer.getVersionId() >= V_19W11A) {
             this.slotCount = buffer.readByte();
         }
         if (this.type == InventoryTypes.HORSE) {

@@ -32,6 +32,8 @@ import de.bixilon.minosoft.util.nbt.tag.NBTTag;
 
 import java.util.HashMap;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketJoinGame extends ClientboundPacket {
     int entityId;
     boolean hardcore;
@@ -48,7 +50,7 @@ public class PacketJoinGame extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 108) {
+        if (buffer.getVersionId() < V_1_9_1) {
             this.entityId = buffer.readInt();
             byte gameModeRaw = buffer.readByte();
             this.hardcore = BitByte.isBitSet(gameModeRaw, 3);
@@ -56,25 +58,25 @@ public class PacketJoinGame extends ClientboundPacket {
             gameModeRaw &= ~0x8;
             this.gameMode = GameModes.byId(gameModeRaw);
 
-            if (buffer.getVersionId() < 108) {
+            if (buffer.getVersionId() < V_1_9_1) {
                 this.dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
             } else {
                 this.dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
             }
             this.difficulty = Difficulties.byId(buffer.readUnsignedByte());
             this.maxPlayers = buffer.readByte();
-            if (buffer.getVersionId() >= 1) {
+            if (buffer.getVersionId() >= V_13W42B) {
                 this.levelType = LevelTypes.byType(buffer.readString());
             }
 
-            if (buffer.getVersionId() < 29) {
+            if (buffer.getVersionId() < V_14W29A) {
                 return true;
             }
             this.reducedDebugScreen = buffer.readBoolean();
             return true;
         }
         this.entityId = buffer.readInt();
-        if (buffer.getVersionId() < 738) {
+        if (buffer.getVersionId() < V_20W27A) {
             byte gameModeRaw = buffer.readByte();
             this.hardcore = BitByte.isBitSet(gameModeRaw, 3);
             // remove hardcore bit and get gamemode
@@ -84,18 +86,18 @@ public class PacketJoinGame extends ClientboundPacket {
             this.hardcore = buffer.readBoolean();
             this.gameMode = GameModes.byId(buffer.readUnsignedByte());
         }
-        if (buffer.getVersionId() >= 730) {
+        if (buffer.getVersionId() >= V_1_16_PRE6) {
             buffer.readByte(); // previous game mode
         }
-        if (buffer.getVersionId() >= 719) {
+        if (buffer.getVersionId() >= V_20W22A) {
             String[] worlds = buffer.readStringArray(buffer.readVarInt());
         }
-        if (buffer.getVersionId() < 718) {
+        if (buffer.getVersionId() < V_20W21A) {
             this.dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
         } else {
             NBTTag dimensionCodec = buffer.readNBT();
             this.dimensions = parseDimensionCodec(dimensionCodec, buffer.getVersionId());
-            if (buffer.getVersionId() < 748) {
+            if (buffer.getVersionId() < V_1_16_2_PRE3) {
                 String[] currentDimensionSplit = buffer.readString().split(":", 2);
                 this.dimension = this.dimensions.get(currentDimensionSplit[0]).get(currentDimensionSplit[1]);
             } else {
@@ -108,34 +110,34 @@ public class PacketJoinGame extends ClientboundPacket {
             }
         }
 
-        if (buffer.getVersionId() >= 719) {
+        if (buffer.getVersionId() >= V_20W22A) {
             buffer.readString(); // world
         }
-        if (buffer.getVersionId() >= 552) {
+        if (buffer.getVersionId() >= V_19W36A) {
             this.hashedSeed = buffer.readLong();
         }
-        if (buffer.getVersionId() < 464) {
+        if (buffer.getVersionId() < V_19W11A) {
             this.difficulty = Difficulties.byId(buffer.readUnsignedByte());
         }
-        if (buffer.getVersionId() < 749) {
+        if (buffer.getVersionId() < V_1_16_2_RC1) {
             this.maxPlayers = buffer.readByte();
         } else {
             this.maxPlayers = buffer.readVarInt();
         }
-        if (buffer.getVersionId() < 716) {
+        if (buffer.getVersionId() < V_20W20A) {
             this.levelType = LevelTypes.byType(buffer.readString());
         }
-        if (buffer.getVersionId() >= 468) {
+        if (buffer.getVersionId() >= V_19W13A) {
             this.viewDistance = buffer.readVarInt();
         }
-        if (buffer.getVersionId() >= 716) {
+        if (buffer.getVersionId() >= V_20W20A) {
             boolean isDebug = buffer.readBoolean();
             if (buffer.readBoolean()) {
                 this.levelType = LevelTypes.FLAT;
             }
         }
         this.reducedDebugScreen = buffer.readBoolean();
-        if (buffer.getVersionId() >= 552) {
+        if (buffer.getVersionId() >= V_19W36A) {
             this.enableRespawnScreen = buffer.readBoolean();
         }
         return true;
@@ -160,7 +162,7 @@ public class PacketJoinGame extends ClientboundPacket {
     private HashMap<String, HashBiMap<String, Dimension>> parseDimensionCodec(NBTTag nbt, int versionId) {
         HashMap<String, HashBiMap<String, Dimension>> dimensionMap = new HashMap<>();
         ListTag listTag;
-        if (versionId < 740) {
+        if (versionId < V_20W28A) {
             listTag = ((CompoundTag) nbt).getListTag("dimension");
         } else {
             listTag = ((CompoundTag) nbt).getCompoundTag("minecraft:dimension_type").getListTag("value");
@@ -169,7 +171,7 @@ public class PacketJoinGame extends ClientboundPacket {
         listTag.getValue().forEach((tag) -> {
             CompoundTag compoundTag = (CompoundTag) tag;
             String[] name;
-            if (versionId < 725) {
+            if (versionId < V_1_16_PRE3) {
                 name = compoundTag.getStringTag("key").getValue().split(":", 2);
             } else {
                 name = compoundTag.getStringTag("name").getValue().split(":", 2);
@@ -178,7 +180,7 @@ public class PacketJoinGame extends ClientboundPacket {
                 dimensionMap.put(name[0], HashBiMap.create());
             }
             boolean hasSkylight;
-            if (versionId < 725 || versionId >= 744) {
+            if (versionId < V_1_16_PRE3 || versionId >= V_1_16_2_PRE1) {
                 hasSkylight = compoundTag.getCompoundTag("element").getByteTag("has_skylight").getValue() == 0x01;
             } else {
                 hasSkylight = compoundTag.getByteTag("has_skylight").getValue() == 0x01;

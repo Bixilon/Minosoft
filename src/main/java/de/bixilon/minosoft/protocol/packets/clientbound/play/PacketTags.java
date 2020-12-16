@@ -18,6 +18,8 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_18W43A;
+
 public class PacketTags extends ClientboundPacket {
     Tag[] blockTags;
     Tag[] itemTags;
@@ -29,7 +31,7 @@ public class PacketTags extends ClientboundPacket {
         this.blockTags = readTags(buffer);
         this.itemTags = readTags(buffer);
         this.fluidTags = readTags(buffer); // ToDo: when was this added? Was not available in 18w01
-        if (buffer.getVersionId() >= 440) {
+        if (buffer.getVersionId() >= V_18W43A) {
             this.entityTags = readTags(buffer);
         }
         return true;

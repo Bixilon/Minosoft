@@ -21,6 +21,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketUpdateSignSending implements ServerboundPacket {
     final BlockPosition position;
     final ChatComponent[] lines;
@@ -33,12 +35,12 @@ public class PacketUpdateSignSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_SIGN);
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             buffer.writeBlockPositionByte(this.position);
         } else {
             buffer.writePosition(this.position);
         }
-        if (buffer.getVersionId() < 21 || buffer.getVersionId() >= 62) {
+        if (buffer.getVersionId() < V_14W25A || buffer.getVersionId() >= V_15W35A) {
             for (int i = 0; i < 4; i++) {
                 buffer.writeString(this.lines[i].getMessage());
             }

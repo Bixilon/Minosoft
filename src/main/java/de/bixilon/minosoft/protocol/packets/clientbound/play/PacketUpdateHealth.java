@@ -19,6 +19,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
+
 public class PacketUpdateHealth extends ClientboundPacket {
     float health;
     int food;
@@ -30,7 +32,7 @@ public class PacketUpdateHealth extends ClientboundPacket {
         if (this.health < 0.0F) {
             this.health = 0.0F;
         }
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             this.food = buffer.readUnsignedShort();
         } else {
             this.food = buffer.readVarInt();

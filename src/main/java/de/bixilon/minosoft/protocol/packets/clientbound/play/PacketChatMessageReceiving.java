@@ -23,6 +23,9 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_20W21A;
+
 public class PacketChatMessageReceiving extends ClientboundPacket {
     ChatComponent message;
     ChatTextPositions position;
@@ -31,12 +34,12 @@ public class PacketChatMessageReceiving extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.message = buffer.readChatComponent();
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             this.position = ChatTextPositions.CHAT_BOX;
             return true;
         }
         this.position = ChatTextPositions.byId(buffer.readUnsignedByte());
-        if (buffer.getVersionId() >= 718) {
+        if (buffer.getVersionId() >= V_20W21A) {
             this.sender = buffer.readUUID();
         }
         return true;

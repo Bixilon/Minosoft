@@ -17,6 +17,9 @@ import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.LOWEST_VERSION_SUPPORTED;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W31A;
+
 public class InventorySlots {
     public enum PlayerInventorySlots implements InventoryInterface {
         CRAFTING_OUTPUT,
@@ -86,11 +89,11 @@ public class InventorySlots {
 
     public enum EntityInventorySlots implements InventoryInterface {
         MAIN_HAND(0),
-        OFF_HAND(new MapSet[]{new MapSet<>(49, 1)}),
-        BOOTS(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(49, 2)}),
-        LEGGINGS(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(49, 3)}),
-        CHESTPLATE(new MapSet[]{new MapSet<>(0, 3), new MapSet<>(49, 4)}),
-        HELMET(new MapSet[]{new MapSet<>(0, 4), new MapSet<>(49, 5)});
+        OFF_HAND(new MapSet[]{new MapSet<>(V_15W31A, 1)}),
+        BOOTS(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 1), new MapSet<>(V_15W31A, 2)}),
+        LEGGINGS(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 2), new MapSet<>(V_15W31A, 3)}),
+        CHESTPLATE(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 3), new MapSet<>(V_15W31A, 4)}),
+        HELMET(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 4), new MapSet<>(V_15W31A, 5)});
 
         final VersionValueMap<Integer> valueMap;
 

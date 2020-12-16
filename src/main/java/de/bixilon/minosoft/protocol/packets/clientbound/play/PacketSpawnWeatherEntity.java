@@ -22,6 +22,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_16W06A;
+
 public class PacketSpawnWeatherEntity extends ClientboundPacket {
     LightningBolt entity;
 
@@ -30,7 +32,7 @@ public class PacketSpawnWeatherEntity extends ClientboundPacket {
         int entityId = buffer.readVarInt();
         byte type = buffer.readByte();
         Location location;
-        if (buffer.getVersionId() < 100) {
+        if (buffer.getVersionId() < V_16W06A) {
             location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             location = buffer.readLocation();

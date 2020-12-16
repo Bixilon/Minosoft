@@ -17,6 +17,9 @@ import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_17W47A;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_18W10D;
+
 public class DirectPalette implements Palette {
     int versionId;
     VersionMapping mapping;
@@ -28,7 +31,7 @@ public class DirectPalette implements Palette {
 
     @Override
     public byte getBitsPerBlock() {
-        if (this.versionId < 367) {
+        if (this.versionId < V_18W10D) {
             return 13;
         }
         return 14;
@@ -38,7 +41,7 @@ public class DirectPalette implements Palette {
     public void read(InByteBuffer buffer) {
         this.versionId = buffer.getVersionId();
         this.mapping = buffer.getConnection().getMapping();
-        if (buffer.getVersionId() < 346) {
+        if (buffer.getVersionId() < V_17W47A) {
             buffer.readVarInt();
         }
     }

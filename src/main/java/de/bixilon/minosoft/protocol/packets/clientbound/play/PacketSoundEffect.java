@@ -20,6 +20,8 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketSoundEffect extends ClientboundPacket {
     Location location;
     SoundCategories category;
@@ -29,21 +31,21 @@ public class PacketSoundEffect extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() >= 321 && buffer.getVersionId() < 326) {
+        if (buffer.getVersionId() >= V_17W15A && buffer.getVersionId() < V_17W18A) {
             // category was moved to the top
             this.category = SoundCategories.byId(buffer.readVarInt());
         }
         this.soundId = buffer.readVarInt();
 
-        if (buffer.getVersionId() >= 321 && buffer.getVersionId() < 326) {
+        if (buffer.getVersionId() >= V_17W15A && buffer.getVersionId() < V_17W18A) {
             buffer.readString(); // parrot entity type
         }
-        if (buffer.getVersionId() >= 95 && (buffer.getVersionId() < 321 || buffer.getVersionId() >= 326)) {
+        if (buffer.getVersionId() >= V_16W02A && (buffer.getVersionId() < V_17W15A || buffer.getVersionId() >= V_17W18A)) {
             this.category = SoundCategories.byId(buffer.readVarInt());
         }
         this.location = new Location(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
         this.volume = buffer.readFloat();
-        if (buffer.getVersionId() < 201) {
+        if (buffer.getVersionId() < V_16W20A) {
             this.pitch = (buffer.readByte() * ProtocolDefinition.PITCH_CALCULATION_CONSTANT) / 100F;
         } else {
             this.pitch = buffer.readFloat();

@@ -20,6 +20,8 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 import java.util.ArrayList;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketMapData extends ClientboundPacket {
     int mapId;
     PacketMapDataDataActions dataData;
@@ -42,7 +44,7 @@ public class PacketMapData extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.mapId = buffer.readVarInt(); // mapId
-        if (buffer.getVersionId() < 27) {
+        if (buffer.getVersionId() < V_14W28A) {
             int length = buffer.readUnsignedShort();
             // read action
             this.dataData = PacketMapDataDataActions.byId(buffer.readUnsignedByte());
@@ -67,14 +69,14 @@ public class PacketMapData extends ClientboundPacket {
             return true;
         }
         this.scale = buffer.readByte();
-        if (buffer.getVersionId() >= 58 && buffer.getVersionId() < 759) {
+        if (buffer.getVersionId() >= V_15W34A && buffer.getVersionId() < V_20W46A) {
             boolean trackPosition = buffer.readBoolean();
         }
-        if (buffer.getVersionId() >= 452) {
+        if (buffer.getVersionId() >= V_19W02A) {
             this.locked = buffer.readBoolean();
         }
         int pinCount = 0;
-        if (buffer.getVersionId() < 759) {
+        if (buffer.getVersionId() < V_20W46A) {
             pinCount = buffer.readVarInt();
         } else {
             if (buffer.readBoolean()) {
@@ -84,11 +86,11 @@ public class PacketMapData extends ClientboundPacket {
         this.pins = new ArrayList<>();
 
         for (int i = 0; i < pinCount; i++) {
-            if (buffer.getVersionId() < 373) {
+            if (buffer.getVersionId() < V_18W19A) {
                 byte directionAndType = buffer.readByte();
                 byte x = buffer.readByte();
                 byte z = buffer.readByte();
-                if (buffer.getVersionId() >= 340) { // ToDo
+                if (buffer.getVersionId() >= V_1_12_2) { // ToDo
                     this.pins.add(new MapPinSet(MapPinTypes.byId(directionAndType >>> 4), directionAndType & 0xF, x, z));
                 } else {
                     this.pins.add(new MapPinSet(MapPinTypes.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));

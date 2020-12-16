@@ -29,15 +29,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W19A;
+
 public class PacketPlayerListItem extends ClientboundPacket {
     final ArrayList<PlayerListItemBulk> playerList = new ArrayList<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 17) { // ToDo: 19?
+        if (buffer.getVersionId() < V_14W19A) { // ToDo: 19?
             String name = buffer.readString();
             int ping;
-            if (buffer.getVersionId() < 7) {
+            if (buffer.getVersionId() < V_14W04A) {
                 ping = buffer.readUnsignedShort();
             } else {
                 ping = buffer.readVarInt();

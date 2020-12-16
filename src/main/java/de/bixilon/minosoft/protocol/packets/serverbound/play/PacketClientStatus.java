@@ -19,6 +19,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
+
 public class PacketClientStatus implements ServerboundPacket {
 
     final ClientStates status;
@@ -30,7 +32,7 @@ public class PacketClientStatus implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CLIENT_STATUS);
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             buffer.writeByte((byte) this.status.ordinal());
         } else {
             buffer.writeVarInt(this.status.ordinal());

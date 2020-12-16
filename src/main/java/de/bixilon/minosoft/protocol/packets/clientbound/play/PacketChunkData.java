@@ -29,26 +29,33 @@ import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import java.util.HashMap;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketChunkData extends ClientboundPacket {
-    final HashMap<BlockPosition, BlockEntityMetaData> blockEntities = new HashMap<>();
-    ChunkLocation location;
-    Chunk chunk;
-    CompoundTag heightMap;
-    int[] biomes;
-    boolean ignoreOldData;
+    private final HashMap<BlockPosition, BlockEntityMetaData> blockEntities = new HashMap<>();
+    private ChunkLocation location;
+    private Chunk chunk;
+    private CompoundTag heightMap;
+    private int[] biomes;
+    private boolean ignoreOldData;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         boolean containsSkyLight = buffer.getConnection().getPlayer().getWorld().getDimension().hasSkyLight();
-        if (buffer.getVersionId() < 23) {
-            this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
-            boolean groundUpContinuous = buffer.readBoolean();
+        this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+
+        boolean groundUpContinuous = true; // ToDo: how should we handle this now?
+        if (buffer.getVersionId() < V_20W45A) {
+            groundUpContinuous = buffer.readBoolean();
+        }
+
+        if (buffer.getVersionId() < V_14W26A) {
             int sectionBitMask = buffer.readUnsignedShort();
             int addBitMask = buffer.readUnsignedShort();
 
             // decompress chunk data
             InByteBuffer decompressed;
-            if (buffer.getVersionId() < 27) {
+            if (buffer.getVersionId() < V_14W28A) {
                 decompressed = Util.decompress(buffer.readBytes(buffer.readInt()), buffer.getConnection());
             } else {
                 decompressed = buffer;
@@ -57,54 +64,40 @@ public class PacketChunkData extends ClientboundPacket {
             this.chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, containsSkyLight);
             return true;
         }
-        if (buffer.getVersionId() < 62) { // ToDo: was this really changed in 62?
-            this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
-            boolean groundUpContinuous = buffer.readBoolean();
-            int sectionBitMask;
-            if (buffer.getVersionId() < 60) {
-                sectionBitMask = buffer.readUnsignedShort();
-            } else {
-                sectionBitMask = buffer.readInt();
-            }
-            int size = buffer.readVarInt();
-            int lastPos = buffer.getPosition();
-            this.chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, 0, groundUpContinuous, containsSkyLight);
-            buffer.setPosition(size + lastPos);
-            return true;
-        }
-        this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
-        boolean groundUpContinuous = true; // ToDo: how should we handle this now?
-        if (buffer.getVersionId() < 758) {
-            groundUpContinuous = buffer.readBoolean();
-        }
-        if (buffer.getVersionId() >= 732 && buffer.getVersionId() < 746) {
-            this.ignoreOldData = buffer.readBoolean();
-        }
         int sectionBitMask;
-        if (buffer.getVersionId() < 70) {
+        if (buffer.getVersionId() < V_15W34C) {
+            sectionBitMask = buffer.readUnsignedShort();
+        } else if (buffer.getVersionId() < V_15W36D) {
             sectionBitMask = buffer.readInt();
         } else {
             sectionBitMask = buffer.readVarInt();
         }
-        if (buffer.getVersionId() >= 443) {
+
+        if (buffer.getVersionId() >= V_1_16_PRE7 && buffer.getVersionId() < V_1_16_2_PRE2) {
+            this.ignoreOldData = buffer.readBoolean();
+        }
+
+        if (buffer.getVersionId() >= V_18W44A) {
             this.heightMap = (CompoundTag) buffer.readNBT();
         }
         if (groundUpContinuous) {
-            if (buffer.getVersionId() >= 740) {
+            if (buffer.getVersionId() >= V_20W28A) {
                 this.biomes = buffer.readVarIntArray();
-            } else if (buffer.getVersionId() >= 552) {
+            } else if (buffer.getVersionId() >= V_19W36A) {
                 this.biomes = buffer.readIntArray(1024);
             }
         }
+
         int size = buffer.readVarInt();
         int lastPos = buffer.getPosition();
+
 
         if (size > 0) {
             this.chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, 0, groundUpContinuous, containsSkyLight);
             // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
             buffer.setPosition(size + lastPos);
         }
-        if (buffer.getVersionId() >= 110) {
+        if (buffer.getVersionId() >= V_1_9_4) {
             int blockEntitiesCount = buffer.readVarInt();
             for (int i = 0; i < blockEntitiesCount; i++) {
                 CompoundTag tag = (CompoundTag) buffer.readNBT();

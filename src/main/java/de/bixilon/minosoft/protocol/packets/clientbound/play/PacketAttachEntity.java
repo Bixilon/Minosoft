@@ -19,6 +19,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W41A;
+
 public class PacketAttachEntity extends ClientboundPacket {
     int entityId;
     int vehicleId;
@@ -28,7 +30,7 @@ public class PacketAttachEntity extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readInt();
         this.vehicleId = buffer.readInt();
-        if (buffer.getVersionId() < 77) {
+        if (buffer.getVersionId() < V_15W41A) {
             this.leash = buffer.readBoolean();
             return true;
         }

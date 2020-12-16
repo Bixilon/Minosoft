@@ -21,6 +21,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W06B;
+
 public class PacketPlayerPositionAndRotationSending implements ServerboundPacket {
     Location location;
     EntityRotation rotation;
@@ -37,7 +39,7 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_POSITION_AND_ROTATION);
         buffer.writeDouble(this.location.getX());
         buffer.writeDouble(this.location.getY());
-        if (buffer.getVersionId() < 10) {
+        if (buffer.getVersionId() < V_14W06B) {
             buffer.writeDouble(this.location.getY() - 1.62);
         }
         buffer.writeDouble(this.location.getZ());

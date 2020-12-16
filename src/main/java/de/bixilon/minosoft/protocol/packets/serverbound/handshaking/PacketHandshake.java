@@ -19,6 +19,7 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.ServerAddress;
 
 public class PacketHandshake implements ServerboundPacket {
@@ -27,10 +28,10 @@ public class PacketHandshake implements ServerboundPacket {
     final ConnectionStates nextState;
     final int version;
 
-    public PacketHandshake(ServerAddress address, ConnectionStates nextState, int version) {
+    public PacketHandshake(ServerAddress address, ConnectionStates nextState, int protocolId) {
         this.address = address;
         this.nextState = nextState;
-        this.version = version;
+        this.version = protocolId;
     }
 
     public PacketHandshake(ServerAddress address, int version) {
@@ -42,7 +43,7 @@ public class PacketHandshake implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.HANDSHAKING_HANDSHAKE);
-        buffer.writeVarInt((this.nextState == ConnectionStates.STATUS ? -1 : connection.getVersion().getProtocolId())); // get best protocol version
+        buffer.writeVarInt((this.nextState == ConnectionStates.STATUS ? ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID : connection.getVersion().getProtocolId())); // get best protocol version
         buffer.writeString(this.address.getHostname());
         buffer.writeShort((short) this.address.getPort());
         buffer.writeVarInt(this.nextState.ordinal());

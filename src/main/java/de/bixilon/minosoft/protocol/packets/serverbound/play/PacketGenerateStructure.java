@@ -20,6 +20,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_20W22A;
+
 public class PacketGenerateStructure implements ServerboundPacket {
     final BlockPosition position;
     final int levels;
@@ -36,7 +38,7 @@ public class PacketGenerateStructure implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_GENERATE_STRUCTURE);
         buffer.writePosition(this.position);
         buffer.writeVarInt(this.levels);
-        if (buffer.getVersionId() <= 719) {
+        if (buffer.getVersionId() <= V_20W22A) {
             buffer.writeBoolean(this.keepJigsaw);
         }
         return buffer;

@@ -17,6 +17,8 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_17W47A;
+
 public class PacketCraftRecipeResponse extends ClientboundPacket {
     byte windowId;
     int recipeId;
@@ -24,13 +26,12 @@ public class PacketCraftRecipeResponse extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 346) { // ToDo: was this really in 346?
-            this.windowId = buffer.readByte();
-            this.recipeId = buffer.readVarInt();
-            return true;
-        }
         this.windowId = buffer.readByte();
-        this.recipeName = buffer.readString();
+        if (buffer.getVersionId() < V_17W47A) { // ToDo: was this really in 346?
+            this.recipeId = buffer.readVarInt();
+        } else {
+            this.recipeName = buffer.readString();
+        }
         return true;
     }
 

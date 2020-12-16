@@ -32,7 +32,7 @@ public class ServerListPing {
 
     public ServerListPing(JsonObject json) {
         int protocolId = json.getAsJsonObject("version").get("protocol").getAsInt();
-        if (protocolId == -1) {
+        if (protocolId == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
             // Server did not send us a version, trying 1.8
             this.protocolId = ProtocolDefinition.FALLBACK_PROTOCOL_VERSION_ID;
             Log.warn(String.format("Server sent us an illegal version id (protocolId=%d). Using 1.8.9.", protocolId));

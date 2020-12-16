@@ -23,9 +23,11 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.HashMap;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public final class ChunkUtil {
     public static Chunk readChunkPacket(InByteBuffer buffer, int sectionBitMask, int addBitMask, boolean groundUpContinuous, boolean containsSkyLight) {
-        if (buffer.getVersionId() < 23) {
+        if (buffer.getVersionId() < V_14W26A) {
             if (sectionBitMask == 0x00 && groundUpContinuous) {
                 // unload chunk
                 return null;
@@ -90,7 +92,7 @@ public final class ChunkUtil {
             }
             return new Chunk(sectionMap);
         }
-        if (buffer.getVersionId() < 62) { // ToDo: was this really changed in 62?
+        if (buffer.getVersionId() < V_15W35A) { // ToDo: was this really changed in 62?
             byte sections = BitByte.getBitCount(sectionBitMask);
             int totalBlocks = ProtocolDefinition.BLOCKS_PER_SECTION * sections;
             int halfBytes = totalBlocks >> 1;
@@ -142,7 +144,7 @@ public final class ChunkUtil {
             if (!BitByte.isBitSet(sectionBitMask, c)) {
                 continue;
             }
-            if (buffer.getVersionId() >= 440) {
+            if (buffer.getVersionId() >= V_18W43A) {
                 buffer.readShort(); // block count
             }
             Palette palette = Palette.choosePalette(buffer.readByte());
@@ -178,7 +180,7 @@ public final class ChunkUtil {
                 }
             }
 
-            if (buffer.getVersionId() < 440) {
+            if (buffer.getVersionId() < V_18W43A) {
                 byte[] light = buffer.readBytes(ProtocolDefinition.BLOCKS_PER_SECTION >> 1);
                 if (containsSkyLight) {
                     byte[] skyLight = buffer.readBytes(ProtocolDefinition.BLOCKS_PER_SECTION >> 1);
@@ -187,7 +189,7 @@ public final class ChunkUtil {
 
             sectionMap.put(c, new ChunkSection(blockMap));
         }
-        if (buffer.getVersionId() < 552) {
+        if (buffer.getVersionId() < V_19W36A) {
             byte[] biomes = buffer.readBytes(256);
         }
         return new Chunk(sectionMap);

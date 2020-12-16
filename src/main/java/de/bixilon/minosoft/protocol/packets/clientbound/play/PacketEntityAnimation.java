@@ -19,6 +19,8 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketEntityAnimation extends ClientboundPacket {
     int entityId;
     EntityAnimations animation;
@@ -37,16 +39,16 @@ public class PacketEntityAnimation extends ClientboundPacket {
 
     public enum EntityAnimations {
         // ToDo
-        SWING_RIGHT_ARM(new MapSet[]{new MapSet<>(0, 0)}),
-        TAKE_DAMAGE(new MapSet[]{new MapSet<>(0, 1)}),
-        LEAVE_BED(new MapSet[]{new MapSet<>(0, 2)}),
-        EAT_FOOD(new MapSet[]{new MapSet<>(0, 3), new MapSet<>(110, -1)}),
-        SWING_LEFT_ARM(new MapSet[]{new MapSet<>(110, 3)}),
-        CRITICAL_EFFECT(new MapSet[]{new MapSet<>(0, 4)}),
-        MAGIC_CRITICAL_EFFECT(new MapSet[]{new MapSet<>(0, 5)}),
-        UNKNOWN_1(new MapSet[]{new MapSet<>(0, 102), new MapSet<>(47, -1)}), // name currently unknown // ToDo
-        SNEAK(new MapSet[]{new MapSet<>(0, 104), new MapSet<>(47, -1)}),
-        UN_SNEAK(new MapSet[]{new MapSet<>(0, 105), new MapSet<>(47, -1)});
+        SWING_RIGHT_ARM(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 0)}),
+        TAKE_DAMAGE(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 1)}),
+        LEAVE_BED(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 2)}),
+        EAT_FOOD(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 3), new MapSet<>(V_1_9_4, -1)}),
+        SWING_LEFT_ARM(new MapSet[]{new MapSet<>(V_1_9_4, 3)}),
+        CRITICAL_EFFECT(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 4)}),
+        MAGIC_CRITICAL_EFFECT(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 5)}),
+        UNKNOWN_1(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 102), new MapSet<>(V_1_8_9, -1)}), // name currently unknown // ToDo
+        SNEAK(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 104), new MapSet<>(V_1_8_9, -1)}),
+        UN_SNEAK(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 105), new MapSet<>(V_1_8_9, -1)});
 
         final VersionValueMap<Integer> valueMap;
 

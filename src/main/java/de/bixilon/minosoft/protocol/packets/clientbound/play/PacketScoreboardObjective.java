@@ -20,6 +20,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketScoreboardObjective extends ClientboundPacket {
     String name;
     ChatComponent value;
@@ -29,20 +31,20 @@ public class PacketScoreboardObjective extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.name = buffer.readString();
-        if (buffer.getVersionId() < 7) { // ToDo
+        if (buffer.getVersionId() < V_14W04A) { // ToDo
             this.value = buffer.readChatComponent();
         }
         this.action = ScoreboardObjectiveActions.byId(buffer.readUnsignedByte());
         if (this.action == ScoreboardObjectiveActions.CREATE || this.action == ScoreboardObjectiveActions.UPDATE) {
-            if (buffer.getVersionId() >= 7) { // ToDo
+            if (buffer.getVersionId() >= V_14W04A) { // ToDo
                 this.value = buffer.readChatComponent();
             }
-            if (buffer.getVersionId() >= 12) {
-                if (buffer.getVersionId() >= 346 && buffer.getVersionId() < 349) {
+            if (buffer.getVersionId() >= V_14W08A) {
+                if (buffer.getVersionId() >= V_17W47A && buffer.getVersionId() < V_17W49A) {
                     // got removed in these 3 versions
                     return true;
                 }
-                if (buffer.getVersionId() < 349) {
+                if (buffer.getVersionId() < V_17W49A) {
                     this.type = ScoreboardObjectiveTypes.byName(buffer.readString());
                 } else {
                     this.type = ScoreboardObjectiveTypes.byId(buffer.readVarInt());

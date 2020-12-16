@@ -18,6 +18,8 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
+
 public class PacketUseBed extends ClientboundPacket {
     int entityId;
     BlockPosition position;
@@ -25,7 +27,7 @@ public class PacketUseBed extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readInt();
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             this.position = buffer.readBlockPosition();
         } else {
             this.position = buffer.readPosition();

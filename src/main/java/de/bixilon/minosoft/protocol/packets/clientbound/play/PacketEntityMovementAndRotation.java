@@ -20,6 +20,9 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W25B;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_16W06A;
+
 public class PacketEntityMovementAndRotation extends ClientboundPacket {
     int entityId;
     RelativeLocation location;
@@ -31,14 +34,14 @@ public class PacketEntityMovementAndRotation extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
-        if (buffer.getVersionId() < 100) {
+        if (buffer.getVersionId() < V_16W06A) {
             this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
         } else {
             this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
         }
         this.yaw = buffer.readAngle();
         this.pitch = buffer.readAngle();
-        if (buffer.getVersionId() >= 22) {
+        if (buffer.getVersionId() >= V_14W25B) {
             this.onGround = buffer.readBoolean();
         }
         return true;

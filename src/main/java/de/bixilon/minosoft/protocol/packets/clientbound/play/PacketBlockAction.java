@@ -22,6 +22,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W41A3B;
+
 public class PacketBlockAction extends ClientboundPacket {
     BlockPosition position;
     BlockAction data;
@@ -29,7 +31,7 @@ public class PacketBlockAction extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         // that's the only difference here
-        if (buffer.getVersionId() < 6) {
+        if (buffer.getVersionId() < V_15W41A3B) {
             this.position = buffer.readBlockPositionShort();
         } else {
             this.position = buffer.readPosition();

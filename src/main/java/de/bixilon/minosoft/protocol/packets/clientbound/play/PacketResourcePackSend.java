@@ -19,6 +19,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_20W45A;
+
 public class PacketResourcePackSend extends ClientboundPacket {
     String url;
     String hash;
@@ -28,7 +30,7 @@ public class PacketResourcePackSend extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.url = buffer.readString();
         this.hash = buffer.readString();
-        if (buffer.getVersionId() >= 758) {
+        if (buffer.getVersionId() >= V_20W45A) {
             this.forced = buffer.readBoolean();
         }
         return true;

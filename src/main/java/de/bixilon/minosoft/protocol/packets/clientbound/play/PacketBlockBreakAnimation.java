@@ -20,6 +20,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W41A3B;
+
 public class PacketBlockBreakAnimation extends ClientboundPacket {
     int entityId;
     BlockPosition position;
@@ -28,7 +30,7 @@ public class PacketBlockBreakAnimation extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readVarInt();
-        if (buffer.getVersionId() < 6) {
+        if (buffer.getVersionId() < V_15W41A3B) {
             this.position = buffer.readBlockPositionInteger();
         } else {
             this.position = buffer.readPosition();

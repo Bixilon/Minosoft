@@ -18,6 +18,8 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W41A3B;
+
 public class PacketPlayerAbilitiesReceiving extends ClientboundPacket {
     boolean creative; // is this needed? receiving the gameMode in change Game state
     boolean flying;
@@ -28,21 +30,18 @@ public class PacketPlayerAbilitiesReceiving extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 6) { // ToDo
-            byte flags = buffer.readByte();
+        byte flags = buffer.readByte();
+        if (buffer.getVersionId() < V_15W41A3B) { // ToDo
             this.creative = BitByte.isBitSet(flags, 0);
             this.flying = BitByte.isBitSet(flags, 1);
             this.canFly = BitByte.isBitSet(flags, 2);
             this.godMode = BitByte.isBitSet(flags, 3);
-            this.flyingSpeed = buffer.readFloat();
-            this.walkingSpeed = buffer.readFloat();
-            return true;
+        } else {
+            this.godMode = BitByte.isBitSet(flags, 0);
+            this.flying = BitByte.isBitSet(flags, 1);
+            this.canFly = BitByte.isBitSet(flags, 2);
+            this.creative = BitByte.isBitSet(flags, 3);
         }
-        byte flags = buffer.readByte();
-        this.godMode = BitByte.isBitSet(flags, 0);
-        this.flying = BitByte.isBitSet(flags, 1);
-        this.canFly = BitByte.isBitSet(flags, 2);
-        this.creative = BitByte.isBitSet(flags, 3);
         this.flyingSpeed = buffer.readFloat();
         this.walkingSpeed = buffer.readFloat();
         return true;

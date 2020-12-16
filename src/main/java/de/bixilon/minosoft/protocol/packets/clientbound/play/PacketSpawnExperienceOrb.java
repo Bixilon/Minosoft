@@ -21,6 +21,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_16W06A;
+
 public class PacketSpawnExperienceOrb extends ClientboundPacket {
     ExperienceOrb entity;
 
@@ -28,7 +30,7 @@ public class PacketSpawnExperienceOrb extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         int entityId = buffer.readVarInt();
         Location location;
-        if (buffer.getVersionId() < 100) {
+        if (buffer.getVersionId() < V_16W06A) {
             location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             location = buffer.readLocation();

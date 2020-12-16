@@ -22,6 +22,9 @@ import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketConfirmTelepo
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W41A3B;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W42A;
+
 public class PacketPlayerPositionAndRotation extends ClientboundPacket {
     Location location;
     EntityRotation rotation;
@@ -34,13 +37,13 @@ public class PacketPlayerPositionAndRotation extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.location = buffer.readLocation();
         this.rotation = new EntityRotation(buffer.readFloat(), buffer.readFloat(), 0);
-        if (buffer.getVersionId() < 6) {
+        if (buffer.getVersionId() < V_15W41A3B) {
             this.onGround = buffer.readBoolean();
             return true;
         } else {
             this.flags = buffer.readByte();
         }
-        if (buffer.getVersionId() >= 79) {
+        if (buffer.getVersionId() >= V_15W42A) {
             this.teleportId = buffer.readVarInt();
         }
         return true;
@@ -50,7 +53,7 @@ public class PacketPlayerPositionAndRotation extends ClientboundPacket {
     public void handle(Connection connection) {
         // ToDo: GUI should do this
         connection.getPlayer().getEntity().setLocation(getLocation());
-        if (connection.getVersion().getVersionId() >= 79) {
+        if (connection.getVersion().getVersionId() >= V_15W42A) {
             connection.sendPacket(new PacketConfirmTeleport(getTeleportId()));
         } else {
             connection.sendPacket(new PacketPlayerPositionAndRotationSending(getLocation(), getRotation(), isOnGround()));

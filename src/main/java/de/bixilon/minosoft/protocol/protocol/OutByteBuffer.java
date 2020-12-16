@@ -25,6 +25,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class OutByteBuffer {
     final ArrayList<Byte> bytes;
     final Connection connection;
@@ -44,7 +46,7 @@ public class OutByteBuffer {
     }
 
     public void writeByteArray(byte[] data) {
-        if (this.versionId < 19) {
+        if (this.versionId < V_14W21A) {
             writeShort((short) data.length);
         } else {
             writeVarInt(data.length);
@@ -146,7 +148,7 @@ public class OutByteBuffer {
             writeLong(0L);
             return;
         }
-        if (this.versionId < 440) {
+        if (this.versionId < V_18W43A) {
             writeLong((((long) position.getX() & 0x3FFFFFF) << 38) | (((long) position.getZ() & 0x3FFFFFF)) | ((long) position.getY() & 0xFFF) << 26);
             return;
         }
@@ -179,7 +181,7 @@ public class OutByteBuffer {
     }
 
     public void writeSlot(Slot slot) {
-        if (this.versionId < 402) {
+        if (this.versionId < V_1_13_2_PRE1) {
             if (slot == null) {
                 writeShort((short) -1);
                 return;
@@ -242,7 +244,7 @@ public class OutByteBuffer {
     }
 
     public void writeEntityId(int entityId) {
-        if (this.versionId < 7) {
+        if (this.versionId < V_14W04A) {
             writeInt(entityId);
         } else {
             writeVarInt(entityId);

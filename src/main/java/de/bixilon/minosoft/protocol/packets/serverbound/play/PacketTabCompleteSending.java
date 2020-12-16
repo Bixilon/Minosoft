@@ -20,6 +20,9 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W33A;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W31A;
+
 public class PacketTabCompleteSending implements ServerboundPacket {
     final String text;
     final BlockPosition position;
@@ -47,10 +50,10 @@ public class PacketTabCompleteSending implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_TAB_COMPLETE);
         buffer.writeString(this.text);
-        if (buffer.getVersionId() >= 59) {
+        if (buffer.getVersionId() >= V_15W31A) {
             buffer.writeBoolean(this.assumeCommand);
         }
-        if (buffer.getVersionId() >= 37) {
+        if (buffer.getVersionId() >= V_14W33A) {
             if (this.position == null) {
                 buffer.writeBoolean(false);
             } else {

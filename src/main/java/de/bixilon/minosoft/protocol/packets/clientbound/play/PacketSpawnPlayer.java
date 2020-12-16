@@ -29,6 +29,8 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import java.util.HashSet;
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketSpawnPlayer extends ClientboundPacket {
     PlayerEntity entity;
     Velocity velocity;
@@ -39,7 +41,7 @@ public class PacketSpawnPlayer extends ClientboundPacket {
         String name = null;
         UUID uuid;
         HashSet<PlayerPropertyData> properties = null;
-        if (buffer.getVersionId() < 19) {
+        if (buffer.getVersionId() < V_14W21A) {
             name = buffer.readString();
             uuid = UUID.fromString(buffer.readString());
             properties = new HashSet<>();
@@ -51,7 +53,7 @@ public class PacketSpawnPlayer extends ClientboundPacket {
             uuid = buffer.readUUID();
         }
         Location location;
-        if (buffer.getVersionId() < 100) {
+        if (buffer.getVersionId() < V_16W06A) {
             location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             location = buffer.readLocation();
@@ -60,11 +62,11 @@ public class PacketSpawnPlayer extends ClientboundPacket {
         short pitch = buffer.readAngle();
 
         Item currentItem = null;
-        if (buffer.getVersionId() < 49) {
+        if (buffer.getVersionId() < V_15W31A) {
             currentItem = buffer.getConnection().getMapping().getItemById(buffer.readUnsignedShort());
         }
         EntityMetaData metaData = null;
-        if (buffer.getVersionId() < 550) {
+        if (buffer.getVersionId() < V_19W34A) {
             metaData = buffer.readMetaData();
         }
         this.entity = new PlayerEntity(buffer.getConnection(), entityId, uuid, location, new EntityRotation(yaw, pitch, 0), name, properties, currentItem);

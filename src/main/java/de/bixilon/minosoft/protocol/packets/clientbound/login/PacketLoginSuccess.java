@@ -20,13 +20,15 @@ import de.bixilon.minosoft.util.Util;
 
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_20W12A;
+
 public class PacketLoginSuccess extends ClientboundPacket {
     UUID uuid;
     String username;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 707) {
+        if (buffer.getVersionId() < V_20W12A) {
             this.uuid = Util.getUUIDFromString(buffer.readString());
         } else {
             this.uuid = buffer.readUUID();

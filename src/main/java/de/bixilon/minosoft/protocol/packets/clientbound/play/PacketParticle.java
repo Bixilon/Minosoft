@@ -22,6 +22,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketParticle extends ClientboundPacket {
     Particle particleType;
     ParticleData particleData;
@@ -35,30 +37,19 @@ public class PacketParticle extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 569) {
-            if (buffer.getVersionId() < 17) {
-                this.particleType = buffer.getConnection().getMapping().getParticleByIdentifier(buffer.readString());
-            } else {
-                this.particleType = buffer.getConnection().getMapping().getParticleById(buffer.readInt());
-            }
-            if (buffer.getVersionId() >= 29) {
-                this.longDistance = buffer.readBoolean();
-            }
-            this.location = buffer.readSmallLocation();
-
-            // offset
-            this.offsetX = buffer.readFloat();
-            this.offsetY = buffer.readFloat();
-            this.offsetZ = buffer.readFloat();
-
-            this.particleDataFloat = buffer.readFloat();
-            this.count = buffer.readInt();
-            this.particleData = buffer.readParticleData(this.particleType);
-            return true;
+        if (buffer.getVersionId() < V_14W19A) {
+            this.particleType = buffer.getConnection().getMapping().getParticleByIdentifier(buffer.readString());
+        } else {
+            this.particleType = buffer.getConnection().getMapping().getParticleById(buffer.readInt());
         }
-        this.particleType = buffer.getConnection().getMapping().getParticleById(buffer.readInt());
-        this.longDistance = buffer.readBoolean();
-        this.location = buffer.readLocation();
+        if (buffer.getVersionId() >= V_14W29A) {
+            this.longDistance = buffer.readBoolean();
+        }
+        if (buffer.getVersionId() < V_1_15_PRE4) {
+            this.location = buffer.readSmallLocation();
+        } else {
+            this.location = buffer.readLocation();
+        }
 
         // offset
         this.offsetX = buffer.readFloat();

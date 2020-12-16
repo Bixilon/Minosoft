@@ -18,7 +18,9 @@ import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersi
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockBreakAnimation;
 
-@MinimumProtocolVersion(versionId = 32)
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W31A;
+
+@MinimumProtocolVersion(versionId = V_14W31A)
 public class BlockBreakAnimationEvent extends CancelableEvent {
     private final int entityId;
     private final BlockPosition position;

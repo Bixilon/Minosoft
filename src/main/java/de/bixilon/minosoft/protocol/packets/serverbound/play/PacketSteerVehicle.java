@@ -19,6 +19,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
+
 public class PacketSteerVehicle implements ServerboundPacket {
 
     final float sideways;
@@ -38,7 +40,7 @@ public class PacketSteerVehicle implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_STEER_VEHICLE);
         buffer.writeFloat(this.sideways);
         buffer.writeFloat(this.forward);
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             buffer.writeBoolean(this.jump);
             buffer.writeBoolean(this.unmount);
         } else {

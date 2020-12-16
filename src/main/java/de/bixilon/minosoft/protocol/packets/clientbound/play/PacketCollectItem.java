@@ -19,6 +19,9 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_16W32A;
+
 public class PacketCollectItem extends ClientboundPacket {
     int itemEntityId;
     int collectorEntityId;
@@ -27,12 +30,12 @@ public class PacketCollectItem extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.itemEntityId = buffer.readEntityId();
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             this.collectorEntityId = buffer.readInt();
             return true;
         }
         this.collectorEntityId = buffer.readVarInt();
-        if (buffer.getVersionId() >= 301) {
+        if (buffer.getVersionId() >= V_16W32A) {
             this.count = buffer.readVarInt();
         }
         return true;

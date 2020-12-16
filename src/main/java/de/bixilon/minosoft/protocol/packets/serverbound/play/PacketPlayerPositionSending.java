@@ -19,6 +19,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W06B;
+
 public class PacketPlayerPositionSending implements ServerboundPacket {
     final double x;
     final double feetY;
@@ -47,7 +49,7 @@ public class PacketPlayerPositionSending implements ServerboundPacket {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_POSITION);
         buffer.writeDouble(this.x);
         buffer.writeDouble(this.feetY);
-        if (buffer.getVersionId() < 10) {
+        if (buffer.getVersionId() < V_14W06B) {
             buffer.writeDouble(this.headY);
         }
         buffer.writeDouble(this.z);

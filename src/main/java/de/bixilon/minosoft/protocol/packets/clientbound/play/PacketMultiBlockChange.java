@@ -25,14 +25,16 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 import java.util.HashMap;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+
 public class PacketMultiBlockChange extends ClientboundPacket {
     final HashMap<InChunkLocation, Block> blocks = new HashMap<>();
     ChunkLocation location;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 25) {
-            if (buffer.getVersionId() < 4) {
+        if (buffer.getVersionId() < V_14W26C) {
+            if (buffer.getVersionId() < V_1_7_5) {
                 this.location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
             } else {
                 this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
@@ -50,7 +52,7 @@ public class PacketMultiBlockChange extends ClientboundPacket {
             }
             return true;
         }
-        if (buffer.getVersionId() < 740) {
+        if (buffer.getVersionId() < V_20W28A) {
             this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             int count = buffer.readVarInt();
             for (int i = 0; i < count; i++) {
@@ -64,7 +66,7 @@ public class PacketMultiBlockChange extends ClientboundPacket {
         long rawPos = buffer.readLong();
         this.location = new ChunkLocation((int) (rawPos >> 42), (int) (rawPos << 22 >> 42));
         int yOffset = ((int) rawPos & 0xFFFFF) * 16;
-        if (buffer.getVersionId() > 748) {
+        if (buffer.getVersionId() > V_1_16_2_PRE3) {
             buffer.readBoolean(); // ToDo
         }
         int count = buffer.readVarInt();

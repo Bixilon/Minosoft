@@ -20,13 +20,15 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 
+import static de.bixilon.minosoft.protocol.protocol.Versions.V_17W45A;
+
 public class PacketStopSound extends ClientboundPacket {
     SoundCategories category;
     ModIdentifier soundIdentifier;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 343) { // ToDo: these 2 values need to be switched in before 1.12.2
+        if (buffer.getVersionId() < V_17W45A) { // ToDo: these 2 values need to be switched in before 1.12.2
             this.category = SoundCategories.valueOf(buffer.readString().toUpperCase());
             this.soundIdentifier = buffer.readIdentifier();
             return true;

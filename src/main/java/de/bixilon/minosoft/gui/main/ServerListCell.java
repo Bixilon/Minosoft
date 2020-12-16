@@ -30,6 +30,7 @@ import de.bixilon.minosoft.modding.event.events.ServerListPingArriveEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.ping.ForgeModInfo;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -158,7 +159,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
             this.playersField.setText(LocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, ping.getPlayerOnline(), ping.getMaxPlayers()));
             Version serverVersion;
-            if (server.getDesiredVersionId() == -1) {
+            if (server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
                 serverVersion = Versions.getVersionByProtocolId(ping.getProtocolId());
             } else {
                 serverVersion = Versions.getVersionById(server.getDesiredVersionId());
@@ -268,7 +269,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
         Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getSelectedAccount()));
         Version version;
-        if (this.server.getDesiredVersionId() == -1) {
+        if (this.server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
             version = this.server.getLastPing().getVersion();
         } else {
             version = Versions.getVersionById(this.server.getDesiredVersionId());
@@ -329,7 +330,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         Label serverAddressLabel = new Label(this.server.getAddress());
         Label forcedVersionLabel = new Label();
 
-        if (this.server.getDesiredVersionId() == -1) {
+        if (this.server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
             forcedVersionLabel.setText(Versions.LOWEST_VERSION_SUPPORTED.getVersionName());
         } else {
             forcedVersionLabel.setText(Versions.getVersionById(this.server.getDesiredVersionId()).getVersionName());
