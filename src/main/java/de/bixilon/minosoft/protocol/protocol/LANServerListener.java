@@ -21,9 +21,7 @@ import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.Util;
 import javafx.application.Platform;
 
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.concurrent.CountDownLatch;
@@ -41,7 +39,7 @@ public class LANServerListener {
         new Thread(() -> {
             try {
                 MulticastSocket socket = new MulticastSocket(ProtocolDefinition.LAN_SERVER_BROADCAST_PORT);
-                socket.joinGroup(ProtocolDefinition.LAN_SERVER_BROADCAST_ADDRESS); // ToDo: do not use deprecated methods
+                socket.joinGroup(new InetSocketAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_ADDRESS, ProtocolDefinition.LAN_SERVER_BROADCAST_PORT), NetworkInterface.getByInetAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_ADDRESS));
                 byte[] buf = new byte[256]; // this should be enough, if the packet is longer, it is probably invalid
                 latch.countDown();
                 while (true) {
