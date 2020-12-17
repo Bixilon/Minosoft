@@ -17,18 +17,46 @@ import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.data.mappings.ModIdentifier
 
 object CommandParsers {
-    private val COMMAND_PARSERS: HashBiMap<ModIdentifier, CommandParser> = HashBiMap.create(mapOf(
+    private val COMMAND_PARSERS: HashBiMap<ModIdentifier, CommandParser> = HashBiMap.create(
+        mapOf(
             ModIdentifier("brigadier:bool") to BooleanParser.BOOLEAN_PARSER,
             ModIdentifier("brigadier:double") to DoubleParser.DOUBLE_PARSER,
             ModIdentifier("brigadier:float") to FloatParser.FLOAT_PARSER,
             ModIdentifier("brigadier:integer") to IntegerParser.INTEGER_PARSER,
             ModIdentifier("brigadier:string") to StringParser.STRING_PARSER,
             ModIdentifier("entity") to EntityParser.ENTITY_PARSER,
-            ModIdentifier("score_holder") to ScoreHolderParser.SCORE_HOLDER_PARSER,
-            ModIdentifier("range") to RangeParser.RANGE_PARSER,
+            // game_profile
+            ModIdentifier("block_pos") to BlockPositionParser.BLOCK_POSITION_PARSER,
+            ModIdentifier("column_pos") to ColumnPositionParser.COLUMN_POSITION_PARSER,
+            ModIdentifier("vec3") to Vec3Parser.VEC3_PARSER,
+            ModIdentifier("vec2") to Vec2Parser.VEC2_PARSER,
+            ModIdentifier("block_state") to BlockStateParser.BLOCK_STACK_PARSER,
+            // block_predicate
+            ModIdentifier("item_stack") to ItemStackParser.ITEM_STACK_PARSER,
+            // item_predicate
+            // color
+            // chat component
             ModIdentifier("message") to MessageParser.MESSAGE_PARSER,
-            ModIdentifier("item_stack") to ItemStackParser.ITEM_STACK_PARSER
-    ))
+            // nbt
+            // nbt_pat
+            // objective
+            // objective_criteria
+            // operation
+            // particle
+            // rotation
+            // scoreboard_slot
+            ModIdentifier("score_holder") to ScoreHolderParser.SCORE_HOLDER_PARSER,
+            // swizzle
+            // team
+            // item_slot
+            // resource_location
+            // mob_effect
+            // function
+            // entity_anchor
+            ModIdentifier("range") to RangeParser.RANGE_PARSER,
+            // ...
+        )
+    )
 
     fun getParserInstance(identifier: ModIdentifier): CommandParser {
         return COMMAND_PARSERS.getOrDefault(identifier, DummyParser.DUMMY_PARSER)

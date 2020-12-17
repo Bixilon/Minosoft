@@ -14,12 +14,12 @@ package de.bixilon.minosoft.data.commands.parser.exceptions
 
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader
 
-class ItemNotFoundCommandParseException : CommandParseException {
+class MixWorldAndLocalCoordinatesCommandParseException : CommandParseException {
     constructor(command: ImprovedStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
 
     constructor(command: ImprovedStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
 
     companion object {
-        private const val ERROR_MESSAGE = "Item not found!"
+        private const val ERROR_MESSAGE = "Can not mix world and local coordinates!"
     }
 }

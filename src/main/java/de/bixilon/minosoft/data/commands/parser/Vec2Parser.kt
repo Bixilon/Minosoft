@@ -10,16 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.commands.parser.exceptions
+package de.bixilon.minosoft.data.commands.parser
 
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
+import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
+import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader
 
-class ItemNotFoundCommandParseException : CommandParseException {
-    constructor(command: ImprovedStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
+class Vec2Parser : CoordinateParser() {
 
-    constructor(command: ImprovedStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
+    @Throws(CommandParseException::class)
+    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: ImprovedStringReader) {
+        readCoordinates(stringReader, true, 2)
+    }
 
     companion object {
-        private const val ERROR_MESSAGE = "Item not found!"
+        val VEC2_PARSER = Vec2Parser()
     }
 }
