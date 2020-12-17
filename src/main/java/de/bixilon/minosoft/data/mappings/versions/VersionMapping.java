@@ -36,10 +36,10 @@ import java.util.HashSet;
 
 public class VersionMapping {
     private final HashSet<Mappings> loaded = new HashSet<>();
-    private final HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap = HashBiMap.create();
-    private final HashMap<EntityMetaDataFields, Integer> entityMetaIndexMap = new HashMap<>();
-    private final HashMap<String, Pair<String, Integer>> entityMetaIndexOffsetParentMapping = new HashMap<>();
-    private final HashBiMap<Integer, Class<? extends Entity>> entityIdClassMap = HashBiMap.create();
+    private final HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap = HashBiMap.create(100);
+    private final HashMap<EntityMetaDataFields, Integer> entityMetaIndexMap = new HashMap<>(100);
+    private final HashMap<String, Pair<String, Integer>> entityMetaIndexOffsetParentMapping = new HashMap<>(100);
+    private final HashBiMap<Integer, Class<? extends Entity>> entityIdClassMap = HashBiMap.create(100);
     private Version version;
     private VersionMapping parentMapping;
     private HashBiMap<String, Motive> motiveIdentifierMap = HashBiMap.create();

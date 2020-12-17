@@ -23,7 +23,7 @@ import java.util.HashSet;
 public class Blocks {
 
     public static HashBiMap<Integer, Block> load(String mod, JsonObject json, boolean metaData) {
-        HashBiMap<Integer, Block> versionMapping = HashBiMap.create();
+        HashBiMap<Integer, Block> versionMapping = HashBiMap.create(json.size() * 10);
         for (String identifierName : json.keySet()) {
             JsonObject identifierJSON = json.getAsJsonObject(identifierName);
             JsonArray statesArray = identifierJSON.getAsJsonArray("states");
