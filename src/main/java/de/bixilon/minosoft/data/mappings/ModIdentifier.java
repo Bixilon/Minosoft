@@ -50,11 +50,6 @@ public class ModIdentifier {
     }
 
     @Override
-    public String toString() {
-        return getFullIdentifier();
-    }
-
-    @Override
     public int hashCode() {
         return Objects.hash(this.mod, this.identifier);
     }
@@ -69,5 +64,10 @@ public class ModIdentifier {
         }
         ModIdentifier their = (ModIdentifier) obj;
         return getIdentifier().equals(their.getIdentifier()) && getMod().equals(their.getMod());
+    }
+
+    @Override
+    public String toString() {
+        return getFullIdentifier();
     }
 }

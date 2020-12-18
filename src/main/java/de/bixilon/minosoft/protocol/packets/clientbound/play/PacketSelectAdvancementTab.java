@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.ChangeableIdentifier;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -24,7 +25,7 @@ public class PacketSelectAdvancementTab extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.readBoolean()) {
-            this.tab = AdvancementTabs.byName(buffer.readString(), buffer.getVersionId());
+            this.tab = AdvancementTabs.byIdentifier(buffer.readIdentifier(), buffer.getVersionId());
         }
         return true;
     }
@@ -51,9 +52,9 @@ public class PacketSelectAdvancementTab extends ClientboundPacket {
             this.changeableIdentifier = changeableIdentifier;
         }
 
-        public static AdvancementTabs byName(String name, int versionId) {
+        public static AdvancementTabs byIdentifier(ModIdentifier identifier, int versionId) {
             for (AdvancementTabs advancementTab : values()) {
-                if (advancementTab.getChangeableIdentifier().get(versionId).equals(name)) {
+                if (advancementTab.getChangeableIdentifier().get(versionId).equals(identifier)) {
                     return advancementTab;
                 }
             }

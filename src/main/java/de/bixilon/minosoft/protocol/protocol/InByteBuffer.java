@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.entities.EntityMetaData;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.Poses;
 import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.mappings.LegacyModIdentifier;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData;
@@ -517,6 +518,12 @@ public class InByteBuffer {
     }
 
     public ModIdentifier readIdentifier() {
-        return new ModIdentifier(readString());
+        String identifier = readString();
+
+        if (Util.doesStringContainsUppercaseLetters(identifier)) {
+            // just a string but wrapped into a identifier (like old plugin channels MC|BRAND or ...)
+            return new LegacyModIdentifier(identifier);
+        }
+        return new ModIdentifier(identifier);
     }
 }

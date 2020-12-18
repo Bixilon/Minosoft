@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.data;
 
+import de.bixilon.minosoft.data.mappings.LegacyModIdentifier;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.Util;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -28,7 +30,7 @@ public class ChangeableIdentifier extends VersionValueMap<ModIdentifier> {
         this.values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
     }
 
-    public ChangeableIdentifier(Map<Integer, String> values) {
+    public ChangeableIdentifier(Map<Integer, Object> values) {
         super(convertToIdentifier(values));
     }
 
@@ -37,10 +39,23 @@ public class ChangeableIdentifier extends VersionValueMap<ModIdentifier> {
         super(Map.of(LOWEST_VERSION_SUPPORTED, new ModIdentifier(name)));
     }
 
-    private static Map<Integer, ModIdentifier> convertToIdentifier(Map<Integer, String> in) {
+    private static Map<Integer, ModIdentifier> convertToIdentifier(Map<Integer, Object> in) {
         TreeMap<Integer, ModIdentifier> out = new TreeMap<>();
-        for (Map.Entry<Integer, String> entry : in.entrySet()) {
-            out.put(entry.getKey(), new ModIdentifier(entry.getValue()));
+        for (Map.Entry<Integer, Object> entry : in.entrySet()) {
+            if (entry.getValue() instanceof ModIdentifier modIdentifier) {
+                out.put(entry.getKey(), modIdentifier);
+                continue;
+            }
+            if (entry.getValue() instanceof String string) {
+                if (Util.doesStringContainsUppercaseLetters(string)) {
+                    // just a string but wrapped into a identifier (like old plugin channels MC|BRAND or ...)
+                    out.put(entry.getKey(), new LegacyModIdentifier(string));
+                    continue;
+                }
+                out.put(entry.getKey(), new ModIdentifier(string));
+                continue;
+            }
+            throw new IllegalArgumentException(String.format("Type %s is not a String or ModIdentifier!", entry.getValue().getClass().getCanonicalName()));
         }
         return out;
     }

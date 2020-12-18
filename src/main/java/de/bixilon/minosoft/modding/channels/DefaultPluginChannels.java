@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.modding.channels;
 
 import de.bixilon.minosoft.data.ChangeableIdentifier;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 
 import java.util.Map;
 
@@ -32,9 +33,9 @@ public enum DefaultPluginChannels {
         this.changeableIdentifier = changeableIdentifier;
     }
 
-    public static DefaultPluginChannels byName(String name, int versionId) {
+    public static DefaultPluginChannels byIdentifier(ModIdentifier identifier, int versionId) {
         for (DefaultPluginChannels channel : values()) {
-            if (channel.getChangeableIdentifier().get(versionId).equals(name)) {
+            if (channel.getChangeableIdentifier().get(versionId).equals(identifier)) {
                 return channel;
             }
         }
