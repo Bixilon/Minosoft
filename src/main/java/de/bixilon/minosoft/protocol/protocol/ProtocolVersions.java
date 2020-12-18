@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+@SuppressWarnings("unused")
 public class ProtocolVersions {
     public static final int V_20W51A = 762;
     public static final int V_20W49A = 761;
@@ -373,5 +374,5 @@ public class ProtocolVersions {
     public static final int V_13W42B = 1;
     public static final int V_13W41B = 0;
 
-    public static final int LOWEST_VERSION_SUPPORTED = 0;
+    public static final int LOWEST_VERSION_SUPPORTED = V_13W41B;
 }

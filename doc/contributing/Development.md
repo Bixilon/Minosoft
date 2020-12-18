@@ -46,7 +46,7 @@ Generally I'd say TBA, but some basic rules are here. Feel free to contact us fi
 1. Clone the repository
 2. Start implementing features
 3. Once you have something (minimal) to show, open a draft merge request (Start title with `WIP`) and write (short or long) what you have and want to implement (consider looking at other PRs)
-3. Test fix all bugs (or discuss about them)
+3. Test fix all bugs (or discuss them)
 4. Let other people test
 6. Mark PR as ready
 7. Wait for merge

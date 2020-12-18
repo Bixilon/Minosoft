@@ -39,7 +39,7 @@ public class LANServerListener {
         new Thread(() -> {
             try {
                 MulticastSocket socket = new MulticastSocket(ProtocolDefinition.LAN_SERVER_BROADCAST_PORT);
-                socket.joinGroup(new InetSocketAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_ADDRESS, ProtocolDefinition.LAN_SERVER_BROADCAST_PORT), NetworkInterface.getByInetAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_ADDRESS));
+                socket.joinGroup(new InetSocketAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_INET_ADDRESS, ProtocolDefinition.LAN_SERVER_BROADCAST_PORT), NetworkInterface.getByInetAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_INET_ADDRESS));
                 byte[] buf = new byte[256]; // this should be enough, if the packet is longer, it is probably invalid
                 latch.countDown();
                 while (true) {
@@ -91,7 +91,7 @@ public class LANServerListener {
     }
 
     private static Server getServerByBroadcast(InetAddress address, byte[] broadcast) {
-        String parsed = new String(broadcast, StandardCharsets.UTF_8);
+        String parsed = new String(broadcast, StandardCharsets.UTF_8); // example: [MOTD]Bixilon - New World[/MOTD][AD]41127[/AD]
         for (String mustContain : BROADCAST_MUST_CONTAIN) {
             if (!parsed.contains(mustContain)) {
                 throw new IllegalArgumentException("Broadcast is invalid!");

@@ -27,14 +27,15 @@ public final class ProtocolDefinition {
 
     public static final int PLAYER_INVENTORY_ID = 0;
 
-    public static final int FLATTING_VERSION_ID = 346;
-    public static final int PRE_FLATTENING_VERSION_ID = 345;
+    public static final int FLATTING_VERSION_ID = ProtocolVersions.V_17W47A;
+    public static final int PRE_FLATTENING_VERSION_ID = ProtocolVersions.V_17W46A;
 
     public static final int FALLBACK_PROTOCOL_VERSION_ID = ProtocolVersions.V_1_8_9; // some servers (like cytooxien.de) send us version id -1.
     public static final int QUERY_PROTOCOL_VERSION_ID = -1;
 
     public static final int LAN_SERVER_BROADCAST_PORT = 4445;
-    public static final InetAddress LAN_SERVER_BROADCAST_ADDRESS;
+    public static final String LAN_SERVER_BROADCAST_ADDRESS = "224.0.2.60";
+    public static final InetAddress LAN_SERVER_BROADCAST_INET_ADDRESS;
     public static final int LAN_SERVER_MAXIMUM_SERVERS = 100; // maximum number of lan servers, set because otherwise dos attacks would be easy
 
     public static final String DEFAULT_MOD = "minecraft";
@@ -71,13 +72,13 @@ public final class ProtocolDefinition {
 
     static {
         // java does (why ever) not allow to directly assign a null
-        InetAddress temp;
+        InetAddress tempInetAddress;
         try {
-            temp = InetAddress.getByName("224.0.2.60");
+            tempInetAddress = InetAddress.getByName(LAN_SERVER_BROADCAST_ADDRESS);
         } catch (Exception e) {
             e.printStackTrace();
-            temp = null;
+            tempInetAddress = null;
         }
-        LAN_SERVER_BROADCAST_ADDRESS = temp;
+        LAN_SERVER_BROADCAST_INET_ADDRESS = tempInetAddress;
     }
 }

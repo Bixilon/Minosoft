@@ -20,7 +20,6 @@ import de.bixilon.minosoft.util.Util;
 import java.util.UUID;
 
 public class MojangAccount {
-
     final String userId;
     final UUID uuid;
     final String playerName;
