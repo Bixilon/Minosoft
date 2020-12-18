@@ -54,6 +54,18 @@ public final class ProtocolDefinition {
     public static final int SECTIONS_PER_CHUNK = 16;
     public static final int BLOCKS_PER_SECTION = SECTION_WIDTH_X * SECTION_HEIGHT_Y * SECTION_WIDTH_X;
 
+    public static final int SIGN_LINES = 4;
+    public static final int ITEM_STACK_MAX_SIZE = 64;
+
+
+    public static final String MOJANG_URL_VERSION_MANIFEST = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
+    public static final String MOJANG_URL_RESOURCES = "https://resources.download.minecraft.net/%s/%s";
+    public static final String MOJANG_URL_PACKAGES = "https://launchermeta.mojang.com/v1/packages/";
+
+    public static final String MOJANG_URL_BLOCKED_SERVERS = "https://sessionserver.mojang.com/blockedservers";
+    public static final String MOJANG_URL_LOGIN = "https://authserver.mojang.com/authenticate";
+    public static final String MOJANG_URL_JOIN = "https://sessionserver.mojang.com/session/minecraft/join";
+    public static final String MOJANG_URL_REFRESH = "https://authserver.mojang.com/refresh";
 
     public static final char[] OBFUSCATED_CHARS = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".toCharArray();
 

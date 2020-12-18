@@ -167,7 +167,7 @@ public class Slot {
         return this.item;
     }
 
-    @IntRange(from = 0, to = 64)
+    @IntRange(from = 0, to = ProtocolDefinition.ITEM_STACK_MAX_SIZE)
     public int getItemCount() {
         return this.itemCount;
     }

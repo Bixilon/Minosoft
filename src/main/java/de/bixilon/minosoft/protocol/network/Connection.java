@@ -318,10 +318,8 @@ public class Connection {
                 // after sending it, switch to next state
                 setConnectionState(next);
             }
-            case STATUS -> {
-                // send status request
-                this.network.sendPacket(new PacketStatusRequest());
-            }
+            case STATUS -> // send status request
+                    this.network.sendPacket(new PacketStatusRequest());
             case LOGIN -> this.network.sendPacket(new PacketLoginStart(this.player));
             case DISCONNECTED -> {
                 if (this.reason == ConnectionReasons.GET_VERSION) {

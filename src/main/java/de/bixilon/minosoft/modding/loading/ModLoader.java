@@ -166,7 +166,7 @@ public class ModLoader {
             ZipFile zipFile = new ZipFile(file);
             ModInfo modInfo = new ModInfo(Util.readJsonFromZip("mod.json", zipFile));
             if (isModLoaded(modInfo)) {
-                Log.warn(String.format("Mod %s:%d (uuid=%s) is loaded multiple times! Skipping", modInfo.getName(), modInfo.getVersionId(), modInfo.getUUID()));
+                Log.warn(String.format("Mod %s:%d (uuid=%s) is loaded multiple times! Skipping", modInfo.getName(), modInfo.getModIdentifier().getVersionId(), modInfo.getModIdentifier().getUUID()));
                 return null;
             }
             JarClassLoader jcl = new JarClassLoader();

@@ -24,8 +24,8 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W06B;
 
 public class PacketPlayerPositionAndRotationSending implements ServerboundPacket {
-    Location location;
-    EntityRotation rotation;
+    final Location location;
+    final EntityRotation rotation;
     final boolean onGround;
 
     public PacketPlayerPositionAndRotationSending(Location location, EntityRotation rotation, boolean onGround) {

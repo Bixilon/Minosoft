@@ -20,6 +20,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
@@ -41,11 +42,11 @@ public class PacketUpdateSignSending implements ServerboundPacket {
             buffer.writePosition(this.position);
         }
         if (buffer.getVersionId() < V_14W25A || buffer.getVersionId() >= V_15W35A) {
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < ProtocolDefinition.SIGN_LINES; i++) {
                 buffer.writeString(this.lines[i].getMessage());
             }
         } else {
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < ProtocolDefinition.SIGN_LINES; i++) {
                 buffer.writeChatComponent(this.lines[i]);
             }
         }

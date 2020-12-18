@@ -13,15 +13,16 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPluginMessageReceiving;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 public class PluginMessageReceiveEvent extends CancelableEvent {
-    private final String channel;
+    private final ModIdentifier channel;
     private final InByteBuffer data;
 
-    public PluginMessageReceiveEvent(Connection connection, String channel, InByteBuffer data) {
+    public PluginMessageReceiveEvent(Connection connection, ModIdentifier channel, InByteBuffer data) {
         super(connection);
         this.channel = channel;
         this.data = data;
@@ -33,7 +34,7 @@ public class PluginMessageReceiveEvent extends CancelableEvent {
         this.data = pkg.getDataAsBuffer();
     }
 
-    public String getChannel() {
+    public ModIdentifier getChannel() {
         return this.channel;
     }
 

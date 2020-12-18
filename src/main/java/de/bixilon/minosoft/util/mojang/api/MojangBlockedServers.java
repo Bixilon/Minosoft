@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.util.mojang.api;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.HTTP;
 import de.bixilon.minosoft.util.Util;
 
@@ -25,7 +26,7 @@ import java.util.List;
 public final class MojangBlockedServers {
 
     public static ArrayList<String> getBlockedServers() {
-        HttpResponse<String> response = HTTP.get(MojangURLs.BLOCKED_SERVERS.getUrl());
+        HttpResponse<String> response = HTTP.get(ProtocolDefinition.MOJANG_URL_BLOCKED_SERVERS);
         if (response == null) {
             Log.mojang("Failed to fetch blocked servers");
             return null;

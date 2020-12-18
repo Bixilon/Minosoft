@@ -132,7 +132,7 @@ public class AssetsManager {
 
     private static void downloadAsset(AssetsSource source, String hash) throws Exception {
         switch (source) {
-            case MOJANG -> downloadAsset(String.format("https://resources.download.minecraft.net/%s/%s", hash.substring(0, 2), hash), hash);
+            case MOJANG -> downloadAsset(String.format(ProtocolDefinition.MOJANG_URL_RESOURCES, hash.substring(0, 2), hash), hash);
             case MINOSOFT_GIT -> downloadAsset(String.format(Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.RESOURCES_URL), hash.substring(0, 2), hash), hash, false);
         }
     }
@@ -193,7 +193,7 @@ public class AssetsManager {
             Log.verbose("client.jar assets probably already generated, skipping");
             return;
         }
-        JsonObject manifest = HTTP.getJson("https://launchermeta.mojang.com/mc/game/version_manifest.json").getAsJsonObject();
+        JsonObject manifest = HTTP.getJson(ProtocolDefinition.MOJANG_URL_VERSION_MANIFEST).getAsJsonObject();
         String assetsVersionJsonUrl = null;
         for (JsonElement versionElement : manifest.getAsJsonArray("versions")) {
             JsonObject version = versionElement.getAsJsonObject();
@@ -205,7 +205,7 @@ public class AssetsManager {
         if (assetsVersionJsonUrl == null) {
             throw new RuntimeException(String.format("Invalid version manifest or invalid ASSETS_CLIENT_JAR_VERSION (%s)", ASSETS_CLIENT_JAR_VERSION));
         }
-        String versionJsonHash = assetsVersionJsonUrl.replace("https://launchermeta.mojang.com/v1/packages/", "").replace(String.format("/%s.json", ASSETS_CLIENT_JAR_VERSION), "");
+        String versionJsonHash = assetsVersionJsonUrl.replace(ProtocolDefinition.MOJANG_URL_PACKAGES, "").replace(String.format("/%s.json", ASSETS_CLIENT_JAR_VERSION), "");
         downloadAsset(assetsVersionJsonUrl, versionJsonHash);
         // download jar
         JsonObject clientJarJson = readJsonAssetByHash(versionJsonHash).getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("client");

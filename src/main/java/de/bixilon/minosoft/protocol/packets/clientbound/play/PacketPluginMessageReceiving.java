@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.modding.event.events.PluginMessageReceiveEvent;
@@ -27,14 +28,14 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W29A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W31A;
 
 public class PacketPluginMessageReceiving extends ClientboundPacket {
-    String channel;
+    ModIdentifier channel;
     byte[] data;
     Connection connection;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.connection = buffer.getConnection();
-        this.channel = buffer.readString();
+        this.channel = buffer.readIdentifier();
         // "read" length prefix
         if (buffer.getVersionId() < V_14W29A) {
             buffer.readShort();
@@ -84,7 +85,7 @@ public class PacketPluginMessageReceiving extends ClientboundPacket {
         Log.protocol(String.format("[IN] Plugin message received in channel \"%s\" with %s bytes of data", this.channel, this.data.length));
     }
 
-    public String getChannel() {
+    public ModIdentifier getChannel() {
         return this.channel;
     }
 

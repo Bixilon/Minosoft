@@ -19,13 +19,14 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.util.nbt.tag.StringTag;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketUpdateSignReceiving extends ClientboundPacket {
-    final ChatComponent[] lines = new ChatComponent[4];
+    final ChatComponent[] lines = new ChatComponent[ProtocolDefinition.SIGN_LINES];
     BlockPosition position;
 
     @Override
@@ -35,7 +36,7 @@ public class PacketUpdateSignReceiving extends ClientboundPacket {
         } else {
             this.position = buffer.readPosition();
         }
-        for (byte i = 0; i < 4; i++) {
+        for (byte i = 0; i < ProtocolDefinition.SIGN_LINES; i++) {
             this.lines[i] = buffer.readChatComponent();
         }
         return true;
@@ -46,7 +47,7 @@ public class PacketUpdateSignReceiving extends ClientboundPacket {
         CompoundTag nbt = new CompoundTag();
         nbt.writeBlockPosition(getPosition());
         nbt.writeTag("id", new StringTag("minecraft:sign"));
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < ProtocolDefinition.SIGN_LINES; i++) {
             nbt.writeTag(String.format("Text%d", (i + 1)), new StringTag(getLines()[i].getLegacyText()));
         }
         // ToDo: handle sign updates

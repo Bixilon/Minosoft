@@ -26,8 +26,6 @@ import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.Util;
 
-import java.io.IOException;
-
 public abstract class Network {
     protected final Connection connection;
     protected int compressionThreshold = -1;
@@ -52,7 +50,7 @@ public abstract class Network {
     }
 
 
-    protected ClientboundPacket receiveClientboundPacket(byte[] bytes) throws IOException, PacketParseException {
+    protected ClientboundPacket receiveClientboundPacket(byte[] bytes) throws PacketParseException {
         if (this.compressionThreshold >= 0) {
             // compression is enabled
             InByteBuffer rawData = new InByteBuffer(bytes, this.connection);

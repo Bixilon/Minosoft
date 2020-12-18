@@ -19,6 +19,7 @@ import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.HTTP;
 
 import java.net.http.HttpResponse;
@@ -41,7 +42,7 @@ public final class MojangAuthentication {
         payload.addProperty("clientToken", clientToken);
         payload.addProperty("requestUser", true);
 
-        HttpResponse<String> response = HTTP.postJson(MojangURLs.LOGIN.getUrl(), payload);
+        HttpResponse<String> response = HTTP.postJson(ProtocolDefinition.MOJANG_URL_LOGIN, payload);
         if (response == null) {
             Log.mojang(String.format("Failed to login with username %s", username));
             return new MojangAccountAuthenticationAttempt("Unknown error, check your Internet connection");
@@ -65,7 +66,7 @@ public final class MojangAuthentication {
         payload.addProperty("selectedProfile", account.getUUID().toString().replace("-", ""));
         payload.addProperty("serverId", serverId);
 
-        HttpResponse<String> response = HTTP.postJson(MojangURLs.JOIN.toString(), payload);
+        HttpResponse<String> response = HTTP.postJson(ProtocolDefinition.MOJANG_URL_JOIN, payload);
 
         if (response == null) {
             Log.mojang(String.format("Failed to join server: %s", serverId));
@@ -94,7 +95,7 @@ public final class MojangAuthentication {
 
         HttpResponse<String> response;
         try {
-            response = HTTP.postJson(MojangURLs.REFRESH.getUrl(), payload);
+            response = HTTP.postJson(ProtocolDefinition.MOJANG_URL_REFRESH, payload);
         } catch (Exception e) {
             Log.mojang(String.format("Could not connect to mojang server: %s", e.getCause().toString()));
             return null;
