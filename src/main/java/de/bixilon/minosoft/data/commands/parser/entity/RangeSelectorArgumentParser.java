@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.commands.parser.entity;
 
+import de.bixilon.minosoft.data.commands.parser.RangeParser;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exceptions.number.*;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
@@ -50,50 +50,6 @@ public class RangeSelectorArgumentParser extends EntitySelectorArgumentParser {
     public void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
         Pair<String, String> match = readNextArgument(stringReader);
 
-        if (match.getKey().contains("..")) {
-            // range
-            String[] split = match.getKey().split("\\.\\.");
-            if (split.length != 2) {
-                throw new RangeBadFormatCommandParseException(stringReader, match.getKey());
-            }
-            double min;
-            double max;
-            if (split[0].isBlank()) {
-                min = getMinValue();
-            } else {
-                min = parseValue(stringReader, match.getKey(), split[0]);
-            }
-            if (split[1].isBlank()) {
-                max = getMaxValue();
-            } else {
-                max = parseValue(stringReader, match.getKey(), split[1]);
-            }
-
-            if (min < getMinValue() || max > getMaxValue()) {
-                throw new ValueOutOfRangeCommandParseException(stringReader, this.minValue, this.maxValue, match.getKey());
-            }
-            if (min > max) {
-                throw new MinimumBiggerAsMaximumCommandParseException(stringReader, match.getKey());
-            }
-            return;
-        }
-
-        parseValue(stringReader, match.getKey(), match.getKey());
-    }
-
-    private double parseValue(ImprovedStringReader stringReader, String match, String value) throws CommandParseException {
-        if (value.contains(".")) {
-            if (!isDecimal()) {
-                throw new NumberIsDecimalCommandParseException(stringReader, match);
-            }
-        }
-        try {
-            return Double.parseDouble(value);
-        } catch (NumberFormatException e) {
-            if (isDecimal()) {
-                throw new DoubleCommandParseException(stringReader, match, e);
-            }
-            throw new IntegerCommandParseException(stringReader, match, e);
-        }
+        RangeParser.readRange(stringReader, match.getKey(), getMinValue(), getMaxValue(), isDecimal());
     }
 }

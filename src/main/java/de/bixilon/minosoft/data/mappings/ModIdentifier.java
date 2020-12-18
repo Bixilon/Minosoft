@@ -15,6 +15,8 @@ package de.bixilon.minosoft.data.mappings;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
+import java.util.Objects;
+
 public class ModIdentifier {
     protected final String mod;
     protected final String identifier;
@@ -54,7 +56,7 @@ public class ModIdentifier {
 
     @Override
     public int hashCode() {
-        return this.mod.hashCode() * this.identifier.hashCode();
+        return Objects.hash(this.mod, this.identifier);
     }
 
     @Override

@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.util;
 
+import java.util.Objects;
+
 public class ServerAddress {
     final String hostname;
     final int port;
@@ -24,7 +26,7 @@ public class ServerAddress {
 
     @Override
     public int hashCode() {
-        return this.hostname.hashCode() * this.port;
+        return Objects.hash(this.hostname, this.port);
     }
 
     @Override

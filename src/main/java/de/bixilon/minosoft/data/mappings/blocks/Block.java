@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.mappings.blocks;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 public class Block extends ModIdentifier {
     final BlockRotations rotation;
@@ -84,11 +85,7 @@ public class Block extends ModIdentifier {
 
     @Override
     public int hashCode() {
-        int ret = this.mod.hashCode() * this.identifier.hashCode() * this.rotation.hashCode();
-        if (!this.properties.isEmpty()) {
-            ret *= this.properties.hashCode();
-        }
-        return ret;
+        return Objects.hash(this.mod, this.identifier, this.properties, this.rotation);
     }
 
     @Override
@@ -99,9 +96,12 @@ public class Block extends ModIdentifier {
         if (hashCode() != obj.hashCode()) {
             return false;
         }
-        if (!(obj instanceof Block their)) {
-            return false;
+        if (obj instanceof Block their) {
+            return getIdentifier().equals(their.getIdentifier()) && getRotation() == their.getRotation() && getProperties().equals(their.getProperties()) && getMod().equals(their.getMod());
         }
-        return getIdentifier().equals(their.getIdentifier()) && getRotation() == their.getRotation() && getProperties().equals(their.getProperties()) && getMod().equals(their.getMod());
+        if (obj instanceof ModIdentifier identifier) {
+            return super.equals(identifier);
+        }
+        return false;
     }
 }

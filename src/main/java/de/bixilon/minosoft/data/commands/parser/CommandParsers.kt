@@ -54,7 +54,15 @@ object CommandParsers {
             // function
             // entity_anchor
             ModIdentifier("range") to RangeParser.RANGE_PARSER,
-            // ...
+            ModIdentifier("int_range") to IntRangeParser.INT_RANGE_PARSER,
+            ModIdentifier("float_range") to FloatRangeParser.FLOAT_RANGE_PARSER,
+            // item_enchantment
+            // entity_summon
+            // dimension
+            ModIdentifier("uuid") to UUIDParser.UUID_PARSER,
+            // nbt_tag
+            // nbt_compound_tag
+            // time
         )
     )
 

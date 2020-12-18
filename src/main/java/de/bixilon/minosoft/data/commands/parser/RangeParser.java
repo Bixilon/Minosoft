@@ -14,16 +14,60 @@
 package de.bixilon.minosoft.data.commands.parser;
 
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.number.*;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.RangeParserProperties;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-import javax.annotation.Nullable;
-
 public class RangeParser extends CommandParser {
     public static final RangeParser RANGE_PARSER = new RangeParser();
+
+    public static void readRange(ImprovedStringReader stringReader, String argument, double minValue, double maxValue, boolean allowDecimal) throws CommandParseException {
+        if (argument.contains("..")) {
+            // range
+            String[] split = argument.split("\\.\\.");
+            if (split.length != 2) {
+                throw new RangeBadFormatCommandParseException(stringReader, argument);
+            }
+            double min;
+            double max;
+            if (split[0].isBlank()) {
+                min = minValue;
+            } else {
+                min = parseValue(stringReader, argument, split[0], allowDecimal);
+            }
+            if (split[1].isBlank()) {
+                max = maxValue;
+            } else {
+                max = parseValue(stringReader, argument, split[1], allowDecimal);
+            }
+
+            if (min < minValue || max > maxValue) {
+                throw new ValueOutOfRangeCommandParseException(stringReader, minValue, maxValue, argument);
+            }
+            if (min > max) {
+                throw new MinimumBiggerAsMaximumCommandParseException(stringReader, argument);
+            }
+        }
+    }
+
+    private static double parseValue(ImprovedStringReader stringReader, String match, String value, boolean allowDecimal) throws CommandParseException {
+        if (value.contains(".")) {
+            if (!allowDecimal) {
+                throw new NumberIsDecimalCommandParseException(stringReader, match);
+            }
+        }
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            if (allowDecimal) {
+                throw new DoubleCommandParseException(stringReader, match, e);
+            }
+            throw new IntegerCommandParseException(stringReader, match, e);
+        }
+    }
 
     @Override
     public ParserProperties readParserProperties(InByteBuffer buffer) {
@@ -31,7 +75,7 @@ public class RangeParser extends CommandParser {
     }
 
     @Override
-    public void isParsable(Connection connection, @Nullable ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
-        // ToDo
+    public void isParsable(Connection connection, ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+        readRange(stringReader, stringReader.readUntilNextCommandArgument(), Double.MIN_VALUE, Double.MAX_VALUE, ((RangeParserProperties) properties).isAllowDecimals());
     }
 }

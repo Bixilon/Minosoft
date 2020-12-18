@@ -15,13 +15,12 @@ package de.bixilon.minosoft.data.commands.parser
 import de.bixilon.minosoft.data.commands.parser.exceptions.MixWorldAndLocalCoordinatesCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.DoubleCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.IntegerCommandParseException
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader
 
 abstract class CoordinateParser : CommandParser() {
 
-    fun readCoordinate(stringReader: ImprovedStringReader, allowDecimal: Boolean): CoordinateNotations {
-        var position = stringReader.readUntil(ProtocolDefinition.COMMAND_SEPARATOR).key
+    private fun readCoordinate(stringReader: ImprovedStringReader, allowDecimal: Boolean): CoordinateNotations {
+        var position = stringReader.readUntilNextCommandArgument()
         val notation: CoordinateNotations = when {
             position.startsWith("~") -> {
                 CoordinateNotations.TILDE

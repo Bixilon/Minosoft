@@ -12,28 +12,26 @@
  */
 package de.bixilon.minosoft.data.commands.parser
 
-import de.bixilon.minosoft.data.commands.parser.exceptions.BlockNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.UUIDCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader
 
-class BlockStateParser : CommandParser() {
+class UUIDParser : CommandParser() {
 
     @Throws(CommandParseException::class)
     override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: ImprovedStringReader) {
-        val argument = stringReader.readUntil(ProtocolDefinition.COMMAND_SEPARATOR, "[")
-        if (!connection.mapping.doesBlockExist(ModIdentifier(argument.key))) {
-            throw BlockNotFoundCommandParseException(stringReader, argument.key)
-        }
-        if (argument.value == "[" || stringReader.nextChar == '[') {
-            throw TODO("Block data needs to be implemented")
+        val argument = stringReader.readUntilNextCommandArgument()
+        try {
+            Util.getUUIDFromString(argument)
+        } catch (exception: IllegalArgumentException) {
+            throw UUIDCommandParseException(stringReader, argument, exception)
         }
     }
 
     companion object {
-        val BLOCK_STACK_PARSER = BlockStateParser()
+        val UUID_PARSER = UUIDParser()
     }
 }

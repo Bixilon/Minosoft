@@ -494,4 +494,13 @@ public class VersionMapping {
         }
         return this.itemMap.containsValue(new Item(identifier.getFullIdentifier()));
     }
+
+    public boolean doesBlockExist(ModIdentifier identifier) {
+        if (this.parentMapping != null) {
+            if (this.parentMapping.doesBlockExist(identifier)) {
+                return true;
+            }
+        }
+        return this.blockIdMap.containsValue(new BlockId(identifier.getFullIdentifier()));
+    }
 }

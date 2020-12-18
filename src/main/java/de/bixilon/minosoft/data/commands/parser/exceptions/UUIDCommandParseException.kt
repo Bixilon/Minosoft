@@ -10,24 +10,16 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.commands.parser.exceptions
 
-package de.bixilon.minosoft.data.commands.parser.properties;
+import de.bixilon.minosoft.util.buffers.ImprovedStringReader
 
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.util.BitByte;
+class UUIDCommandParseException : CommandParseException {
+    constructor(command: ImprovedStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
 
-public class RangeParserProperties implements ParserProperties {
-    private final boolean allowDecimals;
+    constructor(command: ImprovedStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
 
-    public RangeParserProperties(InByteBuffer buffer) {
-        this.allowDecimals = BitByte.isBitMask(buffer.readByte(), 0x01);
-    }
-
-    public RangeParserProperties(boolean allowDecimals) {
-        this.allowDecimals = allowDecimals;
-    }
-
-    public boolean isAllowDecimals() {
-        return this.allowDecimals;
+    companion object {
+        private const val ERROR_MESSAGE = "Invalid UUID!"
     }
 }
