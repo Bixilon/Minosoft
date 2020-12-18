@@ -18,8 +18,7 @@ If you don't know much about this shit, just include the whole log (You may need
 Please take a look at [/doc/contributing/Development.md](doc/contributing/Development.md)
 
 ### Share
-Minosoft is an open source project, it helps if you recommend it and share it more users (probably) use it. I'll fell good,
-that I developed something useful, and people start contributing.
+Minosoft is an open source project, it helps if you recommend it and share it more users (probably) use it. I'll feel good, that I developed something useful, and people start contributing.
 
 ### Donating
 
