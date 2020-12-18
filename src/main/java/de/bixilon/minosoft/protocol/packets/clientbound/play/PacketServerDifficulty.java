@@ -18,7 +18,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_19W11A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W11A;
 
 public class PacketServerDifficulty extends ClientboundPacket {
     Difficulties difficulty;

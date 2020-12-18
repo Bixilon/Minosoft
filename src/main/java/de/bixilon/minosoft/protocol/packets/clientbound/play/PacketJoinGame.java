@@ -32,7 +32,7 @@ import de.bixilon.minosoft.util.nbt.tag.NBTTag;
 
 import java.util.HashMap;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketJoinGame extends ClientboundPacket {
     int entityId;

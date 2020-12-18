@@ -19,8 +19,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_18W50A;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_12_PRE6;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W50A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12_PRE6;
 
 public class PacketCraftingBookData implements ServerboundPacket {
     final BookDataStatus action;

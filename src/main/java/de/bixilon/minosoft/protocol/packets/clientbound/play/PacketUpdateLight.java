@@ -19,8 +19,8 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.ChunkUtil;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_16_PRE3;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_20W49A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE3;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W49A;
 
 public class PacketUpdateLight extends ClientboundPacket {
     ChunkLocation location;

@@ -19,8 +19,8 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W31A;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_12_2_PRE2;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W31A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12_2_PRE2;
 
 public class PacketKeepAlive extends ClientboundPacket {
     private long id;

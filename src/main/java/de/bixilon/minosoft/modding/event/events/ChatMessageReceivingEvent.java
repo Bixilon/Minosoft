@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChatMessageRe
 
 import java.util.UUID;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_20W21A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W21A;
 
 public class ChatMessageReceivingEvent extends CancelableEvent {
     private final ChatComponent message;

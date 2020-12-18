@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadFactory;
@@ -36,7 +37,7 @@ import java.util.regex.Pattern;
 import java.util.zip.*;
 
 public final class Util {
-    public static final Pattern UUID_FIX = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
+    public static final Pattern UUID_FIX_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
     public static final char[] RANDOM_STRING_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final Random THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
@@ -46,7 +47,7 @@ public final class Util {
             return UUID.fromString(uuid);
         }
         if (uuid.length() == 32) {
-            return UUID.fromString(UUID_FIX.matcher(uuid.replace("-", "")).replaceAll("$1-$2-$3-$4-$5"));
+            return UUID.fromString(UUID_FIX_PATTERN.matcher(uuid.replace("-", "")).replaceAll("$1-$2-$3-$4-$5"));
         }
         throw new IllegalArgumentException(String.format("%s is not a valid UUID String", uuid));
     }
@@ -284,5 +285,9 @@ public final class Util {
 
     public static String readAsset(String path) throws IOException {
         return readFile(new BufferedReader(readAsset(path, Util.class)), true);
+    }
+
+    public static boolean doesStringContainsUppercaseLetters(String string) {
+        return string.toLowerCase(Locale.ROOT).equals(string);
     }
 }

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -21,7 +20,9 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+import java.util.Map;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketEntityAction implements ServerboundPacket {
     final int entityId;
@@ -60,19 +61,19 @@ public class PacketEntityAction implements ServerboundPacket {
     }
 
     public enum EntityActions {
-        SNEAK(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 0)}),
-        UN_SNEAK(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 1)}),
-        LEAVE_BED(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 2)}),
-        START_SPRINTING(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 3)}),
-        STOP_SPRINTING(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 4)}),
-        START_HORSE_JUMP(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 5)}),
-        STOP_HORSE_JUMP(new MapSet[]{new MapSet<>(V_15W41A, 6)}), // ToDo: when did they change? really in 77?
-        OPEN_HORSE_INVENTORY(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 6), new MapSet<>(V_15W41A, 7)}),
-        START_ELYTRA_FLYING(new MapSet[]{new MapSet<>(V_15W41A, 8)});
+        SNEAK(Map.of(LOWEST_VERSION_SUPPORTED, 0)),
+        UN_SNEAK(Map.of(LOWEST_VERSION_SUPPORTED, 1)),
+        LEAVE_BED(Map.of(LOWEST_VERSION_SUPPORTED, 2)),
+        START_SPRINTING(Map.of(LOWEST_VERSION_SUPPORTED, 3)),
+        STOP_SPRINTING(Map.of(LOWEST_VERSION_SUPPORTED, 4)),
+        START_HORSE_JUMP(Map.of(LOWEST_VERSION_SUPPORTED, 5)),
+        STOP_HORSE_JUMP(Map.of(V_15W41A, 6)), // ToDo: when did they change? really in 77?
+        OPEN_HORSE_INVENTORY(Map.of(LOWEST_VERSION_SUPPORTED, 6, V_15W41A, 7)),
+        START_ELYTRA_FLYING(Map.of(V_15W41A, 8));
 
         final VersionValueMap<Integer> valueMap;
 
-        EntityActions(MapSet<Integer, Integer>[] values) {
+        EntityActions(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);
         }
 

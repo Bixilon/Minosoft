@@ -23,8 +23,8 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W29A;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W31A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W29A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W31A;
 
 public class PacketPluginMessageReceiving extends ClientboundPacket {
     String channel;

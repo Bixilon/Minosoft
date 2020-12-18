@@ -19,7 +19,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketTags extends ClientboundPacket {
     Tag[] blockTags = {};

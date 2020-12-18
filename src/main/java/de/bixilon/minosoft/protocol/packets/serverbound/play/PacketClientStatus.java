@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketClientStatus implements ServerboundPacket {
 

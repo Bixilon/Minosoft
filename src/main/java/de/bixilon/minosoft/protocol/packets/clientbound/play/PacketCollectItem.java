@@ -19,8 +19,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_16W32A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W32A;
 
 public class PacketCollectItem extends ClientboundPacket {
     int itemEntityId;

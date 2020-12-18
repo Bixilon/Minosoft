@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_20W09A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W09A;
 
 public class ThrownPotion extends ThrowableItemProjectile {
     private static final Slot DEFAULT_ITEM = null;

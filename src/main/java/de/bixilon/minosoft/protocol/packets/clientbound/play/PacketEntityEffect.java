@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketEntityEffect extends ClientboundPacket {
     int entityId;

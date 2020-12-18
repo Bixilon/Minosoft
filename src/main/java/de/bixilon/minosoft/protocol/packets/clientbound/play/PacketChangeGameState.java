@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.GameModes;
-import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.ChangeGameStateEvent;
@@ -22,7 +21,9 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+import java.util.Map;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketChangeGameState extends ClientboundPacket {
     Reason reason;
@@ -74,22 +75,22 @@ public class PacketChangeGameState extends ClientboundPacket {
     }
 
     public enum Reason {
-        NO_RESPAWN_BLOCK_AVAILABLE(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 0)}),
-        START_RAINING(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 1), new MapSet<>(V_1_14_4, 2), new MapSet<>(V_1_15_2, 1)}), // ToDo: when exactly did these 2 switch?
-        STOP_RAINING(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 2), new MapSet<>(V_1_14_4, 1), new MapSet<>(V_1_15_2, 2)}),
-        CHANGE_GAMEMODE(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 3)}),
-        ENTER_CREDITS(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 4)}),
-        DEMO_MESSAGES(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 5)}),
-        ARROW_HITTING_PLAYER(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 6)}),
-        RAIN_LEVEL_CHANGE(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 7)}),
-        THUNDER_LEVEL_CHANGE(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 8)}),
-        PUFFERFISH_STING(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 9)}),
-        GUARDIAN_ELDER_EFFECT(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 10)}),
-        IMMEDIATE_RESPAWN(new MapSet[]{new MapSet<>(V_19W36A, 11)});
+        NO_RESPAWN_BLOCK_AVAILABLE(Map.of(LOWEST_VERSION_SUPPORTED, 0)),
+        START_RAINING(Map.of(LOWEST_VERSION_SUPPORTED, 1, V_1_14_4, 2, V_1_15_2, 1)), // ToDo: when exactly did these 2 switch?
+        STOP_RAINING(Map.of(LOWEST_VERSION_SUPPORTED, 2, V_1_14_4, 1, V_1_15_2, 2)),
+        CHANGE_GAMEMODE(Map.of(LOWEST_VERSION_SUPPORTED, 3)),
+        ENTER_CREDITS(Map.of(LOWEST_VERSION_SUPPORTED, 4)),
+        DEMO_MESSAGES(Map.of(LOWEST_VERSION_SUPPORTED, 5)),
+        ARROW_HITTING_PLAYER(Map.of(LOWEST_VERSION_SUPPORTED, 6)),
+        RAIN_LEVEL_CHANGE(Map.of(LOWEST_VERSION_SUPPORTED, 7)),
+        THUNDER_LEVEL_CHANGE(Map.of(LOWEST_VERSION_SUPPORTED, 8)),
+        PUFFERFISH_STING(Map.of(LOWEST_VERSION_SUPPORTED, 9)),
+        GUARDIAN_ELDER_EFFECT(Map.of(LOWEST_VERSION_SUPPORTED, 10)),
+        IMMEDIATE_RESPAWN(Map.of(V_19W36A, 11));
 
         final VersionValueMap<Integer> valueMap;
 
-        Reason(MapSet<Integer, Integer>[] values) {
+        Reason(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);
         }
 

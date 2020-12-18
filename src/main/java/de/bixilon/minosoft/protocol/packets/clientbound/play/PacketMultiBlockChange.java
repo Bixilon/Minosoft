@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 import java.util.HashMap;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketMultiBlockChange extends ClientboundPacket {
     final HashMap<InChunkLocation, Block> blocks = new HashMap<>();

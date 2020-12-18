@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+import java.util.Map;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketEntityAnimation extends ClientboundPacket {
     int entityId;
@@ -39,20 +40,20 @@ public class PacketEntityAnimation extends ClientboundPacket {
 
     public enum EntityAnimations {
         // ToDo
-        SWING_RIGHT_ARM(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 0)}),
-        TAKE_DAMAGE(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 1)}),
-        LEAVE_BED(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 2)}),
-        EAT_FOOD(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 3), new MapSet<>(V_1_9_4, -1)}),
-        SWING_LEFT_ARM(new MapSet[]{new MapSet<>(V_1_9_4, 3)}),
-        CRITICAL_EFFECT(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 4)}),
-        MAGIC_CRITICAL_EFFECT(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 5)}),
-        UNKNOWN_1(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 102), new MapSet<>(V_1_8_9, -1)}), // name currently unknown // ToDo
-        SNEAK(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 104), new MapSet<>(V_1_8_9, -1)}),
-        UN_SNEAK(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 105), new MapSet<>(V_1_8_9, -1)});
+        SWING_RIGHT_ARM(Map.of(LOWEST_VERSION_SUPPORTED, 0)),
+        TAKE_DAMAGE(Map.of(LOWEST_VERSION_SUPPORTED, 1)),
+        LEAVE_BED(Map.of(LOWEST_VERSION_SUPPORTED, 2)),
+        EAT_FOOD(Map.of(LOWEST_VERSION_SUPPORTED, 3, V_1_9_4, -1)),
+        SWING_LEFT_ARM(Map.of(V_1_9_4, 3)),
+        CRITICAL_EFFECT(Map.of(LOWEST_VERSION_SUPPORTED, 4)),
+        MAGIC_CRITICAL_EFFECT(Map.of(LOWEST_VERSION_SUPPORTED, 5)),
+        UNKNOWN_1(Map.of(LOWEST_VERSION_SUPPORTED, 102, V_1_8_9, -1)), // name currently unknown // ToDo
+        SNEAK(Map.of(LOWEST_VERSION_SUPPORTED, 104, V_1_8_9, -1)),
+        UN_SNEAK(Map.of(LOWEST_VERSION_SUPPORTED, 105, V_1_8_9, -1));
 
         final VersionValueMap<Integer> valueMap;
 
-        EntityAnimations(MapSet<Integer, Integer>[] values) {
+        EntityAnimations(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);
         }
 

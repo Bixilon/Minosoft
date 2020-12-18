@@ -12,35 +12,35 @@
  */
 package de.bixilon.minosoft.data.entities
 
-import de.bixilon.minosoft.data.MapSet
 import de.bixilon.minosoft.data.VersionValueMap
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
 
 data class VillagerData(val type: VillagerTypes, val profession: VillagerProfessions, val level: VillagerLevels) {
     constructor(type: Int, profession: Int, level: Int, versionId: Int) : this(VillagerTypes.values()[type], VillagerProfessions.byId(profession, versionId)!!, VillagerLevels.values()[level])
 
-    enum class VillagerProfessions(val values: Array<MapSet<Int, Int>>) {
-        NONE(arrayOf(MapSet(451, 0))),
-        ARMORER(arrayOf(MapSet(451, 1))),
-        BUTCHER(arrayOf(MapSet(0, 4), MapSet(451, 2))),
-        CARTOGRAPHER(arrayOf(MapSet(451, 3))),
-        CLERIC(arrayOf(MapSet(451, 4))),
-        FARMER(arrayOf(MapSet(0, 0), MapSet(451, 5))),
-        FISHERMAN(arrayOf(MapSet(451, 6))),
-        FLETCHER(arrayOf(MapSet(451, 7))),
-        LEATHER_WORKER(arrayOf(MapSet(451, 8))),
-        LIBRARIAN(arrayOf(MapSet(0, 1), MapSet(451, 9))),
-        MASON(arrayOf(MapSet(451, 10))),
-        NITWIT(arrayOf(MapSet(0, 5), MapSet(451, 11))),
-        SHEPHERD(arrayOf(MapSet(451, 12))),
-        TOOL_SMITH(arrayOf(MapSet(451, 13))),
-        WEAPON_SMITH(arrayOf(MapSet(451, 14))),
-        PRIEST(arrayOf(MapSet(0, 2), MapSet(451, -1))),
-        BLACKSMITH(arrayOf(MapSet(0, 3), MapSet(451, -1))),
-        HUSK(arrayOf(MapSet(204, 5), MapSet(315, -100))),  // ToDo
-        ZOMBIE(arrayOf(MapSet(204, -1), MapSet(315, -100)));
+    enum class VillagerProfessions(val values: Map<Int, Int>) {
+        NONE(mapOf(V_18W50A to 0)),
+        ARMORER(mapOf(V_18W50A to 1)),
+        BUTCHER(mapOf(LOWEST_VERSION_SUPPORTED to 4, V_18W50A to 2)),
+        CARTOGRAPHER(mapOf(V_18W50A to 3)),
+        CLERIC(mapOf(V_18W50A to 4)),
+        FARMER(mapOf(LOWEST_VERSION_SUPPORTED to 0, V_18W50A to 5)),
+        FISHERMAN(mapOf(V_18W50A to 6)),
+        FLETCHER(mapOf(V_18W50A to 7)),
+        LEATHER_WORKER(mapOf(V_18W50A to 8)),
+        LIBRARIAN(mapOf(LOWEST_VERSION_SUPPORTED to 1, V_18W50A to 9)),
+        MASON(mapOf(V_18W50A to 10)),
+        NITWIT(mapOf(LOWEST_VERSION_SUPPORTED to 5, V_18W50A to 11)),
+        SHEPHERD(mapOf(V_18W50A to 12)),
+        TOOL_SMITH(mapOf(V_18W50A to 13)),
+        WEAPON_SMITH(mapOf(V_18W50A to 14)),
+        PRIEST(mapOf(LOWEST_VERSION_SUPPORTED to 2, V_18W50A to -1)),
+        BLACKSMITH(mapOf(LOWEST_VERSION_SUPPORTED to 3, V_18W50A to -1)),
+        HUSK(mapOf(V_1_10_PRE1 to 5, V_1_11 to -100)),  // ToDo
+        ZOMBIE(mapOf(V_1_10_PRE1 to -1, V_1_11 to -100));
 
         // used earlier (ZombieVillagerMeta)
-        private val valueMap = VersionValueMap(values as Array<out MapSet<Int, Int>>)
+        private val valueMap = VersionValueMap(values)
 
 
         fun getId(versionId: Int): Int {

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_17W45A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W45A;
 
 public class PacketStopSound extends ClientboundPacket {
     SoundCategories category;

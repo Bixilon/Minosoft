@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-public class Versions {
+public class ProtocolVersions {
     public static final int V_20W51A = 762;
     public static final int V_20W49A = 761;
     public static final int V_20W48A = 760;

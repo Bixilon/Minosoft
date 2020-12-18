@@ -17,19 +17,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class VersionValueMap<V> {
-    TreeMap<Integer, V> values = new TreeMap<>();
+    protected final TreeMap<Integer, V> values;
 
     public VersionValueMap() {
+        this.values = new TreeMap<>();
     }
 
-    public VersionValueMap(MapSet<Integer, V>[] sets) {
-        for (MapSet<Integer, V> set : sets) {
-            this.values.put(set.getKey(), set.getValue());
-        }
-    }
-
-    public VersionValueMap(MapSet<Integer, V> set) {
-        this.values.put(set.getKey(), set.getValue());
+    public VersionValueMap(Map<Integer, V> map) {
+        this.values = new TreeMap<>(map);
     }
 
     public V get(int versionId) {

@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_8_9;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_8_9;
 
 public class Enderman extends AbstractSkeleton {
 

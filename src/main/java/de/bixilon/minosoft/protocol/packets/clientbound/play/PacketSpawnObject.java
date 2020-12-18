@@ -29,7 +29,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSpawnObject extends ClientboundPacket {
     Entity entity;

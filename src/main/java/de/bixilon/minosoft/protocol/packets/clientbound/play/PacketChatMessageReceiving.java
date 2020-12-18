@@ -23,8 +23,8 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 import java.util.UUID;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_20W21A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W21A;
 
 public class PacketChatMessageReceiving extends ClientboundPacket {
     ChatComponent message;

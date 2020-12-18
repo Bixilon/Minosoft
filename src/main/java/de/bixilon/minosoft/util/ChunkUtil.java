@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import java.util.BitSet;
 import java.util.HashMap;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public final class ChunkUtil {
     public static Chunk readChunkPacket(InByteBuffer buffer, int sectionBitMask, int addBitMask, boolean groundUpContinuous, boolean containsSkyLight) {

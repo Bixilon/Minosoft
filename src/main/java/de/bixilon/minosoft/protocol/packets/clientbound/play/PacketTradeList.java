@@ -20,8 +20,8 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_14_3_PRE1;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_14_4_PRE5;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_14_3_PRE1;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_14_4_PRE5;
 
 public class PacketTradeList extends ClientboundPacket {
     int windowId;

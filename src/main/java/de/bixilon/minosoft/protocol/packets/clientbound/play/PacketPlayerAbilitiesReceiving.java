@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W03B;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
 public class PacketPlayerAbilitiesReceiving extends ClientboundPacket {
     boolean creative; // is this needed? receiving the gameMode in change Game state

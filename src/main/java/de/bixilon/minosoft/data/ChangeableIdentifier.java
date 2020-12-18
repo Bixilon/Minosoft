@@ -13,50 +13,40 @@
 
 package de.bixilon.minosoft.data;
 
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
+import java.util.Map;
 import java.util.TreeMap;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.LOWEST_VERSION_SUPPORTED;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.LOWEST_VERSION_SUPPORTED;
 
-public class ChangeableIdentifier extends VersionValueMap<String> {
-    String mod = ProtocolDefinition.DEFAULT_MOD;
+public class ChangeableIdentifier extends VersionValueMap<ModIdentifier> {
 
-    public ChangeableIdentifier(String legacy, String water) {
+    public ChangeableIdentifier(ModIdentifier legacy, ModIdentifier water) {
         this.values.put(LOWEST_VERSION_SUPPORTED, legacy);
         this.values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
     }
 
-    public ChangeableIdentifier(String legacy, String water, String mod) {
-        this.values.put(LOWEST_VERSION_SUPPORTED, legacy);
-        this.values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
-        this.mod = mod;
+    public ChangeableIdentifier(Map<Integer, String> values) {
+        super(convertToIdentifier(values));
     }
 
-    public ChangeableIdentifier(TreeMap<Integer, String> values) {
-        this.values = values;
-    }
-
-    public ChangeableIdentifier(IdentifierSet... sets) {
-        super(sets);
-    }
 
     public ChangeableIdentifier(String name) {
-        super(new MapSet<>(LOWEST_VERSION_SUPPORTED, name));
+        super(Map.of(LOWEST_VERSION_SUPPORTED, new ModIdentifier(name)));
     }
 
-    public boolean isValidName(String name, int versionId) {
-        name = name.toLowerCase();
-        if (name.indexOf(":") != 0) {
-            String[] splitName = name.split(":", 2);
-            if (!this.mod.equals(splitName[0])) {
-                // mod is not correct
-                return false;
-            }
-            name = splitName[1];
-            // split and check mod
+    private static Map<Integer, ModIdentifier> convertToIdentifier(Map<Integer, String> in) {
+        TreeMap<Integer, ModIdentifier> out = new TreeMap<>();
+        for (Map.Entry<Integer, String> entry : in.entrySet()) {
+            out.put(entry.getKey(), new ModIdentifier(entry.getValue()));
         }
+        return out;
+    }
 
-        return get(versionId).equals(name);
+    public boolean isValidIdentifier(ModIdentifier identifier, int versionId) {
+        return get(versionId).equals(identifier);
     }
 }
+

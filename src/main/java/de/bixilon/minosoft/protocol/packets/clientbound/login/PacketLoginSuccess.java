@@ -20,7 +20,7 @@ import de.bixilon.minosoft.util.Util;
 
 import java.util.UUID;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_20W12A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W12A;
 
 public class PacketLoginSuccess extends ClientboundPacket {
     UUID uuid;

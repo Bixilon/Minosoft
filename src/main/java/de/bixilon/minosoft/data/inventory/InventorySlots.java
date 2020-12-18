@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.inventory;
 
-import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
-import de.bixilon.minosoft.data.mappings.versions.Versions;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.LOWEST_VERSION_SUPPORTED;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W31A;
+import java.util.Map;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.LOWEST_VERSION_SUPPORTED;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 
 public class InventorySlots {
     public enum PlayerInventorySlots implements InventoryInterface {
@@ -89,20 +89,20 @@ public class InventorySlots {
 
     public enum EntityInventorySlots implements InventoryInterface {
         MAIN_HAND(0),
-        OFF_HAND(new MapSet[]{new MapSet<>(V_15W31A, 1)}),
-        BOOTS(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 1), new MapSet<>(V_15W31A, 2)}),
-        LEGGINGS(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 2), new MapSet<>(V_15W31A, 3)}),
-        CHESTPLATE(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 3), new MapSet<>(V_15W31A, 4)}),
-        HELMET(new MapSet[]{new MapSet<>(LOWEST_VERSION_SUPPORTED, 4), new MapSet<>(V_15W31A, 5)});
+        OFF_HAND(Map.of(V_15W31A, 1)),
+        BOOTS(Map.of(LOWEST_VERSION_SUPPORTED, 1, V_15W31A, 2)),
+        LEGGINGS(Map.of(LOWEST_VERSION_SUPPORTED, 2, V_15W31A, 3)),
+        CHESTPLATE(Map.of(LOWEST_VERSION_SUPPORTED, 3, V_15W31A, 4)),
+        HELMET(Map.of(LOWEST_VERSION_SUPPORTED, 4, V_15W31A, 5));
 
-        final VersionValueMap<Integer> valueMap;
+        private final VersionValueMap<Integer> valueMap;
 
-        EntityInventorySlots(MapSet<Integer, Integer>[] values) {
+        EntityInventorySlots(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);
         }
 
         EntityInventorySlots(int id) {
-            this.valueMap = new VersionValueMap<>(new MapSet<>(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), id));
+            this.valueMap = new VersionValueMap<>(Map.of(LOWEST_VERSION_SUPPORTED, id));
         }
 
         public static EntityInventorySlots byId(int id, int versionId) {

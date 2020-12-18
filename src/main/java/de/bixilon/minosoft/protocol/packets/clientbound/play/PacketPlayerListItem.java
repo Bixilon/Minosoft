@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W19A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W19A;
 
 public class PacketPlayerListItem extends ClientboundPacket {
     final ArrayList<PlayerListItemBulk> playerList = new ArrayList<>();

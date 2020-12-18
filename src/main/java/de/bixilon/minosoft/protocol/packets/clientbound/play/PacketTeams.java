@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.BitByte;
 
 import java.util.Arrays;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketTeams extends ClientboundPacket {
     String name;

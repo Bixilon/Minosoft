@@ -15,12 +15,14 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
 import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginPluginResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.*;
+import de.bixilon.minosoft.util.Util;
 
 import java.util.UUID;
 
@@ -103,6 +105,14 @@ public class PacketSender {
 
     public void sendPluginMessageData(String channel, OutByteBuffer toSend) {
         this.connection.sendPacket(new PacketPluginMessageSending(channel, toSend.toByteArray()));
+    }
+
+    public void sendPluginMessageData(ModIdentifier channel, OutByteBuffer toSend) {
+        String channelName = channel.getFullIdentifier();
+        if (Util.doesStringContainsUppercaseLetters(channelName)) {
+            channelName = channel.getIdentifier();
+        }
+        this.connection.sendPacket(new PacketPluginMessageSending(channelName, toSend.toByteArray()));
     }
 
     public void sendLoginPluginMessageResponse(int messageId, OutByteBuffer toSend) {

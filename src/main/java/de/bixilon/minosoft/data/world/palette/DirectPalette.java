@@ -17,8 +17,8 @@ import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_17W47A;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_18W10D;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W47A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W10D;
 
 public class DirectPalette implements Palette {
     int versionId;

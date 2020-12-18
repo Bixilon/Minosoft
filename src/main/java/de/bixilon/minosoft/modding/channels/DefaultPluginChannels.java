@@ -14,15 +14,19 @@
 package de.bixilon.minosoft.modding.channels;
 
 import de.bixilon.minosoft.data.ChangeableIdentifier;
-import de.bixilon.minosoft.data.IdentifierSet;
+
+import java.util.Map;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.LOWEST_VERSION_SUPPORTED;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_PRE3;
 
 public enum DefaultPluginChannels {
-    MC_BRAND(new ChangeableIdentifier(new IdentifierSet(0, "MC|Brand"), new IdentifierSet(385, "minecraft:brand"))),
+    MC_BRAND(new ChangeableIdentifier(Map.of(LOWEST_VERSION_SUPPORTED, "MC|Brand", V_1_13_PRE3, "minecraft:brand"))),
     STOP_SOUND(new ChangeableIdentifier("MC|StopSound")),
-    REGISTER(new ChangeableIdentifier(new IdentifierSet(0, "REGISTER"), new IdentifierSet(385, "minecraft:register"))),
-    UNREGISTER(new ChangeableIdentifier(new IdentifierSet(0, "UNREGISTER"), new IdentifierSet(385, "minecraft:unregister")));
+    REGISTER(new ChangeableIdentifier(Map.of(LOWEST_VERSION_SUPPORTED, "REGISTER", V_1_13_PRE3, "minecraft:register"))),
+    UNREGISTER(new ChangeableIdentifier(Map.of(LOWEST_VERSION_SUPPORTED, "UNREGISTER", V_1_13_PRE3, "minecraft:unregister")));
 
-    final ChangeableIdentifier changeableIdentifier;
+    private final ChangeableIdentifier changeableIdentifier;
 
     DefaultPluginChannels(ChangeableIdentifier changeableIdentifier) {
         this.changeableIdentifier = changeableIdentifier;

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W41A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W41A;
 
 public class PacketAttachEntity extends ClientboundPacket {
     int entityId;

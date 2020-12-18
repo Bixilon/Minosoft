@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W31A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 
 public class PacketAnimation implements ServerboundPacket {
     final Hands hand;

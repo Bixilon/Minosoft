@@ -29,7 +29,7 @@ import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import java.util.HashMap;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketChunkData extends ClientboundPacket {
     private final HashMap<BlockPosition, BlockEntityMetaData> blockEntities = new HashMap<>();

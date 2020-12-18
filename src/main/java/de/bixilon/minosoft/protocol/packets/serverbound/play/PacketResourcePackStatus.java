@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_10_PRE1;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_10_PRE1;
 
 public class PacketResourcePackStatus implements ServerboundPacket {
     final String hash;

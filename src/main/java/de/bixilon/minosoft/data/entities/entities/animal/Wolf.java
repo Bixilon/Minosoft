@@ -24,8 +24,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_19W45B;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_1_8_9;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W45B;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_8_9;
 
 public class Wolf extends TamableAnimal {
 

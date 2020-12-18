@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
@@ -22,7 +21,9 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.*;
+import java.util.Map;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketTitle extends ClientboundPacket {
     TitleActions action;
@@ -93,19 +94,19 @@ public class PacketTitle extends ClientboundPacket {
     public enum TitleActions {
         SET_TITLE(0),
         SET_SUBTITLE(1),
-        SET_ACTION_BAR(new MapSet[]{new MapSet<>(V_16W32B, 2)}),
-        SET_TIMES_AND_DISPLAY(new MapSet[]{new MapSet<>(V_14W20B, 2), new MapSet<>(V_16W32B, 3)}),
-        HIDE(new MapSet[]{new MapSet<>(V_14W20B, 3), new MapSet<>(V_16W32B, 4)}),
-        RESET(new MapSet[]{new MapSet<>(V_14W20B, 4), new MapSet<>(V_16W32B, 5)});
+        SET_ACTION_BAR(Map.of(V_16W32B, 2)),
+        SET_TIMES_AND_DISPLAY(Map.of(V_14W20B, 2, V_16W32B, 3)),
+        HIDE(Map.of(V_14W20B, 3, V_16W32B, 4)),
+        RESET(Map.of(V_14W20B, 4, V_16W32B, 5));
 
         private final VersionValueMap<Integer> valueMap;
 
-        TitleActions(MapSet<Integer, Integer>[] values) {
+        TitleActions(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);
         }
 
         TitleActions(int id) {
-            this.valueMap = new VersionValueMap<>(new MapSet<>(LOWEST_VERSION_SUPPORTED, id));
+            this.valueMap = new VersionValueMap<>(Map.of(LOWEST_VERSION_SUPPORTED, id));
         }
 
         public static TitleActions byId(int id, int versionId) {

@@ -22,8 +22,8 @@ import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketConfirmTelepo
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W03B;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_15W42A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W42A;
 
 public class PacketPlayerPositionAndRotation extends ClientboundPacket {
     Location location;

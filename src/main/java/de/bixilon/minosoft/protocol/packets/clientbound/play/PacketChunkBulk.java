@@ -25,8 +25,8 @@ import de.bixilon.minosoft.util.Util;
 
 import java.util.HashMap;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W26A;
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W28A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W28A;
 
 public class PacketChunkBulk extends ClientboundPacket {
     final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();

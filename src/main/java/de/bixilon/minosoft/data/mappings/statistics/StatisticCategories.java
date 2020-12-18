@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.mappings.statistics;
 
 import de.bixilon.minosoft.data.ChangeableIdentifier;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 
 public enum StatisticCategories {
     MINED(new ChangeableIdentifier("minecraft.mined"), 0),
@@ -34,9 +35,9 @@ public enum StatisticCategories {
         this.id = id;
     }
 
-    public static StatisticCategories byName(String name, int versionId) {
+    public static StatisticCategories byName(ModIdentifier identifier, int versionId) {
         for (StatisticCategories category : values()) {
-            if (category.getChangeableIdentifier().isValidName(name, versionId)) {
+            if (category.getChangeableIdentifier().isValidIdentifier(identifier, versionId)) {
                 return category;
             }
         }

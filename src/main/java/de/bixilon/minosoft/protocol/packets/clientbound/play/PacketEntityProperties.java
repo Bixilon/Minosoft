@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static de.bixilon.minosoft.protocol.protocol.Versions.V_14W04A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketEntityProperties extends ClientboundPacket {
     final HashMap<EntityPropertyKeys, EntityProperty> properties = new HashMap<>();
