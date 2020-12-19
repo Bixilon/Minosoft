@@ -50,13 +50,13 @@ object CommandParsers {
             // team
             // item_slot
             // resource_location
-            // mob_effect
+            ModIdentifier("mob_effect") to IdentifierListParser.MOB_EFFECT_PARSER,
             // function
             // entity_anchor
             ModIdentifier("range") to RangeParser.RANGE_PARSER,
             ModIdentifier("int_range") to IntRangeParser.INT_RANGE_PARSER,
             ModIdentifier("float_range") to FloatRangeParser.FLOAT_RANGE_PARSER,
-            // item_enchantment
+            ModIdentifier("item_enchantment") to IdentifierListParser.ENCHANTMENT_PARSER,
             // entity_summon
             // dimension
             ModIdentifier("uuid") to UUIDParser.UUID_PARSER,

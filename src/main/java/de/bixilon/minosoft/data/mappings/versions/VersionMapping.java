@@ -503,4 +503,22 @@ public class VersionMapping {
         }
         return this.blockIdMap.containsValue(new BlockId(identifier.getFullIdentifier()));
     }
+
+    public boolean doesEnchantmentExist(ModIdentifier identifier) {
+        if (this.parentMapping != null) {
+            if (this.parentMapping.doesEnchantmentExist(identifier)) {
+                return true;
+            }
+        }
+        return this.enchantmentMap.containsValue(new Enchantment(identifier.getFullIdentifier()));
+    }
+
+    public boolean doesMobEffectExist(ModIdentifier identifier) {
+        if (this.parentMapping != null) {
+            if (this.parentMapping.doesMobEffectExist(identifier)) {
+                return true;
+            }
+        }
+        return this.mobEffectMap.containsValue(new MobEffect(identifier.getFullIdentifier()));
+    }
 }
