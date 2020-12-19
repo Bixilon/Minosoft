@@ -37,6 +37,11 @@ public class ModIdentifier {
         this.identifier = split[1];
     }
 
+    public ModIdentifier(ModIdentifier identifier) {
+        this.mod = identifier.getMod();
+        this.identifier = identifier.getIdentifier();
+    }
+
     public String getMod() {
         return this.mod;
     }

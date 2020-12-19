@@ -17,6 +17,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.EntityClassMappings;
 import de.bixilon.minosoft.data.Mappings;
 import de.bixilon.minosoft.data.entities.EntityInformation;
@@ -24,7 +25,8 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.mappings.*;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
-import de.bixilon.minosoft.data.mappings.blocks.Blocks;
+import de.bixilon.minosoft.data.mappings.blocks.BlockProperties;
+import de.bixilon.minosoft.data.mappings.blocks.BlockRotations;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.statistics.Statistic;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -64,6 +66,24 @@ public class VersionMapping {
     public VersionMapping(Version version, VersionMapping parentMapping) {
         this.version = version;
         this.parentMapping = parentMapping;
+    }
+
+    private static int getBlockId(JsonObject json, boolean metaData) {
+        int blockId = json.get("id").getAsInt();
+        if (metaData) {
+            blockId <<= 4;
+            if (json.has("meta")) {
+                // old format (with metadata)
+                blockId |= json.get("meta").getAsByte();
+            }
+        }
+        return blockId;
+    }
+
+    private static void checkAndCrashIfBlockIsIn(int blockId, String identifierName, HashBiMap<Integer, Block> versionMapping) {
+        if (versionMapping.containsKey(blockId)) {
+            throw new RuntimeException(String.format("Block Id %s is already present for %s! (identifier=%s)", blockId, versionMapping.get(blockId), identifierName));
+        }
     }
 
     public Motive getMotiveByIdentifier(String identifier) {
@@ -373,7 +393,59 @@ public class VersionMapping {
                 if (data == null) {
                     break;
                 }
-                this.blockMap = Blocks.load(mod, data, !version.isFlattened());
+
+                for (String identifierName : data.keySet()) {
+                    JsonObject identifierJSON = data.getAsJsonObject(identifierName);
+                    JsonArray statesArray = identifierJSON.getAsJsonArray("states");
+                    for (int i = 0; i < statesArray.size(); i++) {
+                        JsonObject statesJSON = statesArray.get(i).getAsJsonObject();
+                        Block block;
+                        if (statesJSON.has("properties")) {
+                            // properties are optional
+                            JsonObject propertiesJSON = statesJSON.getAsJsonObject("properties");
+                            BlockRotations rotation = BlockRotations.NONE;
+                            if (propertiesJSON.has("facing")) {
+                                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("facing").getAsString());
+                                propertiesJSON.remove("facing");
+                            } else if (propertiesJSON.has("rotation")) {
+                                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("rotation").getAsString());
+                                propertiesJSON.remove("rotation");
+                            } else if (propertiesJSON.has("orientation")) {
+                                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("orientation").getAsString());
+                                propertiesJSON.remove("orientation");
+                            } else if (propertiesJSON.has("axis")) {
+                                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("axis").getAsString());
+                                propertiesJSON.remove("axis");
+                            }
+
+                            HashSet<BlockProperties> properties = new HashSet<>();
+                            for (String propertyName : propertiesJSON.keySet()) {
+                                if (StaticConfiguration.DEBUG_MODE) {
+                                    if (BlockProperties.PROPERTIES_MAPPING.get(propertyName) == null) {
+                                        throw new RuntimeException(String.format("Unknown block property: %s (identifier=%s)", propertyName, identifierName));
+                                    }
+                                    if (BlockProperties.PROPERTIES_MAPPING.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()) == null) {
+                                        throw new RuntimeException(String.format("Unknown block property: %s -> %s (identifier=%s)", propertyName, propertiesJSON.get(propertyName).getAsString(), identifierName));
+                                    }
+                                }
+                                properties.add(BlockProperties.PROPERTIES_MAPPING.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()));
+                            }
+
+                            block = new Block(mod, identifierName, properties, rotation);
+
+                            // map block id
+                            this.blockIdMap.get(this.blockIdMap.inverse().get(new BlockId(block))).getBlocks().add(block);
+                        } else {
+                            // no properties, directly add block
+                            block = new Block(mod, identifierName);
+                        }
+                        int blockId = getBlockId(statesJSON, !version.isFlattened());
+                        if (StaticConfiguration.DEBUG_MODE) {
+                            checkAndCrashIfBlockIsIn(blockId, identifierName, this.blockMap);
+                        }
+                        this.blockMap.put(blockId, block);
+                    }
+                }
             }
             case ENTITIES -> {
                 if (data == null) {
@@ -492,7 +564,7 @@ public class VersionMapping {
                 return true;
             }
         }
-        return this.itemMap.containsValue(new Item(identifier.getFullIdentifier()));
+        return this.itemMap.containsValue(identifier);
     }
 
     public boolean doesBlockExist(ModIdentifier identifier) {
@@ -501,7 +573,7 @@ public class VersionMapping {
                 return true;
             }
         }
-        return this.blockIdMap.containsValue(new BlockId(identifier.getFullIdentifier()));
+        return this.blockIdMap.containsValue(identifier);
     }
 
     public boolean doesEnchantmentExist(ModIdentifier identifier) {
@@ -510,7 +582,7 @@ public class VersionMapping {
                 return true;
             }
         }
-        return this.enchantmentMap.containsValue(new Enchantment(identifier.getFullIdentifier()));
+        return this.enchantmentMap.containsValue(identifier);
     }
 
     public boolean doesMobEffectExist(ModIdentifier identifier) {
@@ -519,6 +591,6 @@ public class VersionMapping {
                 return true;
             }
         }
-        return this.mobEffectMap.containsValue(new MobEffect(identifier.getFullIdentifier()));
+        return this.mobEffectMap.containsValue(identifier);
     }
 }
