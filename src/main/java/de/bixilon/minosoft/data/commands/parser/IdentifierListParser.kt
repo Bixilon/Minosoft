@@ -29,7 +29,7 @@ class IdentifierListParser : CommandParser() {
         val identifier = ModIdentifier(argument)
 
         if (this == ENCHANTMENT_PARSER) {
-            if (!connection.mapping.doesBlockExist(identifier)) {
+            if (!connection.mapping.doesEnchantmentExist(identifier)) {
                 throw EnchantmentNotFoundCommandParseException(stringReader, argument)
             }
             return

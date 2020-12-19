@@ -30,12 +30,12 @@ public class PacketSetDisplayedRecipe implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_SET_DISPLAYED_RECIPE);
-        buffer.writeString(this.recipe.getResult().getItem().getMod() + ":" + this.recipe.getResult().getItem().getIdentifier());
+        buffer.writeString(this.recipe.getResult().getItem().getFullIdentifier());
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending set displayed recipe packet (identifier=%s:%s)", this.recipe.getResult().getItem().getMod(), this.recipe.getResult().getItem().getIdentifier()));
+        Log.protocol(String.format("[OUT] Sending set displayed recipe packet (item=%s)", this.recipe.getResult().getItem()));
     }
 }

@@ -235,7 +235,7 @@ public abstract class Entity {
         if (this.information == null) {
             return this.getClass().getCanonicalName();
         }
-        return String.format("%s:%s", this.information.getMod(), this.information.getIdentifier());
+        return String.format("%s", this.information);
     }
 
     public String getEntityMetaDataAsString() {

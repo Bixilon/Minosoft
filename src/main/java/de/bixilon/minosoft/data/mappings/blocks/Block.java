@@ -80,7 +80,7 @@ public class Block extends ModIdentifier {
         if (!out.isEmpty()) {
             out.append(")");
         }
-        return String.format("%s:%s%s", getMod(), getIdentifier(), out);
+        return String.format("%s%s", getFullIdentifier(), out);
     }
 
     @Override

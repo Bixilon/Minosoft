@@ -40,13 +40,13 @@ public class PacketBlockAction extends ClientboundPacket {
         short byte2 = buffer.readUnsignedByte();
         BlockId blockId = buffer.getConnection().getMapping().getBlockIdById(buffer.readVarInt());
 
-        this.data = switch (blockId.getIdentifier()) {
-            case "noteblock" -> new NoteBlockAction(byte1, byte2); // ToDo: was replaced in 17w47a (346) with the block id
-            case "sticky_piston", "piston" -> new PistonAction(byte1, byte2);
-            case "chest", "ender_chest", "trapped_chest", "white_shulker_box", "shulker_box", "orange_shulker_box", "magenta_shulker_box", "light_blue_shulker_box", "yellow_shulker_box", "lime_shulker_box", "pink_shulker_box", "gray_shulker_box", "silver_shulker_box", "cyan_shulker_box", "purple_shulker_box", "blue_shulker_box", "brown_shulker_box", "green_shulker_box", "red_shulker_box", "black_shulker_box" -> new ChestAction(byte1, byte2);
-            case "beacon" -> new BeaconAction(byte1, byte2);
-            case "mob_spawner" -> new MobSpawnerAction(byte1, byte2);
-            case "end_gateway" -> new EndGatewayAction(byte1, byte2);
+        this.data = switch (blockId.getFullIdentifier()) {
+            case "minecraft:noteblock" -> new NoteBlockAction(byte1, byte2); // ToDo: was replaced in 17w47a (346) with the block id
+            case "minecraft:sticky_piston", "minecraft:piston" -> new PistonAction(byte1, byte2);
+            case "minecraft:chest", "minecraft:ender_chest", "minecraft:trapped_chest", "minecraft:white_shulker_box", "minecraft:shulker_box", "minecraft:orange_shulker_box", "minecraft:magenta_shulker_box", "minecraft:light_blue_shulker_box", "minecraft:yellow_shulker_box", "minecraft:lime_shulker_box", "minecraft:pink_shulker_box", "minecraft:gray_shulker_box", "minecraft:silver_shulker_box", "minecraft:cyan_shulker_box", "minecraft:purple_shulker_box", "minecraft:blue_shulker_box", "minecraft:brown_shulker_box", "minecraft:green_shulker_box", "minecraft:red_shulker_box", "minecraft:black_shulker_box" -> new ChestAction(byte1, byte2);
+            case "minecraft:beacon" -> new BeaconAction(byte1, byte2);
+            case "minecraft:mob_spawner" -> new MobSpawnerAction(byte1, byte2);
+            case "minecraft:end_gateway" -> new EndGatewayAction(byte1, byte2);
             default -> null;
         };
         return true;

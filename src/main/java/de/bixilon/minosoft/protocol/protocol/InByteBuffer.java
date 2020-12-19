@@ -226,16 +226,16 @@ public class InByteBuffer {
     public ParticleData readParticleData(Particle type) {
         if (this.versionId < V_17W45A) {
             // old particle format
-            return switch (type.getIdentifier()) {
-                case "iconcrack" -> new ItemParticleData(new Slot(this.connection.getMapping().getItemByLegacy(readVarInt(), readVarInt())), type);
-                case "blockcrack", "blockdust", "falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlockById(readVarInt() << 4), type);
+            return switch (type.getFullIdentifier()) {
+                case "minecraft:iconcrack" -> new ItemParticleData(new Slot(this.connection.getMapping().getItemByLegacy(readVarInt(), readVarInt())), type);
+                case "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlockById(readVarInt() << 4), type);
                 default -> new ParticleData(type);
             };
         }
-        return switch (type.getIdentifier()) {
-            case "block", "falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlockById(readVarInt()), type);
-            case "dust" -> new DustParticleData(readFloat(), readFloat(), readFloat(), readFloat(), type);
-            case "item" -> new ItemParticleData(readSlot(), type);
+        return switch (type.getFullIdentifier()) {
+            case "minecraft:block", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlockById(readVarInt()), type);
+            case "minecraft:dust" -> new DustParticleData(readFloat(), readFloat(), readFloat(), readFloat(), type);
+            case "minecraft:item" -> new ItemParticleData(readSlot(), type);
             default -> new ParticleData(type);
         };
     }

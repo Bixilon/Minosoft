@@ -79,12 +79,15 @@ Some projects and persons helped this project a lot. See [Credits](Credits.md).
 No clue, but still waiting for !8. Also, some features need to be implemented, so not soo soon (but we are getting closer).
 
 ## Compiling and running
+
 1. Install Maven and java 15 (On Ubuntu based distributions: `sudo apt install maven openjdk-15-jdk`).
 2. Clone this repo (`git clone https://gitlab.bixilon.de/bixilon/minosoft.git`).
 3. Change directory (`cd minosoft`).
 4. Checkout the branch (`git checkout <branch>`). Eventually `render` or `development`.
-5. Build and run Minosoft with `mvn clean verify exec:java`. If any errors occur, feel free to open an issue. In this early stage it might be helpful
- to delete the app data folder (only of minosoft).
+5. Build and run Minosoft with `mvn clean verify exec:java`. If any errors occur, feel free to open an issue. In this early stage it might be helpful to delete the app data folder (only of minosoft).
 
+## Code mirrors
+
+- [GitLab](https://gitlab.com/Bixilon/minosoft)
 
 This readme is work in progress, things may change over time.
