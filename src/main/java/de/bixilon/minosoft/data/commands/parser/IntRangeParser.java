@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.RangeParserProperties;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 import javax.annotation.Nullable;
@@ -24,6 +25,11 @@ import javax.annotation.Nullable;
 public class IntRangeParser extends RangeParser {
     public static final IntRangeParser INT_RANGE_PARSER = new IntRangeParser();
     private static final RangeParserProperties INT_RANGE_PARSER_PROPERTIES = new RangeParserProperties(false);
+
+    @Override
+    public ParserProperties readParserProperties(InByteBuffer buffer) {
+        return null;
+    }
 
     @Override
     public void isParsable(Connection connection, @Nullable ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {

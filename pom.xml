@@ -77,8 +77,8 @@
     </build>
 
     <properties>
-        <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
         <javafx.version>16-ea+5</javafx.version>

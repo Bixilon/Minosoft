@@ -28,7 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadFactory;
@@ -288,6 +287,6 @@ public final class Util {
     }
 
     public static boolean doesStringContainsUppercaseLetters(String string) {
-        return string.toLowerCase(Locale.ROOT).equals(string);
+        return !string.toLowerCase().equals(string);
     }
 }

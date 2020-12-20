@@ -27,7 +27,6 @@ public class MessageParser extends StringParser {
     private static final StringParserProperties STRING_PARSER_PROPERTIES = new StringParserProperties(StringParserProperties.StringSettings.GREEDY_PHRASE, false);
 
     @Override
-    @Nullable
     public ParserProperties readParserProperties(InByteBuffer buffer) {
         return null;
     }

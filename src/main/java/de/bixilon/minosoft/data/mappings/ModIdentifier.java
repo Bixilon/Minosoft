@@ -67,6 +67,9 @@ public class ModIdentifier {
         if (hashCode() != obj.hashCode()) {
             return false;
         }
+        if (obj instanceof LegacyModIdentifier legacyModIdentifier) {
+            return getIdentifier().equals(legacyModIdentifier.getIdentifier());
+        }
         ModIdentifier their = (ModIdentifier) obj;
         return getIdentifier().equals(their.getIdentifier()) && getMod().equals(their.getMod());
     }
