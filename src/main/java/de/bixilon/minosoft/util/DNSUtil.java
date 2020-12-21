@@ -18,6 +18,7 @@ import org.xbill.DNS.Record;
 import org.xbill.DNS.*;
 
 import java.util.LinkedList;
+import java.util.Locale;
 
 public final class DNSUtil {
 
@@ -53,7 +54,6 @@ public final class DNSUtil {
 
     public static String correctHostName(String hostname) {
         // replaces invalid chars to avoid copy and paste issues (like spaces, ...)
-        hostname = hostname.replaceAll("\\s", "");
-        return hostname.toLowerCase();
+        return hostname.replaceAll("\\s+|((https|http):/{2})+|/", "").toLowerCase(Locale.ROOT);
     }
 }

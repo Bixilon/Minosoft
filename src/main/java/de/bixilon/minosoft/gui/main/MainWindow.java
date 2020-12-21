@@ -33,10 +33,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -140,11 +137,15 @@ public class MainWindow implements Initializable {
         RequiredFieldValidator serverAddressValidator = new RequiredFieldValidator();
         serverAddressValidator.setMessage(LocaleManager.translate(Strings.SERVER_ADDRESS_INPUT_REQUIRED));
         serverAddressField.getValidators().add(serverAddressValidator);
-        serverAddressField.focusedProperty().addListener((o, oldValue, newValue) -> {
+        serverAddressField.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
             if (!newValue) {
                 serverAddressField.validate();
             }
         });
+        serverAddressField.setTextFormatter(new TextFormatter<String>((change) -> {
+            change.setText(DNSUtil.correctHostName(change.getText()));
+            return change;
+        }));
 
         GUITools.VERSION_COMBO_BOX.getSelectionModel().select(Versions.LOWEST_VERSION_SUPPORTED);
 
