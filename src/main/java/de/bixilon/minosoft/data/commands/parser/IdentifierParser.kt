@@ -13,44 +13,26 @@
 package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.EnchantmentNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidIdentifierCommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.MobEffectNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader
 
-class IdentifierListParser : CommandParser() {
+class IdentifierParser : CommandParser() {
 
     @Throws(CommandParseException::class)
     override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: ImprovedStringReader) {
         val argument = stringReader.readUntilNextCommandArgument()
 
-
-        val identifier: ModIdentifier
         try {
-            identifier = ModIdentifier.getIdentifier(argument)
+            ModIdentifier.getIdentifier(argument)
         } catch (exception: IllegalArgumentException) {
             throw InvalidIdentifierCommandParseException(stringReader, argument)
-        }
-
-        if (this == ENCHANTMENT_PARSER) {
-            if (!connection.mapping.doesEnchantmentExist(identifier)) {
-                throw EnchantmentNotFoundCommandParseException(stringReader, argument)
-            }
-            return
-        }
-        if (this == MOB_EFFECT_PARSER) {
-            if (!connection.mapping.doesMobEffectExist(identifier)) {
-                throw MobEffectNotFoundCommandParseException(stringReader, argument)
-            }
-            return
         }
     }
 
     companion object {
-        val ENCHANTMENT_PARSER = IdentifierListParser()
-        val MOB_EFFECT_PARSER = IdentifierListParser()
+        val IDENTIFIER_PARSER = IdentifierParser()
     }
 }

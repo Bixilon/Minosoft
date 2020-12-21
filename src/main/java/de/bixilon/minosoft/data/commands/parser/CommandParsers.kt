@@ -49,7 +49,7 @@ object CommandParsers {
             // swizzle
             // team
             // item_slot
-            // resource_location
+            ModIdentifier("resource_location") to IdentifierParser.IDENTIFIER_PARSER,
             ModIdentifier("mob_effect") to IdentifierListParser.MOB_EFFECT_PARSER,
             // function
             // entity_anchor

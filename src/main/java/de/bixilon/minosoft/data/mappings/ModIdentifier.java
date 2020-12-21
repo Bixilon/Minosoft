@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.mappings;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
 
 public class ModIdentifier {
     protected final String mod;
@@ -40,6 +41,16 @@ public class ModIdentifier {
     public ModIdentifier(ModIdentifier identifier) {
         this.mod = identifier.getMod();
         this.identifier = identifier.getIdentifier();
+    }
+
+    public static ModIdentifier getIdentifier(String identifier) throws IllegalArgumentException {
+        Matcher matcher = ProtocolDefinition.IDENTIFIER_PATTERN.matcher(identifier);
+        if (!matcher.find() || !matcher.group().equals(identifier)) {
+            throw new IllegalArgumentException(String.format("%s in not a valid identifier!", identifier));
+        }
+
+        return new ModIdentifier(identifier);
+
     }
 
     public String getMod() {
