@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -37,6 +38,25 @@ public class PacketDeclareCommands extends ClientboundPacket {
     @Override
     public void handle(Connection connection) {
         connection.setCommandRootNode(getRootNode());
+        // ToDo: Remove these dummy commands
+        String[] commands = {
+                "setblock ~3 ~3 3 minecraft:anvil",
+                "setblock ~ ~3 ~3 minecraft:anvil[]",
+                "setblock ^ ^3 ^3 minecraft:anvil[facing=east]",
+                "setblock ^ ^3 ^3 minecraft:anvil[facing=east2]",
+                "setblock ~ ~ ~ minecraft:acacia_door[facing=east,powered=true]",
+                "setblock ~ ~ ~ minecraft:acacia_door[facing=east,powered=truae]",
+                "setblock ~ ~ ~ minecraft:acacia_door[fa3cing=east,powered=true]",
+        };
+        for (String command : commands) {
+            try {
+                getRootNode().isSyntaxCorrect(connection, command);
+                Log.game("Command \"%s\" is valid", command);
+            } catch (CommandParseException e) {
+                Log.game("Command \"%s\" is invalid, %s: %s", command, e.getClass().getSimpleName(), e.getErrorMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

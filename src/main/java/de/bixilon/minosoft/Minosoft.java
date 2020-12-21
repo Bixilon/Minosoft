@@ -22,7 +22,10 @@ import de.bixilon.minosoft.data.assets.AssetsManager;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.gui.main.*;
+import de.bixilon.minosoft.gui.main.AccountListCell;
+import de.bixilon.minosoft.gui.main.GUITools;
+import de.bixilon.minosoft.gui.main.Launcher;
+import de.bixilon.minosoft.gui.main.StartProgressWindow;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventManager;
@@ -203,9 +206,11 @@ public final class Minosoft {
             return;
         }
         config.putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, account.getUserId());
-        selectedAccount = account;
-        MainWindow.selectAccount();
+        if (Launcher.getMainWindow() != null) {
+            Launcher.getMainWindow().selectAccount(selectedAccount);
+        }
         account.saveToConfig();
+        selectedAccount = account;
     }
 
     public static Configuration getConfig() {

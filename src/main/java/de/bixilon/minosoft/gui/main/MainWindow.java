@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.util.DNSUtil;
+import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -47,8 +48,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainWindow implements Initializable {
-    public static Menu menuAccount2;
-
     public BorderPane serversPane;
     public Menu menuFile;
     public MenuItem menuFilePreferences;
@@ -102,19 +101,6 @@ public class MainWindow implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void selectAccount() {
-        if (menuAccount2 == null) {
-            return;
-        }
-        Platform.runLater(() -> {
-            if (Minosoft.getSelectedAccount() != null) {
-                menuAccount2.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, Minosoft.getSelectedAccount().getPlayerName()));
-            } else {
-                menuAccount2.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
-            }
-        });
     }
 
     public static void addOrEditServer(@Nullable final Server server) {
@@ -226,11 +212,20 @@ public class MainWindow implements Initializable {
         dialog.showAndWait();
     }
 
+    public void selectAccount(MojangAccount account) {
+        Platform.runLater(() -> {
+            if (account != null) {
+                this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, account.getPlayerName()));
+            } else {
+                this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
+            }
+        });
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.serversPane.setCenter(ServerListCell.SERVER_LIST_VIEW);
 
-        menuAccount2 = this.menuAccount;
         this.menuFile.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE));
         this.menuFilePreferences.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_PREFERENCES));
         this.menuFileQuit.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_QUIT));
@@ -240,7 +235,7 @@ public class MainWindow implements Initializable {
         this.menuHelp.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP));
         this.menuHelpAbout.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP_ABOUT));
         this.menuAccountManage.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_MANAGE));
-        selectAccount();
+        selectAccount(Minosoft.getSelectedAccount());
     }
 
     @FXML

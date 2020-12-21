@@ -27,7 +27,6 @@ class IdentifierListParser : CommandParser() {
     override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: ImprovedStringReader) {
         val argument = stringReader.readUntilNextCommandArgument()
 
-
         val identifier: ModIdentifier
         try {
             identifier = ModIdentifier.getIdentifier(argument)

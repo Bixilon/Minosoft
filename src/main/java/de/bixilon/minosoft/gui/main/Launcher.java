@@ -36,6 +36,7 @@ import java.util.concurrent.CountDownLatch;
 public class Launcher {
     private static Stage stage;
     private static boolean exit;
+    private static MainWindow mainWindow;
 
     public static void start() {
         Log.info("Starting launcher...");
@@ -66,9 +67,10 @@ public class Launcher {
             ServerListCell.SERVER_LIST_VIEW.setItems(servers);
             LANServerListener.removeAll(); // remove all LAN Servers
 
+            FXMLLoader loader = new FXMLLoader(Launcher.class.getResource("/layout/main.fxml"));
             VBox root;
             try {
-                root = new FXMLLoader(Launcher.class.getResource("/layout/main.fxml")).load();
+                root = loader.load();
             } catch (IOException e) {
                 e.printStackTrace();
                 System.exit(1);
@@ -85,8 +87,11 @@ public class Launcher {
             if (exit) {
                 return;
             }
-            stage.show();
             Launcher.stage = stage;
+            mainWindow = loader.getController();
+
+
+            stage.show();
             if (Minosoft.getSelectedAccount() == null) {
                 MainWindow.manageAccounts();
             }
@@ -109,7 +114,7 @@ public class Launcher {
         Platform.runLater(() -> stage.close());
     }
 
-    public static Stage getStage() {
-        return stage;
+    public static MainWindow getMainWindow() {
+        return mainWindow;
     }
 }
