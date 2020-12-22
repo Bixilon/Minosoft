@@ -56,6 +56,7 @@ public final class MojangAuthentication {
         return new MojangAccountAuthenticationAttempt(new MojangAccount(username, jsonResponse));
     }
 
+
     public static void joinServer(MojangAccount account, String serverId) {
         if (StaticConfiguration.SKIP_MOJANG_AUTHENTICATION) {
             return;

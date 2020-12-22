@@ -198,12 +198,14 @@ public final class Minosoft {
             config.saveToFile();
             return;
         }
-        MojangAccount.RefreshStates refreshState = account.refreshToken();
-        if (refreshState == MojangAccount.RefreshStates.ERROR) {
-            account.delete();
-            AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.getItems().remove(account);
-            selectedAccount = null;
-            return;
+        if (account.needsRefresh()) {
+            MojangAccount.RefreshStates refreshState = account.refreshToken();
+            if (refreshState == MojangAccount.RefreshStates.ERROR) {
+                account.delete();
+                AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.getItems().remove(account);
+                selectedAccount = null;
+                return;
+            }
         }
         config.putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, account.getUserId());
         if (Launcher.getMainWindow() != null) {

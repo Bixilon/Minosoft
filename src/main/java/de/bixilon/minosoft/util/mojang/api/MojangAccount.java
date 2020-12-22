@@ -26,6 +26,7 @@ public class MojangAccount {
     final String mojangUserName;
     String accessToken;
     RefreshStates lastRefreshStatus;
+    private boolean needsRefresh = true;
 
     public MojangAccount(String username, JsonObject json) {
         this.accessToken = json.get("accessToken").getAsString();
@@ -135,6 +136,15 @@ public class MojangAccount {
         }
         MojangAccount account = (MojangAccount) obj;
         return account.getUserId().equals(getUserId());
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+        this.needsRefresh = false;
+    }
+
+    public boolean needsRefresh() {
+        return this.needsRefresh;
     }
 
     public enum RefreshStates {

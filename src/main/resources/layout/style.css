@@ -201,3 +201,7 @@
 .obfuscated {
     -fx-font-family: "Hack";
 }
+
+.error {
+    -fx-text-fill: red;
+}

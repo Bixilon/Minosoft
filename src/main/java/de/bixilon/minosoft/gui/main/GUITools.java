@@ -19,12 +19,16 @@ import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.logging.LogLevels;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
 
@@ -81,5 +85,26 @@ public class GUITools {
     public static Pane initializePane(Pane pane) {
         initializeScene(pane.getScene());
         return pane;
+    }
+
+    public static <T> T showPane(String fxmlPath, Modality modality, String title) throws IOException {
+        FXMLLoader loader = new FXMLLoader(GUITools.class.getResource(fxmlPath));
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.initModality(modality);
+        double width = 600;
+        double height = 400;
+        if (root instanceof Pane pane) {
+            width = pane.getPrefWidth();
+            height = pane.getPrefHeight();
+        }
+        Scene scene = new Scene(root, width, height);
+        stage.setScene(scene);
+
+        stage.setTitle(title);
+        initializeScene(scene);
+
+        stage.show();
+        return loader.getController();
     }
 }

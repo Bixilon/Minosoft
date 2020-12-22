@@ -37,8 +37,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -48,7 +46,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -418,15 +415,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
 
     public void manageSessions() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/layout/sessions.fxml"));
-            Parent parent = loader.load();
-            ((SessionsWindow) loader.getController()).setServer(this.server);
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle(LocaleManager.translate(Strings.SESSIONS_DIALOG_TITLE, this.server.getName()));
-            stage.setScene(new Scene(parent));
-            GUITools.initializeScene(stage.getScene());
-            stage.show();
+            SessionsWindow sessionsWindow = GUITools.showPane("/layout/dialogs/login_mojang.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.SESSIONS_DIALOG_TITLE, this.server.getName()));
+            sessionsWindow.setServer(this.server);
         } catch (IOException e) {
             e.printStackTrace();
         }
