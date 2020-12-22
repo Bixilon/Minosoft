@@ -56,7 +56,6 @@
   "SETTINGS_DOWNLOAD": "Download",
   "LOGIN_DIALOG_TITLE": "Anmelden (Mojang) - Minosoft",
   "LOGIN_DIALOG_HEADER": "Bitte gib deine Mojang Zugangsdaten ein dich anzumelden",
-  "LOGIN_ACCOUNT_ALREADY_PRESENT": "Account existiert bereits!",
   "ERROR": "Fehler",
   "MINOSOFT_STILL_STARTING_TITLE": "Bitte warten",
   "MINOSOFT_STILL_STARTING_HEADER": "Minosoft muss noch ein paar Dinge erledigen, bevor du es verwenden kannst.\nBitte warte noch ein paar Sekunden...",

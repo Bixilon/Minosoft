@@ -40,7 +40,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 
-@Deprecated
 public class BlockingSocketNetwork extends Network {
     private final LinkedBlockingQueue<ServerboundPacket> queue = new LinkedBlockingQueue<>();
     private Thread socketReceiveThread;

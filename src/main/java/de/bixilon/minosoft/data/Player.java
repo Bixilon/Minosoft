@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data;
 
+import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
 import de.bixilon.minosoft.data.inventory.Inventory;
 import de.bixilon.minosoft.data.inventory.InventoryProperties;
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.data.scoreboard.ScoreboardManager;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.data.world.World;
-import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -32,7 +32,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.PLAYER_IN
 
 public class Player {
     public final HashMap<UUID, PlayerListItem> playerList = new HashMap<>();
-    final MojangAccount account;
+    final Account account;
     final ScoreboardManager scoreboardManager = new ScoreboardManager();
     final World world = new World();
     final HashMap<Integer, Inventory> inventories = new HashMap<>();
@@ -50,21 +50,21 @@ public class Player {
     ChatComponent tabHeader;
     ChatComponent tabFooter;
 
-    public Player(MojangAccount account) {
+    public Player(Account account) {
         this.account = account;
         // create our own inventory without any properties
         this.inventories.put(PLAYER_INVENTORY_ID, new Inventory(null));
     }
 
     public String getPlayerName() {
-        return this.account.getPlayerName();
+        return this.account.getUsername();
     }
 
     public UUID getPlayerUUID() {
         return this.account.getUUID();
     }
 
-    public MojangAccount getAccount() {
+    public Account getAccount() {
         return this.account;
     }
 

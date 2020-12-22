@@ -18,6 +18,7 @@ import com.jfoenix.controls.JFXDialogLayout;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
+import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.assets.AssetsManager;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
@@ -35,7 +36,6 @@ import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.MinosoftCommandLineArguments;
 import de.bixilon.minosoft.util.Util;
-import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 import de.bixilon.minosoft.util.task.AsyncTaskWorker;
 import de.bixilon.minosoft.util.task.Task;
 import de.bixilon.minosoft.util.task.TaskImportance;
@@ -51,7 +51,6 @@ import java.util.UUID;
 public final class Minosoft {
     public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
     private static final CountUpAndDownLatch START_STATUS_LATCH = new CountUpAndDownLatch(1);
-    public static MojangAccount selectedAccount;
     public static Configuration config;
 
     public static void main(String[] args) {
@@ -136,7 +135,7 @@ public final class Minosoft {
         taskWorker.addTask(new Task(progress -> {
             Log.debug("Refreshing account token...");
             checkClientToken();
-            selectAccount(config.getAccountList().get(config.getString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED)));
+            selectAccount(config.getSccounts().get(config.getString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED)));
         }, "Token refresh", "Refresh selected account token", Priorities.LOW, TaskImportance.OPTIONAL, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
@@ -191,37 +190,31 @@ public final class Minosoft {
         }
     }
 
-    public static void selectAccount(MojangAccount account) {
+    public static void selectAccount(Account account) {
         if (account == null) {
-            selectedAccount = null;
             config.putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, "");
             config.saveToFile();
             return;
         }
-        if (account.needsRefresh()) {
-            MojangAccount.RefreshStates refreshState = account.refreshToken();
-            if (refreshState == MojangAccount.RefreshStates.ERROR) {
-                account.delete();
-                AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.getItems().remove(account);
-                selectedAccount = null;
-                return;
-            }
+        if (!account.select()) {
+            account.logout();
+            AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.getItems().remove(account);
+            config.removeAccount(account);
+            config.saveToFile();
+            return;
         }
-        config.putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, account.getUserId());
+        config.putAccount(account);
+        config.selectAccount(account);
         if (Launcher.getMainWindow() != null) {
-            Launcher.getMainWindow().selectAccount(selectedAccount);
+            Launcher.getMainWindow().selectAccount(account);
         }
-        account.saveToConfig();
-        selectedAccount = account;
+        config.saveToFile();
     }
 
     public static Configuration getConfig() {
         return config;
     }
 
-    public static MojangAccount getSelectedAccount() {
-        return selectedAccount;
-    }
 
     /**
      * Waits until all critical components are started

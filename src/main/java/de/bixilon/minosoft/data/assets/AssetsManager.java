@@ -70,7 +70,7 @@ public class AssetsManager {
         return ret;
     }
 
-    public static void downloadAllAssets(CountUpAndDownLatch latch) throws IOException {
+    public static void downloadAllAssets(CountUpAndDownLatch latch) throws IOException, InterruptedException {
         if (!ASSETS_MAP.isEmpty()) {
             return;
         }
@@ -184,7 +184,7 @@ public class AssetsManager {
         return false;
     }
 
-    public static void generateJarAssets() throws IOException {
+    public static void generateJarAssets() throws IOException, InterruptedException {
         long startTime = System.currentTimeMillis();
         Log.verbose("Generating client.jar assets...");
         if (verifyAssetHash(ASSETS_CLIENT_JAR_HASH)) {

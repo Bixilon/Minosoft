@@ -17,7 +17,7 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.exceptions.PacketNotImplementedException;
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.UnknownPacketException;
-import de.bixilon.minosoft.protocol.network.socket.NonBlockingSocketNetwork;
+import de.bixilon.minosoft.protocol.network.socket.BlockingSocketNetwork;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.CompressionThresholdChange;
@@ -36,7 +36,7 @@ public abstract class Network {
     }
 
     public static Network getNetworkInstance(Connection connection) {
-        return new NonBlockingSocketNetwork(connection);
+        return new BlockingSocketNetwork(connection);
     }
 
     public abstract void connect(ServerAddress address);

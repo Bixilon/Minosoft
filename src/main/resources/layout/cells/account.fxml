@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 <!--
   ~ Minosoft
   ~ Copyright (C) 2020 Moritz Zwerger
@@ -14,6 +11,9 @@
   ~
   ~ This software is not affiliated with Mojang AB, the original developer of Minecraft.
   -->
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 <AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="500.0" minHeight="-Infinity" minWidth="500.0" onMouseClicked="#clicked" prefWidth="500.0" fx:controller="de.bixilon.minosoft.gui.main.AccountListCell">
     <Label fx:id="playerName" layoutX="111.0" layoutY="14.0" maxWidth="200.0" minWidth="10.0" text="#Player name#" underline="true" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
         <font>
@@ -23,7 +23,7 @@
     <MenuButton fx:id="optionsMenu" layoutX="389.0" layoutY="81.0" mnemonicParsing="false" text="⋮" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <items>
             <MenuItem fx:id="optionsSelect" mnemonicParsing="false" onAction="#select" text="-Select-" />
-            <MenuItem fx:id="optionsDelete" mnemonicParsing="false" onAction="#delete" style="-fx-text-fill: red" text="-Delete-" />
+            <MenuItem fx:id="optionsDelete" mnemonicParsing="false" onAction="#logout" style="-fx-text-fill: red" text="-Delete-"/>
         </items>
     </MenuButton>
     <Label fx:id="email" layoutX="121.0" layoutY="24.0" maxWidth="200.0" minWidth="10.0" text="#Email#" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="30.0" />

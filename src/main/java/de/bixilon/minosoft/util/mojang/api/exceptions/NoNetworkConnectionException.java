@@ -11,31 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.mojang.api;
+package de.bixilon.minosoft.util.mojang.api.exceptions;
 
-public class MojangAccountAuthenticationAttempt {
-    final MojangAccount account;
-    final String error;
+public class NoNetworkConnectionException extends Exception {
 
-    public MojangAccountAuthenticationAttempt(MojangAccount account) {
-        this.account = account;
-        this.error = null;
+    public NoNetworkConnectionException(Exception cause) {
+        super(cause);
     }
 
-    public MojangAccountAuthenticationAttempt(String error) {
-        this.account = null;
-        this.error = error;
+    public NoNetworkConnectionException(String message) {
+        super(message);
     }
 
-    public String getError() {
-        return this.error;
-    }
+    public NoNetworkConnectionException() {
 
-    public MojangAccount getAccount() {
-        return this.account;
-    }
-
-    public boolean succeeded() {
-        return this.account != null;
     }
 }

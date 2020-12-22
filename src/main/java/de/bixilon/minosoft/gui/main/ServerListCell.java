@@ -281,7 +281,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (!this.canConnect || this.server.getLastPing() == null) {
             return;
         }
-        Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getSelectedAccount()));
+        Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getConfig().getSelectedAccount()));
         Version version;
         if (this.server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
             version = this.server.getLastPing().getVersion();
@@ -317,7 +317,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 }
             }
 
-            this.optionsConnect.setDisable(Minosoft.getSelectedAccount() == connection.getPlayer().getAccount());
+            this.optionsConnect.setDisable(Minosoft.getConfig().getSelectedAccount() == connection.getPlayer().getAccount());
             getStyleClass().add("list-cell-connected");
             this.optionsSessions.setDisable(false);
         });

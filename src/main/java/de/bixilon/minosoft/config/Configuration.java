@@ -15,10 +15,12 @@ package de.bixilon.minosoft.config;
 
 import com.google.common.collect.HashBiMap;
 import com.google.gson.*;
+import de.bixilon.minosoft.data.accounts.Account;
+import de.bixilon.minosoft.data.accounts.MojangAccount;
+import de.bixilon.minosoft.data.accounts.OfflineAccount;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.Util;
-import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -30,7 +32,7 @@ public class Configuration {
     public static final int LATEST_CONFIG_VERSION = 1;
     private static final JsonObject DEFAULT_CONFIGURATION = JsonParser.parseReader(new InputStreamReader(Configuration.class.getResourceAsStream("/config/" + StaticConfiguration.CONFIG_FILENAME))).getAsJsonObject();
     private final HashMap<ConfigurationPaths.ConfigurationPath, Object> config = new HashMap<>();
-    private final HashBiMap<String, MojangAccount> accountList = HashBiMap.create();
+    private final HashBiMap<String, Account> accountList = HashBiMap.create();
     private final HashBiMap<Integer, Server> serverList = HashBiMap.create();
     private final Object lock = new Object();
 
@@ -71,8 +73,13 @@ public class Configuration {
 
         // accounts
         for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject("accounts").getAsJsonObject("entries").entrySet()) {
-            MojangAccount account = MojangAccount.deserialize(entry.getValue().getAsJsonObject());
-            this.accountList.put(account.getUserId(), account);
+            JsonObject data = entry.getValue().getAsJsonObject();
+            Account account = switch (data.get("type").getAsString()) {
+                case "mojang" -> MojangAccount.deserialize(data);
+                case "offline" -> OfflineAccount.deserialize(data);
+                default -> throw new IllegalStateException("Unexpected value: " + data.get("type").getAsString());
+            };
+            this.accountList.put(account.getId(), account);
         }
 
         final File finalFile = file;
@@ -106,7 +113,7 @@ public class Configuration {
 
                     // servers
                     JsonObject serversEntriesJson = jsonObject.getAsJsonObject("accounts").getAsJsonObject("entries");
-                    for (Map.Entry<String, MojangAccount> entry : this.accountList.entrySet()) {
+                    for (Map.Entry<String, Account> entry : this.accountList.entrySet()) {
                         serversEntriesJson.add(entry.getKey(), entry.getValue().serialize());
                     }
 
@@ -159,8 +166,8 @@ public class Configuration {
         this.config.put(path, value);
     }
 
-    public void putMojangAccount(MojangAccount account) {
-        this.accountList.put(account.getUserId(), account);
+    public void putAccount(Account account) {
+        this.accountList.put(account.getId(), account);
     }
 
     public void putServer(Server server) {
@@ -177,15 +184,26 @@ public class Configuration {
         }
     }
 
-    public void removeAccount(MojangAccount account) {
-        this.accountList.remove(account.getUserId());
+    public Account getSelectedAccount() {
+        return this.accountList.get(getString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED));
+    }
+
+    public void selectAccount(Account account) {
+        putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, account.getId());
+    }
+
+    public void removeAccount(Account account) {
+        this.accountList.remove(account.getId());
+        if (getString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED).equals(account.getId())) {
+            putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, "");
+        }
     }
 
     public HashBiMap<Integer, Server> getServerList() {
         return this.serverList;
     }
 
-    public HashBiMap<String, MojangAccount> getAccountList() {
+    public HashBiMap<String, Account> getSccounts() {
         return this.accountList;
     }
 

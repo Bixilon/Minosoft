@@ -92,7 +92,7 @@ public class Launcher {
 
 
             stage.show();
-            if (Minosoft.getSelectedAccount() == null) {
+            if (Minosoft.getConfig().getSelectedAccount() == null) {
                 MainWindow.manageAccounts();
             }
             latch.countDown();

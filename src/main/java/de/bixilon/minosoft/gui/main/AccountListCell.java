@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AccountListCell extends ListCell<MojangAccount> implements Initializable {
-    public static final ListView<MojangAccount> MOJANG_ACCOUNT_LIST_VIEW = new ListView<>();
+public class AccountListCell extends ListCell<Account> implements Initializable {
+    public static final ListView<Account> MOJANG_ACCOUNT_LIST_VIEW = new ListView<>();
 
     public MenuButton optionsMenu;
     public Label playerName;
@@ -38,7 +38,7 @@ public class AccountListCell extends ListCell<MojangAccount> implements Initiali
     public MenuItem optionsDelete;
     public AnchorPane root;
 
-    private MojangAccount account;
+    private Account account;
 
     public static AccountListCell newInstance() {
         FXMLLoader loader = new FXMLLoader(AccountListCell.class.getResource("/layout/cells/account.fxml"));
@@ -67,7 +67,7 @@ public class AccountListCell extends ListCell<MojangAccount> implements Initiali
     }
 
     @Override
-    protected void updateItem(MojangAccount account, boolean empty) {
+    protected void updateItem(Account account, boolean empty) {
         super.updateItem(account, empty);
 
         this.root.setVisible(!empty);
@@ -85,9 +85,9 @@ public class AccountListCell extends ListCell<MojangAccount> implements Initiali
         resetCell();
 
         this.account = account;
-        this.playerName.setText(account.getPlayerName());
-        this.email.setText(account.getMojangUserName());
-        if (Minosoft.getSelectedAccount() == account) {
+        this.playerName.setText(account.getUsername());
+        //  this.email.setText(account.getEmail());
+        if (Minosoft.getConfig().getSelectedAccount() == account) {
             setStyle("-fx-background-color: darkseagreen;");
             this.optionsSelect.setDisable(true);
         }
@@ -99,17 +99,19 @@ public class AccountListCell extends ListCell<MojangAccount> implements Initiali
         this.optionsSelect.setDisable(false);
     }
 
-    public void delete() {
-        this.account.delete();
-        if (Minosoft.getSelectedAccount() == this.account) {
-            if (Minosoft.getConfig().getAccountList().isEmpty()) {
+    public void logout() {
+        this.account.logout();
+        Minosoft.getConfig().removeAccount(this.account);
+        Minosoft.getConfig().saveToFile();
+        if (Minosoft.getConfig().getSelectedAccount() == this.account) {
+            if (Minosoft.getConfig().getSccounts().isEmpty()) {
                 Minosoft.selectAccount(null);
             } else {
-                Minosoft.selectAccount(Minosoft.getConfig().getAccountList().values().iterator().next());
+                Minosoft.selectAccount(Minosoft.getConfig().getSccounts().values().iterator().next());
             }
             MOJANG_ACCOUNT_LIST_VIEW.refresh();
         }
-        Log.info(String.format("Deleted account (email=\"%s\", playerName=\"%s\")", this.account.getMojangUserName(), this.account.getPlayerName()));
+        Log.info(String.format("Deleted account (id=%s, username=%s)", this.account.getId(), this.account.getUsername()));
         MOJANG_ACCOUNT_LIST_VIEW.getItems().remove(this.account);
     }
 

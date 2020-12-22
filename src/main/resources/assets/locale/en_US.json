@@ -57,7 +57,6 @@
   "SETTINGS_DOWNLOAD": "Download",
   "LOGIN_DIALOG_TITLE": "Login (Mojang) - Minosoft",
   "LOGIN_DIALOG_HEADER": "Please login to your mojang account",
-  "LOGIN_ACCOUNT_ALREADY_PRESENT": "Account is already present!",
   "ERROR": "Error",
   "MINOSOFT_STILL_STARTING_TITLE": "Please wait",
   "MINOSOFT_STILL_STARTING_HEADER": "Minosoft is still starting up...",

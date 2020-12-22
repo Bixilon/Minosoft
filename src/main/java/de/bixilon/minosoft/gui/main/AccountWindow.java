@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
-import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -30,7 +30,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AccountWindow implements Initializable {
-
     public BorderPane accountPane;
     public MenuItem menuAddAccount;
 
@@ -38,7 +37,7 @@ public class AccountWindow implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.setCellFactory((lv) -> AccountListCell.newInstance());
 
-        ObservableList<MojangAccount> accounts = FXCollections.observableArrayList(Minosoft.getConfig().getAccountList().values());
+        ObservableList<Account> accounts = FXCollections.observableArrayList(Minosoft.getConfig().getSccounts().values());
         AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.setItems(accounts);
         this.accountPane.setCenter(AccountListCell.MOJANG_ACCOUNT_LIST_VIEW);
 

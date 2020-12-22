@@ -17,13 +17,14 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.data.accounts.MojangAccount;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.gui.main.AccountListCell;
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.util.mojang.api.MojangAccount;
-import de.bixilon.minosoft.util.mojang.api.MojangAccountAuthenticationAttempt;
 import de.bixilon.minosoft.util.mojang.api.MojangAuthentication;
+import de.bixilon.minosoft.util.mojang.api.exceptions.AuthenticationException;
+import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -49,7 +50,6 @@ public class MojangLoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // translate
-
         this.header.setText(LocaleManager.translate(Strings.LOGIN_DIALOG_HEADER));
         this.emailLabel.setText(LocaleManager.translate(Strings.EMAIL));
         this.passwordLabel.setText(LocaleManager.translate(Strings.PASSWORD));
@@ -83,45 +83,31 @@ public class MojangLoginController implements Initializable {
 
 
         new Thread(() -> { // ToDo: recycle thread
-            MojangAccountAuthenticationAttempt attempt = MojangAuthentication.login(this.email.getText(), this.password.getText());
-            if (attempt.succeeded()) {
-                // login okay
-                final MojangAccount account = attempt.getAccount();
-                if (Minosoft.getConfig().getAccountList().containsValue(account)) {
-                    // account already present
-                    // replace access token
-                    MojangAccount existingAccount = Minosoft.getConfig().getAccountList().get(account.getUserId());
-                    existingAccount.setAccessToken(attempt.getAccount().getAccessToken());
-                    existingAccount.saveToConfig();
-                    Platform.runLater(() -> {
-                        this.errorMessage.setText(LocaleManager.translate(Strings.LOGIN_ACCOUNT_ALREADY_PRESENT));
-                        this.errorMessage.setVisible(true);
-                        this.email.setDisable(false);
-                        this.password.setDisable(false);
-                        this.loginButton.setDisable(true);
-                    });
-                    return;
-                }
-                Minosoft.getConfig().putMojangAccount(account);
+            try {
+                MojangAccount account = MojangAuthentication.login(this.email.getText(), this.password.getText());
+
+                account.setNeedRefresh(false);
+                Minosoft.getConfig().putAccount(account);
                 account.saveToConfig();
-                Log.info(String.format("Added and saved account (playerName=%s, email=%s, uuid=%s)", account.getPlayerName(), account.getMojangUserName(), account.getUUID()));
+                Log.info(String.format("Added and saved account (username=%s, email=%s, uuid=%s)", account.getUsername(), account.getEmail(), account.getUUID()));
                 Platform.runLater(() -> {
                     AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.getItems().add(account);
                     close();
                 });
-                if (Minosoft.getSelectedAccount() == null) {
+                if (Minosoft.getConfig().getSelectedAccount() == null) {
                     // select account
                     Minosoft.selectAccount(account);
                 }
-                return;
+            } catch (AuthenticationException | NoNetworkConnectionException e) {
+                e.printStackTrace();
+                Platform.runLater(() -> {
+                    this.errorMessage.setText(e.getMessage());
+                    this.errorMessage.setVisible(true);
+                    this.email.setDisable(false);
+                    this.password.setDisable(false);
+                    this.loginButton.setDisable(true);
+                });
             }
-            Platform.runLater(() -> {
-                this.errorMessage.setText(attempt.getError());
-                this.errorMessage.setVisible(true);
-                this.email.setDisable(false);
-                this.password.setDisable(false);
-                this.loginButton.setDisable(true);
-            });
         }, "AccountLoginThread").start();
 
     }

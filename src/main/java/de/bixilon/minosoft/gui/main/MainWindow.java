@@ -19,6 +19,7 @@ import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RequiredFieldValidator;
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
@@ -26,7 +27,6 @@ import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.util.DNSUtil;
-import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -71,7 +71,7 @@ public class MainWindow implements Initializable {
             GUITools.initializeScene(stage.getScene());
             Platform.setImplicitExit(false);
             stage.setOnCloseRequest(event -> {
-                if (Minosoft.getSelectedAccount() == null) {
+                if (Minosoft.getConfig().getSelectedAccount() == null) {
                     event.consume();
                     JFXAlert<?> alert = new JFXAlert<>();
                     GUITools.initializePane(alert.getDialogPane());
@@ -212,10 +212,22 @@ public class MainWindow implements Initializable {
         dialog.showAndWait();
     }
 
-    public void selectAccount(MojangAccount account) {
+    public void selectAccount(Account account) {
+        Runnable runnable = () -> {
+            if (account != null) {
+                MainWindow.this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, account.getUsername()));
+            } else {
+                MainWindow.this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
+            }
+        };
+        if (Platform.isFxApplicationThread()) {
+            runnable.run();
+        } else {
+            Platform.runLater(runnable);
+        }
         Platform.runLater(() -> {
             if (account != null) {
-                this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, account.getPlayerName()));
+                this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, account.getUsername()));
             } else {
                 this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
             }
@@ -235,7 +247,7 @@ public class MainWindow implements Initializable {
         this.menuHelp.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP));
         this.menuHelpAbout.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP_ABOUT));
         this.menuAccountManage.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_MANAGE));
-        selectAccount(Minosoft.getSelectedAccount());
+        selectAccount(Minosoft.getConfig().getSelectedAccount());
     }
 
     @FXML

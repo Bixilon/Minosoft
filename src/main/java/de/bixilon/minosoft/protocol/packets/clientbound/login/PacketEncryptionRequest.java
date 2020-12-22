@@ -19,6 +19,8 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.mojang.api.exceptions.MojangJoinServerErrorException;
+import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;
@@ -43,7 +45,13 @@ public class PacketEncryptionRequest extends ClientboundPacket {
         SecretKey secretKey = CryptManager.createNewSharedKey();
         PublicKey publicKey = CryptManager.decodePublicKey(getPublicKey());
         String serverHash = new BigInteger(CryptManager.getServerHash(getServerId(), publicKey, secretKey)).toString(16);
-        connection.getPlayer().getAccount().join(serverHash);
+        try {
+            connection.getPlayer().getAccount().join(serverHash);
+        } catch (MojangJoinServerErrorException | NoNetworkConnectionException e) {
+            e.printStackTrace();
+            connection.disconnect();
+            return;
+        }
         connection.sendPacket(new PacketEncryptionResponse(secretKey, getVerifyToken(), publicKey));
     }
 
