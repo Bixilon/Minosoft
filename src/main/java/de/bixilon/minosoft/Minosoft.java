@@ -135,7 +135,7 @@ public final class Minosoft {
         taskWorker.addTask(new Task(progress -> {
             Log.debug("Refreshing account token...");
             checkClientToken();
-            selectAccount(config.getSccounts().get(config.getString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED)));
+            selectAccount(config.getAccounts().get(config.getString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED)));
         }, "Token refresh", "Refresh selected account token", Priorities.LOW, TaskImportance.OPTIONAL, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {

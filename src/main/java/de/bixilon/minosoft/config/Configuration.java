@@ -203,7 +203,7 @@ public class Configuration {
         return this.serverList;
     }
 
-    public HashBiMap<String, Account> getSccounts() {
+    public HashBiMap<String, Account> getAccounts() {
         return this.accountList;
     }
 

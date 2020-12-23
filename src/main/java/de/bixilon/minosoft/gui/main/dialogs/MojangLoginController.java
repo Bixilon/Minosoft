@@ -50,7 +50,7 @@ public class MojangLoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // translate
-        this.header.setText(LocaleManager.translate(Strings.LOGIN_DIALOG_HEADER));
+        this.header.setText(LocaleManager.translate(Strings.LOGIN_MOJANG_DIALOG_HEADER));
         this.emailLabel.setText(LocaleManager.translate(Strings.EMAIL));
         this.passwordLabel.setText(LocaleManager.translate(Strings.PASSWORD));
         this.loginButton.setText(LocaleManager.translate(Strings.BUTTON_LOGIN));
@@ -89,7 +89,7 @@ public class MojangLoginController implements Initializable {
                 account.setNeedRefresh(false);
                 Minosoft.getConfig().putAccount(account);
                 account.saveToConfig();
-                Log.info(String.format("Added and saved account (username=%s, email=%s, uuid=%s)", account.getUsername(), account.getEmail(), account.getUUID()));
+                Log.info(String.format("Added and saved account (type=mojang, username=%s, email=%s, uuid=%s)", account.getUsername(), account.getEmail(), account.getUUID()));
                 Platform.runLater(() -> {
                     AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.getItems().add(account);
                     close();

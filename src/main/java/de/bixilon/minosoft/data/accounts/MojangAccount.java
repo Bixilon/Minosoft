@@ -73,6 +73,8 @@ public class MojangAccount extends Account {
 
     @Override
     public void logout() {
+        Minosoft.getConfig().removeAccount(this);
+        Minosoft.getConfig().saveToFile();
     }
 
     @Override
@@ -107,15 +109,6 @@ public class MojangAccount extends Account {
         return this.email;
     }
 
-    public void saveToConfig() {
-        Minosoft.getConfig().putAccount(this);
-        Minosoft.getConfig().saveToFile();
-    }
-
-    public void delete() {
-        Minosoft.getConfig().removeAccount(this);
-        Minosoft.getConfig().saveToFile();
-    }
 
     @Override
     public String toString() {

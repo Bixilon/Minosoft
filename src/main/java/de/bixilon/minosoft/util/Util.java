@@ -42,6 +42,7 @@ public final class Util {
     private static final Random THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
 
     public static UUID getUUIDFromString(String uuid) {
+        uuid = uuid.trim();
         if (uuid.length() == 36) {
             return UUID.fromString(uuid);
         }

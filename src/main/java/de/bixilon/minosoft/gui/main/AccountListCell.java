@@ -104,10 +104,10 @@ public class AccountListCell extends ListCell<Account> implements Initializable 
         Minosoft.getConfig().removeAccount(this.account);
         Minosoft.getConfig().saveToFile();
         if (Minosoft.getConfig().getSelectedAccount() == this.account) {
-            if (Minosoft.getConfig().getSccounts().isEmpty()) {
+            if (Minosoft.getConfig().getAccounts().isEmpty()) {
                 Minosoft.selectAccount(null);
             } else {
-                Minosoft.selectAccount(Minosoft.getConfig().getSccounts().values().iterator().next());
+                Minosoft.selectAccount(Minosoft.getConfig().getAccounts().values().iterator().next());
             }
             MOJANG_ACCOUNT_LIST_VIEW.refresh();
         }

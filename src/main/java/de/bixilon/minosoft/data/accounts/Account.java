@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.accounts;
 
 import com.google.gson.JsonObject;
+import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.util.mojang.api.exceptions.MojangJoinServerErrorException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
 
@@ -64,5 +65,10 @@ public abstract class Account {
         }
         Account account = (Account) obj;
         return getId().equals(account.getId());
+    }
+
+    public void saveToConfig() {
+        Minosoft.getConfig().putAccount(this);
+        Minosoft.getConfig().saveToFile();
     }
 }

@@ -11,11 +11,13 @@
   ~
   ~ This software is not affiliated with Mojang AB, the original developer of Minecraft.
   -->
-<?import javafx.scene.control.Menu?><?import javafx.scene.control.MenuBar?><?import javafx.scene.control.MenuItem?><?import javafx.scene.control.ScrollPane?><?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="640.0" fx:controller="de.bixilon.minosoft.gui.main.AccountWindow">
     <MenuBar VBox.vgrow="NEVER">
         <Menu mnemonicParsing="false" text="_Accounts">
-            <MenuItem fx:id="menuAddAccount" mnemonicParsing="false" onAction="#addAccount" text="-Add-" />
+            <MenuItem fx:id="menuAddMojangAccount" mnemonicParsing="false" onAction="#addMojangAccount" text="-Add Mojang account-"/>
+            <MenuItem fx:id="menuAddOfflineAccount" mnemonicParsing="false" onAction="#addOfflineAccount" text="-Add Offline account-"/>
         </Menu>
     </MenuBar>
     <AnchorPane VBox.vgrow="ALWAYS">

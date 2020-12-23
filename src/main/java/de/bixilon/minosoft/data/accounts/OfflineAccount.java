@@ -14,28 +14,18 @@
 package de.bixilon.minosoft.data.accounts;
 
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Util;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-import java.util.regex.Matcher;
 
 public class OfflineAccount extends Account {
     public OfflineAccount(String username) {
         super(username, UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes(StandardCharsets.UTF_8)));
-        Matcher matcher = ProtocolDefinition.MINECRAFT_NAME_VALIDATOR.matcher(username);
-        if (!matcher.find() || !matcher.group().equals(username)) {
-            throw new IllegalArgumentException(String.format("%s is not valid Minecraft username", username));
-        }
     }
 
     public OfflineAccount(String username, UUID uuid) {
         super(username, uuid);
-        Matcher matcher = ProtocolDefinition.MINECRAFT_NAME_VALIDATOR.matcher(username);
-        if (!matcher.find() || !matcher.group().equals(username)) {
-            throw new IllegalArgumentException(String.format("%s is not valid Minecraft username", username));
-        }
     }
 
     public static OfflineAccount deserialize(JsonObject json) {
@@ -66,6 +56,6 @@ public class OfflineAccount extends Account {
 
     @Override
     public String getId() {
-        return getUsername();
+        return getUsername() + ":" + getUUID().toString();
     }
 }

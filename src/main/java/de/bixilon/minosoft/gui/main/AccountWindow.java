@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
@@ -31,23 +30,33 @@ import java.util.ResourceBundle;
 
 public class AccountWindow implements Initializable {
     public BorderPane accountPane;
-    public MenuItem menuAddAccount;
+    public MenuItem menuAddMojangAccount;
+    public MenuItem menuAddOfflineAccount;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.setCellFactory((lv) -> AccountListCell.newInstance());
 
-        ObservableList<Account> accounts = FXCollections.observableArrayList(Minosoft.getConfig().getSccounts().values());
+        ObservableList<Account> accounts = FXCollections.observableArrayList(Minosoft.getConfig().getAccounts().values());
         AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.setItems(accounts);
         this.accountPane.setCenter(AccountListCell.MOJANG_ACCOUNT_LIST_VIEW);
 
-        this.menuAddAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_ACCOUNT));
+        this.menuAddMojangAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_MOJANG_ACCOUNT));
+        this.menuAddOfflineAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_OFFLINE_ACCOUNT));
     }
 
-    @FXML
-    public void addAccount() {
+    public void addMojangAccount() {
         try {
-            GUITools.showPane("/layout/dialogs/login_mojang.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_DIALOG_TITLE));
+            GUITools.showPane("/layout/dialogs/login_mojang.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_MOJANG_DIALOG_TITLE));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    public void addOfflineAccount() {
+        try {
+            GUITools.showPane("/layout/dialogs/login_offline.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_OFFLINE_DIALOG_TITLE));
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
