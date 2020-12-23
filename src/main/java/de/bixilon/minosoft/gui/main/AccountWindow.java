@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.gui.main.cells.AccountListCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -35,11 +36,11 @@ public class AccountWindow implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.setCellFactory((lv) -> AccountListCell.newInstance());
+        AccountListCell.ACCOUNT_LIST_VIEW.setCellFactory((lv) -> AccountListCell.newInstance());
 
         ObservableList<Account> accounts = FXCollections.observableArrayList(Minosoft.getConfig().getAccounts().values());
-        AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.setItems(accounts);
-        this.accountPane.setCenter(AccountListCell.MOJANG_ACCOUNT_LIST_VIEW);
+        AccountListCell.ACCOUNT_LIST_VIEW.setItems(accounts);
+        this.accountPane.setCenter(AccountListCell.ACCOUNT_LIST_VIEW);
 
         this.menuAddMojangAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_MOJANG_ACCOUNT));
         this.menuAddOfflineAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_OFFLINE_ACCOUNT));

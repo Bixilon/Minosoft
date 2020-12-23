@@ -23,10 +23,11 @@ import de.bixilon.minosoft.data.assets.AssetsManager;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.gui.main.AccountListCell;
 import de.bixilon.minosoft.gui.main.GUITools;
 import de.bixilon.minosoft.gui.main.Launcher;
+import de.bixilon.minosoft.gui.main.ServerListCell;
 import de.bixilon.minosoft.gui.main.StartProgressWindow;
+import de.bixilon.minosoft.gui.main.cells.AccountListCell;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventManager;
@@ -190,25 +191,28 @@ public final class Minosoft {
         }
     }
 
-    public static void selectAccount(Account account) {
+    public static boolean selectAccount(Account account) {
         if (account == null) {
             config.putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, "");
             config.saveToFile();
-            return;
+            return false;
         }
-        if (!account.select()) {
-            account.logout();
-            AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.getItems().remove(account);
-            config.removeAccount(account);
+        if (account.select()) {
+            config.putAccount(account);
+            config.selectAccount(account);
             config.saveToFile();
-            return;
+            if (Launcher.getMainWindow() != null) {
+                Launcher.getMainWindow().selectAccount(account);
+            }
+            AccountListCell.ACCOUNT_LIST_VIEW.refresh();
+            ServerListCell.SERVER_LIST_VIEW.refresh();
+            return true;
         }
-        config.putAccount(account);
-        config.selectAccount(account);
-        if (Launcher.getMainWindow() != null) {
-            Launcher.getMainWindow().selectAccount(account);
-        }
+        account.logout();
+        AccountListCell.ACCOUNT_LIST_VIEW.getItems().remove(account);
+        config.removeAccount(account);
         config.saveToFile();
+        return false;
     }
 
     public static Configuration getConfig() {

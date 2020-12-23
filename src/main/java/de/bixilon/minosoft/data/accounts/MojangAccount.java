@@ -110,11 +110,6 @@ public class MojangAccount extends Account {
     }
 
 
-    @Override
-    public String toString() {
-        return getId();
-    }
-
     public boolean needsRefresh() {
         return this.needsRefresh;
     }

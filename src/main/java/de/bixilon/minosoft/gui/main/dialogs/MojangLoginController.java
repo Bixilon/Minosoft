@@ -20,7 +20,7 @@ import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.accounts.MojangAccount;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
-import de.bixilon.minosoft.gui.main.AccountListCell;
+import de.bixilon.minosoft.gui.main.cells.AccountListCell;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.mojang.api.MojangAuthentication;
 import de.bixilon.minosoft.util.mojang.api.exceptions.AuthenticationException;
@@ -91,7 +91,7 @@ public class MojangLoginController implements Initializable {
                 account.saveToConfig();
                 Log.info(String.format("Added and saved account (type=mojang, username=%s, email=%s, uuid=%s)", account.getUsername(), account.getEmail(), account.getUUID()));
                 Platform.runLater(() -> {
-                    AccountListCell.MOJANG_ACCOUNT_LIST_VIEW.getItems().add(account);
+                    AccountListCell.ACCOUNT_LIST_VIEW.getItems().add(account);
                     close();
                 });
                 if (Minosoft.getConfig().getSelectedAccount() == null) {

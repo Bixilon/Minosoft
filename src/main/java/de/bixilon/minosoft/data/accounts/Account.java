@@ -71,4 +71,9 @@ public abstract class Account {
         Minosoft.getConfig().putAccount(this);
         Minosoft.getConfig().saveToFile();
     }
+
+    @Override
+    public String toString() {
+        return getId();
+    }
 }

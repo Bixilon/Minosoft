@@ -104,12 +104,14 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     protected void updateItem(Server server, boolean empty) {
         super.updateItem(server, empty);
 
-        this.root.setVisible(!empty);
+        this.root.setVisible(server != null || !empty);
         if (empty) {
+            resetCell();
             return;
         }
 
         if (server == null) {
+            resetCell();
             return;
         }
 
