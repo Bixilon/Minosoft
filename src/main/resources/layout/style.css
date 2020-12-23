@@ -79,11 +79,11 @@
 }
 
 .list-cell:selected {
-    -fx-background-color: -primary-dark-color;
+    -fx-background-color: #03111f;
 }
 
 .list-cell:filled:hover {
-    -fx-background-color: -primary-color;
+    -fx-background-color: #566171;
 }
 
 .menu-bar {
