@@ -14,17 +14,26 @@
 package de.bixilon.minosoft.data.commands.parser;
 
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.number.IntegerCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
-import javax.annotation.Nullable;
+public class TimeParser extends CommandParser {
+    public static final TimeParser TIME_PARSER = new TimeParser();
 
-@Deprecated
-public class DummyParser extends CommandParser {
-    public static final DummyParser DUMMY_PARSER = new DummyParser();
 
     @Override
-    public void isParsable(Connection connection, @Nullable ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+    public void isParsable(Connection connection, ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+        String argument = stringReader.readUntilNextCommandArgument();
+        if (argument.endsWith("d") || argument.endsWith("t") || argument.endsWith("s")) {
+            // unit
+            argument = argument.substring(0, argument.length() - 1);
+        }
+        try {
+            Integer.parseInt(argument);
+        } catch (NumberFormatException exception) {
+            throw new IntegerCommandParseException(stringReader, argument, exception);
+        }
     }
 }

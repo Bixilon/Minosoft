@@ -119,9 +119,12 @@ public class EntityParser extends CommandParser {
             return;
         }
         String value = stringReader.readUntilNextCommandArgument();
-        if (ProtocolDefinition.MINECRAFT_NAME_VALIDATOR.matcher(value).matches()) {
+        try {
+            Util.doesStringEqualsRegex(value, ProtocolDefinition.MINECRAFT_NAME_VALIDATOR);
             return;
+        } catch (IllegalArgumentException ignored) {
         }
+
         if (entityParserProperties.isOnlyPlayers()) {
             throw new PlayerOnlyEntityCommandParseException(stringReader, value);
         }

@@ -50,7 +50,9 @@ public class PacketStatusPong extends ClientboundPacket {
                 Log.info(String.format("Server is running on version %s (versionId=%d, protocolId=%d), reconnecting...", connection.getVersion().getVersionName(), connection.getVersion().getVersionId(), connection.getVersion().getProtocolId()));
             }
         }
-        connection.fireEvent(new ServerListPongEvent(connection, getPingId(), pingDifference));
+        ServerListPongEvent pongEvent = new ServerListPongEvent(connection, getPingId(), pingDifference);
+        connection.setPong(pongEvent);
+        connection.fireEvent(pongEvent);
     }
 
     @Override

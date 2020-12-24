@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data.mappings;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.Util;
 
 import java.util.Objects;
-import java.util.regex.Matcher;
 
 public class ModIdentifier {
     protected final String mod;
@@ -44,8 +44,9 @@ public class ModIdentifier {
     }
 
     public static ModIdentifier getIdentifier(String identifier) throws IllegalArgumentException {
-        Matcher matcher = ProtocolDefinition.IDENTIFIER_PATTERN.matcher(identifier);
-        if (!matcher.find() || !matcher.group().equals(identifier)) {
+        try {
+            Util.doesStringEqualsRegex(identifier, ProtocolDefinition.IDENTIFIER_PATTERN);
+        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(String.format("%s in not a valid identifier!", identifier));
         }
 

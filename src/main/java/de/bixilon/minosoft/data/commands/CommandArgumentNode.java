@@ -17,6 +17,8 @@ import de.bixilon.minosoft.data.commands.parser.CommandParser;
 import de.bixilon.minosoft.data.commands.parser.CommandParsers;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
@@ -31,8 +33,14 @@ public class CommandArgumentNode extends CommandLiteralNode {
 
     public CommandArgumentNode(byte flags, InByteBuffer buffer) {
         super(flags, buffer);
-        this.parser = CommandParsers.INSTANCE.getParserInstance(buffer.readIdentifier());
-        this.properties = this.parser.readParserProperties(buffer);
+        ModIdentifier parserIdentifier = buffer.readIdentifier();
+        this.parser = CommandParsers.INSTANCE.getParserInstance(parserIdentifier);
+        if (this.parser == null) {
+            Log.verbose("Unknown command parser: %s", parserIdentifier);
+            this.properties = null;
+        } else {
+            this.properties = this.parser.readParserProperties(buffer);
+        }
         if (BitByte.isBitMask(flags, 0x10)) {
             String fullIdentifier = buffer.readIdentifier().getFullIdentifier();
             this.suggestionType = switch (fullIdentifier) {

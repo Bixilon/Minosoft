@@ -42,6 +42,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -55,6 +56,9 @@ import java.util.ResourceBundle;
 public class ServerListCell extends ListCell<Server> implements Initializable {
     public static final ListView<Server> SERVER_LIST_VIEW = new ListView<>();
 
+    public HBox hBox;
+    public GridPane root;
+
     public ImageView faviconField;
     public TextFlow nameField;
     public TextFlow motdField;
@@ -62,7 +66,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public Label playersField;
     public Label brandField;
 
-    public GridPane root;
     public MenuItem optionsConnect;
     public MenuItem optionsShowInfo;
     public MenuItem optionsEdit;
@@ -105,6 +108,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         super.updateItem(server, empty);
 
         this.root.setVisible(server != null || !empty);
+        this.hBox.setVisible(server != null || !empty);
         if (empty) {
             resetCell();
             return;
@@ -115,11 +119,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             return;
         }
 
-        if (server.equals(this.server)) {
-            return;
-        }
-        server.setCell(this);
         resetCell();
+        server.setCell(this);
 
         this.server = server;
         setName(server.getName());
@@ -130,7 +131,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
         this.faviconField.setImage(favicon);
         if (server.isConnected()) {
-            getStyleClass().add("list-cell-connected");
+            this.root.getStyleClass().add("list-cell-connected");
             this.optionsSessions.setDisable(false);
         } else {
             this.optionsSessions.setDisable(true);
@@ -147,7 +148,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             resetCell();
 
             if (server.isConnected()) {
-                getStyleClass().add("list-cell-connected");
+                this.root.getStyleClass().add("list-cell-connected");
             }
             if (ping == null) {
                 // Offline
@@ -222,7 +223,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     private void resetCell() {
         // clear all cells
         setStyle(null);
-        getStyleClass().remove("list-cell-connected");
+        this.root.getStyleClass().remove("list-cell-connected");
         this.motdField.getChildren().clear();
         this.brandField.setText("");
         this.brandField.setTooltip(null);
@@ -312,7 +313,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 // maybe we got disconnected
                 if (!this.server.isConnected()) {
                     setStyle(null);
-                    getStyleClass().remove("list-cell-connected");
+                    this.root.getStyleClass().remove("list-cell-connected");
                     this.optionsSessions.setDisable(true);
                     this.optionsConnect.setDisable(false);
                     return;
@@ -320,7 +321,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
 
             this.optionsConnect.setDisable(Minosoft.getConfig().getSelectedAccount() == connection.getPlayer().getAccount());
-            getStyleClass().add("list-cell-connected");
+            this.root.getStyleClass().add("list-cell-connected");
             this.optionsSessions.setDisable(false);
         });
     }

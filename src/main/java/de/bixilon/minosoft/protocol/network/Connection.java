@@ -66,6 +66,7 @@ public class Connection {
     private Exception lastException;
     private CommandRootNode commandRootNode;
     private ConnectionPing connectionStatusPing;
+    private ServerListPongEvent pong;
 
     public Connection(int connectionId, String hostname, Player player) {
         this.connectionId = connectionId;
@@ -248,12 +249,12 @@ public class Connection {
         return command;
     }
 
-    public void setReason(ConnectionReasons reason) {
-        this.reason = reason;
-    }
-
     public ConnectionReasons getReason() {
         return this.reason;
+    }
+
+    public void setReason(ConnectionReasons reason) {
+        this.reason = reason;
     }
 
     public Packets.Clientbound getPacketByCommand(ConnectionStates state, int command) {
@@ -335,6 +336,10 @@ public class Connection {
                     // connection was good, do not reconnect
                     break;
                 }
+                if (this.addresses == null) {
+                    handlePingCallbacks(null);
+                    break;
+                }
                 int nextIndex = this.addresses.indexOf(this.address) + 1;
                 if (this.addresses.size() > nextIndex) {
                     ServerAddress nextAddress = this.addresses.get(nextIndex);
@@ -352,10 +357,6 @@ public class Connection {
         fireEvent(new ConnectionStateChangeEvent(this, previousState, state));
     }
 
-    public void setDesiredVersionNumber(int desiredVersionNumber) {
-        this.desiredVersionNumber = desiredVersionNumber;
-    }
-
     public void handlePingCallbacks(@Nullable ServerListPing ping) {
         this.lastPing = ping;
         fireEvent(new ServerListStatusArriveEvent(this, ping));
@@ -365,12 +366,21 @@ public class Connection {
         return this.desiredVersionNumber;
     }
 
+    public void setDesiredVersionNumber(int desiredVersionNumber) {
+        this.desiredVersionNumber = desiredVersionNumber;
+    }
+
     public void registerEvent(EventInvoker method) {
         this.eventListeners.add(method);
         if (method.getEventType() == ServerListStatusArriveEvent.class) {
             if (getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || this.lastPing != null) {
                 // ping done
                 method.invoke(new ServerListStatusArriveEvent(this, this.lastPing));
+            }
+        } else if (method.getEventType() == ServerListPongEvent.class) {
+            if (getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || this.lastPing != null) {
+                // ping done
+                method.invoke(this.pong);
             }
         }
     }
@@ -387,11 +397,19 @@ public class Connection {
         return this.recipes;
     }
 
+    public CommandRootNode getCommandRootNode() {
+        return this.commandRootNode;
+    }
+
     public void setCommandRootNode(CommandRootNode commandRootNode) {
         this.commandRootNode = commandRootNode;
     }
 
-    public CommandRootNode getCommandRootNode() {
-        return this.commandRootNode;
+    public ServerListPongEvent getPong() {
+        return this.pong;
+    }
+
+    public void setPong(ServerListPongEvent pong) {
+        this.pong = pong;
     }
 }

@@ -32,6 +32,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.*;
 
@@ -289,5 +290,12 @@ public final class Util {
 
     public static boolean doesStringContainsUppercaseLetters(String string) {
         return !string.toLowerCase().equals(string);
+    }
+
+    public static void doesStringEqualsRegex(String input, Pattern pattern) throws IllegalArgumentException {
+        Matcher matcher = pattern.matcher(input);
+        if (!matcher.find() || !matcher.group().equals(input)) {
+            throw new IllegalArgumentException();
+        }
     }
 }

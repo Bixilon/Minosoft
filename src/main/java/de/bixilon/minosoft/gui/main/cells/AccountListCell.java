@@ -86,9 +86,6 @@ public class AccountListCell extends ListCell<Account> implements Initializable 
             return;
         }
 
-        if (account.equals(this.account)) {
-            return;
-        }
         resetCell();
         if (Minosoft.getConfig().getSelectedAccount() == account) {
             this.hBox.getStyleClass().add("list-cell-selected");

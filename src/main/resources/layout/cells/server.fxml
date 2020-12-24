@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
   ~ Minosoft
   ~ Copyright (C) 2020 Moritz Zwerger
@@ -17,13 +18,13 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.TextFlow?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.60" fx:controller="de.bixilon.minosoft.gui.main.ServerListCell">
-    <GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" onMouseClicked="#clicked" HBox.hgrow="ALWAYS">
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="hBox" styleClass="list-cell" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="de.bixilon.minosoft.gui.main.ServerListCell">
+    <GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" onMouseClicked="#clicked" HBox.hgrow="ALWAYS" styleClass="list-cell">
         <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS" minWidth="90" maxWidth="90"/>
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="90" minWidth="90"/>
             <ColumnConstraints hgrow="ALWAYS" minWidth="30" prefWidth="30"/>
-            <ColumnConstraints hgrow="ALWAYS" prefWidth="50" maxWidth="100"/>
-            <ColumnConstraints hgrow="ALWAYS" prefWidth="80" maxWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="100" prefWidth="50"/>
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="120" prefWidth="80"/>
         </columnConstraints>
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
@@ -46,7 +47,7 @@
                 <Insets right="10.0"/>
             </GridPane.margin>
         </Label>
-        <Label fx:id="pingField" text="PING" textAlignment="RIGHT" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.halignment="RIGHT">
+        <Label fx:id="pingField" text="PING" textAlignment="RIGHT" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
             <GridPane.margin>
                 <Insets right="10.0"/>
             </GridPane.margin>
@@ -74,8 +75,8 @@
                 <Insets right="15.0"/>
             </GridPane.margin>
         </MenuButton>
-        <padding>
-            <Insets bottom="10.0" top="10.0"/>
-        </padding>
     </GridPane>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+    </padding>
 </HBox>

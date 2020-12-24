@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.commands.parser
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.data.mappings.ModIdentifier
+import org.checkerframework.checker.nullness.qual.Nullable
 
 object CommandParsers {
     private val COMMAND_PARSERS: HashBiMap<ModIdentifier, CommandParser> = HashBiMap.create(
@@ -39,7 +40,7 @@ object CommandParsers {
             ModIdentifier("message") to MessageParser.MESSAGE_PARSER,
             // nbt
             // nbt_pat
-            // objective
+            ModIdentifier("objective") to ObjectiveParser.OBJECTIVE_PARSER,
             // objective_criteria
             // operation
             // particle
@@ -62,12 +63,12 @@ object CommandParsers {
             ModIdentifier("uuid") to UUIDParser.UUID_PARSER,
             // nbt_tag
             // nbt_compound_tag
-            // time
+            ModIdentifier("time") to TimeParser.TIME_PARSER
         )
     )
 
-    fun getParserInstance(identifier: ModIdentifier): CommandParser {
-        return COMMAND_PARSERS.getOrDefault(identifier, DummyParser.DUMMY_PARSER)
+    fun getParserInstance(identifier: ModIdentifier): @Nullable CommandParser? {
+        return COMMAND_PARSERS[identifier]
     }
 }
 

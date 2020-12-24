@@ -34,7 +34,6 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.regex.Matcher;
 
 public class OfflineLoginController implements Initializable {
     public HBox hBox;
@@ -96,8 +95,9 @@ public class OfflineLoginController implements Initializable {
     }
 
     private void checkData(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-        Matcher matcher = ProtocolDefinition.MINECRAFT_NAME_VALIDATOR.matcher(this.username.getText());
-        if (!matcher.find() || !matcher.group().equals(this.username.getText())) {
+        try {
+            Util.doesStringEqualsRegex(this.username.getText(), ProtocolDefinition.MINECRAFT_NAME_VALIDATOR);
+        } catch (IllegalArgumentException e) {
             this.addButton.setDisable(true);
             return;
         }

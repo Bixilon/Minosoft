@@ -40,13 +40,7 @@ public class PacketDeclareCommands extends ClientboundPacket {
         connection.setCommandRootNode(getRootNode());
         // ToDo: Remove these dummy commands
         String[] commands = {
-                "setblock ~3 ~3 3 minecraft:anvil",
-                "setblock ~ ~3 ~3 minecraft:anvil[]",
-                "setblock ^ ^3 ^3 minecraft:anvil[facing=east]",
-                "setblock ^ ^3 ^3 minecraft:anvil[facing=east2]",
-                "setblock ~ ~ ~ minecraft:acacia_door[facing=east,powered=true]",
-                "setblock ~ ~ ~ minecraft:acacia_door[facing=east,powered=truae]",
-                "setblock ~ ~ ~ minecraft:acacia_door[fa3cing=east,powered=true]",
+                "setblock ~3 ~3 3 minecraft:anvil"
         };
         for (String command : commands) {
             try {

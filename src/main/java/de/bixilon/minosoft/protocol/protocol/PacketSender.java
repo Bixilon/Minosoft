@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.data.player.Hands;
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
 import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -48,6 +49,7 @@ public class PacketSender {
         if (this.connection.fireEvent(event)) {
             return;
         }
+        Log.game("Sending chat message: %s", message);
         this.connection.sendPacket(new PacketChatMessageSending(event.getMessage()));
     }
 
