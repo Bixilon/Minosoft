@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.data.commands.parser.exceptions.number;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class ValueOutOfRangeCommandParseException extends CommandParseException {
 
     private static final String ERROR_MESSAGE = "Value out of range (min=%s, max=%s!";
 
-    public ValueOutOfRangeCommandParseException(ImprovedStringReader command, Object minValue, Object maxValue, Object value) {
+    public ValueOutOfRangeCommandParseException(CommandStringReader command, Object minValue, Object maxValue, Object value) {
         super(String.format(ERROR_MESSAGE, minValue, maxValue), command, value.toString());
     }
 }

@@ -13,22 +13,10 @@
 
 package de.bixilon.minosoft.data.commands.parser.entity;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.util.Pair;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public abstract class EntitySelectorArgumentParser {
-    private static final String[] ENTITY_VALUE_TERMINATORS = {",", " ", "]"};
-
-    public abstract void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException;
-
-    protected Pair<String, String> readNextArgument(ImprovedStringReader stringReader) {
-        Pair<String, String> match = stringReader.readUntil(ENTITY_VALUE_TERMINATORS);
-        if (!match.getValue().equals(" ")) {
-            // set pointer to --
-            stringReader.skip(-1);
-        }
-        return match;
-    }
+    public abstract void isParsable(Connection connection, CommandStringReader stringReader, String value) throws CommandParseException;
 }

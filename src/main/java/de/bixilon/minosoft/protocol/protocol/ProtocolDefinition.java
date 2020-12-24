@@ -21,7 +21,7 @@ public final class ProtocolDefinition {
     public static final int DEFAULT_PORT = 25565;
     public static final int SOCKET_CONNECT_TIMEOUT = 5000;
     public static final int SOCKET_TIMEOUT = 30000;
-    public static final int PROTOCOL_PACKET_MAX_SIZE = 2097152;
+    public static final int PROTOCOL_PACKET_MAX_SIZE = 1 << 21;
     public static final float ANGLE_CALCULATION_CONSTANT = 360.0F / 256.0F;
     public static final float PITCH_CALCULATION_CONSTANT = 100.0F / 63.0F;
 

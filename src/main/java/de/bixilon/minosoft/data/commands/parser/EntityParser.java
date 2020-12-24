@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.entity.*;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.entity.*;
@@ -22,10 +23,9 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Util;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
 
 public class EntityParser extends CommandParser {
     public static final EntityParser ENTITY_PARSER = new EntityParser();
@@ -61,64 +61,37 @@ public class EntityParser extends CommandParser {
     }
 
     @Override
-    public void isParsable(Connection connection, ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+    public void isParsable(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         EntityParserProperties entityParserProperties = (EntityParserProperties) properties;
-        if (stringReader.getNextChar() == '@') {
+        if (stringReader.peek() == '@') {
             // selector
             if (entityParserProperties.isOnlySingleEntity()) {
-                throw new SingleEntityOnlyEntityCommandParseException(stringReader, String.valueOf(stringReader.getNextChar()));
+                throw new SingleEntityOnlyEntityCommandParseException(stringReader, String.valueOf(stringReader.read()));
             }
-            stringReader.skip(1); // skip @
-            char selectorChar = stringReader.readChar();
-            if (selectorChar != 'a' && selectorChar != 'e' && selectorChar != 'p' && selectorChar != 'r' && selectorChar != 's') {
+            stringReader.skip();
+            char selectorChar = stringReader.read();
+            if (selectorChar != 'p' && selectorChar != 'a' && selectorChar != 'r' && selectorChar != 's' && selectorChar != 'e') {
                 // only @a, @e, @p, @r and @s possible
-                throw new UnknownMassSelectorEntityCommandParseException(stringReader, stringReader.getNextChar());
+                throw new UnknownMassSelectorEntityCommandParseException(stringReader, selectorChar);
             }
             if (selectorChar == 'e' && entityParserProperties.isOnlyPlayers()) {
                 throw new PlayerOnlyEntityCommandParseException(stringReader, String.valueOf(selectorChar));
             }
 
-            // parse entity selector
+            if (stringReader.peek() == '[') {
+                Map<String, String> propertyMap = stringReader.readProperties();
 
-            // example: /msg @a[ name = "Bixilon" ] asd
-            if (stringReader.getNextChar() != '[') {
-                // no meta data given, valid
-                return;
-            }
-            stringReader.skip(1);
+                for (Map.Entry<String, String> property : propertyMap.entrySet()) {
 
-            // meta data, parse it!
-            HashSet<String> parameters = new HashSet<>();
-            while (true) {
-                stringReader.skipSpaces();
-                String parameterName = stringReader.readUntil("=").getKey().replaceAll("\\s", ""); // ToDo: only remove prefix and suffix spaces!
-                if (parameters.contains(parameterName)) {
-                    throw new DuplicatedParameterEntityCommandParseException(stringReader, parameterName);
-                }
-                if (!ENTITY_FILTER_PARAMETER_LIST.containsKey(parameterName)) {
-                    throw new UnknownParameterEntityCommandParseException(stringReader, parameterName);
-                }
-
-                stringReader.skipSpaces();
-
-                EntitySelectorArgumentParser parser = ENTITY_FILTER_PARAMETER_LIST.get(parameterName);
-                parser.isParsable(connection, stringReader);
-
-                stringReader.skipSpaces();
-                parameters.add(parameterName);
-                char nextChar = stringReader.getNextChar();
-                if (nextChar == ']') {
-                    stringReader.skip(1);
-                    break;
-                }
-                if (nextChar == ',') {
-                    stringReader.skip(1);
+                    if (!ENTITY_FILTER_PARAMETER_LIST.containsKey(property.getKey())) {
+                        throw new UnknownParameterEntityCommandParseException(stringReader, property.getKey());
+                    }
+                    EntitySelectorArgumentParser parser = ENTITY_FILTER_PARAMETER_LIST.get(property.getKey());
+                    parser.isParsable(connection, stringReader, property.getValue());
                 }
             }
-            stringReader.skipSpaces();
-            return;
         }
-        String value = stringReader.readUntilNextCommandArgument();
+        String value = stringReader.readUnquotedString();
         try {
             Util.doesStringEqualsRegex(value, ProtocolDefinition.MINECRAFT_NAME_VALIDATOR);
             return;

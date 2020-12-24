@@ -13,17 +13,17 @@
 
 package de.bixilon.minosoft.data.commands.parser.exceptions;
 
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 
 public class BooleanCommandParseException extends CommandParseException {
 
     private static final String ERROR_MESSAGE = "Unknown boolean value!";
 
-    public BooleanCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public BooleanCommandParseException(CommandStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public BooleanCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public BooleanCommandParseException(CommandStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

@@ -13,17 +13,17 @@
 
 package de.bixilon.minosoft.data.commands.parser.exceptions;
 
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 
 public class RequiresMoreArgumentsCommandParseException extends CommandParseException {
 
     private static final String ERROR_MESSAGE = "Command requires more arguments!";
 
-    public RequiresMoreArgumentsCommandParseException(ImprovedStringReader command) {
-        super(ERROR_MESSAGE, command, command.getPosition());
+    public RequiresMoreArgumentsCommandParseException(CommandStringReader command) {
+        super(ERROR_MESSAGE, command, command.getCursor());
     }
 
-    public RequiresMoreArgumentsCommandParseException(ImprovedStringReader command, Throwable cause) {
-        super(ERROR_MESSAGE, command, command.getPosition(), cause);
+    public RequiresMoreArgumentsCommandParseException(CommandStringReader command, Throwable cause) {
+        super(ERROR_MESSAGE, command, command.getCursor(), cause);
     }
 }

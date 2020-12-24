@@ -12,58 +12,47 @@
  */
 package de.bixilon.minosoft.data.commands.parser
 
+import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.MixWorldAndLocalCoordinatesCommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.number.DoubleCommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.number.IntegerCommandParseException
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader
 
 abstract class CoordinateParser : CommandParser() {
 
-    private fun readCoordinate(stringReader: ImprovedStringReader, allowDecimal: Boolean): CoordinateNotations {
-        var position = stringReader.readUntilNextCommandArgument()
-        val notation: CoordinateNotations = when {
-            position.startsWith("~") -> {
-                CoordinateNotations.TILDE
+    private fun readCoordinate(stringReader: CommandStringReader, allowDecimal: Boolean): CoordinateNotations {
+        val notation: CoordinateNotations = when (stringReader.peek()) {
+            '~' -> {
+                CoordinateNotations.RELATIVE
             }
-            position.startsWith("^") -> {
-                CoordinateNotations.CARET
+            '^' -> {
+                CoordinateNotations.LOCALE
             }
             else -> {
                 CoordinateNotations.NONE
             }
         }
         if (notation != CoordinateNotations.NONE) {
-            position = position.substring(1)
-            if (position.isEmpty()) {
-                return notation
-            }
+            stringReader.skip()
+        }
+        if (!stringReader.canRead() || stringReader.peek() != ' ') {
+            return notation
         }
         if (allowDecimal) {
-            try {
-                position.toDouble()
-            } catch (exception: NumberFormatException) {
-                throw DoubleCommandParseException(stringReader, position)
-            }
+            stringReader.readDouble()
         } else {
-            try {
-                position.toInt()
-            } catch (exception: NumberFormatException) {
-                throw IntegerCommandParseException(stringReader, position)
-            }
+            stringReader.readInt()
         }
-
         return notation
     }
 
-    fun readCoordinates(stringReader: ImprovedStringReader, allowDecimal: Boolean, count: Int) {
+    fun readCoordinates(stringReader: CommandStringReader, allowDecimal: Boolean, count: Int) {
         var localCoordinates: Boolean? = null
         // read coordinates and check if somebody tries to mix world (~ or number) and local coordinates (^)
         for (i in 0 until count) {
             val notation = readCoordinate(stringReader, allowDecimal)
+            stringReader.skipWhitespaces()
             if (localCoordinates == null) {
-                localCoordinates = notation == CoordinateNotations.CARET
+                localCoordinates = notation == CoordinateNotations.LOCALE
             } else {
-                if ((notation == CoordinateNotations.CARET && !localCoordinates) || (notation != CoordinateNotations.CARET && localCoordinates)) {
+                if ((notation == CoordinateNotations.LOCALE && !localCoordinates) || (notation != CoordinateNotations.LOCALE && localCoordinates)) {
                     throw MixWorldAndLocalCoordinatesCommandParseException(stringReader, "") // ToDo: print argument
                 }
             }
@@ -73,7 +62,7 @@ abstract class CoordinateParser : CommandParser() {
 
     enum class CoordinateNotations {
         NONE,
-        TILDE,
-        CARET
+        RELATIVE,
+        LOCALE
     }
 }

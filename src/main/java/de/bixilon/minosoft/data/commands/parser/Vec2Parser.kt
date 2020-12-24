@@ -12,15 +12,15 @@
  */
 package de.bixilon.minosoft.data.commands.parser
 
+import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader
 
 class Vec2Parser : CoordinateParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: ImprovedStringReader) {
+    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
         readCoordinates(stringReader, true, 2)
     }
 

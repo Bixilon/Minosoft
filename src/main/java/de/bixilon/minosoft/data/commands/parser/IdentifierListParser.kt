@@ -12,37 +12,29 @@
  */
 package de.bixilon.minosoft.data.commands.parser
 
+import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.EnchantmentNotFoundCommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidIdentifierCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.MobEffectNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader
 
 class IdentifierListParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: ImprovedStringReader) {
-        val argument = stringReader.readUntilNextCommandArgument()
+    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+        val identifier = stringReader.readModIdentifier()
 
-        val identifier: ModIdentifier
-        try {
-            identifier = ModIdentifier.getIdentifier(argument)
-        } catch (exception: IllegalArgumentException) {
-            throw InvalidIdentifierCommandParseException(stringReader, argument)
-        }
 
         if (this == ENCHANTMENT_PARSER) {
-            if (!connection.mapping.doesEnchantmentExist(identifier)) {
-                throw EnchantmentNotFoundCommandParseException(stringReader, argument)
+            if (!connection.mapping.doesEnchantmentExist(identifier.value)) {
+                throw EnchantmentNotFoundCommandParseException(stringReader, identifier.key)
             }
             return
         }
         if (this == MOB_EFFECT_PARSER) {
-            if (!connection.mapping.doesMobEffectExist(identifier)) {
-                throw MobEffectNotFoundCommandParseException(stringReader, argument)
+            if (!connection.mapping.doesMobEffectExist(identifier.value)) {
+                throw MobEffectNotFoundCommandParseException(stringReader, identifier.key)
             }
             return
         }

@@ -13,17 +13,17 @@
 
 package de.bixilon.minosoft.data.commands.parser.exceptions;
 
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 
 public class BlankStringCommandParseException extends CommandParseException {
 
     private static final String ERROR_MESSAGE = "String is blank!";
 
-    public BlankStringCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public BlankStringCommandParseException(CommandStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public BlankStringCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public BlankStringCommandParseException(CommandStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

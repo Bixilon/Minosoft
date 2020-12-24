@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.StringParserProperties;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 import javax.annotation.Nullable;
 
@@ -32,7 +32,7 @@ public class MessageParser extends StringParser {
     }
 
     @Override
-    public void isParsable(Connection connection, @Nullable ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+    public void isParsable(Connection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         super.isParsable(connection, STRING_PARSER_PROPERTIES, stringReader);
     }
 }

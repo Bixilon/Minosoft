@@ -10,21 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.commands.parser.exceptions
 
-package de.bixilon.minosoft.data.commands.parser.exceptions.entity;
+import de.bixilon.minosoft.data.commands.CommandStringReader
 
-import de.bixilon.minosoft.data.commands.CommandStringReader;
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
+class StringCommandParseException : CommandParseException {
+    constructor(command: CommandStringReader, currentArgument: String, message: String) : super(message, command, currentArgument)
 
-public class UnknownEnumValueCommandParseException extends CommandParseException {
+    constructor(command: CommandStringReader, currentArgument: String, message: String, cause: Throwable) : super(message, command, currentArgument, cause)
 
-    private static final String ERROR_MESSAGE = "Unknown enum value!";
-
-    public UnknownEnumValueCommandParseException(CommandStringReader command, String currentArgument) {
-        super(ERROR_MESSAGE, command, currentArgument);
-    }
-
-    public UnknownEnumValueCommandParseException(CommandStringReader command, String currentArgument, Throwable cause) {
-        super(ERROR_MESSAGE, command, currentArgument, cause);
-    }
 }

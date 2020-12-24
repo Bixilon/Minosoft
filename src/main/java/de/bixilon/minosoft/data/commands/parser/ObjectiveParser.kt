@@ -12,19 +12,19 @@
  */
 package de.bixilon.minosoft.data.commands.parser
 
+import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidIdentifierCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Util
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader
 
 class ObjectiveParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: ImprovedStringReader) {
-        val argument = stringReader.readUntilNextCommandArgument()
+    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+        val argument = stringReader.readUnquotedString()
         try {
             Util.doesStringEqualsRegex(argument, ProtocolDefinition.SCOREBOARD_OBJECTIVE_PATTERN)
         } catch (exception: IllegalArgumentException) {

@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.data.commands;
 
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.FloatingDataCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.WrongArgumentCommandParseException;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class CommandRootNode extends CommandNode {
     public CommandRootNode(byte flags, InByteBuffer buffer) {
@@ -26,9 +26,12 @@ public class CommandRootNode extends CommandNode {
     }
 
     @Override
-    public void isSyntaxCorrect(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
+    public void isSyntaxCorrect(Connection connection, CommandStringReader stringReader) throws CommandParseException {
         try {
             super.isSyntaxCorrect(connection, stringReader);
+            if (stringReader.getRemainingLength() > 0) {
+                throw new FloatingDataCommandParseException(stringReader, stringReader.readRemaining());
+            }
         } catch (WrongArgumentCommandParseException e) {
             if (e.getStartIndex() == 0) {
                 // beginn of string

@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.data.commands.parser.exceptions.entity;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class UnknownMassSelectorEntityCommandParseException extends CommandParseException {
 
     private static final String ERROR_MESSAGE = "Unknown mass selector!";
 
-    public UnknownMassSelectorEntityCommandParseException(ImprovedStringReader command, char currentArgument) {
+    public UnknownMassSelectorEntityCommandParseException(CommandStringReader command, char currentArgument) {
         super(ERROR_MESSAGE, command, String.valueOf(currentArgument));
     }
 
-    public UnknownMassSelectorEntityCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public UnknownMassSelectorEntityCommandParseException(CommandStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

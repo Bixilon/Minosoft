@@ -13,14 +13,13 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exceptions.number.DoubleCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.ValueOutOfRangeCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.DoubleParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class DoubleParser extends CommandParser {
     public static final DoubleParser DOUBLE_PARSER = new DoubleParser();
@@ -35,16 +34,11 @@ public class DoubleParser extends CommandParser {
     }
 
     @Override
-    public void isParsable(Connection connection, ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
-        String argument = stringReader.readUntilNextCommandArgument();
-        try {
-            double value = Double.parseDouble(argument);
-            DoubleParserProperties doubleParserProperties = (DoubleParserProperties) properties;
-            if (value < doubleParserProperties.getMinValue() && value > doubleParserProperties.getMaxValue()) {
-                throw new ValueOutOfRangeCommandParseException(stringReader, doubleParserProperties.getMinValue(), doubleParserProperties.getMaxValue(), value);
-            }
-        } catch (NumberFormatException exception) {
-            throw new DoubleCommandParseException(stringReader, argument, exception);
+    public void isParsable(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+        double value = stringReader.readDouble();
+        DoubleParserProperties doubleParserProperties = (DoubleParserProperties) properties;
+        if (value < doubleParserProperties.getMinValue() && value > doubleParserProperties.getMaxValue()) {
+            throw new ValueOutOfRangeCommandParseException(stringReader, doubleParserProperties.getMinValue(), doubleParserProperties.getMaxValue(), value);
         }
     }
 }

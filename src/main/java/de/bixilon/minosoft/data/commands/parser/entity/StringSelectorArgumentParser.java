@@ -13,23 +13,16 @@
 
 package de.bixilon.minosoft.data.commands.parser.entity;
 
-import de.bixilon.minosoft.data.commands.parser.StringParser;
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.StringParserProperties;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class StringSelectorArgumentParser extends EntitySelectorArgumentParser {
     public static final StringSelectorArgumentParser STRING_SELECTOR_ARGUMENT_PARSER = new StringSelectorArgumentParser();
     private static final StringParserProperties STRING_PARSER_PROPERTIES = new StringParserProperties(StringParserProperties.StringSettings.QUOTABLE_PHRASE, true);
 
     @Override
-    public void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
-        // if it starts with a quote, it will end with a quote
-        if (stringReader.get(1).equals("\"")) {
-            StringParser.STRING_PARSER.isParsable(connection, STRING_PARSER_PROPERTIES, stringReader);
-            return;
-        }
-        readNextArgument(stringReader);
+    public void isParsable(Connection connection, CommandStringReader stringReader, String value) throws CommandParseException {
     }
 }

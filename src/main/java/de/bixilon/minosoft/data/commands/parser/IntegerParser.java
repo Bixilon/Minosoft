@@ -13,14 +13,13 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exceptions.number.IntegerCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.ValueOutOfRangeCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.IntegerParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class IntegerParser extends CommandParser {
     public static final IntegerParser INTEGER_PARSER = new IntegerParser();
@@ -35,16 +34,11 @@ public class IntegerParser extends CommandParser {
     }
 
     @Override
-    public void isParsable(Connection connection, ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
-        String argument = stringReader.readUntilNextCommandArgument();
-        try {
-            int value = Integer.parseInt(argument);
-            IntegerParserProperties integerParserProperties = (IntegerParserProperties) properties;
-            if (value < integerParserProperties.getMinValue() && value > integerParserProperties.getMaxValue()) {
-                throw new ValueOutOfRangeCommandParseException(stringReader, integerParserProperties.getMinValue(), integerParserProperties.getMaxValue(), value);
-            }
-        } catch (NumberFormatException exception) {
-            throw new IntegerCommandParseException(stringReader, argument, exception);
+    public void isParsable(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+        int value = stringReader.readInt();
+        IntegerParserProperties integerParserProperties = (IntegerParserProperties) properties;
+        if (value < integerParserProperties.getMinValue() && value > integerParserProperties.getMaxValue()) {
+            throw new ValueOutOfRangeCommandParseException(stringReader, integerParserProperties.getMinValue(), integerParserProperties.getMaxValue(), value);
         }
     }
 }

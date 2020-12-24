@@ -13,43 +13,43 @@
 
 package de.bixilon.minosoft.data.commands.parser.exceptions;
 
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 
 public class CommandParseException extends Exception {
     private final String errorMessage;
-    private final ImprovedStringReader command;
+    private final CommandStringReader command;
     private final int startIndex;
     private final int endIndex;
 
-    public CommandParseException(String errorMessage, ImprovedStringReader command, int startIndex) {
+    public CommandParseException(String errorMessage, CommandStringReader command, int startIndex) {
         this(errorMessage, command, startIndex, null);
     }
 
-    public CommandParseException(String errorMessage, ImprovedStringReader command, int startIndex, Throwable cause) {
+    public CommandParseException(String errorMessage, CommandStringReader command, int startIndex, Throwable cause) {
         super(String.format("%s  <-- [%s] (%d): %s", command.getString(), command.getString().substring(startIndex), startIndex, errorMessage), cause);
         this.errorMessage = errorMessage;
         this.command = command;
         this.startIndex = startIndex;
-        this.endIndex = command.getPosition();
+        this.endIndex = command.getCursor();
     }
 
-    public CommandParseException(String errorMessage, ImprovedStringReader command, String currentArgument) {
+    public CommandParseException(String errorMessage, CommandStringReader command, String currentArgument) {
         this(errorMessage, command, currentArgument, null);
     }
 
-    public CommandParseException(String errorMessage, ImprovedStringReader command, String currentArgument, Throwable cause) {
-        super(String.format("%s  <-- [%s] (%d): %s", command.getString(), currentArgument, (command.getPosition() - currentArgument.length()), errorMessage), cause);
+    public CommandParseException(String errorMessage, CommandStringReader command, String currentArgument, Throwable cause) {
+        super(String.format("%s  <-- [%s] (%d): %s", command.getString(), currentArgument, (command.getCursor() - currentArgument.length()), errorMessage), cause);
         this.errorMessage = errorMessage;
         this.command = command;
-        this.startIndex = command.getPosition() - currentArgument.length();
-        this.endIndex = command.getPosition();
+        this.startIndex = command.getCursor() - currentArgument.length();
+        this.endIndex = command.getCursor();
     }
 
     public String getErrorMessage() {
         return this.errorMessage;
     }
 
-    public ImprovedStringReader getCommand() {
+    public CommandStringReader getCommand() {
         return this.command;
     }
 

@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.data.commands.parser.exceptions.number;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class MinimumBiggerAsMaximumCommandParseException extends CommandParseException {
 
     private static final String ERROR_MESSAGE = "Minimum bigger than maximum!";
 
-    public MinimumBiggerAsMaximumCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public MinimumBiggerAsMaximumCommandParseException(CommandStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public MinimumBiggerAsMaximumCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public MinimumBiggerAsMaximumCommandParseException(CommandStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

@@ -12,23 +12,21 @@
  */
 package de.bixilon.minosoft.data.commands.parser
 
+import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.ItemNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader
 
 class ItemStackParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: ImprovedStringReader) {
-        val argument = stringReader.readUntil(ProtocolDefinition.COMMAND_SEPARATOR, "{")
-        if (!connection.mapping.doesItemExist(ModIdentifier(argument.key))) {
+    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+        val argument = stringReader.readModIdentifier()
+        if (!connection.mapping.doesItemExist(argument.value)) {
             throw ItemNotFoundCommandParseException(stringReader, argument.key)
         }
-        if (argument.value == "{" || stringReader.nextChar == '{') {
+        if (stringReader.peek() == '{') {
             throw TODO("NBT Data needs to be implemented")
         }
     }

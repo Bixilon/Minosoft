@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.BlankStringCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.StringParserProperties;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class StringParser extends CommandParser {
     public static final StringParser STRING_PARSER = new StringParser();
@@ -30,27 +30,12 @@ public class StringParser extends CommandParser {
     }
 
     @Override
-    public void isParsable(Connection connection, ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
+    public void isParsable(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         StringParserProperties stringParserProperties = ((StringParserProperties) properties);
         String string = switch (stringParserProperties.getSetting()) {
-            case SINGLE_WORD -> stringReader.readUntilNextCommandArgument();
-            case QUOTABLE_PHRASE -> {
-                if (stringReader.get(1).equals("\"")) {
-                    stringReader.skip(1);
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(stringReader.readUntil("\"").getKey());
-                    String currentString = builder.toString();
-                    while (currentString.endsWith("\\") && !currentString.endsWith("\\\\")) {
-                        // quotes are escaped, continue
-                        builder.append("\"");
-                        builder.append(stringReader.readUntil("\""));
-                        currentString = builder.toString();
-                    }
-                    yield currentString;
-                }
-                yield stringReader.readUntilNextCommandArgument();
-            }
-            case GREEDY_PHRASE -> stringReader.readRest();
+            case SINGLE_WORD -> stringReader.readUnquotedString();
+            case QUOTABLE_PHRASE -> stringReader.readString();
+            case GREEDY_PHRASE -> stringReader.readRemaining();
         };
 
         if (stringParserProperties.isAllowEmptyString()) {

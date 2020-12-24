@@ -12,12 +12,12 @@
  */
 package de.bixilon.minosoft.data.commands.parser.exceptions
 
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader
+import de.bixilon.minosoft.data.commands.CommandStringReader
 
 class InvalidObjectiveCommandParseException : CommandParseException {
-    constructor(command: ImprovedStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
+    constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
 
-    constructor(command: ImprovedStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
+    constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
 
     companion object {
         private const val ERROR_MESSAGE = "Objective is invalid!"

@@ -10,21 +10,16 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.commands.parser.exceptions
 
-package de.bixilon.minosoft.data.commands.parser.exceptions.entity;
+import de.bixilon.minosoft.data.commands.CommandStringReader
 
-import de.bixilon.minosoft.data.commands.CommandStringReader;
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
+class FloatingDataCommandParseException : CommandParseException {
+    constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
 
-public class UnknownEnumValueCommandParseException extends CommandParseException {
+    constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
 
-    private static final String ERROR_MESSAGE = "Unknown enum value!";
-
-    public UnknownEnumValueCommandParseException(CommandStringReader command, String currentArgument) {
-        super(ERROR_MESSAGE, command, currentArgument);
-    }
-
-    public UnknownEnumValueCommandParseException(CommandStringReader command, String currentArgument, Throwable cause) {
-        super(ERROR_MESSAGE, command, currentArgument, cause);
+    companion object {
+        private const val ERROR_MESSAGE = "Floating data!"
     }
 }

@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.data.commands.parser.exceptions.number;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class NumberIsDecimalCommandParseException extends CommandParseException {
 
     private static final String ERROR_MESSAGE = "Decimal values are not allowed!";
 
-    public NumberIsDecimalCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public NumberIsDecimalCommandParseException(CommandStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public NumberIsDecimalCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public NumberIsDecimalCommandParseException(CommandStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

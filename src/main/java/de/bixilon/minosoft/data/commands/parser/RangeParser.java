@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.*;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.RangeParserProperties;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class RangeParser extends CommandParser {
     public static final RangeParser RANGE_PARSER = new RangeParser();
 
-    public static void readRange(ImprovedStringReader stringReader, String argument, double minValue, double maxValue, boolean allowDecimal) throws CommandParseException {
+    public static void readRange(CommandStringReader stringReader, String argument, double minValue, double maxValue, boolean allowDecimal) throws CommandParseException {
         if (argument.contains("..")) {
             // range
             String[] split = argument.split("\\.\\.");
@@ -53,7 +53,7 @@ public class RangeParser extends CommandParser {
         }
     }
 
-    private static double parseValue(ImprovedStringReader stringReader, String match, String value, boolean allowDecimal) throws CommandParseException {
+    private static double parseValue(CommandStringReader stringReader, String match, String value, boolean allowDecimal) throws CommandParseException {
         if (value.contains(".")) {
             if (!allowDecimal) {
                 throw new NumberIsDecimalCommandParseException(stringReader, match);
@@ -75,7 +75,7 @@ public class RangeParser extends CommandParser {
     }
 
     @Override
-    public void isParsable(Connection connection, ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
-        readRange(stringReader, stringReader.readUntilNextCommandArgument(), Double.MIN_VALUE, Double.MAX_VALUE, ((RangeParserProperties) properties).isAllowDecimals());
+    public void isParsable(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+        readRange(stringReader, stringReader.readString(), Double.MIN_VALUE, Double.MAX_VALUE, ((RangeParserProperties) properties).isAllowDecimals());
     }
 }

@@ -22,7 +22,6 @@ import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 import javax.annotation.Nullable;
 
@@ -70,7 +69,7 @@ public class CommandArgumentNode extends CommandLiteralNode {
     }
 
     @Override
-    public void isSyntaxCorrect(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
+    public void isSyntaxCorrect(Connection connection, CommandStringReader stringReader) throws CommandParseException {
         this.parser.isParsable(connection, this.properties, stringReader);
         super.isSyntaxCorrect(connection, stringReader);
     }

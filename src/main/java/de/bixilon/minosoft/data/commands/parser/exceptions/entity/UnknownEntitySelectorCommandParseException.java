@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.data.commands.parser.exceptions.entity;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class UnknownEntitySelectorCommandParseException extends CommandParseException {
 
     private static final String ERROR_MESSAGE = "Unknown entity selector!";
 
-    public UnknownEntitySelectorCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public UnknownEntitySelectorCommandParseException(CommandStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public UnknownEntitySelectorCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public UnknownEntitySelectorCommandParseException(CommandStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

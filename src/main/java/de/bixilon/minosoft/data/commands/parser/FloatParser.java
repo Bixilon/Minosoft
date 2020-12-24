@@ -13,14 +13,13 @@
 
 package de.bixilon.minosoft.data.commands.parser;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exceptions.number.FloatCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.ValueOutOfRangeCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.FloatParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class FloatParser extends CommandParser {
     public static final FloatParser FLOAT_PARSER = new FloatParser();
@@ -31,16 +30,11 @@ public class FloatParser extends CommandParser {
     }
 
     @Override
-    public void isParsable(Connection connection, ParserProperties properties, ImprovedStringReader stringReader) throws CommandParseException {
-        String argument = stringReader.readUntilNextCommandArgument();
-        try {
-            float value = Float.parseFloat(argument);
-            FloatParserProperties floatParserProperties = (FloatParserProperties) properties;
-            if (value < floatParserProperties.getMinValue() && value > floatParserProperties.getMaxValue()) {
-                throw new ValueOutOfRangeCommandParseException(stringReader, floatParserProperties.getMinValue(), floatParserProperties.getMaxValue(), value);
-            }
-        } catch (NumberFormatException exception) {
-            throw new FloatCommandParseException(stringReader, argument, exception);
+    public void isParsable(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+        float value = stringReader.readFloat();
+        FloatParserProperties floatParserProperties = (FloatParserProperties) properties;
+        if (value < floatParserProperties.getMinValue() && value > floatParserProperties.getMaxValue()) {
+            throw new ValueOutOfRangeCommandParseException(stringReader, floatParserProperties.getMinValue(), floatParserProperties.getMaxValue(), value);
         }
     }
 }

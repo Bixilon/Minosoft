@@ -14,27 +14,24 @@
 package de.bixilon.minosoft.data.commands.parser.entity;
 
 import de.bixilon.minosoft.data.EntityClassMappings;
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.entity.UnknownEntityCommandParseException;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.util.Pair;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class IdentifierSelectorArgumentParser extends EntitySelectorArgumentParser {
     public static final IdentifierSelectorArgumentParser ENTITY_TYPE_IDENTIFIER_SELECTOR_ARGUMENT_PARSER = new IdentifierSelectorArgumentParser();
 
     @Override
-    public void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
-        Pair<String, String> match = readNextArgument(stringReader);
-        String value = match.getKey();
-        if (match.getKey().startsWith("!")) {
+    public void isParsable(Connection connection, CommandStringReader stringReader, String value) throws CommandParseException {
+        if (value.startsWith("!")) {
             value = value.substring(1);
         }
         ModIdentifier identifier = new ModIdentifier(value);
         if (this == ENTITY_TYPE_IDENTIFIER_SELECTOR_ARGUMENT_PARSER) {
             if (EntityClassMappings.INSTANCE.getByIdentifier(identifier) == null) {
-                throw new UnknownEntityCommandParseException(stringReader, match.getKey());
+                throw new UnknownEntityCommandParseException(stringReader, value);
             }
             return;
         }

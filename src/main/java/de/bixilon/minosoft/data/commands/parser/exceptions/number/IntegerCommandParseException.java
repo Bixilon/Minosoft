@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.data.commands.parser.exceptions.number;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class IntegerCommandParseException extends CommandParseException {
 
     private static final String ERROR_MESSAGE = "Unknown int value!";
 
-    public IntegerCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public IntegerCommandParseException(CommandStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public IntegerCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public IntegerCommandParseException(CommandStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

@@ -13,22 +13,20 @@
 
 package de.bixilon.minosoft.data.commands.parser.entity;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.DoubleCommandParseException;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.util.Pair;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class DoubleSelectorArgumentParser extends EntitySelectorArgumentParser {
     public static final DoubleSelectorArgumentParser DOUBLE_SELECTOR_ARGUMENT_PARSER = new DoubleSelectorArgumentParser();
 
     @Override
-    public void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
-        Pair<String, String> match = readNextArgument(stringReader);
+    public void isParsable(Connection connection, CommandStringReader stringReader, String value) throws CommandParseException {
         try {
-            Double.parseDouble(match.getKey());
+            Double.parseDouble(value);
         } catch (Exception e) {
-            throw new DoubleCommandParseException(stringReader, match.getKey(), e);
+            throw new DoubleCommandParseException(stringReader, value, e);
         }
     }
 }

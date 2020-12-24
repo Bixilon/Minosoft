@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.data.commands.parser.exceptions.entity;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class UnknownEntityCommandParseException extends CommandParseException {
 
     private static final String ERROR_MESSAGE = "Unknown entity type!";
 
-    public UnknownEntityCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public UnknownEntityCommandParseException(CommandStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public UnknownEntityCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public UnknownEntityCommandParseException(CommandStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

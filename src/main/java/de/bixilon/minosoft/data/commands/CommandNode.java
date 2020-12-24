@@ -19,9 +19,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.RequiresMoreArguments
 import de.bixilon.minosoft.data.commands.parser.exceptions.WrongArgumentCommandParseException;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.BitByte;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -78,29 +76,31 @@ public abstract class CommandNode {
         return this.childrenIds;
     }
 
-    public void isSyntaxCorrect(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
-        String nextArgument = stringReader.getUntilNextCommandArgument();
-        if (nextArgument.isEmpty()) {
+    public void isSyntaxCorrect(Connection connection, CommandStringReader stringReader) throws CommandParseException {
+        stringReader.skipWhitespaces();
+        if (stringReader.getRemainingLength() == 0) {
             if (this.isExecutable) {
                 return;
             }
             throw new RequiresMoreArgumentsCommandParseException(stringReader);
         }
+        String nextArgument = stringReader.readUnquotedString();
         if (this.literalChildren.containsKey(nextArgument)) {
-            stringReader.skip(nextArgument.length() + ProtocolDefinition.COMMAND_SEPARATOR.length());
+            stringReader.skip(nextArgument.length());
             this.literalChildren.get(nextArgument).isSyntaxCorrect(connection, stringReader);
             return;
         }
+        stringReader.skip(-nextArgument.length());
         CommandParseException lastException = null;
         for (CommandArgumentNode argumentNode : this.argumentsChildren) {
-            int currentPosition = stringReader.getPosition();
+            int currentPosition = stringReader.getCursor();
             try {
                 argumentNode.isSyntaxCorrect(connection, stringReader);
                 return;
             } catch (CommandParseException e) {
                 lastException = e;
             }
-            stringReader.setPosition(currentPosition);
+            stringReader.setCursor(currentPosition);
         }
         if (lastException != null) {
             throw lastException;
@@ -112,7 +112,7 @@ public abstract class CommandNode {
     public void isSyntaxCorrect(Connection connection, String string) throws CommandParseException {
         // replace multiple spaces with nothing
         string = string.replaceAll("\\s{2,}", " ");
-        ImprovedStringReader stringReader = new ImprovedStringReader(string);
+        CommandStringReader stringReader = new CommandStringReader(string);
         isSyntaxCorrect(connection, stringReader);
     }
 

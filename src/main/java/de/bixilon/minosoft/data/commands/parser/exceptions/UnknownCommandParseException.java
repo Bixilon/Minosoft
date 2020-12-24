@@ -13,17 +13,17 @@
 
 package de.bixilon.minosoft.data.commands.parser.exceptions;
 
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 
 public class UnknownCommandParseException extends CommandParseException {
 
     private static final String ERROR_MESSAGE = "Unknown command!";
 
-    public UnknownCommandParseException(ImprovedStringReader command, String currentArgument) {
+    public UnknownCommandParseException(CommandStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);
     }
 
-    public UnknownCommandParseException(ImprovedStringReader command, String currentArgument, Throwable cause) {
+    public UnknownCommandParseException(CommandStringReader command, String currentArgument, Throwable cause) {
         super(ERROR_MESSAGE, command, currentArgument, cause);
     }
 }

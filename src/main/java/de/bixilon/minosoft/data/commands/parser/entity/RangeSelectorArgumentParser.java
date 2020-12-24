@@ -13,11 +13,10 @@
 
 package de.bixilon.minosoft.data.commands.parser.entity;
 
+import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.RangeParser;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.util.Pair;
-import de.bixilon.minosoft.util.buffers.ImprovedStringReader;
 
 public class RangeSelectorArgumentParser extends EntitySelectorArgumentParser {
     public static final RangeSelectorArgumentParser LEVEL_SELECTOR_ARGUMENT_PARSER = new RangeSelectorArgumentParser(0, Integer.MAX_VALUE, false);
@@ -47,9 +46,7 @@ public class RangeSelectorArgumentParser extends EntitySelectorArgumentParser {
     }
 
     @Override
-    public void isParsable(Connection connection, ImprovedStringReader stringReader) throws CommandParseException {
-        Pair<String, String> match = readNextArgument(stringReader);
-
-        RangeParser.readRange(stringReader, match.getKey(), getMinValue(), getMaxValue(), isDecimal());
+    public void isParsable(Connection connection, CommandStringReader stringReader, String value) throws CommandParseException {
+        RangeParser.readRange(stringReader, value, getMinValue(), getMaxValue(), isDecimal());
     }
 }
