@@ -433,17 +433,29 @@ public class VersionMapping {
 
                             block = new Block(mod, identifierName, properties, rotation);
 
-                            // map block id
-                            this.blockIdMap.get(this.blockIdMap.inverse().get(new BlockId(block))).getBlocks().add(block);
+                            if (version.isFlattened()) {
+                                // map block id
+                                this.blockIdMap.get(this.blockIdMap.inverse().get(new BlockId(block))).getBlocks().add(block);
+                            }
                         } else {
                             // no properties, directly add block
                             block = new Block(mod, identifierName);
                         }
-                        int blockId = getBlockId(statesJSON, !version.isFlattened());
+                        int blockNumericId = getBlockId(statesJSON, !version.isFlattened());
                         if (StaticConfiguration.DEBUG_MODE) {
-                            checkAndCrashIfBlockIsIn(blockId, identifierName, this.blockMap);
+                            checkAndCrashIfBlockIsIn(blockNumericId, identifierName, this.blockMap);
                         }
-                        this.blockMap.put(blockId, block);
+
+                        if (!version.isFlattened()) {
+                            // map block id
+                            BlockId blockId = this.blockIdMap.get(this.blockIdMap.inverse().get(new BlockId(block)));
+                            if (blockId == null) {
+                                blockId = new BlockId(block);
+                                this.blockIdMap.put(blockNumericId, blockId);
+                            }
+                            blockId.getBlocks().add(block);
+                        }
+                        this.blockMap.put(blockNumericId, block);
                     }
                 }
             }
