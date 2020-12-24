@@ -417,7 +417,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
 
     public void manageSessions() {
         try {
-            SessionsWindow sessionsWindow = GUITools.showPane("/layout/dialogs/login_mojang.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.SESSIONS_DIALOG_TITLE, this.server.getName()));
+            SessionsWindow sessionsWindow = GUITools.showPane("/layout/sessions.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.SESSIONS_DIALOG_TITLE, this.server.getName().getMessage()));
             sessionsWindow.setServer(this.server);
         } catch (IOException e) {
             e.printStackTrace();
