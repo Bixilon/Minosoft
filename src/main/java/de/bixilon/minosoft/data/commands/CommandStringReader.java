@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.commands;
 
 import de.bixilon.minosoft.data.commands.parser.exceptions.BooleanCommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidIdentifierCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.StringCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.InvalidIdentifierCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.DoubleCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.FloatCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.IntegerCommandParseException;
@@ -24,6 +24,8 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.properties.BadPropert
 import de.bixilon.minosoft.data.commands.parser.exceptions.properties.DuplicatedPropertyKeyCommandParseException;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.util.Pair;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,11 +34,11 @@ public class CommandStringReader {
     private final String string;
     private int cursor;
 
-    public CommandStringReader(String string) {
+    public CommandStringReader(@NotNull String string) {
         this.string = string;
     }
 
-    public CommandStringReader(CommandStringReader stringReader) {
+    public CommandStringReader(@NotNull CommandStringReader stringReader) {
         this.string = stringReader.string;
         this.cursor = stringReader.cursor;
     }
@@ -105,6 +107,7 @@ public class CommandStringReader {
         return skipped;
     }
 
+    @NotNull
     public String readUnquotedString() {
         StringBuilder builder = new StringBuilder();
         while (canRead()) {
@@ -119,6 +122,7 @@ public class CommandStringReader {
         return builder.toString();
     }
 
+    @NotNull
     public String readQuotedString() throws StringCommandParseException {
         if (!canRead() || !peekExpected('"', '\'')) {
             throw new StringCommandParseException(this, String.valueOf(peek()), "String is not quoted!");
@@ -126,6 +130,7 @@ public class CommandStringReader {
         return readStringUntil(read());
     }
 
+    @NotNull
     public String readNumericString() {
         StringBuilder builder = new StringBuilder();
         while (canRead()) {
@@ -140,6 +145,7 @@ public class CommandStringReader {
         return builder.toString();
     }
 
+    @NotNull
     public Pair<String, String> readProperty() throws StringCommandParseException, BadPropertyMapCommandParseException {
         skipWhitespaces();
         StringBuilder builder = new StringBuilder();
@@ -154,6 +160,7 @@ public class CommandStringReader {
         return new Pair<>(key, value);
     }
 
+    @NotNull
     public Map<String, String> readProperties() throws StringCommandParseException, DuplicatedPropertyKeyCommandParseException, BadPropertyMapCommandParseException {
         Map<String, String> ret = new HashMap<>();
         if (peek() != '[') {
@@ -180,6 +187,7 @@ public class CommandStringReader {
         return ret;
     }
 
+    @NotNull
     public Pair<String, ModIdentifier> readModIdentifier() throws InvalidIdentifierCommandParseException {
         StringBuilder builder = new StringBuilder();
         while (canRead()) {
@@ -199,6 +207,7 @@ public class CommandStringReader {
         }
     }
 
+    @NotNull
     public String readString() throws StringCommandParseException {
         if (!canRead()) {
             return "";
@@ -219,10 +228,12 @@ public class CommandStringReader {
         return false;
     }
 
+    @NotNull
     private String readStringUntil(boolean requiresTerminator, char terminator) throws StringCommandParseException {
         return readStringUntil(requiresTerminator, new char[]{terminator}).getKey();
     }
 
+    @NotNull
     private Pair<String, Character> readStringUntil(boolean requiresTerminator, char... terminators) throws StringCommandParseException {
         StringBuilder builder = new StringBuilder();
         boolean isNextCharEscaped = false;
@@ -297,6 +308,7 @@ public class CommandStringReader {
         }
     }
 
+    @NotNull
     public Pair<String, Character> readStringUntilOrEnd(char... terminators) {
         try {
             return readStringUntil(false, terminators);
@@ -306,10 +318,12 @@ public class CommandStringReader {
         }
     }
 
+    @NotNull
     public Pair<String, Character> readStringUntil(char... terminators) throws StringCommandParseException {
         return readStringUntil(true, terminators);
     }
 
+    @NotNull
     public String readStringUntilOrEnd(char terminator) {
         try {
             return readStringUntil(false, terminator);
@@ -319,8 +333,13 @@ public class CommandStringReader {
         }
     }
 
+    @NotNull
     public String readStringUntil(char terminator) throws StringCommandParseException {
         return readStringUntil(true, terminator);
+    }
+
+    public CompoundTag readNBTCompoundTag() {
+        throw new IllegalArgumentException("TODO");
     }
 
     public boolean readExpected(char... expected) {
@@ -329,16 +348,19 @@ public class CommandStringReader {
         return ret;
     }
 
+    @NotNull
     public String readRemaining() {
         String ret = this.string.substring(this.cursor);
         this.cursor = this.string.length() + 1;
         return ret;
     }
 
+    @NotNull
     public String peekRemaining() {
         return this.string.substring(this.cursor);
     }
 
+    @NotNull
     public String getString() {
         return this.string;
     }

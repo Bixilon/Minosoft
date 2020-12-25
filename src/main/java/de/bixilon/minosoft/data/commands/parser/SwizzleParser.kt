@@ -13,27 +13,34 @@
 package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
+import de.bixilon.minosoft.data.commands.parser.exceptions.BadSwizzleCombinationCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.InvalidIdentifierCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.Util
 
-class ObjectiveParser : CommandParser() {
+class SwizzleParser : CommandParser() {
 
     @Throws(CommandParseException::class)
     override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
-        val argument = stringReader.readUnquotedString()
-        try {
-            Util.doesStringEqualsRegex(argument, ProtocolDefinition.SCOREBOARD_OBJECTIVE_PATTERN)
-        } catch (exception: IllegalArgumentException) {
-            throw InvalidIdentifierCommandParseException(stringReader, argument, exception)
+        val swizzle = stringReader.readUnquotedString()
+
+        val containing: HashSet<Char> = HashSet()
+
+        for (char in swizzle.toCharArray()) {
+            when (char) {
+                'x', 'y', 'z' -> {
+                    if (containing.contains(char)) {
+                        throw BadSwizzleCombinationCommandParseException(stringReader, swizzle)
+                    }
+                    containing.add(char)
+                }
+                else -> throw BadSwizzleCombinationCommandParseException(stringReader, swizzle)
+            }
         }
 
     }
 
     companion object {
-        val OBJECTIVE_PARSER = ObjectiveParser()
+        val SWIZZLE_PARSER = SwizzleParser()
     }
 }

@@ -13,27 +13,37 @@
 package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
+import de.bixilon.minosoft.data.commands.parser.exceptions.ColorNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.InvalidIdentifierCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownOperationCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.Util
 
-class ObjectiveParser : CommandParser() {
+class ScoreboardSlotParser : CommandParser() {
 
     @Throws(CommandParseException::class)
     override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
-        val argument = stringReader.readUnquotedString()
-        try {
-            Util.doesStringEqualsRegex(argument, ProtocolDefinition.SCOREBOARD_OBJECTIVE_PATTERN)
-        } catch (exception: IllegalArgumentException) {
-            throw InvalidIdentifierCommandParseException(stringReader, argument, exception)
+        val slot = stringReader.readUnquotedString()
+
+        if (slot.startsWith("sidebar.team.")) {
+            val color = slot.substring("sidebar.team.".length)
+            try {
+                ChatColors.getChatFormattingByName(color)
+            } catch (exception: IllegalArgumentException) {
+                throw ColorNotFoundCommandParseException(stringReader, color)
+            }
+            return
+        }
+
+        if (!SCOREBOARD_SLOTS.contains(slot)) {
+            throw UnknownOperationCommandParseException(stringReader, slot)
         }
 
     }
 
     companion object {
-        val OBJECTIVE_PARSER = ObjectiveParser()
+        private val SCOREBOARD_SLOTS = setOf("list", "sidebar", "belowName")
+        val SCOREBOARD_SLOT_PARSER = ScoreboardSlotParser()
     }
 }

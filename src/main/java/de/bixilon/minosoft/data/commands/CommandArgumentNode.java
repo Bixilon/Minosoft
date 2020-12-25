@@ -48,7 +48,7 @@ public class CommandArgumentNode extends CommandLiteralNode {
                 case "minecraft:available_sounds" -> CommandArgumentNode.SuggestionTypes.AVAILABLE_SOUNDS;
                 case "minecraft:summonable_entities" -> CommandArgumentNode.SuggestionTypes.SUMMONABLE_ENTITIES;
                 case "minecraft:available_biomes" -> CommandArgumentNode.SuggestionTypes.AVAILABLE_BIOMES;
-                default -> throw new IllegalStateException("Unexpected value: " + fullIdentifier);
+                default -> throw new IllegalArgumentException("Unexpected value: " + fullIdentifier);
             };
         } else {
             this.suggestionType = null;

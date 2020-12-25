@@ -32,7 +32,7 @@ public class PacketSculkVibrationSignal extends ClientboundPacket {
         this.vibrationTargetData = switch (this.vibrationTargetType.getFullIdentifier()) {
             case "minecraft:block" -> buffer.readPosition(); // sculk source position
             case "minecraft:entity" -> buffer.readEntityId();
-            default -> throw new IllegalStateException("Unexpected value: " + this.vibrationTargetType.getFullIdentifier());
+            default -> throw new IllegalArgumentException("Unexpected value: " + this.vibrationTargetType.getFullIdentifier());
         };
         this.arrivalTicks = buffer.readVarInt();
         return true;

@@ -10,16 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.commands.parser.exceptions
+package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
+import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
+import de.bixilon.minosoft.protocol.network.Connection
 
-class EnchantmentNotFoundCommandParseException : CommandParseException {
-    constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
+class RotationParser : CoordinateParser() {
 
-    constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
+    @Throws(CommandParseException::class)
+    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+        readCoordinates(stringReader, true, 2)
+    }
 
     companion object {
-        private const val ERROR_MESSAGE = "Enchantment not found!"
+        val ROTATION_PARSER = RotationParser()
     }
 }

@@ -25,8 +25,9 @@ object CommandParsers {
             ModIdentifier("brigadier:float") to FloatParser.FLOAT_PARSER,
             ModIdentifier("brigadier:integer") to IntegerParser.INTEGER_PARSER,
             ModIdentifier("brigadier:string") to StringParser.STRING_PARSER,
+            ModIdentifier("angle") to AngleParser.ANGLE_PARSER,
             ModIdentifier("entity") to EntityParser.ENTITY_PARSER,
-            // game_profile
+            ModIdentifier("game_profile") to GameProfileParser.GAME_PROFILE_PARSER,
             ModIdentifier("block_pos") to BlockPositionParser.BLOCK_POSITION_PARSER,
             ModIdentifier("column_pos") to ColumnPositionParser.COLUMN_POSITION_PARSER,
             ModIdentifier("vec3") to Vec3Parser.VEC3_PARSER,
@@ -35,21 +36,21 @@ object CommandParsers {
             // block_predicate
             ModIdentifier("item_stack") to ItemStackParser.ITEM_STACK_PARSER,
             // item_predicate
-            // color
+            ModIdentifier("color") to ColorParser.COLOR_PARSER,
             // chat component
             ModIdentifier("message") to MessageParser.MESSAGE_PARSER,
             // nbt
-            // nbt_pat
+            // nbt_path
             ModIdentifier("objective") to ObjectiveParser.OBJECTIVE_PARSER,
             // objective_criteria
-            // operation
+            ModIdentifier("operation") to OperationParser.OPERATION_PARSER,
             // particle
-            // rotation
-            // scoreboard_slot
+            ModIdentifier("rotation") to RotationParser.ROTATION_PARSER,
+            ModIdentifier("scoreboard_slot") to ScoreboardSlotParser.SCOREBOARD_SLOT_PARSER,
             ModIdentifier("score_holder") to ScoreHolderParser.SCORE_HOLDER_PARSER,
-            // swizzle
-            // team
-            // item_slot
+            ModIdentifier("swizzle") to SwizzleParser.SWIZZLE_PARSER,
+            ModIdentifier("team") to TeamParser.TEAM_PARSER,
+            ModIdentifier("item_slot") to ItemSlotParser.ITEM_SLOT_PARSER,
             ModIdentifier("resource_location") to IdentifierParser.IDENTIFIER_PARSER,
             ModIdentifier("mob_effect") to IdentifierListParser.MOB_EFFECT_PARSER,
             // function
@@ -58,8 +59,8 @@ object CommandParsers {
             ModIdentifier("int_range") to IntRangeParser.INT_RANGE_PARSER,
             ModIdentifier("float_range") to FloatRangeParser.FLOAT_RANGE_PARSER,
             ModIdentifier("item_enchantment") to IdentifierListParser.ENCHANTMENT_PARSER,
-            // entity_summon
-            // dimension
+            ModIdentifier("entity_summon") to IdentifierListParser.SUMMONABLE_ENTITY_PARSER,
+            ModIdentifier("dimension") to IdentifierListParser.DIMENSION_EFFECT_PARSER,
             ModIdentifier("uuid") to UUIDParser.UUID_PARSER,
             // nbt_tag
             // nbt_compound_tag

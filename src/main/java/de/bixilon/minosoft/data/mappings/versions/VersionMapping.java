@@ -605,4 +605,14 @@ public class VersionMapping {
         }
         return this.mobEffectMap.containsValue(identifier);
     }
+
+    public boolean doesDimensionExist(ModIdentifier identifier) {
+        if (this.parentMapping != null) {
+            if (this.parentMapping.doesDimensionExist(identifier)) {
+                return true;
+            }
+        }
+        return this.dimensionMap.containsValue(identifier);
+    }
+
 }

@@ -12,10 +12,13 @@
  */
 package de.bixilon.minosoft.data.commands.parser
 
+import de.bixilon.minosoft.data.EntityClassMappings
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.EnchantmentNotFoundCommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.MobEffectNotFoundCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.DimensionNotFoundCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.EnchantmentNotFoundCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.EntityNotFoundCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.MobEffectNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.Connection
 
@@ -38,10 +41,26 @@ class IdentifierListParser : CommandParser() {
             }
             return
         }
+        if (this == DIMENSION_EFFECT_PARSER) {
+            if (!connection.mapping.doesDimensionExist(identifier.value)) {
+                throw DimensionNotFoundCommandParseException(stringReader, identifier.key)
+            }
+            return
+        }
+        if (this == SUMMONABLE_ENTITY_PARSER) {
+            // ToDo: only summonable entities, not all of them
+
+            if (EntityClassMappings.getByIdentifier(identifier.value) == null) {
+                throw EntityNotFoundCommandParseException(stringReader, identifier.key)
+            }
+            return
+        }
     }
 
     companion object {
         val ENCHANTMENT_PARSER = IdentifierListParser()
         val MOB_EFFECT_PARSER = IdentifierListParser()
+        val DIMENSION_EFFECT_PARSER = IdentifierListParser()
+        val SUMMONABLE_ENTITY_PARSER = IdentifierListParser()
     }
 }

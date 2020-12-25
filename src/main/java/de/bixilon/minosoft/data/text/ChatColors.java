@@ -89,6 +89,10 @@ public final class ChatColors {
     }
 
     public static RGBColor getColorByName(String name) {
+        return (RGBColor) getChatFormattingByName(name);
+    }
+
+    public static ChatCode getChatFormattingByName(String name) {
         return switch (name.toLowerCase()) {
             case "black" -> BLACK;
             case "dark_blue" -> DARK_BLUE;
@@ -106,7 +110,12 @@ public final class ChatColors {
             case "light_purple" -> LIGHT_PURPLE;
             case "yellow" -> YELLOW;
             case "white", "reset" -> WHITE;
-            default -> throw new IllegalStateException("Unexpected value: " + name);
+            case "bold" -> PreChatFormattingCodes.BOLD;
+            case "italic" -> PreChatFormattingCodes.ITALIC;
+            case "underlined" -> PreChatFormattingCodes.UNDERLINED;
+            case "strikethrough" -> PreChatFormattingCodes.STRIKETHROUGH;
+            case "obfuscated" -> PreChatFormattingCodes.OBFUSCATED;
+            default -> throw new IllegalArgumentException("Unexpected value: " + name);
         };
     }
 }

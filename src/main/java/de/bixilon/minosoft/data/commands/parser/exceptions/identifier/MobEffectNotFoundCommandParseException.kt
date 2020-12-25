@@ -10,9 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.commands.parser.exceptions
+package de.bixilon.minosoft.data.commands.parser.exceptions.identifier
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 
 class MobEffectNotFoundCommandParseException : CommandParseException {
     constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)

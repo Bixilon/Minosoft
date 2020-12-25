@@ -53,7 +53,7 @@ public class BedEntityMetaData extends BlockEntityMetaData {
             case 13 -> new RGBColor(77, 97, 34); // green
             case 14 -> new RGBColor(139, 30, 31); // red
             case 15 -> new RGBColor(15, 16, 19); // black
-            default -> throw new IllegalStateException("Unexpected value: " + ((IntTag) nbt).getValue());
+            default -> throw new IllegalArgumentException("Unexpected value: " + ((IntTag) nbt).getValue());
         };
     }
 

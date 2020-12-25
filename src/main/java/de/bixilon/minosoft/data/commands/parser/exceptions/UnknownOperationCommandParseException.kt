@@ -14,12 +14,12 @@ package de.bixilon.minosoft.data.commands.parser.exceptions
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 
-class ItemNotFoundCommandParseException : CommandParseException {
+class UnknownOperationCommandParseException : CommandParseException {
     constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
 
     constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
 
     companion object {
-        private const val ERROR_MESSAGE = "Item not found!"
+        private const val ERROR_MESSAGE = "Unknown operation!"
     }
 }

@@ -26,6 +26,11 @@ public class EntityParserProperties implements ParserProperties {
         this.onlyPlayers = BitByte.isBitMask(flags, 0x02);
     }
 
+    public EntityParserProperties(boolean onlySingleEntity, boolean onlyPlayers) {
+        this.onlySingleEntity = onlySingleEntity;
+        this.onlyPlayers = onlyPlayers;
+    }
+
     public boolean isOnlySingleEntity() {
         return this.onlySingleEntity;
     }

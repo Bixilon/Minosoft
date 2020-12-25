@@ -14,26 +14,24 @@ package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.InvalidIdentifierCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownOperationCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.Util
 
-class ObjectiveParser : CommandParser() {
+class OperationParser : CommandParser() {
 
     @Throws(CommandParseException::class)
     override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
-        val argument = stringReader.readUnquotedString()
-        try {
-            Util.doesStringEqualsRegex(argument, ProtocolDefinition.SCOREBOARD_OBJECTIVE_PATTERN)
-        } catch (exception: IllegalArgumentException) {
-            throw InvalidIdentifierCommandParseException(stringReader, argument, exception)
+        val operation = stringReader.readUnquotedString()
+
+        if (!OPERATIONS.contains(operation)) {
+            throw UnknownOperationCommandParseException(stringReader, operation)
         }
 
     }
 
     companion object {
-        val OBJECTIVE_PARSER = ObjectiveParser()
+        private val OPERATIONS = setOf("=", "+=", "-=", "*=", "/=", "%=", "<", ">", "><")
+        val OPERATION_PARSER = OperationParser()
     }
 }

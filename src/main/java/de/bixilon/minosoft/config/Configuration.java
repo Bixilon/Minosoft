@@ -77,7 +77,7 @@ public class Configuration {
             Account account = switch (data.get("type").getAsString()) {
                 case "mojang" -> MojangAccount.deserialize(data);
                 case "offline" -> OfflineAccount.deserialize(data);
-                default -> throw new IllegalStateException("Unexpected value: " + data.get("type").getAsString());
+                default -> throw new IllegalArgumentException("Unexpected value: " + data.get("type").getAsString());
             };
             this.accountList.put(account.getId(), account);
         }

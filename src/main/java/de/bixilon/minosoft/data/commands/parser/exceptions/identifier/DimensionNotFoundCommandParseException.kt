@@ -10,28 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.commands.parser
+package de.bixilon.minosoft.data.commands.parser.exceptions.identifier
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.ItemNotFoundCommandParseException
-import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.protocol.network.Connection
 
-class ItemStackParser : CommandParser() {
+class DimensionNotFoundCommandParseException : CommandParseException {
+    constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
 
-    @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
-        val argument = stringReader.readModIdentifier()
-        if (!connection.mapping.doesItemExist(argument.value)) {
-            throw ItemNotFoundCommandParseException(stringReader, argument.key)
-        }
-        if (stringReader.peek() == '{') {
-            stringReader.readNBTCompoundTag()
-        }
-    }
+    constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
 
     companion object {
-        val ITEM_STACK_PARSER = ItemStackParser()
+        private const val ERROR_MESSAGE = "Dimension not found!"
     }
 }
