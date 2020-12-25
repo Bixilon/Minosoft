@@ -14,23 +14,34 @@ package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.InvalidIdentifierCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.nbt.ExpectedPrimitiveTagCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
-class ObjectiveParser : CommandParser() {
+class NBTParser : CommandParser() {
 
     @Throws(CommandParseException::class)
     override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
-        val argument = stringReader.readUnquotedString()
-        if (!ProtocolDefinition.SCOREBOARD_OBJECTIVE_PATTERN.matcher(argument).matches()) {
-            throw InvalidIdentifierCommandParseException(stringReader, argument)
+        when (this) {
+            NBT_PARSER -> {
+                stringReader.readNBTTag()
+            }
+            NBT_TAG_PARSER -> {
+                val startPos = stringReader.cursor
+                val tag = stringReader.readNBTTag()
+                if (tag!! is CompoundTag) {
+                    throw ExpectedPrimitiveTagCommandParseException(stringReader, stringReader.string.substring(startPos, stringReader.cursor), "Compound Tag is invalid here!")
+                }
+            }
+            NBT_COMPOUND_PARSER -> stringReader.readNBTCompoundTag()
         }
 
     }
 
     companion object {
-        val OBJECTIVE_PARSER = ObjectiveParser()
+        val NBT_PARSER = NBTParser()
+        val NBT_TAG_PARSER = NBTParser()
+        val NBT_COMPOUND_PARSER = NBTParser()
     }
 }

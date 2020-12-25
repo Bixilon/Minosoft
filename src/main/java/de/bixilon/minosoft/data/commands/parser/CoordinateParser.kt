@@ -32,7 +32,7 @@ abstract class CoordinateParser : CommandParser() {
         if (notation != CoordinateNotations.NONE) {
             stringReader.skip()
         }
-        if (!stringReader.canRead() || stringReader.peek() != ' ') {
+        if (!stringReader.canRead() || stringReader.peek() == ' ') {
             return notation
         }
         if (allowDecimal) {

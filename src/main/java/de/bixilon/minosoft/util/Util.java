@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -23,6 +24,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -32,7 +34,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.*;
 
@@ -41,6 +42,23 @@ public final class Util {
     public static final char[] RANDOM_STRING_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final Random THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
+
+    private static final Field JSON_READER_POS_FIELD;
+    private static final Field JSON_READER_LINE_START_FIELD;
+
+    static {
+        new JsonReader(new StringReader(""));
+        Class<?> jsonReadClass = JsonReader.class;
+        try {
+            JSON_READER_POS_FIELD = jsonReadClass.getDeclaredField("pos");
+            JSON_READER_POS_FIELD.setAccessible(true);
+            JSON_READER_LINE_START_FIELD = jsonReadClass.getDeclaredField("lineStart");
+            JSON_READER_LINE_START_FIELD.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
     public static UUID getUUIDFromString(String uuid) {
         uuid = uuid.trim();
@@ -292,10 +310,11 @@ public final class Util {
         return !string.toLowerCase().equals(string);
     }
 
-    public static void doesStringEqualsRegex(String input, Pattern pattern) throws IllegalArgumentException {
-        Matcher matcher = pattern.matcher(input);
-        if (!matcher.find() || !matcher.group().equals(input)) {
-            throw new IllegalArgumentException();
+    public static int getJsonReaderPosition(JsonReader jsonReader) {
+        try {
+            return JSON_READER_POS_FIELD.getInt(jsonReader) - JSON_READER_LINE_START_FIELD.getInt(jsonReader) + 1;
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException();
         }
     }
 }

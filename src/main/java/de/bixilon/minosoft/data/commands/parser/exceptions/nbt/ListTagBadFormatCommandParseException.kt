@@ -10,20 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.commands.parser.exceptions.nbt
 
-package de.bixilon.minosoft.data.commands.parser.exceptions;
+import de.bixilon.minosoft.data.commands.CommandStringReader
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 
-import de.bixilon.minosoft.data.commands.CommandStringReader;
+class ListTagBadFormatCommandParseException : CommandParseException {
+    constructor(command: CommandStringReader, currentArgument: String, message: String) : super(message, command, currentArgument)
 
-public class UnknownCommandParseException extends CommandParseException {
-
-    private static final String ERROR_MESSAGE = "Unknown command!" + 'a';
-
-    public UnknownCommandParseException(CommandStringReader command, String currentArgument) {
-        super(ERROR_MESSAGE, command, currentArgument);
-    }
-
-    public UnknownCommandParseException(CommandStringReader command, String currentArgument, Throwable cause) {
-        super(ERROR_MESSAGE, command, currentArgument, cause);
-    }
+    constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(cause.message, command, currentArgument, cause)
 }

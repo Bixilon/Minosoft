@@ -14,23 +14,24 @@ package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.InvalidIdentifierCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidComponentCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
+import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-class ObjectiveParser : CommandParser() {
+class ComponentParser : CommandParser() {
 
     @Throws(CommandParseException::class)
     override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
-        val argument = stringReader.readUnquotedString()
-        if (!ProtocolDefinition.SCOREBOARD_OBJECTIVE_PATTERN.matcher(argument).matches()) {
-            throw InvalidIdentifierCommandParseException(stringReader, argument)
+        try {
+            BaseComponent(stringReader.readJson().asJsonObject)
+        } catch (exception: Exception) {
+            stringReader.skip(-1)
+            throw InvalidComponentCommandParseException(stringReader, stringReader.read().toString(), exception)
         }
-
     }
 
     companion object {
-        val OBJECTIVE_PARSER = ObjectiveParser()
+        val COMPONENT_PARSER = ComponentParser()
     }
 }

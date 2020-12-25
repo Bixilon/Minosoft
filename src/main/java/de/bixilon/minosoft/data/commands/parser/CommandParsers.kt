@@ -33,13 +33,13 @@ object CommandParsers {
             ModIdentifier("vec3") to Vec3Parser.VEC3_PARSER,
             ModIdentifier("vec2") to Vec2Parser.VEC2_PARSER,
             ModIdentifier("block_state") to BlockStateParser.BLOCK_STACK_PARSER,
-            // block_predicate
+            ModIdentifier("block_predicate") to BlockStateParser.BLOCK_PREDICATE_PARSER,
             ModIdentifier("item_stack") to ItemStackParser.ITEM_STACK_PARSER,
-            // item_predicate
+            ModIdentifier("item_predicate") to ItemStackParser.ITEM_PREDICATE_PARSER,
             ModIdentifier("color") to ColorParser.COLOR_PARSER,
-            // chat component
+            ModIdentifier("component") to ComponentParser.COMPONENT_PARSER,
             ModIdentifier("message") to MessageParser.MESSAGE_PARSER,
-            // nbt
+            ModIdentifier("nbt") to NBTParser.NBT_PARSER,
             // nbt_path
             ModIdentifier("objective") to ObjectiveParser.OBJECTIVE_PARSER,
             // objective_criteria
@@ -62,8 +62,8 @@ object CommandParsers {
             ModIdentifier("entity_summon") to IdentifierListParser.SUMMONABLE_ENTITY_PARSER,
             ModIdentifier("dimension") to IdentifierListParser.DIMENSION_EFFECT_PARSER,
             ModIdentifier("uuid") to UUIDParser.UUID_PARSER,
-            // nbt_tag
-            // nbt_compound_tag
+            ModIdentifier("nbt_tag") to NBTParser.NBT_TAG_PARSER,
+            ModIdentifier("nbt_compound_tag") to NBTParser.NBT_COMPOUND_PARSER,
             ModIdentifier("time") to TimeParser.TIME_PARSER
         )
     )

@@ -13,9 +13,17 @@
 
 package de.bixilon.minosoft.data.commands;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.stream.JsonReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.BooleanCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidJSONCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.StringCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.InvalidIdentifierCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.nbt.CompoundTagBadFormatCommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.nbt.ListTagBadFormatCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.DoubleCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.FloatCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.IntegerCommandParseException;
@@ -24,13 +32,25 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.properties.BadPropert
 import de.bixilon.minosoft.data.commands.parser.exceptions.properties.DuplicatedPropertyKeyCommandParseException;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.util.Pair;
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.nbt.tag.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.StringReader;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class CommandStringReader {
+    private static final Pattern NBT_PATTERN_INT = Pattern.compile("[-+]?(0|[1-9][0-9]*)");
+    private static final Pattern NBT_PATTERN_BYTE = Pattern.compile(NBT_PATTERN_INT.pattern() + "b");
+    private static final Pattern NBT_PATTERN_SHORT = Pattern.compile(NBT_PATTERN_INT.pattern() + "s");
+    private static final Pattern NBT_PATTERN_LONG = Pattern.compile(NBT_PATTERN_INT.pattern() + "l");
+    private static final Pattern NBT_PATTERN_FLOAT = Pattern.compile(NBT_PATTERN_INT.pattern() + "([.][0-9]*)?f");
+    private static final Pattern NBT_PATTERN_DOUBLE = Pattern.compile(NBT_PATTERN_INT.pattern() + "([.][0-9]*)?d?");
+    private static final Gson GSON = new Gson();
+
     private final String string;
     private int cursor;
 
@@ -88,11 +108,15 @@ public class CommandStringReader {
     }
 
     public void skip(int length) {
-        this.cursor += length;
+        int nextLength = this.cursor + length;
+        if (nextLength > this.string.length() || nextLength < 0) {
+            throw new IllegalStateException("Nothing to skip!");
+        }
+        this.cursor = nextLength;
     }
 
     public void skip() {
-        this.cursor++;
+        skip(1);
     }
 
     /**
@@ -148,7 +172,6 @@ public class CommandStringReader {
     @NotNull
     public Pair<String, String> readProperty() throws StringCommandParseException, BadPropertyMapCommandParseException {
         skipWhitespaces();
-        StringBuilder builder = new StringBuilder();
         String key = readString();
         skipWhitespaces();
         if (read() != '=') {
@@ -162,11 +185,12 @@ public class CommandStringReader {
 
     @NotNull
     public Map<String, String> readProperties() throws StringCommandParseException, DuplicatedPropertyKeyCommandParseException, BadPropertyMapCommandParseException {
-        Map<String, String> ret = new HashMap<>();
         if (peek() != '[') {
             throw new BadPropertyMapCommandParseException(this, String.valueOf(peek()), "Not a property map!");
         }
+        Map<String, String> ret = new HashMap<>();
         skip();
+        skipWhitespaces();
         if (peek() == ']') {
             return ret;
         }
@@ -338,8 +362,124 @@ public class CommandStringReader {
         return readStringUntil(true, terminator);
     }
 
-    public CompoundTag readNBTCompoundTag() {
-        throw new IllegalArgumentException("TODO");
+    public ListTag readNBTListTag() throws ListTagBadFormatCommandParseException, StringCommandParseException, CompoundTagBadFormatCommandParseException {
+        skipWhitespaces();
+        if (peek() != '[') {
+            throw new ListTagBadFormatCommandParseException(this, String.valueOf(peek()), "Not a list tag!");
+        }
+        skip();
+        ListTag listTag = new ListTag();
+        skipWhitespaces();
+        if (peek() == ']') {
+            skip();
+            return listTag;
+        }
+        while (canRead()) {
+            int start = getCursor();
+            try {
+                listTag.addTag(readNBTTag());
+            } catch (IllegalArgumentException exception) {
+                throw new ListTagBadFormatCommandParseException(this, this.string.substring(start, getCursor()), exception);
+            }
+            skipWhitespaces();
+            if (peek() == ',') {
+                skip();
+                skipWhitespaces();
+            }
+            if (peek() == ']') {
+                skip();
+                return listTag;
+            }
+        }
+        throw new ListTagBadFormatCommandParseException(this, String.valueOf(peek()), "No closing tag!");
+    }
+
+    public NBTTag readNBTTag() throws StringCommandParseException, ListTagBadFormatCommandParseException, CompoundTagBadFormatCommandParseException {
+        // ToDo: Array tags
+        skipWhitespaces();
+        if (peek() == '[') {
+            return readNBTListTag();
+        }
+        if (peek() == '{') {
+            return readNBTCompoundTag();
+        }
+        String data = readString().toLowerCase(Locale.ROOT);
+        if (data.equals("true")) {
+            return new ByteTag(true);
+        }
+        if (data.equals("false")) {
+            return new ByteTag(false);
+        }
+        try {
+            if (NBT_PATTERN_BYTE.matcher(data).matches()) {
+                return new ByteTag(Byte.parseByte(data.substring(0, data.length() - 1)));
+            }
+            if (NBT_PATTERN_SHORT.matcher(data).matches()) {
+                return new ShortTag(Short.parseShort(data.substring(0, data.length() - 1)));
+            }
+            if (NBT_PATTERN_LONG.matcher(data).matches()) {
+                return new LongTag(Long.parseLong(data.substring(0, data.length() - 1)));
+            }
+            if (NBT_PATTERN_INT.matcher(data).matches()) {
+                return new IntTag(Integer.parseInt(data));
+            }
+            if (NBT_PATTERN_FLOAT.matcher(data).matches()) {
+                return new FloatTag(Float.parseFloat(data.substring(0, data.length() - 1)));
+            }
+            if (NBT_PATTERN_DOUBLE.matcher(data).matches()) {
+                return new DoubleTag(Double.parseDouble(data.endsWith("d") ? data.substring(0, data.length() - 1) : data));
+            }
+        } catch (NumberFormatException ignored) {
+        }
+
+        return new StringTag(data);
+    }
+
+    public CompoundTag readNBTCompoundTag() throws CompoundTagBadFormatCommandParseException, StringCommandParseException, ListTagBadFormatCommandParseException {
+        if (peek() != '{') {
+            throw new CompoundTagBadFormatCommandParseException(this, String.valueOf(peek()), "Not a compound tag!");
+        }
+        CompoundTag compoundTag = new CompoundTag();
+        skip();
+        skipWhitespaces();
+        if (peek() == '}') {
+            return compoundTag;
+        }
+        while (canRead()) {
+            String key = readString();
+            skipWhitespaces();
+            if (peek() != ':') {
+                throw new CompoundTagBadFormatCommandParseException(this, String.valueOf(peek()), "Invalid map char!");
+            }
+            skip();
+            NBTTag value = readNBTTag();
+            compoundTag.writeTag(key, value);
+            skipWhitespaces();
+            char nextChar = read();
+            if (nextChar == '}') {
+                return compoundTag;
+            } else {
+                skipWhitespaces();
+                if (nextChar != ',') {
+                    throw new CompoundTagBadFormatCommandParseException(this, String.valueOf(nextChar), "Invalid map char!");
+                }
+            }
+        }
+        throw new CompoundTagBadFormatCommandParseException(this, String.valueOf(peek()), "No closing tag!");
+    }
+
+
+    public JsonElement readJson() throws InvalidJSONCommandParseException {
+        try {
+            JsonReader jsonReader = new JsonReader(new StringReader(getRemaining()));
+            jsonReader.setLenient(false);
+            JsonObject json = GSON.fromJson(jsonReader, JsonObject.class);
+
+            skip(Util.getJsonReaderPosition(jsonReader) - 1);
+            return json;
+        } catch (JsonParseException exception) {
+            throw new InvalidJSONCommandParseException(this, String.valueOf(peek()), exception);
+        }
     }
 
     public boolean readExpected(char... expected) {
@@ -367,6 +507,9 @@ public class CommandStringReader {
 
     @Override
     public String toString() {
-        return String.format("position=%d/%d: \"%s\"", this.cursor, this.string.length(), peekRemaining());
+        if (canRead()) {
+            return String.format("position=%d/%d: \"%s\"", this.cursor, this.string.length(), peekRemaining());
+        }
+        return String.format("position=%d/%d", this.cursor, this.string.length());
     }
 }

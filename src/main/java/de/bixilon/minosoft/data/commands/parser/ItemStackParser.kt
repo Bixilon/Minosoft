@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidItemPredicateCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.ItemNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.Connection
@@ -22,7 +23,13 @@ class ItemStackParser : CommandParser() {
 
     @Throws(CommandParseException::class)
     override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
-        val argument = stringReader.readModIdentifier()
+        if (this == ITEM_PREDICATE_PARSER) {
+            if (stringReader.peek() != '#') {
+                throw InvalidItemPredicateCommandParseException(stringReader, stringReader.read().toString())
+            }
+            stringReader.skip()
+        }
+        val argument = stringReader.readModIdentifier() // ToDo: Check predicates
         if (!connection.mapping.doesItemExist(argument.value)) {
             throw ItemNotFoundCommandParseException(stringReader, argument.key)
         }
@@ -33,5 +40,6 @@ class ItemStackParser : CommandParser() {
 
     companion object {
         val ITEM_STACK_PARSER = ItemStackParser()
+        val ITEM_PREDICATE_PARSER = ItemStackParser()
     }
 }

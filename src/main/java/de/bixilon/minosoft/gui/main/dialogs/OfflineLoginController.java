@@ -95,9 +95,7 @@ public class OfflineLoginController implements Initializable {
     }
 
     private void checkData(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-        try {
-            Util.doesStringEqualsRegex(this.username.getText(), ProtocolDefinition.MINECRAFT_NAME_VALIDATOR);
-        } catch (IllegalArgumentException e) {
+        if (!ProtocolDefinition.MINECRAFT_NAME_VALIDATOR.matcher(this.username.getText()).matches()) {
             this.addButton.setDisable(true);
             return;
         }

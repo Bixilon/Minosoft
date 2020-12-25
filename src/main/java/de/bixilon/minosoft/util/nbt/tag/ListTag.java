@@ -20,17 +20,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ListTag extends NBTTag {
-    private final TagTypes type;
     private final ArrayList<NBTTag> list;
+    private TagTypes type;
 
     public ListTag(TagTypes type, ArrayList<NBTTag> list) {
         this.type = type;
         this.list = list;
     }
 
-    public ListTag(TagTypes type, NBTTag[] list) {
+    public ListTag(TagTypes type, NBTTag... list) {
         this.type = type;
         this.list = new ArrayList<>(Arrays.asList(list));
+    }
+
+
+    public ListTag() {
+        this.type = TagTypes.BYTE; // idk, default value?
+        this.list = new ArrayList<>();
     }
 
     public ListTag(InByteBuffer buffer) {
@@ -38,18 +44,19 @@ public class ListTag extends NBTTag {
         int length = new IntTag(buffer).getValue();
         this.list = new ArrayList<>();
         for (int i = 0; i < length; i++) {
-            switch (this.type) {
-                case BYTE -> this.list.add(new ByteTag(buffer));
-                case SHORT -> this.list.add(new ShortTag(buffer));
-                case INT -> this.list.add(new IntTag(buffer));
-                case LONG -> this.list.add(new LongTag(buffer));
-                case FLOAT -> this.list.add(new FloatTag(buffer));
-                case DOUBLE -> this.list.add(new DoubleTag(buffer));
-                case BYTE_ARRAY -> this.list.add(new ByteArrayTag(buffer));
-                case STRING -> this.list.add(new StringTag(buffer));
-                case LIST -> this.list.add(new ListTag(buffer));
-                case COMPOUND -> this.list.add(new CompoundTag(true, buffer));
-            }
+            this.list.add(switch (this.type) {
+                case BYTE -> new ByteTag(buffer);
+                case SHORT -> new ShortTag(buffer);
+                case INT -> new IntTag(buffer);
+                case LONG -> new LongTag(buffer);
+                case FLOAT -> new FloatTag(buffer);
+                case DOUBLE -> new DoubleTag(buffer);
+                case BYTE_ARRAY -> new ByteArrayTag(buffer);
+                case STRING -> new StringTag(buffer);
+                case LIST -> new ListTag(buffer);
+                case COMPOUND -> new CompoundTag(true, buffer);
+                default -> throw new IllegalStateException("Unexpected value: " + this.type);
+            });
         }
     }
 
@@ -64,9 +71,21 @@ public class ListTag extends NBTTag {
 
         new IntTag(this.list.size()).writeBytes(buffer);
 
-        for (NBTTag NBTTag : this.list) {
-            NBTTag.writeBytes(buffer);
+        for (NBTTag tag : this.list) {
+            tag.writeBytes(buffer);
         }
+    }
+
+    public ListTag addTag(NBTTag tag) {
+        if (this.type == null) {
+            this.type = tag.getType();
+        } else {
+            if (this.type != tag.getType()) {
+                throw new IllegalArgumentException("Can not mix types!");
+            }
+        }
+        this.list.add(tag);
+        return this;
     }
 
     @SuppressWarnings("unchecked")

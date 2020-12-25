@@ -86,7 +86,6 @@ public abstract class CommandNode {
         }
         String nextArgument = stringReader.readUnquotedString();
         if (this.literalChildren.containsKey(nextArgument)) {
-            stringReader.skip(nextArgument.length());
             this.literalChildren.get(nextArgument).isSyntaxCorrect(connection, stringReader);
             return;
         }
