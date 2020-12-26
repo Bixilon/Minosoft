@@ -20,8 +20,8 @@ import de.bixilon.minosoft.protocol.network.Connection
 class TeamParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
-        stringReader.readUnquotedString()
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+        return stringReader.readUnquotedString()
     }
 
     companion object {

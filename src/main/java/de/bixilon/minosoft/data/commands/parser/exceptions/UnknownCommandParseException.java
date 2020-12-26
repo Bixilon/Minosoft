@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.commands.CommandStringReader;
 
 public class UnknownCommandParseException extends CommandParseException {
 
-    private static final String ERROR_MESSAGE = "Unknown command!" + 'a';
+    private static final String ERROR_MESSAGE = "Unknown command!";
 
     public UnknownCommandParseException(CommandStringReader command, String currentArgument) {
         super(ERROR_MESSAGE, command, currentArgument);

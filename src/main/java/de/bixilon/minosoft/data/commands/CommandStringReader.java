@@ -491,7 +491,7 @@ public class CommandStringReader {
     @NotNull
     public String readRemaining() {
         String ret = this.string.substring(this.cursor);
-        this.cursor = this.string.length() + 1;
+        this.cursor = this.string.length();
         return ret;
     }
 

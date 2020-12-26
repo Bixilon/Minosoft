@@ -28,6 +28,6 @@ public abstract class CommandParser {
         return null;
     }
 
-    public abstract void isParsable(Connection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException;
+    public abstract Object parse(Connection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException;
 
 }

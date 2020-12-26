@@ -24,7 +24,7 @@ public class BooleanParser extends CommandParser {
     public static final BooleanParser BOOLEAN_PARSER = new BooleanParser();
 
     @Override
-    public void isParsable(Connection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
-        stringReader.readBoolean();
+    public Object parse(Connection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+        return stringReader.readBoolean();
     }
 }

@@ -20,8 +20,8 @@ import de.bixilon.minosoft.protocol.network.Connection
 class ColumnPositionParser : CoordinateParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
-        readCoordinates(stringReader, false, 3)
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+        return readCoordinates(stringReader, false, 3)
     }
 
     companion object {

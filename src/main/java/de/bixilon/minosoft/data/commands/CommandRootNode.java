@@ -19,19 +19,26 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownCommandParseEx
 import de.bixilon.minosoft.data.commands.parser.exceptions.WrongArgumentCommandParseException;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.terminal.commands.CommandStack;
+import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
 
 public class CommandRootNode extends CommandNode {
     public CommandRootNode(byte flags, InByteBuffer buffer) {
         super(flags, buffer);
     }
 
+    public CommandRootNode(CommandNode... children) {
+        super(children);
+    }
+
     @Override
-    public void isSyntaxCorrect(Connection connection, CommandStringReader stringReader) throws CommandParseException {
+    public CommandStack parse(Connection connection, CommandStringReader stringReader, CommandStack stack, boolean execute) throws CommandParseException, CLIException {
         try {
-            super.isSyntaxCorrect(connection, stringReader);
+            stack = super.parse(connection, stringReader, stack, execute);
             if (stringReader.getRemainingLength() > 0) {
                 throw new FloatingDataCommandParseException(stringReader, stringReader.readRemaining());
             }
+            return stack;
         } catch (WrongArgumentCommandParseException e) {
             if (e.getStartIndex() == 0) {
                 // beginn of string

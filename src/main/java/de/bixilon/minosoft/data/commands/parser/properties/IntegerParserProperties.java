@@ -34,6 +34,16 @@ public class IntegerParserProperties implements ParserProperties {
         }
     }
 
+    public IntegerParserProperties(int minValue, int maxValue) {
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+    }
+
+    public IntegerParserProperties(int minValue) {
+        this.minValue = minValue;
+        this.maxValue = Integer.MAX_VALUE;
+    }
+
     public int getMinValue() {
         return this.minValue;
     }

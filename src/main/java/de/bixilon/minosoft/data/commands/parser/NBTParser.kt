@@ -22,8 +22,8 @@ import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 class NBTParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
-        when (this) {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+        return when (this) {
             NBT_PARSER -> {
                 stringReader.readNBTTag()
             }
@@ -33,8 +33,12 @@ class NBTParser : CommandParser() {
                 if (tag!! is CompoundTag) {
                     throw ExpectedPrimitiveTagCommandParseException(stringReader, stringReader.string.substring(startPos, stringReader.cursor), "Compound Tag is invalid here!")
                 }
+                tag
             }
             NBT_COMPOUND_PARSER -> stringReader.readNBTCompoundTag()
+            else -> {
+                null
+            }
         }
 
     }

@@ -22,10 +22,10 @@ import de.bixilon.minosoft.protocol.network.Connection
 class ColorParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val color = stringReader.readUnquotedString()
         try {
-            ChatColors.getChatFormattingByName(color)
+            return ChatColors.getChatFormattingByName(color)
         } catch (exception: IllegalArgumentException) {
             throw ColorNotFoundCommandParseException(stringReader, color, exception)
         }

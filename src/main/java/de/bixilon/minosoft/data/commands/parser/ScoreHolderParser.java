@@ -31,7 +31,8 @@ public class ScoreHolderParser extends CommandParser {
     }
 
     @Override
-    public void isParsable(Connection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+    public Object parse(Connection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         // ToDo
+        return null;
     }
 }

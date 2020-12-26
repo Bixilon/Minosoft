@@ -32,7 +32,7 @@ public class MessageParser extends StringParser {
     }
 
     @Override
-    public void isParsable(Connection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
-        super.isParsable(connection, STRING_PARSER_PROPERTIES, stringReader);
+    public Object parse(Connection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+        return super.parse(connection, STRING_PARSER_PROPERTIES, stringReader);
     }
 }

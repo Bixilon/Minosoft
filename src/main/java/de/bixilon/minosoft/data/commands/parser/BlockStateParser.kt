@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.network.Connection
 class BlockStateParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         if (this == BLOCK_PREDICATE_PARSER) {
             if (stringReader.peek() != '#') {
                 throw InvalidBlockPredicateCommandParseException(stringReader, stringReader.read().toString())
@@ -61,6 +61,7 @@ class BlockStateParser : CommandParser() {
                 stringReader.readNBTCompoundTag()
             }
         }
+        return null // ToDo
     }
 
     companion object {

@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.data.commands;
 
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.terminal.commands.executors.CommandConnectionExecutor;
+import de.bixilon.minosoft.terminal.commands.executors.CommandExecutor;
 
 public class CommandLiteralNode extends CommandNode {
     private final String name;
@@ -23,7 +25,25 @@ public class CommandLiteralNode extends CommandNode {
         this.name = buffer.readString();
     }
 
+
+    public CommandLiteralNode(String name, CommandNode... children) {
+        super(children);
+        this.name = name;
+    }
+
+    public CommandLiteralNode(String name, CommandExecutor executor, CommandNode... children) {
+        super(executor, children);
+        this.name = name;
+    }
+
+    public CommandLiteralNode(String name, CommandConnectionExecutor executor, CommandNode... children) {
+        super(executor, children);
+        this.name = name;
+    }
+
+
     public String getName() {
         return this.name;
     }
+
 }

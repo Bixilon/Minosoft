@@ -30,11 +30,12 @@ public class FloatParser extends CommandParser {
     }
 
     @Override
-    public void isParsable(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+    public Object parse(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         float value = stringReader.readFloat();
         FloatParserProperties floatParserProperties = (FloatParserProperties) properties;
-        if (value < floatParserProperties.getMinValue() && value > floatParserProperties.getMaxValue()) {
+        if (value < floatParserProperties.getMinValue() || value > floatParserProperties.getMaxValue()) {
             throw new ValueOutOfRangeCommandParseException(stringReader, floatParserProperties.getMinValue(), floatParserProperties.getMaxValue(), value);
         }
+        return value;
     }
 }

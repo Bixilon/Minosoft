@@ -20,8 +20,8 @@ import de.bixilon.minosoft.protocol.network.Connection
 class IdentifierParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
-        stringReader.readModIdentifier()
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+        return stringReader.readModIdentifier().value
     }
 
     companion object {

@@ -20,8 +20,8 @@ import de.bixilon.minosoft.protocol.network.Connection
 class AngleParser : CoordinateParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
-        readCoordinates(stringReader, true, 1)
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+        return readCoordinates(stringReader, true, 1)
     }
 
     companion object {

@@ -30,13 +30,13 @@ public class PacketDeclareCommands extends ClientboundPacket {
         return true;
     }
 
-    public CommandRootNode getRootNode() {
-        return this.rootNode;
-    }
-
     @Override
     public void handle(Connection connection) {
         connection.setCommandRootNode(getRootNode());
+    }
+
+    public CommandRootNode getRootNode() {
+        return this.rootNode;
     }
 
     @Override

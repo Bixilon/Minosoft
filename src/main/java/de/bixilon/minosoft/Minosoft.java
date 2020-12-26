@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft;
 
+import com.google.common.collect.HashBiMap;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXDialogLayout;
 import de.bixilon.minosoft.config.Configuration;
@@ -33,7 +34,9 @@ import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.loading.ModLoader;
 import de.bixilon.minosoft.modding.loading.Priorities;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
+import de.bixilon.minosoft.terminal.CLI;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.MinosoftCommandLineArguments;
 import de.bixilon.minosoft.util.Util;
@@ -52,6 +55,7 @@ import java.util.UUID;
 public final class Minosoft {
     public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
     private static final CountUpAndDownLatch START_STATUS_LATCH = new CountUpAndDownLatch(1);
+    public static final HashBiMap<Integer, Connection> CONNECTIONS = HashBiMap.create();
     public static Configuration config;
 
     public static void main(String[] args) {
@@ -165,6 +169,12 @@ public final class Minosoft {
             LANServerListener.listen();
             progress.countDown();
         }, "LAN Server Listener", "Listener for LAN Servers", Priorities.LOWEST, TaskImportance.OPTIONAL, "Configuration"));
+
+        taskWorker.addTask(new Task(progress -> {
+            progress.countUp();
+            CLI.initialize();
+            progress.countDown();
+        }, "CLI", "Initialize CLI", Priorities.LOW, TaskImportance.OPTIONAL, "Assets", "Mojang language"));
 
         if (!StaticConfiguration.HEADLESS_MODE) {
             taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFX Toolkit", "Initialize JavaFX", Priorities.HIGHEST));

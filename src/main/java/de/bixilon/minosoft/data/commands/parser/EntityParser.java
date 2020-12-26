@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.commands.parser;
 
 import de.bixilon.minosoft.data.commands.CommandStringReader;
+import de.bixilon.minosoft.data.commands.parser.arguments.Playername;
 import de.bixilon.minosoft.data.commands.parser.entity.*;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.entity.*;
@@ -61,7 +62,7 @@ public class EntityParser extends CommandParser {
     }
 
     @Override
-    public void isParsable(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+    public Object parse(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         EntityParserProperties entityParserProperties = (EntityParserProperties) properties;
         if (stringReader.peek() == '@') {
             // selector
@@ -94,14 +95,13 @@ public class EntityParser extends CommandParser {
         String value = stringReader.readUnquotedString();
 
         if (ProtocolDefinition.MINECRAFT_NAME_VALIDATOR.matcher(value).matches()) {
-            return;
+            return new Playername(value);
         }
         if (entityParserProperties.isOnlyPlayers()) {
             throw new PlayerOnlyEntityCommandParseException(stringReader, value);
         }
         try {
-            Util.getUUIDFromString(value);
-            return;
+            return Util.getUUIDFromString(value);
         } catch (Exception ignored) {
         }
         throw new UnknownEntitySelectorCommandParseException(stringReader, value);

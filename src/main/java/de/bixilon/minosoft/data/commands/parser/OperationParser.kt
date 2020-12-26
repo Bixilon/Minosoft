@@ -21,12 +21,13 @@ import de.bixilon.minosoft.protocol.network.Connection
 class OperationParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val operation = stringReader.readUnquotedString()
 
         if (!OPERATIONS.contains(operation)) {
             throw UnknownOperationCommandParseException(stringReader, operation)
         }
+        return operation
 
     }
 

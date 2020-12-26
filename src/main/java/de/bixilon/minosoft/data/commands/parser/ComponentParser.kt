@@ -22,9 +22,9 @@ import de.bixilon.minosoft.protocol.network.Connection
 class ComponentParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         try {
-            BaseComponent(stringReader.readJson().asJsonObject)
+            return BaseComponent(stringReader.readJson().asJsonObject)
         } catch (exception: Exception) {
             stringReader.skip(-1)
             throw InvalidComponentCommandParseException(stringReader, stringReader.read().toString(), exception)

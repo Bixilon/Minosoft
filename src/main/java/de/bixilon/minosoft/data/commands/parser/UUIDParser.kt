@@ -22,10 +22,10 @@ import de.bixilon.minosoft.util.Util
 class UUIDParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val argument = stringReader.readString()
         try {
-            Util.getUUIDFromString(argument)
+            return Util.getUUIDFromString(argument)
         } catch (exception: IllegalArgumentException) {
             throw UUIDCommandParseException(stringReader, argument, exception)
         }

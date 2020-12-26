@@ -21,14 +21,18 @@ import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.terminal.commands.CommandStack;
+import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
+import de.bixilon.minosoft.terminal.commands.executors.CommandConnectionExecutor;
+import de.bixilon.minosoft.terminal.commands.executors.CommandExecutor;
 import de.bixilon.minosoft.util.BitByte;
 
 import javax.annotation.Nullable;
 
 public class CommandArgumentNode extends CommandLiteralNode {
     private final CommandParser parser;
-    private final ParserProperties properties;
-    private final SuggestionTypes suggestionType;
+    private ParserProperties properties;
+    private SuggestionTypes suggestionType;
 
     public CommandArgumentNode(byte flags, InByteBuffer buffer) {
         super(flags, buffer);
@@ -36,7 +40,6 @@ public class CommandArgumentNode extends CommandLiteralNode {
         this.parser = CommandParsers.INSTANCE.getParserInstance(parserIdentifier);
         if (this.parser == null) {
             Log.verbose("Unknown command parser: %s", parserIdentifier);
-            this.properties = null;
         } else {
             this.properties = this.parser.readParserProperties(buffer);
         }
@@ -50,9 +53,40 @@ public class CommandArgumentNode extends CommandLiteralNode {
                 case "minecraft:available_biomes" -> CommandArgumentNode.SuggestionTypes.AVAILABLE_BIOMES;
                 default -> throw new IllegalArgumentException("Unexpected value: " + fullIdentifier);
             };
-        } else {
-            this.suggestionType = null;
         }
+    }
+
+    public CommandArgumentNode(String name, CommandParser parser, CommandExecutor executor, CommandNode... children) {
+        super(name, executor, children);
+        this.parser = parser;
+    }
+
+    public CommandArgumentNode(String name, CommandParser parser, ParserProperties properties, CommandExecutor executor, CommandNode... children) {
+        super(name, executor, children);
+        this.parser = parser;
+        this.properties = properties;
+    }
+
+    public CommandArgumentNode(String name, CommandParser parser, CommandConnectionExecutor executor, CommandNode... children) {
+        super(name, executor, children);
+        this.parser = parser;
+    }
+
+    public CommandArgumentNode(String name, CommandParser parser, ParserProperties properties, CommandConnectionExecutor executor, CommandNode... children) {
+        super(name, executor, children);
+        this.parser = parser;
+        this.properties = properties;
+    }
+
+    public CommandArgumentNode(String name, CommandParser parser, CommandNode... children) {
+        super(name, children);
+        this.parser = parser;
+    }
+
+    public CommandArgumentNode(String name, CommandParser parser, ParserProperties properties, CommandNode... children) {
+        super(name, children);
+        this.parser = parser;
+        this.properties = properties;
     }
 
     public CommandParser getParser() {
@@ -64,14 +98,15 @@ public class CommandArgumentNode extends CommandLiteralNode {
         return this.properties;
     }
 
+    @Nullable
     public SuggestionTypes getSuggestionType() {
         return this.suggestionType;
     }
 
     @Override
-    public void isSyntaxCorrect(Connection connection, CommandStringReader stringReader) throws CommandParseException {
-        this.parser.isParsable(connection, this.properties, stringReader);
-        super.isSyntaxCorrect(connection, stringReader);
+    public CommandStack parse(Connection connection, CommandStringReader stringReader, CommandStack stack, boolean execute) throws CommandParseException, CLIException {
+        stack.addArgument(this.parser.parse(connection, this.properties, stringReader));
+        return super.parse(connection, stringReader, stack, execute);
     }
 
     public enum SuggestionTypes {

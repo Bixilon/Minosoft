@@ -33,6 +33,8 @@ import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.protocol.*;
+import de.bixilon.minosoft.terminal.CLI;
+import de.bixilon.minosoft.terminal.commands.commands.Command;
 import de.bixilon.minosoft.util.DNSUtil;
 import de.bixilon.minosoft.util.ServerAddress;
 import org.xbill.DNS.TextParseException;
@@ -328,7 +330,13 @@ public class Connection {
                 } else {
                     // unregister all custom recipes
                     this.recipes.removeCustomRecipes();
+                    Minosoft.CONNECTIONS.remove(getConnectionId());
+                    if (CLI.getCurrentConnection() == this) {
+                        CLI.setCurrentConnection(null);
+                        Command.print("Disconnected from current connection!");
+                    }
                 }
+
             }
             case FAILED -> {
                 // connect to next hostname, if available
@@ -352,6 +360,7 @@ public class Connection {
                 }
             }
             case FAILED_NO_RETRY -> handlePingCallbacks(null);
+            case PLAY -> Minosoft.CONNECTIONS.put(getConnectionId(), this);
         }
         // handle callbacks
         fireEvent(new ConnectionStateChangeEvent(this, previousState, state));
@@ -380,7 +389,9 @@ public class Connection {
         } else if (method.getEventType() == ServerListPongEvent.class) {
             if (getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || this.lastPing != null) {
                 // ping done
-                method.invoke(this.pong);
+                if (this.pong != null) {
+                    method.invoke(this.pong);
+                }
             }
         }
     }
@@ -397,6 +408,7 @@ public class Connection {
         return this.recipes;
     }
 
+    @Nullable
     public CommandRootNode getCommandRootNode() {
         return this.commandRootNode;
     }
@@ -411,5 +423,10 @@ public class Connection {
 
     public void setPong(ServerListPongEvent pong) {
         this.pong = pong;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("id=%d, address=%s, account=\"%s\")", getConnectionId(), getAddress(), getPlayer().getAccount());
     }
 }

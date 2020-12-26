@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.network.Connection
 class ItemStackParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         if (this == ITEM_PREDICATE_PARSER) {
             if (stringReader.peek() != '#') {
                 throw InvalidItemPredicateCommandParseException(stringReader, stringReader.read().toString())
@@ -36,6 +36,7 @@ class ItemStackParser : CommandParser() {
         if (stringReader.peek() == '{') {
             stringReader.readNBTCompoundTag()
         }
+        return null // ToDo
     }
 
     companion object {

@@ -71,7 +71,11 @@ public class HoverEvent {
             } else {
                 json = (JsonObject) data;
             }
-            return new EntityHoverData(Util.getUUIDFromString(json.get("id").getAsString()), new ModIdentifier(json.get("type").getAsString()), ChatComponent.valueOf(json.get("name")));
+            ModIdentifier type = null;
+            if (json.has("type")) {
+                type = new ModIdentifier(json.get("type").getAsString());
+            }
+            return new EntityHoverData(Util.getUUIDFromString(json.get("id").getAsString()), type, ChatComponent.valueOf(json.get("name")));
         }
     }
 }

@@ -32,7 +32,7 @@ public class FloatRangeParser extends RangeParser {
     }
 
     @Override
-    public void isParsable(Connection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
-        super.isParsable(connection, FLOAT_RANGE_PARSER_PROPERTIES, stringReader);
+    public Object parse(Connection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+        return super.parse(connection, FLOAT_RANGE_PARSER_PROPERTIES, stringReader);
     }
 }

@@ -22,12 +22,12 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 class ObjectiveParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val argument = stringReader.readUnquotedString()
         if (!ProtocolDefinition.SCOREBOARD_OBJECTIVE_PATTERN.matcher(argument).matches()) {
             throw InvalidIdentifierCommandParseException(stringReader, argument)
         }
-
+        return argument
     }
 
     companion object {

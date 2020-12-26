@@ -24,21 +24,18 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 public class DoubleParser extends CommandParser {
     public static final DoubleParser DOUBLE_PARSER = new DoubleParser();
 
-    public boolean isValidValue(DoubleParserProperties properties, double value) {
-        return value >= properties.getMinValue() && value <= properties.getMaxValue();
-    }
-
     @Override
     public ParserProperties readParserProperties(InByteBuffer buffer) {
         return new DoubleParserProperties(buffer);
     }
 
     @Override
-    public void isParsable(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+    public Object parse(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         double value = stringReader.readDouble();
         DoubleParserProperties doubleParserProperties = (DoubleParserProperties) properties;
-        if (value < doubleParserProperties.getMinValue() && value > doubleParserProperties.getMaxValue()) {
+        if (value < doubleParserProperties.getMinValue() || value > doubleParserProperties.getMaxValue()) {
             throw new ValueOutOfRangeCommandParseException(stringReader, doubleParserProperties.getMinValue(), doubleParserProperties.getMaxValue(), value);
         }
+        return value;
     }
 }

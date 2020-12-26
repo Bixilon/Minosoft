@@ -23,22 +23,22 @@ import de.bixilon.minosoft.protocol.network.Connection
 class ScoreboardSlotParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val slot = stringReader.readUnquotedString()
 
         if (slot.startsWith("sidebar.team.")) {
             val color = slot.substring("sidebar.team.".length)
             try {
-                ChatColors.getChatFormattingByName(color)
+                return ChatColors.getChatFormattingByName(color)
             } catch (exception: IllegalArgumentException) {
                 throw ColorNotFoundCommandParseException(stringReader, color)
             }
-            return
         }
 
         if (!SCOREBOARD_SLOTS.contains(slot)) {
             throw UnknownOperationCommandParseException(stringReader, slot)
         }
+        return slot
 
     }
 

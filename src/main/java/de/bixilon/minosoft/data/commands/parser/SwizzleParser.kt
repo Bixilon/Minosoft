@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.network.Connection
 class SwizzleParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val swizzle = stringReader.readUnquotedString()
 
         val containing: HashSet<Char> = HashSet()
@@ -37,6 +37,7 @@ class SwizzleParser : CommandParser() {
                 else -> throw BadSwizzleCombinationCommandParseException(stringReader, swizzle)
             }
         }
+        return swizzle
 
     }
 

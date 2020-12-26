@@ -26,8 +26,8 @@ class GameProfileParser(val properties: EntityParserProperties) : EntityParser()
     }
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
-        super.isParsable(connection, properties, stringReader)
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+        return super.parse(connection, properties, stringReader)
     }
 
     companion object {

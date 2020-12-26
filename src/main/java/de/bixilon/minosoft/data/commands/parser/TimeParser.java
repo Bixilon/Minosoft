@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.commands.parser;
 
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
+import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownTimeUnitCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -23,14 +24,22 @@ public class TimeParser extends CommandParser {
 
 
     @Override
-    public void isParsable(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
-        stringReader.readInt();
+    public Object parse(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+        int time = stringReader.readInt();
 
         if (stringReader.canRead()) {
-            char unit = stringReader.peek();
-            if (unit == 'd' || unit == 't' || unit == 's') {
-                stringReader.skip();
-            }
+            char unit = stringReader.read();
+            time *= switch (unit) {
+                case 'd' -> 24000;
+                case 's' -> 20;
+                case 't' -> 1;
+                case ' ' -> {
+                    stringReader.skip(-1);
+                    yield 1;
+                }
+                default -> throw new UnknownTimeUnitCommandParseException(stringReader, String.valueOf(unit));
+            };
         }
+        return time;
     }
 }

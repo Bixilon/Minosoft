@@ -30,7 +30,7 @@ public class StringParser extends CommandParser {
     }
 
     @Override
-    public void isParsable(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+    public Object parse(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         StringParserProperties stringParserProperties = ((StringParserProperties) properties);
         String string = switch (stringParserProperties.getSetting()) {
             case SINGLE_WORD -> stringReader.readUnquotedString();
@@ -38,11 +38,9 @@ public class StringParser extends CommandParser {
             case GREEDY_PHRASE -> stringReader.readRemaining();
         };
 
-        if (stringParserProperties.isAllowEmptyString()) {
-            return;
-        }
-        if (string.isBlank()) {
+        if (!stringParserProperties.isAllowEmptyString() && string.isBlank()) {
             throw new BlankStringCommandParseException(stringReader, string);
         }
+        return string;
     }
 }

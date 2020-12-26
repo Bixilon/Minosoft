@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.network.Connection
 class IdentifierListParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun isParsable(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader) {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val identifier = stringReader.readModIdentifier()
 
 
@@ -33,19 +33,19 @@ class IdentifierListParser : CommandParser() {
             if (!connection.mapping.doesEnchantmentExist(identifier.value)) {
                 throw EnchantmentNotFoundCommandParseException(stringReader, identifier.key)
             }
-            return
+            return null // ToDo
         }
         if (this == MOB_EFFECT_PARSER) {
             if (!connection.mapping.doesMobEffectExist(identifier.value)) {
                 throw MobEffectNotFoundCommandParseException(stringReader, identifier.key)
             }
-            return
+            return null // ToDo
         }
         if (this == DIMENSION_EFFECT_PARSER) {
             if (!connection.mapping.doesDimensionExist(identifier.value)) {
                 throw DimensionNotFoundCommandParseException(stringReader, identifier.key)
             }
-            return
+            return null // ToDo
         }
         if (this == SUMMONABLE_ENTITY_PARSER) {
             // ToDo: only summonable entities, not all of them
@@ -53,8 +53,9 @@ class IdentifierListParser : CommandParser() {
             if (EntityClassMappings.getByIdentifier(identifier.value) == null) {
                 throw EntityNotFoundCommandParseException(stringReader, identifier.key)
             }
-            return
+            return null // ToDo
         }
+        return null // ToDo
     }
 
     companion object {

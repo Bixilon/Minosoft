@@ -494,6 +494,7 @@ public class InByteBuffer {
             if (node.getRedirectNodeId() != -1) {
                 node.setRedirectNode(nodes[node.getRedirectNodeId()]);
             }
+
             // children
             for (int id : node.getChildrenIds()) {
                 CommandNode targetNode = nodes[id];
@@ -503,6 +504,7 @@ public class InByteBuffer {
                     node.getLiteralChildren().put(literalNode.getName(), literalNode);
                 }
             }
+            node.resetChildrenIds();
 
         }
         return nodes;
