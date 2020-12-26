@@ -40,15 +40,15 @@ public class BlockEntityMetaDataChangeEvent extends ConnectionEvent {
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     @Nullable
     public PacketBlockEntityMetadata.BlockEntityActions getAction() {
-        return action;
+        return this.action;
     }
 
     public BlockEntityMetaData getData() {
-        return data;
+        return this.data;
     }
 }

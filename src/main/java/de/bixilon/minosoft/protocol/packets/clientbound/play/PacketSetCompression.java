@@ -14,31 +14,25 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.PacketCompressionInterface;
+import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.CompressionThresholdChange;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketSetCompression implements PacketCompressionInterface {
+public class PacketSetCompression extends CompressionThresholdChange {
     int threshold;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        threshold = buffer.readVarInt();
+        this.threshold = buffer.readVarInt();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received set compression packet (threshold=%d)", threshold));
+        Log.protocol(String.format("[IN] Received set compression packet (threshold=%d)", this.threshold));
     }
 
     @Override
     public int getThreshold() {
-        return threshold;
+        return this.threshold;
     }
 }

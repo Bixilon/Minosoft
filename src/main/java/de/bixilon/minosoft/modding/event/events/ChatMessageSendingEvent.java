@@ -24,7 +24,7 @@ public class ChatMessageSendingEvent extends CancelableEvent {
     }
 
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
     public void setMessage(String message) {

@@ -14,12 +14,16 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.RelativeLocation;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketEntityMovementAndRotation implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W25B;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
+
+public class PacketEntityMovementAndRotation extends ClientboundPacket {
     int entityId;
     RelativeLocation location;
     short yaw;
@@ -30,42 +34,48 @@ public class PacketEntityMovementAndRotation implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
-        if (buffer.getVersionId() < 100) {
+        if (buffer.getVersionId() < V_16W06A) {
             this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
         } else {
             this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
         }
         this.yaw = buffer.readAngle();
         this.pitch = buffer.readAngle();
-        if (buffer.getVersionId() >= 22) {
-            onGround = buffer.readBoolean();
+        if (buffer.getVersionId() >= V_14W25B) {
+            this.onGround = buffer.readBoolean();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        Entity entity = connection.getPlayer().getWorld().getEntity(getEntityId());
+        if (entity == null) {
+            // thanks mojang
+            return;
+        }
+        entity.setLocation(getRelativeLocation());
+        entity.setRotation(getYaw(), getPitch());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity %d moved relative %s (yaw=%s, pitch=%s)", entityId, location, yaw, pitch));
+        Log.protocol(String.format("[IN] Entity %d moved relative %s (yaw=%s, pitch=%s)", this.entityId, this.location, this.yaw, this.pitch));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public RelativeLocation getRelativeLocation() {
-        return location;
+        return this.location;
     }
 
     public short getYaw() {
-        return yaw;
+        return this.yaw;
     }
 
     public short getPitch() {
-        return pitch;
+        return this.pitch;
     }
 }

@@ -13,18 +13,22 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.TitleChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketTitle implements ClientboundPacket {
+import java.util.Map;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
+public class PacketTitle extends ClientboundPacket {
     TitleActions action;
 
-    //fields depend on action
+    // fields depend on action
     ChatComponent text;
     ChatComponent subText;
     int fadeInTime;
@@ -33,74 +37,76 @@ public class PacketTitle implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        action = TitleActions.byId(buffer.readVarInt(), buffer.getVersionId());
-        switch (action) {
-            case SET_TITLE -> text = buffer.readTextComponent();
-            case SET_SUBTITLE -> subText = buffer.readTextComponent();
+        this.action = TitleActions.byId(buffer.readVarInt(), buffer.getVersionId());
+        switch (this.action) {
+            case SET_TITLE -> this.text = buffer.readChatComponent();
+            case SET_SUBTITLE -> this.subText = buffer.readChatComponent();
             case SET_TIMES_AND_DISPLAY -> {
-                fadeInTime = buffer.readInt();
-                stayTime = buffer.readInt();
-                fadeOutTime = buffer.readInt();
+                this.fadeInTime = buffer.readInt();
+                this.stayTime = buffer.readInt();
+                this.fadeOutTime = buffer.readInt();
             }
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        if (connection.fireEvent(new TitleChangeEvent(connection, this))) {
+            return;
+        }
     }
 
     @Override
     public void log() {
-        switch (action) {
-            case SET_TITLE -> Log.protocol(String.format("[IN] Received title (action=%s, text=%s)", action, text.getANSIColoredMessage()));
-            case SET_SUBTITLE -> Log.protocol(String.format("[IN] Received title (action=%s, subText=%s)", action, subText.getANSIColoredMessage()));
-            case SET_TIMES_AND_DISPLAY -> Log.protocol(String.format("[IN] Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", action, fadeInTime, stayTime, fadeOutTime));
-            case HIDE, RESET -> Log.protocol(String.format("[IN] Received title (action=%s)", action));
+        switch (this.action) {
+            case SET_TITLE -> Log.protocol(String.format("[IN] Received title (action=%s, text=%s)", this.action, this.text.getANSIColoredMessage()));
+            case SET_SUBTITLE -> Log.protocol(String.format("[IN] Received title (action=%s, subText=%s)", this.action, this.subText.getANSIColoredMessage()));
+            case SET_TIMES_AND_DISPLAY -> Log.protocol(String.format("[IN] Received title (action=%s, fadeInTime=%d, stayTime=%d, fadeOutTime=%d)", this.action, this.fadeInTime, this.stayTime, this.fadeOutTime));
+            case HIDE, RESET -> Log.protocol(String.format("[IN] Received title (action=%s)", this.action));
         }
     }
 
     public int getFadeInTime() {
-        return fadeInTime;
+        return this.fadeInTime;
     }
 
     public int getFadeOutTime() {
-        return fadeOutTime;
+        return this.fadeOutTime;
     }
 
     public int getStayTime() {
-        return stayTime;
+        return this.stayTime;
     }
 
     public ChatComponent getSubText() {
-        return subText;
+        return this.subText;
     }
 
     public ChatComponent getText() {
-        return text;
+        return this.text;
     }
 
     public TitleActions getAction() {
-        return action;
+        return this.action;
     }
 
     public enum TitleActions {
         SET_TITLE(0),
         SET_SUBTITLE(1),
-        SET_ACTION_BAR(new MapSet[]{new MapSet<>(302, 2)}),
-        SET_TIMES_AND_DISPLAY(new MapSet[]{new MapSet<>(18, 2), new MapSet<>(302, 3)}),
-        HIDE(new MapSet[]{new MapSet<>(18, 3), new MapSet<>(302, 4)}),
-        RESET(new MapSet[]{new MapSet<>(18, 4), new MapSet<>(302, 5)});
+        SET_ACTION_BAR(Map.of(V_16W32B, 2)),
+        SET_TIMES_AND_DISPLAY(Map.of(V_14W20B, 2, V_16W32B, 3)),
+        HIDE(Map.of(V_14W20B, 3, V_16W32B, 4)),
+        RESET(Map.of(V_14W20B, 4, V_16W32B, 5));
 
-        final VersionValueMap<Integer> valueMap;
+        private final VersionValueMap<Integer> valueMap;
 
-        TitleActions(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+        TitleActions(Map<Integer, Integer> values) {
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         TitleActions(int id) {
-            valueMap = new VersionValueMap<>(id);
+            this.valueMap = new VersionValueMap<>(Map.of(LOWEST_VERSION_SUPPORTED, id));
         }
 
         public static TitleActions byId(int id, int versionId) {
@@ -113,7 +119,7 @@ public class PacketTitle implements ClientboundPacket {
         }
 
         public int getId(int versionId) {
-            Integer ret = valueMap.get(versionId);
+            Integer ret = this.valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

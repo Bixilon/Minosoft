@@ -31,11 +31,11 @@ public class Sheep extends Animal {
 
     @EntityMetaDataFunction(identifier = "color")
     private RGBColor getColor() {
-        return ChatColors.getColorById(metaData.getSets().getByte(EntityMetaDataFields.SHEEP_FLAGS) & 0xF);
+        return ChatColors.getColorById(this.metaData.getSets().getByte(EntityMetaDataFields.SHEEP_FLAGS) & 0xF);
     }
 
     @EntityMetaDataFunction(identifier = "isSheared")
     private boolean isSheared() {
-        return metaData.getSets().getBitMask(EntityMetaDataFields.SHEEP_FLAGS, 0x10);
+        return this.metaData.getSets().getBitMask(EntityMetaDataFields.SHEEP_FLAGS, 0x10);
     }
 }

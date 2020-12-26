@@ -35,7 +35,8 @@ import java.util.concurrent.CountDownLatch;
 
 public class Launcher {
     private static Stage stage;
-    private static boolean exit = false;
+    private static boolean exit;
+    private static MainWindow mainWindow;
 
     public static void start() {
         Log.info("Starting launcher...");
@@ -59,23 +60,25 @@ public class Launcher {
                     };
                 }
             });
-            ServerListCell.listView.setCellFactory((lv) -> ServerListCell.newInstance());
+            ServerListCell.SERVER_LIST_VIEW.setCellFactory((lv) -> ServerListCell.newInstance());
 
             ObservableList<Server> servers = FXCollections.observableArrayList();
-            servers.addAll(Minosoft.serverList);
-            ServerListCell.listView.setItems(servers);
+            servers.addAll(Minosoft.getConfig().getServerList().values());
+            ServerListCell.SERVER_LIST_VIEW.setItems(servers);
             LANServerListener.removeAll(); // remove all LAN Servers
 
-            VBox root = null;
+            FXMLLoader loader = new FXMLLoader(Launcher.class.getResource("/layout/main.fxml"));
+            VBox root;
             try {
-                root = new FXMLLoader(Launcher.class.getResource("/layout/main.fxml")).load();
+                root = loader.load();
             } catch (IOException e) {
                 e.printStackTrace();
                 System.exit(1);
+                return;
             }
 
             Stage stage = new Stage();
-            Scene scene = new Scene(root, 600, 800);
+            Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
             stage.setScene(scene);
 
             stage.setTitle(LocaleManager.translate(Strings.MAIN_WINDOW_TITLE));
@@ -84,9 +87,12 @@ public class Launcher {
             if (exit) {
                 return;
             }
-            stage.show();
             Launcher.stage = stage;
-            if (Minosoft.getSelectedAccount() == null) {
+            mainWindow = loader.getController();
+
+
+            stage.show();
+            if (Minosoft.getConfig().getSelectedAccount() == null) {
                 MainWindow.manageAccounts();
             }
             latch.countDown();
@@ -108,7 +114,7 @@ public class Launcher {
         Platform.runLater(() -> stage.close());
     }
 
-    public static Stage getStage() {
-        return stage;
+    public static MainWindow getMainWindow() {
+        return mainWindow;
     }
 }

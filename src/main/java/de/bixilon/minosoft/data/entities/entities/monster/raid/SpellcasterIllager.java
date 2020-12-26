@@ -29,7 +29,7 @@ public class SpellcasterIllager extends AbstractIllager {
 
     @EntityMetaDataFunction(identifier = "spell")
     public Spells getSpell() {
-        return Spells.values()[metaData.getSets().getInt(EntityMetaDataFields.SPELLCASTER_ILLAGER_SPELL)];
+        return Spells.byId(this.metaData.getSets().getInt(EntityMetaDataFields.SPELLCASTER_ILLAGER_SPELL));
     }
 
     public enum Spells {
@@ -38,6 +38,12 @@ public class SpellcasterIllager extends AbstractIllager {
         ATTACK,
         WOLOLO,
         DISAPPEAR,
-        BLINDNESS
+        BLINDNESS;
+
+        private static final Spells[] SPELLS = values();
+
+        public static Spells byId(int id) {
+            return SPELLS[id];
+        }
     }
 }

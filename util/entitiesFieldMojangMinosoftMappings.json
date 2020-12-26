@@ -850,5 +850,14 @@
   "PigZombie": {
     "identifier": "zombie_pigman",
     "extends": "Zombie"
+  },
+  "Axolotl": {
+    "identifier": "axolotl",
+    "extends": "Animal",
+    "data": {
+      "DATA_VARIANT": "AXOLOTL_VARIANT",
+      "DATA_PLAYING_DEAD": "AXOLOTL_PLAYING_DEAD",
+      "FROM_BUCKET": "AXOLOTL_FROM_BUCKET"
+    }
   }
 }

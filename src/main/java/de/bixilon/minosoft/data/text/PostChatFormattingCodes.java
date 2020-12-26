@@ -25,16 +25,16 @@ public enum PostChatFormattingCodes implements ChatFormattingCode {
     }
 
     public char getChar() {
-        return c;
+        return this.c;
+    }
+
+    public String getANSI() {
+        return this.ansi;
     }
 
     @Override
     public String toString() {
         return getANSI();
-    }
-
-    public String getANSI() {
-        return ansi;
     }
 }
 

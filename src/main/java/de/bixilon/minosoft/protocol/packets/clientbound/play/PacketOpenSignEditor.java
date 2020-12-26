@@ -15,34 +15,40 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketOpenSignEditor implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
+
+public class PacketOpenSignEditor extends ClientboundPacket {
     BlockPosition position;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 6) {
-            position = buffer.readBlockPositionInteger();
+        if (buffer.getVersionId() < V_14W03B) {
+            this.position = buffer.readBlockPositionInteger();
             return true;
         }
-        position = buffer.readPosition();
+        this.position = buffer.readPosition();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        OpenSignEditorEvent event = new OpenSignEditorEvent(connection, this);
+        if (connection.fireEvent(event)) {
+            return;
+        }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Opening sign editor: %s", position));
+        Log.protocol(String.format("[IN] Opening sign editor: %s", this.position));
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 }

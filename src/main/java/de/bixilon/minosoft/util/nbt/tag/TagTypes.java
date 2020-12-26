@@ -28,7 +28,9 @@ public enum TagTypes {
     INT_ARRAY,
     LONG_ARRAY;
 
-    public static TagTypes getById(int id) {
-        return values()[id];
+    private static final TagTypes[] TAG_TYPES = values();
+
+    public static TagTypes byId(int id) {
+        return TAG_TYPES[id];
     }
 }

@@ -27,6 +27,6 @@ public class PacketSendEvent extends ConnectionEvent {
     }
 
     public ServerboundPacket getPacket() {
-        return packet;
+        return this.packet;
     }
 }

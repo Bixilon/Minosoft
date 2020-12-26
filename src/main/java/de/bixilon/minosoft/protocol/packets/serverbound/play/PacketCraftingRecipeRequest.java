@@ -31,13 +31,13 @@ public class PacketCraftingRecipeRequest implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CRAFT_RECIPE_REQUEST);
-        buffer.writeByte(windowId);
-        buffer.writeVarInt(recipeId);
+        buffer.writeByte(this.windowId);
+        buffer.writeVarInt(this.recipeId);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending entity action packet (windowId=%d, recipeId=%d)", windowId, recipeId));
+        Log.protocol(String.format("[OUT] Sending entity action packet (windowId=%d, recipeId=%d)", this.windowId, this.recipeId));
     }
 }

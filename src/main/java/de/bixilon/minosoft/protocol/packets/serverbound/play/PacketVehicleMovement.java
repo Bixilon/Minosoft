@@ -37,16 +37,16 @@ public class PacketVehicleMovement implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_VEHICLE_MOVE);
-        buffer.writeDouble(x);
-        buffer.writeDouble(y);
-        buffer.writeDouble(z);
-        buffer.writeFloat(yaw);
-        buffer.writeFloat(pitch);
+        buffer.writeDouble(this.x);
+        buffer.writeDouble(this.y);
+        buffer.writeDouble(this.z);
+        buffer.writeFloat(this.yaw);
+        buffer.writeFloat(this.pitch);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending vehicle movement: %s %s %s (yaw=%s, pitch=%s)", x, y, z, yaw, pitch));
+        Log.protocol(String.format("[OUT] Sending vehicle movement: %s %s %s (yaw=%s, pitch=%s)", this.x, this.y, this.z, this.yaw, this.pitch));
     }
 }

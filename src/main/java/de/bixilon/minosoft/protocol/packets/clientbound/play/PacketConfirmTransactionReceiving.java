@@ -16,9 +16,8 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketConfirmTransactionReceiving implements ClientboundPacket {
+public class PacketConfirmTransactionReceiving extends ClientboundPacket {
     byte windowId;
     short actionNumber;
     boolean accepted;
@@ -32,24 +31,19 @@ public class PacketConfirmTransactionReceiving implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Closing inventory (windowId=%d)", windowId));
+        Log.protocol(String.format("[IN] Closing inventory (windowId=%d)", this.windowId));
     }
 
     public byte getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     public boolean wasAccepted() {
-        return accepted;
+        return this.accepted;
     }
 
     public short getActionNumber() {
-        return actionNumber;
+        return this.actionNumber;
     }
 }

@@ -14,22 +14,26 @@
 package de.bixilon.minosoft.config;
 
 import com.google.common.collect.HashBiMap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
+import de.bixilon.minosoft.data.accounts.Account;
+import de.bixilon.minosoft.data.accounts.MojangAccount;
+import de.bixilon.minosoft.data.accounts.OfflineAccount;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.Util;
-import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Configuration {
     public static final int LATEST_CONFIG_VERSION = 1;
-    final JsonObject config;
+    private static final JsonObject DEFAULT_CONFIGURATION = JsonParser.parseReader(new InputStreamReader(Configuration.class.getResourceAsStream("/config/" + StaticConfiguration.CONFIG_FILENAME))).getAsJsonObject();
+    private final HashMap<ConfigurationPaths.ConfigurationPath, Object> config = new HashMap<>();
+    private final HashBiMap<String, Account> accountList = HashBiMap.create();
+    private final HashBiMap<Integer, Server> serverList = HashBiMap.create();
     private final Object lock = new Object();
 
     public Configuration() throws IOException, ConfigMigrationException {
@@ -47,8 +51,10 @@ public class Configuration {
             Files.copy(input, Paths.get(file.getAbsolutePath()));
             file = new File(StaticConfiguration.HOME_DIRECTORY + "config/" + StaticConfiguration.CONFIG_FILENAME);
         }
-        config = Util.readJsonFromFile(file.getAbsolutePath());
-        int configVersion = getInt(ConfigurationPaths.IntegerPaths.GENERAL_CONFIG_VERSION);
+
+        JsonObject json = Util.readJsonFromFile(file.getAbsolutePath());
+
+        int configVersion = (int) getData(json, ConfigurationPaths.IntegerPaths.GENERAL_CONFIG_VERSION);
         if (configVersion > LATEST_CONFIG_VERSION) {
             throw new ConfigMigrationException(String.format("Configuration was migrated to newer config format (version=%d, expected=%d). Downgrading the config file is unsupported!", configVersion, LATEST_CONFIG_VERSION));
         }
@@ -56,13 +62,33 @@ public class Configuration {
             migrateConfiguration();
         }
 
+        for (ConfigurationPaths.ConfigurationPath path : ConfigurationPaths.ALL_PATHS) {
+            this.config.put(path, getData(json, path));
+        }
+
+        // servers
+        for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject("servers").getAsJsonObject("entries").entrySet()) {
+            this.serverList.put(Integer.parseInt(entry.getKey()), Server.deserialize(entry.getValue().getAsJsonObject()));
+        }
+
+        // accounts
+        for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject("accounts").getAsJsonObject("entries").entrySet()) {
+            JsonObject data = entry.getValue().getAsJsonObject();
+            Account account = switch (data.get("type").getAsString()) {
+                case "mojang" -> MojangAccount.deserialize(data);
+                case "offline" -> OfflineAccount.deserialize(data);
+                default -> throw new IllegalArgumentException("Unexpected value: " + data.get("type").getAsString());
+            };
+            this.accountList.put(account.getId(), account);
+        }
+
         final File finalFile = file;
         new Thread(() -> {
             while (true) {
                 // wait for interrupt
-                synchronized (lock) {
+                synchronized (this.lock) {
                     try {
-                        lock.wait();
+                        this.lock.wait();
                     } catch (InterruptedException ignored) {
                     }
                 }
@@ -76,16 +102,36 @@ public class Configuration {
                     e.printStackTrace();
                     return;
                 }
-                synchronized (config) {
-                    gson.toJson(config, writer);
+                JsonObject jsonObject = DEFAULT_CONFIGURATION.deepCopy();
+                synchronized (this.config) {
+
+                    // accounts
+                    JsonObject accountsEntriesJson = jsonObject.getAsJsonObject("servers").getAsJsonObject("entries");
+                    for (Map.Entry<Integer, Server> entry : this.serverList.entrySet()) {
+                        accountsEntriesJson.add(String.valueOf(entry.getKey()), entry.getValue().serialize());
+                    }
+
+                    // servers
+                    JsonObject serversEntriesJson = jsonObject.getAsJsonObject("accounts").getAsJsonObject("entries");
+                    for (Map.Entry<String, Account> entry : this.accountList.entrySet()) {
+                        serversEntriesJson.add(entry.getKey(), entry.getValue().serialize());
+                    }
+
+                    // rest of data
+                    for (ConfigurationPaths.ConfigurationPath path : ConfigurationPaths.ALL_PATHS) {
+                        saveData(jsonObject, path, this.config.get(path));
+                    }
                 }
+                gson.toJson(jsonObject, writer);
                 try {
                     writer.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 if (finalFile.exists()) {
-                    finalFile.delete();
+                    if (!finalFile.delete()) {
+                        throw new RuntimeException("Could not save config!");
+                    }
                 }
                 if (!tempFile.renameTo(finalFile)) {
                     Log.fatal("An error occurred while saving the config file");
@@ -97,96 +143,68 @@ public class Configuration {
     }
 
     public boolean getBoolean(ConfigurationPaths.BooleanPaths path) {
-        return switch (path) {
-            case NETWORK_FAKE_CLIENT_BRAND -> config.getAsJsonObject("network").get("fake-network-brand").getAsBoolean();
-            case NETWORK_SHOW_LAN_SERVERS -> config.getAsJsonObject("network").get("show-lan-servers").getAsBoolean();
-            case DEBUG_VERIFY_ASSETS -> config.getAsJsonObject("debug").get("verify-assets").getAsBoolean();
-        };
+        return (boolean) this.config.get(path);
     }
 
     public void putBoolean(ConfigurationPaths.BooleanPaths path, boolean value) {
-        switch (path) {
-            case NETWORK_FAKE_CLIENT_BRAND -> config.getAsJsonObject("network").addProperty("fake-network-brand", value);
-            case NETWORK_SHOW_LAN_SERVERS -> config.getAsJsonObject("network").addProperty("show-lan-servers", value);
-            case DEBUG_VERIFY_ASSETS -> config.getAsJsonObject("debug").addProperty("verify-assets", value);
-        }
+        this.config.put(path, value);
     }
 
     public int getInt(ConfigurationPaths.IntegerPaths path) {
-        return switch (path) {
-            case GENERAL_CONFIG_VERSION -> config.getAsJsonObject("general").get("version").getAsInt();
-            case GAME_RENDER_DISTANCE -> config.getAsJsonObject("game").get("render-distance").getAsInt();
-        };
+        return (int) this.config.get(path);
     }
 
     public void putInt(ConfigurationPaths.IntegerPaths path, int value) {
-        switch (path) {
-            case GENERAL_CONFIG_VERSION -> config.getAsJsonObject("general").addProperty("version", value);
-            case GAME_RENDER_DISTANCE -> config.getAsJsonObject("game").addProperty("render-distance", value);
-        }
+        this.config.put(path, value);
     }
 
     public String getString(ConfigurationPaths.StringPaths path) {
-        return switch (path) {
-            case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").get("selected").getAsString();
-            case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").get("log-level").getAsString();
-            case GENERAL_LANGUAGE -> config.getAsJsonObject("general").get("language").getAsString();
-            case RESOURCES_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").get("resources").getAsString();
-            case CLIENT_TOKEN -> config.getAsJsonObject("accounts").get("client-token").getAsString();
-        };
+        return (String) this.config.get(path);
     }
 
     public void putString(ConfigurationPaths.StringPaths path, String value) {
-        switch (path) {
-            case ACCOUNT_SELECTED -> config.getAsJsonObject("accounts").addProperty("selected", value);
-            case GENERAL_LOG_LEVEL -> config.getAsJsonObject("general").addProperty("log-level", value);
-            case GENERAL_LANGUAGE -> config.getAsJsonObject("general").addProperty("language", value);
-            case RESOURCES_URL -> config.getAsJsonObject("download").getAsJsonObject("urls").addProperty("resources", value);
-            case CLIENT_TOKEN -> config.getAsJsonObject("accounts").addProperty("client-token", value);
-        }
+        this.config.put(path, value);
     }
 
-    public void putMojangAccount(MojangAccount account) {
-        config.getAsJsonObject("accounts").getAsJsonObject("entries").add(account.getUserId(), account.serialize());
+    public void putAccount(Account account) {
+        this.accountList.put(account.getId(), account);
     }
 
     public void putServer(Server server) {
-        config.getAsJsonObject("servers").getAsJsonObject("entries").add(String.valueOf(server.getId()), server.serialize());
+        this.serverList.put(server.getId(), server);
     }
 
     public void removeServer(Server server) {
-        config.getAsJsonObject("servers").getAsJsonObject("entries").remove(String.valueOf(server.getId()));
+        this.serverList.remove(server.getId());
     }
 
     public void saveToFile() {
-        synchronized (lock) {
-            lock.notifyAll();
+        synchronized (this.lock) {
+            this.lock.notifyAll();
         }
     }
 
-    public HashBiMap<String, MojangAccount> getMojangAccounts() {
-        HashBiMap<String, MojangAccount> accounts = HashBiMap.create();
-        JsonObject entries = config.getAsJsonObject("accounts").getAsJsonObject("entries");
-        entries.keySet().forEach((entry) -> {
-            MojangAccount account = MojangAccount.deserialize(entries.get(entry).getAsJsonObject());
-            accounts.put(account.getUserId(), account);
-        });
-        return accounts;
+    public Account getSelectedAccount() {
+        return this.accountList.get(getString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED));
     }
 
-    public ArrayList<Server> getServers() {
-        ArrayList<Server> servers = new ArrayList<>();
-        JsonObject entries = config.getAsJsonObject("servers").getAsJsonObject("entries");
-        entries.keySet().forEach((entry) -> servers.add(Server.deserialize(entries.get(entry).getAsJsonObject())));
-        return servers;
+    public void selectAccount(Account account) {
+        putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, account.getId());
     }
 
-    public void removeAccount(MojangAccount account) {
-        config.getAsJsonObject("accounts").getAsJsonObject("entries").remove(account.getUserId());
+    public void removeAccount(Account account) {
+        this.accountList.remove(account.getId());
+        if (getString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED).equals(account.getId())) {
+            putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, "");
+        }
     }
 
-    public JsonObject getConfig() {
-        return config;
+    public HashBiMap<Integer, Server> getServerList() {
+        return this.serverList;
+    }
+
+    public HashBiMap<String, Account> getAccounts() {
+        return this.accountList;
     }
 
     private void migrateConfiguration() throws ConfigMigrationException {
@@ -205,6 +223,61 @@ public class Configuration {
         switch (nextVersion) {
             // ToDo
             default -> throw new ConfigMigrationException("Can not migrate config: Unknown config version " + nextVersion);
+        }
+    }
+
+    private Object getData(JsonObject json, ConfigurationPaths.ConfigurationPath path) {
+        if (path instanceof ConfigurationPaths.BooleanPaths booleanPath) {
+            return switch (booleanPath) {
+                case NETWORK_FAKE_CLIENT_BRAND -> json.getAsJsonObject("network").get("fake-network-brand").getAsBoolean();
+                case NETWORK_SHOW_LAN_SERVERS -> json.getAsJsonObject("network").get("show-lan-servers").getAsBoolean();
+                case DEBUG_VERIFY_ASSETS -> json.getAsJsonObject("debug").get("verify-assets").getAsBoolean();
+                case CHAT_COLORED -> json.getAsJsonObject("chat").get("colored").getAsBoolean();
+                case CHAT_OBFUSCATED -> json.getAsJsonObject("chat").get("obfuscated").getAsBoolean();
+            };
+        }
+        if (path instanceof ConfigurationPaths.IntegerPaths integerPath) {
+            return switch (integerPath) {
+                case GENERAL_CONFIG_VERSION -> json.getAsJsonObject("general").get("version").getAsInt();
+                case GAME_RENDER_DISTANCE -> json.getAsJsonObject("game").get("render-distance").getAsInt();
+            };
+        }
+        if (path instanceof ConfigurationPaths.StringPaths stringPath) {
+            return switch (stringPath) {
+                case ACCOUNT_SELECTED -> json.getAsJsonObject("accounts").get("selected").getAsString();
+                case GENERAL_LOG_LEVEL -> json.getAsJsonObject("general").get("log-level").getAsString();
+                case GENERAL_LANGUAGE -> json.getAsJsonObject("general").get("language").getAsString();
+                case RESOURCES_URL -> json.getAsJsonObject("download").getAsJsonObject("urls").get("resources").getAsString();
+                case CLIENT_TOKEN -> json.getAsJsonObject("accounts").get("client-token").getAsString();
+            };
+        }
+        throw new IllegalArgumentException();
+    }
+
+    private void saveData(JsonObject input, ConfigurationPaths.ConfigurationPath path, Object data) {
+        if (data instanceof Boolean bool) {
+            switch ((ConfigurationPaths.BooleanPaths) path) {
+                case NETWORK_FAKE_CLIENT_BRAND -> input.getAsJsonObject("network").addProperty("fake-network-brand", bool);
+                case NETWORK_SHOW_LAN_SERVERS -> input.getAsJsonObject("network").addProperty("show-lan-servers", bool);
+                case DEBUG_VERIFY_ASSETS -> input.getAsJsonObject("debug").addProperty("verify-assets", bool);
+                case CHAT_COLORED -> input.getAsJsonObject("chat").addProperty("colored", bool);
+                case CHAT_OBFUSCATED -> input.getAsJsonObject("chat").addProperty("obfuscated", bool);
+            }
+        } else if (data instanceof Integer integer) {
+            switch ((ConfigurationPaths.IntegerPaths) path) {
+                case GENERAL_CONFIG_VERSION -> input.getAsJsonObject("general").addProperty("version", integer);
+                case GAME_RENDER_DISTANCE -> input.getAsJsonObject("game").addProperty("render-distance", integer);
+            }
+        } else if (data instanceof String string) {
+            switch ((ConfigurationPaths.StringPaths) path) {
+                case ACCOUNT_SELECTED -> input.getAsJsonObject("accounts").addProperty("selected", string);
+                case GENERAL_LOG_LEVEL -> input.getAsJsonObject("general").addProperty("log-level", string);
+                case GENERAL_LANGUAGE -> input.getAsJsonObject("general").addProperty("language", string);
+                case RESOURCES_URL -> input.getAsJsonObject("download").getAsJsonObject("urls").addProperty("resources", string);
+                case CLIENT_TOKEN -> input.getAsJsonObject("accounts").addProperty("client-token", string);
+            }
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 }

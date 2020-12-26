@@ -15,48 +15,54 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.BlockBreakAnimationEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketBlockBreakAnimation implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
+
+public class PacketBlockBreakAnimation extends ClientboundPacket {
     int entityId;
     BlockPosition position;
     byte stage;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        entityId = buffer.readVarInt();
-        if (buffer.getVersionId() < 6) {
-            position = buffer.readBlockPositionInteger();
+        this.entityId = buffer.readVarInt();
+        if (buffer.getVersionId() < V_14W03B) {
+            this.position = buffer.readBlockPositionInteger();
         } else {
-            position = buffer.readPosition();
+            this.position = buffer.readPosition();
         }
-        stage = buffer.readByte();
+        this.stage = buffer.readByte();
 
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        BlockBreakAnimationEvent event = new BlockBreakAnimationEvent(connection, this);
+        if (connection.fireEvent(event)) {
+            return;
+        }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving block break packet (entityId=%d, stage=%d) at %s", entityId, stage, position));
+        Log.protocol(String.format("[IN] Receiving block break packet (entityId=%d, stage=%d) at %s", this.entityId, this.stage, this.position));
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public byte getStage() {
-        return stage;
+        return this.stage;
     }
 }
 

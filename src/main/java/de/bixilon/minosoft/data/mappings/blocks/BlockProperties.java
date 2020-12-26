@@ -32,7 +32,6 @@ public enum BlockProperties {
     GENERAL_WATERLOGGED_YES,
     GENERAL_WATERLOGGED_NO,
 
-
     // stairs
     STAIR_DIRECTIONAL_STRAIGHT("shape", "straight"),
     STAIR_DIRECTIONAL_INNER_LEFT("shape", "inner_left"),
@@ -46,7 +45,6 @@ public enum BlockProperties {
     SLAB_TYPE_TOP,
     SLAB_TYPE_BOTTOM,
     SLAB_TYPE_DOUBLE,
-
 
     // farmland
     FARMLAND_MOISTURE_LEVEL_0,
@@ -192,7 +190,7 @@ public enum BlockProperties {
 
     // noteblock
     NOTEBLOCK_INSTRUMENT_HARP,
-    NOTEBLOCK_INSTRUMENT_BASEDRUM,
+    NOTEBLOCK_INSTRUMENT_BASE_DRUM("instrument", "basedrum"),
     NOTEBLOCK_INSTRUMENT_SNARE,
     NOTEBLOCK_INSTRUMENT_HAT,
     NOTEBLOCK_INSTRUMENT_BASS,
@@ -419,15 +417,24 @@ public enum BlockProperties {
     BUTTON_FACE_WALL,
     BUTTON_FACE_CEILING,
 
-
     POINTED_DRIPSTONE_THICKNESS_TIP_MERGE("thickness", "tip_merge"),
     POINTED_DRIPSTONE_THICKNESS_TIP("thickness", "tip"),
     POINTED_DRIPSTONE_THICKNESS_FRUSTUM("thickness", "frustum"),
     POINTED_DRIPSTONE_THICKNESS_MIDDLE("thickness", "middle"),
     POINTED_DRIPSTONE_THICKNESS_BASE("thickness", "base"),
     POINTED_DRIPSTONE_VERTICAL_DIRECTION_UP("vertical_direction", "up"),
-    POINTED_DRIPSTONE_VERTICAL_DIRECTION_DOWN("vertical_direction", "down");
+    POINTED_DRIPSTONE_VERTICAL_DIRECTION_DOWN("vertical_direction", "down"),
 
+    LEGACY_LEAVES_BLOCK_UPDATE_YES("block_update"),
+    LEGACY_LEAVES_BLOCK_UPDATE_NO("block_update"),
+
+    // is smooth cobble stone in < 17w46a a thing? probably (double cobble stone slab is smooth so ... (and even more))
+    LEGACY_SMOOTH_YES,
+    LEGACY_SMOOTH_NO,
+
+    SCULK_SENSOR_PHASE_INACTIVE("sculk_sensor_phase", "inactive"),
+    SCULK_SENSOR_PHASE_ACTIVE("sculk_sensor_phase", "active"),
+    SCULK_SENSOR_PHASE_COOLDOWN("sculk_sensor_phase", "cooldown");
 
     public static final HashMap<String, HashMap<String, BlockProperties>> PROPERTIES_MAPPING = new HashMap<>();
 
@@ -451,12 +458,12 @@ public enum BlockProperties {
         if (name.contains("LEVEL")) {
             // level with int values
             int levelIndex = split.indexOf("LEVEL");
-            group = split.get(levelIndex - 1).toLowerCase();
+            this.group = split.get(levelIndex - 1).toLowerCase();
         } else if (split.size() == 3) {
             // TYPE_NAME_VALUE
-            group = split.get(1).toLowerCase();
+            this.group = split.get(1).toLowerCase();
         } else if (name.endsWith("YES") || name.endsWith("NO")) {
-            group = split.get(split.size() - 2).toLowerCase();
+            this.group = split.get(split.size() - 2).toLowerCase();
         } else {
             throw new IllegalArgumentException(String.format("Could not find group automatically: %s", name));
         }
@@ -490,10 +497,10 @@ public enum BlockProperties {
     }
 
     public String getGroup() {
-        return group;
+        return this.group;
     }
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 }

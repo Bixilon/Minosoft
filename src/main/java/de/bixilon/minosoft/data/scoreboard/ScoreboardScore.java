@@ -25,11 +25,11 @@ public class ScoreboardScore {
     }
 
     public String getItemName() {
-        return itemName;
+        return this.itemName;
     }
 
     public String getScoreName() {
-        return scoreName;
+        return this.scoreName;
     }
 
     public void setScoreName(String scoreName) {
@@ -37,7 +37,7 @@ public class ScoreboardScore {
     }
 
     public int getScore() {
-        return score;
+        return this.score;
     }
 
     public void setScore(int score) {

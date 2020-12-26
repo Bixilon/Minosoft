@@ -16,37 +16,31 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketSetPassenger implements ClientboundPacket {
+public class PacketSetPassenger extends ClientboundPacket {
     int vehicleId;
     int[] entityIds;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.vehicleId = buffer.readVarInt();
-        entityIds = new int[buffer.readVarInt()];
-        for (int i = 0; i < entityIds.length; i++) {
-            entityIds[i] = buffer.readVarInt();
+        this.entityIds = new int[buffer.readVarInt()];
+        for (int i = 0; i < this.entityIds.length; i++) {
+            this.entityIds[i] = buffer.readVarInt();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Attaching %d entities (vehicleId=%d)", entityIds.length, vehicleId));
+        Log.protocol(String.format("[IN] Attaching %d entities (vehicleId=%d)", this.entityIds.length, this.vehicleId));
     }
 
     public int getVehicleId() {
-        return vehicleId;
+        return this.vehicleId;
     }
 
     public int[] getEntityIds() {
-        return entityIds;
+        return this.entityIds;
     }
 }

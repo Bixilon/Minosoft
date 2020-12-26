@@ -13,8 +13,12 @@
 
 package de.bixilon.minosoft.data.inventory;
 
-import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
+
+import java.util.Map;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.LOWEST_VERSION_SUPPORTED;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 
 public class InventorySlots {
     public enum PlayerInventorySlots implements InventoryInterface {
@@ -67,12 +71,14 @@ public class InventorySlots {
         HOTBAR_9,
         OFF_HAND;
 
-        public static PlayerInventorySlots byId(int id, int versionId) {
-            return values()[id];
-        }
+        private static final PlayerInventorySlots[] INVENTORY_SLOTS = values();
 
         public static PlayerInventorySlots byId(int id) {
-            return values()[id];
+            return INVENTORY_SLOTS[id];
+        }
+
+        public static PlayerInventorySlots byId(int id, int versionId) {
+            return byId(id);
         }
 
         @Override
@@ -83,20 +89,20 @@ public class InventorySlots {
 
     public enum EntityInventorySlots implements InventoryInterface {
         MAIN_HAND(0),
-        OFF_HAND(new MapSet[]{new MapSet<>(49, 1)}),
-        BOOTS(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(49, 2)}),
-        LEGGINGS(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(49, 3)}),
-        CHESTPLATE(new MapSet[]{new MapSet<>(0, 3), new MapSet<>(49, 4)}),
-        HELMET(new MapSet[]{new MapSet<>(0, 4), new MapSet<>(49, 5)});
+        OFF_HAND(Map.of(V_15W31A, 1)),
+        BOOTS(Map.of(LOWEST_VERSION_SUPPORTED, 1, V_15W31A, 2)),
+        LEGGINGS(Map.of(LOWEST_VERSION_SUPPORTED, 2, V_15W31A, 3)),
+        CHESTPLATE(Map.of(LOWEST_VERSION_SUPPORTED, 3, V_15W31A, 4)),
+        HELMET(Map.of(LOWEST_VERSION_SUPPORTED, 4, V_15W31A, 5));
 
-        final VersionValueMap<Integer> valueMap;
+        private final VersionValueMap<Integer> valueMap;
 
-        EntityInventorySlots(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+        EntityInventorySlots(Map<Integer, Integer> values) {
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         EntityInventorySlots(int id) {
-            valueMap = new VersionValueMap<>(id);
+            this.valueMap = new VersionValueMap<>(Map.of(LOWEST_VERSION_SUPPORTED, id));
         }
 
         public static EntityInventorySlots byId(int id, int versionId) {
@@ -110,7 +116,7 @@ public class InventorySlots {
 
         @Override
         public int getId(int versionId) {
-            Integer value = valueMap.get(versionId);
+            Integer value = this.valueMap.get(versionId);
             if (value == null) {
                 return Integer.MIN_VALUE;
             }

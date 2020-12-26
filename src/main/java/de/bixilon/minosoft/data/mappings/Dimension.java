@@ -22,7 +22,7 @@ public class Dimension extends ModIdentifier {
     }
 
     public boolean hasSkyLight() {
-        return hasSkyLight;
+        return this.hasSkyLight;
     }
 
     @Override
@@ -34,6 +34,6 @@ public class Dimension extends ModIdentifier {
             return false;
         }
         Dimension their = (Dimension) obj;
-        return getIdentifier().equals(their.getIdentifier()) && getMod().equals(their.getMod()) && hasSkyLight() == their.hasSkyLight();
+        return super.equals(obj) && hasSkyLight() == their.hasSkyLight();
     }
 }

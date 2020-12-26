@@ -16,14 +16,14 @@ package de.bixilon.minosoft.modding.event.events;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 public abstract class CancelableEvent extends ConnectionEvent {
-    private boolean cancelled = false;
+    private boolean cancelled;
 
     protected CancelableEvent(Connection connection) {
         super(connection);
     }
 
     public boolean isCancelled() {
-        return cancelled;
+        return this.cancelled;
     }
 
     public void setCancelled(boolean cancelled) {

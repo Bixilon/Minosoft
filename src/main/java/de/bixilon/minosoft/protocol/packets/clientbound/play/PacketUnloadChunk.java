@@ -15,30 +15,30 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketUnloadChunk implements ClientboundPacket {
+public class PacketUnloadChunk extends ClientboundPacket {
     ChunkLocation location;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+        this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.getPlayer().getWorld().unloadChunk(getLocation());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received unload chunk packet (location=%s)", location));
+        Log.protocol(String.format("[IN] Received unload chunk packet (location=%s)", this.location));
     }
 
     public ChunkLocation getLocation() {
-        return location;
+        return this.location;
     }
 }

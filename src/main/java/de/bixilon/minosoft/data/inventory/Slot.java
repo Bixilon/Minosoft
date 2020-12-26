@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.inventory;
 
+import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.data.mappings.Enchantment;
 import de.bixilon.minosoft.data.mappings.Item;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
@@ -20,6 +21,7 @@ import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.nbt.tag.*;
+import org.checkerframework.common.value.qual.IntRange;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ import java.util.HashMap;
 
 public class Slot {
     final Item item;
-    final HashMap<Enchantment, Short> enchantments = new HashMap<>();
+    final HashMap<Enchantment, Integer> enchantments = new HashMap<>();
     final ArrayList<ChatComponent> lore = new ArrayList<>();
     int itemCount;
     short itemMetadata;
@@ -70,11 +72,11 @@ public class Slot {
         if (nbt.containsKey("display")) {
             CompoundTag display = nbt.getCompoundTag("display");
             if (display.containsKey("Name")) {
-                this.customDisplayName = ChatComponent.fromString(display.getStringTag("Name").getValue());
+                this.customDisplayName = ChatComponent.valueOf(display.getStringTag("Name").getValue());
             }
             if (display.containsKey("Lore")) {
                 for (StringTag lore : display.getListTag("Lore").<StringTag>getValue()) {
-                    this.lore.add(ChatComponent.fromString(lore.getValue()));
+                    this.lore.add(ChatComponent.valueOf(lore.getValue()));
                 }
             }
         }
@@ -82,7 +84,7 @@ public class Slot {
             this.unbreakable = nbt.getByteTag("unbreakable").getValue() == 0x01;
         }
         if (nbt.containsKey("SkullOwner")) {
-            //this.skullOwner = nbt.getStringTag("SkullOwner").getValue(); // ToDo
+            // this.skullOwner = nbt.getStringTag("SkullOwner").getValue(); // ToDo
         }
         if (nbt.containsKey("HideFlags")) {
             this.hideFlags = (byte) nbt.getIntTag("HideFlags").getValue();
@@ -90,11 +92,11 @@ public class Slot {
         if (nbt.containsKey("Enchantments")) {
             for (CompoundTag enchantment : nbt.getListTag("Enchantments").<CompoundTag>getValue()) {
                 String[] spilittedIdentifier = enchantment.getStringTag("id").getValue().split(":");
-                enchantments.put(new Enchantment(spilittedIdentifier[0], spilittedIdentifier[1]), enchantment.getShortTag("lvl").getValue());
+                this.enchantments.put(new Enchantment(spilittedIdentifier[0], spilittedIdentifier[1]), enchantment.getNumberTag("lvl").getAsInt());
             }
         } else if (nbt.containsKey("ench")) {
             for (CompoundTag enchantment : nbt.getListTag("ench").<CompoundTag>getValue()) {
-                enchantments.put(mapping.getEnchantmentById(enchantment.getShortTag("id").getValue()), enchantment.getShortTag("lvl").getValue());
+                this.enchantments.put(mapping.getEnchantmentById(enchantment.getNumberTag("id").getAsInt()), enchantment.getNumberTag("lvl").getAsInt());
             }
         }
     }
@@ -102,44 +104,45 @@ public class Slot {
     public CompoundTag getNbt(VersionMapping mapping) {
         CompoundTag nbt = new CompoundTag();
 
-        if (repairCost != 0) {
-            nbt.writeTag("RepairCost", new IntTag(repairCost));
+        if (this.repairCost != 0) {
+            nbt.writeTag("RepairCost", new IntTag(this.repairCost));
         }
         CompoundTag display = new CompoundTag();
-        if (customDisplayName != null) {
-            display.writeTag("Name", new StringTag(customDisplayName.getLegacyText()));
+        if (this.customDisplayName != null) {
+            display.writeTag("Name", new StringTag(this.customDisplayName.getLegacyText()));
         }
-        if (lore.size() > 0) {
-            display.writeTag("Lore", new ListTag(TagTypes.STRING, lore.stream().map(ChatComponent::getLegacyText).map(StringTag::new).toArray(StringTag[]::new)));
+        if (!this.lore.isEmpty()) {
+            display.writeTag("Lore", new ListTag(TagTypes.STRING, this.lore.stream().map(ChatComponent::getLegacyText).map(StringTag::new).toArray(StringTag[]::new)));
         }
         if (display.size() > 0) {
             nbt.writeTag("display", display);
         }
-        if (unbreakable) {
+        if (this.unbreakable) {
             nbt.writeTag("unbreakable", new ByteTag(true));
         }
-        if (skullOwner != null) {
-            //nbt.writeTag("SkullOwner", new StringTag(skullOwner)); // ToDo
+        if (this.skullOwner != null) {
+            // nbt.writeTag("SkullOwner", new StringTag(skullOwner)); // ToDo
         }
-        if (hideFlags != 0) {
-            nbt.writeTag("HideFlags", new IntTag(hideFlags));
+        if (this.hideFlags != 0) {
+            nbt.writeTag("HideFlags", new IntTag(this.hideFlags));
         }
-        if (enchantments.size() > 0) {
+
+        if (!this.enchantments.isEmpty()) {
             if (mapping.getVersion().isFlattened()) {
                 ListTag enchantmentList = new ListTag(TagTypes.COMPOUND, new ArrayList<>());
-                enchantments.forEach((id, level) -> {
+                this.enchantments.forEach((id, level) -> {
                     CompoundTag tag = new CompoundTag();
                     tag.writeTag("id", new StringTag(id.toString()));
-                    tag.writeTag("lvl", new ShortTag(level));
+                    tag.writeTag("lvl", new ShortTag(level.shortValue()));
                     enchantmentList.getValue().add(tag);
                 });
                 nbt.writeTag("Enchantments", enchantmentList);
             } else {
                 ListTag enchantmentList = new ListTag(TagTypes.COMPOUND, new ArrayList<>());
-                enchantments.forEach((id, level) -> {
+                this.enchantments.forEach((id, level) -> {
                     CompoundTag tag = new CompoundTag();
                     tag.writeTag("id", new ShortTag((short) (int) mapping.getIdByEnchantment(id)));
-                    tag.writeTag("lvl", new ShortTag(level));
+                    tag.writeTag("lvl", new ShortTag(level.shortValue()));
                     enchantmentList.getValue().add(tag);
                 });
                 nbt.writeTag("ench", enchantmentList);
@@ -160,12 +163,18 @@ public class Slot {
         return their.getItem().equals(getItem()) && their.getItemCount() == getItemCount() && their.getItemMetadata() == getItemMetadata();
     }
 
-    public Item getItem() {
-        return item;
+    @Override
+    public String toString() {
+        return getDisplayName();
     }
 
+    public Item getItem() {
+        return this.item;
+    }
+
+    @IntRange(from = 0, to = ProtocolDefinition.ITEM_STACK_MAX_SIZE)
     public int getItemCount() {
-        return itemCount;
+        return this.itemCount;
     }
 
     public void setItemCount(int itemCount) {
@@ -173,16 +182,11 @@ public class Slot {
     }
 
     public short getItemMetadata() {
-        return itemMetadata;
+        return this.itemMetadata;
     }
 
     public void setItemMetadata(short itemMetadata) {
         this.itemMetadata = itemMetadata;
-    }
-
-    @Override
-    public String toString() {
-        return getDisplayName();
     }
 
     public String getDisplayName() {
@@ -190,12 +194,23 @@ public class Slot {
         if (customName != null) {
             return customName.getANSIColoredMessage();
         }
-        return (item == null ? "AIR" : item.toString()); // ToDo display name per Item (from language file)
+        return (this.item == null ? "AIR" : getLanguageName());
+    }
+
+    public String getLanguageName() {
+        // ToDo: What if an item identifier changed between versions? oOo
+        String[] keys = {String.format("item.%s.%s", this.item.getMod(), this.item.getIdentifier()), String.format("block.%s.%s", this.item.getMod(), this.item.getIdentifier())};
+        for (String key : keys) {
+            if (MinecraftLocaleManager.getLanguage().canTranslate(key)) {
+                return MinecraftLocaleManager.translate(key);
+            }
+        }
+        return this.item.getFullIdentifier();
     }
 
     @Nullable
     public ChatComponent getCustomDisplayName() {
-        return customDisplayName;
+        return this.customDisplayName;
     }
 
     public void setCustomDisplayName(ChatComponent customDisplayName) {
@@ -203,7 +218,7 @@ public class Slot {
     }
 
     public int getRepairCost() {
-        return repairCost;
+        return this.repairCost;
     }
 
     public void setRepairCost(int repairCost) {
@@ -211,7 +226,7 @@ public class Slot {
     }
 
     public int getDurability() {
-        return durability;
+        return this.durability;
     }
 
     public void setDurability(int durability) {
@@ -219,7 +234,7 @@ public class Slot {
     }
 
     public boolean isUnbreakable() {
-        return unbreakable;
+        return this.unbreakable;
     }
 
     public void setUnbreakable(boolean unbreakable) {
@@ -227,45 +242,45 @@ public class Slot {
     }
 
     public boolean shouldHideEnchantments() {
-        return BitByte.isBitSet(hideFlags, 0);
+        return BitByte.isBitSet(this.hideFlags, 0);
     }
 
     public boolean shouldHideModifiers() {
-        return BitByte.isBitSet(hideFlags, 1);
+        return BitByte.isBitSet(this.hideFlags, 1);
     }
 
     public boolean shouldHideUnbreakable() {
-        return BitByte.isBitSet(hideFlags, 2);
+        return BitByte.isBitSet(this.hideFlags, 2);
     }
 
     public boolean shouldHideCanDestroy() {
-        return BitByte.isBitSet(hideFlags, 3);
+        return BitByte.isBitSet(this.hideFlags, 3);
     }
 
     public boolean shouldHideCanPlaceOn() {
-        return BitByte.isBitSet(hideFlags, 4);
+        return BitByte.isBitSet(this.hideFlags, 4);
     }
 
     /**
      * @return hides other information, including potion effects, shield pattern info, "StoredEnchantments", written book "generation" and "author", "Explosion", "Fireworks", and map tooltips
      */
     public boolean shouldHideOtherInformation() {
-        return BitByte.isBitSet(hideFlags, 5);
+        return BitByte.isBitSet(this.hideFlags, 5);
     }
 
     public boolean shouldHideLeatherDyeColor() {
-        return BitByte.isBitSet(hideFlags, 6);
+        return BitByte.isBitSet(this.hideFlags, 6);
     }
 
-    public HashMap<Enchantment, Short> getEnchantments() {
-        return enchantments;
+    public HashMap<Enchantment, Integer> getEnchantments() {
+        return this.enchantments;
     }
 
     public String getSkullOwner() {
-        if (!item.getMod().equals(ProtocolDefinition.DEFAULT_MOD) || !item.getIdentifier().equals("skull")) {
+        if (!this.item.getMod().equals(ProtocolDefinition.DEFAULT_MOD) || !this.item.getIdentifier().equals("skull")) {
             throw new IllegalArgumentException("Item is not a skull!");
         }
-        return skullOwner;
+        return this.skullOwner;
     }
 
     public void setSkullOwner(String skullOwner) {
@@ -273,45 +288,45 @@ public class Slot {
     }
 
     public ArrayList<ChatComponent> getLore() {
-        return lore;
+        return this.lore;
     }
 
     public void setShouldHideEnchantments(boolean hideEnchantments) {
         if (hideEnchantments) {
-            hideFlags |= 1;
+            this.hideFlags |= 1;
         } else
-            hideFlags &= ~(1);
+            this.hideFlags &= ~(1);
     }
 
     public void setShouldHideModifiers(boolean hideModifiers) {
         if (hideModifiers) {
-            hideFlags |= 1 << 1;
+            this.hideFlags |= 1 << 1;
         } else {
-            hideFlags &= ~(1 << 1);
+            this.hideFlags &= ~(1 << 1);
         }
     }
 
     public void setShouldHideUnbreakable(boolean hideUnbreakable) {
         if (hideUnbreakable) {
-            hideFlags |= 1 << 2;
+            this.hideFlags |= 1 << 2;
         } else {
-            hideFlags &= ~(1 << 2);
+            this.hideFlags &= ~(1 << 2);
         }
     }
 
     public void setShouldHideCanDestroy(boolean hideCanDestroy) {
         if (hideCanDestroy) {
-            hideFlags |= 1 << 3;
+            this.hideFlags |= 1 << 3;
         } else {
-            hideFlags &= ~(1 << 3);
+            this.hideFlags &= ~(1 << 3);
         }
     }
 
     public void setShouldHideCanPlaceOn(boolean hideCanPlaceOn) {
         if (hideCanPlaceOn) {
-            hideFlags |= 1 << 4;
+            this.hideFlags |= 1 << 4;
         } else {
-            hideFlags &= ~(1 << 4);
+            this.hideFlags &= ~(1 << 4);
         }
     }
 
@@ -320,17 +335,17 @@ public class Slot {
      */
     public void setShouldHideOtherInformation(boolean hideOtherInformation) {
         if (hideOtherInformation) {
-            hideFlags |= 1 << 5;
+            this.hideFlags |= 1 << 5;
         } else {
-            hideFlags &= ~(1 << 5);
+            this.hideFlags &= ~(1 << 5);
         }
     }
 
     public void setShouldHideLeatherDyeColor(boolean hideLeatherDyeColor) {
         if (hideLeatherDyeColor) {
-            hideFlags |= 1 << 6;
+            this.hideFlags |= 1 << 6;
         } else {
-            hideFlags &= ~(1 << 6);
+            this.hideFlags &= ~(1 << 6);
         }
     }
 }

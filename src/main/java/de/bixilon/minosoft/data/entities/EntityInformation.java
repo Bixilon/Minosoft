@@ -35,10 +35,10 @@ public class EntityInformation extends ModIdentifier {
     }
 
     public float getWidth() {
-        return width;
+        return this.width;
     }
 
     public float getHeight() {
-        return height;
+        return this.height;
     }
 }

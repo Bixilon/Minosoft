@@ -26,7 +26,7 @@ public class PlayerListItem {
     final String name;
     final boolean legacy;
     int ping;
-    //optional fields
+    // optional fields
     GameModes gameMode;
     ChatComponent displayName;
     HashMap<PlayerProperties, PlayerProperty> properties;
@@ -55,15 +55,15 @@ public class PlayerListItem {
     }
 
     public UUID getUUID() {
-        return uuid;
+        return this.uuid;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public int getPing() {
-        return ping;
+        return this.ping;
     }
 
     public void setPing(int ping) {
@@ -71,7 +71,7 @@ public class PlayerListItem {
     }
 
     public GameModes getGameMode() {
-        return gameMode;
+        return this.gameMode;
     }
 
     public void setGameMode(GameModes gameMode) {
@@ -79,7 +79,7 @@ public class PlayerListItem {
     }
 
     public ChatComponent getDisplayName() {
-        return (hasDisplayName() ? displayName : ChatComponent.fromString(name));
+        return (hasDisplayName() ? this.displayName : ChatComponent.valueOf(this.name));
     }
 
     public void setDisplayName(ChatComponent displayName) {
@@ -87,18 +87,18 @@ public class PlayerListItem {
     }
 
     public boolean hasDisplayName() {
-        return displayName != null;
+        return this.displayName != null;
     }
 
     public HashMap<PlayerProperties, PlayerProperty> getProperties() {
-        return properties;
+        return this.properties;
     }
 
     public PlayerProperty getProperty(PlayerProperties property) {
-        return properties.get(property);
+        return this.properties.get(property);
     }
 
     public boolean isLegacy() {
-        return legacy;
+        return this.legacy;
     }
 }

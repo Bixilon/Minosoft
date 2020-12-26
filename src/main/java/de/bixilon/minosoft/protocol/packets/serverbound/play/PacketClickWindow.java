@@ -40,17 +40,17 @@ public class PacketClickWindow implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CLICK_WINDOW);
-        buffer.writeByte(windowId);
-        buffer.writeShort(slot);
-        buffer.writeByte(action.getButton());
-        buffer.writeShort(actionNumber);
-        buffer.writeByte(action.getMode());
-        buffer.writeSlot(clickedItem);
+        buffer.writeByte(this.windowId);
+        buffer.writeShort(this.slot);
+        buffer.writeByte(this.action.getButton());
+        buffer.writeShort(this.actionNumber);
+        buffer.writeByte(this.action.getMode());
+        buffer.writeSlot(this.clickedItem);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Clicking in window (windowId=%d, slot=%d, action=%s)", windowId, slot, action));
+        Log.protocol(String.format("[OUT] Clicking in window (windowId=%d, slot=%d, action=%s)", this.windowId, this.slot, this.action));
     }
 }

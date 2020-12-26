@@ -60,7 +60,7 @@ public class BossBarChangeEvent extends CancelableEvent {
     }
 
     public UUID getUUID() {
-        return uuid;
+        return this.uuid;
     }
 
     public void setUUID(UUID uuid) {
@@ -68,7 +68,7 @@ public class BossBarChangeEvent extends CancelableEvent {
     }
 
     public PacketBossBar.BossBarActions getAction() {
-        return action;
+        return this.action;
     }
 
     public void setAction(PacketBossBar.BossBarActions action) {
@@ -76,7 +76,7 @@ public class BossBarChangeEvent extends CancelableEvent {
     }
 
     public ChatComponent getTitle() {
-        return title;
+        return this.title;
     }
 
     public void setTitle(ChatComponent title) {
@@ -84,7 +84,7 @@ public class BossBarChangeEvent extends CancelableEvent {
     }
 
     public float getHealth() {
-        return health;
+        return this.health;
     }
 
     public void setHealth(float health) {
@@ -92,7 +92,7 @@ public class BossBarChangeEvent extends CancelableEvent {
     }
 
     public PacketBossBar.BossBarColors getColor() {
-        return color;
+        return this.color;
     }
 
     public void setColor(PacketBossBar.BossBarColors color) {
@@ -100,7 +100,7 @@ public class BossBarChangeEvent extends CancelableEvent {
     }
 
     public PacketBossBar.BossBarDivisions getDivisions() {
-        return divisions;
+        return this.divisions;
     }
 
     public void setDivisions(PacketBossBar.BossBarDivisions divisions) {
@@ -108,15 +108,15 @@ public class BossBarChangeEvent extends CancelableEvent {
     }
 
     public boolean isDragonBar() {
-        return isDragonBar;
+        return this.isDragonBar;
     }
 
     public void setDragonBar(boolean dragonBar) {
-        isDragonBar = dragonBar;
+        this.isDragonBar = dragonBar;
     }
 
     public boolean isShouldDarkenSky() {
-        return shouldDarkenSky;
+        return this.shouldDarkenSky;
     }
 
     public void setShouldDarkenSky(boolean shouldDarkenSky) {
@@ -124,7 +124,7 @@ public class BossBarChangeEvent extends CancelableEvent {
     }
 
     public boolean isCreateFog() {
-        return createFog;
+        return this.createFog;
     }
 
     public void setCreateFog(boolean createFog) {

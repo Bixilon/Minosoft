@@ -40,18 +40,18 @@ public class EffectEvent extends CancelableEvent {
     }
 
     public PacketEffect.EffectEffects getEffect() {
-        return effect;
+        return this.effect;
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public int getData() {
-        return data;
+        return this.data;
     }
 
     public boolean isDisableRelativeVolume() {
-        return disableRelativeVolume;
+        return this.disableRelativeVolume;
     }
 }

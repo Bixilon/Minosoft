@@ -22,6 +22,6 @@ public class ChestAction implements BlockAction {
 
     @Override
     public String toString() {
-        return playersLookingInChest > 0 ? String.format("CHEST_OPEN (%d)", playersLookingInChest) : "CHEST_CLOSE";
+        return this.playersLookingInChest > 0 ? String.format("CHEST_OPEN (%d)", this.playersLookingInChest) : "CHEST_CLOSE";
     }
 }

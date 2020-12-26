@@ -29,6 +29,6 @@ public class MinecartFurnace extends AbstractMinecartContainer {
 
     @EntityMetaDataFunction(identifier = "hasFuel")
     public boolean hasFuel() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.MINECART_FURNACE_HAS_FUEL);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.MINECART_FURNACE_HAS_FUEL);
     }
 }

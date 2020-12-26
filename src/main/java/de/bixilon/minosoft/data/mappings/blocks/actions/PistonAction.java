@@ -26,15 +26,17 @@ public class PistonAction implements BlockAction {
 
     @Override
     public String toString() {
-        return String.format("PISTON_%s:%s", status, direction);
+        return String.format("PISTON_%s:%s", this.status, this.direction);
     }
 
     public enum PistonStates {
         PUSH,
         PULL;
 
+        private static final PistonStates[] PISTON_STATES = values();
+
         public static PistonStates byId(int id) {
-            return values()[id];
+            return PISTON_STATES[id];
         }
     }
 }

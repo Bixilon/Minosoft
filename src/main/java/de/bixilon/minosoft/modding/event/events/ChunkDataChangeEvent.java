@@ -49,14 +49,14 @@ public class ChunkDataChangeEvent extends ConnectionEvent {
     }
 
     public ChunkLocation getLocation() {
-        return location;
+        return this.location;
     }
 
     public Chunk getChunk() {
-        return chunk;
+        return this.chunk;
     }
 
     public CompoundTag getHeightMap() {
-        return heightMap;
+        return this.heightMap;
     }
 }

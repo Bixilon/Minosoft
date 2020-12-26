@@ -88,7 +88,7 @@ public class Packets {
         }
 
         public ConnectionStates getState() {
-            return state;
+            return this.state;
         }
     }
 
@@ -117,7 +117,7 @@ public class Packets {
         PLAY_CHAT_MESSAGE(PacketChatMessageReceiving.class),
         PLAY_MULTIBLOCK_CHANGE(PacketMultiBlockChange.class),
         PLAY_TAB_COMPLETE(PacketTabCompleteReceiving.class),
-        PLAY_DECLARE_COMMANDS(null),
+        PLAY_DECLARE_COMMANDS(PacketDeclareCommands.class),
         PLAY_WINDOW_CONFIRMATION(PacketConfirmTransactionReceiving.class),
         PLAY_CLOSE_WINDOW(PacketCloseWindowReceiving.class),
         PLAY_WINDOW_ITEMS(PacketWindowItems.class),
@@ -198,7 +198,8 @@ public class Packets {
         PLAY_TITLE(PacketTitle.class),
         PLAY_ENTITY_INITIALISATION(PacketEntityInitialisation.class),
         PLAY_SET_COMPRESSION(PacketSetCompression.class),
-        PLAY_ADVANCEMENT_PROGRESS(null);
+        PLAY_ADVANCEMENT_PROGRESS(null),
+        PLAY_SCULK_VIBRATION_SIGNAL(PacketSculkVibrationSignal.class);
 
         final ConnectionStates state;
         final Class<? extends ClientboundPacket> clazz;
@@ -209,11 +210,11 @@ public class Packets {
         }
 
         public ConnectionStates getState() {
-            return state;
+            return this.state;
         }
 
         public Class<? extends ClientboundPacket> getClazz() {
-            return clazz;
+            return this.clazz;
         }
     }
 }

@@ -7,6 +7,10 @@
   "game": {
     "render-distance": 12
   },
+  "chat": {
+    "colored": true,
+    "obfuscated": true
+  },
   "network": {
     "fake-network-brand": false,
     "show-lan-servers": true

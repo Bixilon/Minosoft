@@ -21,27 +21,25 @@ import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.Util;
 import javafx.application.Platform;
 
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.concurrent.CountDownLatch;
 
 public class LANServerListener {
-    private final static String MOTD_BEGIN_STRING = "[MOTD]";
-    private final static String MOTD_END_STRING = "[/MOTD]";
-    private final static String PORT_START_STRING = "[AD]";
-    private final static String PORT_END_STRING = "[/AD]";
-    private final static String[] BROADCAST_MUST_CONTAIN = {MOTD_BEGIN_STRING, MOTD_END_STRING, PORT_START_STRING, PORT_END_STRING};
-    public final static HashBiMap<InetAddress, Server> servers = HashBiMap.create();
+    public static final HashBiMap<InetAddress, Server> SERVER_MAP = HashBiMap.create();
+    private static final String MOTD_BEGIN_STRING = "[MOTD]";
+    private static final String MOTD_END_STRING = "[/MOTD]";
+    private static final String PORT_START_STRING = "[AD]";
+    private static final String PORT_END_STRING = "[/AD]";
+    private static final String[] BROADCAST_MUST_CONTAIN = {MOTD_BEGIN_STRING, MOTD_END_STRING, PORT_START_STRING, PORT_END_STRING};
 
     public static void listen() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         new Thread(() -> {
             try {
                 MulticastSocket socket = new MulticastSocket(ProtocolDefinition.LAN_SERVER_BROADCAST_PORT);
-                socket.joinGroup(ProtocolDefinition.LAN_SERVER_BROADCAST_ADDRESS); // ToDo: do not use deprecated methods
+                socket.joinGroup(new InetSocketAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_INET_ADDRESS, ProtocolDefinition.LAN_SERVER_BROADCAST_PORT), NetworkInterface.getByInetAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_INET_ADDRESS));
                 byte[] buf = new byte[256]; // this should be enough, if the packet is longer, it is probably invalid
                 latch.countDown();
                 while (true) {
@@ -50,19 +48,19 @@ public class LANServerListener {
                         socket.receive(packet);
                         Log.protocol(String.format("LAN UDP Broadcast from %s:%s -> %s", packet.getAddress().getHostAddress(), packet.getPort(), new String(buf)));
                         InetAddress sender = packet.getAddress();
-                        if (servers.containsKey(sender)) {
+                        if (SERVER_MAP.containsKey(sender)) {
                             // This guy sent us already a server, maybe just the regular 1.5 second interval, a duplicate or a DOS attack...We don't care
                             continue;
                         }
                         Server server = getServerByBroadcast(sender, packet.getData());
-                        if (servers.containsValue(server)) {
+                        if (SERVER_MAP.containsValue(server)) {
                             continue;
                         }
-                        if (servers.size() > ProtocolDefinition.LAN_SERVER_MAXIMUM_SERVERS) {
+                        if (SERVER_MAP.size() > ProtocolDefinition.LAN_SERVER_MAXIMUM_SERVERS) {
                             continue;
                         }
-                        servers.put(sender, server);
-                        Platform.runLater(() -> ServerListCell.listView.getItems().add(server));
+                        SERVER_MAP.put(sender, server);
+                        Platform.runLater(() -> ServerListCell.SERVER_LIST_VIEW.getItems().add(server));
                         Log.debug(String.format("Discovered new LAN Server: %s", server));
                     } catch (Exception ignored) {
                     }
@@ -72,28 +70,28 @@ public class LANServerListener {
                 e.printStackTrace();
                 latch.countDown();
             }
-            servers.clear();
+            SERVER_MAP.clear();
             Log.warn("Stopping LAN Server Listener Thread");
         }, "LAN Server Listener").start();
         latch.await();
     }
 
-    public static HashBiMap<InetAddress, Server> getServers() {
-        return servers;
+    public static HashBiMap<InetAddress, Server> getServerMap() {
+        return SERVER_MAP;
     }
 
     public static void removeAll() {
-        HashSet<Server> temp = new HashSet<>(servers.values());
+        HashSet<Server> temp = new HashSet<>(SERVER_MAP.values());
         for (Server server : temp) {
             if (server.isConnected()) {
                 continue;
             }
-            servers.inverse().remove(server);
+            SERVER_MAP.inverse().remove(server);
         }
     }
 
     private static Server getServerByBroadcast(InetAddress address, byte[] broadcast) {
-        String parsed = new String(broadcast, StandardCharsets.UTF_8);
+        String parsed = new String(broadcast, StandardCharsets.UTF_8); // example: [MOTD]Bixilon - New World[/MOTD][AD]41127[/AD]
         for (String mustContain : BROADCAST_MUST_CONTAIN) {
             if (!parsed.contains(mustContain)) {
                 throw new IllegalArgumentException("Broadcast is invalid!");

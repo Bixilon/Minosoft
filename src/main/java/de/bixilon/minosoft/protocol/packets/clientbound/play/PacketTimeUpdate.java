@@ -14,36 +14,39 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.TimeChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketTimeUpdate implements ClientboundPacket {
+public class PacketTimeUpdate extends ClientboundPacket {
     long worldAge;
     long timeOfDay;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        worldAge = buffer.readLong();
-        timeOfDay = buffer.readLong();
+        this.worldAge = buffer.readLong();
+        this.timeOfDay = buffer.readLong();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        if (connection.fireEvent(new TimeChangeEvent(connection, this))) {
+            return;
+        }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Time Update packet received. Time is now %st (total %st, moving=%s)", Math.abs(timeOfDay), worldAge, timeOfDay > 0));
+        Log.protocol(String.format("[IN] Time Update packet received. Time is now %st (total %st, moving=%s)", Math.abs(this.timeOfDay), this.worldAge, this.timeOfDay > 0));
     }
 
     public long getWorldAge() {
-        return worldAge;
+        return this.worldAge;
     }
 
     public long getTimeOfDay() {
-        return timeOfDay;
+        return this.timeOfDay;
     }
 }

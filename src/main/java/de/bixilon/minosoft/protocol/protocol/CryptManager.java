@@ -43,6 +43,7 @@ public class CryptManager {
             throw new RuntimeException(e);
         }
     }
+
     public static byte[] getServerHash(String serverId, PublicKey publicKey, SecretKey secretKey) {
         return digestOperation(serverId.getBytes(StandardCharsets.ISO_8859_1), secretKey.getEncoded(), publicKey.getEncoded());
     }

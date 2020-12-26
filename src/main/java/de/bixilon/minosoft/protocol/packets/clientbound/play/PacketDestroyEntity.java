@@ -14,40 +14,47 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.EntityDespawnEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.Arrays;
 
-public class PacketDestroyEntity implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+
+public class PacketDestroyEntity extends ClientboundPacket {
     int[] entityIds;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             this.entityIds = new int[buffer.readByte()];
         } else {
             this.entityIds = new int[buffer.readVarInt()];
         }
 
-        for (int i = 0; i < entityIds.length; i++) {
-            entityIds[i] = buffer.readEntityId();
+        for (int i = 0; i < this.entityIds.length; i++) {
+            this.entityIds[i] = buffer.readEntityId();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new EntityDespawnEvent(connection, this));
+
+        for (int entityId : getEntityIds()) {
+            connection.getPlayer().getWorld().removeEntity(entityId);
+        }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Despawning the following entities: %s", Arrays.toString(entityIds)));
+        Log.protocol(String.format("[IN] Despawning the following entities: %s", Arrays.toString(this.entityIds)));
     }
 
     public int[] getEntityIds() {
-        return entityIds;
+        return this.entityIds;
     }
 }

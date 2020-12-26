@@ -22,6 +22,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
 public class PacketInteractEntity implements ServerboundPacket {
     final int entityId;
     Location location;
@@ -63,32 +65,32 @@ public class PacketInteractEntity implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_INTERACT_ENTITY);
-        buffer.writeEntityId(entityId);
-        if (buffer.getVersionId() < 33) {
-            if (click == EntityInteractionClicks.INTERACT_AT) {
-                click = EntityInteractionClicks.INTERACT;
+        buffer.writeEntityId(this.entityId);
+        if (buffer.getVersionId() < V_14W32A) {
+            if (this.click == EntityInteractionClicks.INTERACT_AT) {
+                this.click = EntityInteractionClicks.INTERACT;
             }
         }
-        buffer.writeByte((byte) click.ordinal());
-        if (buffer.getVersionId() >= 33) {
-            if (click == EntityInteractionClicks.INTERACT_AT) {
+        buffer.writeByte((byte) this.click.ordinal());
+        if (buffer.getVersionId() >= V_14W32A) {
+            if (this.click == EntityInteractionClicks.INTERACT_AT) {
                 // position
-                buffer.writeFloat((float) location.getX());
-                buffer.writeFloat((float) location.getY());
-                buffer.writeFloat((float) location.getZ());
+                buffer.writeFloat((float) this.location.getX());
+                buffer.writeFloat((float) this.location.getY());
+                buffer.writeFloat((float) this.location.getZ());
             }
 
-            if (click == EntityInteractionClicks.INTERACT_AT || click == EntityInteractionClicks.INTERACT) {
-                if (buffer.getVersionId() >= 49) {
-                    buffer.writeVarInt(hand.ordinal());
+            if (this.click == EntityInteractionClicks.INTERACT_AT || this.click == EntityInteractionClicks.INTERACT) {
+                if (buffer.getVersionId() >= V_15W31A) {
+                    buffer.writeVarInt(this.hand.ordinal());
                 }
 
-                if (buffer.getVersionId() >= 725 && buffer.getVersionId() < 729) {
-                    buffer.writeBoolean(sneaking);
+                if (buffer.getVersionId() >= V_1_16_PRE3 && buffer.getVersionId() < V_1_16_PRE5) {
+                    buffer.writeBoolean(this.sneaking);
                 }
             }
-            if (buffer.getVersionId() <= 729) {
-                buffer.writeBoolean(sneaking);
+            if (buffer.getVersionId() <= V_1_16_PRE5) {
+                buffer.writeBoolean(this.sneaking);
             }
         }
         return buffer;
@@ -96,7 +98,7 @@ public class PacketInteractEntity implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Interacting with entity (entityId=%d, click=%s)", entityId, click));
+        Log.protocol(String.format("[OUT] Interacting with entity (entityId=%d, click=%s)", this.entityId, this.click));
     }
 
     public enum EntityInteractionClicks {

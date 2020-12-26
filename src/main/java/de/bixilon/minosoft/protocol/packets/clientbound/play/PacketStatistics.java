@@ -18,38 +18,34 @@ import de.bixilon.minosoft.data.mappings.statistics.StatisticCategories;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.HashMap;
 
-public class PacketStatistics implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W47A;
+
+public class PacketStatistics extends ClientboundPacket {
     final HashMap<Statistic, Integer> statistics = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
-            if (buffer.getVersionId() < 346) { // ToDo
-                statistics.put(buffer.getConnection().getMapping().getStatisticByIdentifier(buffer.readString()), buffer.readVarInt());
+            if (buffer.getVersionId() < V_17W47A) { // ToDo
+                this.statistics.put(buffer.getConnection().getMapping().getStatisticByIdentifier(buffer.readString()), buffer.readVarInt());
             } else {
                 StatisticCategories category = StatisticCategories.byId(buffer.readVarInt());
-                statistics.put(buffer.getConnection().getMapping().getStatisticById(buffer.readVarInt()), buffer.readVarInt());
+                this.statistics.put(buffer.getConnection().getMapping().getStatisticById(buffer.readVarInt()), buffer.readVarInt());
             }
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received player statistics (count=%d)", statistics.size()));
+        Log.protocol(String.format("[IN] Received player statistics (count=%d)", this.statistics.size()));
     }
 
     public HashMap<Statistic, Integer> getStatistics() {
-        return statistics;
+        return this.statistics;
     }
 }

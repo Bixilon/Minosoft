@@ -16,8 +16,6 @@ package de.bixilon.minosoft.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.logging.LogLevels;
 
 import java.io.IOException;
 import java.net.URI;
@@ -27,32 +25,22 @@ import java.net.http.HttpResponse;
 
 public final class HTTP {
 
-    public static HttpResponse<String> postJson(String url, JsonObject json) {
+    public static HttpResponse<String> postJson(String url, JsonObject json) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).POST(HttpRequest.BodyPublishers.ofString(json.toString())).header("Content-Type", "application/json").build();
-        try {
-            return client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception e) {
-            Log.printException(e, LogLevels.DEBUG);
-        }
-        return null;
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    public static HttpResponse<String> get(String url) {
+    public static HttpResponse<String> get(String url) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
-        try {
-            return client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    public static JsonElement getJson(String url) {
+    public static JsonElement getJson(String url) throws IOException, InterruptedException {
         HttpResponse<String> response = get(url);
-        if (response == null || response.statusCode() != 200) {
-            return null;
+        if (response.statusCode() != 200) {
+            throw new IOException();
         }
         return JsonParser.parseString(response.body());
     }

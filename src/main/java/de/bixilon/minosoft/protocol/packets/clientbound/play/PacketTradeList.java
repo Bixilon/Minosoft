@@ -19,9 +19,11 @@ import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketTradeList implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_14_3_PRE1;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_14_4_PRE5;
+
+public class PacketTradeList extends ClientboundPacket {
     int windowId;
     Trade[] trades;
     VillagerData.VillagerLevels level;
@@ -31,9 +33,9 @@ public class PacketTradeList implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        windowId = buffer.readVarInt();
-        trades = new Trade[buffer.readByte()];
-        for (int i = 0; i < trades.length; i++) {
+        this.windowId = buffer.readVarInt();
+        this.trades = new Trade[buffer.readByte()];
+        for (int i = 0; i < this.trades.length; i++) {
             Slot input1 = buffer.readSlot();
             Slot input2 = null;
             if (buffer.readBoolean()) {
@@ -47,51 +49,46 @@ public class PacketTradeList implements ClientboundPacket {
             int specialPrice = buffer.readInt();
             float priceMultiplier = buffer.readFloat();
             int demand = 0;
-            if (buffer.getVersionId() >= 495) {
+            if (buffer.getVersionId() >= V_1_14_4_PRE5) {
                 demand = buffer.readInt();
             }
-            trades[i] = new Trade(input1, input2, enabled, usages, maxUsages, xp, specialPrice, priceMultiplier, demand);
+            this.trades[i] = new Trade(input1, input2, enabled, usages, maxUsages, xp, specialPrice, priceMultiplier, demand);
         }
-        level = VillagerData.VillagerLevels.byId(buffer.readVarInt());
-        experience = buffer.readVarInt();
-        isRegularVillager = buffer.readBoolean();
-        if (buffer.getVersionId() >= 486) {
-            canRestock = buffer.readBoolean();
+        this.level = VillagerData.VillagerLevels.byId(buffer.readVarInt());
+        this.experience = buffer.readVarInt();
+        this.isRegularVillager = buffer.readBoolean();
+        if (buffer.getVersionId() >= V_1_14_3_PRE1) {
+            this.canRestock = buffer.readBoolean();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received select trade packet (windowId=%d, tradeLength=%d, level=%s, experience=%d, regularVillager=%s, canRestock=%s)", windowId, trades.length, level, experience, isRegularVillager, canRestock));
+        Log.protocol(String.format("[IN] Received select trade packet (windowId=%d, tradeLength=%d, level=%s, experience=%d, regularVillager=%s, canRestock=%s)", this.windowId, this.trades.length, this.level, this.experience, this.isRegularVillager, this.canRestock));
     }
 
     public int getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     public Trade[] getTrades() {
-        return trades;
+        return this.trades;
     }
 
     public VillagerData.VillagerLevels getLevel() {
-        return level;
+        return this.level;
     }
 
     public int getExperience() {
-        return experience;
+        return this.experience;
     }
 
     public boolean isRegularVillager() {
-        return isRegularVillager;
+        return this.isRegularVillager;
     }
 
     public boolean canRestock() {
-        return canRestock;
+        return this.canRestock;
     }
 }

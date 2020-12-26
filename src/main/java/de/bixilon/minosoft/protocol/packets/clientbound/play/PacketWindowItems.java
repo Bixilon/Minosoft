@@ -15,39 +15,42 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.MultiSlotChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketWindowItems implements ClientboundPacket {
+public class PacketWindowItems extends ClientboundPacket {
     byte windowId;
     Slot[] data;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        windowId = buffer.readByte();
-        data = new Slot[buffer.readShort()];
-        for (int i = 0; i < data.length; i++) {
-            data[i] = buffer.readSlot();
+        this.windowId = buffer.readByte();
+        this.data = new Slot[buffer.readUnsignedShort()];
+        for (int i = 0; i < this.data.length; i++) {
+            this.data[i] = buffer.readSlot();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new MultiSlotChangeEvent(connection, this));
+
+        connection.getPlayer().setInventory(getWindowId(), getData());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Inventory slot change: %d", data.length));
+        Log.protocol(String.format("[IN] Inventory slot change: %d", this.data.length));
     }
 
     public byte getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     public Slot[] getData() {
-        return data;
+        return this.data;
     }
 }

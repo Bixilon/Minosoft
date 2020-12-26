@@ -13,78 +13,83 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
-public class PacketBlockEntityMetadata implements ClientboundPacket {
+import java.util.Map;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
+public class PacketBlockEntityMetadata extends ClientboundPacket {
     BlockPosition position;
     BlockEntityActions action;
     BlockEntityMetaData data;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 6) {
-            position = buffer.readBlockPositionShort();
-            action = BlockEntityActions.byId(buffer.readByte(), buffer.getVersionId());
-            data = BlockEntityMetaData.getData(action, (CompoundTag) buffer.readNBT(true));
+        if (buffer.getVersionId() < V_14W03B) {
+            this.position = buffer.readBlockPositionShort();
+            this.action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
+            this.data = BlockEntityMetaData.getData(this.action, (CompoundTag) buffer.readNBT(true));
             return true;
         }
-        position = buffer.readPosition();
-        action = BlockEntityActions.byId(buffer.readByte(), buffer.getVersionId());
-        data = BlockEntityMetaData.getData(action, (CompoundTag) buffer.readNBT());
+        this.position = buffer.readPosition();
+        this.action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
+        this.data = BlockEntityMetaData.getData(this.action, (CompoundTag) buffer.readNBT());
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new BlockEntityMetaDataChangeEvent(connection, this));
+        connection.getPlayer().getWorld().setBlockEntityData(getPosition(), getData());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving blockEntityMeta (position=%s, action=%s)", position, action));
+        Log.protocol(String.format("[IN] Receiving blockEntityMeta (position=%s, action=%s)", this.position, this.action));
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public BlockEntityActions getAction() {
-        return action;
+        return this.action;
     }
 
     public BlockEntityMetaData getData() {
-        return data;
+        return this.data;
     }
 
     public enum BlockEntityActions {
-        SPAWNER(new MapSet[]{new MapSet<>(0, 1)}),
-        COMMAND_BLOCK_TEXT(new MapSet[]{new MapSet<>(0, 2)}),
-        BEACON(new MapSet[]{new MapSet<>(33, 3)}),
-        SKULL(new MapSet[]{new MapSet<>(0, 3), new MapSet<>(33, 4)}),
-        FLOWER_POT(new MapSet[]{new MapSet<>(0, 4), new MapSet<>(33, 5), new MapSet<>(346, -1)}),
-        DECLARE_CONDUIT(new MapSet[]{new MapSet<>(371, 5)}),
-        BANNER(new MapSet[]{new MapSet<>(30, 6)}),
-        DATA_STRUCTURE_TILE_ENTITY(new MapSet[]{new MapSet<>(49, 7)}), // ToDo: was this really in 49?
-        END_GATEWAY_DESTINATION(new MapSet[]{new MapSet<>(49, 8)}),
-        SET_TEXT_ON_SIGN(new MapSet[]{new MapSet<>(110, 9)}),
-        DECLARE_SHULKER_BOX(new MapSet[]{new MapSet<>(307, 10)}),
-        SET_BED_COLOR(new MapSet[]{new MapSet<>(321, 11)}),
-        SET_DATA_JIGSAW(new MapSet[]{new MapSet<>(445, 12)}),
-        SET_ITEMS_IN_CAMPFIRE(new MapSet[]{new MapSet<>(452, 13)}),
-        BEE_HIVE(new MapSet[]{new MapSet<>(550, 14)});
+        SPAWNER(Map.of(LOWEST_VERSION_SUPPORTED, 1)),
+        COMMAND_BLOCK_TEXT(Map.of(LOWEST_VERSION_SUPPORTED, 2)),
+        BEACON(Map.of(V_14W32A, 3)),
+        SKULL(Map.of(LOWEST_VERSION_SUPPORTED, 3, V_14W32A, 4)),
+        FLOWER_POT(Map.of(LOWEST_VERSION_SUPPORTED, 4, V_14W32A, 5, V_17W47A, -1)),
+        DECLARE_CONDUIT(Map.of(V_18W15A, 5)),
+        BANNER(Map.of(V_14W30B, 6)),
+        DATA_STRUCTURE_TILE_ENTITY(Map.of(V_15W31A, 7)), // ToDo: was this really in 49?
+        END_GATEWAY_DESTINATION(Map.of(V_15W31A, 8)),
+        SET_TEXT_ON_SIGN(Map.of(V_1_9_4, 9)),
+        DECLARE_SHULKER_BOX(Map.of(V_16W39A, 10)),
+        SET_BED_COLOR(Map.of(V_17W15A, 11)),
+        SET_DATA_JIGSAW(Map.of(V_18W46A, 12)),
+        SET_ITEMS_IN_CAMPFIRE(Map.of(V_19W02A, 13)),
+        BEE_HIVE(Map.of(V_19W34A, 14));
 
         final VersionValueMap<Integer> valueMap;
 
-        BlockEntityActions(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+        BlockEntityActions(Map<Integer, Integer> values) {
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         public static BlockEntityActions byId(int id, int versionId) {
@@ -97,7 +102,7 @@ public class PacketBlockEntityMetadata implements ClientboundPacket {
         }
 
         public int getId(int versionId) {
-            Integer ret = valueMap.get(versionId);
+            Integer ret = this.valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

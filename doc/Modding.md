@@ -43,7 +43,7 @@ In the root folder of your jar file (the mod) must be a file called `mod.json`. 
 ### Explanation
 - `uuid` is a unique id for the mod. Generate 1 and keep it in all versions (used for dependencies, etc). **Required**
 - `versionId` like in android there is a numeric version id. It is used to compare between versions (and as identifier). **Required**
-- `versionName`, `authors`, `name` is the classic implementation of metadata. Can be anything, will be displayed in the mod list. **Required**
+- `versionName`, `authors` and `name` is the classic implementation of metadata. Can be anything, will be displayed in the mod list. **Required**
 - `moddingAPIVersion` Modding API version of minosoft. Currently `1` **Required**
 - `identifier` is the prefix of items (for Minecraft it is `minecraft`). Aka the thing before the `:`.  **Required**
 - `mainClass` the Main class of your mod (self explaining). The main class needs to extent the abstract class `MinosoftMod`. **Required**
@@ -56,21 +56,6 @@ In the root folder of your jar file (the mod) must be a file called `mod.json`. 
     - `version` Specifies the version you need to load. **Optional**
       - `minimum` Minimum versionId required. **Maximum, minimum, both or none**
       - `maximum` Maximum versionId required. **Maximum, minimum, both or none**
-
-## Mod loading (aka Main class)
-Your main class must extend the following class: `de.bixilon.minosoft.MinosoftMod`.
-
-### Phases
-There are different phases (states) for the loading. There are the following phases:
- 1. `BOOTING` Happens after loading all configuration files and while displaying the server list.
- 2. `INITIALIZING` All mods are loaded into the ram and everything before registering anything happens here (like OpenGL stuff, etc). You should also register Events here.
- 3. `LOADING` You have custom items, entities, blocks, etc? Load it here.
- 4. `STARTING` All items, etc are loaded. If you want to do anything else, do it here.
- 5. `STARTED` The loading is complete
-
-The most important thing is performance. To archive fast loading times, etc, all mods (if they don't on each other) are getting loaded async.
-One phase is completed (= Next phase starts), once all mods have completed the previous phase. Everything is async.
-If your start function needs much time, you can set the loading priority in the `mod.json` to start at the beginning. The `start` method returns a success boolean.
 
 ## Getting started
 Add Minosoft to your maven dependencies with  
@@ -85,12 +70,33 @@ Repository:
 ```  
 Dependency:  
 ```xml
-<dependency>
-    <groupId>de.bixilon.gitlab.bixilon</groupId>
-    <artifactId>minosoft</artifactId>
-    <version>master-SNAPSHOT</version>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>de.bixilon.gitlab.bixilon</groupId>
+        <artifactId>minosoft</artifactId>
+        <version>master-SNAPSHOT</version>
+    </dependency>
+</dependencies>
 ```
+
+Instead of `master-SNAPSHOT` you should write the latest commit, if there is no release tagged yet.
+
+## Mod loading (aka Main class)
+Your main class must extend the following class: `de.bixilon.minosoft.modding.MinosoftMod`.
+
+### Phases
+There are different phases (states) for the loading. There are the following phases:
+ 1. `BOOTING` Happens after loading all configuration files and while displaying the server list.
+ 2. `INITIALIZING` All mods are loaded into the ram and everything before registering anything happens here (like OpenGL stuff, etc). You should also register Events here.
+ 3. `LOADING` You have custom items, entities, blocks, etc? Load it here.
+ 4. `STARTING` All items, etc are loaded. If you want to do anything else, do it here.
+ 5. `STARTED` The loading is complete
+
+The most important thing is performance. To archive fast loading times, etc, all mods (if they don't on each other) are getting loaded async.
+One phase is completed (= Next phase starts), once all mods have completed the previous phase. Everything is async.
+If your start function needs much time, you can set the loading priority in the `mod.json` to start at the beginning. The `start` method returns a success boolean.
+
+
 Create a Main class, here is an example
 ```java
 package de.bixilon.example.mod.main;
@@ -99,6 +105,7 @@ import de.bixilon.minosoft.modding.MinosoftMod;
 import de.bixilon.minosoft.modding.loading.ModPhases;
 
 public class TestMod extends MinosoftMod {
+    
   public boolean start(ModPhases phase) {
     if (phase == ModPhases.BOOTING) {
         getLogger().info("Hello world!");
@@ -147,6 +154,7 @@ import de.bixilon.minosoft.modding.event.events.annotations.EventHandler;
 import de.bixilon.minosoft.modding.loading.Priorities;
 
 public class ChatEvent extends EventListener {
+    
     @EventHandler(priority = Priorities.HIGHEST)
     public void onChatMessageReceiving(ChatMessageReceivingEvent event) {
         if (event.getMessage().getMessage().contains("Bixilon")) {
@@ -164,5 +172,11 @@ public class ChatEvent extends EventListener {
     }
 }
 ```
-The following code would suppress messages containing the word "Bixilon" and if you write "jeb_ is stupid" into the chat, the message's text will be "jeb_ is awesome".
-To see a list of all events look into `de.bixilon.minosoft.modding.connectionEvent.events`. There is also a javadoc.
+
+The following code would suppress messages containing the word "Bixilon" and if you write "jeb_ is stupid" into the chat, the message's text will be "jeb_ is awesome". To see a list of all events look into `de.bixilon.minosoft.modding.connectionEvent.events`. There is also sometimes a javadoc, but generally just search for a file or open an issue.
+
+## Debugging and running
+
+Use a classic zip script that replaces the .jar in your mods folder:)
+
+Just kidding, no clue yet. We need a build system, #12

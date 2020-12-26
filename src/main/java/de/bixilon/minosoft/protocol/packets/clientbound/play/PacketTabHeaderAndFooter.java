@@ -15,37 +15,43 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.PlayerListInfoChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketTabHeaderAndFooter implements ClientboundPacket {
+public class PacketTabHeaderAndFooter extends ClientboundPacket {
     ChatComponent header;
     ChatComponent footer;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        header = buffer.readTextComponent();
-        footer = buffer.readTextComponent();
+        this.header = buffer.readChatComponent();
+        this.footer = buffer.readChatComponent();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        if (connection.fireEvent(new PlayerListInfoChangeEvent(connection, this))) {
+            return;
+        }
+
+        connection.getPlayer().setTabHeader(getHeader());
+        connection.getPlayer().setTabFooter(getFooter());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received tab list header: %s", header.getANSIColoredMessage()));
-        Log.protocol(String.format("[IN] Received tab list footer: %s", footer.getANSIColoredMessage()));
+        Log.protocol(String.format("[IN] Received tab list header: %s", this.header.getANSIColoredMessage()));
+        Log.protocol(String.format("[IN] Received tab list footer: %s", this.footer.getANSIColoredMessage()));
     }
 
     public ChatComponent getHeader() {
-        return header;
+        return this.header;
     }
 
     public ChatComponent getFooter() {
-        return footer;
+        return this.footer;
     }
 }

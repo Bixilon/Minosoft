@@ -14,12 +14,13 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.Velocity;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketEntityVelocity implements ClientboundPacket {
+public class PacketEntityVelocity extends ClientboundPacket {
     int entityId;
     Velocity velocity;
 
@@ -32,20 +33,26 @@ public class PacketEntityVelocity implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        Entity entity = connection.getPlayer().getWorld().getEntity(getEntityId());
+
+        if (entity == null) {
+            // thanks mojang
+            return;
+        }
+        connection.getVelocityHandler().handleVelocity(entity, getVelocity());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity velocity changed %d: %s", entityId, velocity.toString()));
+        Log.protocol(String.format("[IN] Entity velocity changed %d: %s", this.entityId, this.velocity.toString()));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public Velocity getVelocity() {
-        return velocity;
+        return this.velocity;
     }
 }

@@ -16,26 +16,20 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketEntityEvent implements ClientboundPacket {
+public class PacketEntityEvent extends ClientboundPacket {
     int entityId;
     byte eventId;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        entityId = buffer.readInt();
-        eventId = buffer.readByte();
+        this.entityId = buffer.readInt();
+        this.eventId = buffer.readByte();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity status: (entityId=%d, eventId=%s)", entityId, eventId));
+        Log.protocol(String.format("[IN] Entity status: (entityId=%d, eventId=%s)", this.entityId, this.eventId));
     }
 }

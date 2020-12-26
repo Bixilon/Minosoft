@@ -19,6 +19,7 @@ import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RequiredFieldValidator;
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
@@ -33,10 +34,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -50,8 +48,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainWindow implements Initializable {
-    public static Menu menuAccount2;
-
     public BorderPane serversPane;
     public Menu menuFile;
     public MenuItem menuFilePreferences;
@@ -75,7 +71,7 @@ public class MainWindow implements Initializable {
             GUITools.initializeScene(stage.getScene());
             Platform.setImplicitExit(false);
             stage.setOnCloseRequest(event -> {
-                if (Minosoft.getSelectedAccount() == null) {
+                if (Minosoft.getConfig().getSelectedAccount() == null) {
                     event.consume();
                     JFXAlert<?> alert = new JFXAlert<>();
                     GUITools.initializePane(alert.getDialogPane());
@@ -107,23 +103,9 @@ public class MainWindow implements Initializable {
         }
     }
 
-    public static void selectAccount() {
-        if (menuAccount2 == null) {
-            return;
-        }
-        Platform.runLater(() -> {
-            if (Minosoft.getSelectedAccount() != null) {
-                menuAccount2.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, Minosoft.getSelectedAccount().getPlayerName()));
-            } else {
-                menuAccount2.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
-            }
-        });
-    }
-
     public static void addOrEditServer(@Nullable final Server server) {
         JFXAlert<?> dialog = new JFXAlert<>();
         GUITools.initializePane(dialog.getDialogPane());
-
 
         JFXDialogLayout layout = new JFXDialogLayout();
 
@@ -133,7 +115,6 @@ public class MainWindow implements Initializable {
 
         JFXButton submitButton;
 
-
         JFXTextField serverNameField = new JFXTextField();
         serverNameField.setPromptText(LocaleManager.translate(Strings.SERVER_NAME));
 
@@ -142,14 +123,17 @@ public class MainWindow implements Initializable {
         RequiredFieldValidator serverAddressValidator = new RequiredFieldValidator();
         serverAddressValidator.setMessage(LocaleManager.translate(Strings.SERVER_ADDRESS_INPUT_REQUIRED));
         serverAddressField.getValidators().add(serverAddressValidator);
-        serverAddressField.focusedProperty().addListener((o, oldValue, newValue) -> {
+        serverAddressField.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
             if (!newValue) {
                 serverAddressField.validate();
             }
         });
+        serverAddressField.setTextFormatter(new TextFormatter<String>((change) -> {
+            change.setText(DNSUtil.correctHostName(change.getText()));
+            return change;
+        }));
 
         GUITools.VERSION_COMBO_BOX.getSelectionModel().select(Versions.LOWEST_VERSION_SUPPORTED);
-
 
         if (server == null) {
             // add
@@ -181,13 +165,11 @@ public class MainWindow implements Initializable {
         gridPane.add(new Label(LocaleManager.translate(Strings.VERSION) + ":"), 0, 2);
         gridPane.add(GUITools.VERSION_COMBO_BOX, 1, 2);
 
-
         layout.setBody(gridPane);
         JFXButton closeButton = new JFXButton(ButtonType.CLOSE.getText());
         closeButton.setOnAction((actionEvent -> dialog.hide()));
         closeButton.setButtonType(JFXButton.ButtonType.RAISED);
         layout.setActions(closeButton, submitButton);
-
 
         serverAddressField.textProperty().addListener((observable, oldValue, newValue) -> submitButton.setDisable(newValue.trim().isEmpty()));
         submitButton.setDisable(serverAddressField.getText().isBlank());
@@ -203,15 +185,15 @@ public class MainWindow implements Initializable {
 
             if (server1 == null) {
                 server1 = new Server(Server.getNextServerId(), serverName, serverAddress, desiredVersionId);
-                Minosoft.serverList.add(server1);
-                ServerListCell.listView.getItems().add(server1);
+                Minosoft.getConfig().putServer(server1);
+                ServerListCell.SERVER_LIST_VIEW.getItems().add(server1);
             } else {
                 server1.setName(serverName);
                 server1.setAddress(serverAddress);
                 server1.setDesiredVersionId(desiredVersionId);
                 if (server1.getCell() != null) {
                     server1.getCell().setName(server1.getName());
-                    //ToDo: version
+                    // ToDo: version
                 }
             }
             server1.saveToConfig();
@@ -230,21 +212,42 @@ public class MainWindow implements Initializable {
         dialog.showAndWait();
     }
 
+    public void selectAccount(Account account) {
+        Runnable runnable = () -> {
+            if (account != null) {
+                MainWindow.this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, account.getUsername()));
+            } else {
+                MainWindow.this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
+            }
+        };
+        if (Platform.isFxApplicationThread()) {
+            runnable.run();
+        } else {
+            Platform.runLater(runnable);
+        }
+        Platform.runLater(() -> {
+            if (account != null) {
+                this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, account.getUsername()));
+            } else {
+                this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
+            }
+        });
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        serversPane.setCenter(ServerListCell.listView);
+        this.serversPane.setCenter(ServerListCell.SERVER_LIST_VIEW);
 
-        menuAccount2 = menuAccount;
-        menuFile.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE));
-        menuFilePreferences.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_PREFERENCES));
-        menuFileQuit.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_QUIT));
-        menuServers.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS));
-        menuServersAdd.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ADD));
-        menuServerRefresh.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_REFRESH));
-        menuHelp.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP));
-        menuHelpAbout.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP_ABOUT));
-        menuAccountManage.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_MANAGE));
-        selectAccount();
+        this.menuFile.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE));
+        this.menuFilePreferences.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_PREFERENCES));
+        this.menuFileQuit.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_QUIT));
+        this.menuServers.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS));
+        this.menuServersAdd.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ADD));
+        this.menuServerRefresh.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_REFRESH));
+        this.menuHelp.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP));
+        this.menuHelpAbout.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP_ABOUT));
+        this.menuAccountManage.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_MANAGE));
+        selectAccount(Minosoft.getConfig().getSelectedAccount());
     }
 
     @FXML
@@ -260,16 +263,17 @@ public class MainWindow implements Initializable {
     public void refreshServers() {
         Log.info("Refreshing server list");
         // remove all lan servers
-        ServerListCell.listView.getItems().removeAll(LANServerListener.getServers().values());
+        ServerListCell.SERVER_LIST_VIEW.getItems().removeAll(LANServerListener.getServerMap().values());
         LANServerListener.removeAll();
 
-        for (Server server : ServerListCell.listView.getItems()) {
+        for (Server server : ServerListCell.SERVER_LIST_VIEW.getItems()) {
             if (server.getLastPing() == null) {
                 // server was not pinged, don't even try, only costs memory and cpu
                 continue;
             }
-            server.ping();
-            ServerListCell.listView.refresh();
+            if (server.getCell() != null) {
+                server.getCell().refresh();
+            }
         }
     }
 

@@ -24,18 +24,23 @@ public class Language {
 
     protected Language(String language, JsonObject json) {
         this.language = language;
-        json.keySet().forEach((key) -> data.put(Strings.valueOf(key.toUpperCase()), json.get(key).getAsString()));
+        json.keySet().forEach((key) -> this.data.put(Strings.valueOf(key.toUpperCase()), json.get(key).getAsString()));
     }
 
     public String getLanguage() {
-        return language;
+        return this.language;
     }
 
     public boolean canTranslate(Strings key) {
-        return data.containsKey(key);
+        return this.data.containsKey(key);
     }
 
     public String translate(Strings key, Object... data) {
         return MessageFormat.format(this.data.get(key), data);
+    }
+
+    @Override
+    public String toString() {
+        return this.language;
     }
 }

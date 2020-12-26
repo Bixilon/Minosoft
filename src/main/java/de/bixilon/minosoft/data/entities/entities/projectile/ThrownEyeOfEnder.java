@@ -33,7 +33,7 @@ public class ThrownEyeOfEnder extends Entity {
 
     @EntityMetaDataFunction(identifier = "item")
     public Slot getItem() {
-        Slot slot = metaData.getSets().getSlot(EntityMetaDataFields.THROWN_EYE_OF_ENDER_ITEM);
+        Slot slot = this.metaData.getSets().getSlot(EntityMetaDataFields.THROWN_EYE_OF_ENDER_ITEM);
         if (slot == null) {
             return DEFAULT_ITEM;
         }

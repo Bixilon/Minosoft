@@ -37,14 +37,14 @@ public class LoginPluginMessageRequestEvent extends CancelableEvent {
     }
 
     public int getMessageId() {
-        return messageId;
+        return this.messageId;
     }
 
     public String getChannel() {
-        return channel;
+        return this.channel;
     }
 
     public InByteBuffer getData() {
-        return data;
+        return this.data;
     }
 }

@@ -14,48 +14,45 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.SoundCategories;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.BitByte;
 
-public class PacketStopSound implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W45A;
+
+public class PacketStopSound extends ClientboundPacket {
     SoundCategories category;
-    String soundIdentifier;
+    ModIdentifier soundIdentifier;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 343) { //ToDo: these 2 values need to be switched in before 1.12.2
-            category = SoundCategories.valueOf(buffer.readString().toUpperCase());
-            soundIdentifier = buffer.readString();
+        if (buffer.getVersionId() < V_17W45A) { // ToDo: these 2 values need to be switched in before 1.12.2
+            this.category = SoundCategories.valueOf(buffer.readString().toUpperCase());
+            this.soundIdentifier = buffer.readIdentifier();
             return true;
         }
         byte flags = buffer.readByte();
         if (BitByte.isBitMask(flags, 0x01)) {
-            category = SoundCategories.byId(buffer.readVarInt());
+            this.category = SoundCategories.byId(buffer.readVarInt());
         }
         if (BitByte.isBitMask(flags, 0x02)) {
-            soundIdentifier = buffer.readString();
+            this.soundIdentifier = buffer.readIdentifier();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received stop sound (category=%s, soundIdentifier=%s)", category, soundIdentifier));
+        Log.protocol(String.format("[IN] Received stop sound (category=%s, soundIdentifier=%s)", this.category, this.soundIdentifier));
     }
 
     public SoundCategories getSoundId() {
-        return category;
+        return this.category;
     }
 
-    public String getSoundIdentifier() {
-        return soundIdentifier;
+    public ModIdentifier getSoundIdentifier() {
+        return this.soundIdentifier;
     }
 }

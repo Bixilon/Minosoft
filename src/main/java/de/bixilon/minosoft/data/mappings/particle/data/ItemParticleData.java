@@ -25,11 +25,11 @@ public class ItemParticleData extends ParticleData {
     }
 
     public Slot getSlot() {
-        return slot;
+        return this.slot;
     }
 
     @Override
     public String toString() {
-        return slot.toString();
+        return this.slot.toString();
     }
 }

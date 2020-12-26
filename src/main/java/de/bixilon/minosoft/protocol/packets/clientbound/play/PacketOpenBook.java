@@ -17,32 +17,26 @@ import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketOpenBook implements ClientboundPacket {
+public class PacketOpenBook extends ClientboundPacket {
     Hands hand;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.readVarInt() == 0) {
-            hand = Hands.MAIN_HAND;
+            this.hand = Hands.MAIN_HAND;
             return true;
         }
-        hand = Hands.OFF_HAND;
+        this.hand = Hands.OFF_HAND;
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received open book packet (hand=%s)", hand));
+        Log.protocol(String.format("[IN] Received open book packet (hand=%s)", this.hand));
     }
 
     public Hands getHand() {
-        return hand;
+        return this.hand;
     }
 }

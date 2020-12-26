@@ -19,6 +19,8 @@ import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersi
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketCollectItem;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W32A;
+
 public class CollectItemAnimationEvent extends CancelableEvent {
     private final ItemEntity item;
     private final Entity collector;
@@ -39,15 +41,15 @@ public class CollectItemAnimationEvent extends CancelableEvent {
     }
 
     public ItemEntity getItem() {
-        return item;
+        return this.item;
     }
 
     public Entity getCollector() {
-        return collector;
+        return this.collector;
     }
 
-    @MinimumProtocolVersion(versionId = 301)
+    @MinimumProtocolVersion(versionId = V_16W32A)
     public int getCount() {
-        return count;
+        return this.count;
     }
 }

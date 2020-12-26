@@ -46,7 +46,7 @@ public class ChunkSection {
     }
 
     public Block getBlock(InChunkSectionLocation loc) {
-        return blocks.get(loc);
+        return this.blocks.get(loc);
     }
 
     public void setBlock(int x, int y, int z, Block block) {
@@ -54,39 +54,41 @@ public class ChunkSection {
     }
 
     public void setBlock(InChunkSectionLocation location, Block block) {
-        if (blocks.get(location).equals(block)) {
+        if (block == null) {
+            this.blocks.remove(location);
+            this.blockEntityMeta.remove(location);
             return;
         }
-        blocks.put(location, block);
-        blockEntityMeta.remove(location);
+        this.blocks.put(location, block);
+        this.blockEntityMeta.remove(location);
     }
 
     public void setBlockEntityData(InChunkSectionLocation position, BlockEntityMetaData data) {
         // ToDo check if block is really a block entity (command block, spawner, skull, flower pot)
-        blockEntityMeta.put(position, data);
+        this.blockEntityMeta.put(position, data);
     }
 
     public HashMap<InChunkSectionLocation, Block> getBlocks() {
-        return blocks;
+        return this.blocks;
     }
 
     public HashMap<InChunkSectionLocation, BlockEntityMetaData> getBlockEntityMeta() {
-        return blockEntityMeta;
+        return this.blockEntityMeta;
     }
 
     public HashMap<InChunkSectionLocation, Byte> getLight() {
-        return light;
+        return this.light;
     }
 
     public HashMap<InChunkSectionLocation, Byte> getSkyLight() {
-        return skyLight;
+        return this.skyLight;
     }
 
     public BlockEntityMetaData getBlockEntityData(InChunkSectionLocation position) {
-        return blockEntityMeta.get(position);
+        return this.blockEntityMeta.get(position);
     }
 
     public void setBlockEntityData(HashMap<InChunkSectionLocation, BlockEntityMetaData> blockEntities) {
-        blockEntities.forEach(blockEntityMeta::put);
+        blockEntities.forEach(this.blockEntityMeta::put);
     }
 }

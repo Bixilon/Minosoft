@@ -14,47 +14,55 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketSetExperience implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+
+public class PacketSetExperience extends ClientboundPacket {
     float bar;
     int level;
     int total;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        bar = buffer.readFloat();
-        if (buffer.getVersionId() < 7) {
-            level = buffer.readShort();
-            total = buffer.readShort();
+        this.bar = buffer.readFloat();
+        if (buffer.getVersionId() < V_14W04A) {
+            this.level = buffer.readUnsignedShort();
+            this.total = buffer.readUnsignedShort();
             return true;
         }
-        level = buffer.readVarInt();
-        total = buffer.readVarInt();
+        this.level = buffer.readVarInt();
+        this.total = buffer.readVarInt();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        if (connection.fireEvent(new ExperienceChangeEvent(connection, this))) {
+            return;
+        }
+
+        connection.getPlayer().setLevel(getLevel());
+        connection.getPlayer().setTotalExperience(getTotal());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Level update received. Now at %d levels, totally %d exp", level, total));
+        Log.protocol(String.format("[IN] Level update received. Now at %d levels, totally %d exp", this.level, this.total));
     }
 
     public float getBar() {
-        return bar;
+        return this.bar;
     }
 
     public int getLevel() {
-        return level;
+        return this.level;
     }
 
     public int getTotal() {
-        return total;
+        return this.total;
     }
 }

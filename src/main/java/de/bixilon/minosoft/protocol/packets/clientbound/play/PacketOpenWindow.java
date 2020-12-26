@@ -17,11 +17,13 @@ import de.bixilon.minosoft.data.inventory.InventoryProperties;
 import de.bixilon.minosoft.data.inventory.InventoryTypes;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketOpenWindow implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
+public class PacketOpenWindow extends ClientboundPacket {
     byte windowId;
     InventoryTypes type;
     ChatComponent title;
@@ -30,61 +32,61 @@ public class PacketOpenWindow implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 6) {
+        if (buffer.getVersionId() < V_14W03B) {
             this.windowId = buffer.readByte();
-            this.type = InventoryTypes.byId(buffer.readByte());
-            this.title = buffer.readTextComponent();
-            slotCount = buffer.readByte();
+            this.type = InventoryTypes.byId(buffer.readUnsignedByte());
+            this.title = buffer.readChatComponent();
+            this.slotCount = buffer.readByte();
             if (!buffer.readBoolean()) {
                 // no custom name
-                title = null;
+                this.title = null;
             }
             this.entityId = buffer.readInt();
             return true;
         }
         this.windowId = buffer.readByte();
-        this.type = InventoryTypes.byName(buffer.readString());
-        this.title = buffer.readTextComponent();
-        if (buffer.getVersionId() < 452 || buffer.getVersionId() >= 464) {
-            slotCount = buffer.readByte();
+        this.type = InventoryTypes.byIdentifier(buffer.readIdentifier());
+        this.title = buffer.readChatComponent();
+        if (buffer.getVersionId() < V_19W02A || buffer.getVersionId() >= V_19W11A) {
+            this.slotCount = buffer.readByte();
         }
-        if (type == InventoryTypes.HORSE) {
+        if (this.type == InventoryTypes.HORSE) {
             this.entityId = buffer.readInt();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.getPlayer().createInventory(getInventoryProperties());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received inventory open packet (windowId=%d, type=%s, title=%s, entityId=%d, slotCount=%d)", windowId, type, title, entityId, slotCount));
+        Log.protocol(String.format("[IN] Received inventory open packet (windowId=%d, type=%s, title=%s, entityId=%d, slotCount=%d)", this.windowId, this.type, this.title, this.entityId, this.slotCount));
     }
 
     public byte getSlotCount() {
-        return slotCount;
+        return this.slotCount;
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public ChatComponent getTitle() {
-        return title;
+        return this.title;
     }
 
     public InventoryProperties getInventoryProperties() {
-        return new InventoryProperties(getWindowId(), getType(), title, slotCount);
+        return new InventoryProperties(getWindowId(), getType(), this.title, this.slotCount);
     }
 
     public byte getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     public InventoryTypes getType() {
-        return type;
+        return this.type;
     }
 }

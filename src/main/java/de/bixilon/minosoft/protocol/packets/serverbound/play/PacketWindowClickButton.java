@@ -32,13 +32,13 @@ public class PacketWindowClickButton implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CLICK_WINDOW_BUTTON);
-        buffer.writeByte(windowId);
-        buffer.writeByte(buttonId);
+        buffer.writeByte(this.windowId);
+        buffer.writeByte(this.buttonId);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending Click Window Packet (windowId=%d, buttonId=%d)", windowId, buttonId));
+        Log.protocol(String.format("[OUT] Sending Click Window Packet (windowId=%d, buttonId=%d)", this.windowId, this.buttonId));
     }
 }

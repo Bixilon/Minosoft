@@ -29,7 +29,7 @@ public class Parrot extends ShoulderRidingAnimal {
 
     @EntityMetaDataFunction(identifier = "variant")
     public ParrotVariants getVariant() {
-        return ParrotVariants.values()[metaData.getSets().getInt(EntityMetaDataFields.PARROT_VARIANT)];
+        return ParrotVariants.byId(this.metaData.getSets().getInt(EntityMetaDataFields.PARROT_VARIANT));
     }
 
     public enum ParrotVariants {
@@ -37,6 +37,12 @@ public class Parrot extends ShoulderRidingAnimal {
         BLUE,
         GREEN,
         YELLOW_BLUE,
-        GREY
+        GREY;
+
+        private static final ParrotVariants[] PARROT_VARIANTS = values();
+
+        public static ParrotVariants byId(int id) {
+            return PARROT_VARIANTS[id];
+        }
     }
 }

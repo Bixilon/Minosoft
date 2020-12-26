@@ -21,14 +21,17 @@ import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
 import de.bixilon.minosoft.data.mappings.Item;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.HashSet;
 import java.util.UUID;
 
-public class PacketSpawnPlayer implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
+public class PacketSpawnPlayer extends ClientboundPacket {
     PlayerEntity entity;
     Velocity velocity;
 
@@ -38,7 +41,7 @@ public class PacketSpawnPlayer implements ClientboundPacket {
         String name = null;
         UUID uuid;
         HashSet<PlayerPropertyData> properties = null;
-        if (buffer.getVersionId() < 19) {
+        if (buffer.getVersionId() < V_14W21A) {
             name = buffer.readString();
             uuid = UUID.fromString(buffer.readString());
             properties = new HashSet<>();
@@ -50,8 +53,8 @@ public class PacketSpawnPlayer implements ClientboundPacket {
             uuid = buffer.readUUID();
         }
         Location location;
-        if (buffer.getVersionId() < 100) {
-            location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
+        if (buffer.getVersionId() < V_16W06A) {
+            location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             location = buffer.readLocation();
         }
@@ -59,36 +62,39 @@ public class PacketSpawnPlayer implements ClientboundPacket {
         short pitch = buffer.readAngle();
 
         Item currentItem = null;
-        if (buffer.getVersionId() < 49) {
-            currentItem = buffer.getConnection().getMapping().getItemById(buffer.readShort());
+        if (buffer.getVersionId() < V_15W31A) {
+            currentItem = buffer.getConnection().getMapping().getItemById(buffer.readUnsignedShort());
         }
         EntityMetaData metaData = null;
-        if (buffer.getVersionId() < 550) {
+        if (buffer.getVersionId() < V_19W34A) {
             metaData = buffer.readMetaData();
         }
         this.entity = new PlayerEntity(buffer.getConnection(), entityId, uuid, location, new EntityRotation(yaw, pitch, 0), name, properties, currentItem);
         if (metaData != null) {
-            entity.setMetaData(metaData);
+            this.entity.setMetaData(metaData);
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new EntitySpawnEvent(connection, this));
+
+        connection.getPlayer().getWorld().addEntity(getEntity());
+        connection.getVelocityHandler().handleVelocity(getEntity(), getVelocity());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Player spawned at %s (entityId=%d, name=%s, uuid=%s)", entity.getLocation(), entity.getEntityId(), entity.getName(), entity.getUUID()));
+        Log.protocol(String.format("[IN] Player spawned at %s (entityId=%d, name=%s, uuid=%s)", this.entity.getLocation(), this.entity.getEntityId(), this.entity.getName(), this.entity.getUUID()));
     }
 
     public PlayerEntity getEntity() {
-        return entity;
+        return this.entity;
     }
 
     public Velocity getVelocity() {
-        return velocity;
+        return this.velocity;
     }
 
 }

@@ -50,43 +50,43 @@ public class AdvancementDisplay {
     }
 
     public ChatComponent getTitle() {
-        return title;
+        return this.title;
     }
 
     public ChatComponent getDescription() {
-        return description;
+        return this.description;
     }
 
     public Slot getIcon() {
-        return icon;
+        return this.icon;
     }
 
     public AdvancementFrameTypes getFrameType() {
-        return frameType;
+        return this.frameType;
     }
 
     public boolean hasBackgroundTexture() {
-        return BitByte.isBitMask(flags, 0x01);
+        return BitByte.isBitMask(this.flags, 0x01);
     }
 
     public boolean showToast() {
-        return BitByte.isBitMask(flags, 0x02);
+        return BitByte.isBitMask(this.flags, 0x02);
     }
 
     public boolean isHidden() {
-        return BitByte.isBitMask(flags, 0x04);
+        return BitByte.isBitMask(this.flags, 0x04);
     }
 
     public String getBackgroundTexture() {
-        return backgroundTexture;
+        return this.backgroundTexture;
     }
 
     public float getX() {
-        return x;
+        return this.x;
     }
 
     public float getY() {
-        return y;
+        return this.y;
     }
 
     public enum AdvancementFrameTypes {
@@ -94,8 +94,10 @@ public class AdvancementDisplay {
         CHALLENGE,
         GOAL;
 
+        private static final AdvancementFrameTypes[] ADVANCEMENT_FRAME_TYPES = values();
+
         public static AdvancementFrameTypes byId(int id) {
-            return values()[id];
+            return ADVANCEMENT_FRAME_TYPES[id];
         }
     }
 }

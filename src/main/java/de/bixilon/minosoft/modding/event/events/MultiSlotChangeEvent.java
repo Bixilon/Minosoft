@@ -34,13 +34,13 @@ public class MultiSlotChangeEvent extends ConnectionEvent {
     }
 
     public byte getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     /**
      * @return Data array. Array position equals the slot id
      */
     public Slot[] getData() {
-        return data;
+        return this.data;
     }
 }

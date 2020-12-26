@@ -20,6 +20,9 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W33A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
+
 public class PacketTabCompleteSending implements ServerboundPacket {
     final String text;
     final BlockPosition position;
@@ -27,14 +30,14 @@ public class PacketTabCompleteSending implements ServerboundPacket {
 
     public PacketTabCompleteSending(String text) {
         this.text = text;
-        position = null;
-        assumeCommand = false;
+        this.position = null;
+        this.assumeCommand = false;
     }
 
     public PacketTabCompleteSending(String text, BlockPosition position) {
         this.text = text;
         this.position = position;
-        assumeCommand = false;
+        this.assumeCommand = false;
     }
 
     public PacketTabCompleteSending(String text, boolean assumeCommand, BlockPosition position) {
@@ -46,16 +49,16 @@ public class PacketTabCompleteSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_TAB_COMPLETE);
-        buffer.writeString(text);
-        if (buffer.getVersionId() >= 59) {
-            buffer.writeBoolean(assumeCommand);
+        buffer.writeString(this.text);
+        if (buffer.getVersionId() >= V_15W31A) {
+            buffer.writeBoolean(this.assumeCommand);
         }
-        if (buffer.getVersionId() >= 37) {
-            if (position == null) {
+        if (buffer.getVersionId() >= V_14W33A) {
+            if (this.position == null) {
                 buffer.writeBoolean(false);
             } else {
                 buffer.writeBoolean(true);
-                buffer.writePosition(position);
+                buffer.writePosition(this.position);
             }
         }
         return buffer;
@@ -63,6 +66,6 @@ public class PacketTabCompleteSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending tab complete for message=\"%s\"", text.replace("\"", "\\\"")));
+        Log.protocol(String.format("[OUT] Sending tab complete for message=\"%s\"", this.text.replace("\"", "\\\"")));
     }
 }

@@ -17,9 +17,8 @@ import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketCombatEvent implements ClientboundPacket {
+public class PacketCombatEvent extends ClientboundPacket {
     CombatEvents action;
 
     int duration;
@@ -29,32 +28,27 @@ public class PacketCombatEvent implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        action = CombatEvents.byId(buffer.readVarInt());
-        switch (action) {
+        this.action = CombatEvents.byId(buffer.readVarInt());
+        switch (this.action) {
             case END_COMBAT -> {
-                duration = buffer.readVarInt();
-                entityId = buffer.readInt();
+                this.duration = buffer.readVarInt();
+                this.entityId = buffer.readInt();
             }
             case ENTITY_DEAD -> {
-                playerId = buffer.readVarInt();
-                entityId = buffer.readInt();
-                message = buffer.readTextComponent();
+                this.playerId = buffer.readVarInt();
+                this.entityId = buffer.readInt();
+                this.message = buffer.readChatComponent();
             }
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        switch (action) {
-            case ENTER_COMBAT -> Log.protocol(String.format("[IN] Received combat packet (action=%s)", action));
-            case END_COMBAT -> Log.protocol(String.format("[IN] Received combat packet (action=%s, duration=%d, entityId=%d)", action, duration, entityId));
-            case ENTITY_DEAD -> Log.protocol(String.format("[IN] Received combat packet (action=%s, playerId=%d, entityId=%d, message=\"%s\")", action, playerId, entityId, message));
+        switch (this.action) {
+            case ENTER_COMBAT -> Log.protocol(String.format("[IN] Received combat packet (action=%s)", this.action));
+            case END_COMBAT -> Log.protocol(String.format("[IN] Received combat packet (action=%s, duration=%d, entityId=%d)", this.action, this.duration, this.entityId));
+            case ENTITY_DEAD -> Log.protocol(String.format("[IN] Received combat packet (action=%s, playerId=%d, entityId=%d, message=\"%s\")", this.action, this.playerId, this.entityId, this.message));
         }
     }
 
@@ -63,8 +57,10 @@ public class PacketCombatEvent implements ClientboundPacket {
         END_COMBAT,
         ENTITY_DEAD;
 
+        private static final CombatEvents[] COMBAT_EVENTS = values();
+
         public static CombatEvents byId(int id) {
-            return values()[id];
+            return COMBAT_EVENTS[id];
         }
     }
 }

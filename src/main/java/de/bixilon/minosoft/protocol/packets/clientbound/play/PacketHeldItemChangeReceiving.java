@@ -14,30 +14,30 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketHeldItemChangeReceiving implements ClientboundPacket {
+public class PacketHeldItemChangeReceiving extends ClientboundPacket {
     byte slot;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        slot = buffer.readByte();
+        this.slot = buffer.readByte();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.getPlayer().setSelectedSlot(getSlot());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Slot change received. Now on slot %s", slot));
+        Log.protocol(String.format("[IN] Slot change received. Now on slot %s", this.slot));
     }
 
     public byte getSlot() {
-        return slot;
+        return this.slot;
     }
 }

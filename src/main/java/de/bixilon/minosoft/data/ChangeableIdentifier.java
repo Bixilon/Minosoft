@@ -13,49 +13,55 @@
 
 package de.bixilon.minosoft.data;
 
-import de.bixilon.minosoft.data.mappings.versions.Versions;
+import de.bixilon.minosoft.data.mappings.LegacyModIdentifier;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.Util;
 
+import java.util.Map;
 import java.util.TreeMap;
 
-public class ChangeableIdentifier extends VersionValueMap<String> {
-    String mod = ProtocolDefinition.DEFAULT_MOD;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.LOWEST_VERSION_SUPPORTED;
 
-    public ChangeableIdentifier(String legacy, String water) {
-        values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), legacy);
-        values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
+public class ChangeableIdentifier extends VersionValueMap<ModIdentifier> {
+
+    public ChangeableIdentifier(ModIdentifier legacy, ModIdentifier water) {
+        this.values.put(LOWEST_VERSION_SUPPORTED, legacy);
+        this.values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
     }
 
-    public ChangeableIdentifier(String legacy, String water, String mod) {
-        values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), legacy);
-        values.put(ProtocolDefinition.FLATTING_VERSION_ID, water);
-        this.mod = mod;
+    public ChangeableIdentifier(Map<Integer, Object> values) {
+        super(convertToIdentifier(values));
     }
 
-    public ChangeableIdentifier(TreeMap<Integer, String> values) {
-        this.values = values;
-    }
-
-    public ChangeableIdentifier(IdentifierSet... sets) {
-        super(sets, true);
-    }
 
     public ChangeableIdentifier(String name) {
-        super(name);
+        super(Map.of(LOWEST_VERSION_SUPPORTED, new ModIdentifier(name)));
     }
 
-    public boolean isValidName(String name, int versionId) {
-        name = name.toLowerCase();
-        if (name.indexOf(":") != 0) {
-            String[] splitName = name.split(":", 2);
-            if (!mod.equals(splitName[0])) {
-                // mod is not correct
-                return false;
+    private static Map<Integer, ModIdentifier> convertToIdentifier(Map<Integer, Object> in) {
+        TreeMap<Integer, ModIdentifier> out = new TreeMap<>();
+        for (Map.Entry<Integer, Object> entry : in.entrySet()) {
+            if (entry.getValue() instanceof ModIdentifier modIdentifier) {
+                out.put(entry.getKey(), modIdentifier);
+                continue;
             }
-            name = splitName[1];
-            // split and check mod
+            if (entry.getValue() instanceof String string) {
+                if (Util.doesStringContainsUppercaseLetters(string)) {
+                    // just a string but wrapped into a identifier (like old plugin channels MC|BRAND or ...)
+                    out.put(entry.getKey(), new LegacyModIdentifier(string));
+                    continue;
+                }
+                out.put(entry.getKey(), new ModIdentifier(string));
+                continue;
+            }
+            throw new IllegalArgumentException(String.format("Type %s is not a String or ModIdentifier!", entry.getValue().getClass().getCanonicalName()));
         }
+        return out;
+    }
 
-        return get(versionId).equals(name);
+    public boolean isValidIdentifier(ModIdentifier identifier, int versionId) {
+        return get(versionId).equals(identifier);
     }
 }
+

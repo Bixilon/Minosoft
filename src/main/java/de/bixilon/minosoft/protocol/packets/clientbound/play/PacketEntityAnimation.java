@@ -13,51 +13,48 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketEntityAnimation implements ClientboundPacket {
+import java.util.Map;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
+public class PacketEntityAnimation extends ClientboundPacket {
     int entityId;
     EntityAnimations animation;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        entityId = buffer.readVarInt();
-        animation = EntityAnimations.byId(buffer.readByte(), buffer.getVersionId());
+        this.entityId = buffer.readVarInt();
+        this.animation = EntityAnimations.byId(buffer.readUnsignedByte(), buffer.getVersionId());
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Play entity animation (entityId=%d, animation=%s)", entityId, animation));
+        Log.protocol(String.format("[IN] Play entity animation (entityId=%d, animation=%s)", this.entityId, this.animation));
     }
 
     public enum EntityAnimations {
-        //ToDo
-        SWING_RIGHT_ARM(new MapSet[]{new MapSet<>(0, 0)}),
-        TAKE_DAMAGE(new MapSet[]{new MapSet<>(0, 1)}),
-        LEAVE_BED(new MapSet[]{new MapSet<>(0, 2)}),
-        EAT_FOOD(new MapSet[]{new MapSet<>(0, 3), new MapSet<>(110, -1)}),
-        SWING_LEFT_ARM(new MapSet[]{new MapSet<>(110, 3)}),
-        CRITICAL_EFFECT(new MapSet[]{new MapSet<>(0, 4)}),
-        MAGIC_CRITICAL_EFFECT(new MapSet[]{new MapSet<>(0, 5)}),
-        UNKNOWN_1(new MapSet[]{new MapSet<>(0, 102), new MapSet<>(47, -1)}), // name currently unknown // ToDo
-        SNEAK(new MapSet[]{new MapSet<>(0, 104), new MapSet<>(47, -1)}),
-        UN_SNEAK(new MapSet[]{new MapSet<>(0, 105), new MapSet<>(47, -1)});
+        // ToDo
+        SWING_RIGHT_ARM(Map.of(LOWEST_VERSION_SUPPORTED, 0)),
+        TAKE_DAMAGE(Map.of(LOWEST_VERSION_SUPPORTED, 1)),
+        LEAVE_BED(Map.of(LOWEST_VERSION_SUPPORTED, 2)),
+        EAT_FOOD(Map.of(LOWEST_VERSION_SUPPORTED, 3, V_1_9_4, -1)),
+        SWING_LEFT_ARM(Map.of(V_1_9_4, 3)),
+        CRITICAL_EFFECT(Map.of(LOWEST_VERSION_SUPPORTED, 4)),
+        MAGIC_CRITICAL_EFFECT(Map.of(LOWEST_VERSION_SUPPORTED, 5)),
+        UNKNOWN_1(Map.of(LOWEST_VERSION_SUPPORTED, 102, V_1_8_9, -1)), // name currently unknown // ToDo
+        SNEAK(Map.of(LOWEST_VERSION_SUPPORTED, 104, V_1_8_9, -1)),
+        UN_SNEAK(Map.of(LOWEST_VERSION_SUPPORTED, 105, V_1_8_9, -1));
 
         final VersionValueMap<Integer> valueMap;
 
-        EntityAnimations(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+        EntityAnimations(Map<Integer, Integer> values) {
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         public static EntityAnimations byId(int id, int versionId) {
@@ -70,7 +67,7 @@ public class PacketEntityAnimation implements ClientboundPacket {
         }
 
         public int getId(Integer versionId) {
-            Integer ret = valueMap.get(versionId);
+            Integer ret = this.valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

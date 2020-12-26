@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.mappings.MobEffect;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketRemoveEntityEffect implements ClientboundPacket {
+public class PacketRemoveEntityEffect extends ClientboundPacket {
     int entityId;
     MobEffect effect;
 
@@ -27,25 +28,30 @@ public class PacketRemoveEntityEffect implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
-        effect = buffer.getConnection().getMapping().getMobEffectById(buffer.readByte());
+        this.effect = buffer.getConnection().getMapping().getMobEffectById(buffer.readByte());
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        Entity entity = connection.getPlayer().getWorld().getEntity(getEntityId());
+        if (entity == null) {
+            // thanks mojang
+            return;
+        }
+        entity.removeEffect(getEffect());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity effect removed (entityId=%d, effect=%s)", entityId, effect));
+        Log.protocol(String.format("[IN] Entity effect removed (entityId=%d, effect=%s)", this.entityId, this.effect));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public MobEffect getEffect() {
-        return effect;
+        return this.effect;
     }
 }

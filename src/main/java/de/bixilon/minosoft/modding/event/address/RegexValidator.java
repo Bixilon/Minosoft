@@ -26,20 +26,20 @@ public class RegexValidator implements ServerAddressValidator {
 
     @Override
     public boolean check(ServerAddress address) {
-        return pattern.matcher(address.getHostname()).find();
+        return this.pattern.matcher(address.getHostname()).find();
     }
 
     @Override
     public int hashCode() {
-        return pattern.hashCode();
+        return this.pattern.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return pattern.equals(obj);
+        return this.pattern.equals(obj);
     }
 
     public Pattern getPattern() {
-        return pattern;
+        return this.pattern;
     }
 }

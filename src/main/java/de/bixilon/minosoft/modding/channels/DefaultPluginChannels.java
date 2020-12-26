@@ -14,23 +14,28 @@
 package de.bixilon.minosoft.modding.channels;
 
 import de.bixilon.minosoft.data.ChangeableIdentifier;
-import de.bixilon.minosoft.data.IdentifierSet;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
+
+import java.util.Map;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.LOWEST_VERSION_SUPPORTED;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_PRE3;
 
 public enum DefaultPluginChannels {
-    MC_BRAND(new ChangeableIdentifier(new IdentifierSet(0, "MC|Brand"), new IdentifierSet(385, "minecraft:brand"))),
+    MC_BRAND(new ChangeableIdentifier(Map.of(LOWEST_VERSION_SUPPORTED, "MC|Brand", V_1_13_PRE3, "minecraft:brand"))),
     STOP_SOUND(new ChangeableIdentifier("MC|StopSound")),
-    REGISTER(new ChangeableIdentifier(new IdentifierSet(0, "REGISTER"), new IdentifierSet(385, "minecraft:register"))),
-    UNREGISTER(new ChangeableIdentifier(new IdentifierSet(0, "UNREGISTER"), new IdentifierSet(385, "minecraft:unregister")));
+    REGISTER(new ChangeableIdentifier(Map.of(LOWEST_VERSION_SUPPORTED, "REGISTER", V_1_13_PRE3, "minecraft:register"))),
+    UNREGISTER(new ChangeableIdentifier(Map.of(LOWEST_VERSION_SUPPORTED, "UNREGISTER", V_1_13_PRE3, "minecraft:unregister")));
 
-    final ChangeableIdentifier changeableIdentifier;
+    private final ChangeableIdentifier changeableIdentifier;
 
     DefaultPluginChannels(ChangeableIdentifier changeableIdentifier) {
         this.changeableIdentifier = changeableIdentifier;
     }
 
-    public static DefaultPluginChannels byName(String name, int versionId) {
+    public static DefaultPluginChannels byIdentifier(ModIdentifier identifier, int versionId) {
         for (DefaultPluginChannels channel : values()) {
-            if (channel.getChangeableIdentifier().get(versionId).equals(name)) {
+            if (channel.getChangeableIdentifier().get(versionId).equals(identifier)) {
                 return channel;
             }
         }
@@ -38,6 +43,6 @@ public enum DefaultPluginChannels {
     }
 
     public ChangeableIdentifier getChangeableIdentifier() {
-        return changeableIdentifier;
+        return this.changeableIdentifier;
     }
 }

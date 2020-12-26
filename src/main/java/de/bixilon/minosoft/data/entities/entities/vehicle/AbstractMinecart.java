@@ -29,31 +29,31 @@ public abstract class AbstractMinecart extends Entity {
 
     @EntityMetaDataFunction(identifier = "shakingPower")
     public int getShakingPower() {
-        return metaData.getSets().getInt(EntityMetaDataFields.MINECART_HURT);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.MINECART_HURT);
     }
 
     @EntityMetaDataFunction(identifier = "shakingDirection")
     public int getShakingDirection() {
-        return metaData.getSets().getInt(EntityMetaDataFields.MINECART_HURT_DIRECTION);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.MINECART_HURT_DIRECTION);
     }
 
     @EntityMetaDataFunction(identifier = "shakingMultiplier")
     public float getShakingMultiplier() {
-        return metaData.getSets().getInt(EntityMetaDataFields.MINECART_DAMAGE_TAKEN);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.MINECART_DAMAGE_TAKEN);
     }
 
     @EntityMetaDataFunction(identifier = "blockId")
     public int getBlockId() {
-        return metaData.getSets().getInt(EntityMetaDataFields.MINECART_BLOCK_ID);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.MINECART_BLOCK_ID);
     }
 
     @EntityMetaDataFunction(identifier = "blockYOffset")
     public int getBlockYOffset() {
-        return metaData.getSets().getInt(EntityMetaDataFields.MINECART_BLOCK_Y_OFFSET);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.MINECART_BLOCK_Y_OFFSET);
     }
 
     @EntityMetaDataFunction(identifier = "isShowingBlock")
     public boolean isShowingBlock() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.MINECART_SHOW_BLOCK);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.MINECART_SHOW_BLOCK);
     }
 }

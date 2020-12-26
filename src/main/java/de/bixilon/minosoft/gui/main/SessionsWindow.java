@@ -35,10 +35,10 @@ public class SessionsWindow implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        SessionListCell.listView.setCellFactory((lv) -> SessionListCell.newInstance());
+        SessionListCell.CONNECTION_LIST_VIEW.setCellFactory((lv) -> SessionListCell.newInstance());
 
-        menuDisconnect.setText(LocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT));
-        menuDisconnectFromAll.setText(LocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT_FROM_ALL));
+        this.menuDisconnect.setText(LocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT));
+        this.menuDisconnectFromAll.setText(LocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT_FROM_ALL));
     }
 
     public void setServer(Server server) {
@@ -50,11 +50,11 @@ public class SessionsWindow implements Initializable {
             }
             connections.add(connection);
         }
-        SessionListCell.listView.setItems(connections);
-        accountPane.setCenter(SessionListCell.listView);
+        SessionListCell.CONNECTION_LIST_VIEW.setItems(connections);
+        this.accountPane.setCenter(SessionListCell.CONNECTION_LIST_VIEW);
     }
 
     public void disconnectAll() {
-        server.getConnections().forEach(Connection::disconnect);
+        this.server.getConnections().forEach(Connection::disconnect);
     }
 }

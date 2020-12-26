@@ -21,6 +21,9 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
+
 public class PacketClientSettings implements ServerboundPacket {
 
     public final String locale;
@@ -42,24 +45,24 @@ public class PacketClientSettings implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CLIENT_SETTINGS);
-        buffer.writeString(locale); // locale
-        buffer.writeByte(renderDistance); // render Distance
+        buffer.writeString(this.locale); // locale
+        buffer.writeByte(this.renderDistance); // render Distance
         buffer.writeByte((byte) 0x00); // chat settings (nobody uses them)
         buffer.writeBoolean(true); // chat colors
-        if (buffer.getVersionId() < 6) {
+        if (buffer.getVersionId() < V_14W03B) {
             buffer.writeByte((byte) Difficulties.NORMAL.ordinal()); // difficulty
             buffer.writeBoolean(true); // cape
         } else {
             buffer.writeByte((byte) 0b01111111); // ToDo: skin parts
         }
-        if (buffer.getVersionId() >= 49) {
-            buffer.writeVarInt(mainHand.ordinal());
+        if (buffer.getVersionId() >= V_15W31A) {
+            buffer.writeVarInt(this.mainHand.ordinal());
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending settings (locale=%s, renderDistance=%d)", locale, renderDistance));
+        Log.protocol(String.format("[OUT] Sending settings (locale=%s, renderDistance=%d)", this.locale, this.renderDistance));
     }
 }

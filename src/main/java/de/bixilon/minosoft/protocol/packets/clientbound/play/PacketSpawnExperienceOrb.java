@@ -16,38 +16,43 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.entities.ExperienceOrb;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketSpawnExperienceOrb implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
+
+public class PacketSpawnExperienceOrb extends ClientboundPacket {
     ExperienceOrb entity;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         int entityId = buffer.readVarInt();
         Location location;
-        if (buffer.getVersionId() < 100) {
-            location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
+        if (buffer.getVersionId() < V_16W06A) {
+            location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             location = buffer.readLocation();
         }
-        short count = buffer.readShort();
-        entity = new ExperienceOrb(buffer.getConnection(), entityId, location, count);
+        int count = buffer.readUnsignedShort();
+        this.entity = new ExperienceOrb(buffer.getConnection(), entityId, location, count);
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new EntitySpawnEvent(connection, this));
+
+        connection.getPlayer().getWorld().addEntity(getEntity());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Experience orb spawned at %s(entityId=%d, count=%d)", entity.getLocation().toString(), entity.getEntityId(), entity.getCount()));
+        Log.protocol(String.format("[IN] Experience orb spawned at %s(entityId=%d, count=%d)", this.entity.getLocation().toString(), this.entity.getEntityId(), this.entity.getCount()));
     }
 
     public ExperienceOrb getEntity() {
-        return entity;
+        return this.entity;
     }
 }

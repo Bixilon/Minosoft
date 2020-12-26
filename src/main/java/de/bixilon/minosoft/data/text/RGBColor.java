@@ -13,39 +13,53 @@
 
 package de.bixilon.minosoft.data.text;
 
+import org.checkerframework.common.value.qual.IntRange;
+
 public final class RGBColor implements ChatCode {
     private final int color;
 
-    public RGBColor(int color) {
-        this.color = color;
+    public RGBColor(int red, int green, int blue, int alpha) {
+        this.color = blue | (green << 8) | (red << 16) | (alpha << 24);
     }
 
     public RGBColor(int red, int green, int blue) {
         this.color = blue | (green << 8) | (red << 16);
     }
 
+    public RGBColor(int color) {
+        this.color = color;
+    }
+
     public RGBColor(String colorString) {
         if (colorString.startsWith("#")) {
             colorString = colorString.substring(1);
         }
-        color = Integer.parseInt(colorString, 16);
+        this.color = Integer.parseInt(colorString, 16);
     }
 
+    @IntRange(from = 0, to = 255)
+    public int getAlpha() {
+        return (this.color >> 24) & 0xFF;
+    }
+
+    @IntRange(from = 0, to = 255)
     public int getRed() {
-        return (color >> 16) & 0xFF;
+        return (this.color >> 16) & 0xFF;
     }
 
+    @IntRange(from = 0, to = 255)
     public int getGreen() {
-        return (color >> 8) & 0xFF;
+        return (this.color >> 8) & 0xFF;
     }
 
+    @IntRange(from = 0, to = 255)
     public int getBlue() {
-        return color & 0xFF;
+        return this.color & 0xFF;
     }
 
     @Override
     public int hashCode() {
-        return color;
+        return this.color;
     }
 
     @Override
@@ -57,12 +71,15 @@ public final class RGBColor implements ChatCode {
         return getColor() == their.getColor();
     }
 
-    public int getColor() {
-        return color;
-    }
-
     @Override
     public String toString() {
-        return String.format("#%06X", (0xFFFFFF & color));
+        if (getAlpha() > 0) {
+            return String.format("#%08X", this.color);
+        }
+        return String.format("#%06X", (0xFFFFFF & this.color));
+    }
+
+    public int getColor() {
+        return this.color;
     }
 }

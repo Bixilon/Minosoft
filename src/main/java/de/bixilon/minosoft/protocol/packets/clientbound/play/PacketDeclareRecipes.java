@@ -15,36 +15,39 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.data.mappings.recipes.Ingredient;
 import de.bixilon.minosoft.data.mappings.recipes.Recipe;
 import de.bixilon.minosoft.data.mappings.recipes.RecipeTypes;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketDeclareRecipes implements ClientboundPacket {
-    final HashBiMap<String, Recipe> recipes = HashBiMap.create();
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W03A;
+
+public class PacketDeclareRecipes extends ClientboundPacket {
+    private final HashBiMap<ModIdentifier, Recipe> recipes = HashBiMap.create();
 
     @Override
     public boolean read(InByteBuffer buffer) {
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
             Recipe recipe;
-            String identifier;
+            ModIdentifier identifier;
             String typeName;
-            if (buffer.getVersionId() >= 453) { //ToDo: find out version
+            if (buffer.getVersionId() >= V_19W03A) { // ToDo: find out version
                 typeName = buffer.readString();
-                identifier = buffer.readString();
+                identifier = buffer.readIdentifier();
             } else {
-                identifier = buffer.readString();
+                identifier = buffer.readIdentifier();
                 typeName = buffer.readString();
             }
             RecipeTypes type = RecipeTypes.byName(typeName);
             switch (type) {
                 case SHAPELESS -> {
                     String group = buffer.readString();
-                    Ingredient[] ingredients = buffer.readIngredientArray(buffer.readVarInt());
+                    Ingredient[] ingredients = buffer.readIngredientArray();
                     Slot result = buffer.readSlot();
                     recipe = new Recipe(type, group, ingredients, result);
                 }
@@ -78,22 +81,22 @@ public class PacketDeclareRecipes implements ClientboundPacket {
                 }
                 default -> recipe = new Recipe(type);
             }
-            recipes.put(identifier, recipe);
+            this.recipes.put(identifier, recipe);
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.getRecipes().registerCustomRecipes(getRecipes());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received declare recipe packet (recipeLength=%d)", recipes.size()));
+        Log.protocol(String.format("[IN] Received declare recipe packet (recipeLength=%d)", this.recipes.size()));
     }
 
-    public HashBiMap<String, Recipe> getRecipes() {
-        return recipes;
+    public HashBiMap<ModIdentifier, Recipe> getRecipes() {
+        return this.recipes;
     }
 }

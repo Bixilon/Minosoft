@@ -38,14 +38,14 @@ public class EntityEquipmentChangeEvent extends ConnectionEvent {
     }
 
     public Entity getEntity() {
-        return getConnection().getPlayer().getWorld().getEntity(entityId);
+        return getConnection().getPlayer().getWorld().getEntity(this.entityId);
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public HashMap<InventorySlots.EntityInventorySlots, Slot> getSlots() {
-        return slots;
+        return this.slots;
     }
 }

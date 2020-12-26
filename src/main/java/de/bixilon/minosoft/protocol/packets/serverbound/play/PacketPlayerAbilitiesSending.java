@@ -19,6 +19,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE4;
+
 public class PacketPlayerAbilitiesSending implements ServerboundPacket {
     final boolean flying;
 
@@ -30,11 +32,11 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_ABILITIES);
         byte flags = 0;
-        if (flying) {
+        if (this.flying) {
             flags |= 0b10;
         }
         buffer.writeByte(flags);
-        if (buffer.getVersionId() < 727) {
+        if (buffer.getVersionId() < V_1_16_PRE4) {
             // only fly matters, everything else ignored
             buffer.writeFloat(0.0F);
             buffer.writeFloat(0.0F);
@@ -44,6 +46,6 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending player abilities packet: (flying=%s)", flying));
+        Log.protocol(String.format("[OUT] Sending player abilities packet: (flying=%s)", this.flying));
     }
 }

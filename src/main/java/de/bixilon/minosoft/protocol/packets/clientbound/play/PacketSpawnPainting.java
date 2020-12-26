@@ -18,53 +18,58 @@ import de.bixilon.minosoft.data.entities.entities.decoration.Painting;
 import de.bixilon.minosoft.data.mappings.Motive;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.UUID;
 
-public class PacketSpawnPainting implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
+public class PacketSpawnPainting extends ClientboundPacket {
     Painting entity;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         int entityId = buffer.readVarInt();
         UUID uuid = null;
-        if (buffer.getVersionId() >= 95) {
+        if (buffer.getVersionId() >= V_16W02A) {
             uuid = buffer.readUUID();
         }
         Motive motive;
-        if (buffer.getVersionId() < 353) {
+        if (buffer.getVersionId() < V_18W02A) {
             motive = buffer.getConnection().getMapping().getMotiveByIdentifier(buffer.readString());
         } else {
             motive = buffer.getConnection().getMapping().getMotiveById(buffer.readVarInt());
         }
         BlockPosition position;
         Directions direction;
-        if (buffer.getVersionId() < 8) {
+        if (buffer.getVersionId() < V_14W04B) {
             position = buffer.readBlockPositionInteger();
             direction = Directions.byId(buffer.readInt());
         } else {
             position = buffer.readPosition();
-            direction = Directions.byId(buffer.readByte());
+            direction = Directions.byId(buffer.readUnsignedByte());
         }
-        entity = new Painting(buffer.getConnection(), entityId, uuid, position, direction, motive);
+        this.entity = new Painting(buffer.getConnection(), entityId, uuid, position, direction, motive);
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new EntitySpawnEvent(connection, this));
+
+        connection.getPlayer().getWorld().addEntity(getEntity());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Spawning painting at %s (entityId=%d, motive=%s, direction=%s)", entity.getLocation(), entity.getEntityId(), entity.getMotive(), entity.getDirection()));
+        Log.protocol(String.format("[IN] Spawning painting at %s (entityId=%d, motive=%s, direction=%s)", this.entity.getLocation(), this.entity.getEntityId(), this.entity.getMotive(), this.entity.getDirection()));
     }
 
     public Painting getEntity() {
-        return entity;
+        return this.entity;
     }
 }
 

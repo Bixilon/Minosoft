@@ -13,13 +13,16 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+
+import java.util.Map;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketEntityAction implements ServerboundPacket {
     final int entityId;
@@ -41,37 +44,37 @@ public class PacketEntityAction implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ENTITY_ACTION);
-        buffer.writeEntityId(entityId);
-        if (buffer.getVersionId() < 7) {
-            buffer.writeByte((byte) action.getId(buffer.getVersionId()));
-            buffer.writeInt(parameter);
+        buffer.writeEntityId(this.entityId);
+        if (buffer.getVersionId() < V_14W04A) {
+            buffer.writeByte((byte) this.action.getId(buffer.getVersionId()));
+            buffer.writeInt(this.parameter);
         } else {
-            buffer.writeVarInt(action.getId(buffer.getVersionId()));
-            buffer.writeVarInt(parameter);
+            buffer.writeVarInt(this.action.getId(buffer.getVersionId()));
+            buffer.writeVarInt(this.parameter);
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending entity action packet (entityId=%d, action=%s, parameter=%d)", entityId, action, parameter));
+        Log.protocol(String.format("[OUT] Sending entity action packet (entityId=%d, action=%s, parameter=%d)", this.entityId, this.action, this.parameter));
     }
 
     public enum EntityActions {
-        SNEAK(new MapSet[]{new MapSet<>(0, 0)}),
-        UN_SNEAK(new MapSet[]{new MapSet<>(0, 1)}),
-        LEAVE_BED(new MapSet[]{new MapSet<>(0, 2)}),
-        START_SPRINTING(new MapSet[]{new MapSet<>(0, 3)}),
-        STOP_SPRINTING(new MapSet[]{new MapSet<>(0, 4)}),
-        START_HORSE_JUMP(new MapSet[]{new MapSet<>(0, 5)}),
-        STOP_HORSE_JUMP(new MapSet[]{new MapSet<>(77, 6)}), // ToDo: when did they change? really in 77?
-        OPEN_HORSE_INVENTORY(new MapSet[]{new MapSet<>(0, 6), new MapSet<>(77, 7)}),
-        START_ELYTRA_FLYING(new MapSet[]{new MapSet<>(77, 8)});
+        SNEAK(Map.of(LOWEST_VERSION_SUPPORTED, 0)),
+        UN_SNEAK(Map.of(LOWEST_VERSION_SUPPORTED, 1)),
+        LEAVE_BED(Map.of(LOWEST_VERSION_SUPPORTED, 2)),
+        START_SPRINTING(Map.of(LOWEST_VERSION_SUPPORTED, 3)),
+        STOP_SPRINTING(Map.of(LOWEST_VERSION_SUPPORTED, 4)),
+        START_HORSE_JUMP(Map.of(LOWEST_VERSION_SUPPORTED, 5)),
+        STOP_HORSE_JUMP(Map.of(V_15W41A, 6)), // ToDo: when did they change? really in 77?
+        OPEN_HORSE_INVENTORY(Map.of(LOWEST_VERSION_SUPPORTED, 6, V_15W41A, 7)),
+        START_ELYTRA_FLYING(Map.of(V_15W41A, 8));
 
         final VersionValueMap<Integer> valueMap;
 
-        EntityActions(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+        EntityActions(Map<Integer, Integer> values) {
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         public static EntityActions byId(int id, int versionId) {
@@ -84,7 +87,7 @@ public class PacketEntityAction implements ServerboundPacket {
         }
 
         public int getId(int versionId) {
-            Integer ret = valueMap.get(versionId);
+            Integer ret = this.valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

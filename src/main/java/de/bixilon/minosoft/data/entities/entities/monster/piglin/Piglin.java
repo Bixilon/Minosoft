@@ -21,6 +21,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A;
+
 public class Piglin extends AbstractPiglin {
 
     public Piglin(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
@@ -30,26 +32,25 @@ public class Piglin extends AbstractPiglin {
     @EntityMetaDataFunction(identifier = "isImmuneToZombification")
     @Override
     public boolean isImmuneToZombification() {
-        if (versionId < 738) {
+        if (this.versionId < V_20W27A) {
             return super.isImmuneToZombification();
         }
-        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IMMUNE_TO_ZOMBIFICATION);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IMMUNE_TO_ZOMBIFICATION);
     }
 
     @EntityMetaDataFunction(identifier = "isBaby")
     public boolean isBaby() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_BABY);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_BABY);
     }
 
     @EntityMetaDataFunction(identifier = "isChargingCrossbow")
     public boolean isChargingCrossbow() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_CHARGING_CROSSBOW);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_CHARGING_CROSSBOW);
     }
 
     @EntityMetaDataFunction(identifier = "isDancing")
     public boolean isDancing() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_DANCING);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.PIGLIN_IS_DANCING);
     }
-
 
 }

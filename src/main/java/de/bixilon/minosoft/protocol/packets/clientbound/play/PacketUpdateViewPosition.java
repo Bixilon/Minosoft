@@ -17,24 +17,18 @@ import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketUpdateViewPosition implements ClientboundPacket {
+public class PacketUpdateViewPosition extends ClientboundPacket {
     ChunkLocation location;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
+        this.location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received view position update (location=%s)", location));
+        Log.protocol(String.format("[IN] Received view position update (location=%s)", this.location));
     }
 }

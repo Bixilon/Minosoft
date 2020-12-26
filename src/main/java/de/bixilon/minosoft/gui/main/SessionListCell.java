@@ -33,7 +33,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SessionListCell extends ListCell<Connection> implements Initializable {
-    public static final ListView<Connection> listView = new ListView<>();
+    public static final ListView<Connection> CONNECTION_LIST_VIEW = new ListView<>();
 
     public Label account;
     public Label connectionId;
@@ -56,20 +56,20 @@ public class SessionListCell extends ListCell<Connection> implements Initializab
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         updateSelected(false);
-        setGraphic(root);
+        setGraphic(this.root);
 
-        optionsDisconnect.setText(LocaleManager.translate(Strings.SESSIONS_ACTION_DISCONNECT));
+        this.optionsDisconnect.setText(LocaleManager.translate(Strings.SESSIONS_ACTION_DISCONNECT));
     }
 
     public AnchorPane getRoot() {
-        return root;
+        return this.root;
     }
 
     @Override
     protected void updateItem(Connection connection, boolean empty) {
         super.updateItem(connection, empty);
 
-        root.setVisible(!empty);
+        this.root.setVisible(!empty);
         if (empty) {
             return;
         }
@@ -83,9 +83,9 @@ public class SessionListCell extends ListCell<Connection> implements Initializab
         }
         setStyle(null);
         this.connection = connection;
-        connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
-        connectionId.setText(String.format("#%d", connection.getConnectionId()));
-        account.setText(connection.getPlayer().getAccount().getPlayerName());
+        connection.registerEvent(new EventInvokerCallback<>(ConnectionStateChangeEvent.class, this::handleConnectionCallback));
+        this.connectionId.setText(String.format("#%d", connection.getConnectionId()));
+        this.account.setText(connection.getPlayer().getAccount().getUsername());
     }
 
     private void handleConnectionCallback(ConnectionStateChangeEvent event) {
@@ -97,9 +97,9 @@ public class SessionListCell extends ListCell<Connection> implements Initializab
 
         if (!connection.isConnected()) {
             Platform.runLater(() -> {
-                listView.getItems().remove(connection);
-                if (listView.getItems().size() == 0) {
-                    ((Stage) root.getScene().getWindow()).close();
+                CONNECTION_LIST_VIEW.getItems().remove(connection);
+                if (CONNECTION_LIST_VIEW.getItems().isEmpty()) {
+                    ((Stage) this.root.getScene().getWindow()).close();
                 }
             });
         }
@@ -107,6 +107,6 @@ public class SessionListCell extends ListCell<Connection> implements Initializab
 
     public void disconnect() {
         setStyle("-fx-background-color: indianred");
-        connection.disconnect();
+        this.connection.disconnect();
     }
 }

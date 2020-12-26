@@ -33,10 +33,10 @@ public class TimeChangeEvent extends CancelableEvent {
     }
 
     public long getWorldAge() {
-        return worldAge;
+        return this.worldAge;
     }
 
     public long getTimeOfDay() {
-        return timeOfDay;
+        return this.timeOfDay;
     }
 }

@@ -14,43 +14,48 @@
 package de.bixilon.minosoft;
 
 import com.google.common.collect.HashBiMap;
+import com.jfoenix.controls.JFXAlert;
+import com.jfoenix.controls.JFXDialogLayout;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
+import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.assets.AssetsManager;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.gui.main.*;
+import de.bixilon.minosoft.gui.main.GUITools;
+import de.bixilon.minosoft.gui.main.Launcher;
+import de.bixilon.minosoft.gui.main.ServerListCell;
+import de.bixilon.minosoft.gui.main.StartProgressWindow;
+import de.bixilon.minosoft.gui.main.cells.AccountListCell;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.loading.ModLoader;
 import de.bixilon.minosoft.modding.loading.Priorities;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
+import de.bixilon.minosoft.terminal.CLI;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.MinosoftCommandLineArguments;
 import de.bixilon.minosoft.util.Util;
-import de.bixilon.minosoft.util.mojang.api.MojangAccount;
 import de.bixilon.minosoft.util.task.AsyncTaskWorker;
 import de.bixilon.minosoft.util.task.Task;
 import de.bixilon.minosoft.util.task.TaskImportance;
 import javafx.application.Platform;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.TextArea;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 
 public final class Minosoft {
-    public static final HashSet<EventManager> eventManagers = new HashSet<>();
-    private static final CountUpAndDownLatch startStatusLatch = new CountUpAndDownLatch(1);
-    public static HashBiMap<String, MojangAccount> accountList;
-    public static MojangAccount selectedAccount;
-    public static ArrayList<Server> serverList;
+    public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
+    public static final HashBiMap<Integer, Connection> CONNECTIONS = HashBiMap.create();
+    private static final CountUpAndDownLatch START_STATUS_LATCH = new CountUpAndDownLatch(1);
     public static Configuration config;
 
     public static void main(String[] args) {
@@ -60,11 +65,15 @@ public final class Minosoft {
 
         taskWorker.setFatalError((exception) -> {
             Log.fatal("Critical error occurred while preparing. Exit");
+            if (StaticConfiguration.HEADLESS_MODE) {
+                System.exit(1);
+                return;
+            }
             try {
-                if (StartProgressWindow.toolkitLatch.getCount() == 2) {
+                if (StartProgressWindow.TOOLKIT_LATCH.getCount() == 2) {
                     StartProgressWindow.start();
                 }
-                StartProgressWindow.toolkitLatch.await();
+                StartProgressWindow.TOOLKIT_LATCH.await();
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 System.exit(1);
@@ -73,18 +82,19 @@ public final class Minosoft {
             StartProgressWindow.hideDialog();
             Launcher.exit();
             Platform.runLater(() -> {
-                Dialog<Boolean> dialog = new Dialog<>();
+                JFXAlert<Boolean> dialog = new JFXAlert<>();
                 GUITools.initializePane(dialog.getDialogPane());
                 // Do not translate this, translations might fail to load...
                 dialog.setTitle("Critical Error");
-                dialog.setHeaderText("An error occurred while starting Minosoft");
+                JFXDialogLayout layout = new JFXDialogLayout();
+                layout.setHeading(new Text("A fatal error occurred while starting Minosoft"));
                 TextArea text = new TextArea(exception.getClass().getCanonicalName() + ": " + exception.getMessage());
                 text.setEditable(false);
                 text.setWrapText(true);
-                dialog.getDialogPane().setContent(text);
+                layout.setBody(text);
+                dialog.getDialogPane().setContent(layout);
 
                 Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
-                stage.setAlwaysOnTop(true);
                 stage.toFront();
                 stage.setOnCloseRequest(dialogEvent -> {
                     dialog.setResult(Boolean.TRUE);
@@ -109,14 +119,8 @@ public final class Minosoft {
             // set log level from config
             Log.setLevel(LogLevels.valueOf(config.getString(ConfigurationPaths.StringPaths.GENERAL_LOG_LEVEL)));
             Log.info(String.format("Logging info with level: %s", Log.getLevel()));
-
-            serverList = config.getServers();
             progress.countDown();
         }, "Configuration", String.format("Load config file (%s)", StaticConfiguration.CONFIG_FILENAME), Priorities.HIGHEST, TaskImportance.REQUIRED));
-
-        taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFX Toolkit", "Initialize JavaFX", Priorities.HIGHEST));
-
-        taskWorker.addTask(new Task((progress) -> StartProgressWindow.show(startStatusLatch), "Progress Window", "Display progress window", Priorities.HIGH, TaskImportance.OPTIONAL, "JavaFX Toolkit", "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             progress.countUp();
@@ -136,8 +140,7 @@ public final class Minosoft {
         taskWorker.addTask(new Task(progress -> {
             Log.debug("Refreshing account token...");
             checkClientToken();
-            accountList = config.getMojangAccounts();
-            selectAccount(accountList.get(config.getString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED)));
+            selectAccount(config.getAccounts().get(config.getString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED)));
         }, "Token refresh", "Refresh selected account token", Priorities.LOW, TaskImportance.OPTIONAL, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
@@ -167,11 +170,26 @@ public final class Minosoft {
             progress.countDown();
         }, "LAN Server Listener", "Listener for LAN Servers", Priorities.LOWEST, TaskImportance.OPTIONAL, "Configuration"));
 
-        taskWorker.work(startStatusLatch);
+        taskWorker.addTask(new Task(progress -> {
+            progress.countUp();
+            CLI.initialize();
+            progress.countDown();
+        }, "CLI", "Initialize CLI", Priorities.LOW, TaskImportance.OPTIONAL, "Assets", "Mojang language"));
+
+        if (!StaticConfiguration.HEADLESS_MODE) {
+            taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFX Toolkit", "Initialize JavaFX", Priorities.HIGHEST));
+
+            taskWorker.addTask(new Task((progress) -> StartProgressWindow.show(START_STATUS_LATCH), "Progress Window", "Display progress window", Priorities.HIGH, TaskImportance.OPTIONAL, "JavaFX Toolkit", "Configuration"));
+        }
+        taskWorker.work(START_STATUS_LATCH);
         try {
-            startStatusLatch.waitUntilZero();
+            START_STATUS_LATCH.waitUntilZero();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+        Log.info("Everything initialized!");
+        if (StaticConfiguration.HEADLESS_MODE) {
+            return;
         }
         Launcher.start();
     }
@@ -183,55 +201,47 @@ public final class Minosoft {
         }
     }
 
-    public static void selectAccount(MojangAccount account) {
+    public static boolean selectAccount(Account account) {
         if (account == null) {
-            selectedAccount = null;
             config.putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, "");
             config.saveToFile();
-            return;
+            return false;
         }
-        MojangAccount.RefreshStates refreshState = account.refreshToken();
-        if (refreshState == MojangAccount.RefreshStates.ERROR) {
-            accountList.remove(account.getUserId());
-            account.delete();
-            AccountListCell.listView.getItems().remove(account);
-            selectedAccount = null;
-            return;
+        if (account.select()) {
+            config.putAccount(account);
+            config.selectAccount(account);
+            config.saveToFile();
+            if (Launcher.getMainWindow() != null) {
+                Launcher.getMainWindow().selectAccount(account);
+            }
+            AccountListCell.ACCOUNT_LIST_VIEW.refresh();
+            ServerListCell.SERVER_LIST_VIEW.refresh();
+            return true;
         }
-        config.putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, account.getUserId());
-        selectedAccount = account;
-        MainWindow.selectAccount();
-        account.saveToConfig();
+        account.logout();
+        AccountListCell.ACCOUNT_LIST_VIEW.getItems().remove(account);
+        config.removeAccount(account);
+        config.saveToFile();
+        return false;
     }
 
     public static Configuration getConfig() {
         return config;
     }
 
-    public static ArrayList<Server> getServerList() {
-        return serverList;
-    }
-
-    public static HashBiMap<String, MojangAccount> getAccountList() {
-        return accountList;
-    }
-
-    public static MojangAccount getSelectedAccount() {
-        return selectedAccount;
-    }
 
     /**
      * Waits until all critical components are started
      */
     public static void waitForStartup() {
         try {
-            startStatusLatch.waitUntilZero();
+            START_STATUS_LATCH.waitUntilZero();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     public static CountUpAndDownLatch getStartStatusLatch() {
-        return startStatusLatch;
+        return START_STATUS_LATCH;
     }
 }

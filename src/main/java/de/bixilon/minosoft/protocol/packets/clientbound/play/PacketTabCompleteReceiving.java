@@ -16,24 +16,26 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketTabCompleteReceiving implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W33A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W45A;
+
+public class PacketTabCompleteReceiving extends ClientboundPacket {
     int count;
     String[] match;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 37) {
-            count = buffer.readVarInt();
-            match = new String[]{buffer.readString()};
+        if (buffer.getVersionId() < V_14W33A) {
+            this.count = buffer.readVarInt();
+            this.match = new String[]{buffer.readString()};
             return true;
         }
-        if (buffer.getVersionId() < 343) {
-            count = buffer.readVarInt();
-            match = new String[count];
-            for (int i = 0; i < count; i++) {
-                match[i] = buffer.readString();
+        if (buffer.getVersionId() < V_17W45A) {
+            this.count = buffer.readVarInt();
+            this.match = new String[this.count];
+            for (int i = 0; i < this.count; i++) {
+                this.match[i] = buffer.readString();
             }
             return true;
         }
@@ -42,20 +44,15 @@ public class PacketTabCompleteReceiving implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received tab complete for message(count=%d)", count));
+        Log.protocol(String.format("[IN] Received tab complete for message(count=%d)", this.count));
     }
 
     public int getCount() {
-        return count;
+        return this.count;
     }
 
     public String[] getMatch() {
-        return match;
+        return this.match;
     }
 }

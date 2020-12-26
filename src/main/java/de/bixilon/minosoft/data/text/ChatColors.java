@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.text;
 
 import com.google.common.collect.HashBiMap;
+import org.checkerframework.common.value.qual.IntRange;
 
 public final class ChatColors {
     public static final RGBColor BLACK = new RGBColor(0, 0, 0);
@@ -33,12 +34,12 @@ public final class ChatColors {
     public static final RGBColor YELLOW = new RGBColor(255, 255, 85);
     public static final RGBColor WHITE = new RGBColor(255, 255, 255);
 
-    private static final HashBiMap<RGBColor, Integer> colorIntMap = HashBiMap.create();
-    private static final RGBColor[] colors = {BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE};
+    private static final HashBiMap<RGBColor, Integer> COLOR_ID_MAP = HashBiMap.create();
+    private static final RGBColor[] COLORS = {BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE};
 
     static {
-        for (int i = 0; i < colors.length; i++) {
-            colorIntMap.put(colors[i], i);
+        for (int i = 0; i < COLORS.length; i++) {
+            COLOR_ID_MAP.put(COLORS[i], i);
         }
     }
 
@@ -54,7 +55,7 @@ public final class ChatColors {
         return getColorById(Character.digit(c, 16));
     }
 
-    public static ChatCode getFormattingById(int id) {
+    public static ChatCode getFormattingById(@IntRange(from = 0, to = 21) int id) {
         if (id <= 15) {
             return getColorById(id);
         }
@@ -69,25 +70,29 @@ public final class ChatColors {
         };
     }
 
-    public static RGBColor getColorById(int id) {
+    public static RGBColor getColorById(@IntRange(from = 0, to = 15) int id) {
         if (id < 0) {
             return null;
         }
         if (id <= 15) {
-            return colors[id];
+            return COLORS[id];
         }
         return null;
     }
 
     public static Integer getColorId(RGBColor color) {
-        return colorIntMap.get(color);
+        return COLOR_ID_MAP.get(color);
     }
 
     public static String getColorChar(RGBColor color) {
-        return String.format("%x", colorIntMap.get(color));
+        return String.format("%x", COLOR_ID_MAP.get(color));
     }
 
     public static RGBColor getColorByName(String name) {
+        return (RGBColor) getChatFormattingByName(name);
+    }
+
+    public static ChatCode getChatFormattingByName(String name) {
         return switch (name.toLowerCase()) {
             case "black" -> BLACK;
             case "dark_blue" -> DARK_BLUE;
@@ -105,7 +110,12 @@ public final class ChatColors {
             case "light_purple" -> LIGHT_PURPLE;
             case "yellow" -> YELLOW;
             case "white", "reset" -> WHITE;
-            default -> throw new IllegalStateException("Unexpected value: " + name);
+            case "bold" -> PreChatFormattingCodes.BOLD;
+            case "italic" -> PreChatFormattingCodes.ITALIC;
+            case "underlined" -> PreChatFormattingCodes.UNDERLINED;
+            case "strikethrough" -> PreChatFormattingCodes.STRIKETHROUGH;
+            case "obfuscated" -> PreChatFormattingCodes.OBFUSCATED;
+            default -> throw new IllegalArgumentException("Unexpected value: " + name);
         };
     }
 }

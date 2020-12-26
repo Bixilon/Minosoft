@@ -20,26 +20,26 @@ public class ScoreboardManager {
     final HashMap<String, ScoreboardObjective> objectives = new HashMap<>();
 
     public void addTeam(Team team) {
-        teams.put(team.getName(), team);
+        this.teams.put(team.getName(), team);
     }
 
     public Team getTeam(String name) {
-        return teams.get(name);
+        return this.teams.get(name);
     }
 
     public void removeTeam(String name) {
-        teams.remove(name);
+        this.teams.remove(name);
     }
 
     public void addObjective(ScoreboardObjective objective) {
-        objectives.put(objective.getObjectiveName(), objective);
+        this.objectives.put(objective.getObjectiveName(), objective);
     }
 
     public void removeObjective(String name) {
-        objectives.remove(name);
+        this.objectives.remove(name);
     }
 
     public ScoreboardObjective getObjective(String objective) {
-        return objectives.get(objective);
+        return this.objectives.get(objective);
     }
 }

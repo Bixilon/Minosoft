@@ -13,115 +13,54 @@
 
 package de.bixilon.minosoft.gui.main;
 
-import com.jfoenix.controls.*;
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
-import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.util.mojang.api.MojangAccount;
-import de.bixilon.minosoft.util.mojang.api.MojangAccountAuthenticationAttempt;
-import de.bixilon.minosoft.util.mojang.api.MojangAuthentication;
-import javafx.application.Platform;
+import de.bixilon.minosoft.gui.main.cells.AccountListCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.stage.Window;
+import javafx.stage.Modality;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AccountWindow implements Initializable {
-
     public BorderPane accountPane;
-    public MenuItem menuAddAccount;
+    public MenuItem menuAddMojangAccount;
+    public MenuItem menuAddOfflineAccount;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        AccountListCell.listView.setCellFactory((lv) -> AccountListCell.newInstance());
+        AccountListCell.ACCOUNT_LIST_VIEW.setCellFactory((lv) -> AccountListCell.newInstance());
 
-        ObservableList<MojangAccount> accounts = FXCollections.observableArrayList(Minosoft.getAccountList().values());
-        AccountListCell.listView.setItems(accounts);
-        accountPane.setCenter(AccountListCell.listView);
+        ObservableList<Account> accounts = FXCollections.observableArrayList(Minosoft.getConfig().getAccounts().values());
+        AccountListCell.ACCOUNT_LIST_VIEW.setItems(accounts);
+        this.accountPane.setCenter(AccountListCell.ACCOUNT_LIST_VIEW);
 
-        menuAddAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_ACCOUNT));
+        this.menuAddMojangAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_MOJANG_ACCOUNT));
+        this.menuAddOfflineAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_OFFLINE_ACCOUNT));
     }
 
-    @FXML
-    public void addAccount() {
-        JFXAlert<?> dialog = new JFXAlert<>();
-        dialog.setTitle(LocaleManager.translate(Strings.LOGIN_DIALOG_TITLE));
-        GUITools.initializePane(dialog.getDialogPane());
-        JFXDialogLayout layout = new JFXDialogLayout();
-        layout.setHeading(new Label(LocaleManager.translate(Strings.LOGIN_DIALOG_HEADER)));
+    public void addMojangAccount() {
+        try {
+            GUITools.showPane("/layout/dialogs/login_mojang.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_MOJANG_DIALOG_TITLE));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
 
-        JFXButton loginButton = new JFXButton(LocaleManager.translate(Strings.BUTTON_LOGIN));
-        layout.setActions(loginButton);
-
-        GridPane gridPane = new GridPane();
-        gridPane.setHgap(15);
-        gridPane.setVgap(15);
-
-        JFXTextField emailField = new JFXTextField();
-        emailField.setPromptText(LocaleManager.translate(Strings.EMAIL));
-
-        JFXPasswordField passwordField = new JFXPasswordField();
-        passwordField.setPromptText(LocaleManager.translate(Strings.PASSWORD));
-
-        gridPane.add(new Label(LocaleManager.translate(Strings.EMAIL) + ":"), 0, 0);
-        gridPane.add(emailField, 1, 0);
-        gridPane.add(new Label(LocaleManager.translate(Strings.PASSWORD) + ":"), 0, 1);
-        gridPane.add(passwordField, 1, 1);
-
-        emailField.textProperty().addListener((observable, oldValue, newValue) -> loginButton.setDisable(newValue.trim().isEmpty()));
-        loginButton.setDisable(true);
-
-        layout.setBody(gridPane);
-        dialog.setContent(layout);
-
-        Platform.runLater(emailField::requestFocus);
-        loginButton.addEventFilter(ActionEvent.ACTION, event -> {
-            MojangAccountAuthenticationAttempt attempt = MojangAuthentication.login(emailField.getText(), passwordField.getText());
-            if (attempt.succeeded()) {
-                // login okay
-                MojangAccount account = attempt.getAccount();
-                Minosoft.accountList.put(account.getUserId(), account);
-                account.saveToConfig();
-                AccountListCell.listView.getItems().add(account);
-                Log.info(String.format("Added and saved account (playerName=%s, email=%s, uuid=%s)", account.getPlayerName(), account.getMojangUserName(), account.getUUID()));
-                dialog.close();
-                return;
-            }
-            event.consume();
-            Label error = new Label();
-            error.setStyle("-fx-text-fill: red");
-            error.setText(attempt.getError());
-
-            gridPane.add(new Label(LocaleManager.translate(Strings.ERROR)), 0, 2);
-            gridPane.add(error, 1, 2);
-            // ToDo resize window
-        });
-
-        Window window = dialog.getDialogPane().getScene().getWindow();
-        window.setOnCloseRequest(windowEvent -> window.hide());
-
-
-        dialog.getDialogPane().setOnKeyReleased(keyEvent -> {
-            if (keyEvent.getCode() != KeyCode.ENTER) {
-                return;
-            }
-            if (emailField.getText().trim().isEmpty()) {
-                return;
-            }
-            loginButton.fire();
-        });
-
-        dialog.showAndWait();
+    public void addOfflineAccount() {
+        try {
+            GUITools.showPane("/layout/dialogs/login_offline.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_OFFLINE_DIALOG_TITLE));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 }

@@ -13,12 +13,16 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective;
+import de.bixilon.minosoft.data.scoreboard.ScoreboardScore;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketScoreboardUpdateScore implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+
+public class PacketScoreboardUpdateScore extends ClientboundPacket {
     String itemName;
     ScoreboardUpdateScoreActions action;
     String scoreName;
@@ -26,59 +30,70 @@ public class PacketScoreboardUpdateScore implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        itemName = buffer.readString();
-        action = ScoreboardUpdateScoreActions.byId(buffer.readByte());
-        if (buffer.getVersionId() < 7) { // ToDo
-            if (action == ScoreboardUpdateScoreActions.REMOVE) {
+        this.itemName = buffer.readString();
+        this.action = ScoreboardUpdateScoreActions.byId(buffer.readUnsignedByte());
+        if (buffer.getVersionId() < V_14W04A) { // ToDo
+            if (this.action == ScoreboardUpdateScoreActions.REMOVE) {
                 return true;
             }
             // not present id action == REMOVE
-            scoreName = buffer.readString();
-            scoreValue = buffer.readInt();
+            this.scoreName = buffer.readString();
+            this.scoreValue = buffer.readInt();
             return true;
         }
-        scoreName = buffer.readString();
+        this.scoreName = buffer.readString();
 
-        if (action == ScoreboardUpdateScoreActions.REMOVE) {
+        if (this.action == ScoreboardUpdateScoreActions.REMOVE) {
             return true;
         }
         // not present id action == REMOVE
-        scoreValue = buffer.readVarInt();
+        this.scoreValue = buffer.readVarInt();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        switch (getAction()) {
+            case CREATE_UPDATE -> connection.getPlayer().getScoreboardManager().getObjective(getScoreName()).addScore(new ScoreboardScore(getItemName(), getScoreName(), getScoreValue()));
+            case REMOVE -> {
+                ScoreboardObjective objective = connection.getPlayer().getScoreboardManager().getObjective(getScoreName());
+                if (objective != null) {
+                    // thanks mojang
+                    objective.removeScore(getItemName());
+                }
+            }
+        }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received scoreboard score update (itemName=\"%s\", action=%s, scoreName=\"%s\", scoreValue=%d", itemName, action, scoreName, scoreValue));
+        Log.protocol(String.format("[IN] Received scoreboard score update (itemName=\"%s\", action=%s, scoreName=\"%s\", scoreValue=%d", this.itemName, this.action, this.scoreName, this.scoreValue));
     }
 
     public String getItemName() {
-        return itemName;
+        return this.itemName;
     }
 
     public ScoreboardUpdateScoreActions getAction() {
-        return action;
+        return this.action;
     }
 
     public String getScoreName() {
-        return scoreName;
+        return this.scoreName;
     }
 
     public int getScoreValue() {
-        return scoreValue;
+        return this.scoreValue;
     }
 
     public enum ScoreboardUpdateScoreActions {
         CREATE_UPDATE,
         REMOVE;
 
+        private static final ScoreboardUpdateScoreActions[] SCOREBOARD_UPDATE_SCORE_ACTIONS = values();
+
         public static ScoreboardUpdateScoreActions byId(int id) {
-            return values()[id];
+            return SCOREBOARD_UPDATE_SCORE_ACTIONS[id];
         }
     }
 }

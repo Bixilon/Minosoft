@@ -42,26 +42,26 @@ public class Inventory {
     }
 
     public Slot getSlot(int slot) {
-        return slots.get(slot);
+        return this.slots.get(slot);
     }
 
     public void setSlot(int slot, Slot data) {
-        slots.put(slot, data);
+        this.slots.put(slot, data);
     }
 
     public void setSlot(InventorySlots.InventoryInterface slot, int versionId, Slot data) {
-        slots.put(slot.getId(versionId), data);
+        this.slots.put(slot.getId(versionId), data);
     }
 
     public void clear() {
-        slots.clear();
+        this.slots.clear();
     }
 
     public HashMap<Integer, Slot> getSlots() {
-        return slots;
+        return this.slots;
     }
 
     public InventoryProperties getProperties() {
-        return properties;
+        return this.properties;
     }
 }

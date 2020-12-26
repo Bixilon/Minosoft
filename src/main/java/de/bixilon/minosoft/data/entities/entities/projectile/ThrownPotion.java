@@ -22,6 +22,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W09A;
+
 public class ThrownPotion extends ThrowableItemProjectile {
     private static final Slot DEFAULT_ITEM = null;
 
@@ -32,10 +34,10 @@ public class ThrownPotion extends ThrowableItemProjectile {
     @EntityMetaDataFunction(identifier = "item")
     @Override
     public Slot getItem() {
-        if (versionId > 704) {
+        if (this.versionId > V_20W09A) {
             return super.getItem();
         }
-        Slot slot = metaData.getSets().getSlot(EntityMetaDataFields.THROWN_POTION_ITEM);
+        Slot slot = this.metaData.getSets().getSlot(EntityMetaDataFields.THROWN_POTION_ITEM);
         if (slot == null) {
             return getDefaultItem();
         }

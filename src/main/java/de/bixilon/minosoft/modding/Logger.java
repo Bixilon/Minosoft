@@ -26,7 +26,7 @@ public class Logger {
     }
 
     public void log(LogLevels level, RGBColor color, Object message, Object... format) {
-        Log.log(level, String.format("[%s] ", modName), color, message, format);
+        Log.log(level, String.format("[%s] ", this.modName), color, message, format);
     }
 
     public void game(Object message, Object... format) {

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.mappings.blocks;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 public class Block extends ModIdentifier {
     final BlockRotations rotation;
@@ -52,43 +53,16 @@ public class Block extends ModIdentifier {
     }
 
     public BlockRotations getRotation() {
-        return rotation;
+        return this.rotation;
     }
 
     public HashSet<BlockProperties> getProperties() {
-        return properties;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder out = new StringBuilder();
-        if (rotation != BlockRotations.NONE) {
-            out.append(" (");
-            out.append("rotation=");
-            out.append(getRotation());
-        }
-        if (properties.size() > 0) {
-            if (out.length() > 0) {
-                out.append(", ");
-            } else {
-                out.append(" (");
-            }
-            out.append("properties=");
-            out.append(properties);
-        }
-        if (out.length() > 0) {
-            out.append(")");
-        }
-        return String.format("%s:%s%s", getMod(), getIdentifier(), out);
+        return this.properties;
     }
 
     @Override
     public int hashCode() {
-        int ret = mod.hashCode() * identifier.hashCode() * rotation.hashCode();
-        if (properties.size() > 0) {
-            ret *= properties.hashCode();
-        }
-        return ret;
+        return Objects.hash(this.mod, this.identifier, this.properties, this.rotation);
     }
 
     @Override
@@ -99,9 +73,35 @@ public class Block extends ModIdentifier {
         if (hashCode() != obj.hashCode()) {
             return false;
         }
-        if (!(obj instanceof Block their)) {
-            return false;
+        if (obj instanceof Block their) {
+            return getIdentifier().equals(their.getIdentifier()) && getRotation() == their.getRotation() && getProperties().equals(their.getProperties()) && getMod().equals(their.getMod());
         }
-        return getIdentifier().equals(their.getIdentifier()) && getRotation() == their.getRotation() && getProperties().equals(their.getProperties()) && getMod().equals(their.getMod());
+        if (obj instanceof ModIdentifier identifier) {
+            return super.equals(identifier);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder out = new StringBuilder();
+        if (this.rotation != BlockRotations.NONE) {
+            out.append(" (");
+            out.append("rotation=");
+            out.append(getRotation());
+        }
+        if (!this.properties.isEmpty()) {
+            if (!out.isEmpty()) {
+                out.append(", ");
+            } else {
+                out.append(" (");
+            }
+            out.append("properties=");
+            out.append(this.properties);
+        }
+        if (!out.isEmpty()) {
+            out.append(")");
+        }
+        return String.format("%s%s", getFullIdentifier(), out);
     }
 }

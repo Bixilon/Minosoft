@@ -37,10 +37,10 @@ public class SettingsWindow implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        generalLogLevel.setItems(GUITools.LOG_LEVELS);
-        generalLogLevel.getSelectionModel().select(Log.getLevel());
-        generalLogLevel.setOnAction((actionEvent -> {
-            LogLevels newLevel = generalLogLevel.getValue();
+        this.generalLogLevel.setItems(GUITools.LOG_LEVELS);
+        this.generalLogLevel.getSelectionModel().select(Log.getLevel());
+        this.generalLogLevel.setOnAction((actionEvent -> {
+            LogLevels newLevel = this.generalLogLevel.getValue();
             if (Log.getLevel() == newLevel) {
                 return;
             }
@@ -49,8 +49,8 @@ public class SettingsWindow implements Initializable {
             Minosoft.getConfig().saveToFile();
         }));
 
-        general.setText(LocaleManager.translate(Strings.SETTINGS_GENERAL));
-        generalLogLevelLabel.setText(LocaleManager.translate(Strings.SETTINGS_GENERAL_LOG_LEVEL));
-        download.setText(LocaleManager.translate(Strings.SETTINGS_DOWNLOAD));
+        this.general.setText(LocaleManager.translate(Strings.SETTINGS_GENERAL));
+        this.generalLogLevelLabel.setText(LocaleManager.translate(Strings.SETTINGS_GENERAL_LOG_LEVEL));
+        this.download.setText(LocaleManager.translate(Strings.SETTINGS_DOWNLOAD));
     }
 }

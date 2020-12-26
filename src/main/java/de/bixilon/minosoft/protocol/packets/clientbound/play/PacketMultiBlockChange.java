@@ -14,26 +14,30 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.data.world.InChunkLocation;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.MultiBlockChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.HashMap;
 
-public class PacketMultiBlockChange implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
+public class PacketMultiBlockChange extends ClientboundPacket {
     final HashMap<InChunkLocation, Block> blocks = new HashMap<>();
     ChunkLocation location;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 25) {
-            if (buffer.getVersionId() < 4) {
-                location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
+        if (buffer.getVersionId() < V_14W26C) {
+            if (buffer.getVersionId() < V_1_7_5) {
+                this.location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
             } else {
-                location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+                this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             }
             short count = buffer.readShort();
             int dataSize = buffer.readInt(); // should be count * 4
@@ -44,50 +48,56 @@ public class PacketMultiBlockChange implements ClientboundPacket {
                 byte y = (byte) ((raw & 0xFF_00_00) >>> 16);
                 byte z = (byte) ((raw & 0x0F_00_00_00) >>> 24);
                 byte x = (byte) ((raw & 0xF0_00_00_00) >>> 28);
-                blocks.put(new InChunkLocation(x, y, z), buffer.getConnection().getMapping().getBlockById((blockId << 4) | meta));
+                this.blocks.put(new InChunkLocation(x, y, z), buffer.getConnection().getMapping().getBlockById((blockId << 4) | meta));
             }
             return true;
         }
-        if (buffer.getVersionId() < 740) {
-            location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+        if (buffer.getVersionId() < V_20W28A) {
+            this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
             int count = buffer.readVarInt();
             for (int i = 0; i < count; i++) {
                 byte pos = buffer.readByte();
                 byte y = buffer.readByte();
                 int blockId = buffer.readVarInt();
-                blocks.put(new InChunkLocation((pos & 0xF0 >>> 4) & 0xF, y, pos & 0xF), buffer.getConnection().getMapping().getBlockById(blockId));
+                this.blocks.put(new InChunkLocation((pos & 0xF0 >>> 4) & 0xF, y, pos & 0xF), buffer.getConnection().getMapping().getBlockById(blockId));
             }
             return true;
         }
         long rawPos = buffer.readLong();
-        location = new ChunkLocation((int) (rawPos >> 42), (int) (rawPos << 22 >> 42));
+        this.location = new ChunkLocation((int) (rawPos >> 42), (int) (rawPos << 22 >> 42));
         int yOffset = ((int) rawPos & 0xFFFFF) * 16;
-        if (buffer.getVersionId() > 748) {
+        if (buffer.getVersionId() > V_1_16_2_PRE3) {
             buffer.readBoolean(); // ToDo
         }
         int count = buffer.readVarInt();
         for (int i = 0; i < count; i++) {
             long data = buffer.readVarLong();
-            blocks.put(new InChunkLocation((int) ((data >> 8) & 0xF), yOffset + (int) ((data >> 4) & 0xF), (int) (data & 0xF)), buffer.getConnection().getMapping().getBlockById(((int) (data >>> 12))));
+            this.blocks.put(new InChunkLocation((int) ((data >> 8) & 0xF), yOffset + (int) ((data >> 4) & 0xF), (int) (data & 0xF)), buffer.getConnection().getMapping().getBlockById(((int) (data >>> 12))));
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        Chunk chunk = connection.getPlayer().getWorld().getChunk(getLocation());
+        if (chunk == null) {
+            // thanks mojang
+            return;
+        }
+        connection.fireEvent(new MultiBlockChangeEvent(connection, this));
+        chunk.setBlocks(getBlocks());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Multi block change received at %s (size=%d)", location, blocks.size()));
+        Log.protocol(String.format("[IN] Multi block change received at %s (size=%d)", this.location, this.blocks.size()));
     }
 
     public ChunkLocation getLocation() {
-        return location;
+        return this.location;
     }
 
     public HashMap<InChunkLocation, Block> getBlocks() {
-        return blocks;
+        return this.blocks;
     }
 }

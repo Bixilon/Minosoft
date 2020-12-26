@@ -29,7 +29,7 @@ public abstract class AbstractHorse extends Animal {
     }
 
     private boolean getAbstractHorseFlag(int bitMask) {
-        return metaData.getSets().getBitMask(EntityMetaDataFields.ABSTRACT_HORSE_FLAGS, bitMask);
+        return this.metaData.getSets().getBitMask(EntityMetaDataFields.ABSTRACT_HORSE_FLAGS, bitMask);
     }
 
     @EntityMetaDataFunction(identifier = "isTame")
@@ -64,6 +64,6 @@ public abstract class AbstractHorse extends Animal {
 
     @Nullable
     public UUID getOwner() {
-        return metaData.getSets().getUUID(EntityMetaDataFields.ABSTRACT_HORSE_OWNER_UUID);
+        return this.metaData.getSets().getUUID(EntityMetaDataFields.ABSTRACT_HORSE_OWNER_UUID);
     }
 }

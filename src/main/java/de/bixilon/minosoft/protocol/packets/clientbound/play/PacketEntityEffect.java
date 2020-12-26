@@ -14,69 +14,77 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.StatusEffect;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.BitByte;
 
-public class PacketEntityEffect implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
+public class PacketEntityEffect extends ClientboundPacket {
     int entityId;
     StatusEffect effect;
     boolean isAmbient;
-    boolean hideParticles = false;
+    boolean hideParticles;
     boolean showIcon = true;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
-        if (buffer.getVersionId() < 7) {
-            effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readShort());
+        if (buffer.getVersionId() < V_14W04A) {
+            this.effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readShort());
             return true;
         }
-        effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readVarInt());
-        if (buffer.getVersionId() < 110) { //ToDo
-            if (buffer.getVersionId() >= 10) {
-                hideParticles = buffer.readBoolean();
+        this.effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readVarInt());
+        if (buffer.getVersionId() < V_1_9_4) { // ToDo
+            if (buffer.getVersionId() >= V_14W06B) {
+                this.hideParticles = buffer.readBoolean();
                 return true;
             }
         }
         byte flags = buffer.readByte();
-        isAmbient = BitByte.isBitMask(flags, 0x01);
-        hideParticles = !BitByte.isBitMask(flags, 0x02);
-        if (buffer.getVersionId() >= 498) { //ToDo
-            showIcon = BitByte.isBitMask(flags, 0x04);
+        this.isAmbient = BitByte.isBitMask(flags, 0x01);
+        this.hideParticles = !BitByte.isBitMask(flags, 0x02);
+        if (buffer.getVersionId() >= V_1_14_4) { // ToDo
+            this.showIcon = BitByte.isBitMask(flags, 0x04);
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        Entity entity = connection.getPlayer().getWorld().getEntity(getEntityId());
+        if (entity == null) {
+            // thanks mojang
+            return;
+        }
+        entity.addEffect(getEffect());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity effect added: %d %s", entityId, effect.toString()));
+        Log.protocol(String.format("[IN] Entity effect added: %d %s", this.entityId, this.effect.toString()));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public StatusEffect getEffect() {
-        return effect;
+        return this.effect;
     }
 
     public boolean hideParticles() {
-        return hideParticles;
+        return this.hideParticles;
     }
 
     public boolean showIcon() {
-        return showIcon;
+        return this.showIcon;
     }
 
     public boolean isAmbient() {
-        return isAmbient;
+        return this.isAmbient;
     }
 }

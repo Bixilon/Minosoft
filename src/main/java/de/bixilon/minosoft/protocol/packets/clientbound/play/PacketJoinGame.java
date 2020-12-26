@@ -17,11 +17,13 @@ import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.Difficulties;
 import de.bixilon.minosoft.data.GameModes;
 import de.bixilon.minosoft.data.LevelTypes;
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.JoinGameEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
@@ -30,7 +32,9 @@ import de.bixilon.minosoft.util.nbt.tag.NBTTag;
 
 import java.util.HashMap;
 
-public class PacketJoinGame implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
+public class PacketJoinGame extends ClientboundPacket {
     int entityId;
     boolean hardcore;
     GameModes gameMode;
@@ -46,108 +50,119 @@ public class PacketJoinGame implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 108) {
+        if (buffer.getVersionId() < V_1_9_1) {
             this.entityId = buffer.readInt();
             byte gameModeRaw = buffer.readByte();
-            hardcore = BitByte.isBitSet(gameModeRaw, 3);
+            this.hardcore = BitByte.isBitSet(gameModeRaw, 3);
             // remove hardcore bit and get gamemode
             gameModeRaw &= ~0x8;
-            gameMode = GameModes.byId(gameModeRaw);
+            this.gameMode = GameModes.byId(gameModeRaw);
 
-            if (buffer.getVersionId() < 108) {
-                dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
+            if (buffer.getVersionId() < V_1_9_1) {
+                this.dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readByte());
             } else {
-                dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
+                this.dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
             }
-            difficulty = Difficulties.byId(buffer.readByte());
-            maxPlayers = buffer.readByte();
-            if (buffer.getVersionId() >= 1) {
-                levelType = LevelTypes.byType(buffer.readString());
+            this.difficulty = Difficulties.byId(buffer.readUnsignedByte());
+            this.maxPlayers = buffer.readByte();
+            if (buffer.getVersionId() >= V_13W42B) {
+                this.levelType = LevelTypes.byType(buffer.readString());
             }
 
-            if (buffer.getVersionId() < 29) {
+            if (buffer.getVersionId() < V_14W29A) {
                 return true;
             }
-            reducedDebugScreen = buffer.readBoolean();
+            this.reducedDebugScreen = buffer.readBoolean();
             return true;
         }
         this.entityId = buffer.readInt();
-        if (buffer.getVersionId() < 738) {
+        if (buffer.getVersionId() < V_20W27A) {
             byte gameModeRaw = buffer.readByte();
-            hardcore = BitByte.isBitSet(gameModeRaw, 3);
+            this.hardcore = BitByte.isBitSet(gameModeRaw, 3);
             // remove hardcore bit and get gamemode
             gameModeRaw &= ~0x8;
-            gameMode = GameModes.byId(gameModeRaw);
+            this.gameMode = GameModes.byId(gameModeRaw);
         } else {
-            hardcore = buffer.readBoolean();
-            gameMode = GameModes.byId(buffer.readByte());
+            this.hardcore = buffer.readBoolean();
+            this.gameMode = GameModes.byId(buffer.readUnsignedByte());
         }
-        if (buffer.getVersionId() >= 730) {
+        if (buffer.getVersionId() >= V_1_16_PRE6) {
             buffer.readByte(); // previous game mode
         }
-        if (buffer.getVersionId() >= 719) {
+        if (buffer.getVersionId() >= V_20W22A) {
             String[] worlds = buffer.readStringArray(buffer.readVarInt());
         }
-        if (buffer.getVersionId() < 718) {
-            dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
+        if (buffer.getVersionId() < V_20W21A) {
+            this.dimension = buffer.getConnection().getMapping().getDimensionById(buffer.readInt());
         } else {
             NBTTag dimensionCodec = buffer.readNBT();
-            dimensions = parseDimensionCodec(dimensionCodec, buffer.getVersionId());
-            if (buffer.getVersionId() < 748) {
+            this.dimensions = parseDimensionCodec(dimensionCodec, buffer.getVersionId());
+            if (buffer.getVersionId() < V_1_16_2_PRE3) {
                 String[] currentDimensionSplit = buffer.readString().split(":", 2);
-                dimension = dimensions.get(currentDimensionSplit[0]).get(currentDimensionSplit[1]);
+                this.dimension = this.dimensions.get(currentDimensionSplit[0]).get(currentDimensionSplit[1]);
             } else {
                 CompoundTag tag = (CompoundTag) buffer.readNBT();
-                if (tag.getByteTag("has_skylight").getValue() == 0x01) { //ToDo: this is just for not messing up the skylight
-                    dimension = dimensions.get(ProtocolDefinition.DEFAULT_MOD).get("overworld");
+                if (tag.getByteTag("has_skylight").getValue() == 0x01) { // ToDo: this is just for not messing up the skylight
+                    this.dimension = this.dimensions.get(ProtocolDefinition.DEFAULT_MOD).get("overworld");
                 } else {
-                    dimension = dimensions.get(ProtocolDefinition.DEFAULT_MOD).get("the_nether");
+                    this.dimension = this.dimensions.get(ProtocolDefinition.DEFAULT_MOD).get("the_nether");
                 }
             }
         }
 
-        if (buffer.getVersionId() >= 719) {
+        if (buffer.getVersionId() >= V_20W22A) {
             buffer.readString(); // world
         }
-        if (buffer.getVersionId() >= 552) {
-            hashedSeed = buffer.readLong();
+        if (buffer.getVersionId() >= V_19W36A) {
+            this.hashedSeed = buffer.readLong();
         }
-        if (buffer.getVersionId() < 464) {
-            difficulty = Difficulties.byId(buffer.readByte());
+        if (buffer.getVersionId() < V_19W11A) {
+            this.difficulty = Difficulties.byId(buffer.readUnsignedByte());
         }
-        if (buffer.getVersionId() < 749) {
-            maxPlayers = buffer.readByte();
+        if (buffer.getVersionId() < V_1_16_2_RC1) {
+            this.maxPlayers = buffer.readByte();
         } else {
-            maxPlayers = buffer.readVarInt();
+            this.maxPlayers = buffer.readVarInt();
         }
-        if (buffer.getVersionId() < 716) {
-            levelType = LevelTypes.byType(buffer.readString());
+        if (buffer.getVersionId() < V_20W20A) {
+            this.levelType = LevelTypes.byType(buffer.readString());
         }
-        if (buffer.getVersionId() >= 468) {
-            viewDistance = buffer.readVarInt();
+        if (buffer.getVersionId() >= V_19W13A) {
+            this.viewDistance = buffer.readVarInt();
         }
-        if (buffer.getVersionId() >= 716) {
+        if (buffer.getVersionId() >= V_20W20A) {
             boolean isDebug = buffer.readBoolean();
             if (buffer.readBoolean()) {
-                levelType = LevelTypes.FLAT;
+                this.levelType = LevelTypes.FLAT;
             }
         }
-        reducedDebugScreen = buffer.readBoolean();
-        if (buffer.getVersionId() >= 552) {
-            enableRespawnScreen = buffer.readBoolean();
+        this.reducedDebugScreen = buffer.readBoolean();
+        if (buffer.getVersionId() >= V_19W36A) {
+            this.enableRespawnScreen = buffer.readBoolean();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        if (connection.fireEvent(new JoinGameEvent(connection, this))) {
+            return;
+        }
+
+        connection.getPlayer().setGameMode(getGameMode());
+        connection.getPlayer().getWorld().setHardcore(isHardcore());
+        connection.getMapping().setDimensions(getDimensions());
+        connection.getPlayer().getWorld().setDimension(getDimension());
+        PlayerEntity entity = new PlayerEntity(connection, getEntityId(), connection.getPlayer().getPlayerUUID(), null, null, connection.getPlayer().getPlayerName(), null, null);
+        connection.getPlayer().setEntity(entity);
+        connection.getPlayer().getWorld().addEntity(entity);
+        connection.getSender().sendChatMessage("I am alive! ~ Minosoft");
     }
 
     private HashMap<String, HashBiMap<String, Dimension>> parseDimensionCodec(NBTTag nbt, int versionId) {
         HashMap<String, HashBiMap<String, Dimension>> dimensionMap = new HashMap<>();
         ListTag listTag;
-        if (versionId < 740) {
+        if (versionId < V_20W28A) {
             listTag = ((CompoundTag) nbt).getListTag("dimension");
         } else {
             listTag = ((CompoundTag) nbt).getCompoundTag("minecraft:dimension_type").getListTag("value");
@@ -156,7 +171,7 @@ public class PacketJoinGame implements ClientboundPacket {
         listTag.getValue().forEach((tag) -> {
             CompoundTag compoundTag = (CompoundTag) tag;
             String[] name;
-            if (versionId < 725) {
+            if (versionId < V_1_16_PRE3) {
                 name = compoundTag.getStringTag("key").getValue().split(":", 2);
             } else {
                 name = compoundTag.getStringTag("name").getValue().split(":", 2);
@@ -165,7 +180,7 @@ public class PacketJoinGame implements ClientboundPacket {
                 dimensionMap.put(name[0], HashBiMap.create());
             }
             boolean hasSkylight;
-            if (versionId < 725 || versionId >= 744) {
+            if (versionId < V_1_16_PRE3 || versionId >= V_1_16_2_PRE1) {
                 hasSkylight = compoundTag.getCompoundTag("element").getByteTag("has_skylight").getValue() == 0x01;
             } else {
                 hasSkylight = compoundTag.getByteTag("has_skylight").getValue() == 0x01;
@@ -177,54 +192,54 @@ public class PacketJoinGame implements ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", entityId, gameMode, dimension, difficulty, hardcore, viewDistance));
+        Log.protocol(String.format("[IN] Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", this.entityId, this.gameMode, this.dimension, this.difficulty, this.hardcore, this.viewDistance));
     }
 
     public boolean isHardcore() {
-        return hardcore;
+        return this.hardcore;
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public GameModes getGameMode() {
-        return gameMode;
+        return this.gameMode;
     }
 
     public int getMaxPlayers() {
-        return maxPlayers;
+        return this.maxPlayers;
     }
 
     public LevelTypes getLevelType() {
-        return levelType;
+        return this.levelType;
     }
 
     public Difficulties getDifficulty() {
-        return difficulty;
+        return this.difficulty;
     }
 
     public Dimension getDimension() {
-        return dimension;
+        return this.dimension;
     }
 
     public int getViewDistance() {
-        return viewDistance;
+        return this.viewDistance;
     }
 
     public HashMap<String, HashBiMap<String, Dimension>> getDimensions() {
-        return dimensions;
+        return this.dimensions;
     }
 
     public boolean isReducedDebugScreen() {
-        return reducedDebugScreen;
+        return this.reducedDebugScreen;
     }
 
     public boolean isEnableRespawnScreen() {
-        return enableRespawnScreen;
+        return this.enableRespawnScreen;
     }
 
     public long getHashedSeed() {
-        return hashedSeed;
+        return this.hashedSeed;
     }
 }

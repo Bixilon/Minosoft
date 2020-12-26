@@ -27,7 +27,7 @@ public class PlayerListItemBulk {
     final String name;
     final boolean legacy;
     final int ping;
-    //optional fields
+    // optional fields
     final GameModes gameMode;
     final ChatComponent displayName;
     final HashMap<PlayerProperties, PlayerProperty> properties;
@@ -38,9 +38,9 @@ public class PlayerListItemBulk {
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.ping = ping;
-        gameMode = null;
-        displayName = null;
-        properties = null;
+        this.gameMode = null;
+        this.displayName = null;
+        this.properties = null;
         this.legacy = true;
     }
 
@@ -56,43 +56,43 @@ public class PlayerListItemBulk {
     }
 
     public UUID getUUID() {
-        return uuid;
+        return this.uuid;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public int getPing() {
-        return ping;
+        return this.ping;
     }
 
     public GameModes getGameMode() {
-        return gameMode;
+        return this.gameMode;
     }
 
     public ChatComponent getDisplayName() {
-        return (hasDisplayName() ? displayName : ChatComponent.fromString(name));
+        return (hasDisplayName() ? this.displayName : ChatComponent.valueOf(this.name));
     }
 
     public boolean hasDisplayName() {
-        return displayName != null;
+        return this.displayName != null;
     }
 
     public HashMap<PlayerProperties, PlayerProperty> getProperties() {
-        return properties;
+        return this.properties;
     }
 
     public PlayerProperty getProperty(PlayerProperties property) {
-        return properties.get(property);
+        return this.properties.get(property);
     }
 
     public boolean isLegacy() {
-        return legacy;
+        return this.legacy;
     }
 
     public PacketPlayerListItem.PlayerListItemActions getAction() {
-        return action;
+        return this.action;
     }
 
     @Override

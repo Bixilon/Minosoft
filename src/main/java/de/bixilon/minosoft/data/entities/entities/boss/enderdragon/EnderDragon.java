@@ -30,7 +30,7 @@ public class EnderDragon extends Mob {
 
     @EntityMetaDataFunction(identifier = "phase")
     public DragonPhases getPhase() {
-        return DragonPhases.values()[metaData.getSets().getInt(EntityMetaDataFields.ENDER_DRAGON_PHASE)];
+        return DragonPhases.byId(this.metaData.getSets().getInt(EntityMetaDataFields.ENDER_DRAGON_PHASE));
     }
 
     public enum DragonPhases {
@@ -44,6 +44,12 @@ public class EnderDragon extends Mob {
         SITTING_ATTACKING,
         CHARGE_PLAYER,
         DEATH,
-        HOVER
+        HOVER;
+
+        private static final DragonPhases[] DRAGON_PHASES = values();
+
+        public static DragonPhases byId(int id) {
+            return DRAGON_PHASES[id];
+        }
     }
 }

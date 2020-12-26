@@ -13,12 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketAttachEntity implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W41A;
+
+public class PacketAttachEntity extends ClientboundPacket {
     int entityId;
     int vehicleId;
     boolean leash;
@@ -27,7 +30,7 @@ public class PacketAttachEntity implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readInt();
         this.vehicleId = buffer.readInt();
-        if (buffer.getVersionId() < 77) {
+        if (buffer.getVersionId() < V_15W41A) {
             this.leash = buffer.readBoolean();
             return true;
         }
@@ -36,24 +39,30 @@ public class PacketAttachEntity implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        Entity entity = connection.getPlayer().getWorld().getEntity(getEntityId());
+        if (entity == null) {
+            // thanks mojang
+            return;
+        }
+        entity.attachTo(getVehicleId());
+        // ToDo leash support
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Attaching entity %d to entity %d (leash=%s)", entityId, vehicleId, leash));
+        Log.protocol(String.format("[IN] Attaching entity %d to entity %d (leash=%s)", this.entityId, this.vehicleId, this.leash));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public int getVehicleId() {
-        return vehicleId;
+        return this.vehicleId;
     }
 
     public boolean isLeash() {
-        return leash;
+        return this.leash;
     }
 }

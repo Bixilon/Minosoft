@@ -19,7 +19,7 @@ Assets are [Game Files](https://wiki.vg/Game_files). For example:
   "minecraft/lang/de_de.json": "a8f1b2babf63e3fa21d24728271eaef0d8d33041"
 }
 ```
-Next, in the `version.json` ([Example 1.16.4-pre1](https://launchermeta.mojang.com/v1/packages/edcca0531de05c4b15007ca689b575a33b9d96a2/1.16.4-pre1.json)) there is sub json object called `assetIndex`.
+Next, in the `version.json` ([Example 1.16.4-pre1](https://launchermeta.mojang.com/v1/packages/edcca0531de05c4b15007ca689b575a33b9d96a2/1.16.4-pre1.json)) there is a sub json object called `assetIndex`.
 The asset index will be downloaded and stored. The hash of the file is hardcoded into minosoft to ensure that the assets are compatible. Next we loop over all elements and check if the file exists.
 If not, we will download it and store it gzip compressed.
 

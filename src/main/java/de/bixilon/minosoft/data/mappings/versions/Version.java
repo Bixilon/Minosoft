@@ -38,29 +38,29 @@ public class Version {
     }
 
     public Packets.Clientbound getPacketByCommand(ConnectionStates state, int command) {
-        if (clientboundPacketMapping.containsKey(state) && clientboundPacketMapping.get(state).containsValue(command)) {
-            return clientboundPacketMapping.get(state).inverse().get(command);
+        if (this.clientboundPacketMapping.containsKey(state) && this.clientboundPacketMapping.get(state).containsValue(command)) {
+            return this.clientboundPacketMapping.get(state).inverse().get(command);
         }
         return null;
     }
 
     public Integer getCommandByPacket(Packets.Serverbound packet) {
-        if (serverboundPacketMapping.containsKey(packet.getState()) && serverboundPacketMapping.get(packet.getState()).containsKey(packet)) {
-            return serverboundPacketMapping.get(packet.getState()).get(packet);
+        if (this.serverboundPacketMapping.containsKey(packet.getState()) && this.serverboundPacketMapping.get(packet.getState()).containsKey(packet)) {
+            return this.serverboundPacketMapping.get(packet.getState()).get(packet);
         }
         return null;
     }
 
     public HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> getClientboundPacketMapping() {
-        return clientboundPacketMapping;
+        return this.clientboundPacketMapping;
     }
 
     public HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> getServerboundPacketMapping() {
-        return serverboundPacketMapping;
+        return this.serverboundPacketMapping;
     }
 
     public VersionMapping getMapping() {
-        return mapping;
+        return this.mapping;
     }
 
     public void setMapping(VersionMapping mapping) {
@@ -68,19 +68,19 @@ public class Version {
     }
 
     public boolean isGettingLoaded() {
-        return isGettingLoaded;
+        return this.isGettingLoaded;
     }
 
     public void setGettingLoaded(boolean gettingLoaded) {
-        isGettingLoaded = gettingLoaded;
+        this.isGettingLoaded = gettingLoaded;
     }
 
     public boolean isFlattened() {
-        return versionId >= ProtocolDefinition.FLATTING_VERSION_ID;
+        return this.versionId >= ProtocolDefinition.FLATTING_VERSION_ID;
     }
 
     public String getVersionName() {
-        return versionName;
+        return this.versionName;
     }
 
     public void setVersionName(String versionName) {
@@ -88,20 +88,12 @@ public class Version {
     }
 
     public int getVersionId() {
-        return versionId;
+        return this.versionId;
     }
 
     @Override
     public int hashCode() {
         return getVersionId();
-    }
-
-    public int getProtocolId() {
-        return protocolId;
-    }
-
-    public boolean isLoaded() {
-        return getMapping() != null && getMapping().isFullyLoaded();
     }
 
     @Override
@@ -115,11 +107,19 @@ public class Version {
         if (hashCode() != obj.hashCode()) {
             return false;
         }
-        return getVersionName().equals(versionName);
+        return getVersionName().equals(this.versionName);
     }
 
     @Override
     public String toString() {
         return getVersionName();
+    }
+
+    public int getProtocolId() {
+        return this.protocolId;
+    }
+
+    public boolean isLoaded() {
+        return getMapping() != null && getMapping().isFullyLoaded();
     }
 }

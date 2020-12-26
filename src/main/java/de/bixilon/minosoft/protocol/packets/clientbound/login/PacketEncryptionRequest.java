@@ -14,27 +14,45 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
+import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.util.mojang.api.exceptions.MojangJoinServerErrorException;
+import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
 
-public class PacketEncryptionRequest implements ClientboundPacket {
+import javax.crypto.SecretKey;
+import java.math.BigInteger;
+import java.security.PublicKey;
 
-    String serverId; //normally empty
+public class PacketEncryptionRequest extends ClientboundPacket {
+
+    String serverId; // normally empty
     byte[] publicKey;
     byte[] verifyToken;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        serverId = buffer.readString();
-        publicKey = buffer.readByteArray();
-        verifyToken = buffer.readByteArray();
+        this.serverId = buffer.readString();
+        this.publicKey = buffer.readByteArray();
+        this.verifyToken = buffer.readByteArray();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        SecretKey secretKey = CryptManager.createNewSharedKey();
+        PublicKey publicKey = CryptManager.decodePublicKey(getPublicKey());
+        String serverHash = new BigInteger(CryptManager.getServerHash(getServerId(), publicKey, secretKey)).toString(16);
+        try {
+            connection.getPlayer().getAccount().join(serverHash);
+        } catch (MojangJoinServerErrorException | NoNetworkConnectionException e) {
+            e.printStackTrace();
+            connection.disconnect();
+            return;
+        }
+        connection.sendPacket(new PacketEncryptionResponse(secretKey, getVerifyToken(), publicKey));
     }
 
     @Override
@@ -43,14 +61,14 @@ public class PacketEncryptionRequest implements ClientboundPacket {
     }
 
     public byte[] getPublicKey() {
-        return publicKey;
+        return this.publicKey;
     }
 
     public byte[] getVerifyToken() {
-        return verifyToken;
+        return this.verifyToken;
     }
 
     public String getServerId() {
-        return serverId;
+        return this.serverId;
     }
 }

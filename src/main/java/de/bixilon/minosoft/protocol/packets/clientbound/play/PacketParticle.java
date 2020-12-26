@@ -17,14 +17,17 @@ import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.ParticleSpawnEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketParticle implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
+public class PacketParticle extends ClientboundPacket {
     Particle particleType;
     ParticleData particleData;
-    boolean longDistance = false;
+    boolean longDistance;
     Location location;
     float offsetX;
     float offsetY;
@@ -34,85 +37,76 @@ public class PacketParticle implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 569) {
-            if (buffer.getVersionId() < 17) {
-                particleType = buffer.getConnection().getMapping().getParticleByIdentifier(buffer.readString());
-            } else {
-                particleType = buffer.getConnection().getMapping().getParticleById(buffer.readInt());
-            }
-            if (buffer.getVersionId() >= 29) {
-                longDistance = buffer.readBoolean();
-            }
-            location = buffer.readSmallLocation();
-
-            // offset
-            offsetX = buffer.readFloat();
-            offsetY = buffer.readFloat();
-            offsetZ = buffer.readFloat();
-
-            particleDataFloat = buffer.readFloat();
-            count = buffer.readInt();
-            particleData = buffer.readParticleData(particleType);
-            return true;
+        if (buffer.getVersionId() < V_14W19A) {
+            this.particleType = buffer.getConnection().getMapping().getParticleByIdentifier(buffer.readString());
+        } else {
+            this.particleType = buffer.getConnection().getMapping().getParticleById(buffer.readInt());
         }
-        particleType = buffer.getConnection().getMapping().getParticleById(buffer.readInt());
-        longDistance = buffer.readBoolean();
-        location = buffer.readLocation();
+        if (buffer.getVersionId() >= V_14W29A) {
+            this.longDistance = buffer.readBoolean();
+        }
+        if (buffer.getVersionId() < V_1_15_PRE4) {
+            this.location = buffer.readSmallLocation();
+        } else {
+            this.location = buffer.readLocation();
+        }
 
         // offset
-        offsetX = buffer.readFloat();
-        offsetY = buffer.readFloat();
-        offsetZ = buffer.readFloat();
+        this.offsetX = buffer.readFloat();
+        this.offsetY = buffer.readFloat();
+        this.offsetZ = buffer.readFloat();
 
-        particleDataFloat = buffer.readFloat();
-        count = buffer.readInt();
-        particleData = buffer.readParticleData(particleType);
+        this.particleDataFloat = buffer.readFloat();
+        this.count = buffer.readInt();
+        this.particleData = buffer.readParticleData(this.particleType);
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        if (connection.fireEvent(new ParticleSpawnEvent(connection, this))) {
+            return;
+        }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received particle spawn packet (location=%s, offsetX=%s, offsetY=%s, offsetZ=%s, particleType=%s, dataFloat=%s, count=%d, particleData=%s)", location, offsetX, offsetY, offsetZ, particleType, particleDataFloat, count, particleData));
+        Log.protocol(String.format("[IN] Received particle spawn packet (location=%s, offsetX=%s, offsetY=%s, offsetZ=%s, particleType=%s, dataFloat=%s, count=%d, particleData=%s)", this.location, this.offsetX, this.offsetY, this.offsetZ, this.particleType, this.particleDataFloat, this.count, this.particleData));
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
     public float getOffsetX() {
-        return offsetX;
+        return this.offsetX;
     }
 
     public float getOffsetY() {
-        return offsetY;
+        return this.offsetY;
     }
 
     public float getOffsetZ() {
-        return offsetZ;
+        return this.offsetZ;
     }
 
     public int getCount() {
-        return count;
+        return this.count;
     }
 
     public Particle getParticleType() {
-        return particleType;
+        return this.particleType;
     }
 
     public ParticleData getParticleData() {
-        return particleData;
+        return this.particleData;
     }
 
     public float getParticleDataFloat() {
-        return particleDataFloat;
+        return this.particleDataFloat;
     }
 
     public boolean isLongDistance() {
-        return longDistance;
+        return this.longDistance;
     }
 }

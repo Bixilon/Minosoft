@@ -31,13 +31,13 @@ public class PacketQueryEntityNBT implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ENTITY_NBT_REQUEST);
-        buffer.writeVarInt(transactionId);
-        buffer.writeVarInt(entityId);
+        buffer.writeVarInt(this.transactionId);
+        buffer.writeVarInt(this.entityId);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Querying entity nbt (transactionId=%d, entityId=%d)", transactionId, entityId));
+        Log.protocol(String.format("[OUT] Querying entity nbt (transactionId=%d, entityId=%d)", this.transactionId, this.entityId));
     }
 }

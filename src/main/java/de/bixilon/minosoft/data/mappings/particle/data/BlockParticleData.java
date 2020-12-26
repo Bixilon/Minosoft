@@ -30,9 +30,9 @@ public class BlockParticleData extends ParticleData {
 
     @Override
     public String toString() {
-        if (block == null) {
+        if (this.block == null) {
             return null;
         }
-        return block.toString();
+        return this.block.toString();
     }
 }

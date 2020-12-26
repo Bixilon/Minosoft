@@ -22,30 +22,31 @@ import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
+import de.bixilon.minosoft.data.player.PingBars;
 import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.EventInvokerCallback;
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
-import de.bixilon.minosoft.modding.event.events.ServerListPingArriveEvent;
+import de.bixilon.minosoft.modding.event.events.ServerListPongEvent;
+import de.bixilon.minosoft.modding.event.events.ServerListStatusArriveEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.ping.ForgeModInfo;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -53,7 +54,10 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class ServerListCell extends ListCell<Server> implements Initializable {
-    public static final ListView<Server> listView = new ListView<>();
+    public static final ListView<Server> SERVER_LIST_VIEW = new ListView<>();
+
+    public HBox hBox;
+    public GridPane root;
 
     public ImageView faviconField;
     public TextFlow nameField;
@@ -62,7 +66,6 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public Label playersField;
     public Label brandField;
 
-    public GridPane root;
     public MenuItem optionsConnect;
     public MenuItem optionsShowInfo;
     public MenuItem optionsEdit;
@@ -70,8 +73,9 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public MenuItem optionsSessions;
     public MenuItem optionsDelete;
     public MenuButton optionsMenu;
+    public Label pingField;
 
-    boolean canConnect = false;
+    boolean canConnect;
     private Server server;
 
     public static ServerListCell newInstance() {
@@ -88,35 +92,35 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         updateSelected(false);
-        setGraphic(root);
+        setGraphic(this.root);
 
         // change locale
-        optionsConnect.setText(LocaleManager.translate(Strings.SERVER_ACTION_CONNECT));
-        optionsShowInfo.setText(LocaleManager.translate(Strings.SERVER_ACTION_SHOW_INFO));
-        optionsEdit.setText(LocaleManager.translate(Strings.SERVER_ACTION_EDIT));
-        optionsRefresh.setText(LocaleManager.translate(Strings.SERVER_ACTION_REFRESH));
-        optionsSessions.setText(LocaleManager.translate(Strings.SERVER_ACTION_SESSIONS));
-        optionsDelete.setText(LocaleManager.translate(Strings.SERVER_ACTION_DELETE));
+        this.optionsConnect.setText(LocaleManager.translate(Strings.SERVER_ACTION_CONNECT));
+        this.optionsShowInfo.setText(LocaleManager.translate(Strings.SERVER_ACTION_SHOW_INFO));
+        this.optionsEdit.setText(LocaleManager.translate(Strings.SERVER_ACTION_EDIT));
+        this.optionsRefresh.setText(LocaleManager.translate(Strings.SERVER_ACTION_REFRESH));
+        this.optionsSessions.setText(LocaleManager.translate(Strings.SERVER_ACTION_SESSIONS));
+        this.optionsDelete.setText(LocaleManager.translate(Strings.SERVER_ACTION_DELETE));
     }
 
     @Override
     protected void updateItem(Server server, boolean empty) {
         super.updateItem(server, empty);
 
-        root.setVisible(!empty);
+        this.root.setVisible(server != null || !empty);
+        this.hBox.setVisible(server != null || !empty);
         if (empty) {
+            resetCell();
             return;
         }
 
         if (server == null) {
+            resetCell();
             return;
         }
 
-        if (server.equals(this.server)) {
-            return;
-        }
-        server.setCell(this);
         resetCell();
+        server.setCell(this);
 
         this.server = server;
         setName(server.getName());
@@ -125,17 +129,17 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (favicon == null) {
             favicon = GUITools.MINOSOFT_LOGO;
         }
-        faviconField.setImage(favicon);
+        this.faviconField.setImage(favicon);
         if (server.isConnected()) {
-            setStyle("-fx-background-color: darkseagreen;");
-            optionsSessions.setDisable(false);
+            this.root.getStyleClass().add("list-cell-connected");
+            this.optionsSessions.setDisable(false);
         } else {
-            optionsSessions.setDisable(true);
+            this.optionsSessions.setDisable(true);
         }
         if (server.getLastPing() == null) {
             server.ping();
         }
-        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListPingArriveEvent>(ServerListPingArriveEvent.class, event -> Platform.runLater(() -> {
+        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListStatusArriveEvent>(ServerListStatusArriveEvent.class, event -> Platform.runLater(() -> {
             ServerListPing ping = event.getServerListPing();
             if (server != this.server) {
                 // cell does not contains us anymore
@@ -144,63 +148,74 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             resetCell();
 
             if (server.isConnected()) {
-                setStyle("-fx-background-color: darkseagreen;");
+                this.root.getStyleClass().add("list-cell-connected");
             }
             if (ping == null) {
                 // Offline
-                playersField.setText("");
-                versionField.setText(LocaleManager.translate(Strings.OFFLINE));
-                versionField.setStyle("-fx-text-fill: red;");
+                this.playersField.setText("");
+                this.versionField.setText(LocaleManager.translate(Strings.OFFLINE));
+                this.versionField.getStyleClass().add("version-error");
                 setErrorMotd(String.format("%s", server.getLastPing().getLastConnectionException()));
-                optionsConnect.setDisable(true);
-                canConnect = false;
+                this.optionsConnect.setDisable(true);
+                this.canConnect = false;
                 return;
             }
-            playersField.setText(LocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, ping.getPlayerOnline(), ping.getMaxPlayers()));
+            this.playersField.setText(LocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, ping.getPlayerOnline(), ping.getMaxPlayers()));
             Version serverVersion;
-            if (server.getDesiredVersionId() == -1) {
+            if (server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
                 serverVersion = Versions.getVersionByProtocolId(ping.getProtocolId());
             } else {
                 serverVersion = Versions.getVersionById(server.getDesiredVersionId());
-                versionField.setStyle("-fx-text-fill: -secondary-light-light-color;");
+                this.versionField.setStyle("-fx-text-fill: -secondary-light-light-color;");
             }
             if (serverVersion == null) {
-                versionField.setText(ping.getServerBrand());
-                versionField.setStyle("-fx-text-fill: red;");
-                optionsConnect.setDisable(true);
-                canConnect = false;
+                this.versionField.setText(ping.getServerBrand());
+                this.versionField.setStyle("-fx-text-fill: red;");
+                this.optionsConnect.setDisable(true);
+                this.canConnect = false;
             } else {
-                versionField.setText(serverVersion.getVersionName());
-                optionsConnect.setDisable(false);
-                canConnect = true;
+                this.versionField.setText(serverVersion.getVersionName());
+                this.optionsConnect.setDisable(false);
+                this.canConnect = true;
             }
-            brandField.setText(ping.getServerModInfo().getBrand());
-            brandField.setTooltip(new Tooltip(ping.getServerModInfo().getInfo()));
-            motdField.getChildren().setAll(ping.getMotd().getJavaFXText());
+            this.brandField.setText(ping.getServerModInfo().getBrand());
+            this.brandField.setTooltip(new Tooltip(ping.getServerModInfo().getInfo()));
+            this.motdField.getChildren().setAll(ping.getMotd().getJavaFXText());
             if (ping.getFavicon() != null) {
-                faviconField.setImage(GUITools.getImage(ping.getFavicon()));
+                this.faviconField.setImage(GUITools.getImage(ping.getFavicon()));
                 if (!Arrays.equals(ping.getFavicon(), server.getFavicon())) {
                     server.setFavicon(ping.getFavicon());
                     server.saveToConfig();
                 }
             }
             if (server.isReadOnly()) {
-                optionsEdit.setDisable(true);
-                optionsDelete.setDisable(true);
+                this.optionsEdit.setDisable(true);
+                this.optionsDelete.setDisable(true);
             }
             if (server.getLastPing().getLastConnectionException() != null) {
                 // connection failed because of an error in minosoft, but ping was okay
-                versionField.setStyle("-fx-text-fill: red;");
-                optionsConnect.setDisable(true);
-                canConnect = false;
+                this.versionField.setStyle("-fx-text-fill: red;");
+                this.optionsConnect.setDisable(true);
+                this.canConnect = false;
                 setErrorMotd(String.format("%s: %s", server.getLastPing().getLastConnectionException().getClass().getCanonicalName(), server.getLastPing().getLastConnectionException().getMessage()));
+            }
+        })));
+        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListPongEvent>(ServerListPongEvent.class, event -> Platform.runLater(() -> {
+            this.pingField.setText(String.format("%dms", event.getLatency()));
+            switch (PingBars.byPing(event.getLatency())) {
+                case BARS_5 -> this.pingField.getStyleClass().add("ping-5-bars");
+                case BARS_4 -> this.pingField.getStyleClass().add("ping-4-bars");
+                case BARS_3 -> this.pingField.getStyleClass().add("ping-3-bars");
+                case BARS_2 -> this.pingField.getStyleClass().add("ping-2-bars");
+                case BARS_1 -> this.pingField.getStyleClass().add("ping-1-bars");
+                case NO_CONNECTION -> this.pingField.getStyleClass().add("ping-no-connection");
             }
         })));
     }
 
     public void setName(BaseComponent name) {
-        nameField.getChildren().setAll(name.getJavaFXText());
-        for (Node node : nameField.getChildren()) {
+        this.nameField.getChildren().setAll(name.getJavaFXText());
+        for (Node node : this.nameField.getChildren()) {
             node.setStyle("-fx-font-size: 15pt ;");
         }
     }
@@ -208,41 +223,46 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     private void resetCell() {
         // clear all cells
         setStyle(null);
-        motdField.getChildren().clear();
-        brandField.setText("");
-        brandField.setTooltip(null);
-        motdField.setStyle(null);
-        versionField.setText(LocaleManager.translate(Strings.CONNECTING));
-        versionField.setStyle(null);
-        playersField.setText("");
-        optionsConnect.setDisable(true);
-        optionsEdit.setDisable(false);
-        optionsDelete.setDisable(false);
+        this.root.getStyleClass().removeAll("list-cell-connected");
+        this.motdField.getChildren().clear();
+        this.brandField.setText("");
+        this.brandField.setTooltip(null);
+        this.motdField.setStyle(null);
+        this.versionField.setText(LocaleManager.translate(Strings.CONNECTING));
+        this.versionField.getStyleClass().removeAll("version-error");
+        this.versionField.setStyle(null);
+        this.playersField.setText("");
+        this.pingField.setText("");
+        this.pingField.getStyleClass().removeIf((s -> s.startsWith("ping")));
+        this.optionsConnect.setDisable(true);
+        this.optionsEdit.setDisable(false);
+        this.optionsDelete.setDisable(false);
     }
 
     private void setErrorMotd(String message) {
         Text text = new Text(message);
         text.setFill(Color.RED);
-        motdField.getChildren().setAll(text);
+        this.motdField.getChildren().setAll(text);
     }
 
     public void delete() {
-        if (server.isReadOnly()) {
+        if (this.server.isReadOnly()) {
             return;
         }
-        server.getConnections().forEach(Connection::disconnect);
-        server.delete();
-        Log.info(String.format("Deleted server (name=\"%s\", address=\"%s\")", server.getName().getLegacyText(), server.getAddress()));
-        listView.getItems().remove(server);
+        this.server.getConnections().forEach(Connection::disconnect);
+        this.server.delete();
+        Log.info(String.format("Deleted server (name=\"%s\", address=\"%s\")", this.server.getName().getLegacyText(), this.server.getAddress()));
+        SERVER_LIST_VIEW.getItems().remove(this.server);
     }
 
     public void refresh() {
-        Log.info(String.format("Refreshing server status (serverName=\"%s\", address=\"%s\")", server.getName().getLegacyText(), server.getAddress()));
-        if (server.getLastPing() == null) {
+        if (this.server.getLastPing() == null) {
             // server was not pinged, don't even try, only costs memory and cpu
             return;
         }
-        server.ping();
+        Log.info(String.format("Refreshing server status (serverName=\"%s\", address=\"%s\")", this.server.getName().getLegacyText(), this.server.getAddress()));
+        resetCell();
+        this.server.ping();
     }
 
     public void clicked(MouseEvent e) {
@@ -252,68 +272,66 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                     connect();
                 }
             }
-            case SECONDARY -> optionsMenu.fire();
+            case SECONDARY -> this.optionsMenu.fire();
             case MIDDLE -> {
-                listView.getSelectionModel().select(server);
+                SERVER_LIST_VIEW.getSelectionModel().select(this.server);
                 editServer();
             }
         }
     }
 
     public void connect() {
-        if (!canConnect || server.getLastPing() == null) {
+        if (!this.canConnect || this.server.getLastPing() == null) {
             return;
         }
-        Connection connection = new Connection(Connection.lastConnectionId++, server.getAddress(), new Player(Minosoft.getSelectedAccount()));
+        Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getConfig().getSelectedAccount()));
         Version version;
-        if (server.getDesiredVersionId() == -1) {
-            version = server.getLastPing().getVersion();
+        if (this.server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
+            version = this.server.getLastPing().getVersion();
         } else {
-            version = Versions.getVersionById(server.getDesiredVersionId());
+            version = Versions.getVersionById(this.server.getDesiredVersionId());
         }
-        optionsConnect.setDisable(true);
-        connection.connect(server.getLastPing().getAddress(), version);
-        connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
-        server.addConnection(connection);
+        this.optionsConnect.setDisable(true);
+        connection.connect(this.server.getLastPing().getAddress(), version);
+        connection.registerEvent(new EventInvokerCallback<>(ConnectionStateChangeEvent.class, this::handleConnectionCallback));
+        this.server.addConnection(connection);
 
     }
 
     public void editServer() {
-        MainWindow.addOrEditServer(server);
+        MainWindow.addOrEditServer(this.server);
     }
 
     private void handleConnectionCallback(ConnectionStateChangeEvent event) {
         Connection connection = event.getConnection();
-        if (!server.getConnections().contains(connection)) {
+        if (!this.server.getConnections().contains(connection)) {
             // the card got recycled
             return;
         }
         Platform.runLater(() -> {
             if (!connection.isConnected()) {
                 // maybe we got disconnected
-                if (!server.isConnected()) {
+                if (!this.server.isConnected()) {
                     setStyle(null);
-                    optionsSessions.setDisable(true);
-                    optionsConnect.setDisable(false);
+                    this.root.getStyleClass().removeAll("list-cell-connected");
+                    this.optionsSessions.setDisable(true);
+                    this.optionsConnect.setDisable(false);
+                    return;
                 }
-                return;
             }
 
-            if (Minosoft.getSelectedAccount() != connection.getPlayer().getAccount()) {
-                optionsConnect.setDisable(false);
-            }
-            setStyle("-fx-background-color: darkseagreen;");
-            optionsSessions.setDisable(false);
+            this.optionsConnect.setDisable(Minosoft.getConfig().getSelectedAccount() == connection.getPlayer().getAccount());
+            this.root.getStyleClass().add("list-cell-connected");
+            this.optionsSessions.setDisable(false);
         });
     }
 
     public void showInfo() {
         JFXAlert<?> dialog = new JFXAlert<>();
-        dialog.setTitle("View server info: " + server.getName().getMessage());
+        dialog.setTitle("View server info: " + this.server.getName().getMessage());
         GUITools.initializePane(dialog.getDialogPane());
 
         JFXDialogLayout layout = new JFXDialogLayout();
-
 
         JFXButton closeButton = new JFXButton(ButtonType.CLOSE.getText());
         closeButton.setOnAction((actionEvent -> dialog.hide()));
@@ -325,14 +343,14 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         grid.setVgap(10);
 
         TextFlow serverNameLabel = new TextFlow();
-        serverNameLabel.getChildren().setAll(server.getName().getJavaFXText());
-        Label serverAddressLabel = new Label(server.getAddress());
+        serverNameLabel.getChildren().setAll(this.server.getName().getJavaFXText());
+        Label serverAddressLabel = new Label(this.server.getAddress());
         Label forcedVersionLabel = new Label();
 
-        if (server.getDesiredVersionId() == -1) {
+        if (this.server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
             forcedVersionLabel.setText(Versions.LOWEST_VERSION_SUPPORTED.getVersionName());
         } else {
-            forcedVersionLabel.setText(Versions.getVersionById(server.getDesiredVersionId()).getVersionName());
+            forcedVersionLabel.setText(Versions.getVersionById(this.server.getDesiredVersionId()).getVersionName());
         }
 
         int column = -1;
@@ -345,16 +363,16 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         grid.add(new Label(LocaleManager.translate(Strings.FORCED_VERSION) + ":"), 0, ++column);
         grid.add(forcedVersionLabel, 1, column);
 
-        if (server.getLastPing() != null) {
-            if (server.getLastPing().getLastConnectionException() != null) {
-                Label lastConnectionExceptionLabel = new Label(server.getLastPing().getLastConnectionException().toString());
+        if (this.server.getLastPing() != null) {
+            if (this.server.getLastPing().getLastConnectionException() != null) {
+                Label lastConnectionExceptionLabel = new Label(this.server.getLastPing().getLastConnectionException().toString());
                 lastConnectionExceptionLabel.setStyle("-fx-text-fill: red");
                 grid.add(new Label(LocaleManager.translate(Strings.SERVER_INFO_LAST_CONNECTION_EXCEPTION) + ":"), 0, ++column);
                 grid.add(lastConnectionExceptionLabel, 1, column);
             }
 
-            if (server.getLastPing().getLastPing() != null) {
-                ServerListPing lastPing = server.getLastPing().getLastPing();
+            if (this.server.getLastPing().getLastPing() != null) {
+                ServerListPing lastPing = this.server.getLastPing().getLastPing();
                 Version serverVersion = Versions.getVersionByProtocolId(lastPing.getProtocolId());
                 String serverVersionString;
                 if (serverVersion == null) {
@@ -362,7 +380,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 } else {
                     serverVersionString = serverVersion.getVersionName();
                 }
-                Label realServerAddressLabel = new Label(server.getLastPing().getAddress().toString());
+                Label realServerAddressLabel = new Label(this.server.getLastPing().getAddress().toString());
                 Label serverVersionLabel = new Label(serverVersionString);
                 Label serverBrandLabel = new Label(lastPing.getServerBrand());
                 Label playersOnlineMaxLabel = new Label(LocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, lastPing.getPlayerOnline(), lastPing.getMaxPlayers()));
@@ -400,15 +418,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
 
     public void manageSessions() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/layout/sessions.fxml"));
-            Parent parent = loader.load();
-            ((SessionsWindow) loader.getController()).setServer(server);
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle(LocaleManager.translate(Strings.SESSIONS_DIALOG_TITLE, server.getName()));
-            stage.setScene(new Scene(parent));
-            GUITools.initializeScene(stage.getScene());
-            stage.show();
+            SessionsWindow sessionsWindow = GUITools.showPane("/layout/sessions.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.SESSIONS_DIALOG_TITLE, this.server.getName().getMessage()));
+            sessionsWindow.setServer(this.server);
         } catch (IOException e) {
             e.printStackTrace();
         }

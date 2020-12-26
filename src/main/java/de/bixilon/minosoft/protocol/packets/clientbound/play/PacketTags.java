@@ -14,24 +14,44 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.Tag;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketTags implements ClientboundPacket {
-    Tag[] blockTags;
-    Tag[] itemTags;
-    Tag[] fluidTags;
-    Tag[] entityTags;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
+public class PacketTags extends ClientboundPacket {
+    Tag[] blockTags = {};
+    Tag[] itemTags = {};
+    Tag[] fluidTags = {};
+    Tag[] entityTags = {};
+    Tag[] gameEventTags = {};
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        blockTags = readTags(buffer);
-        itemTags = readTags(buffer);
-        fluidTags = readTags(buffer); // ToDo: when was this added? Was not available in 18w01
-        if (buffer.getVersionId() >= 440) {
-            entityTags = readTags(buffer);
+        if (buffer.getVersionId() < V_20W51A) {
+            this.blockTags = readTags(buffer);
+            this.itemTags = readTags(buffer);
+            this.fluidTags = readTags(buffer); // ToDo: when was this added? Was not available in 18w01
+            if (buffer.getVersionId() >= V_18W43A) {
+                this.entityTags = readTags(buffer);
+            }
+            if (buffer.getVersionId() >= V_20W49A) {
+                this.gameEventTags = readTags(buffer);
+            }
+            return true;
+        }
+        int length = buffer.readVarInt();
+        for (int i = 0; i < length; i++) {
+            ModIdentifier identifier = buffer.readIdentifier();
+            switch (identifier.getFullIdentifier()) {
+                case "minecraft:block" -> this.blockTags = readTags(buffer);
+                case "minecraft:item" -> this.itemTags = readTags(buffer);
+                case "minecraft:fluid" -> this.fluidTags = readTags(buffer);
+                case "minecraft:entity_type" -> this.entityTags = readTags(buffer);
+                case "minecraft:game_event" -> this.gameEventTags = readTags(buffer);
+            }
         }
         return true;
     }
@@ -39,18 +59,13 @@ public class PacketTags implements ClientboundPacket {
     private Tag[] readTags(InByteBuffer buffer) {
         Tag[] ret = new Tag[buffer.readVarInt()];
         for (int i = 0; i < ret.length; i++) {
-            ret[i] = new Tag(buffer.readString(), buffer.readVarIntArray(buffer.readVarInt()));
+            ret[i] = new Tag(buffer.readString(), buffer.readVarIntArray());
         }
         return ret;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received tags (blockLength=%d, itemLength=%d, fluidLength=%d, entityLength=%d)", blockTags.length, itemTags.length, fluidTags.length, ((entityTags == null) ? 0 : entityTags.length)));
+        Log.protocol(String.format("[IN] Received tags (blockLength=%d, itemLength=%d, fluidLength=%d, entityLength=%d, gameEventLength=%d)", this.blockTags.length, this.itemTags.length, this.fluidTags.length, this.entityTags.length, this.gameEventTags.length));
     }
 }

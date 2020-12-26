@@ -34,6 +34,6 @@ public class StatusResponseEvent extends ConnectionEvent {
     }
 
     public ServerListPing getResponse() {
-        return response;
+        return this.response;
     }
 }

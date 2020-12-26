@@ -22,10 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Log {
-    public final static long MINOSOFT_START_TIME = System.currentTimeMillis();
-    final static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    final static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>();
-    static LogLevels level = LogLevels.PROTOCOL;
+    public static final long MINOSOFT_START_TIME = System.currentTimeMillis();
+    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final LinkedBlockingQueue<String> LOG_QUEUE = new LinkedBlockingQueue<>();
+    private static LogLevels level = LogLevels.PROTOCOL;
 
     static {
         new Thread(() -> {
@@ -33,12 +33,13 @@ public class Log {
                 // something to print
                 String message;
                 try {
-                    message = queue.take();
+                    message = LOG_QUEUE.take();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     continue;
                 }
                 System.out.println(message);
+                System.out.flush();
 
                 // ToDo: log to file
             }
@@ -61,14 +62,16 @@ public class Log {
             if (string.isBlank()) {
                 return;
             }
-            message = String.format(string, format);
+            if (format.length > 0) {
+                message = String.format(string, format);
+            }
         }
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         if (StaticConfiguration.LOG_RELATIVE_TIME) {
             builder.append(System.currentTimeMillis() - MINOSOFT_START_TIME);
         } else {
-            builder.append(timeFormat.format(System.currentTimeMillis()));
+            builder.append(TIME_FORMAT.format(System.currentTimeMillis()));
         }
         builder.append("] [");
         builder.append(Thread.currentThread().getName());
@@ -84,7 +87,7 @@ public class Log {
             builder.append(message);
         }
         builder.append(PostChatFormattingCodes.RESET.getANSI());
-        queue.add(builder.toString());
+        LOG_QUEUE.add(builder.toString());
     }
 
     /**
@@ -159,7 +162,6 @@ public class Log {
         log(LogLevels.INFO, ChatColors.WHITE, message, format);
     }
 
-
     public static LogLevels getLevel() {
         return level;
     }
@@ -168,13 +170,13 @@ public class Log {
         if (Log.level == level) {
             return;
         }
-        Log.info(String.format("Log level changed from %s to %s", Log.level, level));
+        info(String.format("Log level changed from %s to %s", Log.level, level));
         Log.level = level;
     }
 
-    public static boolean printException(Exception exception, LogLevels minimumLogLevel) {
+    public static boolean printException(Throwable exception, LogLevels minimumLogLevel) {
         // ToDo: log to file, print also exceptions that are not printed with this method
-        if (Log.getLevel().ordinal() >= minimumLogLevel.ordinal()) {
+        if (getLevel().ordinal() >= minimumLogLevel.ordinal()) {
             exception.printStackTrace();
             return true;
         }

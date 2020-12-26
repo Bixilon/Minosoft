@@ -19,15 +19,14 @@ import java.util.Arrays;
 
 public final class ChatFormattingCodes {
 
-    private static final HashBiMap<Character, ChatFormattingCode> formattingCodes = HashBiMap.create();
+    private static final HashBiMap<Character, ChatFormattingCode> FORMATTING_CODES = HashBiMap.create();
 
     static {
-        Arrays.stream(PreChatFormattingCodes.values()).forEach(chatFormattingCodes -> formattingCodes.put(chatFormattingCodes.getChar(), chatFormattingCodes));
-        Arrays.stream(PostChatFormattingCodes.values()).forEach(chatFormattingCodes -> formattingCodes.put(chatFormattingCodes.getChar(), chatFormattingCodes));
-
+        Arrays.stream(PreChatFormattingCodes.values()).forEach(chatFormattingCodes -> FORMATTING_CODES.put(chatFormattingCodes.getChar(), chatFormattingCodes));
+        Arrays.stream(PostChatFormattingCodes.values()).forEach(chatFormattingCodes -> FORMATTING_CODES.put(chatFormattingCodes.getChar(), chatFormattingCodes));
     }
 
     public static ChatFormattingCode getChatFormattingCodeByChar(char nextFormattingChar) {
-        return formattingCodes.get(nextFormattingChar);
+        return FORMATTING_CODES.get(nextFormattingChar);
     }
 }

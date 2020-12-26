@@ -21,15 +21,17 @@ import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.UnknownEntityException;
 import de.bixilon.minosoft.data.mappings.VersionTweaker;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
-public class PacketSpawnObject implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
+public class PacketSpawnObject extends ClientboundPacket {
     Entity entity;
     Velocity velocity;
 
@@ -37,41 +39,41 @@ public class PacketSpawnObject implements ClientboundPacket {
     public boolean read(InByteBuffer buffer) throws Exception {
         int entityId = buffer.readVarInt();
         UUID uuid = null;
-        if (buffer.getVersionId() >= 49) {
+        if (buffer.getVersionId() >= V_15W31A) {
             uuid = buffer.readUUID();
         }
 
         int type;
-        if (buffer.getVersionId() < 301) {
+        if (buffer.getVersionId() < V_16W32A) {
             type = buffer.readByte();
         } else {
             type = buffer.readVarInt();
         }
         Class<? extends Entity> typeClass;
-        if (buffer.getVersionId() < 458) {
+        if (buffer.getVersionId() < V_19W05A) {
             typeClass = Objects.byId(type).getClazz();
         } else {
             typeClass = buffer.getConnection().getMapping().getEntityClassById(type);
         }
 
         Location location;
-        if (buffer.getVersionId() < 100) {
-            location = new Location(buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger(), buffer.readFixedPointNumberInteger());
+        if (buffer.getVersionId() < V_16W06A) {
+            location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             location = buffer.readLocation();
         }
         EntityRotation rotation = new EntityRotation(buffer.readAngle(), buffer.readAngle(), 0);
         int data = buffer.readInt();
 
-        if (buffer.getVersionId() < 49) {
+        if (buffer.getVersionId() < V_15W31A) {
             if (data != 0) {
-                velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+                this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
             }
         } else {
-            velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+            this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
         }
 
-        if (buffer.getVersionId() <= 47) { // ToDo
+        if (buffer.getVersionId() <= V_1_8_9) { // ToDo
             typeClass = VersionTweaker.getRealEntityObjectClass(typeClass, data, buffer.getVersionId());
         }
 
@@ -80,7 +82,7 @@ public class PacketSpawnObject implements ClientboundPacket {
         }
 
         try {
-            entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Location.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, location, rotation);
+            this.entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Location.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, location, rotation);
             return true;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
             e.printStackTrace();
@@ -89,21 +91,24 @@ public class PacketSpawnObject implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new EntitySpawnEvent(connection, this));
+
+        connection.getPlayer().getWorld().addEntity(getEntity());
+        connection.getVelocityHandler().handleVelocity(getEntity(), getVelocity());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Object spawned at %s (entityId=%d, type=%s)", entity.getLocation().toString(), entity.getEntityId(), entity));
+        Log.protocol(String.format("[IN] Object spawned at %s (entityId=%d, type=%s)", this.entity.getLocation().toString(), this.entity.getEntityId(), this.entity));
     }
 
     public Entity getEntity() {
-        return entity;
+        return this.entity;
     }
 
     public Velocity getVelocity() {
-        return velocity;
+        return this.velocity;
     }
 
 }

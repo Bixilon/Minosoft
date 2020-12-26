@@ -30,6 +30,6 @@ public class Phantom extends FlyingMob {
 
     @EntityMetaDataFunction(identifier = "size")
     public int getSize() {
-        return metaData.getSets().getInt(EntityMetaDataFields.PHANTOM_SIZE);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.PHANTOM_SIZE);
     }
 }

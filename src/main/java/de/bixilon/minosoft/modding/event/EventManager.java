@@ -27,7 +27,7 @@ public class EventManager {
     private final HashMap<HashSet<ServerAddressValidator>, HashSet<EventInvoker>> specificEventListeners = new HashMap<>();
 
     public void registerGlobalListener(EventListener listener) {
-        globalEventListeners.addAll(getEventMethods(listener));
+        this.globalEventListeners.addAll(getEventMethods(listener));
     }
 
     private HashSet<EventInvoker> getEventMethods(EventListener listener) {
@@ -50,7 +50,7 @@ public class EventManager {
     }
 
     public HashSet<EventInvoker> getGlobalEventListeners() {
-        return globalEventListeners;
+        return this.globalEventListeners;
     }
 
     public void registerConnectionListener(EventListener listener, ServerAddressValidator... addresses) {
@@ -58,10 +58,10 @@ public class EventManager {
             throw new RuntimeException("You must provide at least one address validator or use global events!");
         }
         HashSet<ServerAddressValidator> serverAddresses = new HashSet<>(Arrays.asList(addresses));
-        specificEventListeners.put(serverAddresses, getEventMethods(listener));
+        this.specificEventListeners.put(serverAddresses, getEventMethods(listener));
     }
 
     public HashMap<HashSet<ServerAddressValidator>, HashSet<EventInvoker>> getSpecificEventListeners() {
-        return specificEventListeners;
+        return this.specificEventListeners;
     }
 }

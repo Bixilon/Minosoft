@@ -20,6 +20,9 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketUpdateSignSending implements ServerboundPacket {
     final BlockPosition position;
@@ -33,18 +36,18 @@ public class PacketUpdateSignSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_SIGN);
-        if (buffer.getVersionId() < 7) {
-            buffer.writeBlockPositionByte(position);
+        if (buffer.getVersionId() < V_14W04A) {
+            buffer.writeBlockPositionByte(this.position);
         } else {
-            buffer.writePosition(position);
+            buffer.writePosition(this.position);
         }
-        if (buffer.getVersionId() < 21 || buffer.getVersionId() >= 62) {
-            for (int i = 0; i < 4; i++) {
-                buffer.writeString(lines[i].getMessage());
+        if (buffer.getVersionId() < V_14W25A || buffer.getVersionId() >= V_15W35A) {
+            for (int i = 0; i < ProtocolDefinition.SIGN_LINES; i++) {
+                buffer.writeString(this.lines[i].getMessage());
             }
         } else {
-            for (int i = 0; i < 4; i++) {
-                buffer.writeTextComponent(lines[i]);
+            for (int i = 0; i < ProtocolDefinition.SIGN_LINES; i++) {
+                buffer.writeChatComponent(this.lines[i]);
             }
         }
         return buffer;
@@ -52,6 +55,6 @@ public class PacketUpdateSignSending implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending Sign Update: %s", position));
+        Log.protocol(String.format("[OUT] Sending Sign Update: %s", this.position));
     }
 }

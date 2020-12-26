@@ -16,9 +16,8 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketOpenHorseWindow implements ClientboundPacket {
+public class PacketOpenHorseWindow extends ClientboundPacket {
     byte windowId;
     int slotCount;
     int entityId;
@@ -32,24 +31,19 @@ public class PacketOpenHorseWindow implements ClientboundPacket {
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received open horse window packet (windowId=%d, slotCount=%d, entityId=%s)", windowId, slotCount, entityId));
+        Log.protocol(String.format("[IN] Received open horse window packet (windowId=%d, slotCount=%d, entityId=%s)", this.windowId, this.slotCount, this.entityId));
     }
 
     public byte getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     public int getSlotCount() {
-        return slotCount;
+        return this.slotCount;
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 }

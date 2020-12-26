@@ -70,50 +70,50 @@ public class JoinGameEvent extends CancelableEvent {
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public boolean isHardcore() {
-        return hardcore;
+        return this.hardcore;
     }
 
     public GameModes getGameMode() {
-        return gameMode;
+        return this.gameMode;
     }
 
     public Dimension getDimension() {
-        return dimension;
+        return this.dimension;
     }
 
     public Difficulties getDifficulty() {
-        return difficulty;
+        return this.difficulty;
     }
 
     public int getViewDistance() {
-        return viewDistance;
+        return this.viewDistance;
     }
 
     public int getMaxPlayers() {
-        return maxPlayers;
+        return this.maxPlayers;
     }
 
     public LevelTypes getLevelType() {
-        return levelType;
+        return this.levelType;
     }
 
     public boolean isReducedDebugScreen() {
-        return reducedDebugScreen;
+        return this.reducedDebugScreen;
     }
 
     public boolean isEnableRespawnScreen() {
-        return enableRespawnScreen;
+        return this.enableRespawnScreen;
     }
 
     public long getHashedSeed() {
-        return hashedSeed;
+        return this.hashedSeed;
     }
 
     public HashMap<String, HashBiMap<String, Dimension>> getDimensions() {
-        return dimensions;
+        return this.dimensions;
     }
 }

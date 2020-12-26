@@ -17,6 +17,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.EntityClassMappings;
 import de.bixilon.minosoft.data.Mappings;
 import de.bixilon.minosoft.data.entities.EntityInformation;
@@ -24,7 +25,8 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.mappings.*;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
-import de.bixilon.minosoft.data.mappings.blocks.Blocks;
+import de.bixilon.minosoft.data.mappings.blocks.BlockProperties;
+import de.bixilon.minosoft.data.mappings.blocks.BlockRotations;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.statistics.Statistic;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -36,12 +38,12 @@ import java.util.HashSet;
 
 public class VersionMapping {
     private final HashSet<Mappings> loaded = new HashSet<>();
+    private final HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap = HashBiMap.create(100);
+    private final HashMap<EntityMetaDataFields, Integer> entityMetaIndexMap = new HashMap<>(100);
+    private final HashMap<String, Pair<String, Integer>> entityMetaIndexOffsetParentMapping = new HashMap<>(100);
+    private final HashBiMap<Integer, Class<? extends Entity>> entityIdClassMap = HashBiMap.create(100);
     private Version version;
     private VersionMapping parentMapping;
-    private final HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap = HashBiMap.create();
-    private final HashMap<EntityMetaDataFields, Integer> entityMetaIndexMap = new HashMap<>();
-    private final HashMap<String, Pair<String, Integer>> entityMetaIndexOffsetParentMapping = new HashMap<>();
-    private final HashBiMap<Integer, Class<? extends Entity>> entityIdClassMap = HashBiMap.create();
     private HashBiMap<String, Motive> motiveIdentifierMap = HashBiMap.create();
     private HashBiMap<String, Particle> particleIdentifierMap = HashBiMap.create();
     private HashBiMap<String, Statistic> statisticIdentifierMap = HashBiMap.create();
@@ -66,91 +68,109 @@ public class VersionMapping {
         this.parentMapping = parentMapping;
     }
 
+    private static int getBlockId(JsonObject json, boolean metaData) {
+        int blockId = json.get("id").getAsInt();
+        if (metaData) {
+            blockId <<= 4;
+            if (json.has("meta")) {
+                // old format (with metadata)
+                blockId |= json.get("meta").getAsByte();
+            }
+        }
+        return blockId;
+    }
+
+    private static void checkAndCrashIfBlockIsIn(int blockId, String identifierName, HashBiMap<Integer, Block> versionMapping) {
+        if (versionMapping.containsKey(blockId)) {
+            throw new RuntimeException(String.format("Block Id %s is already present for %s! (identifier=%s)", blockId, versionMapping.get(blockId), identifierName));
+        }
+    }
+
     public Motive getMotiveByIdentifier(String identifier) {
-        if (parentMapping != null) {
-            Motive motive = parentMapping.getMotiveByIdentifier(identifier);
+        if (this.parentMapping != null) {
+            Motive motive = this.parentMapping.getMotiveByIdentifier(identifier);
             if (motive != null) {
                 return motive;
             }
         }
-        return motiveIdentifierMap.get(identifier);
+        return this.motiveIdentifierMap.get(identifier);
     }
 
     public Statistic getStatisticByIdentifier(String identifier) {
-        if (parentMapping != null) {
-            Statistic statistic = parentMapping.getStatisticByIdentifier(identifier);
+        if (this.parentMapping != null) {
+            Statistic statistic = this.parentMapping.getStatisticByIdentifier(identifier);
             if (statistic != null) {
                 return statistic;
             }
         }
-        return statisticIdentifierMap.get(identifier);
+        return this.statisticIdentifierMap.get(identifier);
     }
 
     public Particle getParticleByIdentifier(String identifier) {
-        if (parentMapping != null) {
-            Particle particle = parentMapping.getParticleByIdentifier(identifier);
+        if (this.parentMapping != null) {
+            Particle particle = this.parentMapping.getParticleByIdentifier(identifier);
             if (particle != null) {
                 return particle;
             }
         }
-        return particleIdentifierMap.get(identifier);
+        return this.particleIdentifierMap.get(identifier);
     }
 
     public Item getItemById(int versionId) {
-        if (!version.isFlattened()) {
+        if (!this.version.isFlattened()) {
             return getItemByLegacy(versionId >>> 16, versionId & 0xFFFF);
         }
         return getItemByIdIgnoreFlattened(versionId);
     }
 
     private Item getItemByIdIgnoreFlattened(int versionId) {
-        if (parentMapping != null) {
-            Item item = parentMapping.getItemById(versionId);
+        if (this.parentMapping != null) {
+            Item item = this.parentMapping.getItemById(versionId);
             if (item != null) {
                 return item;
             }
         }
-        return itemMap.get(versionId);
+        return this.itemMap.get(versionId);
     }
 
     public Integer getItemId(Item item) {
-        if (parentMapping != null) {
-            Integer itemId = parentMapping.getItemId(item);
+        if (this.parentMapping != null) {
+            Integer itemId = this.parentMapping.getItemId(item);
             if (item != null) {
                 return itemId;
             }
         }
-        return itemMap.inverse().get(item);
+        return this.itemMap.inverse().get(item);
     }
 
     public Motive getMotiveById(int versionId) {
-        if (parentMapping != null) {
-            Motive motive = parentMapping.getMotiveById(versionId);
+        if (this.parentMapping != null) {
+            Motive motive = this.parentMapping.getMotiveById(versionId);
             if (motive != null) {
                 return motive;
             }
         }
-        return motiveIdMap.get(versionId);
+        return this.motiveIdMap.get(versionId);
     }
 
     public MobEffect getMobEffectById(int versionId) {
-        if (parentMapping != null) {
-            MobEffect mobEffect = parentMapping.getMobEffectById(versionId);
+        if (this.parentMapping != null) {
+            MobEffect mobEffect = this.parentMapping.getMobEffectById(versionId);
             if (mobEffect != null) {
                 return mobEffect;
             }
         }
-        return mobEffectMap.get(versionId);
+        return this.mobEffectMap.get(versionId);
     }
 
     public Dimension getDimensionById(int versionId) {
-        if (parentMapping != null) {
-            Dimension dimension = parentMapping.getDimensionById(versionId);
+        if (this.parentMapping != null) {
+            Dimension dimension = this.parentMapping.getDimensionById(versionId);
             if (dimension != null) {
                 return dimension;
             }
         }
-        return dimensionMap.get(versionId);
+        return this.dimensionMap.get(versionId);
     }
 
     @Nullable
@@ -158,120 +178,111 @@ public class VersionMapping {
         if (versionId == ProtocolDefinition.NULL_BLOCK_ID) {
             return null;
         }
-        if (parentMapping != null) {
-            Block block = parentMapping.getBlockById(versionId);
+        if (this.parentMapping != null) {
+            Block block = this.parentMapping.getBlockById(versionId);
             if (block != null) {
                 return block;
             }
         }
-        return blockMap.get(versionId);
+        return this.blockMap.get(versionId);
     }
 
     public BlockId getBlockIdById(int versionId) {
-        if (parentMapping != null) {
-            BlockId blockId = parentMapping.getBlockIdById(versionId);
+        if (this.parentMapping != null) {
+            BlockId blockId = this.parentMapping.getBlockIdById(versionId);
             if (blockId != null) {
                 return blockId;
             }
         }
-        return blockIdMap.get(versionId);
+        return this.blockIdMap.get(versionId);
     }
 
     public Enchantment getEnchantmentById(int versionId) {
-        if (parentMapping != null) {
-            Enchantment enchantment = parentMapping.getEnchantmentById(versionId);
+        if (this.parentMapping != null) {
+            Enchantment enchantment = this.parentMapping.getEnchantmentById(versionId);
             if (enchantment != null) {
                 return enchantment;
             }
         }
-        return enchantmentMap.get(versionId);
+        return this.enchantmentMap.get(versionId);
     }
 
     public Particle getParticleById(int versionId) {
-        if (parentMapping != null) {
-            Particle particle = parentMapping.getParticleById(versionId);
+        if (this.parentMapping != null) {
+            Particle particle = this.parentMapping.getParticleById(versionId);
             if (particle != null) {
                 return particle;
             }
         }
-        return particleIdMap.get(versionId);
+        return this.particleIdMap.get(versionId);
     }
 
     public Statistic getStatisticById(int versionId) {
-        if (parentMapping != null) {
-            Statistic statistic = parentMapping.getStatisticById(versionId);
+        if (this.parentMapping != null) {
+            Statistic statistic = this.parentMapping.getStatisticById(versionId);
             if (statistic != null) {
                 return statistic;
             }
         }
-        return statisticIdMap.get(versionId);
+        return this.statisticIdMap.get(versionId);
     }
 
     public Integer getIdByEnchantment(Enchantment enchantment) {
-        if (parentMapping != null) {
-            Integer enchantmentId = parentMapping.getIdByEnchantment(enchantment);
+        if (this.parentMapping != null) {
+            Integer enchantmentId = this.parentMapping.getIdByEnchantment(enchantment);
             if (enchantmentId != null) {
                 return enchantmentId;
             }
         }
-        return enchantmentMap.inverse().get(enchantment);
+        return this.enchantmentMap.inverse().get(enchantment);
     }
 
     public EntityInformation getEntityInformation(Class<? extends Entity> clazz) {
-        if (parentMapping != null) {
-            EntityInformation information = parentMapping.getEntityInformation(clazz);
+        if (this.parentMapping != null) {
+            EntityInformation information = this.parentMapping.getEntityInformation(clazz);
             if (information != null) {
                 return information;
             }
         }
-        if (entityInformationMap == null) {
-            return null;
-        }
-        return entityInformationMap.get(clazz);
+        return this.entityInformationMap.get(clazz);
     }
 
     public Integer getEntityMetaDataIndex(EntityMetaDataFields field) {
-        if (parentMapping != null) {
-            Integer metaDataIndex = parentMapping.getEntityMetaDataIndex(field);
+        if (this.parentMapping != null) {
+            Integer metaDataIndex = this.parentMapping.getEntityMetaDataIndex(field);
             if (metaDataIndex != null) {
                 return metaDataIndex;
             }
         }
-        if (entityMetaIndexMap == null) {
-            return null;
-        }
-        return entityMetaIndexMap.get(field);
+        return this.entityMetaIndexMap.get(field);
     }
 
     public Class<? extends Entity> getEntityClassById(int id) {
-        if (parentMapping != null) {
-            Class<? extends Entity> clazz = parentMapping.getEntityClassById(id);
+        if (this.parentMapping != null) {
+            Class<? extends Entity> clazz = this.parentMapping.getEntityClassById(id);
             if (clazz != null) {
                 return clazz;
             }
         }
-        if (entityIdClassMap == null) {
-            return null;
-        }
-        return entityIdClassMap.get(id);
+        return this.entityIdClassMap.get(id);
     }
 
     public Dimension getDimensionByIdentifier(String identifier) {
-        if (parentMapping != null) {
-            Dimension dimension = parentMapping.getDimensionByIdentifier(identifier);
+        if (this.parentMapping != null) {
+            Dimension dimension = this.parentMapping.getDimensionByIdentifier(identifier);
             if (dimension != null) {
                 return dimension;
             }
         }
         String[] split = identifier.split(":", 2);
-        if (dimensionIdentifierMap.containsKey(split[0]) && dimensionIdentifierMap.get(split[0]).containsKey(split[1])) {
-            return dimensionIdentifierMap.get(split[0]).get(split[1]);
+        if (this.dimensionIdentifierMap.containsKey(split[0]) && this.dimensionIdentifierMap.get(split[0]).containsKey(split[1])) {
+            return this.dimensionIdentifierMap.get(split[0]).get(split[1]);
         }
         return null;
     }
 
     public void setDimensions(HashMap<String, HashBiMap<String, Dimension>> dimensions) {
-        dimensionIdentifierMap = dimensions;
+        this.dimensionIdentifierMap = dimensions;
     }
 
     public Item getItemByLegacy(int itemId, int metaData) {
@@ -287,23 +298,22 @@ public class VersionMapping {
         return item;
     }
 
-
     public void load(Mappings type, String mod, @Nullable JsonObject data, Version version) {
         switch (type) {
             case REGISTRIES -> {
                 if (!version.isFlattened() && version.getVersionId() != ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
                     // clone all values
-                    itemMap = Versions.PRE_FLATTENING_MAPPING.itemMap;
-                    enchantmentMap = Versions.PRE_FLATTENING_MAPPING.enchantmentMap;
-                    statisticIdMap = Versions.PRE_FLATTENING_MAPPING.statisticIdMap;
-                    statisticIdentifierMap = Versions.PRE_FLATTENING_MAPPING.statisticIdentifierMap;
-                    blockIdMap = Versions.PRE_FLATTENING_MAPPING.blockIdMap;
-                    motiveIdMap = Versions.PRE_FLATTENING_MAPPING.motiveIdMap;
-                    motiveIdentifierMap = Versions.PRE_FLATTENING_MAPPING.motiveIdentifierMap;
-                    particleIdMap = Versions.PRE_FLATTENING_MAPPING.particleIdMap;
-                    particleIdentifierMap = Versions.PRE_FLATTENING_MAPPING.particleIdentifierMap;
-                    mobEffectMap = Versions.PRE_FLATTENING_MAPPING.mobEffectMap;
-                    dimensionMap = Versions.PRE_FLATTENING_MAPPING.dimensionMap;
+                    this.itemMap = Versions.PRE_FLATTENING_MAPPING.itemMap;
+                    this.enchantmentMap = Versions.PRE_FLATTENING_MAPPING.enchantmentMap;
+                    this.statisticIdMap = Versions.PRE_FLATTENING_MAPPING.statisticIdMap;
+                    this.statisticIdentifierMap = Versions.PRE_FLATTENING_MAPPING.statisticIdentifierMap;
+                    this.blockIdMap = Versions.PRE_FLATTENING_MAPPING.blockIdMap;
+                    this.motiveIdMap = Versions.PRE_FLATTENING_MAPPING.motiveIdMap;
+                    this.motiveIdentifierMap = Versions.PRE_FLATTENING_MAPPING.motiveIdentifierMap;
+                    this.particleIdMap = Versions.PRE_FLATTENING_MAPPING.particleIdMap;
+                    this.particleIdentifierMap = Versions.PRE_FLATTENING_MAPPING.particleIdentifierMap;
+                    this.mobEffectMap = Versions.PRE_FLATTENING_MAPPING.mobEffectMap;
+                    this.dimensionMap = Versions.PRE_FLATTENING_MAPPING.dimensionMap;
                     break;
                 }
 
@@ -323,93 +333,157 @@ public class VersionMapping {
                             itemId |= identifierJSON.get("meta").getAsInt();
                         }
                     }
-                    itemMap.put(itemId, item);
+                    this.itemMap.put(itemId, item);
                 }
                 JsonObject enchantmentJson = data.getAsJsonObject("enchantment").getAsJsonObject("entries");
                 for (String identifier : enchantmentJson.keySet()) {
                     Enchantment enchantment = new Enchantment(mod, identifier);
-                    enchantmentMap.put(enchantmentJson.getAsJsonObject(identifier).get("id").getAsInt(), enchantment);
+                    this.enchantmentMap.put(enchantmentJson.getAsJsonObject(identifier).get("id").getAsInt(), enchantment);
                 }
                 JsonObject statisticJson = data.getAsJsonObject("custom_stat").getAsJsonObject("entries");
                 for (String identifier : statisticJson.keySet()) {
                     Statistic statistic = new Statistic(mod, identifier);
                     if (statisticJson.getAsJsonObject(identifier).has("id")) {
-                        statisticIdMap.put(statisticJson.getAsJsonObject(identifier).get("id").getAsInt(), statistic);
+                        this.statisticIdMap.put(statisticJson.getAsJsonObject(identifier).get("id").getAsInt(), statistic);
                     }
-                    statisticIdentifierMap.put(identifier, statistic);
+                    this.statisticIdentifierMap.put(identifier, statistic);
                 }
                 JsonObject blockIdJson = data.getAsJsonObject("block").getAsJsonObject("entries");
                 for (String identifier : blockIdJson.keySet()) {
                     BlockId blockId = new BlockId(mod, identifier);
-                    blockIdMap.put(blockIdJson.getAsJsonObject(identifier).get("id").getAsInt(), blockId);
+                    this.blockIdMap.put(blockIdJson.getAsJsonObject(identifier).get("id").getAsInt(), blockId);
                 }
                 JsonObject motiveJson = data.getAsJsonObject("motive").getAsJsonObject("entries");
                 for (String identifier : motiveJson.keySet()) {
                     Motive motive = new Motive(mod, identifier);
                     if (motiveJson.getAsJsonObject(identifier).has("id")) {
-                        motiveIdMap.put(motiveJson.getAsJsonObject(identifier).get("id").getAsInt(), motive);
+                        this.motiveIdMap.put(motiveJson.getAsJsonObject(identifier).get("id").getAsInt(), motive);
                     }
-                    motiveIdentifierMap.put(identifier, motive);
+                    this.motiveIdentifierMap.put(identifier, motive);
                 }
                 JsonObject particleJson = data.getAsJsonObject("particle_type").getAsJsonObject("entries");
                 for (String identifier : particleJson.keySet()) {
                     Particle particle = new Particle(mod, identifier);
                     if (particleJson.getAsJsonObject(identifier).has("id")) {
-                        particleIdMap.put(particleJson.getAsJsonObject(identifier).get("id").getAsInt(), particle);
+                        this.particleIdMap.put(particleJson.getAsJsonObject(identifier).get("id").getAsInt(), particle);
                     }
-                    particleIdentifierMap.put(identifier, particle);
+                    this.particleIdentifierMap.put(identifier, particle);
                 }
                 JsonObject mobEffectJson = data.getAsJsonObject("mob_effect").getAsJsonObject("entries");
                 for (String identifier : mobEffectJson.keySet()) {
                     MobEffect mobEffect = new MobEffect(mod, identifier);
-                    mobEffectMap.put(mobEffectJson.getAsJsonObject(identifier).get("id").getAsInt(), mobEffect);
+                    this.mobEffectMap.put(mobEffectJson.getAsJsonObject(identifier).get("id").getAsInt(), mobEffect);
                 }
                 if (data.has("dimension_type")) {
-                    dimensionMap = HashBiMap.create();
+                    this.dimensionMap = HashBiMap.create();
                     JsonObject dimensionJson = data.getAsJsonObject("dimension_type").getAsJsonObject("entries");
                     for (String identifier : dimensionJson.keySet()) {
                         Dimension dimension = new Dimension(mod, identifier, dimensionJson.getAsJsonObject(identifier).get("has_skylight").getAsBoolean());
-                        dimensionMap.put(dimensionJson.getAsJsonObject(identifier).get("id").getAsInt(), dimension);
+                        this.dimensionMap.put(dimensionJson.getAsJsonObject(identifier).get("id").getAsInt(), dimension);
                     }
                 }
             }
             case BLOCKS -> {
                 if (!version.isFlattened() && version.getVersionId() != ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
                     // clone all values
-                    blockMap = Versions.PRE_FLATTENING_MAPPING.blockMap;
+                    this.blockMap = Versions.PRE_FLATTENING_MAPPING.blockMap;
                     break;
                 }
 
                 if (data == null) {
                     break;
                 }
-                blockMap = Blocks.load(mod, data, !version.isFlattened());
+
+                for (String identifierName : data.keySet()) {
+                    JsonObject identifierJSON = data.getAsJsonObject(identifierName);
+                    JsonArray statesArray = identifierJSON.getAsJsonArray("states");
+                    for (int i = 0; i < statesArray.size(); i++) {
+                        JsonObject statesJSON = statesArray.get(i).getAsJsonObject();
+                        Block block;
+                        if (statesJSON.has("properties")) {
+                            // properties are optional
+                            JsonObject propertiesJSON = statesJSON.getAsJsonObject("properties");
+                            BlockRotations rotation = BlockRotations.NONE;
+                            if (propertiesJSON.has("facing")) {
+                                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("facing").getAsString());
+                                propertiesJSON.remove("facing");
+                            } else if (propertiesJSON.has("rotation")) {
+                                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("rotation").getAsString());
+                                propertiesJSON.remove("rotation");
+                            } else if (propertiesJSON.has("orientation")) {
+                                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("orientation").getAsString());
+                                propertiesJSON.remove("orientation");
+                            } else if (propertiesJSON.has("axis")) {
+                                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("axis").getAsString());
+                                propertiesJSON.remove("axis");
+                            }
+
+                            HashSet<BlockProperties> properties = new HashSet<>();
+                            for (String propertyName : propertiesJSON.keySet()) {
+                                if (StaticConfiguration.DEBUG_MODE) {
+                                    if (BlockProperties.PROPERTIES_MAPPING.get(propertyName) == null) {
+                                        throw new RuntimeException(String.format("Unknown block property: %s (identifier=%s)", propertyName, identifierName));
+                                    }
+                                    if (BlockProperties.PROPERTIES_MAPPING.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()) == null) {
+                                        throw new RuntimeException(String.format("Unknown block property: %s -> %s (identifier=%s)", propertyName, propertiesJSON.get(propertyName).getAsString(), identifierName));
+                                    }
+                                }
+                                properties.add(BlockProperties.PROPERTIES_MAPPING.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()));
+                            }
+
+                            block = new Block(mod, identifierName, properties, rotation);
+
+                            if (version.isFlattened()) {
+                                // map block id
+                                this.blockIdMap.get(this.blockIdMap.inverse().get(new BlockId(block))).getBlocks().add(block);
+                            }
+                        } else {
+                            // no properties, directly add block
+                            block = new Block(mod, identifierName);
+                        }
+                        int blockNumericId = getBlockId(statesJSON, !version.isFlattened());
+                        if (StaticConfiguration.DEBUG_MODE) {
+                            checkAndCrashIfBlockIsIn(blockNumericId, identifierName, this.blockMap);
+                        }
+
+                        if (!version.isFlattened()) {
+                            // map block id
+                            BlockId blockId = this.blockIdMap.get(this.blockIdMap.inverse().get(new BlockId(block)));
+                            if (blockId == null) {
+                                blockId = new BlockId(block);
+                                this.blockIdMap.put(blockNumericId, blockId);
+                            }
+                            blockId.getBlocks().add(block);
+                        }
+                        this.blockMap.put(blockNumericId, block);
+                    }
+                }
             }
             case ENTITIES -> {
                 if (data == null) {
                     break;
                 }
                 for (String identifier : data.keySet()) {
-                    if (entityMetaIndexOffsetParentMapping.containsKey(identifier)) {
+                    if (this.entityMetaIndexOffsetParentMapping.containsKey(identifier)) {
                         continue;
                     }
                     loadEntityMapping(mod, identifier, data);
                 }
             }
         }
-        loaded.add(type);
+        this.loaded.add(type);
     }
 
     private void loadEntityMapping(String mod, String identifier, JsonObject fullModData) {
         JsonObject data = fullModData.getAsJsonObject(identifier);
-        Class<? extends Entity> clazz = EntityClassMappings.getByIdentifier(mod, identifier);
+        Class<? extends Entity> clazz = EntityClassMappings.INSTANCE.getByIdentifier(mod, identifier);
         EntityInformation information = EntityInformation.deserialize(mod, identifier, data);
         if (information != null) {
             // not abstract, has id and attributes
-            entityInformationMap.put(clazz, information);
+            this.entityInformationMap.put(clazz, information);
 
             if (data.has("id")) {
-                entityIdClassMap.put(data.get("id").getAsInt(), clazz);
+                this.entityIdClassMap.put(data.get("id").getAsInt(), clazz);
             }
         }
         String parent = null;
@@ -418,12 +492,12 @@ public class VersionMapping {
             parent = data.get("extends").getAsString();
 
             // check if parent has been loaded
-            Pair<String, Integer> metaParent = entityMetaIndexOffsetParentMapping.get(parent);
+            Pair<String, Integer> metaParent = this.entityMetaIndexOffsetParentMapping.get(parent);
             if (metaParent == null) {
                 loadEntityMapping(mod, parent, fullModData);
             }
 
-            metaDataIndexOffset += entityMetaIndexOffsetParentMapping.get(parent).getValue();
+            metaDataIndexOffset += this.entityMetaIndexOffsetParentMapping.get(parent).getValue();
         }
         // meta data index
         if (data.has("data")) {
@@ -431,45 +505,45 @@ public class VersionMapping {
             if (metaDataJson instanceof JsonArray metaDataJsonArray) {
                 for (JsonElement jsonElement : metaDataJsonArray) {
                     String field = jsonElement.getAsString();
-                    entityMetaIndexMap.put(EntityMetaDataFields.valueOf(field), metaDataIndexOffset++);
+                    this.entityMetaIndexMap.put(EntityMetaDataFields.valueOf(field), metaDataIndexOffset++);
                 }
             } else if (metaDataJson instanceof JsonObject metaDataJsonObject) {
                 for (String key : metaDataJsonObject.keySet()) {
-                    entityMetaIndexMap.put(EntityMetaDataFields.valueOf(key), metaDataJsonObject.get(key).getAsInt());
+                    this.entityMetaIndexMap.put(EntityMetaDataFields.valueOf(key), metaDataJsonObject.get(key).getAsInt());
                     metaDataIndexOffset++;
                 }
             } else {
                 throw new RuntimeException("entities.json is invalid");
             }
         }
-        entityMetaIndexOffsetParentMapping.put(identifier, new Pair<>(parent, metaDataIndexOffset));
+        this.entityMetaIndexOffsetParentMapping.put(identifier, new Pair<>(parent, metaDataIndexOffset));
     }
 
     public void unload() {
-        motiveIdentifierMap.clear();
-        particleIdentifierMap.clear();
-        statisticIdentifierMap.clear();
-        itemMap.clear();
-        motiveIdMap.clear();
-        mobEffectMap.clear();
-        dimensionMap.clear();
-        blockMap.clear();
-        blockIdMap.clear();
-        enchantmentMap.clear();
-        particleIdMap.clear();
-        statisticIdMap.clear();
-        entityInformationMap.clear();
-        entityMetaIndexMap.clear();
-        entityMetaIndexOffsetParentMapping.clear();
-        entityIdClassMap.clear();
+        this.motiveIdentifierMap.clear();
+        this.particleIdentifierMap.clear();
+        this.statisticIdentifierMap.clear();
+        this.itemMap.clear();
+        this.motiveIdMap.clear();
+        this.mobEffectMap.clear();
+        this.dimensionMap.clear();
+        this.blockMap.clear();
+        this.blockIdMap.clear();
+        this.enchantmentMap.clear();
+        this.particleIdMap.clear();
+        this.statisticIdMap.clear();
+        this.entityInformationMap.clear();
+        this.entityMetaIndexMap.clear();
+        this.entityMetaIndexOffsetParentMapping.clear();
+        this.entityIdClassMap.clear();
     }
 
     public boolean isFullyLoaded() {
-        if (loaded.size() == Mappings.values().length) {
+        if (this.loaded.size() == Mappings.values().length) {
             return true;
         }
         for (Mappings mapping : Mappings.values()) {
-            if (!loaded.contains(mapping)) {
+            if (!this.loaded.contains(mapping)) {
                 return false;
             }
         }
@@ -477,7 +551,7 @@ public class VersionMapping {
     }
 
     public Version getVersion() {
-        return version;
+        return this.version;
     }
 
     public void setVersion(Version version) {
@@ -485,7 +559,7 @@ public class VersionMapping {
     }
 
     public VersionMapping getParentMapping() {
-        return parentMapping;
+        return this.parentMapping;
     }
 
     public void setParentMapping(VersionMapping parentMapping) {
@@ -493,6 +567,61 @@ public class VersionMapping {
     }
 
     public HashSet<Mappings> getAvailableFeatures() {
-        return loaded;
+        return this.loaded;
     }
+
+    public boolean doesItemExist(ModIdentifier identifier) {
+        if (this.parentMapping != null) {
+            if (this.parentMapping.doesItemExist(identifier)) {
+                return true;
+            }
+        }
+        return this.itemMap.containsValue(identifier);
+    }
+
+    public boolean doesBlockExist(ModIdentifier identifier) {
+        if (this.parentMapping != null) {
+            if (this.parentMapping.doesBlockExist(identifier)) {
+                return true;
+            }
+        }
+        return this.blockIdMap.containsValue(identifier);
+    }
+
+    public boolean doesEnchantmentExist(ModIdentifier identifier) {
+        if (this.parentMapping != null) {
+            if (this.parentMapping.doesEnchantmentExist(identifier)) {
+                return true;
+            }
+        }
+        return this.enchantmentMap.containsValue(identifier);
+    }
+
+    public boolean doesMobEffectExist(ModIdentifier identifier) {
+        if (this.parentMapping != null) {
+            if (this.parentMapping.doesMobEffectExist(identifier)) {
+                return true;
+            }
+        }
+        return this.mobEffectMap.containsValue(identifier);
+    }
+
+    public boolean doesDimensionExist(ModIdentifier identifier) {
+        if (this.parentMapping != null) {
+            if (this.parentMapping.doesDimensionExist(identifier)) {
+                return true;
+            }
+        }
+        return this.dimensionMap.containsValue(identifier);
+    }
+
+    public boolean doesParticleExist(ModIdentifier identifier) {
+        if (this.parentMapping != null) {
+            if (this.parentMapping.doesParticleExist(identifier)) {
+                return true;
+            }
+        }
+        return this.particleIdMap.containsValue(identifier);
+    }
+
 }

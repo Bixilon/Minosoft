@@ -29,10 +29,10 @@ public class StatusPongEvent extends ConnectionEvent {
 
     public StatusPongEvent(Connection connection, PacketStatusPong pkg) {
         super(connection);
-        this.pongId = pkg.getID();
+        this.pongId = pkg.getPingId();
     }
 
     public long getPongId() {
-        return pongId;
+        return this.pongId;
     }
 }

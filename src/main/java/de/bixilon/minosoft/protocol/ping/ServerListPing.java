@@ -32,58 +32,58 @@ public class ServerListPing {
 
     public ServerListPing(JsonObject json) {
         int protocolId = json.getAsJsonObject("version").get("protocol").getAsInt();
-        if (protocolId == -1) {
+        if (protocolId == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
             // Server did not send us a version, trying 1.8
             this.protocolId = ProtocolDefinition.FALLBACK_PROTOCOL_VERSION_ID;
-            Log.warn(String.format("Server sent us a illegal version id (protocolId=%d). Using 1.8.9.", protocolId));
+            Log.warn(String.format("Server sent us an illegal version id (protocolId=%d). Using 1.8.9.", protocolId));
         } else {
             this.protocolId = protocolId;
         }
-        playersOnline = json.getAsJsonObject("players").get("online").getAsInt();
-        maxPlayers = json.getAsJsonObject("players").get("max").getAsInt();
+        this.playersOnline = json.getAsJsonObject("players").get("online").getAsInt();
+        this.maxPlayers = json.getAsJsonObject("players").get("max").getAsInt();
         if (json.has("favicon")) {
-            favicon = Base64.getDecoder().decode(json.get("favicon").getAsString().replace("data:image/png;base64,", "").replace("\n", ""));
+            this.favicon = Base64.getDecoder().decode(json.get("favicon").getAsString().replace("data:image/png;base64,", "").replace("\n", ""));
         }
 
         if (json.get("description").isJsonPrimitive()) {
-            motd = ChatComponent.fromString(json.get("description").getAsString());
+            this.motd = ChatComponent.valueOf(json.get("description").getAsString());
         } else {
-            motd = new BaseComponent(json.getAsJsonObject("description"));
+            this.motd = new BaseComponent(json.getAsJsonObject("description"));
         }
-        serverBrand = json.getAsJsonObject("version").get("name").getAsString();
+        this.serverBrand = json.getAsJsonObject("version").get("name").getAsString();
 
         if (json.has("modinfo") && json.getAsJsonObject("modinfo").has("type") && json.getAsJsonObject("modinfo").get("type").getAsString().equals("FML")) {
-            serverModInfo = new ForgeModInfo(json.getAsJsonObject("modinfo"));
+            this.serverModInfo = new ForgeModInfo(json.getAsJsonObject("modinfo"));
         } else {
-            serverModInfo = new VanillaModInfo();
+            this.serverModInfo = new VanillaModInfo();
         }
     }
 
     public int getProtocolId() {
-        return protocolId;
+        return this.protocolId;
     }
 
     public int getPlayerOnline() {
-        return playersOnline;
+        return this.playersOnline;
     }
 
     public int getMaxPlayers() {
-        return maxPlayers;
+        return this.maxPlayers;
     }
 
     public byte[] getFavicon() {
-        return favicon;
+        return this.favicon;
     }
 
     public ChatComponent getMotd() {
-        return motd;
+        return this.motd;
     }
 
     public String getServerBrand() {
-        return serverBrand;
+        return this.serverBrand;
     }
 
     public ServerModInfo getServerModInfo() {
-        return serverModInfo;
+        return this.serverModInfo;
     }
 }

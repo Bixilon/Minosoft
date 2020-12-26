@@ -16,40 +16,35 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketCraftRecipeResponse implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W47A;
+
+public class PacketCraftRecipeResponse extends ClientboundPacket {
     byte windowId;
     int recipeId;
     String recipeName;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 346) { //ToDo: was this really in 346?
-            windowId = buffer.readByte();
-            recipeId = buffer.readVarInt();
-            return true;
+        this.windowId = buffer.readByte();
+        if (buffer.getVersionId() < V_17W47A) { // ToDo: was this really in 346?
+            this.recipeId = buffer.readVarInt();
+        } else {
+            this.recipeName = buffer.readString();
         }
-        windowId = buffer.readByte();
-        recipeName = buffer.readString();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received Crafting recipe response (windowId=%d, recipeId=%d)", windowId, recipeId));
+        Log.protocol(String.format("[IN] Received Crafting recipe response (windowId=%d, recipeId=%d)", this.windowId, this.recipeId));
     }
 
     public byte getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     public int getRecipeId() {
-        return recipeId;
+        return this.recipeId;
     }
 }

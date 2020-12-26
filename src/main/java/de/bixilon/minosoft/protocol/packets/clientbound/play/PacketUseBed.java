@@ -17,38 +17,34 @@ import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketUseBed implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+
+public class PacketUseBed extends ClientboundPacket {
     int entityId;
     BlockPosition position;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        entityId = buffer.readInt();
-        if (buffer.getVersionId() < 7) {
-            position = buffer.readBlockPosition();
+        this.entityId = buffer.readInt();
+        if (buffer.getVersionId() < V_14W04A) {
+            this.position = buffer.readBlockPositionByte();
         } else {
-            position = buffer.readPosition();
+            this.position = buffer.readPosition();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity used bed at %s (entityId=%d)", position, entityId));
+        Log.protocol(String.format("[IN] Entity used bed at %s (entityId=%d)", this.position, this.entityId));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 }

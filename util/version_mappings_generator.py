@@ -60,7 +60,7 @@ def downloadAndReplace(url, filename, destination):
         file.write(json)
 
 
-def getMinsoftEntityFieldNames(obfuscationMapLines, clazz, obfuscatedFields):
+def getMinosoftEntityFieldNames(obfuscationMapLines, clazz, obfuscatedFields):
     classLineStart = -1
     for i in range(0, len(obfuscationMapLines)):
         if obfuscationMapLines[i].endswith(" -> %s:" % clazz):
@@ -198,7 +198,7 @@ for version in VERSION_MANIFEST["versions"]:
                     entity = {}
 
                     # generate (deobfuscated) className
-                    entityOriginalClassName, unused = getMinsoftEntityFieldNames(obfuscationMapLines, burgerEntityData["class"], [])
+                    entityOriginalClassName, unused = getMinosoftEntityFieldNames(obfuscationMapLines, burgerEntityData["class"], [])
 
                     # check if entity was already parsed
                     if entityOriginalClassName in entities:
@@ -236,7 +236,7 @@ for version in VERSION_MANIFEST["versions"]:
                         for entry in metadataEntry["data"]:
                             metadataObfuscatedFields.append(entry["field"])
 
-                        metadataEntryOriginalClassName, metadataOriginalFields = getMinsoftEntityFieldNames(obfuscationMapLines, metadataEntry["class"], metadataObfuscatedFields)
+                        metadataEntryOriginalClassName, metadataOriginalFields = getMinosoftEntityFieldNames(obfuscationMapLines, metadataEntry["class"], metadataObfuscatedFields)
 
                         metaDataEntityData = {}
 

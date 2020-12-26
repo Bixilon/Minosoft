@@ -16,42 +16,37 @@ package de.bixilon.minosoft.protocol.packets.clientbound.login;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.Util;
 
 import java.util.UUID;
 
-public class PacketLoginSuccess implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W12A;
+
+public class PacketLoginSuccess extends ClientboundPacket {
     UUID uuid;
     String username;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 707) {
-            uuid = Util.getUUIDFromString(buffer.readString());
-            username = buffer.readString();
-            return true;
+        if (buffer.getVersionId() < V_20W12A) {
+            this.uuid = Util.getUUIDFromString(buffer.readString());
+        } else {
+            this.uuid = buffer.readUUID();
         }
-        uuid = buffer.readUUID();
-        username = buffer.readString();
+        this.username = buffer.readString();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving login success packet (username=%s, UUID=%s)", username, uuid));
+        Log.protocol(String.format("[IN] Receiving login success packet (username=%s, uuid=%s)", this.username, this.uuid));
     }
 
     public UUID getUUID() {
-        return uuid;
+        return this.uuid;
     }
 
     public String getUsername() {
-        return username;
+        return this.username;
     }
 }

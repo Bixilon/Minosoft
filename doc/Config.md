@@ -55,18 +55,18 @@ There is a config file located in:
 ```
 
 ## General
- - `version`: The current version of the config. Used for migration between versions. A new version will be tagged, once a new release of minosoft is there, and the format of the config changed.
- - `log-level`: Self explaining, valid log levels are defined in [LogLevels.java](/src/main/java/de/bixilon/minosoft/logging/LogLevels.java).
- - `language`: Self explaining. All values are valid, if the specific language cannot be loaded (or specific strings are not available), `en_US` will be used (as fallback). 
+ - `version` The current version of the config. Used for migration between versions. A new version will be tagged, once a new release of minosoft is there, and the format of the config changed.
+ - `log-level` Self explaining, valid log levels are defined in [LogLevels.java](/src/main/java/de/bixilon/minosoft/logging/LogLevels.java).
+ - `language` Self explaining. All values are valid, if the specific language cannot be loaded (or specific strings are not available), `en_US` will be used (as fallback). 
 
 ## Network
- - `fake-network-brand`: Minosoft send its brand to the server. If true, minosoft will say, that we use standard `vanilla`.
- - `show-lan-servers`: If true, minosoft will listen for lan servers (singleplayer and share to LAN) and show them in the server list.
+ - `fake-network-brand` Minosoft send its brand to the server. If true, minosoft will say, that we use standard `vanilla`.
+ - `show-lan-servers` If true, minosoft will listen for lan servers (singleplayer and share to LAN) and show them in the server list.
 
 ## Accounts
- - `selected`: userId of the current selected account, can be empty
- - `client-token`: A random uuid (generated at first startup), used as unique identifier for all authentication communication with mojang.
- - `entries`: A account array:
+ - `selected` userId of the current selected account, can be empty
+ - `client-token` A random uuid (generated at first startup), used as unique identifier for all authentication communication with mojang.
+ - `entries` An account array:
  
 ### Account
 ```json
@@ -82,7 +82,7 @@ There is a config file located in:
 ```
 
 ## Servers
- - `entries`: A server array:
+ - `entries` A server array:
  
 ### Server
 ```json
@@ -97,9 +97,9 @@ There is a config file located in:
 }
 ```
 ## Download
- - `url`:
-   - `mappings`: URL for resources. For example mappings. The data is in a folder starting with the first digs of the hash, followed by the hash
+ - `url`
+   - `mappings` URL for resources. For example mappings. The data is in a folder starting with the first digs of the hash, followed by the hash
                  The URL must contain .tar.gz files named after minecraft versions (e.g. `0a/0aeb75059ef955d4cf2b9823d15775d0eacb13d5.tar.gz`). 
 
 ## Debug
- - `verify-assets`: If true, minosoft will check the sha1 of every asset. Must be false, if you want to modify assets. (Should be true, can be false, if you want to improve the start time)
+ - `verify-assets` If true, minosoft will check the sha1 of every asset. Must be false, if you want to modify assets. (Should be true, can be false, if you want to improve the start time)

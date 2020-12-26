@@ -15,15 +15,12 @@ package de.bixilon.minosoft.modding.loading;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.util.Util;
 
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ModInfo {
-    final UUID uuid;
-    final int versionId;
     final String versionName;
     final String name;
     final String[] authors;
@@ -32,20 +29,20 @@ public class ModInfo {
     final String mainClass;
     final HashSet<ModDependency> hardDependencies = new HashSet<>();
     final HashSet<ModDependency> softDependencies = new HashSet<>();
+    private final ModVersionIdentifier modVersionIdentifier;
     LoadingInfo loadingInfo;
 
     public ModInfo(JsonObject json) throws ModLoadingException {
-        this.uuid = Util.getUUIDFromString(json.get("uuid").getAsString());
-        this.versionId = json.get("versionId").getAsInt();
+        this.modVersionIdentifier = ModVersionIdentifier.serialize(json);
         this.versionName = json.get("versionName").getAsString();
         this.name = json.get("name").getAsString();
         JsonArray authors = json.get("authors").getAsJsonArray();
         this.authors = new String[authors.size()];
         AtomicInteger i = new AtomicInteger();
         authors.forEach((authorElement) -> this.authors[i.getAndIncrement()] = authorElement.getAsString());
-        moddingAPIVersion = json.get("moddingAPIVersion").getAsInt();
-        if (moddingAPIVersion > ModLoader.CURRENT_MODDING_API_VERSION) {
-            throw new ModLoadingException(String.format("Mod was written with for a newer version of minosoft (moddingAPIVersion=%d, expected=%d)", moddingAPIVersion, ModLoader.CURRENT_MODDING_API_VERSION));
+        this.moddingAPIVersion = json.get("moddingAPIVersion").getAsInt();
+        if (this.moddingAPIVersion > ModLoader.CURRENT_MODDING_API_VERSION) {
+            throw new ModLoadingException(String.format("Mod was written with for a newer version of minosoft (moddingAPIVersion=%d, expected=%d)", this.moddingAPIVersion, ModLoader.CURRENT_MODDING_API_VERSION));
         }
         this.identifier = json.get("identifier").getAsString();
         this.mainClass = json.get("mainClass").getAsString();
@@ -59,68 +56,62 @@ public class ModInfo {
         if (json.has("dependencies")) {
             JsonObject dependencies = json.getAsJsonObject("dependencies");
             if (dependencies.has("hard")) {
-                hardDependencies.addAll(ModDependency.serializeDependencyArray(dependencies.getAsJsonArray("hard")));
+                this.hardDependencies.addAll(ModDependency.serializeDependencyArray(dependencies.getAsJsonArray("hard")));
             }
             if (dependencies.has("soft")) {
-                softDependencies.addAll(ModDependency.serializeDependencyArray(dependencies.getAsJsonArray("soft")));
+                this.softDependencies.addAll(ModDependency.serializeDependencyArray(dependencies.getAsJsonArray("soft")));
             }
         }
     }
 
     public String[] getAuthors() {
-        return authors;
+        return this.authors;
     }
 
     public String getIdentifier() {
-        return identifier;
+        return this.identifier;
     }
 
     public String getMainClass() {
-        return mainClass;
+        return this.mainClass;
     }
 
     public LoadingInfo getLoadingInfo() {
-        return loadingInfo;
+        return this.loadingInfo;
     }
 
+    @Deprecated
     public UUID getUUID() {
-        return uuid;
+        return this.modVersionIdentifier.getUUID();
     }
 
+    @Deprecated
     public int getVersionId() {
-        return versionId;
+        return this.modVersionIdentifier.getVersionId();
+    }
+
+    public ModVersionIdentifier getModIdentifier() {
+        return this.modVersionIdentifier;
     }
 
     public String getVersionName() {
-        return versionName;
+        return this.versionName;
     }
 
     public String getName() {
-        return name;
+        return this.name;
+    }
+
+    public HashSet<ModDependency> getHardDependencies() {
+        return this.hardDependencies;
+    }
+
+    public HashSet<ModDependency> getSoftDependencies() {
+        return this.softDependencies;
     }
 
     @Override
     public String toString() {
         return String.format("name=\"%s\", uuid=%s, versionName=\"%s\", versionId=%d", getName(), getUUID(), getVersionName(), getVersionId());
-    }
-
-    @Override
-    public int hashCode() {
-        return uuid.hashCode() * versionId;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj)) {
-            return true;
-        }
-        if (this.hashCode() != obj.hashCode()) {
-            return false;
-        }
-        ModInfo their = (ModInfo) obj;
-        return getUUID().equals(their.getUUID()) && getVersionId() == their.getVersionId();
     }
 }

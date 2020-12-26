@@ -17,9 +17,8 @@ import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketFacePlayer implements ClientboundPacket {
+public class PacketFacePlayer extends ClientboundPacket {
     PlayerFaces face;
     Location location;
     int entityId = -1;
@@ -27,48 +26,45 @@ public class PacketFacePlayer implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        face = PlayerFaces.byId(buffer.readVarInt());
-        location = buffer.readLocation();
+        this.face = PlayerFaces.byId(buffer.readVarInt());
+        this.location = buffer.readLocation();
         if (buffer.readBoolean()) {
             // entity present
-            entityId = buffer.readVarInt();
-            entityFace = PlayerFaces.byId(buffer.readVarInt());
+            this.entityId = buffer.readVarInt();
+            this.entityFace = PlayerFaces.byId(buffer.readVarInt());
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received face player packet (face=%s, location=%s, entityId=%d, entityFace=%s)", face, location, entityId, entityFace));
+        Log.protocol(String.format("[IN] Received face player packet (face=%s, location=%s, entityId=%d, entityFace=%s)", this.face, this.location, this.entityId, this.entityFace));
     }
 
     public PlayerFaces getFace() {
-        return face;
+        return this.face;
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public PlayerFaces getEntityFace() {
-        return entityFace;
+        return this.entityFace;
     }
 
     public enum PlayerFaces {
         FEET,
         EYES;
 
+        private static final PlayerFaces[] PLAYER_FACES = values();
+
         public static PlayerFaces byId(int id) {
-            return values()[id];
+            return PLAYER_FACES[id];
         }
     }
 }

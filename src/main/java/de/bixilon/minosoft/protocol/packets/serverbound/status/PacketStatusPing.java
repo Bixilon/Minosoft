@@ -38,12 +38,12 @@ public class PacketStatusPing implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.STATUS_PING);
-        buffer.writeLong(id);
+        buffer.writeLong(this.id);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending ping packet (%s)", id));
+        Log.protocol(String.format("[OUT] Sending ping packet (%s)", this.id));
     }
 }

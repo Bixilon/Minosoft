@@ -41,10 +41,10 @@ public class MultiBlockChangeEvent extends ConnectionEvent {
     }
 
     public HashMap<InChunkLocation, Block> getBlocks() {
-        return blocks;
+        return this.blocks;
     }
 
     public ChunkLocation getLocation() {
-        return location;
+        return this.location;
     }
 }

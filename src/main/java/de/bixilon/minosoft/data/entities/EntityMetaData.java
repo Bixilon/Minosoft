@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.entities;
 
 import de.bixilon.minosoft.data.Directions;
-import de.bixilon.minosoft.data.MapSet;
 import de.bixilon.minosoft.data.Vector;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.data.inventory.Slot;
@@ -29,12 +28,15 @@ import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class EntityMetaData {
 
-    final MetaDataHashMap sets = new MetaDataHashMap();
-    final Connection connection;
+    private final MetaDataHashMap sets = new MetaDataHashMap();
+    private final Connection connection;
 
     public EntityMetaData(Connection connection) {
         this.connection = connection;
@@ -48,7 +50,7 @@ public class EntityMetaData {
             case INT -> buffer.readInt();
             case FLOAT -> buffer.readFloat();
             case STRING -> buffer.readString();
-            case CHAT -> buffer.readTextComponent();
+            case CHAT -> buffer.readChatComponent();
             case BOOLEAN -> buffer.readBoolean();
             case VECTOR -> new Vector(buffer.readInt(), buffer.readInt(), buffer.readInt());
             case SLOT -> buffer.readSlot();
@@ -56,7 +58,7 @@ public class EntityMetaData {
             case POSITION -> buffer.readPosition();
             case OPT_CHAT -> {
                 if (buffer.readBoolean()) {
-                    yield buffer.readTextComponent();
+                    yield buffer.readChatComponent();
                 }
                 yield null;
             }
@@ -90,42 +92,42 @@ public class EntityMetaData {
     }
 
     public MetaDataHashMap getSets() {
-        return sets;
+        return this.sets;
     }
 
     public enum EntityMetaDataValueTypes {
         BYTE(0),
-        SHORT(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(57, -1)}), // got removed in 1.9
-        INT(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(57, -1)}),
-        VAR_INT(new MapSet[]{new MapSet<>(57, 1)}),
-        FLOAT(new MapSet[]{new MapSet<>(0, 3), new MapSet<>(57, 2)}),
-        STRING(new MapSet[]{new MapSet<>(0, 4), new MapSet<>(57, 3)}),
-        CHAT(new MapSet[]{new MapSet<>(57, 4)}),
-        OPT_CHAT(new MapSet[]{new MapSet<>(346, 5)}), // ToDo: when where the 1.13 changes? in 346?
-        SLOT(new MapSet[]{new MapSet<>(0, 5), new MapSet<>(346, 6)}),
-        BOOLEAN(new MapSet[]{new MapSet<>(57, 6), new MapSet<>(346, 7)}),
-        VECTOR(new MapSet[]{new MapSet<>(0, 6), new MapSet<>(57, -1)}),
-        ROTATION(new MapSet[]{new MapSet<>(44, 7), new MapSet<>(346, 8)}),
-        POSITION(new MapSet[]{new MapSet<>(57, 8), new MapSet<>(346, 9)}),
-        OPT_POSITION(new MapSet[]{new MapSet<>(57, 9), new MapSet<>(346, 10)}),
-        DIRECTION(new MapSet[]{new MapSet<>(57, 10), new MapSet<>(346, 11)}),
-        OPT_UUID(new MapSet[]{new MapSet<>(57, 11), new MapSet<>(346, 12)}),
-        BLOCK_ID(new MapSet[]{new MapSet<>(67, 12), new MapSet<>(210, -1)}), // ToDo: test: 1.10 blockId replacement
-        OPT_BLOCK_ID(new MapSet[]{new MapSet<>(210, 12), new MapSet<>(346, 13)}),
-        NBT(new MapSet[]{new MapSet<>(318, 13), new MapSet<>(346, 14)}),
-        PARTICLE(new MapSet[]{new MapSet<>(346, 15)}),
-        VILLAGER_DATA(new MapSet[]{new MapSet<>(451, 16)}),
-        OPT_VAR_INT(new MapSet[]{new MapSet<>(459, 17)}),
-        POSE(new MapSet[]{new MapSet<>(461, 18)});
+        SHORT(Map.of(LOWEST_VERSION_SUPPORTED, 1, V_15W33C, -1)), // got removed in 1.9
+        INT(Map.of(LOWEST_VERSION_SUPPORTED, 2, V_15W33C, -1)),
+        VAR_INT(Map.of(V_15W33C, 1)),
+        FLOAT(Map.of(LOWEST_VERSION_SUPPORTED, 3, V_15W33C, 2)),
+        STRING(Map.of(LOWEST_VERSION_SUPPORTED, 4, V_15W33C, 3)),
+        CHAT(Map.of(V_15W33C, 4)),
+        OPT_CHAT(Map.of(V_17W47A, 5)), // ToDo: when where the 1.13 changes? in 346?
+        SLOT(Map.of(LOWEST_VERSION_SUPPORTED, 5, V_17W47A, 6)),
+        BOOLEAN(Map.of(V_15W33C, 6, V_17W47A, 7)),
+        VECTOR(Map.of(LOWEST_VERSION_SUPPORTED, 6, V_15W33C, -1)),
+        ROTATION(Map.of(V_1_8_PRE1, 7, V_17W47A, 8)),
+        POSITION(Map.of(V_15W33C, 8, V_17W47A, 9)),
+        OPT_POSITION(Map.of(V_15W33C, 9, V_17W47A, 10)),
+        DIRECTION(Map.of(V_15W33C, 10, V_17W47A, 11)),
+        OPT_UUID(Map.of(V_15W33C, 11, V_17W47A, 12)),
+        BLOCK_ID(Map.of(V_15W36A, 12, V_1_10_2, -1)), // ToDo: test: 1.10 blockId replacement
+        OPT_BLOCK_ID(Map.of(V_1_10_2, 12, V_17W47A, 13)),
+        NBT(Map.of(V_17W13A, 13, V_17W47A, 14)),
+        PARTICLE(Map.of(V_17W47A, 15)),
+        VILLAGER_DATA(Map.of(V_18W50A, 16)),
+        OPT_VAR_INT(Map.of(V_19W06A, 17)),
+        POSE(Map.of(V_19W08A, 18));
 
-        final VersionValueMap<Integer> valueMap;
+        private final VersionValueMap<Integer> valueMap;
 
-        EntityMetaDataValueTypes(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+        EntityMetaDataValueTypes(Map<Integer, Integer> values) {
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         EntityMetaDataValueTypes(int id) {
-            valueMap = new VersionValueMap<>(id);
+            this.valueMap = new VersionValueMap<>(Map.of(LOWEST_VERSION_SUPPORTED, id));
         }
 
         public static EntityMetaDataValueTypes byId(int id, int versionId) {
@@ -138,7 +140,7 @@ public class EntityMetaData {
         }
 
         public int getId(Integer versionId) {
-            Integer ret = valueMap.get(versionId);
+            Integer ret = this.valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }
@@ -204,8 +206,9 @@ public class EntityMetaData {
             return BitByte.isBitMask(getByte(field), bitMask);
         }
 
+        @SuppressWarnings("unchecked")
         public <K> K get(EntityMetaDataFields field) {
-            Integer index = connection.getMapping().getEntityMetaDataIndex(field);
+            Integer index = EntityMetaData.this.connection.getMapping().getEntityMetaDataIndex(field);
             if (index == null) {
                 // ups, index not found. Index not available in this version?, mappings broken or mappings not available
                 return field.getDefaultValue();
@@ -228,7 +231,7 @@ public class EntityMetaData {
         public ChatComponent getChatComponent(EntityMetaDataFields field) {
             Object object = get(field);
             if (object instanceof String string) {
-                return ChatComponent.fromString(string);
+                return ChatComponent.valueOf(string);
             }
             return (ChatComponent) object;
         }

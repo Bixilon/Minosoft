@@ -19,6 +19,9 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W50A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12_PRE6;
+
 public class PacketCraftingBookData implements ServerboundPacket {
     final BookDataStatus action;
 
@@ -34,8 +37,8 @@ public class PacketCraftingBookData implements ServerboundPacket {
     public PacketCraftingBookData(BookDataStatus action, int recipeId) {
         this.action = action;
         this.recipeId = recipeId;
-        craftingBookOpen = false;
-        craftingFilter = false;
+        this.craftingBookOpen = false;
+        this.craftingFilter = false;
     }
 
     public PacketCraftingBookData(BookDataStatus action, boolean craftingBookOpen, boolean craftingFilter) {
@@ -57,22 +60,22 @@ public class PacketCraftingBookData implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_RECIPE_BOOK_DATA);
-        if (buffer.getVersionId() < 333) {
-            buffer.writeInt(action.ordinal());
+        if (buffer.getVersionId() < V_1_12_PRE6) {
+            buffer.writeInt(this.action.ordinal());
         } else {
-            buffer.writeVarInt(action.ordinal());
+            buffer.writeVarInt(this.action.ordinal());
         }
 
-        switch (action) {
-            case DISPLAY_RECIPE -> buffer.writeVarInt(recipeId);
+        switch (this.action) {
+            case DISPLAY_RECIPE -> buffer.writeVarInt(this.recipeId);
             case CRAFTING_BOOK_STATUS -> {
-                buffer.writeBoolean(craftingBookOpen);
-                buffer.writeBoolean(craftingFilter);
-                if (buffer.getVersionId() >= 451) {
-                    buffer.writeBoolean(blastingBookOpen);
-                    buffer.writeBoolean(blastingFilter);
-                    buffer.writeBoolean(smokingBookOpen);
-                    buffer.writeBoolean(smokingFilter);
+                buffer.writeBoolean(this.craftingBookOpen);
+                buffer.writeBoolean(this.craftingFilter);
+                if (buffer.getVersionId() >= V_18W50A) {
+                    buffer.writeBoolean(this.blastingBookOpen);
+                    buffer.writeBoolean(this.blastingFilter);
+                    buffer.writeBoolean(this.smokingBookOpen);
+                    buffer.writeBoolean(this.smokingFilter);
                 }
             }
         }
@@ -81,9 +84,9 @@ public class PacketCraftingBookData implements ServerboundPacket {
 
     @Override
     public void log() {
-        switch (action) {
-            case DISPLAY_RECIPE -> Log.protocol(String.format("[OUT] Sending crafting book status (action=%s, recipeId=%d)", action, recipeId));
-            case CRAFTING_BOOK_STATUS -> Log.protocol(String.format("[OUT] Sending crafting book status (action=%s, craftingBookOpen=%s, craftingFilter=%s)", action, craftingBookOpen, craftingFilter));
+        switch (this.action) {
+            case DISPLAY_RECIPE -> Log.protocol(String.format("[OUT] Sending crafting book status (action=%s, recipeId=%d)", this.action, this.recipeId));
+            case CRAFTING_BOOK_STATUS -> Log.protocol(String.format("[OUT] Sending crafting book status (action=%s, craftingBookOpen=%s, craftingFilter=%s)", this.action, this.craftingBookOpen, this.craftingFilter));
         }
     }
 
@@ -91,8 +94,10 @@ public class PacketCraftingBookData implements ServerboundPacket {
         DISPLAY_RECIPE,
         CRAFTING_BOOK_STATUS;
 
+        private static final BookDataStatus[] BOOK_DATA_STATUSES = values();
+
         public static BookDataStatus byId(int id) {
-            return values()[id];
+            return BOOK_DATA_STATUSES[id];
         }
     }
 }

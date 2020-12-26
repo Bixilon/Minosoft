@@ -14,12 +14,16 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.RelativeLocation;
+import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketEntityMovement implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W25B;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
+
+public class PacketEntityMovement extends ClientboundPacket {
     int entityId;
     RelativeLocation location;
     boolean onGround;
@@ -27,32 +31,37 @@ public class PacketEntityMovement implements ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
-        if (buffer.getVersionId() < 100) {
+        if (buffer.getVersionId() < V_16W06A) {
             this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
         } else {
             this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
         }
-        if (buffer.getVersionId() >= 22) {
+        if (buffer.getVersionId() >= V_14W25B) {
             this.onGround = buffer.readBoolean();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        Entity entity = connection.getPlayer().getWorld().getEntity(getEntityId());
+        if (entity == null) {
+            // thanks mojang
+            return;
+        }
+        entity.setLocation(getRelativeLocation());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity %d moved relative %s", entityId, location));
+        Log.protocol(String.format("[IN] Entity %d moved relative %s", this.entityId, this.location));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public RelativeLocation getRelativeLocation() {
-        return location;
+        return this.location;
     }
 }

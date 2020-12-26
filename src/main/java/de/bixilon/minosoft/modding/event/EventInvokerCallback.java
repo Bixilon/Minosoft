@@ -26,26 +26,22 @@ public class EventInvokerCallback<V extends ConnectionEvent> extends EventInvoke
         this.callback = callback;
     }
 
-
     // if you need instant fireing support
     public EventInvokerCallback(Class<? extends ConnectionEvent> eventType, InvokerCallback<V> callback) {
         this(false, callback);
         this.eventType = eventType; // ToDo: how to get the class of V? seems to be impossible
     }
 
-    public EventInvokerCallback(InvokerCallback<V> callback) {
-        this(false, callback);
-    }
-
+    @SuppressWarnings("unchecked")
     public void invoke(ConnectionEvent event) {
-        if (eventType != event.getClass()) {
+        if (this.eventType != event.getClass()) {
             return;
         }
-        callback.handle((V) event);
+        this.callback.handle((V) event);
     }
 
     public Class<? extends ConnectionEvent> getEventType() {
-        return eventType;
+        return this.eventType;
     }
 
     public interface InvokerCallback<V> {

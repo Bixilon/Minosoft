@@ -32,32 +32,32 @@ public class Turtle extends Animal {
     @EntityMetaDataFunction(identifier = "homePosition")
     @Nullable
     public BlockPosition getHomePosition() {
-        return metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_HOME_POSITION);
+        return this.metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_HOME_POSITION);
     }
 
     @EntityMetaDataFunction(identifier = "hasEgg")
     public boolean hasEgg() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_HAS_EGG);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_HAS_EGG);
     }
 
     @EntityMetaDataFunction(identifier = "isLayingEgg")
     public boolean isLayingEgg() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_LAYING_EGG);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_LAYING_EGG);
     }
 
     @EntityMetaDataFunction(identifier = "travelPosition")
     @Nullable
     public BlockPosition getTravelPosition() {
-        return metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_TRAVEL_POSITION);
+        return this.metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_TRAVEL_POSITION);
     }
 
     @EntityMetaDataFunction(identifier = "isGoingHome")
     public boolean isGoingHome() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_GOING_HOME);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_GOING_HOME);
     }
 
     @EntityMetaDataFunction(identifier = "isTraveling")
     public boolean isTraveling() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_TRAVELING);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_TRAVELING);
     }
 }

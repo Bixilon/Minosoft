@@ -14,38 +14,42 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketKeepAlive implements ClientboundPacket {
-    long id;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W31A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12_2_PRE2;
+
+public class PacketKeepAlive extends ClientboundPacket {
+    private long id;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 32) {
-            id = buffer.readInt();
+        if (buffer.getVersionId() < V_14W31A) {
+            this.id = buffer.readInt();
             return true;
         }
-        if (buffer.getVersionId() < 339) {
-            id = buffer.readVarInt();
+        if (buffer.getVersionId() < V_1_12_2_PRE2) {
+            this.id = buffer.readVarInt();
             return true;
         }
-        id = buffer.readLong();
+        this.id = buffer.readLong();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.sendPacket(new PacketKeepAliveResponse(getId()));
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Keep alive packet received (%d)", id));
+        Log.protocol(String.format("[IN] Keep alive packet received (%d)", this.id));
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 }

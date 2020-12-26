@@ -14,44 +14,50 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.ResourcePackChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketResourcePackSend implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W45A;
+
+public class PacketResourcePackSend extends ClientboundPacket {
     String url;
     String hash;
-    boolean forced = false;
+    boolean forced;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        url = buffer.readString();
-        hash = buffer.readString();
-        if (buffer.getVersionId() >= 758) {
-            forced = buffer.readBoolean();
+        this.url = buffer.readString();
+        this.hash = buffer.readString();
+        if (buffer.getVersionId() >= V_20W45A) {
+            this.forced = buffer.readBoolean();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        ResourcePackChangeEvent event = new ResourcePackChangeEvent(connection, this);
+        if (connection.fireEvent(event)) {
+            return;
+        }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received resource pack send (url=\"%s\", hash=%s", url, hash));
+        Log.protocol(String.format("[IN] Received resource pack send (url=\"%s\", hash=%s", this.url, this.hash));
     }
 
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     public String getHash() {
-        return hash;
+        return this.hash;
     }
 
     public boolean isForced() {
-        return forced;
+        return this.forced;
     }
 }

@@ -28,9 +28,8 @@ public class Vex extends Monster {
     }
 
     private boolean getVexFlag(int bitMask) {
-        return metaData.getSets().getBitMask(EntityMetaDataFields.VEX_FLAGS, bitMask);
+        return this.metaData.getSets().getBitMask(EntityMetaDataFields.VEX_FLAGS, bitMask);
     }
-
 
     @EntityMetaDataFunction(identifier = "isAttacking")
     public boolean isAttacking() {

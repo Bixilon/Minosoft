@@ -18,31 +18,32 @@ import de.bixilon.minosoft.data.entities.EntityPropertyKeys;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class PacketEntityProperties implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+
+public class PacketEntityProperties extends ClientboundPacket {
     final HashMap<EntityPropertyKeys, EntityProperty> properties = new HashMap<>();
     int entityId;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
-        if (buffer.getVersionId() < 7) {
+        if (buffer.getVersionId() < V_14W04A) {
             int count = buffer.readInt();
             for (int i = 0; i < count; i++) {
                 EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString());
                 double value = buffer.readDouble();
-                short listLength = buffer.readShort();
+                int listLength = buffer.readUnsignedShort();
                 for (int ii = 0; ii < listLength; ii++) {
                     UUID uuid = buffer.readUUID();
                     double amount = buffer.readDouble();
-                    ModifierActions operation = ModifierActions.byId(buffer.readByte());
+                    ModifierActions operation = ModifierActions.byId(buffer.readUnsignedByte());
                     // ToDo: modifiers
                 }
-                properties.put(key, new EntityProperty(value));
+                this.properties.put(key, new EntityProperty(value));
             }
             return true;
         }
@@ -54,26 +55,21 @@ public class PacketEntityProperties implements ClientboundPacket {
             for (int ii = 0; ii < listLength; ii++) {
                 UUID uuid = buffer.readUUID();
                 double amount = buffer.readDouble();
-                ModifierActions operation = ModifierActions.byId(buffer.readByte());
+                ModifierActions operation = ModifierActions.byId(buffer.readUnsignedByte());
                 // ToDo: modifiers
             }
-            properties.put(key, new EntityProperty(value));
+            this.properties.put(key, new EntityProperty(value));
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received entity properties (entityId=%d)", entityId));
+        Log.protocol(String.format("[IN] Received entity properties (entityId=%d)", this.entityId));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public enum ModifierActions {
@@ -81,8 +77,10 @@ public class PacketEntityProperties implements ClientboundPacket {
         ADD_PERCENT,
         MULTIPLY;
 
+        private static final ModifierActions[] MODIFIER_ACTIONS = values();
+
         public static ModifierActions byId(int id) {
-            return values()[id];
+            return MODIFIER_ACTIONS[id];
         }
     }
 }

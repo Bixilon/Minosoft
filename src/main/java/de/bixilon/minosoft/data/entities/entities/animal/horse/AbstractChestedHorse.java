@@ -28,6 +28,6 @@ public abstract class AbstractChestedHorse extends AbstractHorse {
 
     @EntityMetaDataFunction(identifier = "hasChest")
     public boolean hasChest() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.ABSTRACT_CHESTED_HORSE_HAS_CHEST);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.ABSTRACT_CHESTED_HORSE_HAS_CHEST);
     }
 }

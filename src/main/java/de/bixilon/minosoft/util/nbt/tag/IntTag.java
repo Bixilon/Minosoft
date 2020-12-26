@@ -16,7 +16,7 @@ package de.bixilon.minosoft.util.nbt.tag;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
-public class IntTag extends NBTTag {
+public class IntTag extends NumberTag {
     final int value;
 
     public IntTag(int value) {
@@ -34,15 +34,20 @@ public class IntTag extends NBTTag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeInt(value);
+        buffer.writeInt(this.value);
     }
 
     public int getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
     public String toString() {
-        return String.valueOf(value);
+        return String.valueOf(this.value);
+    }
+
+    @Override
+    public long getAsLong() {
+        return this.value;
     }
 }

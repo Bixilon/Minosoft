@@ -32,22 +32,22 @@ public class Cat extends TamableAnimal {
 
     @EntityMetaDataFunction(identifier = "variant")
     public CatVariants getVariant() {
-        return CatVariants.values()[metaData.getSets().getInt(EntityMetaDataFields.CAT_VARIANT)];
+        return CatVariants.byId(this.metaData.getSets().getInt(EntityMetaDataFields.CAT_VARIANT));
     }
 
     @EntityMetaDataFunction(identifier = "lying")
     public boolean isLying() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.CAT_IS_LYING);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.CAT_IS_LYING);
     }
 
     @EntityMetaDataFunction(identifier = "relaxed")
     public boolean isRelaxed() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.CAT_IS_RELAXED);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.CAT_IS_RELAXED);
     }
 
     @EntityMetaDataFunction(identifier = "collarColor")
     public RGBColor getCollarColor() {
-        return ChatColors.getColorById(metaData.getSets().getInt(EntityMetaDataFields.CAT_GET_COLLAR_COLOR));
+        return ChatColors.getColorById(this.metaData.getSets().getInt(EntityMetaDataFields.CAT_GET_COLLAR_COLOR));
     }
 
     public enum CatVariants {
@@ -59,6 +59,12 @@ public class Cat extends TamableAnimal {
         CALICO,
         PERSIAN,
         RAGDOLL,
-        ALL_BLACK
+        ALL_BLACK;
+
+        private static final CatVariants[] CAT_VARIANTS = values();
+
+        public static CatVariants byId(int id) {
+            return CAT_VARIANTS[id];
+        }
     }
 }

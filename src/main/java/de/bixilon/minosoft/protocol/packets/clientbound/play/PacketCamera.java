@@ -16,28 +16,22 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketCamera implements ClientboundPacket {
+public class PacketCamera extends ClientboundPacket {
     int entityId;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        entityId = buffer.readVarInt();
+        this.entityId = buffer.readVarInt();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving camera packet (entityId=%d)", entityId));
+        Log.protocol(String.format("[IN] Receiving camera packet (entityId=%d)", this.entityId));
     }
 
     public int getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 }

@@ -15,43 +15,54 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.world.BlockPosition;
+import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.BlockChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketBlockChange implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
+
+public class PacketBlockChange extends ClientboundPacket {
     BlockPosition position;
     Block block;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 6) {
-            position = buffer.readBlockPosition();
-            block = buffer.getConnection().getMapping().getBlockById((buffer.readVarInt() << 4) | buffer.readByte()); // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
+        if (buffer.getVersionId() < V_14W03B) {
+            this.position = buffer.readBlockPositionByte();
+            this.block = buffer.getConnection().getMapping().getBlockById((buffer.readVarInt() << 4) | buffer.readByte()); // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
             return true;
         }
-        position = buffer.readPosition();
-        block = buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
+        this.position = buffer.readPosition();
+        this.block = buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
         return true;
 
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        Chunk chunk = connection.getPlayer().getWorld().getChunk(getPosition().getChunkLocation());
+        if (chunk == null) {
+            // thanks mojang
+            return;
+        }
+        connection.fireEvent(new BlockChangeEvent(connection, this));
+
+        chunk.setBlock(getPosition().getInChunkLocation(), getBlock());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Block change received at %s (block=%s)", position, block));
+        Log.protocol(String.format("[IN] Block change received at %s (block=%s)", this.position, this.block));
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public Block getBlock() {
-        return block;
+        return this.block;
     }
 }

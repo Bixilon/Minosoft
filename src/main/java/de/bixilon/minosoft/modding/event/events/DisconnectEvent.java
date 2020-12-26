@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketDisconnect;
 
 public class DisconnectEvent extends ConnectionEvent {
     private final ChatComponent reason;
@@ -25,12 +25,12 @@ public class DisconnectEvent extends ConnectionEvent {
         this.reason = reason;
     }
 
-    public DisconnectEvent(Connection connection, PacketLoginDisconnect pkg) {
+    public DisconnectEvent(Connection connection, PacketDisconnect pkg) {
         super(connection);
         this.reason = pkg.getReason();
     }
 
     public ChatComponent getReason() {
-        return reason;
+        return this.reason;
     }
 }

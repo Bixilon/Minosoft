@@ -20,6 +20,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W13A;
+
 public class PacketUpdateJigsawBlock implements ServerboundPacket {
     final BlockPosition position;
     final String targetPool;
@@ -48,23 +50,23 @@ public class PacketUpdateJigsawBlock implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_JIGSAW_BLOCK);
-        buffer.writePosition(position);
-        if (buffer.getVersionId() < 708) {
-            buffer.writeString(attachmentType);
-            buffer.writeString(targetPool);
-            buffer.writeString(finalState);
+        buffer.writePosition(this.position);
+        if (buffer.getVersionId() < V_20W13A) {
+            buffer.writeString(this.attachmentType);
+            buffer.writeString(this.targetPool);
+            buffer.writeString(this.finalState);
         } else {
-            buffer.writeString(name);
-            buffer.writeString(target);
-            buffer.writeString(targetPool);
-            buffer.writeString(finalState);
-            buffer.writeString(jointType);
+            buffer.writeString(this.name);
+            buffer.writeString(this.target);
+            buffer.writeString(this.targetPool);
+            buffer.writeString(this.finalState);
+            buffer.writeString(this.jointType);
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Updating jigsaw block (position=%s, attachmentType=%s, targetPool=%s, finalState=%s)", position, attachmentType, targetPool, finalState));
+        Log.protocol(String.format("[OUT] Updating jigsaw block (position=%s, attachmentType=%s, targetPool=%s, finalState=%s)", this.position, this.attachmentType, this.targetPool, this.finalState));
     }
 }

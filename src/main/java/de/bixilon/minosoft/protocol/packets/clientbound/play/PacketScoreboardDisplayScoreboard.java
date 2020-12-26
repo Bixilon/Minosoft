@@ -16,27 +16,21 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
+public class PacketScoreboardDisplayScoreboard extends ClientboundPacket {
     ScoreboardAnimations action;
     String scoreName;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        action = ScoreboardAnimations.byId(buffer.readByte());
-        scoreName = buffer.readString();
+        this.action = ScoreboardAnimations.byId(buffer.readUnsignedByte());
+        this.scoreName = buffer.readString();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received display scoreboard packet (position=%s, scoreName=\"%s\"", action, scoreName));
+        Log.protocol(String.format("[IN] Received display scoreboard packet (position=%s, scoreName=\"%s\"", this.action, this.scoreName));
     }
 
     public enum ScoreboardAnimations {
@@ -60,8 +54,10 @@ public class PacketScoreboardDisplayScoreboard implements ClientboundPacket {
         TEAM_YELLOW,
         TEAM_WHITE;
 
+        private static final ScoreboardAnimations[] SCOREBOARD_ANIMATIONS = values();
+
         public static ScoreboardAnimations byId(int id) {
-            return values()[id];
+            return SCOREBOARD_ANIMATIONS[id];
         }
     }
 }

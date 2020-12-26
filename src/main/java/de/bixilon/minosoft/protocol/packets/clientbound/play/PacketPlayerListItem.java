@@ -14,34 +14,39 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.player.PlayerListItem;
 import de.bixilon.minosoft.data.player.PlayerListItemBulk;
 import de.bixilon.minosoft.data.player.PlayerProperties;
 import de.bixilon.minosoft.data.player.PlayerProperty;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.PlayerListItemChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class PacketPlayerListItem implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W19A;
+
+public class PacketPlayerListItem extends ClientboundPacket {
     final ArrayList<PlayerListItemBulk> playerList = new ArrayList<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 17) { //ToDo: 19?
+        if (buffer.getVersionId() < V_14W19A) { // ToDo: 19?
             String name = buffer.readString();
             int ping;
-            if (buffer.getVersionId() < 7) {
-                ping = buffer.readShort();
+            if (buffer.getVersionId() < V_14W04A) {
+                ping = buffer.readUnsignedShort();
             } else {
                 ping = buffer.readVarInt();
             }
             PlayerListItemActions action = (buffer.readBoolean() ? PlayerListItemActions.UPDATE_LATENCY : PlayerListItemActions.REMOVE_PLAYER);
-            playerList.add(new PlayerListItemBulk(name, ping, action));
+            this.playerList.add(new PlayerListItemBulk(name, ping, action));
             return true;
         }
         PlayerListItemActions action = PlayerListItemActions.byId(buffer.readVarInt());
@@ -49,7 +54,7 @@ public class PacketPlayerListItem implements ClientboundPacket {
         for (int i = 0; i < count; i++) {
             UUID uuid = buffer.readUUID();
             PlayerListItemBulk listItemBulk;
-            //UUID uuid, String name, int ping, GameMode gameMode, TextComponent displayName, HashMap< PlayerProperties, PlayerProperty > properties, PacketPlayerInfo.PlayerInfoAction action) {
+            // UUID uuid, String name, int ping, GameMode gameMode, TextComponent displayName, HashMap< PlayerProperties, PlayerProperty > properties, PacketPlayerInfo.PlayerInfoAction action) {
             switch (action) {
                 case ADD -> {
                     String name = buffer.readString();
@@ -61,34 +66,74 @@ public class PacketPlayerListItem implements ClientboundPacket {
                     }
                     GameModes gameMode = GameModes.byId(buffer.readVarInt());
                     int ping = buffer.readVarInt();
-                    ChatComponent displayName = (buffer.readBoolean() ? buffer.readTextComponent() : null);
+                    ChatComponent displayName = (buffer.readBoolean() ? buffer.readChatComponent() : null);
                     listItemBulk = new PlayerListItemBulk(uuid, name, ping, gameMode, displayName, playerProperties, action);
                 }
                 case UPDATE_GAMEMODE -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, GameModes.byId(buffer.readVarInt()), null, null, action);
                 case UPDATE_LATENCY -> listItemBulk = new PlayerListItemBulk(uuid, null, buffer.readVarInt(), null, null, null, action);
-                case UPDATE_DISPLAY_NAME -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, (buffer.readBoolean() ? buffer.readTextComponent() : null), null, action);
+                case UPDATE_DISPLAY_NAME -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, (buffer.readBoolean() ? buffer.readChatComponent() : null), null, action);
                 case REMOVE_PLAYER -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, null, null, action);
                 default -> listItemBulk = null;
             }
-            playerList.add(listItemBulk);
+            this.playerList.add(listItemBulk);
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        if (connection.fireEvent(new PlayerListItemChangeEvent(connection, this))) {
+            return;
+        }
+        for (PlayerListItemBulk bulk : getPlayerList()) {
+            PlayerListItem item = connection.getPlayer().getPlayerList().get(bulk.getUUID());
+            if (item == null && !bulk.isLegacy()) {
+                // Aaaaah. Fuck this shit. The server sends us bullshit!
+                continue;
+            }
+            switch (bulk.getAction()) {
+                case ADD -> connection.getPlayer().getPlayerList().put(bulk.getUUID(), new PlayerListItem(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGameMode(), bulk.getDisplayName(), bulk.getProperties()));
+                case UPDATE_LATENCY -> {
+                    if (bulk.isLegacy()) {
+                        // add or update
+                        if (item == null) {
+                            // create
+                            UUID uuid = UUID.randomUUID();
+                            connection.getPlayer().getPlayerList().put(uuid, new PlayerListItem(uuid, bulk.getName(), bulk.getPing()));
+                        } else {
+                            // update ping
+                            item.setPing(bulk.getPing());
+                        }
+                        continue;
+                    }
+                    connection.getPlayer().getPlayerList().get(bulk.getUUID()).setPing(bulk.getPing());
+                }
+                case REMOVE_PLAYER -> {
+                    if (bulk.isLegacy()) {
+                        if (item == null) {
+                            // not initialized yet
+                            continue;
+                        }
+                        connection.getPlayer().getPlayerList().remove(connection.getPlayer().getPlayerListItem(bulk.getName()).getUUID());
+                        continue;
+                    }
+                    connection.getPlayer().getPlayerList().remove(bulk.getUUID());
+                }
+                case UPDATE_GAMEMODE -> item.setGameMode(bulk.getGameMode());
+                case UPDATE_DISPLAY_NAME -> item.setDisplayName(bulk.getDisplayName());
+            }
+        }
     }
 
     @Override
     public void log() {
-        for (PlayerListItemBulk property : playerList) {
+        for (PlayerListItemBulk property : this.playerList) {
             Log.protocol(String.format("[IN] Received player list item bulk (%s)", property));
         }
     }
 
     public ArrayList<PlayerListItemBulk> getPlayerList() {
-        return playerList;
+        return this.playerList;
     }
 
     public enum PlayerListItemActions {
@@ -98,8 +143,10 @@ public class PacketPlayerListItem implements ClientboundPacket {
         UPDATE_DISPLAY_NAME,
         REMOVE_PLAYER;
 
+        private static final PlayerListItemActions[] PLAYER_LIST_ITEM_ACTIONS = values();
+
         public static PlayerListItemActions byId(int id) {
-            return values()[id];
+            return PLAYER_LIST_ITEM_ACTIONS[id];
         }
     }
 }

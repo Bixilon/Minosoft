@@ -16,24 +16,18 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketUpdateViewDistance implements ClientboundPacket {
+public class PacketUpdateViewDistance extends ClientboundPacket {
     int viewDistance;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        viewDistance = buffer.readVarInt();
+        this.viewDistance = buffer.readVarInt();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received view distance update (viewDistance=%s)", viewDistance));
+        Log.protocol(String.format("[IN] Received view distance update (viewDistance=%s)", this.viewDistance));
     }
 }

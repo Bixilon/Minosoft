@@ -16,27 +16,31 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.ChunkUtil;
 import de.bixilon.minosoft.util.Util;
 
 import java.util.HashMap;
 
-public class PacketChunkBulk implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W28A;
+
+public class PacketChunkBulk extends ClientboundPacket {
     final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 23) {
-            short chunkCount = buffer.readShort();
+        if (buffer.getVersionId() < V_14W26A) {
+            int chunkCount = buffer.readUnsignedShort();
             int dataLen = buffer.readInt();
             boolean containsSkyLight = buffer.readBoolean();
 
             // decompress chunk data
             InByteBuffer decompressed;
-            if (buffer.getVersionId() < 27) {
+            if (buffer.getVersionId() < V_14W28A) {
                 decompressed = Util.decompress(buffer.readBytes(dataLen), buffer.getConnection());
             } else {
                 decompressed = buffer;
@@ -46,10 +50,10 @@ public class PacketChunkBulk implements ClientboundPacket {
             for (int i = 0; i < chunkCount; i++) {
                 int x = buffer.readInt();
                 int z = buffer.readInt();
-                short sectionBitMask = buffer.readShort();
-                short addBitMask = buffer.readShort();
+                int sectionBitMask = buffer.readUnsignedShort();
+                int addBitMask = buffer.readUnsignedShort();
 
-                chunks.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
+                this.chunks.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
             }
             return true;
         }
@@ -57,32 +61,34 @@ public class PacketChunkBulk implements ClientboundPacket {
         int chunkCount = buffer.readVarInt();
         int[] x = new int[chunkCount];
         int[] z = new int[chunkCount];
-        short[] sectionBitMask = new short[chunkCount];
+        int[] sectionBitMask = new int[chunkCount];
 
-        //ToDo: this was still compressed in 14w28a
+        // ToDo: this was still compressed in 14w28a
 
         for (int i = 0; i < chunkCount; i++) {
             x[i] = buffer.readInt();
             z[i] = buffer.readInt();
-            sectionBitMask[i] = buffer.readShort();
+            sectionBitMask[i] = buffer.readUnsignedShort();
         }
         for (int i = 0; i < chunkCount; i++) {
-            chunks.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
+            this.chunks.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        getChunks().forEach(((location, chunk) -> connection.fireEvent(new ChunkDataChangeEvent(connection, location, chunk))));
+
+        connection.getPlayer().getWorld().setChunks(getChunks());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Chunk bulk packet received (chunks=%s)", chunks.size()));
+        Log.protocol(String.format("[IN] Chunk bulk packet received (chunks=%s)", this.chunks.size()));
     }
 
     public HashMap<ChunkLocation, Chunk> getChunks() {
-        return chunks;
+        return this.chunks;
     }
 }

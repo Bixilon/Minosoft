@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.data.text;
 
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.hash.BetterHashSet;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -47,37 +50,37 @@ public class TextComponent extends ChatComponent {
     }
 
     public TextComponent setObfuscated(boolean obfuscated) {
-        formatting.addOrRemove(PreChatFormattingCodes.OBFUSCATED, obfuscated);
+        this.formatting.addOrRemove(PreChatFormattingCodes.OBFUSCATED, obfuscated);
         return this;
     }
 
     public TextComponent setBold(boolean bold) {
-        formatting.addOrRemove(PreChatFormattingCodes.BOLD, bold);
+        this.formatting.addOrRemove(PreChatFormattingCodes.BOLD, bold);
         return this;
     }
 
     public TextComponent setStrikethrough(boolean strikethrough) {
-        formatting.addOrRemove(PreChatFormattingCodes.STRIKETHROUGH, strikethrough);
+        this.formatting.addOrRemove(PreChatFormattingCodes.STRIKETHROUGH, strikethrough);
         return this;
     }
 
     public TextComponent setUnderlined(boolean underlined) {
-        formatting.addOrRemove(PreChatFormattingCodes.UNDERLINED, underlined);
+        this.formatting.addOrRemove(PreChatFormattingCodes.UNDERLINED, underlined);
         return this;
     }
 
     public TextComponent setItalic(boolean italic) {
-        formatting.addOrRemove(PreChatFormattingCodes.ITALIC, italic);
+        this.formatting.addOrRemove(PreChatFormattingCodes.ITALIC, italic);
         return this;
     }
 
     public TextComponent setReset(boolean reset) {
-        formatting.addOrRemove(PostChatFormattingCodes.RESET, reset);
+        this.formatting.addOrRemove(PostChatFormattingCodes.RESET, reset);
         return this;
     }
 
     public RGBColor getColor() {
-        return color;
+        return this.color;
     }
 
     public TextComponent setColor(RGBColor color) {
@@ -86,12 +89,17 @@ public class TextComponent extends ChatComponent {
     }
 
     public BetterHashSet<ChatFormattingCode> getFormatting() {
-        return formatting;
+        return this.formatting;
     }
 
     public TextComponent setFormatting(BetterHashSet<ChatFormattingCode> formatting) {
         this.formatting = formatting;
         return this;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.text, this.color, this.formatting);
     }
 
     @Override
@@ -103,30 +111,30 @@ public class TextComponent extends ChatComponent {
             return false;
         }
         TextComponent their = (TextComponent) obj;
-        return text.equals(their.getMessage()) && color.equals(their.getColor()) && formatting.equals(their.getFormatting());
+        return this.text.equals(their.getMessage()) && this.color.equals(their.getColor()) && this.formatting.equals(their.getFormatting());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(text, color, formatting);
+    public String toString() {
+        return getANSIColoredMessage();
     }
 
     @Override
     public String getANSIColoredMessage() {
         StringBuilder builder = new StringBuilder();
-        if (color != null) {
-            builder.append(ChatColors.getANSIColorByRGBColor(color));
+        if (this.color != null) {
+            builder.append(ChatColors.getANSIColorByRGBColor(this.color));
         }
-        if (formatting != null) {
-            formatting.forEach((chatFormattingCodes -> {
+        if (this.formatting != null) {
+            this.formatting.forEach((chatFormattingCodes -> {
                 if (chatFormattingCodes instanceof PreChatFormattingCodes code) {
                     builder.append(code.getANSI());
                 }
             }));
         }
-        builder.append(text);
-        if (formatting != null) {
-            formatting.forEach((chatFormattingCodes -> {
+        builder.append(this.text);
+        if (this.formatting != null) {
+            this.formatting.forEach((chatFormattingCodes -> {
                 if (chatFormattingCodes instanceof PostChatFormattingCodes code) {
                     builder.append(code.getANSI());
                 }
@@ -139,36 +147,48 @@ public class TextComponent extends ChatComponent {
     @Override
     public String getLegacyText() {
         StringBuilder output = new StringBuilder();
-        Integer colorChar = ChatColors.getColorId(color);
+        Integer colorChar = ChatColors.getColorId(this.color);
         if (colorChar != null) {
             output.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(Integer.toHexString(colorChar));
         }
-        formatting.forEach((chatFormattingCode -> output.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(chatFormattingCode.getChar())));
-        output.append(text);
+        this.formatting.forEach((chatFormattingCode -> output.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(chatFormattingCode.getChar())));
+        output.append(this.text);
         output.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(PostChatFormattingCodes.RESET.getChar());
         return output.toString();
     }
 
     @Override
     public String getMessage() {
-        return text;
+        return this.text;
     }
 
     @Override
     public ObservableList<Node> getJavaFXText(ObservableList<Node> nodes) {
         Text text = new Text(this.text);
-        if (color == null) {
-            text.setFill(Color.WHITE);
-        } else {
-            text.setFill(Color.web(color.toString()));
+        text.setFill(Color.WHITE);
+        if (Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.CHAT_COLORED) && this.color != null) {
+            text.setFill(Color.web(this.color.toString()));
         }
-        formatting.forEach((chatFormattingCode -> {
+        this.formatting.forEach((chatFormattingCode -> {
             if (chatFormattingCode instanceof PreChatFormattingCodes code) {
                 switch (code) {
                     case OBFUSCATED -> {
-                        Timeline flasher = new Timeline(new KeyFrame(Duration.seconds(1), e -> text.setVisible(false)), new KeyFrame(Duration.seconds(2), e -> text.setVisible(true)));
-                        flasher.setCycleCount(Animation.INDEFINITE);
-                        flasher.play();
+                        // ToDo: potential memory leak: Stop timeline, when TextComponent isn't shown anymore
+                        Timeline obfuscatedTimeline;
+                        if (Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.CHAT_OBFUSCATED)) {
+                            obfuscatedTimeline = new Timeline(new KeyFrame(Duration.millis(50), e -> {
+                                char[] chars = text.getText().toCharArray();
+                                for (int i = 0; i < chars.length; i++) {
+                                    chars[i] = Util.getRandomChar(ProtocolDefinition.OBFUSCATED_CHARS);
+                                }
+                                text.setText(new String(chars));
+                            }));
+                        } else {
+                            obfuscatedTimeline = new Timeline(new KeyFrame(Duration.millis(500), e -> text.setVisible(false)), new KeyFrame(Duration.millis(1000), e -> text.setVisible(true)));
+                        }
+                        obfuscatedTimeline.setCycleCount(Animation.INDEFINITE);
+                        obfuscatedTimeline.play();
+                        text.getStyleClass().add("obfuscated");
                     }
                     case BOLD -> text.setStyle("-fx-font-weight: bold;");
                     case STRIKETHROUGH -> text.setStyle("-fx-strikethrough: true;");
@@ -179,10 +199,5 @@ public class TextComponent extends ChatComponent {
         }));
         nodes.add(text);
         return nodes;
-    }
-
-    @Override
-    public String toString() {
-        return getANSIColoredMessage();
     }
 }

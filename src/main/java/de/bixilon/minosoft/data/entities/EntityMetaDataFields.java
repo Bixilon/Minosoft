@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.entities;
 
 import de.bixilon.minosoft.data.Directions;
+import de.bixilon.minosoft.data.entities.entities.animal.Axolotl;
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
@@ -58,7 +59,6 @@ public enum EntityMetaDataFields {
     ABSTRACT_ARROW_PIERCE_LEVEL((byte) 0),
     ABSTRACT_ARROW_OWNER_UUID,
 
-
     FISHING_HOOK_HOOKED_ENTITY(0),
     FISHING_HOOK_CATCHABLE(false),
 
@@ -66,7 +66,6 @@ public enum EntityMetaDataFields {
 
     THROWN_TRIDENT_LOYALTY_LEVEL(0),
     THROWN_TRIDENT_FOIL(false),
-
 
     BOAT_HURT(0),
     BOAT_HURT_DIRECTION(1),
@@ -259,7 +258,7 @@ public enum EntityMetaDataFields {
     MINECART_FURNACE_HAS_FUEL(false),
 
     MINECART_COMMAND_BLOCK_COMMAND(""),
-    MINECART_COMMAND_BLOCK_LAST_OUTPUT(ChatComponent.fromString("")),
+    MINECART_COMMAND_BLOCK_LAST_OUTPUT(ChatComponent.valueOf("")),
 
     PRIMED_TNT_FUSE_TIME(80),
 
@@ -267,6 +266,9 @@ public enum EntityMetaDataFields {
 
     THROWN_EYE_OF_ENDER_ITEM,
 
+    AXOLOTL_VARIANT(Axolotl.AxolotlVariants.LUCY.ordinal()),
+    AXOLOTL_PLAYING_DEAD(false),
+    AXOLOTL_FROM_BUCKET(false),
 
     // pretty old stuff here. 1.8 mostly (or even after, I don't know and I don't care)
     LEGACY_SKELETON_TYPE((byte) 0),
@@ -287,14 +289,15 @@ public enum EntityMetaDataFields {
     private final Object defaultValue;
 
     EntityMetaDataFields() {
-        defaultValue = null;
+        this.defaultValue = null;
     }
 
     EntityMetaDataFields(Object defaultValue) {
         this.defaultValue = defaultValue;
     }
 
+    @SuppressWarnings("unchecked")
     public <K> K getDefaultValue() {
-        return (K) defaultValue;
+        return (K) this.defaultValue;
     }
 }

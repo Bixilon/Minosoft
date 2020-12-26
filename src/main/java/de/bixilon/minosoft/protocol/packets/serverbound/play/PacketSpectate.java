@@ -31,12 +31,12 @@ public class PacketSpectate implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_SPECTATE);
-        buffer.writeUUID(entityUUID);
+        buffer.writeUUID(this.entityUUID);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Spectating entity (entityUUID=%s)", entityUUID));
+        Log.protocol(String.format("[OUT] Spectating entity (entityUUID=%s)", this.entityUUID));
     }
 }

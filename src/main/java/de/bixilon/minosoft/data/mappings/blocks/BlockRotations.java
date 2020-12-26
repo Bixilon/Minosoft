@@ -37,7 +37,6 @@ public enum BlockRotations {
     SOUTH_EAST("14"),
     SOUTH_SOUTH_EAST("15"),
 
-
     // stairs?
     NORTH_SOUTH,
     EAST_WEST,
@@ -80,14 +79,14 @@ public enum BlockRotations {
     private final HashSet<String> aliases;
 
     BlockRotations() {
-        aliases = new HashSet<>();
+        this.aliases = new HashSet<>();
     }
 
     BlockRotations(String... alias) {
-        aliases = new HashSet<>(Arrays.asList(alias));
+        this.aliases = new HashSet<>(Arrays.asList(alias));
     }
 
     public HashSet<String> getAliases() {
-        return aliases;
+        return this.aliases;
     }
 }

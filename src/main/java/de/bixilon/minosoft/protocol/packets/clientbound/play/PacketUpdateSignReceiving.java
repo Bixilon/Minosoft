@@ -16,42 +16,53 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.util.nbt.tag.StringTag;
 
-public class PacketUpdateSignReceiving implements ClientboundPacket {
-    final ChatComponent[] lines = new ChatComponent[4];
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+
+public class PacketUpdateSignReceiving extends ClientboundPacket {
+    final ChatComponent[] lines = new ChatComponent[ProtocolDefinition.SIGN_LINES];
     BlockPosition position;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        if (buffer.getVersionId() < 7) {
-            position = buffer.readBlockPositionShort();
+        if (buffer.getVersionId() < V_14W04A) {
+            this.position = buffer.readBlockPositionShort();
         } else {
-            position = buffer.readPosition();
+            this.position = buffer.readPosition();
         }
-        for (byte i = 0; i < 4; i++) {
-            lines[i] = buffer.readTextComponent();
+        for (byte i = 0; i < ProtocolDefinition.SIGN_LINES; i++) {
+            this.lines[i] = buffer.readChatComponent();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        CompoundTag nbt = new CompoundTag();
+        nbt.writeBlockPosition(getPosition());
+        nbt.writeTag("id", new StringTag("minecraft:sign"));
+        for (int i = 0; i < ProtocolDefinition.SIGN_LINES; i++) {
+            nbt.writeTag(String.format("Text%d", (i + 1)), new StringTag(getLines()[i].getLegacyText()));
+        }
+        // ToDo: handle sign updates
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Sign data received at: %s", position));
+        Log.protocol(String.format("[IN] Sign data received at: %s", this.position));
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public ChatComponent[] getLines() {
-        return lines;
+        return this.lines;
     }
 }

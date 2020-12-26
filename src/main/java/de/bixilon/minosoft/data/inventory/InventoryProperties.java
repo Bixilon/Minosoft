@@ -29,18 +29,18 @@ public class InventoryProperties {
     }
 
     public int getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     public InventoryTypes getType() {
-        return type;
+        return this.type;
     }
 
     public ChatComponent getTitle() {
-        return title;
+        return this.title;
     }
 
     public byte getSlotCount() {
-        return slotCount;
+        return this.slotCount;
     }
 }

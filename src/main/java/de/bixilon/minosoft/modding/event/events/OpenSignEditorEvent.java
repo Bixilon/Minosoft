@@ -31,6 +31,6 @@ public class OpenSignEditorEvent extends CancelableEvent {
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 }

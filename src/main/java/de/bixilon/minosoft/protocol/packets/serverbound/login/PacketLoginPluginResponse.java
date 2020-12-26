@@ -38,16 +38,16 @@ public class PacketLoginPluginResponse implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.LOGIN_PLUGIN_RESPONSE);
-        buffer.writeVarInt(messageId);
-        buffer.writeBoolean(successful);
-        if (successful) {
-            buffer.writeBytes(data);
+        buffer.writeVarInt(this.messageId);
+        buffer.writeBoolean(this.successful);
+        if (this.successful) {
+            buffer.writeBytes(this.data);
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending login plugin response (messageId=%d, successful=%s)", messageId, successful));
+        Log.protocol(String.format("[OUT] Sending login plugin response (messageId=%d, successful=%s)", this.messageId, this.successful));
     }
 }

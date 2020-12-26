@@ -28,15 +28,15 @@ public class BedEntityMetaData extends BlockEntityMetaData {
 
     public BedEntityMetaData(NBTTag nbt) {
         if (nbt == null) {
-            color = ChatColors.RED;
+            this.color = ChatColors.RED;
             return;
         }
         if (nbt instanceof StringTag stringTag) {
             // yes, we support bed rgb colors :D
-            color = new RGBColor(stringTag.getValue());
+            this.color = new RGBColor(stringTag.getValue());
             return;
         }
-        color = switch (((IntTag) nbt).getValue()) {
+        this.color = switch (((IntTag) nbt).getValue()) {
             case 0 -> new RGBColor(255, 255, 255); // white
             case 1 -> new RGBColor(234, 103, 3); // orange
             case 2 -> new RGBColor(199, 78, 189); // magenta
@@ -53,11 +53,11 @@ public class BedEntityMetaData extends BlockEntityMetaData {
             case 13 -> new RGBColor(77, 97, 34); // green
             case 14 -> new RGBColor(139, 30, 31); // red
             case 15 -> new RGBColor(15, 16, 19); // black
-            default -> throw new IllegalStateException("Unexpected value: " + ((IntTag) nbt).getValue());
+            default -> throw new IllegalArgumentException("Unexpected value: " + ((IntTag) nbt).getValue());
         };
     }
 
     public RGBColor getColor() {
-        return color;
+        return this.color;
     }
 }

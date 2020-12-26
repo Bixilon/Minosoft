@@ -28,7 +28,7 @@ public class Bee extends Animal {
     }
 
     private boolean getBeeFlag(int bitMask) {
-        return metaData.getSets().getBitMask(EntityMetaDataFields.BEE_FLAGS, bitMask);
+        return this.metaData.getSets().getBitMask(EntityMetaDataFields.BEE_FLAGS, bitMask);
     }
 
     @EntityMetaDataFunction(identifier = "isAngry")
@@ -48,6 +48,6 @@ public class Bee extends Animal {
 
     @EntityMetaDataFunction(identifier = "remainingAngerTime")
     public int getRemainingAngerTimer() {
-        return metaData.getSets().getInt(EntityMetaDataFields.BEE_REMAINING_ANGER_TIME);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.BEE_REMAINING_ANGER_TIME);
     }
 }

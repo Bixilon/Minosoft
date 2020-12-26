@@ -28,36 +28,36 @@ public class ScoreboardObjective {
     }
 
     public String getObjectiveName() {
-        return objectiveName;
+        return this.objectiveName;
     }
 
     public ChatComponent getObjectiveValue() {
-        return objectiveValue;
+        return this.objectiveValue;
     }
 
     public HashMap<String, ScoreboardScore> getScores() {
-        return scores;
+        return this.scores;
     }
 
     public void addScore(ScoreboardScore score) {
-        if (scores.containsKey(score.getItemName())) {
+        if (this.scores.containsKey(score.getItemName())) {
             // update
-            scores.get(score.getItemName()).setScoreName(score.getScoreName());
-            scores.get(score.getItemName()).setScore(score.getScore());
+            this.scores.get(score.getItemName()).setScoreName(score.getScoreName());
+            this.scores.get(score.getItemName()).setScore(score.getScore());
             return;
         }
-        scores.put(score.getItemName(), score);
+        this.scores.put(score.getItemName(), score);
     }
 
     public void removeScore(String itemName) {
-        scores.remove(itemName);
+        this.scores.remove(itemName);
     }
 
     public ScoreboardScore getScore(String itemName) {
-        return scores.get(itemName);
+        return this.scores.get(itemName);
     }
 
     public void setValue(ChatComponent value) {
-        objectiveValue = value;
+        this.objectiveValue = value;
     }
 }

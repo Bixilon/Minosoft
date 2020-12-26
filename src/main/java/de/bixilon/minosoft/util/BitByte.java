@@ -15,7 +15,7 @@ package de.bixilon.minosoft.util;
 
 public final class BitByte {
     public static boolean isBitSet(long in, int pos) {
-        long mask = 1 << pos;
+        long mask = 1L << pos;
         return ((in & mask) == mask);
     }
 
@@ -25,7 +25,7 @@ public final class BitByte {
 
     public static byte getBitCount(int input) {
         byte ret = 0;
-        for (byte i = 0; i < Short.BYTES * 8; i++) { // bytes to bits
+        for (byte i = 0; i < Short.SIZE; i++) {
             if (isBitSet(input, i)) {
                 ret++;
             }

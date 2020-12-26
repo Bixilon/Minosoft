@@ -19,6 +19,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+
 public class PacketClientStatus implements ServerboundPacket {
 
     final ClientStates status;
@@ -30,17 +32,17 @@ public class PacketClientStatus implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CLIENT_STATUS);
-        if (buffer.getVersionId() < 7) {
-            buffer.writeByte((byte) status.ordinal());
+        if (buffer.getVersionId() < V_14W04A) {
+            buffer.writeByte((byte) this.status.ordinal());
         } else {
-            buffer.writeVarInt(status.ordinal());
+            buffer.writeVarInt(this.status.ordinal());
         }
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending client status packet (status=%s)", status));
+        Log.protocol(String.format("[OUT] Sending client status packet (status=%s)", this.status));
     }
 
     public enum ClientStates {
@@ -48,8 +50,10 @@ public class PacketClientStatus implements ServerboundPacket {
         REQUEST_STATISTICS,
         OPEN_INVENTORY;
 
+        private static final ClientStates[] CLIENT_STATES = values();
+
         public static ClientStates byId(int id) {
-            return values()[id];
+            return CLIENT_STATES[id];
         }
     }
 }

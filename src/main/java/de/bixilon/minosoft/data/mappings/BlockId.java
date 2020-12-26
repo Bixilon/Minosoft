@@ -13,13 +13,34 @@
 
 package de.bixilon.minosoft.data.mappings;
 
+import de.bixilon.minosoft.data.mappings.blocks.Block;
+
+import java.util.HashSet;
+
 public class BlockId extends ModIdentifier {
+    private final HashSet<Block> blocks;
+
+    public BlockId(String mod, String identifier, HashSet<Block> blocks) {
+        super(mod, identifier);
+        this.blocks = blocks;
+    }
 
     public BlockId(String mod, String identifier) {
         super(mod, identifier);
+        this.blocks = new HashSet<>();
     }
 
     public BlockId(String fullIdentifier) {
         super(fullIdentifier);
+        this.blocks = new HashSet<>();
+    }
+
+    public BlockId(ModIdentifier identifier) {
+        super(identifier);
+        this.blocks = new HashSet<>();
+    }
+
+    public HashSet<Block> getBlocks() {
+        return this.blocks;
     }
 }

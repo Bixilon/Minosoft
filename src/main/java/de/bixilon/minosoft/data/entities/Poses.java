@@ -22,7 +22,9 @@ public enum Poses {
     SNEAKING,
     DYING;
 
+    private static final Poses[] POSES = values();
+
     public static Poses byId(int id) {
-        return values()[id];
+        return POSES[id];
     }
 }

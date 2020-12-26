@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -23,6 +24,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -36,16 +38,35 @@ import java.util.regex.Pattern;
 import java.util.zip.*;
 
 public final class Util {
-    public static final Pattern UUID_FIX = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
-    public static final String RANDOM_STRING_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    private static final Random random = ThreadLocalRandom.current();
+    public static final Pattern UUID_FIX_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
+    public static final char[] RANDOM_STRING_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    private static final Random THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
+
+    private static final Field JSON_READER_POS_FIELD;
+    private static final Field JSON_READER_LINE_START_FIELD;
+
+    static {
+        new JsonReader(new StringReader(""));
+        Class<?> jsonReadClass = JsonReader.class;
+        try {
+            JSON_READER_POS_FIELD = jsonReadClass.getDeclaredField("pos");
+            JSON_READER_POS_FIELD.setAccessible(true);
+            JSON_READER_LINE_START_FIELD = jsonReadClass.getDeclaredField("lineStart");
+            JSON_READER_LINE_START_FIELD.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
     public static UUID getUUIDFromString(String uuid) {
+        uuid = uuid.trim();
         if (uuid.length() == 36) {
             return UUID.fromString(uuid);
         }
         if (uuid.length() == 32) {
-            return UUID.fromString(UUID_FIX.matcher(uuid.replace("-", "")).replaceAll("$1-$2-$3-$4-$5"));
+            return UUID.fromString(UUID_FIX_PATTERN.matcher(uuid.replace("-", "")).replaceAll("$1-$2-$3-$4-$5"));
         }
         throw new IllegalArgumentException(String.format("%s is not a valid UUID String", uuid));
     }
@@ -167,11 +188,10 @@ public final class Util {
 
     public static String readFile(BufferedReader reader, boolean closeStream) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
-        String ls = System.getProperty("line.separator");
         String line;
         while ((line = reader.readLine()) != null) {
             stringBuilder.append(line);
-            stringBuilder.append(ls);
+            stringBuilder.append(LINE_SEPARATOR);
         }
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         if (closeStream) {
@@ -264,13 +284,37 @@ public final class Util {
     public static String generateRandomString(int length) {
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
-            sb.append(RANDOM_STRING_CHARS.charAt(random.nextInt(RANDOM_STRING_CHARS.length())));
+            sb.append(getRandomChar(RANDOM_STRING_CHARS));
         }
         return sb.toString();
+    }
+
+    public static char getRandomChar(char[] chars) {
+        return chars[(THREAD_LOCAL_RANDOM.nextInt(chars.length))];
+    }
+
+    public static char getRandomChar() {
+        return (char) THREAD_LOCAL_RANDOM.nextInt();
     }
 
     public static String getStringBetween(String search, String first, String second) {
         String result = search.substring(search.indexOf(first) + first.length());
         return result.substring(0, result.indexOf(second));
+    }
+
+    public static String readAsset(String path) throws IOException {
+        return readFile(new BufferedReader(readAsset(path, Util.class)), true);
+    }
+
+    public static boolean doesStringContainsUppercaseLetters(String string) {
+        return !string.toLowerCase().equals(string);
+    }
+
+    public static int getJsonReaderPosition(JsonReader jsonReader) {
+        try {
+            return JSON_READER_POS_FIELD.getInt(jsonReader) - JSON_READER_LINE_START_FIELD.getInt(jsonReader) + 1;
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException();
+        }
     }
 }

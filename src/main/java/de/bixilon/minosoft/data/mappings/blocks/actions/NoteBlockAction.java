@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.mappings.blocks.actions;
 
 public class NoteBlockAction implements BlockAction {
-    final Instruments instrument;
-    final short pitch;
+    private final Instruments instrument;
+    private final short pitch;
 
     public NoteBlockAction(short instrument, short pitch) {
         this.instrument = Instruments.byId(instrument);
@@ -24,7 +24,7 @@ public class NoteBlockAction implements BlockAction {
 
     @Override
     public String toString() {
-        return String.format("NOTEBLOCK_%s:%d", instrument, pitch);
+        return String.format("NOTEBLOCK_%s:%d", this.instrument, this.pitch);
     }
 
     public enum Instruments {
@@ -34,8 +34,10 @@ public class NoteBlockAction implements BlockAction {
         CLICKS_STICKS,
         BASS_DRUM;
 
+        private static final Instruments[] INSTRUMENTS = values();
+
         public static Instruments byId(int id) {
-            return values()[id];
+            return INSTRUMENTS[id];
         }
     }
 }

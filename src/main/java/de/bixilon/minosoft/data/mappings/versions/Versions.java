@@ -32,8 +32,8 @@ import java.util.HashSet;
 
 public class Versions {
     public static final Version LOWEST_VERSION_SUPPORTED = new Version("Automatic", -1, -1, null, null);
-    private static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create();
-    private static final HashBiMap<Integer, Version> VERSION_PROTOCOL_ID_MAP = HashBiMap.create();
+    private static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create(500);
+    private static final HashBiMap<Integer, Version> VERSION_PROTOCOL_ID_MAP = HashBiMap.create(500);
     private static final HashSet<Version> LOADED_VERSIONS = new HashSet<>();
     public static VersionMapping PRE_FLATTENING_MAPPING;
 
@@ -77,7 +77,7 @@ public class Versions {
             for (JsonElement packetElement : mappingJson.getAsJsonArray("serverbound")) {
                 Packets.Serverbound packet = Packets.Serverbound.valueOf(packetElement.getAsString());
                 if (!serverboundPacketMapping.containsKey(packet.getState())) {
-                    serverboundPacketMapping.put(packet.getState(), HashBiMap.create());
+                    serverboundPacketMapping.put(packet.getState(), HashBiMap.create(30));
                 }
                 serverboundPacketMapping.get(packet.getState()).put(packet, serverboundPacketMapping.get(packet.getState()).size());
             }
@@ -85,7 +85,7 @@ public class Versions {
             for (JsonElement packetElement : mappingJson.getAsJsonArray("clientbound")) {
                 Packets.Clientbound packet = Packets.Clientbound.valueOf(packetElement.getAsString());
                 if (!clientboundPacketMapping.containsKey(packet.getState())) {
-                    clientboundPacketMapping.put(packet.getState(), HashBiMap.create());
+                    clientboundPacketMapping.put(packet.getState(), HashBiMap.create(100));
                 }
                 clientboundPacketMapping.get(packet.getState()).put(packet, clientboundPacketMapping.get(packet.getState()).size());
             }

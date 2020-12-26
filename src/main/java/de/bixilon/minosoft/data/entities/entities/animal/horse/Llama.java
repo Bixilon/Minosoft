@@ -29,16 +29,16 @@ public class Llama extends AbstractChestedHorse {
 
     @EntityMetaDataFunction(identifier = "strength")
     public int getStrength() {
-        return metaData.getSets().getInt(EntityMetaDataFields.LLAMA_STRENGTH);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.LLAMA_STRENGTH);
     }
 
     @EntityMetaDataFunction(identifier = "carpetColor")
     public int getCarpetColor() {
-        return metaData.getSets().getInt(EntityMetaDataFields.LLAMA_CARPET_COLOR);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.LLAMA_CARPET_COLOR);
     }
 
     @EntityMetaDataFunction(identifier = "variant")
     public int getVariant() {
-        return metaData.getSets().getInt(EntityMetaDataFields.LLAMA_VARIANT);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.LLAMA_VARIANT);
     }
 }

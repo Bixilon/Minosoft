@@ -14,46 +14,60 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.UpdateHealthEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketUpdateHealth implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+
+public class PacketUpdateHealth extends ClientboundPacket {
     float health;
     int food;
     float saturation;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        health = buffer.readFloat();
-        if (buffer.getVersionId() < 7) {
-            food = buffer.readShort();
-        } else {
-            food = buffer.readVarInt();
+        this.health = buffer.readFloat();
+        if (this.health < 0.0F) {
+            this.health = 0.0F;
         }
-        saturation = buffer.readFloat();
+        if (buffer.getVersionId() < V_14W04A) {
+            this.food = buffer.readUnsignedShort();
+        } else {
+            this.food = buffer.readVarInt();
+        }
+        this.saturation = buffer.readFloat();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        connection.fireEvent(new UpdateHealthEvent(connection, this));
+
+        connection.getPlayer().setFood(getFood());
+        connection.getPlayer().setHealth(getHealth());
+        connection.getPlayer().setSaturation(getSaturation());
+        if (getHealth() <= 0.0F) {
+            // do respawn
+            connection.getSender().respawn();
+        }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Health update. Now at %s hearts and %s food level and %s saturation", health, food, saturation));
+        Log.protocol(String.format("[IN] Health update. Now at %s hearts and %s food level and %s saturation", this.health, this.food, this.saturation));
     }
 
     public int getFood() {
-        return food;
+        return this.food;
     }
 
     public float getHealth() {
-        return health;
+        return this.health;
     }
 
     public float getSaturation() {
-        return saturation;
+        return this.saturation;
     }
 }

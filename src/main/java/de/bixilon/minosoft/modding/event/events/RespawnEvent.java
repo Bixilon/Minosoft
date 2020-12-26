@@ -43,18 +43,18 @@ public class RespawnEvent extends CancelableEvent {
     }
 
     public GameModes getGameMode() {
-        return gameMode;
+        return this.gameMode;
     }
 
     public Dimension getDimension() {
-        return dimension;
+        return this.dimension;
     }
 
     public Difficulties getDifficulty() {
-        return difficulty;
+        return this.difficulty;
     }
 
     public LevelTypes getLevelType() {
-        return levelType;
+        return this.levelType;
     }
 }

@@ -22,11 +22,13 @@ public class StaticConfiguration {
     public static final boolean DEBUG_MODE = false; // if true, additional checks will be made to validate data, ... Decreases performance
     public static final boolean DEBUG_SLOW_LOADING = false; // if true, many Thread.sleep will be executed and the start will be delayed (by a lot)
     public static String CONFIG_FILENAME = "config.json"; // Filename of minosoft's base configuration (located in AppData/Minosoft/config)
-    public static boolean SKIP_MOJANG_AUTHENTICATION = false; // disables all connections to mojang
+    public static boolean SKIP_MOJANG_AUTHENTICATION; // disables all connections to mojang
     public static boolean COLORED_LOG = true; // the log should be colored with ANSI (does not affect base components)
-    public static boolean LOG_RELATIVE_TIME = false; // prefix all log messages with the relative start time in milliseconds instead of the formatted time
-    public static boolean VERBOSE_ENTITY_META_DATA_LOGGING = false; // if true, the entity meta data is getting serialized
+    public static boolean LOG_RELATIVE_TIME; // prefix all log messages with the relative start time in milliseconds instead of the formatted time
+    public static boolean VERBOSE_ENTITY_META_DATA_LOGGING; // if true, the entity meta data is getting serialized
+    public static boolean HEADLESS_MODE; // if true, no gui, rendering or whatever will be loaded or shown
     public static String HOME_DIRECTORY;
+    public static final String TEMPORARY_FOLDER = System.getProperty("java.io.tmpdir", HOME_DIRECTORY + "/tmp/") + "/";
 
     static {
         // Sets Config.homeDir to the correct folder per OS

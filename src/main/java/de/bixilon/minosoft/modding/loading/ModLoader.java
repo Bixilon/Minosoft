@@ -22,8 +22,12 @@ import de.bixilon.minosoft.util.Util;
 import org.xeustechnologies.jcl.JarClassLoader;
 import org.xeustechnologies.jcl.JclObjectFactory;
 
+import javax.annotation.Nullable;
 import java.io.File;
-import java.util.LinkedList;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,9 +35,10 @@ import java.util.zip.ZipFile;
 
 public class ModLoader {
     public static final int CURRENT_MODDING_API_VERSION = 1;
-    public static final LinkedList<MinosoftMod> mods = new LinkedList<>();
+    public static final ConcurrentHashMap<UUID, MinosoftMod> MOD_MAP = new ConcurrentHashMap<>();
 
     public static void loadMods(CountUpAndDownLatch progress) throws Exception {
+        final long startTime = System.currentTimeMillis();
         Log.info("Start loading mods...");
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Util.getThreadFactory("ModLoader"));
 
@@ -53,62 +58,104 @@ public class ModLoader {
             executor.execute(() -> {
                 MinosoftMod mod = loadMod(progress, modFile);
                 if (mod != null) {
-                    mods.add(mod);
+                    MOD_MAP.put(mod.getInfo().getModIdentifier().getUUID(), mod);
                 }
                 latch.countDown();
             });
         }
         latch.await();
 
-        if (mods.size() == 0) {
+        if (MOD_MAP.isEmpty()) {
             Log.info("No mods to load.");
             return;
         }
 
-        progress.addCount(mods.size() * ModPhases.values().length); // count * mod phases
+        progress.addCount(MOD_MAP.size() * ModPhases.values().length); // count * mod phases
 
-        // sort for priority
-        mods.sort((a, b) -> {
-            if (a == null || b == null) {
+        // check if all dependencies are available
+        modLoop:
+        for (Map.Entry<UUID, MinosoftMod> modEntry : MOD_MAP.entrySet()) {
+            ModInfo currentModInfo = modEntry.getValue().getInfo();
+
+            for (ModDependency dependency : currentModInfo.getHardDependencies()) {
+                ModInfo info = getModInfoByUUID(dependency.getUUID());
+                if (info == null) {
+                    Log.warn("Could not satisfy mod dependency for mod %s (Requires %s)", modEntry.getValue().getInfo(), dependency.getUUID());
+                    MOD_MAP.remove(modEntry.getKey());
+                    continue modLoop;
+                }
+                if (dependency.getVersionMinimum() < info.getModIdentifier().getVersionId()) {
+                    Log.warn("Could not satisfy mod dependency for mod %s (Requires %s version > %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMinimum());
+                    MOD_MAP.remove(modEntry.getKey());
+                    continue modLoop;
+                }
+                if (dependency.getVersionMaximum() > info.getModIdentifier().getVersionId()) {
+                    Log.warn("Could not satisfy mod dependency for mod %s (Requires %s version < %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMaximum());
+                    MOD_MAP.remove(modEntry.getKey());
+                    continue modLoop;
+                }
+            }
+            for (ModDependency dependency : currentModInfo.getSoftDependencies()) {
+                ModInfo info = getModInfoByUUID(dependency.getUUID());
+                if (info == null) {
+                    Log.warn("Could not satisfy mod soft dependency for mod %s (Requires %s)", modEntry.getValue().getInfo(), dependency.getUUID());
+                    continue;
+                }
+                if (dependency.getVersionMinimum() < info.getModIdentifier().getVersionId()) {
+                    Log.warn("Could not satisfy mod dependency for mod %s (Requires %s version > %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMinimum());
+                    continue;
+                }
+                if (dependency.getVersionMaximum() > info.getModIdentifier().getVersionId()) {
+                    Log.warn("Could not satisfy mod soft dependency for mod %s (Requires %s version < %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMaximum());
+                }
+            }
+
+        }
+
+        final TreeMap<UUID, MinosoftMod> sortedModMap = new TreeMap<>((mod1UUID, mod2UUID) -> {
+            // ToDo: Load dependencies first
+            if (mod1UUID == null || mod2UUID == null) {
                 return 0;
             }
-            return -(getLoadingPriorityOrDefault(b.getInfo()).ordinal() - getLoadingPriorityOrDefault(a.getInfo()).ordinal());
+            return -(getLoadingPriorityOrDefault(MOD_MAP.get(mod2UUID).getInfo()).ordinal() - getLoadingPriorityOrDefault(MOD_MAP.get(mod1UUID).getInfo()).ordinal());
         });
-        // ToDo: check dependencies
+
+        sortedModMap.putAll(MOD_MAP);
 
         for (ModPhases phase : ModPhases.values()) {
             Log.verbose(String.format("Mod loading phase changed: %s", phase));
-            CountDownLatch modLatch = new CountDownLatch(mods.size());
-            mods.forEach((instance) -> {
+            CountDownLatch modLatch = new CountDownLatch(sortedModMap.size());
+            for (Map.Entry<UUID, MinosoftMod> entry : sortedModMap.entrySet()) {
                 executor.execute(() -> {
-                    if (!instance.isEnabled()) {
+                    if (!entry.getValue().isEnabled()) {
                         modLatch.countDown();
                         progress.countDown();
                         return;
                     }
                     try {
-                        if (!instance.start(phase)) {
-                            throw new ModLoadingException(String.format("Could not load nod %s", instance.getInfo()));
+                        if (!entry.getValue().start(phase)) {
+                            throw new ModLoadingException(String.format("Could not load mod %s", entry.getValue().getInfo()));
                         }
                     } catch (Throwable e) {
                         e.printStackTrace();
-                        Log.warn(String.format("An error occurred while loading %s", instance.getInfo()));
-                        instance.setEnabled(false);
+                        Log.warn(String.format("An error occurred while loading %s", entry.getValue().getInfo()));
+                        entry.getValue().setEnabled(false);
                     }
                     modLatch.countDown();
                     progress.countDown();
                 });
-            });
+            }
             modLatch.await();
         }
-        mods.forEach((instance) -> {
-            if (instance.isEnabled()) {
-                Minosoft.eventManagers.add(instance.getEventManager());
+
+        for (Map.Entry<UUID, MinosoftMod> entry : sortedModMap.entrySet()) {
+            if (entry.getValue().isEnabled()) {
+                Minosoft.EVENT_MANAGERS.add(entry.getValue().getEventManager());
             } else {
-                mods.remove(instance);
+                MOD_MAP.remove(entry.getKey());
             }
-        });
-        Log.info("Loading of %d mods finished!", mods.size());
+        }
+        Log.info("Loading of %d mods finished in %dms!", sortedModMap.size(), (System.currentTimeMillis() - startTime));
     }
 
     public static MinosoftMod loadMod(CountUpAndDownLatch progress, File file) {
@@ -119,7 +166,7 @@ public class ModLoader {
             ZipFile zipFile = new ZipFile(file);
             ModInfo modInfo = new ModInfo(Util.readJsonFromZip("mod.json", zipFile));
             if (isModLoaded(modInfo)) {
-                Log.warn(String.format("Mod %s:%d (uuid=%s) is loaded multiple times! Skipping", modInfo.getName(), modInfo.getVersionId(), modInfo.getUUID()));
+                Log.warn(String.format("Mod %s:%d (uuid=%s) is loaded multiple times! Skipping", modInfo.getName(), modInfo.getModIdentifier().getVersionId(), modInfo.getModIdentifier().getUUID()));
                 return null;
             }
             JarClassLoader jcl = new JarClassLoader();
@@ -146,12 +193,21 @@ public class ModLoader {
         return Priorities.NORMAL;
     }
 
-    static boolean isModLoaded(ModInfo info) {
-        for (MinosoftMod instance : mods) {
-            if (instance.getInfo().getUUID().equals(info.getUUID())) {
-                return true;
-            }
+    public static boolean isModLoaded(ModInfo info) {
+        return MOD_MAP.containsKey(info.getModIdentifier().getUUID());
+    }
+
+    @Nullable
+    public static MinosoftMod getModByUUID(UUID uuid) {
+        return MOD_MAP.get(uuid);
+    }
+
+    @Nullable
+    public static ModInfo getModInfoByUUID(UUID uuid) {
+        MinosoftMod mod = getModByUUID(uuid);
+        if (mod == null) {
+            return null;
         }
-        return false;
+        return mod.getInfo();
     }
 }

@@ -25,7 +25,7 @@ public abstract class BlockEntityMetaData {
             item = action.name();
         } else
             // new format, use id in nbt
-            if (!nbt.containsKey("id")) {
+            if (nbt.containsKey("id")) {
                 item = nbt.getStringTag("id").getValue();
             } else {
                 return null;

@@ -18,18 +18,25 @@ import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
+import de.bixilon.minosoft.data.accounts.MojangAccount;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.logging.LogLevels;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.HTTP;
+import de.bixilon.minosoft.util.mojang.api.exceptions.AuthenticationException;
+import de.bixilon.minosoft.util.mojang.api.exceptions.MojangJoinServerErrorException;
+import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
 
+import java.io.IOException;
 import java.net.http.HttpResponse;
 
 public final class MojangAuthentication {
 
-    public static MojangAccountAuthenticationAttempt login(String username, String password) {
+    public static MojangAccount login(String username, String password) throws AuthenticationException, NoNetworkConnectionException {
         return login(Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.CLIENT_TOKEN), username, password);
     }
 
-    public static MojangAccountAuthenticationAttempt login(String clientToken, String username, String password) {
+    public static MojangAccount login(String clientToken, String username, String password) throws NoNetworkConnectionException, AuthenticationException {
         JsonObject agent = new JsonObject();
         agent.addProperty("name", "Minecraft");
         agent.addProperty("version", 1);
@@ -41,21 +48,28 @@ public final class MojangAuthentication {
         payload.addProperty("clientToken", clientToken);
         payload.addProperty("requestUser", true);
 
-        HttpResponse<String> response = HTTP.postJson(MojangURLs.LOGIN.getUrl(), payload);
+        HttpResponse<String> response;
+        try {
+            response = HTTP.postJson(ProtocolDefinition.MOJANG_URL_LOGIN, payload);
+        } catch (IOException | InterruptedException e) {
+            Log.printException(e, LogLevels.DEBUG);
+            throw new NoNetworkConnectionException(e);
+        }
         if (response == null) {
             Log.mojang(String.format("Failed to login with username %s", username));
-            return new MojangAccountAuthenticationAttempt("Unknown error, check your Internet connection");
+            throw new NoNetworkConnectionException("Unknown error, check your Internet connection");
         }
         JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
         if (response.statusCode() != 200) {
             Log.mojang(String.format("Failed to login with error code %d: %s", response.statusCode(), jsonResponse.get("errorMessage").getAsString()));
-            return new MojangAccountAuthenticationAttempt(jsonResponse.get("errorMessage").getAsString());
+            throw new AuthenticationException(jsonResponse.get("errorMessage").getAsString());
         }
         // now it is okay
-        return new MojangAccountAuthenticationAttempt(new MojangAccount(username, jsonResponse));
+        return new MojangAccount(username, jsonResponse);
     }
 
-    public static void joinServer(MojangAccount account, String serverId) {
+
+    public static void joinServer(MojangAccount account, String serverId) throws NoNetworkConnectionException, MojangJoinServerErrorException {
         if (StaticConfiguration.SKIP_MOJANG_AUTHENTICATION) {
             return;
         }
@@ -65,26 +79,31 @@ public final class MojangAuthentication {
         payload.addProperty("selectedProfile", account.getUUID().toString().replace("-", ""));
         payload.addProperty("serverId", serverId);
 
-        HttpResponse<String> response = HTTP.postJson(MojangURLs.JOIN.toString(), payload);
+        HttpResponse<String> response;
+        try {
+            response = HTTP.postJson(ProtocolDefinition.MOJANG_URL_JOIN, payload);
+        } catch (IOException | InterruptedException e) {
+            throw new NoNetworkConnectionException(e);
+        }
 
         if (response == null) {
             Log.mojang(String.format("Failed to join server: %s", serverId));
-            return;
+            throw new MojangJoinServerErrorException();
         }
         if (response.statusCode() != 204) {
             JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
             Log.mojang(String.format("Failed to join server with error code %d: %s", response.statusCode(), jsonResponse.has("errorMessage") ? jsonResponse.get("errorMessage").getAsString() : "null"));
-            return;
+            throw new MojangJoinServerErrorException(jsonResponse.get("errorMessage").getAsString());
         }
         // joined
         Log.mojang("Joined server successfully");
     }
 
-    public static String refresh(String accessToken) {
+    public static String refresh(String accessToken) throws NoNetworkConnectionException, AuthenticationException {
         return refresh(Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.CLIENT_TOKEN), accessToken);
     }
 
-    public static String refresh(String clientToken, String accessToken) {
+    public static String refresh(String clientToken, String accessToken) throws NoNetworkConnectionException, AuthenticationException {
         if (StaticConfiguration.SKIP_MOJANG_AUTHENTICATION) {
             return clientToken;
         }
@@ -94,19 +113,19 @@ public final class MojangAuthentication {
 
         HttpResponse<String> response;
         try {
-            response = HTTP.postJson(MojangURLs.REFRESH.getUrl(), payload);
-        } catch (Exception e) {
+            response = HTTP.postJson(ProtocolDefinition.MOJANG_URL_REFRESH, payload);
+        } catch (IOException | InterruptedException e) {
             Log.mojang(String.format("Could not connect to mojang server: %s", e.getCause().toString()));
-            return null;
+            throw new NoNetworkConnectionException(e);
         }
         if (response == null) {
             Log.mojang("Failed to refresh session");
-            return null;
+            throw new NoNetworkConnectionException();
         }
         JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
         if (response.statusCode() != 200) {
             Log.mojang(String.format("Failed to refresh session with error code %d: %s", response.statusCode(), jsonResponse.get("errorMessage").getAsString()));
-            return "";
+            throw new AuthenticationException(jsonResponse.get("errorMessage").getAsString());
         }
         // now it is okay
         Log.mojang("Refreshed 1 session token");

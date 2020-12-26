@@ -19,20 +19,24 @@ public enum PingBars {
     BARS_4,
     BARS_3,
     BARS_2,
-    BRAS_1;
+    BARS_1;
 
     public static PingBars byPing(long ping) {
         if (ping < 0) {
             return NO_CONNECTION;
-        } else if (ping < 150) {
+        }
+        if (ping < 150) {
             return BARS_5;
-        } else if (ping < 300) {
+        }
+        if (ping < 300) {
             return BARS_4;
-        } else if (ping < 600) {
+        }
+        if (ping < 600) {
             return BARS_3;
-        } else if (ping < 1000) {
+        }
+        if (ping < 1000) {
             return BARS_2;
         }
-        return BRAS_1;
+        return BARS_1;
     }
 }

@@ -17,8 +17,8 @@ import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
-import de.bixilon.minosoft.data.mappings.blocks.Blocks;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 
 /**
@@ -32,19 +32,20 @@ public class World {
     Dimension dimension; // used for sky color, etc
 
     public HashMap<ChunkLocation, Chunk> getAllChunks() {
-        return chunks;
+        return this.chunks;
     }
 
+    @Nullable
     public Block getBlock(BlockPosition pos) {
         ChunkLocation loc = pos.getChunkLocation();
         if (getChunk(loc) != null) {
             return getChunk(loc).getBlock(pos.getInChunkLocation());
         }
-        return Blocks.nullBlock;
+        return null;
     }
 
     public Chunk getChunk(ChunkLocation loc) {
-        return chunks.get(loc);
+        return this.chunks.get(loc);
     }
 
     public void setBlock(BlockPosition pos, Block block) {
@@ -55,19 +56,19 @@ public class World {
     }
 
     public void unloadChunk(ChunkLocation location) {
-        chunks.remove(location);
+        this.chunks.remove(location);
     }
 
     public void setChunk(ChunkLocation location, Chunk chunk) {
-        chunks.put(location, chunk);
+        this.chunks.put(location, chunk);
     }
 
     public void setChunks(HashMap<ChunkLocation, Chunk> chunkMap) {
-        chunkMap.forEach(chunks::put);
+        chunkMap.forEach(this.chunks::put);
     }
 
     public boolean isHardcore() {
-        return hardcore;
+        return this.hardcore;
     }
 
     public void setHardcore(boolean hardcore) {
@@ -75,7 +76,7 @@ public class World {
     }
 
     public boolean isRaining() {
-        return raining;
+        return this.raining;
     }
 
     public void setRaining(boolean raining) {
@@ -87,7 +88,7 @@ public class World {
     }
 
     public Entity getEntity(int id) {
-        return entities.get(id);
+        return this.entities.get(id);
     }
 
     public void removeEntity(Entity entity) {
@@ -99,7 +100,7 @@ public class World {
     }
 
     public Dimension getDimension() {
-        return dimension;
+        return this.dimension;
     }
 
     public void setDimension(Dimension dimension) {
@@ -107,7 +108,7 @@ public class World {
     }
 
     public void setBlockEntityData(BlockPosition position, BlockEntityMetaData data) {
-        Chunk chunk = chunks.get(position.getChunkLocation());
+        Chunk chunk = this.chunks.get(position.getChunkLocation());
         if (chunk == null) {
             return;
         }
@@ -115,7 +116,7 @@ public class World {
     }
 
     public BlockEntityMetaData getBlockEntityData(BlockPosition position) {
-        Chunk chunk = chunks.get(position.getChunkLocation());
+        Chunk chunk = this.chunks.get(position.getChunkLocation());
         if (chunk == null) {
             return null;
         }

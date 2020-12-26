@@ -20,10 +20,10 @@ public class InPacketBuffer extends InByteBuffer {
 
     public InPacketBuffer(byte[] bytes, Connection connection) {
         super(bytes, connection);
-        command = readVarInt();
+        this.command = readVarInt();
     }
 
     public int getCommand() {
-        return command;
+        return this.command;
     }
 }

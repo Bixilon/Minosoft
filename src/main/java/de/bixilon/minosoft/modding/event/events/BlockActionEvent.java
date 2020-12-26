@@ -38,10 +38,10 @@ public class BlockActionEvent extends CancelableEvent {
     }
 
     public BlockPosition getPosition() {
-        return position;
+        return this.position;
     }
 
     public BlockAction getData() {
-        return data;
+        return this.data;
     }
 }

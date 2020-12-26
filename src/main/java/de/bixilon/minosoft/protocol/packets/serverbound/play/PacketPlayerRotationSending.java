@@ -33,14 +33,14 @@ public class PacketPlayerRotationSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_ROTATION);
-        buffer.writeFloat(yaw);
-        buffer.writeFloat(pitch);
-        buffer.writeBoolean(onGround);
+        buffer.writeFloat(this.yaw);
+        buffer.writeFloat(this.pitch);
+        buffer.writeBoolean(this.onGround);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending player rotation (yaw=%s, pitch=%s)", yaw, pitch));
+        Log.protocol(String.format("[OUT] Sending player rotation (yaw=%s, pitch=%s)", this.yaw, this.pitch));
     }
 }

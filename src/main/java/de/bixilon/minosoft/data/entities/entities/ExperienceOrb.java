@@ -24,16 +24,16 @@ public class ExperienceOrb extends Entity {
 
     public ExperienceOrb(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
-        count = 0;
+        this.count = 0;
     }
 
-    public ExperienceOrb(Connection connection, int entityId, Location location, short count) {
+    public ExperienceOrb(Connection connection, int entityId, Location location, int count) {
         super(connection, entityId, UUID.randomUUID(), location, new EntityRotation(0, 0, 0));
         this.count = count;
     }
 
     @EntityMetaDataFunction(identifier = "count")
     public int getCount() {
-        return count;
+        return this.count;
     }
 }

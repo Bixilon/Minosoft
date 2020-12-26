@@ -13,13 +13,17 @@
 
 package de.bixilon.minosoft.data.world.palette;
 
-import com.google.common.collect.HashBiMap;
+import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
+import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+
+import java.util.HashMap;
 
 public class IndirectPalette implements Palette {
-    final HashBiMap<Integer, Integer> map = HashBiMap.create();
+    final HashMap<Integer, Integer> map = new HashMap<>();
     final byte bitsPerBlock;
     int versionId;
     VersionMapping mapping;
@@ -30,12 +34,29 @@ public class IndirectPalette implements Palette {
 
     @Override
     public Block byId(int id) {
-        return mapping.getBlockById(map.getOrDefault(id, id));
+        int blockId = this.map.getOrDefault(id, id);
+        Block block = this.mapping.getBlockById(blockId);
+        if (StaticConfiguration.DEBUG_MODE) {
+            if (block == null) {
+                if (blockId == ProtocolDefinition.NULL_BLOCK_ID) {
+                    return null;
+                }
+                String blockName;
+                if (this.versionId <= ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
+                    blockName = String.format("%d:%d", blockId >> 4, blockId & 0xF);
+                } else {
+                    blockName = String.valueOf(blockId);
+                }
+                Log.warn(String.format("Server sent unknown block: %s", blockName));
+                return null;
+            }
+        }
+        return block;
     }
 
     @Override
     public byte getBitsPerBlock() {
-        return bitsPerBlock;
+        return this.bitsPerBlock;
     }
 
     @Override
@@ -44,7 +65,7 @@ public class IndirectPalette implements Palette {
         this.mapping = buffer.getConnection().getMapping();
         int paletteLength = buffer.readVarInt();
         for (int i = 0; i < paletteLength; i++) {
-            map.put(i, buffer.readVarInt());
+            this.map.put(i, buffer.readVarInt());
         }
     }
 }

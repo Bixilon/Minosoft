@@ -19,6 +19,8 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+
 public class PacketSteerVehicle implements ServerboundPacket {
 
     final float sideways;
@@ -36,17 +38,17 @@ public class PacketSteerVehicle implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_STEER_VEHICLE);
-        buffer.writeFloat(sideways);
-        buffer.writeFloat(forward);
-        if (buffer.getVersionId() < 7) {
-            buffer.writeBoolean(jump);
-            buffer.writeBoolean(unmount);
+        buffer.writeFloat(this.sideways);
+        buffer.writeFloat(this.forward);
+        if (buffer.getVersionId() < V_14W04A) {
+            buffer.writeBoolean(this.jump);
+            buffer.writeBoolean(this.unmount);
         } else {
             byte flags = 0;
-            if (jump) {
+            if (this.jump) {
                 flags |= 0x1;
             }
-            if (unmount) {
+            if (this.unmount) {
                 flags |= 0x2;
             }
             buffer.writeByte(flags);
@@ -56,6 +58,6 @@ public class PacketSteerVehicle implements ServerboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Steering vehicle: %s %s (jump=%s, unmount=%s)", sideways, forward, jump, unmount));
+        Log.protocol(String.format("[OUT] Steering vehicle: %s %s (jump=%s, unmount=%s)", this.sideways, this.forward, this.jump, this.unmount));
     }
 }

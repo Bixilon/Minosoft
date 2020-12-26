@@ -13,35 +13,29 @@
 
 package de.bixilon.minosoft.data;
 
-import de.bixilon.minosoft.data.mappings.versions.Versions;
-
 import java.util.Map;
 import java.util.TreeMap;
 
 public class VersionValueMap<V> {
-    TreeMap<Integer, V> values = new TreeMap<>();
+    protected final TreeMap<Integer, V> values;
 
     public VersionValueMap() {
+        this.values = new TreeMap<>();
     }
 
-    public VersionValueMap(MapSet<Integer, V>[] sets, boolean unused) {
-        for (MapSet<Integer, V> set : sets) {
-            values.put(set.getKey(), set.getValue());
-        }
-    }
-
-    public VersionValueMap(V value) {
-        values.put(Versions.LOWEST_VERSION_SUPPORTED.getVersionId(), value);
+    public VersionValueMap(Map<Integer, V> map) {
+        this.values = new TreeMap<>(map);
     }
 
     public V get(int versionId) {
-        Map.Entry<Integer, V> value = values.lowerEntry(versionId);
+        Map.Entry<Integer, V> value = this.values.lowerEntry(versionId);
         if (value == null) {
             return null;
         }
         return value.getValue();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) {
@@ -52,6 +46,6 @@ public class VersionValueMap<V> {
     }
 
     public TreeMap<Integer, V> getAll() {
-        return values;
+        return this.values;
     }
 }

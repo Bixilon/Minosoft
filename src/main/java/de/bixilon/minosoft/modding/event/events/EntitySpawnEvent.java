@@ -56,6 +56,6 @@ public class EntitySpawnEvent extends ConnectionEvent {
     }
 
     public Entity getEntity() {
-        return entity;
+        return this.entity;
     }
 }

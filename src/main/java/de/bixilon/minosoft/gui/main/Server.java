@@ -35,7 +35,7 @@ public class Server {
     private int desiredVersion;
     private byte[] favicon;
     private Connection lastPing;
-    private boolean readOnly = false;
+    private boolean readOnly;
     private ServerListCell cell;
 
     public Server(int id, BaseComponent name, String address, int desiredVersion, byte[] favicon) {
@@ -56,7 +56,7 @@ public class Server {
 
     public Server(ServerAddress address) {
         this.id = getNextServerId();
-        this.name = new BaseComponent(String.format("LAN Server #%d", LANServerListener.getServers().size()));
+        this.name = new BaseComponent(String.format("LAN Server #%d", LANServerListener.getServerMap().size()));
         this.address = address.toString();
         this.desiredVersion = -1; // Automatic
         this.readOnly = true;
@@ -76,7 +76,7 @@ public class Server {
 
     @Nullable
     public byte[] getFavicon() {
-        return favicon;
+        return this.favicon;
     }
 
     public void setFavicon(byte[] favicon) {
@@ -84,7 +84,7 @@ public class Server {
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public void saveToConfig() {
@@ -104,12 +104,12 @@ public class Server {
     }
 
     public Connection getLastPing() {
-        return lastPing;
+        return this.lastPing;
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return this.id;
     }
 
     @Override
@@ -118,19 +118,18 @@ public class Server {
     }
 
     public BaseComponent getName() {
-        if (name.isEmpty()) {
-            return addressName;
+        if (this.name.isEmpty()) {
+            return this.addressName;
         }
-        return name;
+        return this.name;
     }
-
 
     public void setName(BaseComponent name) {
         this.name = name;
     }
 
     public String getAddress() {
-        return address;
+        return this.address;
     }
 
     public void setAddress(String address) {
@@ -139,14 +138,14 @@ public class Server {
     }
 
     public void ping() {
-        if (lastPing == null) {
-            lastPing = new Connection(Connection.lastConnectionId++, getAddress(), null);
+        if (this.lastPing == null) {
+            this.lastPing = new Connection(Connection.lastConnectionId++, getAddress(), null);
         }
-        lastPing.resolve(ConnectionReasons.PING, getDesiredVersionId()); // resolve dns address and ping
+        this.lastPing.resolve(ConnectionReasons.PING, getDesiredVersionId()); // resolve dns address and ping
     }
 
     public int getDesiredVersionId() {
-        return desiredVersion;
+        return this.desiredVersion;
     }
 
     public void setDesiredVersionId(int versionId) {
@@ -154,15 +153,15 @@ public class Server {
     }
 
     public ArrayList<Connection> getConnections() {
-        return connections;
+        return this.connections;
     }
 
     public void addConnection(Connection connection) {
-        connections.add(connection);
+        this.connections.add(connection);
     }
 
     public boolean isConnected() {
-        for (Connection connection : connections) {
+        for (Connection connection : this.connections) {
             if (connection.isConnected()) {
                 return true;
             }
@@ -172,11 +171,11 @@ public class Server {
 
     public JsonObject serialize() {
         JsonObject json = new JsonObject();
-        json.addProperty("id", id);
-        json.addProperty("name", name.getLegacyText());
-        json.addProperty("address", address);
-        json.addProperty("version", desiredVersion);
-        if (favicon != null) {
+        json.addProperty("id", this.id);
+        json.addProperty("name", this.name.getLegacyText());
+        json.addProperty("address", this.address);
+        json.addProperty("version", this.desiredVersion);
+        if (this.favicon != null) {
             json.addProperty("favicon", getBase64Favicon());
         }
         return json;
@@ -184,18 +183,18 @@ public class Server {
 
     @Nullable
     public String getBase64Favicon() {
-        if (favicon == null) {
+        if (this.favicon == null) {
             return null;
         }
-        return Base64.getEncoder().encodeToString(favicon);
+        return Base64.getEncoder().encodeToString(this.favicon);
     }
 
     public boolean isReadOnly() {
-        return readOnly;
+        return this.readOnly;
     }
 
     public ServerListCell getCell() {
-        return cell;
+        return this.cell;
     }
 
     public void setCell(ServerListCell cell) {

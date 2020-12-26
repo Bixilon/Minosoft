@@ -20,6 +20,9 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
+
 public class PacketPlayerDigging implements ServerboundPacket {
     final DiggingStatus status;
     final BlockPosition position;
@@ -34,31 +37,31 @@ public class PacketPlayerDigging implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_DIGGING);
-        if (buffer.getVersionId() < 49) { //ToDo
-            buffer.writeByte((byte) status.ordinal());
+        if (buffer.getVersionId() < V_15W31A) { // ToDo
+            buffer.writeByte((byte) this.status.ordinal());
         } else {
-            buffer.writeVarInt(status.ordinal());
+            buffer.writeVarInt(this.status.ordinal());
         }
 
-        if (buffer.getVersionId() < 7) {
-            if (position == null) {
+        if (buffer.getVersionId() < V_14W04A) {
+            if (this.position == null) {
                 buffer.writeInt(0);
                 buffer.writeByte((byte) 0);
                 buffer.writeInt(0);
             } else {
-                buffer.writeBlockPositionByte(position);
+                buffer.writeBlockPositionByte(this.position);
             }
         } else {
-            buffer.writePosition(position);
+            buffer.writePosition(this.position);
         }
 
-        buffer.writeByte(face.getId());
+        buffer.writeByte(this.face.getId());
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Send player digging packet (status=%s, position=%s, face=%s)", status, position, face));
+        Log.protocol(String.format("[OUT] Send player digging packet (status=%s, position=%s, face=%s)", this.status, this.position, this.face));
     }
 
     public enum DiggingStatus {
@@ -70,8 +73,10 @@ public class PacketPlayerDigging implements ServerboundPacket {
         SHOOT_ARROW__FINISH_EATING,
         SWAP_ITEMS_IN_HAND;
 
+        private static final DiggingStatus[] DIGGING_STATUSES = values();
+
         public static DiggingStatus byId(int id) {
-            return values()[id];
+            return DIGGING_STATUSES[id];
         }
     }
 
@@ -91,7 +96,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
         }
 
         public byte getId() {
-            return id;
+            return this.id;
         }
     }
 }

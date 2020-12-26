@@ -33,13 +33,13 @@ public class PacketCreativeInventoryAction implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CREATIVE_INVENTORY_ACTION);
-        buffer.writeShort(slot);
-        buffer.writeSlot(clickedItem);
+        buffer.writeShort(this.slot);
+        buffer.writeSlot(this.clickedItem);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending creative inventory action (slot=%d, item=%s)", slot, clickedItem.getDisplayName()));
+        Log.protocol(String.format("[OUT] Sending creative inventory action (slot=%d, item=%s)", this.slot, this.clickedItem.getDisplayName()));
     }
 }

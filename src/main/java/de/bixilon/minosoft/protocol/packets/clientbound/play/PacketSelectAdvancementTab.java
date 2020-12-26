@@ -14,34 +14,29 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.ChangeableIdentifier;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketSelectAdvancementTab implements ClientboundPacket {
+public class PacketSelectAdvancementTab extends ClientboundPacket {
     AdvancementTabs tab;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.readBoolean()) {
-            tab = AdvancementTabs.byName(buffer.readString(), buffer.getVersionId());
+            this.tab = AdvancementTabs.byIdentifier(buffer.readIdentifier(), buffer.getVersionId());
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received select advancement tab (tab=%s)", tab));
+        Log.protocol(String.format("[IN] Received select advancement tab (tab=%s)", this.tab));
     }
 
     public AdvancementTabs getTab() {
-        return tab;
+        return this.tab;
     }
 
     public enum AdvancementTabs {
@@ -57,9 +52,9 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
             this.changeableIdentifier = changeableIdentifier;
         }
 
-        public static AdvancementTabs byName(String name, int versionId) {
+        public static AdvancementTabs byIdentifier(ModIdentifier identifier, int versionId) {
             for (AdvancementTabs advancementTab : values()) {
-                if (advancementTab.getChangeableIdentifier().get(versionId).equals(name)) {
+                if (advancementTab.getChangeableIdentifier().get(versionId).equals(identifier)) {
                     return advancementTab;
                 }
             }
@@ -67,7 +62,7 @@ public class PacketSelectAdvancementTab implements ClientboundPacket {
         }
 
         public ChangeableIdentifier getChangeableIdentifier() {
-            return changeableIdentifier;
+            return this.changeableIdentifier;
         }
     }
 }

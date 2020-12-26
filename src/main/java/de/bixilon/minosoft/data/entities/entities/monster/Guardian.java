@@ -29,11 +29,11 @@ public class Guardian extends Monster {
 
     @EntityMetaDataFunction(identifier = "isMoving")
     public boolean isMoving() {
-        return metaData.getSets().getBoolean(EntityMetaDataFields.GUARDIAN_IS_MOVING);
+        return this.metaData.getSets().getBoolean(EntityMetaDataFields.GUARDIAN_IS_MOVING);
     }
 
     @EntityMetaDataFunction(identifier = "attackedEntityId")
     public int getAttackEntityId() {
-        return metaData.getSets().getInt(EntityMetaDataFields.GUARDIAN_TARGET_ENTITY_ID);
+        return this.metaData.getSets().getInt(EntityMetaDataFields.GUARDIAN_TARGET_ENTITY_ID);
     }
 }

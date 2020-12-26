@@ -63,28 +63,28 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_STRUCTURE_BLOCK);
-        buffer.writePosition(position);
-        buffer.writeVarInt(action.ordinal());
-        buffer.writeVarInt(mode.ordinal());
-        buffer.writeString(name);
-        buffer.writeByte(offsetX);
-        buffer.writeByte(offsetY);
-        buffer.writeByte(offsetZ);
-        buffer.writeByte(sizeX);
-        buffer.writeByte(sizeY);
-        buffer.writeByte(sizeZ);
-        buffer.writeVarInt(mirror.ordinal());
-        buffer.writeVarInt(rotation.ordinal());
-        buffer.writeString(metaData);
-        buffer.writeFloat(integrity);
-        buffer.writeVarLong(seed);
-        buffer.writeByte(flags);
+        buffer.writePosition(this.position);
+        buffer.writeVarInt(this.action.ordinal());
+        buffer.writeVarInt(this.mode.ordinal());
+        buffer.writeString(this.name);
+        buffer.writeByte(this.offsetX);
+        buffer.writeByte(this.offsetY);
+        buffer.writeByte(this.offsetZ);
+        buffer.writeByte(this.sizeX);
+        buffer.writeByte(this.sizeY);
+        buffer.writeByte(this.sizeZ);
+        buffer.writeVarInt(this.mirror.ordinal());
+        buffer.writeVarInt(this.rotation.ordinal());
+        buffer.writeString(this.metaData);
+        buffer.writeFloat(this.integrity);
+        buffer.writeVarLong(this.seed);
+        buffer.writeByte(this.flags);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending update structure block packet (position=%s, action=%s, mode=%s, name=\"%s\", offsetX=%d, offsetY=%d, offsetZ=%d, sizeX=%d, sizeY=%d, sizeZ=%d, mirror=%s, rotation=%s, metaData=\"%s\", integrity=%s, seed=%s, flags=%s)", position, action, mode, name, offsetX, offsetY, offsetZ, sizeX, sizeY, sizeZ, mirror, rotation, metaData, integrity, seed, flags));
+        Log.protocol(String.format("[OUT] Sending update structure block packet (position=%s, action=%s, mode=%s, name=\"%s\", offsetX=%d, offsetY=%d, offsetZ=%d, sizeX=%d, sizeY=%d, sizeZ=%d, mirror=%s, rotation=%s, metaData=\"%s\", integrity=%s, seed=%s, flags=%s)", this.position, this.action, this.mode, this.name, this.offsetX, this.offsetY, this.offsetZ, this.sizeX, this.sizeY, this.sizeZ, this.mirror, this.rotation, this.metaData, this.integrity, this.seed, this.flags));
     }
 
     public enum StructureBlockActions {
@@ -93,8 +93,10 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
         LOAD,
         DETECT_SIZE;
 
+        private static final StructureBlockActions[] STRUCTURE_BLOCK_ACTIONS = values();
+
         public static StructureBlockActions byId(int id) {
-            return values()[id];
+            return STRUCTURE_BLOCK_ACTIONS[id];
         }
     }
 
@@ -104,8 +106,10 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
         CORNER,
         DATA;
 
+        private static final StructureBlockModes[] STRUCTURE_BLOCK_MODES = values();
+
         public static StructureBlockModes byId(int id) {
-            return values()[id];
+            return STRUCTURE_BLOCK_MODES[id];
         }
     }
 
@@ -114,8 +118,10 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
         LEFT_RIGHT,
         FRONT_BACK;
 
+        private static final StructureBlockMirrors[] STRUCTURE_BLOCK_MIRRORS = values();
+
         public static StructureBlockMirrors byId(int id) {
-            return values()[id];
+            return STRUCTURE_BLOCK_MIRRORS[id];
         }
     }
 
@@ -125,8 +131,10 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
         CLOCKWISE_180,
         COUNTERCLOCKWISE_90;
 
+        private static final StructureBlockRotations[] STRUCTURE_BLOCK_ROTATIONS = values();
+
         public static StructureBlockRotations byId(int id) {
-            return values()[id];
+            return STRUCTURE_BLOCK_ROTATIONS[id];
         }
     }
 

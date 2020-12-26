@@ -24,13 +24,13 @@ public class OutPacketBuffer extends OutByteBuffer {
     }
 
     @Override
-    public byte[] getOutBytes() {
+    public byte[] toByteArray() {
         OutByteBuffer ret = new OutByteBuffer(this);
         ret.prefixVarInt(getCommand());
-        return ret.getOutBytes();
+        return ret.toByteArray();
     }
 
     public int getCommand() {
-        return command;
+        return this.command;
     }
 }

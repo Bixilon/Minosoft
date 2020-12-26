@@ -13,16 +13,21 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketConfirmTeleport;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketPlayerPositionAndRotation implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W42A;
+
+public class PacketPlayerPositionAndRotation extends ClientboundPacket {
     Location location;
-    float yaw;
-    float pitch;
+    EntityRotation rotation;
     boolean onGround;
     byte flags;
 
@@ -30,48 +35,50 @@ public class PacketPlayerPositionAndRotation implements ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        location = buffer.readLocation();
-        yaw = buffer.readFloat();
-        pitch = buffer.readFloat();
-        if (buffer.getVersionId() < 6) {
-            onGround = buffer.readBoolean();
+        this.location = buffer.readLocation();
+        this.rotation = new EntityRotation(buffer.readFloat(), buffer.readFloat(), 0);
+        if (buffer.getVersionId() < V_14W03B) {
+            this.onGround = buffer.readBoolean();
             return true;
         } else {
-            flags = buffer.readByte();
+            this.flags = buffer.readByte();
         }
-        if (buffer.getVersionId() >= 79) {
-            teleportId = buffer.readVarInt();
+        if (buffer.getVersionId() >= V_15W42A) {
+            this.teleportId = buffer.readVarInt();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        // ToDo: GUI should do this
+        connection.getPlayer().getEntity().setLocation(getLocation());
+        if (connection.getVersion().getVersionId() >= V_15W42A) {
+            connection.sendPacket(new PacketConfirmTeleport(getTeleportId()));
+        } else {
+            connection.sendPacket(new PacketPlayerPositionAndRotationSending(getLocation(), getRotation(), isOnGround()));
+        }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received player location: %s (yaw=%s, pitch=%s)", location, yaw, pitch));
+        Log.protocol(String.format("[IN] Received player location: (location=%s, rotation=%s, onGround=%b)", this.location, this.rotation, this.onGround));
     }
 
     public Location getLocation() {
-        return location;
+        return this.location;
     }
 
-    public float getPitch() {
-        return pitch;
-    }
-
-    public float getYaw() {
-        return yaw;
+    public EntityRotation getRotation() {
+        return this.rotation;
     }
 
     public boolean isOnGround() {
-        return onGround;
+        return this.onGround;
     }
 
     public int getTeleportId() {
-        return teleportId;
+        return this.teleportId;
     }
+
 }

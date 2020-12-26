@@ -13,27 +13,48 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.MapSet;
+import de.bixilon.minosoft.data.GameModes;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.modding.event.events.ChangeGameStateEvent;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketChangeGameState implements ClientboundPacket {
+import java.util.Map;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
+
+public class PacketChangeGameState extends ClientboundPacket {
     Reason reason;
     float value;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        reason = Reason.byId(buffer.readByte(), buffer.getVersionId());
-        value = buffer.readFloat();
+        this.reason = Reason.byId(buffer.readByte(), buffer.getVersionId());
+        this.value = buffer.readFloat();
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
+    public void handle(Connection connection) {
+        ChangeGameStateEvent event = new ChangeGameStateEvent(connection, this);
+        if (connection.fireEvent(event)) {
+            return;
+        }
+
+        Log.game(switch (getReason()) {
+            case START_RAINING -> "Received weather packet: Starting rain...";
+            case STOP_RAINING -> "Received weather packet: Stopping rain...";
+            case CHANGE_GAMEMODE -> String.format("Received game mode change: Now in %s", GameModes.byId(getIntValue()));
+            default -> "";
+        });
+
+        switch (getReason()) {
+            case STOP_RAINING -> connection.getPlayer().getWorld().setRaining(false);
+            case START_RAINING -> connection.getPlayer().getWorld().setRaining(true);
+            case CHANGE_GAMEMODE -> connection.getPlayer().setGameMode(GameModes.byId(getIntValue()));
+        }
     }
 
     @Override
@@ -42,31 +63,35 @@ public class PacketChangeGameState implements ClientboundPacket {
     }
 
     public Reason getReason() {
-        return reason;
+        return this.reason;
     }
 
-    public Float getValue() {
-        return value;
+    public float getFloatValue() {
+        return this.value;
+    }
+
+    public int getIntValue() {
+        return (int) this.value;
     }
 
     public enum Reason {
-        NO_RESPAWN_BLOCK_AVAILABLE(new MapSet[]{new MapSet<>(0, 0)}),
-        START_RAINING(new MapSet[]{new MapSet<>(0, 1), new MapSet<>(498, 2), new MapSet<>(578, 1)}), // ToDo: when exactly did these 2 switch?
-        STOP_RAINING(new MapSet[]{new MapSet<>(0, 2), new MapSet<>(498, 1), new MapSet<>(578, 2)}),
-        CHANGE_GAMEMODE(new MapSet[]{new MapSet<>(0, 3)}),
-        ENTER_CREDITS(new MapSet[]{new MapSet<>(0, 4)}),
-        DEMO_MESSAGES(new MapSet[]{new MapSet<>(0, 5)}),
-        ARROW_HITTING_PLAYER(new MapSet[]{new MapSet<>(0, 6)}),
-        RAIN_LEVEL_CHANGE(new MapSet[]{new MapSet<>(0, 7)}),
-        THUNDER_LEVEL_CHANGE(new MapSet[]{new MapSet<>(0, 8)}),
-        PUFFERFISH_STING(new MapSet[]{new MapSet<>(0, 9)}),
-        GUARDIAN_ELDER_EFFECT(new MapSet[]{new MapSet<>(0, 10)}),
-        IMMEDIATE_RESPAWN(new MapSet[]{new MapSet<>(552, 11)});
+        NO_RESPAWN_BLOCK_AVAILABLE(Map.of(LOWEST_VERSION_SUPPORTED, 0)),
+        START_RAINING(Map.of(LOWEST_VERSION_SUPPORTED, 1, V_1_14_4, 2, V_1_15_2, 1)), // ToDo: when exactly did these 2 switch?
+        STOP_RAINING(Map.of(LOWEST_VERSION_SUPPORTED, 2, V_1_14_4, 1, V_1_15_2, 2)),
+        CHANGE_GAMEMODE(Map.of(LOWEST_VERSION_SUPPORTED, 3)),
+        ENTER_CREDITS(Map.of(LOWEST_VERSION_SUPPORTED, 4)),
+        DEMO_MESSAGES(Map.of(LOWEST_VERSION_SUPPORTED, 5)),
+        ARROW_HITTING_PLAYER(Map.of(LOWEST_VERSION_SUPPORTED, 6)),
+        RAIN_LEVEL_CHANGE(Map.of(LOWEST_VERSION_SUPPORTED, 7)),
+        THUNDER_LEVEL_CHANGE(Map.of(LOWEST_VERSION_SUPPORTED, 8)),
+        PUFFERFISH_STING(Map.of(LOWEST_VERSION_SUPPORTED, 9)),
+        GUARDIAN_ELDER_EFFECT(Map.of(LOWEST_VERSION_SUPPORTED, 10)),
+        IMMEDIATE_RESPAWN(Map.of(V_19W36A, 11));
 
         final VersionValueMap<Integer> valueMap;
 
-        Reason(MapSet<Integer, Integer>[] values) {
-            valueMap = new VersionValueMap<>(values, true);
+        Reason(Map<Integer, Integer> values) {
+            this.valueMap = new VersionValueMap<>(values);
         }
 
         public static Reason byId(int id, int versionId) {
@@ -79,7 +104,7 @@ public class PacketChangeGameState implements ClientboundPacket {
         }
 
         public int getId(Integer versionId) {
-            Integer ret = valueMap.get(versionId);
+            Integer ret = this.valueMap.get(versionId);
             if (ret == null) {
                 return -2;
             }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.text.ChatComponent;
@@ -20,10 +21,11 @@ import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.UUID;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class OutByteBuffer {
     final ArrayList<Byte> bytes;
@@ -36,6 +38,7 @@ public class OutByteBuffer {
         this.versionId = connection.getVersion().getVersionId();
     }
 
+    @SuppressWarnings("unchecked")
     public OutByteBuffer(OutByteBuffer buffer) {
         this.bytes = (ArrayList<Byte>) buffer.getBytes().clone();
         this.connection = buffer.getConnection();
@@ -43,7 +46,7 @@ public class OutByteBuffer {
     }
 
     public void writeByteArray(byte[] data) {
-        if (versionId < 19) {
+        if (this.versionId < V_14W21A) {
             writeShort((short) data.length);
         } else {
             writeVarInt(data.length);
@@ -51,39 +54,41 @@ public class OutByteBuffer {
         writeBytes(data);
     }
 
-    public void writeShort(short s) {
-        ByteBuffer buffer = ByteBuffer.allocate(Short.BYTES);
-        buffer.putShort(s);
-        writeBytes(buffer.array());
+    public void writeShort(short value) {
+        writeByte(value >>> 8);
+        writeByte(value);
     }
 
-    public void writeInt(int i) {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.putInt(i);
-        writeBytes(buffer.array());
+    public void writeInt(int value) {
+        writeByte(value >>> 24);
+        writeByte(value >>> 16);
+        writeByte(value >>> 8);
+        writeByte(value);
     }
 
-    public void writeBytes(byte[] b) {
-        for (byte value : b) {
-            bytes.add(value);
+    public void writeBytes(byte[] data) {
+        for (byte singleByte : data) {
+            this.bytes.add(singleByte);
         }
     }
 
-    public void writeLong(Long l) {
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.putLong(l);
-        writeBytes(buffer.array());
+    public void writeLong(long value) {
+        writeInt((int) (value >> 32));
+        writeInt((int) (value));
     }
 
-    public void writeTextComponent(ChatComponent chatComponent) {
-        writeString(chatComponent.getMessage()); //ToDo: test if this should not be json
+    public void writeChatComponent(ChatComponent chatComponent) {
+        writeString(chatComponent.getLegacyText()); // ToDo: test if this should not be json
     }
 
-    public void writeJSON(JsonObject j) {
-        writeString(j.toString());
+    public void writeJSON(JsonObject json) {
+        writeString(new Gson().toJson(json));
     }
 
     public void writeString(String string) {
+        if (string.length() > ProtocolDefinition.STRING_MAX_LEN) {
+            throw new IllegalArgumentException(String.format("String max string length exceeded %d > %d", string.length(), ProtocolDefinition.STRING_MAX_LEN));
+        }
         writeVarInt(string.length());
         writeBytes(string.getBytes(StandardCharsets.UTF_8));
     }
@@ -99,29 +104,29 @@ public class OutByteBuffer {
         } while (value != 0);
     }
 
-    public void writeByte(byte b) {
-        bytes.add(b);
+    public void writeByte(byte value) {
+        this.bytes.add(value);
     }
 
-    public void writeFloat(Float f) {
-        ByteBuffer buffer = ByteBuffer.allocate(Float.BYTES);
-        buffer.putFloat(f);
-        for (byte b : buffer.array()) {
-            bytes.add(b);
-        }
+    public void writeByte(int value) {
+        this.bytes.add((byte) (value & 0xFF));
     }
 
-    public void writeDouble(Double d) {
-        ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
-        buffer.putDouble(d);
-        writeBytes(buffer.array());
+    public void writeByte(long value) {
+        this.bytes.add((byte) (value & 0xFF));
     }
 
-    public void writeUUID(UUID u) {
-        ByteBuffer buffer = ByteBuffer.allocate(16); // UUID.BYTES
-        buffer.putLong(u.getMostSignificantBits());
-        buffer.putLong(u.getLeastSignificantBits());
-        writeBytes(buffer.array());
+    public void writeFloat(float value) {
+        writeInt(Float.floatToIntBits(value));
+    }
+
+    public void writeDouble(double value) {
+        writeLong(Double.doubleToLongBits(value));
+    }
+
+    public void writeUUID(UUID uuid) {
+        writeLong(uuid.getMostSignificantBits());
+        writeLong(uuid.getLeastSignificantBits());
     }
 
     public void writeFixedPointNumberInt(double d) {
@@ -129,7 +134,7 @@ public class OutByteBuffer {
     }
 
     public ArrayList<Byte> getBytes() {
-        return bytes;
+        return this.bytes;
     }
 
     public void writePosition(BlockPosition position) {
@@ -137,7 +142,7 @@ public class OutByteBuffer {
             writeLong(0L);
             return;
         }
-        if (versionId < 440) {
+        if (this.versionId < V_18W43A) {
             writeLong((((long) position.getX() & 0x3FFFFFF) << 38) | (((long) position.getZ() & 0x3FFFFFF)) | ((long) position.getY() & 0xFFF) << 26);
             return;
         }
@@ -165,28 +170,28 @@ public class OutByteBuffer {
             if (value != 0) {
                 temp |= 0x80;
             }
-            bytes.add(count++, temp);
+            this.bytes.add(count++, temp);
         } while (value != 0);
     }
 
     public void writeSlot(Slot slot) {
-        if (versionId < 402) {
+        if (this.versionId < V_1_13_2_PRE1) {
             if (slot == null) {
                 writeShort((short) -1);
                 return;
             }
-            writeShort((short) (int) connection.getMapping().getItemId(slot.getItem()));
+            writeShort((short) (int) this.connection.getMapping().getItemId(slot.getItem()));
             writeByte((byte) slot.getItemCount());
             writeShort(slot.getItemMetadata());
-            writeNBT(slot.getNbt(connection.getMapping()));
+            writeNBT(slot.getNbt(this.connection.getMapping()));
         }
         if (slot == null) {
             writeBoolean(false);
             return;
         }
-        writeVarInt(connection.getMapping().getItemId(slot.getItem()));
+        writeVarInt(this.connection.getMapping().getItemId(slot.getItem()));
         writeByte((byte) slot.getItemCount());
-        writeNBT(slot.getNbt(connection.getMapping()));
+        writeNBT(slot.getNbt(this.connection.getMapping()));
     }
 
     void writeNBT(CompoundTag nbt) {
@@ -194,8 +199,8 @@ public class OutByteBuffer {
         nbt.writeBytes(this);
     }
 
-    public void writeBoolean(boolean b) {
-        bytes.add((byte) ((b) ? 0x01 : 0x00));
+    public void writeBoolean(boolean value) {
+        this.bytes.add((byte) ((value) ? 0x01 : 0x00));
     }
 
     public void writeStringNoLength(String string) {
@@ -208,10 +213,10 @@ public class OutByteBuffer {
         writeInt(pos.getZ());
     }
 
-    public byte[] getOutBytes() {
-        byte[] ret = new byte[bytes.size()];
-        for (int i = 0; i < bytes.size(); i++) {
-            ret[i] = bytes.get(i);
+    public byte[] toByteArray() {
+        byte[] ret = new byte[this.bytes.size()];
+        for (int i = 0; i < this.bytes.size(); i++) {
+            ret[i] = this.bytes.get(i);
         }
         return ret;
     }
@@ -229,11 +234,11 @@ public class OutByteBuffer {
     }
 
     public int getVersionId() {
-        return versionId;
+        return this.versionId;
     }
 
     public void writeEntityId(int entityId) {
-        if (versionId < 7) {
+        if (this.versionId < V_14W04A) {
             writeInt(entityId);
         } else {
             writeVarInt(entityId);
@@ -241,6 +246,6 @@ public class OutByteBuffer {
     }
 
     public Connection getConnection() {
-        return connection;
+        return this.connection;
     }
 }

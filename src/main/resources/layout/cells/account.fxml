@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 <!--
   ~ Minosoft
   ~ Copyright (C) 2020 Moritz Zwerger
@@ -14,17 +11,56 @@
   ~
   ~ This software is not affiliated with Mojang AB, the original developer of Minecraft.
   -->
-<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="500.0" minHeight="-Infinity" minWidth="500.0" onMouseClicked="#clicked" prefWidth="500.0" fx:controller="de.bixilon.minosoft.gui.main.AccountListCell">
-    <Label fx:id="playerName" layoutX="111.0" layoutY="14.0" maxWidth="200.0" minWidth="10.0" text="#Player name#" underline="true" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
-        <font>
-            <Font size="17.0" />
-        </font>
-    </Label>
-    <MenuButton fx:id="optionsMenu" layoutX="389.0" layoutY="81.0" mnemonicParsing="false" text="⋮" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
-        <items>
-            <MenuItem fx:id="optionsSelect" mnemonicParsing="false" onAction="#select" text="-Select-" />
-            <MenuItem fx:id="optionsDelete" mnemonicParsing="false" onAction="#delete" style="-fx-text-fill: red" text="-Delete-" />
-        </items>
-    </MenuButton>
-    <Label fx:id="email" layoutX="121.0" layoutY="24.0" maxWidth="200.0" minWidth="10.0" text="#Email#" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="30.0" />
-</AnchorPane>
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" onMouseClicked="#clicked" fx:id="hBox" maxHeight="50" maxWidth="Infinity" minHeight="50" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="de.bixilon.minosoft.gui.main.cells.AccountListCell">
+    <GridPane maxHeight="Infinity" maxWidth="Infinity" HBox.hgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" prefWidth="40.0"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="50.0" prefWidth="160.0"/>
+            <ColumnConstraints hgrow="NEVER" minWidth="30.0"/>
+            <ColumnConstraints hgrow="NEVER" minWidth="30.0"/>
+            <ColumnConstraints hgrow="NEVER" minWidth="30.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="NEVER"/>
+        </rowConstraints>
+        <ImageView fx:id="head" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true"/>
+        <GridPane GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="NEVER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints maxHeight="20" minHeight="20.0" prefHeight="20.0" vgrow="NEVER"/>
+                <RowConstraints maxHeight="20" minHeight="20.0" prefHeight="20.0" vgrow="NEVER"/>
+            </rowConstraints>
+            <Label fx:id="username" text="Bixilon"/>
+            <Label fx:id="type" styleClass="account-type" text="Offline" GridPane.rowIndex="1"/>
+            <GridPane.margin>
+                <Insets left="10.0"/>
+            </GridPane.margin>
+        </GridPane>
+
+        <JFXButton fx:id="selectIcon" onAction="#select" text="SELECT" GridPane.columnIndex="2">
+            <GridPane.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </GridPane.margin>
+        </JFXButton>
+        <JFXButton fx:id="infoIcon" disable="true" onAction="#info" text="INFO" GridPane.columnIndex="3">
+            <GridPane.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </GridPane.margin>
+        </JFXButton>
+        <JFXButton fx:id="logoutIcon" onAction="#logout" text="LOGOUT" GridPane.columnIndex="4">
+            <GridPane.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </GridPane.margin>
+        </JFXButton>
+    </GridPane>
+    <padding>
+        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+    </padding>
+</HBox>

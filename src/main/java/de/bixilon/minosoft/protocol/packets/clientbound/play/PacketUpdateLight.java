@@ -17,34 +17,43 @@ import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 import de.bixilon.minosoft.util.ChunkUtil;
 
-public class PacketUpdateLight implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE3;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W49A;
+
+public class PacketUpdateLight extends ClientboundPacket {
     ChunkLocation location;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
-        if (buffer.getVersionId() >= 725) {
+        this.location = new ChunkLocation(buffer.readVarInt(), buffer.readVarInt());
+        if (buffer.getVersionId() >= V_1_16_PRE3) {
             boolean trustEdges = buffer.readBoolean();
         }
-        // was a varInt before 20w45a, should we change this?
-        long skyLightMask = buffer.readVarLong();
-        long blockLightMask = buffer.readVarLong();
-        long emptyBlockLightMask = buffer.readVarLong();
-        long emptySkyLightMask = buffer.readVarLong();
+
+        long[] skyLightMask;
+        long[] blockLightMask;
+        long[] emptySkyLightMask;
+        long[] emptyBlockLightMask;
+        if (buffer.getVersionId() < V_20W49A) {
+            // was a varInt before 20w45a, should we change this?
+            skyLightMask = new long[]{buffer.readVarLong()};
+            blockLightMask = new long[]{buffer.readVarLong()};
+            emptyBlockLightMask = new long[]{buffer.readVarLong()};
+            emptySkyLightMask = new long[]{buffer.readVarLong()};
+        } else {
+            skyLightMask = buffer.readLongArray();
+            blockLightMask = buffer.readLongArray();
+            emptySkyLightMask = buffer.readLongArray();
+            emptyBlockLightMask = buffer.readLongArray();
+        }
         ChunkUtil.readSkyLightPacket(buffer, skyLightMask, blockLightMask, emptyBlockLightMask, emptySkyLightMask);
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received light update (location=%s)", location));
+        Log.protocol(String.format("[IN] Received light update (location=%s)", this.location));
     }
 }

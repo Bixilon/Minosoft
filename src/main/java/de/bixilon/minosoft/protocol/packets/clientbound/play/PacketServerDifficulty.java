@@ -17,32 +17,28 @@ import de.bixilon.minosoft.data.Difficulties;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketHandler;
 
-public class PacketServerDifficulty implements ClientboundPacket {
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W11A;
+
+public class PacketServerDifficulty extends ClientboundPacket {
     Difficulties difficulty;
     boolean locked;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        difficulty = Difficulties.byId(buffer.readByte());
-        if (buffer.getVersionId() > 464) {
-            locked = buffer.readBoolean();
+        this.difficulty = Difficulties.byId(buffer.readUnsignedByte());
+        if (buffer.getVersionId() > V_19W11A) {
+            this.locked = buffer.readBoolean();
         }
         return true;
     }
 
     @Override
-    public void handle(PacketHandler h) {
-        h.handle(this);
-    }
-
-    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received server difficulty (difficulty=%s)", difficulty));
+        Log.protocol(String.format("[IN] Received server difficulty (difficulty=%s)", this.difficulty));
     }
 
     public Difficulties getDifficulty() {
-        return difficulty;
+        return this.difficulty;
     }
 }

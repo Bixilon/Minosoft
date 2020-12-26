@@ -21,6 +21,8 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChatMessageRe
 
 import java.util.UUID;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W21A;
+
 public class ChatMessageReceivingEvent extends CancelableEvent {
     private final ChatComponent message;
     private final ChatTextPositions position;
@@ -41,17 +43,17 @@ public class ChatMessageReceivingEvent extends CancelableEvent {
     }
 
     public ChatComponent getMessage() {
-        return message;
+        return this.message;
     }
 
     public ChatTextPositions getPosition() {
-        return position;
+        return this.position;
     }
 
     /**
      * @return The uuid of the sender
      */
-    @MinimumProtocolVersion(versionId = 718)
+    @MinimumProtocolVersion(versionId = V_20W21A)
     public UUID getSender() {
         return this.sender;
     }

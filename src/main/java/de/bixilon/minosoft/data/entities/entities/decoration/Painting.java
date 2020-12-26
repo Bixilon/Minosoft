@@ -30,8 +30,8 @@ public class Painting extends Entity {
 
     public Painting(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
-        direction = Directions.NORTH;
-        motive = new Motive("kebab");
+        this.direction = Directions.NORTH;
+        this.motive = new Motive("kebab");
     }
 
     public Painting(Connection connection, int entityId, UUID uuid, BlockPosition position, Directions direction, Motive motive) {
@@ -42,11 +42,11 @@ public class Painting extends Entity {
 
     @EntityMetaDataFunction(identifier = "direction")
     public Directions getDirection() {
-        return direction;
+        return this.direction;
     }
 
     @EntityMetaDataFunction(identifier = "motive")
     public Motive getMotive() {
-        return motive;
+        return this.motive;
     }
 }

@@ -15,6 +15,8 @@ package de.bixilon.minosoft.data.mappings;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
+import java.util.Objects;
+
 public class ModIdentifier {
     protected final String mod;
     protected final String identifier;
@@ -35,22 +37,35 @@ public class ModIdentifier {
         this.identifier = split[1];
     }
 
+    public ModIdentifier(ModIdentifier identifier) {
+        this.mod = identifier.getMod();
+        this.identifier = identifier.getIdentifier();
+    }
+
+    public static ModIdentifier getIdentifier(String identifier) throws IllegalArgumentException {
+        if (!ProtocolDefinition.IDENTIFIER_PATTERN.matcher(identifier).matches()) {
+            throw new IllegalArgumentException(String.format("%s in not a valid identifier!", identifier));
+        }
+
+        return new ModIdentifier(identifier);
+
+    }
+
     public String getMod() {
-        return mod;
+        return this.mod;
     }
 
     public String getIdentifier() {
-        return identifier;
+        return this.identifier;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s:%s", mod, identifier);
+    public String getFullIdentifier() {
+        return String.format("%s:%s", this.mod, this.identifier);
     }
 
     @Override
     public int hashCode() {
-        return mod.hashCode() * identifier.hashCode();
+        return Objects.hash(this.mod, this.identifier);
     }
 
     @Override
@@ -61,7 +76,15 @@ public class ModIdentifier {
         if (hashCode() != obj.hashCode()) {
             return false;
         }
+        if (obj instanceof LegacyModIdentifier legacyModIdentifier) {
+            return getIdentifier().equals(legacyModIdentifier.getIdentifier());
+        }
         ModIdentifier their = (ModIdentifier) obj;
         return getIdentifier().equals(their.getIdentifier()) && getMod().equals(their.getMod());
+    }
+
+    @Override
+    public String toString() {
+        return getFullIdentifier();
     }
 }

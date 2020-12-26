@@ -43,11 +43,11 @@ public class CloseWindowEvent extends CancelableEvent {
     }
 
     public byte getWindowId() {
-        return windowId;
+        return this.windowId;
     }
 
     public Initiators getInitiator() {
-        return initiator;
+        return this.initiator;
     }
 
     public enum Initiators {
