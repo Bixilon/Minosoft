@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.terminal;
 
+import com.google.common.reflect.ClassPath;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownCommandParseException;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.terminal.commands.CommandStack;
-import de.bixilon.minosoft.terminal.commands.commands.*;
+import de.bixilon.minosoft.terminal.commands.commands.Command;
 import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import org.jline.reader.LineReader;
@@ -31,6 +32,7 @@ import org.jline.terminal.TerminalBuilder;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 public class CLI {
     private static final CommandRootNode ROOT_NODE;
@@ -38,10 +40,25 @@ public class CLI {
 
     static {
         ROOT_NODE = new CommandRootNode();
-        new CommandHelp().build(ROOT_NODE);
-        new CommandConnection().build(ROOT_NODE);
-        new CommandDisconnect().build(ROOT_NODE);
-        new CommandSendChat().build(ROOT_NODE);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            for (ClassPath.ClassInfo info : ClassPath.from(classLoader).getTopLevelClasses()) {
+                if (!info.getName().startsWith(Command.class.getPackageName())) {
+                    continue;
+                }
+                Class<?> clazz = info.load();
+                if (clazz == Command.class) {
+                    continue;
+                }
+                if (!Command.class.isAssignableFrom(clazz)) {
+                    continue;
+                }
+                ((Command) clazz.getConstructor().newInstance()).build(ROOT_NODE);
+            }
+
+        } catch (IOException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Connection getCurrentConnection() {
