@@ -101,7 +101,7 @@ public class AccountListCell extends ListCell<Account> implements Initializable 
 
     private void resetCell() {
         // clear all cells
-        this.hBox.getStyleClass().remove("list-cell-selected");
+        this.hBox.getStyleClass().removeAll("list-cell-selected");
         this.selectIcon.setDisable(false);
         this.head.setImage(GUITools.MINOSOFT_LOGO);
     }

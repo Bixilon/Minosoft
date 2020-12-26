@@ -223,13 +223,13 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     private void resetCell() {
         // clear all cells
         setStyle(null);
-        this.root.getStyleClass().remove("list-cell-connected");
+        this.root.getStyleClass().removeAll("list-cell-connected");
         this.motdField.getChildren().clear();
         this.brandField.setText("");
         this.brandField.setTooltip(null);
         this.motdField.setStyle(null);
         this.versionField.setText(LocaleManager.translate(Strings.CONNECTING));
-        this.versionField.getStyleClass().remove("version-error");
+        this.versionField.getStyleClass().removeAll("version-error");
         this.versionField.setStyle(null);
         this.playersField.setText("");
         this.pingField.setText("");
@@ -313,7 +313,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 // maybe we got disconnected
                 if (!this.server.isConnected()) {
                     setStyle(null);
-                    this.root.getStyleClass().remove("list-cell-connected");
+                    this.root.getStyleClass().removeAll("list-cell-connected");
                     this.optionsSessions.setDisable(true);
                     this.optionsConnect.setDisable(false);
                     return;
