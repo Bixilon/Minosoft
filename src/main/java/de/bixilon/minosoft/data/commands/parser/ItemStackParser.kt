@@ -17,12 +17,15 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidItemPredicateCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.ItemNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
+import de.bixilon.minosoft.data.inventory.Slot
+import de.bixilon.minosoft.data.mappings.Item
 import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
 class ItemStackParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Slot {
         if (this == ITEM_PREDICATE_PARSER) {
             if (stringReader.peek() != '#') {
                 throw InvalidItemPredicateCommandParseException(stringReader, stringReader.read().toString())
@@ -33,10 +36,11 @@ class ItemStackParser : CommandParser() {
         if (!connection.mapping.doesItemExist(argument.value)) {
             throw ItemNotFoundCommandParseException(stringReader, argument.key)
         }
+        var nbt: CompoundTag? = null
         if (stringReader.peek() == '{') {
-            stringReader.readNBTCompoundTag()
+            nbt = stringReader.readNBTCompoundTag()
         }
-        return null // ToDo
+        return Slot(connection.mapping, Item(argument.value.mod, argument.value.identifier), 1, nbt)
     }
 
     companion object {

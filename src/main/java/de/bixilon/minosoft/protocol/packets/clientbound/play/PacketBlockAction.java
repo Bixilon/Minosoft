@@ -52,20 +52,20 @@ public class PacketBlockAction extends ClientboundPacket {
         return true;
     }
 
-    public BlockPosition getPosition() {
-        return this.position;
-    }
-
-    public BlockAction getData() {
-        return this.data;
-    }
-
     @Override
     public void handle(Connection connection) {
         BlockActionEvent event = new BlockActionEvent(connection, this);
         if (connection.fireEvent(event)) {
             return;
         }
+    }
+
+    public BlockPosition getPosition() {
+        return this.position;
+    }
+
+    public BlockAction getData() {
+        return this.data;
     }
 
     @Override

@@ -163,6 +163,11 @@ public class Slot {
         return their.getItem().equals(getItem()) && their.getItemCount() == getItemCount() && their.getItemMetadata() == getItemMetadata();
     }
 
+    @Override
+    public String toString() {
+        return getDisplayName();
+    }
+
     public Item getItem() {
         return this.item;
     }
@@ -182,11 +187,6 @@ public class Slot {
 
     public void setItemMetadata(short itemMetadata) {
         this.itemMetadata = itemMetadata;
-    }
-
-    @Override
-    public String toString() {
-        return getDisplayName();
     }
 
     public String getDisplayName() {

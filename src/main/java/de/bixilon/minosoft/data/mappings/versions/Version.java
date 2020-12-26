@@ -96,14 +96,6 @@ public class Version {
         return getVersionId();
     }
 
-    public int getProtocolId() {
-        return this.protocolId;
-    }
-
-    public boolean isLoaded() {
-        return getMapping() != null && getMapping().isFullyLoaded();
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) {
@@ -121,5 +113,13 @@ public class Version {
     @Override
     public String toString() {
         return getVersionName();
+    }
+
+    public int getProtocolId() {
+        return this.protocolId;
+    }
+
+    public boolean isLoaded() {
+        return getMapping() != null && getMapping().isFullyLoaded();
     }
 }

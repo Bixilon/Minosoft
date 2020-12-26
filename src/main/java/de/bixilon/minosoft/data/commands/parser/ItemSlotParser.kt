@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.network.Connection
 class ItemSlotParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any {
         val slot = stringReader.readUnquotedString()
 
         if (!SLOTS.contains(slot)) {

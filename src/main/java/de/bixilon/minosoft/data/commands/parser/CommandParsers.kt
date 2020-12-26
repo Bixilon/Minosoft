@@ -40,11 +40,11 @@ object CommandParsers {
             ModIdentifier("component") to ComponentParser.COMPONENT_PARSER,
             ModIdentifier("message") to MessageParser.MESSAGE_PARSER,
             ModIdentifier("nbt") to NBTParser.NBT_PARSER,
-            // nbt_path
+            // ToDo: nbt_path
             ModIdentifier("objective") to ObjectiveParser.OBJECTIVE_PARSER,
-            // objective_criteria
+            // ToDo: objective_criteria
             ModIdentifier("operation") to OperationParser.OPERATION_PARSER,
-            // particle
+            ModIdentifier("particle") to ParticleParser.PARTICLE_PARSER,
             ModIdentifier("rotation") to RotationParser.ROTATION_PARSER,
             ModIdentifier("scoreboard_slot") to ScoreboardSlotParser.SCOREBOARD_SLOT_PARSER,
             ModIdentifier("score_holder") to ScoreHolderParser.SCORE_HOLDER_PARSER,
@@ -53,8 +53,8 @@ object CommandParsers {
             ModIdentifier("item_slot") to ItemSlotParser.ITEM_SLOT_PARSER,
             ModIdentifier("resource_location") to IdentifierParser.IDENTIFIER_PARSER,
             ModIdentifier("mob_effect") to IdentifierListParser.MOB_EFFECT_PARSER,
-            // function
-            // entity_anchor
+            // ToDo: function
+            // ToDo: entity_anchor
             ModIdentifier("range") to RangeParser.RANGE_PARSER,
             ModIdentifier("int_range") to IntRangeParser.INT_RANGE_PARSER,
             ModIdentifier("float_range") to FloatRangeParser.FLOAT_RANGE_PARSER,

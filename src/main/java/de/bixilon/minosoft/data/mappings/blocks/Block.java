@@ -61,6 +61,28 @@ public class Block extends ModIdentifier {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(this.mod, this.identifier, this.properties, this.rotation);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (hashCode() != obj.hashCode()) {
+            return false;
+        }
+        if (obj instanceof Block their) {
+            return getIdentifier().equals(their.getIdentifier()) && getRotation() == their.getRotation() && getProperties().equals(their.getProperties()) && getMod().equals(their.getMod());
+        }
+        if (obj instanceof ModIdentifier identifier) {
+            return super.equals(identifier);
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
         if (this.rotation != BlockRotations.NONE) {
@@ -81,27 +103,5 @@ public class Block extends ModIdentifier {
             out.append(")");
         }
         return String.format("%s%s", getFullIdentifier(), out);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.mod, this.identifier, this.properties, this.rotation);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (hashCode() != obj.hashCode()) {
-            return false;
-        }
-        if (obj instanceof Block their) {
-            return getIdentifier().equals(their.getIdentifier()) && getRotation() == their.getRotation() && getProperties().equals(their.getProperties()) && getMod().equals(their.getMod());
-        }
-        if (obj instanceof ModIdentifier identifier) {
-            return super.equals(identifier);
-        }
-        return false;
     }
 }

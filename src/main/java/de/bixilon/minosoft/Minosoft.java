@@ -54,8 +54,8 @@ import java.util.UUID;
 
 public final class Minosoft {
     public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
-    private static final CountUpAndDownLatch START_STATUS_LATCH = new CountUpAndDownLatch(1);
     public static final HashBiMap<Integer, Connection> CONNECTIONS = HashBiMap.create();
+    private static final CountUpAndDownLatch START_STATUS_LATCH = new CountUpAndDownLatch(1);
     public static Configuration config;
 
     public static void main(String[] args) {

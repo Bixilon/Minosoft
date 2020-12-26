@@ -67,13 +67,13 @@ public abstract class Account {
         return getId().equals(account.getId());
     }
 
-    public void saveToConfig() {
-        Minosoft.getConfig().putAccount(this);
-        Minosoft.getConfig().saveToFile();
-    }
-
     @Override
     public String toString() {
         return getId();
+    }
+
+    public void saveToConfig() {
+        Minosoft.getConfig().putAccount(this);
+        Minosoft.getConfig().saveToFile();
     }
 }

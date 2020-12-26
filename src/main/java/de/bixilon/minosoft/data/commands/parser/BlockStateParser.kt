@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.commands.parser
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.*
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
+import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.BlockRotations
 import de.bixilon.minosoft.protocol.network.Connection
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.protocol.network.Connection
 class BlockStateParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Block? {
         if (this == BLOCK_PREDICATE_PARSER) {
             if (stringReader.peek() != '#') {
                 throw InvalidBlockPredicateCommandParseException(stringReader, stringReader.read().toString())
@@ -30,6 +31,7 @@ class BlockStateParser : CommandParser() {
             stringReader.skip()
         }
         val identifier = stringReader.readModIdentifier() // ToDo: check tags
+        var block = Block(identifier.value.mod, identifier.value.identifier)
         if (!connection.mapping.doesBlockExist(identifier.value)) {
             throw BlockNotFoundCommandParseException(stringReader, identifier.key)
         }
@@ -54,14 +56,16 @@ class BlockStateParser : CommandParser() {
                 val blockProperty = blockPropertyKey[pair.value] ?: throw UnknownBlockPropertyCommandParseException(stringReader, pair.value)
                 allProperties.add(blockProperty)
             }
+            block = Block(identifier.value.mod, identifier.value.identifier, allProperties, rotation)
         }
 
         if (this == BLOCK_PREDICATE_PARSER) {
             if (stringReader.canRead() && stringReader.peek() == '{') {
                 stringReader.readNBTCompoundTag()
             }
+            return null // ToDo
         }
-        return null // ToDo
+        return block
     }
 
     companion object {

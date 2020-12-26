@@ -182,7 +182,7 @@ public class InByteBuffer {
         return this.bytes[this.position++];
     }
 
-    @IntRange(from = 0, to = ((int) Byte.MAX_VALUE) * 2)
+    @IntRange(from = 0, to = ((int) Byte.MAX_VALUE) * 2 + 1)
     public short readUnsignedByte() {
         return (short) (this.bytes[this.position++] & 0xFF);
     }

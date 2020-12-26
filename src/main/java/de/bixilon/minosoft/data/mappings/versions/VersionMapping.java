@@ -615,4 +615,13 @@ public class VersionMapping {
         return this.dimensionMap.containsValue(identifier);
     }
 
+    public boolean doesParticleExist(ModIdentifier identifier) {
+        if (this.parentMapping != null) {
+            if (this.parentMapping.doesParticleExist(identifier)) {
+                return true;
+            }
+        }
+        return this.particleIdMap.containsValue(identifier);
+    }
+
 }
