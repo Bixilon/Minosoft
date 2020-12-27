@@ -59,7 +59,7 @@ public class PacketTags extends ClientboundPacket {
     private Tag[] readTags(InByteBuffer buffer) {
         Tag[] ret = new Tag[buffer.readVarInt()];
         for (int i = 0; i < ret.length; i++) {
-            ret[i] = new Tag(buffer.readString(), buffer.readVarIntArray());
+            ret[i] = new Tag(buffer.readIdentifier(), buffer.readVarIntArray());
         }
         return ret;
     }
