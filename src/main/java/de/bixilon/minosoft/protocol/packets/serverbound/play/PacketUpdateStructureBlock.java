@@ -21,25 +21,22 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketUpdateStructureBlock implements ServerboundPacket {
-    final BlockPosition position;
-    final StructureBlockActions action;
-    final StructureBlockModes mode;
-    final String name;
-
-    final byte offsetX;
-    final byte offsetY;
-    final byte offsetZ;
-
-    final byte sizeX;
-    final byte sizeY;
-    final byte sizeZ;
-
-    final StructureBlockMirrors mirror;
-    final StructureBlockRotations rotation;
-    final String metaData;
-    final float integrity;
-    final long seed;
-    final byte flags;
+    private final BlockPosition position;
+    private final StructureBlockActions action;
+    private final StructureBlockModes mode;
+    private final String name;
+    private final byte offsetX;
+    private final byte offsetY;
+    private final byte offsetZ;
+    private final byte sizeX;
+    private final byte sizeY;
+    private final byte sizeZ;
+    private final StructureBlockMirrors mirror;
+    private final StructureBlockRotations rotation;
+    private final String metaData;
+    private final float integrity;
+    private final long seed;
+    private final byte flags;
 
     public PacketUpdateStructureBlock(BlockPosition position, StructureBlockActions action, StructureBlockModes mode, String name, byte offsetX, byte offsetY, byte offsetZ, byte sizeX, byte sizeY, byte sizeZ, StructureBlockMirrors mirror, StructureBlockRotations rotation, String metaData, float integrity, long seed, byte flags) {
         this.position = position;

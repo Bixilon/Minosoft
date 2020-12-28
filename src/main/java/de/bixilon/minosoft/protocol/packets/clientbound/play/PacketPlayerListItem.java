@@ -33,7 +33,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W19A;
 
 public class PacketPlayerListItem extends ClientboundPacket {
-    final ArrayList<PlayerListItemBulk> playerList = new ArrayList<>();
+    private final ArrayList<PlayerListItemBulk> playerList = new ArrayList<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {

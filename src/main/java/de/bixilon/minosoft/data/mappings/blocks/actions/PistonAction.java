@@ -16,8 +16,8 @@ package de.bixilon.minosoft.data.mappings.blocks.actions;
 import de.bixilon.minosoft.data.Directions;
 
 public class PistonAction implements BlockAction {
-    final PistonStates status;
-    final Directions direction;
+    private final PistonStates status;
+    private final Directions direction;
 
     public PistonAction(short status, short direction) {
         this.status = PistonStates.byId(status);

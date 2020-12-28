@@ -17,7 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 public class DoubleTag extends NBTTag {
-    final double value;
+    private final double value;
 
     public DoubleTag(double value) {
         this.value = value;

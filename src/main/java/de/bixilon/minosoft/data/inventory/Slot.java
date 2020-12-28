@@ -28,9 +28,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Slot {
-    final Item item;
-    final HashMap<Enchantment, Integer> enchantments = new HashMap<>();
-    final ArrayList<ChatComponent> lore = new ArrayList<>();
+    private final Item item;
+    private final HashMap<Enchantment, Integer> enchantments = new HashMap<>();
+    private final ArrayList<ChatComponent> lore = new ArrayList<>();
     int itemCount;
     short itemMetadata;
     int repairCost;

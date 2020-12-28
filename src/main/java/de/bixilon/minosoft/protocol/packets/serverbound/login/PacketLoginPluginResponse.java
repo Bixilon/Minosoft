@@ -20,8 +20,8 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketLoginPluginResponse implements ServerboundPacket {
-    final int messageId;
-    final boolean successful;
+    private final int messageId;
+    private final boolean successful;
     byte[] data;
 
     public PacketLoginPluginResponse(int messageId, boolean successful) {

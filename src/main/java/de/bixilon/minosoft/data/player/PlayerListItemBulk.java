@@ -22,16 +22,16 @@ import java.util.UUID;
 
 // The holder for the data on <tab>
 public class PlayerListItemBulk {
-    // required fields
-    final UUID uuid;
-    final String name;
-    final boolean legacy;
-    final int ping;
+    // required fieldsp
+    private final UUID uuid;
+    private final String name;
+    private final boolean legacy;
+    private final int ping;
     // optional fields
-    final GameModes gameMode;
-    final ChatComponent displayName;
-    final HashMap<PlayerProperties, PlayerProperty> properties;
-    final PacketPlayerListItem.PlayerListItemActions action;
+    private final GameModes gameMode;
+    private final ChatComponent displayName;
+    private final HashMap<PlayerProperties, PlayerProperty> properties;
+    private final PacketPlayerListItem.PlayerListItemActions action;
 
     public PlayerListItemBulk(String name, int ping, PacketPlayerListItem.PlayerListItemActions action) {
         this.action = action;

@@ -24,9 +24,9 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W33A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 
 public class PacketTabCompleteSending implements ServerboundPacket {
-    final String text;
-    final BlockPosition position;
-    final boolean assumeCommand;
+    private final String text;
+    private final BlockPosition position;
+    private final boolean assumeCommand;
 
     public PacketTabCompleteSending(String text) {
         this.text = text;

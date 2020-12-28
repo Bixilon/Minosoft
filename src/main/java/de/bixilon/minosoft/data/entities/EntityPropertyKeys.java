@@ -32,7 +32,7 @@ public enum EntityPropertyKeys {
         }
     }
 
-    final String identifier;
+    private final String identifier;
 
     EntityPropertyKeys(String identifier) {
         this.identifier = identifier;

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.player.advancements;
 import java.util.HashMap;
 
 public class AdvancementProgress {
-    final HashMap<String, CriterionProgress> progress;
+    private final HashMap<String, CriterionProgress> progress;
 
     public AdvancementProgress(HashMap<String, CriterionProgress> progress) {
         this.progress = progress;

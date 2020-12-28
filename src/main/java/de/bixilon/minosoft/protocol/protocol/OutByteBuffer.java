@@ -28,9 +28,9 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class OutByteBuffer {
-    final ArrayList<Byte> bytes;
-    final Connection connection;
-    final int versionId;
+    private final ArrayList<Byte> bytes;
+    private final Connection connection;
+    private final int versionId;
 
     public OutByteBuffer(Connection connection) {
         this.bytes = new ArrayList<>();

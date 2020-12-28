@@ -20,8 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketChatMessageSending implements ServerboundPacket {
-
-    final String message;
+private final String message;
 
     public PacketChatMessageSending(String message) {
         this.message = message;

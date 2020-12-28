@@ -25,8 +25,8 @@ import java.util.HashMap;
  * Collection of chunks
  */
 public class World {
-    final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
-    final HashMap<Integer, Entity> entities = new HashMap<>();
+    private final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
+    private final HashMap<Integer, Entity> entities = new HashMap<>();
     boolean hardcore;
     boolean raining;
     Dimension dimension; // used for sky color, etc

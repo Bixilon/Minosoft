@@ -153,7 +153,7 @@ public class PacketEffect extends ClientboundPacket {
         END_GATEWAY_SPAWN(Map.of(V_1_9_4, 3000)),
         MOB_ENDER_DRAGON_GROWL(Map.of(V_1_9_4, 3001));
 
-        final VersionValueMap<Integer> valueMap;
+   private final VersionValueMap<Integer> valueMap;
 
         EffectEffects(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);

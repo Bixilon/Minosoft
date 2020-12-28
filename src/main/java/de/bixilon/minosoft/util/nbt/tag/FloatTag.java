@@ -17,7 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 public class FloatTag extends NBTTag {
-    final float value;
+    private final float value;
 
     public FloatTag(float value) {
         this.value = value;

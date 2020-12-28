@@ -16,10 +16,10 @@ package de.bixilon.minosoft.data.inventory;
 import de.bixilon.minosoft.data.text.ChatComponent;
 
 public class InventoryProperties {
-    final int windowId;
-    final InventoryTypes type;
-    final ChatComponent title;
-    final byte slotCount;
+    private final int windowId;
+    private final InventoryTypes type;
+    private final ChatComponent title;
+    private final byte slotCount;
 
     public InventoryProperties(int windowId, InventoryTypes type, ChatComponent title, byte slotCount) {
         this.windowId = windowId;

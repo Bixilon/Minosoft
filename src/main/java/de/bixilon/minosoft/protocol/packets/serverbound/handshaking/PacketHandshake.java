@@ -23,10 +23,9 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.ServerAddress;
 
 public class PacketHandshake implements ServerboundPacket {
-
-    final ServerAddress address;
-    final ConnectionStates nextState;
-    final int version;
+    private final ServerAddress address;
+    private final ConnectionStates nextState;
+    private final int version;
 
     public PacketHandshake(ServerAddress address, ConnectionStates nextState, int protocolId) {
         this.address = address;

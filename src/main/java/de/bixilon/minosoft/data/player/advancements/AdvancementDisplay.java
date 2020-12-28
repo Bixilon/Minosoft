@@ -18,14 +18,14 @@ import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.util.BitByte;
 
 public class AdvancementDisplay {
-    final ChatComponent title;
-    final ChatComponent description;
-    final Slot icon;
-    final AdvancementFrameTypes frameType;
-    final int flags;
-    final String backgroundTexture;
-    final float x;
-    final float y;
+    private final ChatComponent title;
+    private final ChatComponent description;
+    private final Slot icon;
+    private final AdvancementFrameTypes frameType;
+    private final int flags;
+    private final String backgroundTexture;
+    private final float x;
+    private final float y;
 
     public AdvancementDisplay(ChatComponent title, ChatComponent description, Slot icon, AdvancementFrameTypes frameType, int flags, String backgroundTexture, float x, float y) {
         this.title = title;

@@ -21,10 +21,10 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import java.util.HashMap;
 
 public class Version {
-    final int versionId;
-    final int protocolId;
-    final HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
-    final HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
+    private final int versionId;
+    private final int protocolId;
+    private final HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
+    private final HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
     String versionName;
     VersionMapping mapping;
     boolean isGettingLoaded;

@@ -20,8 +20,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.HashMap;
 
 public class VelocityHandler {
-    final Connection connection;
-    final HashMap<Entity, Velocity> entities = new HashMap<>();
+    private final Connection connection;
+    private final HashMap<Entity, Velocity> entities = new HashMap<>();
 
     public VelocityHandler(Connection connection) {
         this.connection = connection;

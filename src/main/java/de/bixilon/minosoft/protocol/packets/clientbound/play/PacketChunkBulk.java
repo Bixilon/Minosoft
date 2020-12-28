@@ -29,7 +29,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W28A;
 
 public class PacketChunkBulk extends ClientboundPacket {
-    final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
+    private final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {

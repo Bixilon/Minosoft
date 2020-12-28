@@ -24,7 +24,7 @@ import java.util.HashMap;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W47A;
 
 public class PacketStatistics extends ClientboundPacket {
-    final HashMap<Statistic, Integer> statistics = new HashMap<>();
+    private final HashMap<Statistic, Integer> statistics = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {

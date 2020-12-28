@@ -448,8 +448,8 @@ public enum BlockProperties {
         }
     }
 
-    final String group;
-    final String value;
+    private final String group;
+    private final String value;
 
     BlockProperties() {
         final String name = name();

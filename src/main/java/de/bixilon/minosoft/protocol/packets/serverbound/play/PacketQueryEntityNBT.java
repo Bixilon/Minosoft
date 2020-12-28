@@ -20,8 +20,8 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketQueryEntityNBT implements ServerboundPacket {
-    final int transactionId;
-    final int entityId;
+    private final int transactionId;
+    private final int entityId;
 
     public PacketQueryEntityNBT(int transactionId, int entityId) {
         this.transactionId = transactionId;

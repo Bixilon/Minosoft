@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PacketAdvancements extends ClientboundPacket {
-    final HashMap<String, Advancement> advancements = new HashMap<>();
-    final HashMap<String, AdvancementProgress> progresses = new HashMap<>();
+    private final HashMap<String, Advancement> advancements = new HashMap<>();
+    private final HashMap<String, AdvancementProgress> progresses = new HashMap<>();
     boolean reset;
     String[] toRemove;
 

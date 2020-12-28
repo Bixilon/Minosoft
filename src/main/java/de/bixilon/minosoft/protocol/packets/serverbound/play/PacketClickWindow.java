@@ -22,12 +22,11 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketClickWindow implements ServerboundPacket {
-
-    final byte windowId;
-    final short slot;
-    final InventoryActions action;
-    final short actionNumber;
-    final Slot clickedItem;
+    private final byte windowId;
+    private final short slot;
+    private final InventoryActions action;
+    private final short actionNumber;
+    private final Slot clickedItem;
 
     public PacketClickWindow(byte windowId, short slot, InventoryActions action, short actionNumber, Slot clickedItem) {
         this.windowId = windowId;

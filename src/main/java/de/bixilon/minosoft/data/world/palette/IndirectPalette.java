@@ -23,8 +23,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import java.util.HashMap;
 
 public class IndirectPalette implements Palette {
-    final HashMap<Integer, Integer> map = new HashMap<>();
-    final byte bitsPerBlock;
+    private final HashMap<Integer, Integer> map = new HashMap<>();
+    private final byte bitsPerBlock;
     int versionId;
     VersionMapping mapping;
 

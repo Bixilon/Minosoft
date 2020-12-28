@@ -20,9 +20,8 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketWindowClickButton implements ServerboundPacket {
-
-    final byte windowId;
-    final byte buttonId; // up, middle, bottom (0, 1, 2); in later versions: lectern page, etc
+    private final byte windowId;
+    private final byte buttonId; // up, middle, bottom (0, 1, 2); in later versions: lectern page, etc
 
     public PacketWindowClickButton(byte windowId, byte buttonId) {
         this.windowId = windowId;

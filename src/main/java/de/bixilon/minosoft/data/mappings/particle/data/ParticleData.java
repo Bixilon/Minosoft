@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.mappings.particle.data;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 
 public class ParticleData {
-    final Particle type;
+    private final Particle type;
 
     public ParticleData(Particle type) {
         this.type = type;

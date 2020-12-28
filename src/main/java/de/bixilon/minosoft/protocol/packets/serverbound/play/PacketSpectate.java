@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import java.util.UUID;
 
 public class PacketSpectate implements ServerboundPacket {
-    final UUID entityUUID;
+    private final UUID entityUUID;
 
     public PacketSpectate(UUID entityUUID) {
         this.entityUUID = entityUUID;

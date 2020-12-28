@@ -22,11 +22,10 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketSteerVehicle implements ServerboundPacket {
-
-    final float sideways;
-    final float forward;
-    final boolean jump;
-    final boolean unmount;
+    private final float sideways;
+    private final float forward;
+    private final boolean jump;
+    private final boolean unmount;
 
     public PacketSteerVehicle(float sideways, float forward, boolean jump, boolean unmount) {
         this.sideways = sideways;

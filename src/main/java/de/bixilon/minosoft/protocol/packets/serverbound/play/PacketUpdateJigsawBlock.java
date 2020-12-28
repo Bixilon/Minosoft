@@ -23,9 +23,9 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W13A;
 
 public class PacketUpdateJigsawBlock implements ServerboundPacket {
-    final BlockPosition position;
-    final String targetPool;
-    final String finalState;
+    private final BlockPosition position;
+    private final String targetPool;
+    private final String finalState;
     String attachmentType;
     String name;
     String target;

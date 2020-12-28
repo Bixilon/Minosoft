@@ -20,8 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketNameItem implements ServerboundPacket {
-
-    final String name;
+private final String name;
 
     public PacketNameItem(String name) {
         this.name = name;

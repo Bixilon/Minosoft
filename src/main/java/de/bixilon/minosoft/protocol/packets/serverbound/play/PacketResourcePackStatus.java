@@ -22,8 +22,8 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_10_PRE1;
 
 public class PacketResourcePackStatus implements ServerboundPacket {
-    final String hash;
-    final ResourcePackStates status;
+    private final String hash;
+    private final ResourcePackStates status;
 
     public PacketResourcePackStatus(String hash, ResourcePackStates status) {
         this.hash = hash;

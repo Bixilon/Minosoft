@@ -20,11 +20,11 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketVehicleMovement implements ServerboundPacket {
-    final double x;
-    final double y;
-    final double z;
-    final float yaw;
-    final float pitch;
+    private final double x;
+    private final double y;
+    private final double z;
+    private final float yaw;
+    private final float pitch;
 
     public PacketVehicleMovement(double x, double y, double z, float yaw, float pitch) {
         this.x = x;

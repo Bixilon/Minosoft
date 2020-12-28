@@ -16,10 +16,10 @@ package de.bixilon.minosoft.data.mappings.particle.data;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 
 public class DustParticleData extends ParticleData {
-    final float red;
-    final float green;
-    final float blue;
-    final float scale;
+    private final float red;
+    private final float green;
+    private final float blue;
+    private final float scale;
 
     public DustParticleData(float red, float green, float blue, float scale, Particle type) {
         super(type);

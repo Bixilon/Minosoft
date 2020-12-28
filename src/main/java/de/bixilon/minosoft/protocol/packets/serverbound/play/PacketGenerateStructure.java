@@ -23,9 +23,9 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W22A;
 
 public class PacketGenerateStructure implements ServerboundPacket {
-    final BlockPosition position;
-    final int levels;
-    final boolean keepJigsaw;
+    private final BlockPosition position;
+    private final int levels;
+    private final boolean keepJigsaw;
 
     public PacketGenerateStructure(BlockPosition position, int levels, boolean keepJigsaw) {
         this.position = position;

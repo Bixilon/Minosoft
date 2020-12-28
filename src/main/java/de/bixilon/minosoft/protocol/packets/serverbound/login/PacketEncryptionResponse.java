@@ -24,10 +24,9 @@ import javax.crypto.SecretKey;
 import java.security.PublicKey;
 
 public class PacketEncryptionResponse implements ServerboundPacket {
-
-    final byte[] secret;
-    final byte[] token;
-    final SecretKey secretKey;
+    private final byte[] secret;
+    private final byte[] token;
+    private final SecretKey secretKey;
 
     public PacketEncryptionResponse(SecretKey secret, byte[] token, PublicKey key) {
         this.secretKey = secret;

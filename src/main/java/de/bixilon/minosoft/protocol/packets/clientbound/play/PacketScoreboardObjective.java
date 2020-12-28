@@ -101,7 +101,7 @@ public class PacketScoreboardObjective extends ClientboundPacket {
         HEARTS("hearts");
 
         private static final ScoreboardObjectiveTypes[] SCOREBOARD_OBJECTIVE_TYPES = values();
-        final String name;
+        private final String name;
 
         ScoreboardObjectiveTypes(String name) {
             this.name = name;

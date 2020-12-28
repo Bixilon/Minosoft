@@ -21,8 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketLoginStart implements ServerboundPacket {
-
-    final String username;
+private final String username;
 
     public PacketLoginStart(Player p) {
         this.username = p.getPlayerName();

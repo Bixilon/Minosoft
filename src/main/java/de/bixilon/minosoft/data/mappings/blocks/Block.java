@@ -19,8 +19,8 @@ import java.util.HashSet;
 import java.util.Objects;
 
 public class Block extends ModIdentifier {
-    final BlockRotations rotation;
-    final HashSet<BlockProperties> properties;
+    private final BlockRotations rotation;
+    private final HashSet<BlockProperties> properties;
 
     public Block(String mod, String identifier, HashSet<BlockProperties> properties, BlockRotations rotation) {
         super(mod, identifier);
