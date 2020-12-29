@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
+import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
@@ -114,6 +115,8 @@ public class PacketChunkData extends ClientboundPacket {
     @Override
     public void handle(Connection connection) {
         getBlockEntities().forEach(((position, compoundTag) -> connection.fireEvent(new BlockEntityMetaDataChangeEvent(connection, position, null, compoundTag))));
+        VersionTweaker.transformChunk(this.chunk, connection.getVersion().getVersionId());
+
         connection.fireEvent(new ChunkDataChangeEvent(connection, this));
 
         connection.getPlayer().getWorld().setChunk(getLocation(), getChunk());

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.logging.Log;
@@ -50,7 +51,14 @@ public class PacketBlockChange extends ClientboundPacket {
         }
         connection.fireEvent(new BlockChangeEvent(connection, this));
 
-        chunk.setBlock(getPosition().getInChunkLocation(), getBlock());
+
+        // tweak
+        if (!connection.getVersion().isFlattened()) {
+            Block block = VersionTweaker.transformBlock(getBlock(), chunk, getPosition().getInChunkLocation());
+            chunk.setBlock(getPosition().getInChunkLocation(), block);
+        } else {
+            chunk.setBlock(getPosition().getInChunkLocation(), getBlock());
+        }
     }
 
     @Override

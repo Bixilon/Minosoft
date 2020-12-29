@@ -20,10 +20,12 @@ import java.util.Objects;
 public class ModIdentifier {
     protected final String mod;
     protected final String identifier;
+    public final String fullIdentifier;
 
     public ModIdentifier(String mod, String identifier) {
         this.mod = mod;
         this.identifier = identifier;
+        this.fullIdentifier = mod + ":" + identifier;
     }
 
     public ModIdentifier(String fullIdentifier) {
@@ -31,15 +33,17 @@ public class ModIdentifier {
         if (split.length == 1) {
             this.mod = ProtocolDefinition.DEFAULT_MOD;
             this.identifier = fullIdentifier;
-            return;
+        } else {
+            this.mod = split[0];
+            this.identifier = split[1];
         }
-        this.mod = split[0];
-        this.identifier = split[1];
+        this.fullIdentifier = this.mod + ":" + this.identifier;
     }
 
     public ModIdentifier(ModIdentifier identifier) {
         this.mod = identifier.getMod();
         this.identifier = identifier.getIdentifier();
+        this.fullIdentifier = identifier.getFullIdentifier();
     }
 
     public static ModIdentifier getIdentifier(String identifier) throws IllegalArgumentException {
@@ -60,7 +64,7 @@ public class ModIdentifier {
     }
 
     public String getFullIdentifier() {
-        return String.format("%s:%s", this.mod, this.identifier);
+        return this.fullIdentifier;
     }
 
     @Override

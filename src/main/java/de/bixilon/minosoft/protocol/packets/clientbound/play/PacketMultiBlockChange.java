@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.data.world.InChunkLocation;
@@ -24,6 +25,7 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
@@ -86,6 +88,17 @@ public class PacketMultiBlockChange extends ClientboundPacket {
         }
         connection.fireEvent(new MultiBlockChangeEvent(connection, this));
         chunk.setBlocks(getBlocks());
+
+        // tweak
+        if (!connection.getVersion().isFlattened()) {
+            for (Map.Entry<InChunkLocation, Block> entry : getBlocks().entrySet()) {
+                Block block = VersionTweaker.transformBlock(entry.getValue(), chunk, entry.getKey());
+                if (block == entry.getValue()) {
+                    continue;
+                }
+                chunk.setBlock(entry.getKey(), block);
+            }
+        }
     }
 
     @Override

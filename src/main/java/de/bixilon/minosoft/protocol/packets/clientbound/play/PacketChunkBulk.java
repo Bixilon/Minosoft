@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.logging.Log;
@@ -78,6 +79,8 @@ public class PacketChunkBulk extends ClientboundPacket {
 
     @Override
     public void handle(Connection connection) {
+        this.chunks.values().forEach((chunk) -> VersionTweaker.transformChunk(chunk, connection.getVersion().getVersionId()));
+
         getChunks().forEach(((location, chunk) -> connection.fireEvent(new ChunkDataChangeEvent(connection, location, chunk))));
 
         connection.getPlayer().getWorld().setChunks(getChunks());
