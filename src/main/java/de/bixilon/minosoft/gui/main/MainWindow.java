@@ -19,6 +19,7 @@ import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RequiredFieldValidator;
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
@@ -83,7 +84,7 @@ public class MainWindow implements Initializable {
                     JFXButton cancel = new JFXButton(ButtonType.CANCEL.getText());
                     cancel.setOnAction((actionEvent -> alert.close()));
                     JFXButton close = new JFXButton(ButtonType.OK.getText());
-                    close.setOnAction(actionEvent -> System.exit(0));
+                    close.setOnAction(actionEvent -> Minosoft.shutdown(ShutdownReasons.NO_ACCOUNT_SELECTED));
 
                     layout.setActions(cancel, close);
                     alert.setContent(layout);
@@ -257,7 +258,7 @@ public class MainWindow implements Initializable {
 
     @FXML
     public void quit() {
-        System.exit(0);
+        Minosoft.shutdown(ShutdownReasons.REQUESTED_BY_USER);
     }
 
     public void refreshServers() {

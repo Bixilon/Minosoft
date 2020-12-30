@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.terminal;
 
 import com.google.common.reflect.ClassPath;
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
@@ -91,7 +93,7 @@ public class CLI {
                         try {
                             line = reader.readLine().replaceAll("\\s{2,}", "");
                         } catch (UserInterruptException e) {
-                            System.exit(0);
+                            Minosoft.shutdown(e.getMessage(), ShutdownReasons.REQUESTED_BY_USER);
                             return;
                         }
                         terminal.flush();
@@ -101,22 +103,15 @@ public class CLI {
                         ROOT_NODE.execute(currentConnection, new CommandStringReader(line), new CommandStack());
 
 
+                    } catch (CLIException | CommandParseException exception) {
+                        Command.printError("--> " + exception.getMessage());
+                        if (exception instanceof UnknownCommandParseException) {
+                            Command.printError("Type help for a command list!");
+                        }
+                    } catch (UserInterruptException exception) {
+                        Minosoft.shutdown(exception.getMessage(), ShutdownReasons.REQUESTED_BY_USER);
                     } catch (Exception exception) {
-                        if (exception instanceof CommandParseException) {
-                            Command.printError("--> " + exception.getMessage());
-                            if (exception instanceof UnknownCommandParseException) {
-                                Command.printError("Type help for a command list!");
-                            }
-                            continue;
-                        }
-                        if (exception instanceof CLIException) {
-                            Command.printError("--> " + exception.getMessage());
-                            continue;
-                        }
                         exception.printStackTrace();
-                        if (exception instanceof UserInterruptException) {
-                            System.exit(0);
-                        }
                     }
                 }
             } catch (IOException e) {

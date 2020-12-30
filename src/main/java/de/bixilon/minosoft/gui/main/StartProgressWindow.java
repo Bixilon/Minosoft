@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.main;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXProgressBar;
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.logging.Log;
@@ -67,7 +69,7 @@ public class StartProgressWindow extends Application {
 
                 Stage stage = (Stage) progressDialog.getDialogPane().getScene().getWindow();
                 stage.initModality(Modality.APPLICATION_MODAL);
-                stage.setOnCloseRequest((request) -> System.exit(0));
+                stage.setOnCloseRequest((request) -> Minosoft.shutdown(ShutdownReasons.REQUESTED_BY_USER));
                 if (exit) {
                     return;
                 }

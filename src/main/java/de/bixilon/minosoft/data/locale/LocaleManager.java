@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.locale;
 
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.Util;
@@ -57,8 +59,7 @@ public class LocaleManager {
                 fallbackLanguage = loadLanguage("en_US");
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.fatal("Could not load fallback language file (en_US). Exiting...");
-                System.exit(1);
+                Minosoft.shutdown("Could not load fallback language file (en_US). Exiting...", ShutdownReasons.CRITICAL_EXCEPTION);
             }
         }
         try {

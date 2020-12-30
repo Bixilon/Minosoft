@@ -57,16 +57,19 @@ public final class Minosoft {
     public static final HashBiMap<Integer, Connection> CONNECTIONS = HashBiMap.create();
     private static final CountUpAndDownLatch START_STATUS_LATCH = new CountUpAndDownLatch(1);
     public static Configuration config;
+    private static boolean isExiting;
 
     public static void main(String[] args) {
         MinosoftCommandLineArguments.parseCommandLineArguments(args);
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown(ShutdownReasons.UNKNOWN), "ShutdownHook"));
+
         Log.info("Starting...");
         AsyncTaskWorker taskWorker = new AsyncTaskWorker("StartUp");
 
         taskWorker.setFatalError((exception) -> {
             Log.fatal("Critical error occurred while preparing. Exit");
             if (StaticConfiguration.HEADLESS_MODE) {
-                System.exit(1);
+                shutdown(exception.getMessage(), ShutdownReasons.CRITICAL_EXCEPTION);
                 return;
             }
             try {
@@ -76,7 +79,7 @@ public final class Minosoft {
                 StartProgressWindow.TOOLKIT_LATCH.await();
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                System.exit(1);
+                shutdown(e.getMessage(), ShutdownReasons.CRITICAL_EXCEPTION);
             }
             // hide all other gui parts
             StartProgressWindow.hideDialog();
@@ -99,10 +102,10 @@ public final class Minosoft {
                 stage.setOnCloseRequest(dialogEvent -> {
                     dialog.setResult(Boolean.TRUE);
                     dialog.close();
-                    System.exit(1);
+                    shutdown(exception.getMessage(), ShutdownReasons.CRITICAL_EXCEPTION);
                 });
                 dialog.showAndWait();
-                System.exit(1);
+                shutdown(exception.getMessage(), ShutdownReasons.CRITICAL_EXCEPTION);
             });
         });
         taskWorker.addTask(new Task(progress -> {
@@ -239,6 +242,33 @@ public final class Minosoft {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void shutdown(String message, ShutdownReasons reason) {
+        if (isExiting) {
+            return;
+        }
+        if (message == null) {
+            message = "Unknown :(";
+        }
+        if (reason != ShutdownReasons.CLI_HELP && reason != ShutdownReasons.CLI_WRONG_PARAMETER) {
+            Log.info("Exiting (reason=%s): %s", reason, message);
+
+            // disconnect from all servers
+            for (Object connection : CONNECTIONS.values().toArray()) {
+                ((Connection) connection).disconnect();
+            }
+            Log.info("Disconnected from all connections!");
+            if (Thread.currentThread().getName().equals("ShutdownHook")) {
+                return;
+            }
+        }
+        isExiting = true;
+        System.exit(reason.getExitCode());
+    }
+
+    public static void shutdown(ShutdownReasons reason) {
+        shutdown(null, reason);
     }
 
     public static CountUpAndDownLatch getStartStatusLatch() {
