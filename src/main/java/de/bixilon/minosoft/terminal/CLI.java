@@ -89,7 +89,7 @@ public class CLI {
                     try {
                         String line;
                         try {
-                            line = reader.readLine().trim();
+                            line = reader.readLine().replaceAll("\\s{2,}", "");
                         } catch (UserInterruptException e) {
                             System.exit(0);
                             return;

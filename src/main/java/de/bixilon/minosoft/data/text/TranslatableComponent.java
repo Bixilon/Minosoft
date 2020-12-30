@@ -21,6 +21,7 @@ import javafx.scene.Node;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TranslatableComponent extends ChatComponent {
     private final ArrayList<ChatComponent> data = new ArrayList<>();
@@ -105,7 +106,12 @@ public class TranslatableComponent extends ChatComponent {
                 }
                 return builder.toString();
             }
-            return MinecraftLocaleManager.translate(this.key, data);
+            String text = MinecraftLocaleManager.translate(this.key, data);
+            if (text == null) {
+                // Error, can not translate
+                text = "{invalid=true, key=" + this.key + ", data=" + Arrays.toString(data);
+            }
+            return text;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

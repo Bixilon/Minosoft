@@ -35,7 +35,7 @@ public class ListTag extends NBTTag {
 
 
     public ListTag() {
-        this.type = TagTypes.BYTE; // idk, default value?
+        this.type = null;
         this.list = new ArrayList<>();
     }
 
@@ -67,6 +67,9 @@ public class ListTag extends NBTTag {
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
+        if (this.type == null) {
+            this.type = TagTypes.BYTE; // idk, default value?
+        }
         new ByteTag((byte) this.type.ordinal()).writeBytes(buffer);
 
         new IntTag(this.list.size()).writeBytes(buffer);

@@ -269,6 +269,7 @@ public class CommandStringReader {
             }
             if (isNextCharEscaped) {
                 builder.append(read);
+                isNextCharEscaped = false;
                 continue;
             }
 
