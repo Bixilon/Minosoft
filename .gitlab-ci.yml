@@ -9,9 +9,9 @@ cache:
     - .m2/repository
 
 stages:
-  - verify
+  - build
 
-verify:
-  stage: verify
+build:
+  stage: build
   script:
     - 'mvn $MAVEN_CLI_OPTS verify'
