@@ -23,11 +23,12 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public abstract class AbstractPiglin extends Monster {
+
     public AbstractPiglin(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "isImmuneToZombification")
+    @EntityMetaDataFunction(identifier = "Is immune to zombification")
     public boolean isImmuneToZombification() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ABSTRACT_PIGLIN_IMMUNE_TO_ZOMBIFICATION);
     }

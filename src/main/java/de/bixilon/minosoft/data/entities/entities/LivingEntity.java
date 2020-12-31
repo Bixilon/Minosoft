@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public abstract class LivingEntity extends Entity {
+
     public LivingEntity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
@@ -33,47 +34,47 @@ public abstract class LivingEntity extends Entity {
     }
 
     // = isUsingItem
-    @EntityMetaDataFunction(identifier = "isHandActive")
+    @EntityMetaDataFunction(identifier = "Is hand active")
     public boolean isHandActive() {
         return getLivingEntityFlag(0x01);
     }
 
-    @EntityMetaDataFunction(identifier = "mainHand")
+    @EntityMetaDataFunction(identifier = "Main hand")
     public Hands getMainHand() {
         return getLivingEntityFlag(0x04) ? Hands.OFF_HAND : Hands.MAIN_HAND;
     }
 
-    @EntityMetaDataFunction(identifier = "isAutoSpinAttack")
+    @EntityMetaDataFunction(identifier = "Is auto spin attack")
     public boolean isAutoSpinAttack() {
         return getLivingEntityFlag(0x04);
     }
 
-    @EntityMetaDataFunction(identifier = "health")
+    @EntityMetaDataFunction(identifier = "Health")
     public float getHealth() {
         return this.metaData.getSets().getFloat(EntityMetaDataFields.LIVING_ENTITY_HEALTH);
     }
 
-    @EntityMetaDataFunction(identifier = "effectColor")
+    @EntityMetaDataFunction(identifier = "Effect color")
     public int getEffectColor() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_EFFECT_COLOR);
     }
 
-    @EntityMetaDataFunction(identifier = "isEffectAmbient")
+    @EntityMetaDataFunction(identifier = "Is effect ambient")
     public boolean getEffectAmbient() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.LIVING_ENTITY_EFFECT_AMBIENCE);
     }
 
-    @EntityMetaDataFunction(identifier = "arrowsInEntity")
+    @EntityMetaDataFunction(identifier = "Arrows in entity")
     public int getArrowCount() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ARROW_COUNT);
     }
 
-    @EntityMetaDataFunction(identifier = "absorptionHearts")
+    @EntityMetaDataFunction(identifier = "Absorption hearts")
     public int getAbsorptionHearts() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ABSORPTION_HEARTS);
     }
 
-    @EntityMetaDataFunction(identifier = "bedLocation")
+    @EntityMetaDataFunction(identifier = "Bed location")
     @Nullable
     public BlockPosition getBedLocation() {
         return this.metaData.getSets().getPosition(EntityMetaDataFields.LIVING_ENTITY_BED_POSITION);

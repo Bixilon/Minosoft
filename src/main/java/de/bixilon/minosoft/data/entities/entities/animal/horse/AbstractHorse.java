@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public abstract class AbstractHorse extends Animal {
+
     public AbstractHorse(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
@@ -32,36 +33,37 @@ public abstract class AbstractHorse extends Animal {
         return this.metaData.getSets().getBitMask(EntityMetaDataFields.ABSTRACT_HORSE_FLAGS, bitMask);
     }
 
-    @EntityMetaDataFunction(identifier = "isTame")
+    @EntityMetaDataFunction(identifier = "Is tame")
     public boolean isTame() {
         return getAbstractHorseFlag(0x02);
     }
 
-    @EntityMetaDataFunction(identifier = "isSaddled")
+    @EntityMetaDataFunction(identifier = "Is saddled")
     public boolean isSaddled() {
         return getAbstractHorseFlag(0x04);
     }
 
-    @EntityMetaDataFunction(identifier = "hasBred")
+    @EntityMetaDataFunction(identifier = "Has bred")
     public boolean hasBred() {
         return getAbstractHorseFlag(0x08);
     }
 
-    @EntityMetaDataFunction(identifier = "isEating")
+    @EntityMetaDataFunction(identifier = "Is eating")
     public boolean isEating() {
         return getAbstractHorseFlag(0x10);
     }
 
-    @EntityMetaDataFunction(identifier = "isRearing")
+    @EntityMetaDataFunction(identifier = "Is rearing")
     public boolean isRearing() {
         return getAbstractHorseFlag(0x20);
     }
 
-    @EntityMetaDataFunction(identifier = "isMouthOpen")
+    @EntityMetaDataFunction(identifier = "Is mouth open")
     public boolean isMouthOpen() {
         return getAbstractHorseFlag(0x40);
     }
 
+    @EntityMetaDataFunction(identifier = "Owner UUID")
     @Nullable
     public UUID getOwner() {
         return this.metaData.getSets().getUUID(EntityMetaDataFields.ABSTRACT_HORSE_OWNER_UUID);

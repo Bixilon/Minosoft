@@ -31,7 +31,7 @@ public class SnowGolem extends AbstractGolem {
         return this.metaData.getSets().getBitMask(EntityMetaDataFields.SNOW_GOLEM_FLAGS, bitMask);
     }
 
-    @EntityMetaDataFunction(identifier = "pumpkinHat")
+    @EntityMetaDataFunction(identifier = "Pumpkin hat")
     public boolean hasPumpkinHat() {
         return getPumpkinFlags(0x10);
     }

@@ -23,11 +23,12 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public abstract class ThrowableItemProjectile extends ThrowableProjectile {
+
     public ThrowableItemProjectile(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "item")
+    @EntityMetaDataFunction(identifier = "Item")
     public Slot getItem() {
         Slot slot = this.metaData.getSets().getSlot(EntityMetaDataFields.THROWABLE_ITEM_PROJECTILE_ITEM);
         if (slot == null) {

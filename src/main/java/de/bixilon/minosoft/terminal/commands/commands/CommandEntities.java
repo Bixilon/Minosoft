@@ -48,15 +48,15 @@ public class CommandEntities extends Command {
                             }
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
-                            tableData.add(new Object[]{"entity id", entity.getEntityId()});
-                            tableData.add(new Object[]{"uuid", entity.getUUID()});
-                            tableData.add(new Object[]{"type", entity.getEntityInformation()});
-                            tableData.add(new Object[]{"class", entity.getClass().getName()});
-                            tableData.add(new Object[]{"location", entity.getLocation()});
-                            tableData.add(new Object[]{"rotation", entity.getRotation()});
-                            tableData.add(new Object[]{"equipment", entity.getEquipment()});
-                            tableData.add(new Object[]{"effects", entity.getEffectList()});
-                            tableData.add(new Object[]{"attached to", entity.getAttachedEntity() == -1 ? "" : entity.getAttachedEntity()});
+                            tableData.add(new Object[]{"Entity id", entity.getEntityId()});
+                            tableData.add(new Object[]{"UUID", entity.getUUID()});
+                            tableData.add(new Object[]{"Type", entity.getEntityInformation()});
+                            tableData.add(new Object[]{"Class", entity.getClass().getName()});
+                            tableData.add(new Object[]{"Location", entity.getLocation()});
+                            tableData.add(new Object[]{"Rotation", entity.getRotation()});
+                            tableData.add(new Object[]{"Equipment", entity.getEquipment()});
+                            tableData.add(new Object[]{"Effects", entity.getEffectList()});
+                            tableData.add(new Object[]{"Attached to", entity.getAttachedEntity() == -1 ? "" : entity.getAttachedEntity()});
 
                             for (var entry : entity.getEntityMetaDataFormatted().entrySet()) {
                                 tableData.add(new Object[]{entry.getKey(), entry.getValue()});

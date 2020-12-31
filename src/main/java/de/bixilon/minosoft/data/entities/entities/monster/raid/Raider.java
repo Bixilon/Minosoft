@@ -23,11 +23,12 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public abstract class Raider extends PatrollingMonster {
+
     public Raider(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "isCelebrating")
+    @EntityMetaDataFunction(identifier = "Is celebrating")
     public boolean isCelebrating() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.RAIDER_IS_CELEBRATING);
     }

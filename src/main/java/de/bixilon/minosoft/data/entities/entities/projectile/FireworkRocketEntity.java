@@ -28,18 +28,18 @@ public class FireworkRocketEntity extends Projectile {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "item")
+    @EntityMetaDataFunction(identifier = "Item")
     @Nullable
     public Slot getFireworkItem() {
         return getMetaData().getSets().getSlot(EntityMetaDataFields.FIREWORK_ROCKET_ENTITY_ITEM);
     }
 
-    @EntityMetaDataFunction(identifier = "attachedEntityId")
+    @EntityMetaDataFunction(identifier = "Attached entity id")
     public int getAttachedEntity() {
         return getMetaData().getSets().getInt(EntityMetaDataFields.FIREWORK_ROCKET_ENTITY_ATTACHED_ENTITY);
     }
 
-    @EntityMetaDataFunction(identifier = "shotAtAngle")
+    @EntityMetaDataFunction(identifier = "Shot at angle")
     public boolean isShotAtAngle() {
         return getMetaData().getSets().getBoolean(EntityMetaDataFields.FIREWORK_ROCKET_ENTITY_SHOT_AT_ANGLE);
     }

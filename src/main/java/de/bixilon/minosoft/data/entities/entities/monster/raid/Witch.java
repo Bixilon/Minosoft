@@ -27,7 +27,7 @@ public class Witch extends Raider {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "isDrinkingPotion")
+    @EntityMetaDataFunction(identifier = "Is drinking Potion")
     public boolean isDrinkingPotion() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.WITCH_IS_DRINKING_POTION);
     }

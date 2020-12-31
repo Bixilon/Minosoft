@@ -29,34 +29,34 @@ public class Turtle extends Animal {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "homePosition")
+    @EntityMetaDataFunction(identifier = "Home Position")
     @Nullable
     public BlockPosition getHomePosition() {
         return this.metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_HOME_POSITION);
     }
 
-    @EntityMetaDataFunction(identifier = "hasEgg")
+    @EntityMetaDataFunction(identifier = "Has egg")
     public boolean hasEgg() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_HAS_EGG);
     }
 
-    @EntityMetaDataFunction(identifier = "isLayingEgg")
+    @EntityMetaDataFunction(identifier = "Is laying egg")
     public boolean isLayingEgg() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_LAYING_EGG);
     }
 
-    @EntityMetaDataFunction(identifier = "travelPosition")
+    @EntityMetaDataFunction(identifier = "Travel position")
     @Nullable
     public BlockPosition getTravelPosition() {
         return this.metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_TRAVEL_POSITION);
     }
 
-    @EntityMetaDataFunction(identifier = "isGoingHome")
+    @EntityMetaDataFunction(identifier = "Is going home")
     public boolean isGoingHome() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_GOING_HOME);
     }
 
-    @EntityMetaDataFunction(identifier = "isTraveling")
+    @EntityMetaDataFunction(identifier = "Is traveling")
     public boolean isTraveling() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_TRAVELING);
     }

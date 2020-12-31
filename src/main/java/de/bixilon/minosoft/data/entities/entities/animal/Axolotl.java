@@ -22,21 +22,22 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public class Axolotl extends Animal {
+
     public Axolotl(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "axolotlVariant")
+    @EntityMetaDataFunction(identifier = "Axolotl variant")
     public AxolotlVariants getVariant() {
         return AxolotlVariants.byId(this.metaData.getSets().getInt(EntityMetaDataFields.AXOLOTL_VARIANT));
     }
 
-    @EntityMetaDataFunction(identifier = "isPlayingDead")
+    @EntityMetaDataFunction(identifier = "Is playing dead")
     public boolean isPlayingDead() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.AXOLOTL_PLAYING_DEAD);
     }
 
-    @EntityMetaDataFunction(identifier = "isFromBucket")
+    @EntityMetaDataFunction(identifier = "Is from bucket")
     public boolean isFromBucket() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.AXOLOTL_FROM_BUCKET);
     }

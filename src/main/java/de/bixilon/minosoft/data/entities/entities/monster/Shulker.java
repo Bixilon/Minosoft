@@ -33,23 +33,23 @@ public class Shulker extends AbstractGolem {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "attachmentFace")
+    @EntityMetaDataFunction(identifier = "Attachment face")
     public Directions getAttachmentFace() {
         return this.metaData.getSets().getDirection(EntityMetaDataFields.SHULKER_ATTACH_FACE);
     }
 
-    @EntityMetaDataFunction(identifier = "attachmentPosition")
+    @EntityMetaDataFunction(identifier = "Attachment position")
     @Nullable
     public BlockPosition getAttachmentPosition() {
         return this.metaData.getSets().getPosition(EntityMetaDataFields.SHULKER_ATTACHMENT_POSITION);
     }
 
-    @EntityMetaDataFunction(identifier = "peek")
+    @EntityMetaDataFunction(identifier = "Peek")
     public byte getPeek() {
         return this.metaData.getSets().getByte(EntityMetaDataFields.SHULKER_PEEK);
     }
 
-    @EntityMetaDataFunction(identifier = "color")
+    @EntityMetaDataFunction(identifier = "Color")
     public RGBColor getColor() {
         return ChatColors.getColorById(this.metaData.getSets().getByte(EntityMetaDataFields.SHULKER_COLOR));
     }

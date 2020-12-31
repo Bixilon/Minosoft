@@ -23,36 +23,37 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public abstract class AbstractMinecart extends Entity {
+
     public AbstractMinecart(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "shakingPower")
+    @EntityMetaDataFunction(identifier = "Shaking power")
     public int getShakingPower() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.MINECART_HURT);
     }
 
-    @EntityMetaDataFunction(identifier = "shakingDirection")
+    @EntityMetaDataFunction(identifier = "Shaking direction")
     public int getShakingDirection() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.MINECART_HURT_DIRECTION);
     }
 
-    @EntityMetaDataFunction(identifier = "shakingMultiplier")
+    @EntityMetaDataFunction(identifier = "Shaking multiplier")
     public float getShakingMultiplier() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.MINECART_DAMAGE_TAKEN);
     }
 
-    @EntityMetaDataFunction(identifier = "blockId")
+    @EntityMetaDataFunction(identifier = "Block id")
     public int getBlockId() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.MINECART_BLOCK_ID);
     }
 
-    @EntityMetaDataFunction(identifier = "blockYOffset")
+    @EntityMetaDataFunction(identifier = "Block Y offset")
     public int getBlockYOffset() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.MINECART_BLOCK_Y_OFFSET);
     }
 
-    @EntityMetaDataFunction(identifier = "isShowingBlock")
+    @EntityMetaDataFunction(identifier = "Is showing block")
     public boolean isShowingBlock() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.MINECART_SHOW_BLOCK);
     }

@@ -27,7 +27,7 @@ public class PufferFish extends AbstractFish {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "puffState")
+    @EntityMetaDataFunction(identifier = "Puff state")
     public int getPuffState() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.PUFFERFISH_PUFF_STATE);
     }

@@ -30,7 +30,7 @@ public class FallingBlock extends Entity {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "spawnPosition")
+    @EntityMetaDataFunction(identifier = "Spawn position")
     @Nullable
     public BlockPosition getSpawnPosition() {
         return getMetaData().getSets().getPosition(EntityMetaDataFields.FALLING_BLOCK_SPAWN_POSITION);

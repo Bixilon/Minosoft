@@ -28,37 +28,37 @@ public class Boat extends Entity {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "timeSinceLastHit")
+    @EntityMetaDataFunction(identifier = "Time since last hit")
     public int getTimeSinceLastHit() {
         return getMetaData().getSets().getInt(EntityMetaDataFields.BOAT_HURT);
     }
 
-    @EntityMetaDataFunction(identifier = "forwardDirection")
+    @EntityMetaDataFunction(identifier = "Forward direction")
     public int getForwardDirection() {
         return getMetaData().getSets().getInt(EntityMetaDataFields.BOAT_HURT_DIRECTION);
     }
 
-    @EntityMetaDataFunction(identifier = "damageTaken")
+    @EntityMetaDataFunction(identifier = "Damage taken")
     public float getDamageTaken() {
         return getMetaData().getSets().getFloat(EntityMetaDataFields.BOAT_DAMAGE_TAKEN);
     }
 
-    @EntityMetaDataFunction(identifier = "material")
+    @EntityMetaDataFunction(identifier = "Material")
     public BoatMaterials getMaterial() {
         return BoatMaterials.byId(getMetaData().getSets().getInt(EntityMetaDataFields.BOAT_MATERIAL));
     }
 
-    @EntityMetaDataFunction(identifier = "leftPaddleTurning")
+    @EntityMetaDataFunction(identifier = "Left paddle turning")
     public boolean isLeftPaddleTurning() {
         return getMetaData().getSets().getBoolean(EntityMetaDataFields.BOAT_PADDLE_LEFT);
     }
 
-    @EntityMetaDataFunction(identifier = "rightPaddleTurning")
+    @EntityMetaDataFunction(identifier = "Right paddle turning")
     public boolean isRightPaddleTurning() {
         return getMetaData().getSets().getBoolean(EntityMetaDataFields.BOAT_PADDLE_RIGHT);
     }
 
-    @EntityMetaDataFunction(identifier = "splashTimer")
+    @EntityMetaDataFunction(identifier = "Splash timer")
     public int getSplashTimer() {
         return getMetaData().getSets().getInt(EntityMetaDataFields.BOAT_BUBBLE_TIME);
     }

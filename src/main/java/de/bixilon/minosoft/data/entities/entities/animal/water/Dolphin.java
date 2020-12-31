@@ -29,18 +29,18 @@ public class Dolphin extends WaterAnimal {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "treasurePosition")
+    @EntityMetaDataFunction(identifier = "Treasure position")
     @Nullable
     public BlockPosition getTreasurePosition() {
         return this.metaData.getSets().getPosition(EntityMetaDataFields.DOLPHIN_TREASURE_POSITION);
     }
 
-    @EntityMetaDataFunction(identifier = "hasFish")
+    @EntityMetaDataFunction(identifier = "Has fish")
     public boolean hasFish() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.DOLPHIN_HAS_FISH);
     }
 
-    @EntityMetaDataFunction(identifier = "moistnessLevel")
+    @EntityMetaDataFunction(identifier = "Moistness level")
     public int getMoistnessLevel() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.DOLPHIN_MOISTNESS_LEVEL);
     }
