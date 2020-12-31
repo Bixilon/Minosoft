@@ -86,7 +86,7 @@ public class PacketBlockEntityMetadata extends ClientboundPacket {
         SET_ITEMS_IN_CAMPFIRE(Map.of(V_19W02A, 13)),
         BEE_HIVE(Map.of(V_19W34A, 14));
 
-        final VersionValueMap<Integer> valueMap;
+   private final VersionValueMap<Integer> valueMap;
 
         BlockEntityActions(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 public class InPacketBuffer extends InByteBuffer {
-    final int command;
+    private final int command;
 
     public InPacketBuffer(byte[] bytes, Connection connection) {
         super(bytes, connection);

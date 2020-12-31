@@ -81,7 +81,7 @@ public class Packets {
         PLAY_VEHICLE_MOVEMENT,
         PLAY_QUERY_ENTITY_NBT;
 
-        final ConnectionStates state;
+   private final ConnectionStates state;
 
         Serverbound() {
             this.state = ConnectionStates.valueOf(name().split("_")[0]);
@@ -201,8 +201,8 @@ public class Packets {
         PLAY_ADVANCEMENT_PROGRESS(null),
         PLAY_SCULK_VIBRATION_SIGNAL(PacketSculkVibrationSignal.class);
 
-        final ConnectionStates state;
-        final Class<? extends ClientboundPacket> clazz;
+        private final ConnectionStates state;
+        private final Class<? extends ClientboundPacket> clazz;
 
         Clientbound(Class<? extends ClientboundPacket> clazz) {
             this.state = ConnectionStates.valueOf(name().split("_")[0]);

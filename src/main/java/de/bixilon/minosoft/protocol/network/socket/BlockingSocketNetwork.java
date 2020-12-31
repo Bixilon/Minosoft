@@ -165,7 +165,9 @@ public class BlockingSocketNetwork extends Network {
                     }
 
                     ServerboundPacket packet = this.queue.take();
-                    packet.log();
+                    if (Log.getLevel().ordinal() >= LogLevels.PROTOCOL.ordinal()) {
+                        packet.log();
+                    }
 
                     this.outputStream.write(prepareServerboundPacket(packet));
                     this.outputStream.flush();

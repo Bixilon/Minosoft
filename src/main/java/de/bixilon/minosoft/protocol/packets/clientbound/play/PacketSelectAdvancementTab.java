@@ -46,7 +46,7 @@ public class PacketSelectAdvancementTab extends ClientboundPacket {
         ADVENTURE(new ChangeableIdentifier("adventure/root")),
         HUSBANDRY(new ChangeableIdentifier("husbandry/root"));
 
-        final ChangeableIdentifier changeableIdentifier;
+   private final ChangeableIdentifier changeableIdentifier;
 
         AdvancementTabs(ChangeableIdentifier changeableIdentifier) {
             this.changeableIdentifier = changeableIdentifier;

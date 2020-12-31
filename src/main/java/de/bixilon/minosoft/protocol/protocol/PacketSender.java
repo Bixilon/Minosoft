@@ -29,7 +29,7 @@ import java.util.UUID;
 
 public class PacketSender {
     public static final String[] ILLEGAL_CHAT_CHARS = {"§"};
-    final Connection connection;
+    private final Connection connection;
 
     public PacketSender(Connection connection) {
         this.connection = connection;

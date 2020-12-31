@@ -21,11 +21,12 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public abstract class AgeableMob extends PathfinderMob {
+
     public AgeableMob(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "isBaby")
+    @EntityMetaDataFunction(identifier = "Is baby")
     public boolean isBaby() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.AGEABLE_IS_BABY);
     }

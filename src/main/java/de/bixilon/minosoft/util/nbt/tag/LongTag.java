@@ -17,7 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 public class LongTag extends NumberTag {
-    final long value;
+    private final long value;
 
     public LongTag(long value) {
         this.value = value;

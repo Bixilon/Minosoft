@@ -23,12 +23,10 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W50A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12_PRE6;
 
 public class PacketCraftingBookData implements ServerboundPacket {
-    final BookDataStatus action;
-
-    final int recipeId;
-
-    final boolean craftingBookOpen;
-    final boolean craftingFilter;
+    private final BookDataStatus action;
+    private final int recipeId;
+    private final boolean craftingBookOpen;
+    private final boolean craftingFilter;
     boolean blastingBookOpen;
     boolean blastingFilter;
     boolean smokingBookOpen;

@@ -18,8 +18,8 @@ import de.bixilon.minosoft.data.text.ChatComponent;
 import java.util.HashMap;
 
 public class ScoreboardObjective {
-    final String objectiveName;
-    final HashMap<String, ScoreboardScore> scores = new HashMap<>();
+    private final String objectiveName;
+    private final HashMap<String, ScoreboardScore> scores = new HashMap<>();
     ChatComponent objectiveValue;
 
     public ScoreboardObjective(String objectiveName, ChatComponent objectiveValue) {

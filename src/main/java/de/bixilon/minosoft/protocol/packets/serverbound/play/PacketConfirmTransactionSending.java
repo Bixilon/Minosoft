@@ -20,10 +20,9 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketConfirmTransactionSending implements ServerboundPacket {
-
-    final byte windowId;
-    final short actionNumber;
-    final boolean accepted;
+    private final byte windowId;
+    private final short actionNumber;
+    private final boolean accepted;
 
     public PacketConfirmTransactionSending(byte windowId, short actionNumber, boolean accepted) {
         this.windowId = windowId;

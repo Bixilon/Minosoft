@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.nbt.tag.StringTag;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketUpdateSignReceiving extends ClientboundPacket {
-    final ChatComponent[] lines = new ChatComponent[ProtocolDefinition.SIGN_LINES];
+    private final ChatComponent[] lines = new ChatComponent[ProtocolDefinition.SIGN_LINES];
     BlockPosition position;
 
     @Override

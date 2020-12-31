@@ -32,10 +32,10 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.PLAYER_IN
 
 public class Player {
     public final HashMap<UUID, PlayerListItem> playerList = new HashMap<>();
-    final Account account;
-    final ScoreboardManager scoreboardManager = new ScoreboardManager();
-    final World world = new World();
-    final HashMap<Integer, Inventory> inventories = new HashMap<>();
+    private final Account account;
+    private final ScoreboardManager scoreboardManager = new ScoreboardManager();
+    private final World world = new World();
+    private final HashMap<Integer, Inventory> inventories = new HashMap<>();
     float health;
     int food;
     float saturation;

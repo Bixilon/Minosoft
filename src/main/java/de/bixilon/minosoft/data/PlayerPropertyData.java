@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data;
 
 public class PlayerPropertyData {
-    final String name;
-    final String value;
-    final String signature;
+    private final String name;
+    private final String value;
+    private final String signature;
 
     public PlayerPropertyData(String name, String value, String signature) {
         this.name = name;

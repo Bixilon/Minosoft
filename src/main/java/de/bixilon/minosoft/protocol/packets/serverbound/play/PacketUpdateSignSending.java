@@ -25,8 +25,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketUpdateSignSending implements ServerboundPacket {
-    final BlockPosition position;
-    final ChatComponent[] lines;
+    private final BlockPosition position;
+    private final ChatComponent[] lines;
 
     public PacketUpdateSignSending(BlockPosition position, ChatComponent[] lines) {
         this.position = position;

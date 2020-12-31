@@ -22,8 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketClientStatus implements ServerboundPacket {
-
-    final ClientStates status;
+private final ClientStates status;
 
     public PacketClientStatus(ClientStates status) {
         this.status = status;

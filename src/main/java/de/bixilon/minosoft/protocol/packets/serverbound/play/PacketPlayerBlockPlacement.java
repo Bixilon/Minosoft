@@ -25,11 +25,11 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketPlayerBlockPlacement implements ServerboundPacket {
-    final BlockPosition position;
-    final byte direction;
-    final float cursorX;
-    final float cursorY;
-    final float cursorZ;
+    private final BlockPosition position;
+    private final byte direction;
+    private final float cursorX;
+    private final float cursorY;
+    private final float cursorZ;
     Slot item;
     Hands hand;
     boolean insideBlock;

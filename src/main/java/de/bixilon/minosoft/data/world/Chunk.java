@@ -82,4 +82,8 @@ public class Chunk {
     public void setBlockEntityData(HashMap<InChunkLocation, BlockEntityMetaData> blockEntities) {
         blockEntities.forEach(this::setBlockEntityData);
     }
+
+    public HashMap<Byte, ChunkSection> getSections() {
+        return this.sections;
+    }
 }

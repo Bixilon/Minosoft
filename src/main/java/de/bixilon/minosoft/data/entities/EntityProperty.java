@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class EntityProperty {
-    final double value;
-    final HashMap<UUID, EntityPropertyModifier> modifiers = new HashMap<>();
+    private final double value;
+    private final HashMap<UUID, EntityPropertyModifier> modifiers = new HashMap<>();
 
     public EntityProperty(double value) {
         this.value = value;

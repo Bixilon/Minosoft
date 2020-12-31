@@ -47,9 +47,9 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class InByteBuffer {
-    final Connection connection;
-    final int versionId;
-    final byte[] bytes;
+    private final Connection connection;
+    private final int versionId;
+    private final byte[] bytes;
     int position;
 
     public InByteBuffer(byte[] bytes, Connection connection) {

@@ -22,12 +22,12 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import java.util.Base64;
 
 public class ServerListPing {
-    final ServerModInfo serverModInfo;
-    final int protocolId;
-    final int playersOnline;
-    final int maxPlayers;
-    final ChatComponent motd;
-    final String serverBrand;
+    private final ServerModInfo serverModInfo;
+    private final int protocolId;
+    private final int playersOnline;
+    private final int maxPlayers;
+    private final ChatComponent motd;
+    private final String serverBrand;
     byte[] favicon;
 
     public ServerListPing(JsonObject json) {

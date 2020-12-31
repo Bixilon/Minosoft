@@ -20,9 +20,9 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketRecipeBookState implements ServerboundPacket {
-    final RecipeBooks book;
-    final boolean bookOpen;
-    final boolean filterActive;
+    private final RecipeBooks book;
+    private final boolean bookOpen;
+    private final boolean filterActive;
 
     public PacketRecipeBookState(RecipeBooks book, boolean bookOpen, boolean filterActive) {
         this.book = book;

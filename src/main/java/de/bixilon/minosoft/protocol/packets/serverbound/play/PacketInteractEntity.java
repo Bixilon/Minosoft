@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketInteractEntity implements ServerboundPacket {
-    final int entityId;
+    private final int entityId;
     Location location;
     Hands hand;
     EntityInteractionClicks click;

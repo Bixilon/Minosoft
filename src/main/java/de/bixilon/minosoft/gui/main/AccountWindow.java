@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
@@ -51,7 +52,7 @@ public class AccountWindow implements Initializable {
             GUITools.showPane("/layout/dialogs/login_mojang.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_MOJANG_DIALOG_TITLE));
         } catch (IOException e) {
             e.printStackTrace();
-            System.exit(1);
+            Minosoft.shutdown(e.getMessage(), ShutdownReasons.LAUNCHER_FXML_LOAD_ERROR);
         }
     }
 
@@ -60,7 +61,7 @@ public class AccountWindow implements Initializable {
             GUITools.showPane("/layout/dialogs/login_offline.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_OFFLINE_DIALOG_TITLE));
         } catch (IOException e) {
             e.printStackTrace();
-            System.exit(1);
+            Minosoft.shutdown(e.getMessage(), ShutdownReasons.LAUNCHER_FXML_LOAD_ERROR);
         }
     }
 }

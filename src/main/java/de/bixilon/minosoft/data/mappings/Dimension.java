@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.mappings;
 
 public class Dimension extends ModIdentifier {
-    final boolean hasSkyLight;
+    private final boolean hasSkyLight;
 
     public Dimension(String mod, String identifier, boolean hasSkyLight) {
         super(mod, identifier);

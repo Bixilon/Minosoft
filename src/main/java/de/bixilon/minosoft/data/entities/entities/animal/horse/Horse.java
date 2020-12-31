@@ -42,17 +42,17 @@ public class Horse extends AbstractHorse {
         return this.metaData.getSets().getInt(EntityMetaDataFields.HORSE_VARIANT);
     }
 
-    @EntityMetaDataFunction(identifier = "color")
+    @EntityMetaDataFunction(identifier = "Color")
     public HorseColors getColor() {
         return HorseColors.byId(getVariant() & 0xFF);
     }
 
-    @EntityMetaDataFunction(identifier = "dots")
+    @EntityMetaDataFunction(identifier = "Dots")
     public HorseDots getDots() {
         return HorseDots.byId(getVariant() >> 8);
     }
 
-    @EntityMetaDataFunction(identifier = "armor")
+    @EntityMetaDataFunction(identifier = "Armor")
     @Nullable
     public Item getArmor() {
         if (this.versionId <= V_1_8_9) { // ToDo

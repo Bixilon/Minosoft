@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings;
+package de.bixilon.minosoft.data.mappings.tweaker;
 
 import de.bixilon.minosoft.data.entities.EntityMetaData;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
@@ -19,6 +19,14 @@ import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.animal.horse.*;
 import de.bixilon.minosoft.data.entities.entities.monster.*;
 import de.bixilon.minosoft.data.entities.entities.vehicle.*;
+import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.world.Chunk;
+import de.bixilon.minosoft.data.world.ChunkSection;
+import de.bixilon.minosoft.data.world.InChunkLocation;
+import de.bixilon.minosoft.data.world.InChunkSectionLocation;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+
+import java.util.Map;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_8_9;
 
@@ -80,5 +88,48 @@ public class VersionTweaker {
             };
         }
         return fakeClass;
+    }
+
+    public static Chunk transformChunk(Chunk chunk, int versionId) {
+        // some blocks need to be tweaked. eg. Grass with a snow block on top becomes snowy grass block
+        if (versionId >= ProtocolDefinition.FLATTING_VERSION_ID) {
+            return chunk;
+        }
+        for (Map.Entry<Byte, ChunkSection> sectionEntry : chunk.getSections().entrySet()) {
+            for (Map.Entry<InChunkSectionLocation, Block> blockEntry : sectionEntry.getValue().getBlocks().entrySet()) {
+                Block newBlock = transformBlock(blockEntry.getValue(), chunk, blockEntry.getKey(), sectionEntry.getKey());
+                if (newBlock == blockEntry.getValue()) {
+                    continue;
+                }
+                sectionEntry.getValue().setBlock(blockEntry.getKey(), newBlock);
+            }
+        }
+        return chunk;
+    }
+
+    public static Block transformBlock(Block originalBlock, Chunk chunk, InChunkLocation location) {
+        return transformBlock(originalBlock, chunk, location.getInChunkSectionLocation(), (byte) (location.getY() / ProtocolDefinition.SECTION_HEIGHT_Y));
+    }
+
+    public static Block transformBlock(Block originalBlock, Chunk chunk, InChunkSectionLocation location, byte sectionHeight) {
+        switch (originalBlock.getFullIdentifier()) {
+            case "minecraft:grass" -> {
+                Block above = getBlockAbove(chunk, location, sectionHeight);
+                if (above == null) {
+                    break;
+                }
+                if (above.equals(TweakBlocks.SNOW) || above.equals(TweakBlocks.SNOW_LAYER)) {
+                    return TweakBlocks.GRASS_BLOCK_SNOWY_YES;
+                } else {
+                    return TweakBlocks.GRASS_BLOCK_SNOWY_NO;
+                }
+            }
+            // ToDo: all blocks. e.g. doors, etc
+        }
+        return originalBlock;
+    }
+
+    private static Block getBlockAbove(Chunk chunk, InChunkSectionLocation location, byte sectionHeight) {
+        return chunk.getBlock(location.getInChunkLocation(sectionHeight));
     }
 }

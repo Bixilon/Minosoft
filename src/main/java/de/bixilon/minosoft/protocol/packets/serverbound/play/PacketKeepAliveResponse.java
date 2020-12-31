@@ -23,8 +23,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W31A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12_2_PRE2;
 
 public class PacketKeepAliveResponse implements ServerboundPacket {
-
-    final long id;
+private final long id;
 
     public PacketKeepAliveResponse(long id) {
         this.id = id;

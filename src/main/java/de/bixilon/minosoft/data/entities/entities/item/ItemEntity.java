@@ -30,7 +30,7 @@ public class ItemEntity extends Entity {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "item")
+    @EntityMetaDataFunction(identifier = "Item")
     @Nullable
     public Slot getItem() {
         return this.metaData.getSets().getSlot(EntityMetaDataFields.ITEM_ITEM);

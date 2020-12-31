@@ -16,8 +16,8 @@ package de.bixilon.minosoft.protocol.protocol;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ConnectionPing {
-    final long pingId;
-    final long sendingTime;
+    private final long pingId;
+    private final long sendingTime;
 
     public ConnectionPing() {
         this.pingId = ThreadLocalRandom.current().nextLong();

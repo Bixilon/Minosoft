@@ -25,8 +25,8 @@ import java.util.HashMap;
  * Collection of chunks
  */
 public class World {
-    final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
-    final HashMap<Integer, Entity> entities = new HashMap<>();
+    private final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
+    private final HashMap<Integer, Entity> entities = new HashMap<>();
     boolean hardcore;
     boolean raining;
     Dimension dimension; // used for sky color, etc
@@ -125,5 +125,9 @@ public class World {
 
     public void setBlockEntityData(HashMap<BlockPosition, BlockEntityMetaData> blockEntities) {
         blockEntities.forEach(this::setBlockEntityData);
+    }
+
+    public HashMap<Integer, Entity> getEntities() {
+        return this.entities;
     }
 }

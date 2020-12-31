@@ -20,10 +20,9 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketUpdateCommandBlockMinecart implements ServerboundPacket {
-
-    final int entityId;
-    final String command;
-    final boolean trackOutput;
+    private final int entityId;
+    private final String command;
+    private final boolean trackOutput;
 
     public PacketUpdateCommandBlockMinecart(int entityId, String command, boolean trackOutput) {
         this.entityId = entityId;

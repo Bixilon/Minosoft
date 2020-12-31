@@ -23,11 +23,12 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public abstract class AbstractVillager extends AgeableMob {
+
     public AbstractVillager(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "unhappyTimer")
+    @EntityMetaDataFunction(identifier = "Unhappy timer")
     public int getUnhappyTimer() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.ABSTRACT_VILLAGER_UNHAPPY_TIMER);
     }

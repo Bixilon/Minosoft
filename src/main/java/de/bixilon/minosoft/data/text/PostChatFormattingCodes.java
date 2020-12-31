@@ -15,9 +15,8 @@ package de.bixilon.minosoft.data.text;
 
 public enum PostChatFormattingCodes implements ChatFormattingCode {
     RESET('r', "\u001b[0m");
-
-    final char c;
-    final String ansi;
+    private final char c;
+    private final String ansi;
 
     PostChatFormattingCodes(char c, String ansi) {
         this.c = c;

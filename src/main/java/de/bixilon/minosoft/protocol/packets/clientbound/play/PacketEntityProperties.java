@@ -25,7 +25,7 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketEntityProperties extends ClientboundPacket {
-    final HashMap<EntityPropertyKeys, EntityProperty> properties = new HashMap<>();
+    private final HashMap<EntityPropertyKeys, EntityProperty> properties = new HashMap<>();
     int entityId;
 
     @Override

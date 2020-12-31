@@ -56,17 +56,20 @@ public final class Minosoft {
     public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
     public static final HashBiMap<Integer, Connection> CONNECTIONS = HashBiMap.create();
     private static final CountUpAndDownLatch START_STATUS_LATCH = new CountUpAndDownLatch(1);
-    public static Configuration config;
+    private static Configuration config;
+    private static boolean isExiting;
 
     public static void main(String[] args) {
         MinosoftCommandLineArguments.parseCommandLineArguments(args);
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown(ShutdownReasons.UNKNOWN), "ShutdownHook"));
+
         Log.info("Starting...");
         AsyncTaskWorker taskWorker = new AsyncTaskWorker("StartUp");
 
         taskWorker.setFatalError((exception) -> {
             Log.fatal("Critical error occurred while preparing. Exit");
             if (StaticConfiguration.HEADLESS_MODE) {
-                System.exit(1);
+                shutdown(exception.getMessage(), ShutdownReasons.CRITICAL_EXCEPTION);
                 return;
             }
             try {
@@ -76,7 +79,7 @@ public final class Minosoft {
                 StartProgressWindow.TOOLKIT_LATCH.await();
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                System.exit(1);
+                shutdown(e.getMessage(), ShutdownReasons.CRITICAL_EXCEPTION);
             }
             // hide all other gui parts
             StartProgressWindow.hideDialog();
@@ -99,14 +102,13 @@ public final class Minosoft {
                 stage.setOnCloseRequest(dialogEvent -> {
                     dialog.setResult(Boolean.TRUE);
                     dialog.close();
-                    System.exit(1);
+                    shutdown(exception.getMessage(), ShutdownReasons.CRITICAL_EXCEPTION);
                 });
                 dialog.showAndWait();
-                System.exit(1);
+                shutdown(exception.getMessage(), ShutdownReasons.CRITICAL_EXCEPTION);
             });
         });
         taskWorker.addTask(new Task(progress -> {
-            progress.countUp();
             Log.info("Reading config file...");
             try {
                 config = new Configuration();
@@ -119,22 +121,15 @@ public final class Minosoft {
             // set log level from config
             Log.setLevel(LogLevels.valueOf(config.getString(ConfigurationPaths.StringPaths.GENERAL_LOG_LEVEL)));
             Log.info(String.format("Logging info with level: %s", Log.getLevel()));
-            progress.countDown();
         }, "Configuration", String.format("Load config file (%s)", StaticConfiguration.CONFIG_FILENAME), Priorities.HIGHEST, TaskImportance.REQUIRED));
 
-        taskWorker.addTask(new Task(progress -> {
-            progress.countUp();
-            LocaleManager.load(config.getString(ConfigurationPaths.StringPaths.GENERAL_LANGUAGE));
-            progress.countDown();
-        }, "Minosoft Language", "Load minosoft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
+        taskWorker.addTask(new Task(progress -> LocaleManager.load(config.getString(ConfigurationPaths.StringPaths.GENERAL_LANGUAGE)), "Minosoft Language", "Load minosoft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
-            progress.countUp();
             Log.info("Loading versions.json...");
             long mappingStartLoadingTime = System.currentTimeMillis();
             Versions.loadAvailableVersions(Util.readJsonAsset("mapping/versions.json"));
             Log.info(String.format("Loaded %d versions in %dms", Versions.getVersionIdMap().size(), (System.currentTimeMillis() - mappingStartLoadingTime)));
-            progress.countDown();
         }, "Version mappings", "Load available minecraft versions inclusive mappings", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
@@ -143,38 +138,20 @@ public final class Minosoft {
             selectAccount(config.getAccounts().get(config.getString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED)));
         }, "Token refresh", "Refresh selected account token", Priorities.LOW, TaskImportance.OPTIONAL, "Configuration"));
 
-        taskWorker.addTask(new Task(progress -> {
-            progress.countUp();
-            ModLoader.loadMods(progress);
-            progress.countDown();
-        }, "ModLoading", "Load all minosoft mods", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
+        taskWorker.addTask(new Task(ModLoader::loadMods, "ModLoading", "Load all minosoft mods", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
 
-        taskWorker.addTask(new Task(progress -> {
-            progress.countUp();
-            AssetsManager.downloadAllAssets(progress);
-            progress.countDown();
-        }, "Assets", "Download and verify all minecraft assets", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
+        taskWorker.addTask(new Task(AssetsManager::downloadAllAssets, "Assets", "Download and verify all minecraft assets", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
 
-        taskWorker.addTask(new Task(progress -> {
-            progress.countUp();
-            MinecraftLocaleManager.load(config.getString(ConfigurationPaths.StringPaths.GENERAL_LANGUAGE));
-            progress.countDown();
-        }, "Mojang language", "Load minecraft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Assets"));
+        taskWorker.addTask(new Task(progress -> MinecraftLocaleManager.load(config.getString(ConfigurationPaths.StringPaths.GENERAL_LANGUAGE)), "Mojang language", "Load minecraft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Assets"));
 
         taskWorker.addTask(new Task(progress -> {
             if (!config.getBoolean(ConfigurationPaths.BooleanPaths.NETWORK_SHOW_LAN_SERVERS)) {
                 return;
             }
-            progress.countUp();
             LANServerListener.listen();
-            progress.countDown();
         }, "LAN Server Listener", "Listener for LAN Servers", Priorities.LOWEST, TaskImportance.OPTIONAL, "Configuration"));
 
-        taskWorker.addTask(new Task(progress -> {
-            progress.countUp();
-            CLI.initialize();
-            progress.countDown();
-        }, "CLI", "Initialize CLI", Priorities.LOW, TaskImportance.OPTIONAL, "Assets", "Mojang language"));
+        taskWorker.addTask(new Task(progress -> CLI.initialize(), "CLI", "Initialize CLI", Priorities.LOW, TaskImportance.OPTIONAL, "Assets", "Mojang language"));
 
         if (!StaticConfiguration.HEADLESS_MODE) {
             taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFX Toolkit", "Initialize JavaFX", Priorities.HIGHEST));
@@ -239,6 +216,33 @@ public final class Minosoft {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void shutdown(String message, ShutdownReasons reason) {
+        if (isExiting) {
+            return;
+        }
+        if (message == null) {
+            message = "";
+        }
+        if (reason != ShutdownReasons.CLI_HELP && reason != ShutdownReasons.CLI_WRONG_PARAMETER) {
+            Log.info("Exiting (reason=%s): %s", reason, message);
+
+            // disconnect from all servers
+            for (Object connection : CONNECTIONS.values().toArray()) {
+                ((Connection) connection).disconnect();
+            }
+            Log.info("Disconnected from all connections!");
+            if (Thread.currentThread().getName().equals("ShutdownHook")) {
+                return;
+            }
+        }
+        isExiting = true;
+        System.exit(reason.getExitCode());
+    }
+
+    public static void shutdown(ShutdownReasons reason) {
+        shutdown(null, reason);
     }
 
     public static CountUpAndDownLatch getStartStatusLatch() {

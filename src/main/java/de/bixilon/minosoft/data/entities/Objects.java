@@ -66,8 +66,8 @@ public enum Objects {
         }
     }
 
-    final int id;
-    final Class<? extends Entity> clazz;
+    private final int id;
+    private final Class<? extends Entity> clazz;
 
     Objects(int id, Class<? extends Entity> clazz) {
         this.id = id;

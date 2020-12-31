@@ -20,8 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketHeldItemChangeSending implements ServerboundPacket {
-
-    final short slot;
+private final short slot;
 
     public PacketHeldItemChangeSending(short slot) {
         this.slot = slot;

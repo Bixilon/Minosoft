@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.logging.Log;
@@ -29,7 +30,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W28A;
 
 public class PacketChunkBulk extends ClientboundPacket {
-    final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
+    private final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -78,6 +79,8 @@ public class PacketChunkBulk extends ClientboundPacket {
 
     @Override
     public void handle(Connection connection) {
+        this.chunks.values().forEach((chunk) -> VersionTweaker.transformChunk(chunk, connection.getVersion().getVersionId()));
+
         getChunks().forEach(((location, chunk) -> connection.fireEvent(new ChunkDataChangeEvent(connection, location, chunk))));
 
         connection.getPlayer().getWorld().setChunks(getChunks());

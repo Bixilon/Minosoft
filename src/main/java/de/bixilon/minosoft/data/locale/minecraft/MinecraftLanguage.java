@@ -35,7 +35,11 @@ public class MinecraftLanguage {
     }
 
     public String translate(String key, Object... data) {
-        return String.format(this.data.get(key), data);
+        String placeholder = this.data.get(key);
+        if (placeholder == null) {
+            return null;
+        }
+        return String.format(placeholder, data);
     }
 
     @Override

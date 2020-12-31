@@ -22,11 +22,12 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public abstract class AbstractFish extends WaterAnimal {
+
     public AbstractFish(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "isFromBucket")
+    @EntityMetaDataFunction(identifier = "Is from bucket")
     public boolean isFromBucket() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ABSTRACT_FISH_FROM_BUCKET);
     }

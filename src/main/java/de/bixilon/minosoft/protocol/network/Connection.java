@@ -206,7 +206,9 @@ public class Connection {
                     continue;
                 }
                 try {
-                    packet.log();
+                    if (Log.getLevel().ordinal() >= LogLevels.PROTOCOL.ordinal()) {
+                        packet.log();
+                    }
                     PacketReceiveEvent event = new PacketReceiveEvent(this, packet);
                     if (fireEvent(event)) {
                         continue;
@@ -360,7 +362,13 @@ public class Connection {
                 }
             }
             case FAILED_NO_RETRY -> handlePingCallbacks(null);
-            case PLAY -> Minosoft.CONNECTIONS.put(getConnectionId(), this);
+            case PLAY -> {
+                Minosoft.CONNECTIONS.put(getConnectionId(), this);
+
+                if (CLI.getCurrentConnection() == null) {
+                    CLI.setCurrentConnection(this);
+                }
+            }
         }
         // handle callbacks
         fireEvent(new ConnectionStateChangeEvent(this, previousState, state));
@@ -427,6 +435,6 @@ public class Connection {
 
     @Override
     public String toString() {
-        return String.format("id=%d, address=%s, account=\"%s\")", getConnectionId(), getAddress(), getPlayer().getAccount());
+        return String.format("(id=%d, address=%s, account=\"%s\")", getConnectionId(), getAddress(), getPlayer().getAccount());
     }
 }

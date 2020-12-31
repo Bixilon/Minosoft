@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE4;
 
 public class PacketPlayerAbilitiesSending implements ServerboundPacket {
-    final boolean flying;
+    private final boolean flying;
 
     public PacketPlayerAbilitiesSending(boolean flying) {
         this.flying = flying;

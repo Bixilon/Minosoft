@@ -20,9 +20,9 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketPlayerRotationSending implements ServerboundPacket {
-    final float yaw;
-    final float pitch;
-    final boolean onGround;
+    private final float yaw;
+    private final float pitch;
+    private final boolean onGround;
 
     public PacketPlayerRotationSending(float yaw, float pitch, boolean onGround) {
         this.yaw = yaw;

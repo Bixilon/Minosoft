@@ -13,16 +13,18 @@
 
 package de.bixilon.minosoft.data;
 
-public class Tag {
-    final String identifier;
-    final int[] idList;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 
-    public Tag(String identifier, int[] idList) {
+public class Tag {
+    private final ModIdentifier identifier;
+    private final int[] idList;
+
+    public Tag(ModIdentifier identifier, int[] idList) {
         this.identifier = identifier;
         this.idList = idList;
     }
 
-    public String getIdentifier() {
+    public ModIdentifier getIdentifier() {
         return this.identifier;
     }
 

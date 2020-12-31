@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketSetDisplayedRecipe implements ServerboundPacket {
-    final Recipe recipe;
+    private final Recipe recipe;
 
     public PacketSetDisplayedRecipe(Recipe recipe) {
         this.recipe = recipe;

@@ -180,7 +180,7 @@ public class PacketTeams extends ClientboundPacket {
         HIDE_FOR_OWN_TEAM("hideForOwnTeam"),
         NEVER("never");
 
-        final String name;
+   private final String name;
 
         TeamNameTagVisibilities(String name) {
             this.name = name;
@@ -206,7 +206,7 @@ public class PacketTeams extends ClientboundPacket {
         PUSH_OWN_TEAM("pushOwnOwnTeam"),
         NEVER("never");
 
-        final String name;
+        private final String name;
 
         TeamCollisionRules(String name) {
             this.name = name;

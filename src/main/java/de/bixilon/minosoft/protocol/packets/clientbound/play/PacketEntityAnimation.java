@@ -51,7 +51,7 @@ public class PacketEntityAnimation extends ClientboundPacket {
         SNEAK(Map.of(LOWEST_VERSION_SUPPORTED, 104, V_1_8_9, -1)),
         UN_SNEAK(Map.of(LOWEST_VERSION_SUPPORTED, 105, V_1_8_9, -1));
 
-        final VersionValueMap<Integer> valueMap;
+   private final VersionValueMap<Integer> valueMap;
 
         EntityAnimations(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);

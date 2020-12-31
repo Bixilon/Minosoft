@@ -88,7 +88,7 @@ public class PacketChangeGameState extends ClientboundPacket {
         GUARDIAN_ELDER_EFFECT(Map.of(LOWEST_VERSION_SUPPORTED, 10)),
         IMMEDIATE_RESPAWN(Map.of(V_19W36A, 11));
 
-        final VersionValueMap<Integer> valueMap;
+   private final VersionValueMap<Integer> valueMap;
 
         Reason(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);

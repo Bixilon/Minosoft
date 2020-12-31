@@ -20,9 +20,8 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketSetBeaconEffect implements ServerboundPacket {
-
-    final int primaryEffectId;
-    final int secondaryEffectId;
+    private final int primaryEffectId;
+    private final int secondaryEffectId;
 
     public PacketSetBeaconEffect(int primaryEffectId, int secondaryEffectId) {
         this.primaryEffectId = primaryEffectId;

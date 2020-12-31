@@ -17,7 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 public class ShortTag extends NumberTag {
-    final short value;
+    private final short value;
 
     public ShortTag(short value) {
         this.value = value;

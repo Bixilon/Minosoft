@@ -24,9 +24,9 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 
 public class PacketPlayerDigging implements ServerboundPacket {
-    final DiggingStatus status;
-    final BlockPosition position;
-    final DiggingFaces face;
+    private final DiggingStatus status;
+    private final BlockPosition position;
+    private final DiggingFaces face;
 
     public PacketPlayerDigging(DiggingStatus status, BlockPosition position, DiggingFaces face) {
         this.status = status;
@@ -89,7 +89,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
         EAST(5),
         SPECIAL(255);
 
-        final byte id;
+        private final byte id;
 
         DiggingFaces(int id) {
             this.id = (byte) id;

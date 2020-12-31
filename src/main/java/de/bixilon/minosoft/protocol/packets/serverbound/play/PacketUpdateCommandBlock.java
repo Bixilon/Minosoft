@@ -21,13 +21,12 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketUpdateCommandBlock implements ServerboundPacket {
-
-    final BlockPosition position;
-    final String command;
-    final CommandBlockType type;
-    final boolean trackOutput;
-    final boolean isConditional;
-    final boolean isAutomatic;
+    private final BlockPosition position;
+    private final String command;
+    private final CommandBlockType type;
+    private final boolean trackOutput;
+    private final boolean isConditional;
+    private final boolean isAutomatic;
 
     public PacketUpdateCommandBlock(BlockPosition position, String command, CommandBlockType type, boolean trackOutput, boolean isConditional, boolean isAutomatic) {
         this.position = position;

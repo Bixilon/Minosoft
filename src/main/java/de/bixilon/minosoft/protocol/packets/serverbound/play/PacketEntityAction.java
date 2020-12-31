@@ -25,9 +25,9 @@ import java.util.Map;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketEntityAction implements ServerboundPacket {
-    final int entityId;
-    final EntityActions action;
-    final int parameter; // only for horse (jump boost)
+    private final int entityId;
+    private final EntityActions action;
+    private final int parameter; // only for horse (jump boost)
 
     public PacketEntityAction(int entityId, EntityActions action) {
         this.entityId = entityId;
@@ -71,7 +71,7 @@ public class PacketEntityAction implements ServerboundPacket {
         OPEN_HORSE_INVENTORY(Map.of(LOWEST_VERSION_SUPPORTED, 6, V_15W41A, 7)),
         START_ELYTRA_FLYING(Map.of(V_15W41A, 8));
 
-        final VersionValueMap<Integer> valueMap;
+        private final VersionValueMap<Integer> valueMap;
 
         EntityActions(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);

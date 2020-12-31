@@ -16,8 +16,8 @@ package de.bixilon.minosoft.data.inventory;
 import java.util.HashMap;
 
 public class Inventory {
-    final InventoryProperties properties;
-    final HashMap<Integer, Slot> slots;
+    private final InventoryProperties properties;
+    private final HashMap<Integer, Slot> slots;
 
     public Inventory(InventoryProperties properties, HashMap<Integer, Slot> slots) {
         this.properties = properties;

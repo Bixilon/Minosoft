@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.terminal.commands.commands;
 
+import com.github.freva.asciitable.AsciiTable;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.commands.CommandArgumentNode;
 import de.bixilon.minosoft.data.commands.CommandLiteralNode;
@@ -23,6 +24,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.terminal.CLI;
 import de.bixilon.minosoft.terminal.commands.exceptions.ConnectionNotFoundCommandParseException;
 
+import java.util.ArrayList;
+
 public class CommandConnection extends Command {
 
     @Override
@@ -30,15 +33,13 @@ public class CommandConnection extends Command {
         parent.addChildren(
                 new CommandLiteralNode("connection",
                         new CommandLiteralNode("list", (stack) -> {
-                            if (Minosoft.CONNECTIONS.isEmpty()) {
-                                print("You are not connected to any server!");
-                                return;
-                            }
-                            print("List of connections:");
-                            print("ID\t\t\tAddress\t\t\tAccount");
+                            ArrayList<Object[]> tableData = new ArrayList<>();
+
                             for (var entry : Minosoft.CONNECTIONS.entrySet()) {
-                                print("[%d]\t\t\t%s\t\t\t%s", entry.getKey(), entry.getValue().getAddress(), entry.getValue().getPlayer().getAccount());
+                                tableData.add(new Object[]{entry.getKey(), entry.getValue().getAddress(), entry.getValue().getPlayer().getAccount()});
                             }
+
+                            print(AsciiTable.getTable(new String[]{"ID", "ADDRESS", "ACCOUNT"}, tableData.toArray(new Object[0][0])));
                         }),
                         new CommandLiteralNode("select", new CommandArgumentNode("connectionId", IntegerParser.INTEGER_PARSER, new IntegerParserProperties(0), (stack) -> {
                             int connectionId = stack.getInt(0);
@@ -56,7 +57,6 @@ public class CommandConnection extends Command {
                                 return;
                             }
                             print("Current connection: %s", connection);
-
                         })));
         return parent;
     }

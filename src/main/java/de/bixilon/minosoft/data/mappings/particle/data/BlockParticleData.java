@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 
 public class BlockParticleData extends ParticleData {
-    final Block block;
+    private final Block block;
 
     public BlockParticleData(Block block, Particle type) {
         super(type);

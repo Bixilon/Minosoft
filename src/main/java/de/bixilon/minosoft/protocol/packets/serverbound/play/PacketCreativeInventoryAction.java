@@ -21,9 +21,8 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketCreativeInventoryAction implements ServerboundPacket {
-
-    final short slot;
-    final Slot clickedItem;
+    private final short slot;
+    private final Slot clickedItem;
 
     public PacketCreativeInventoryAction(short slot, Slot clickedItem) {
         this.slot = slot;

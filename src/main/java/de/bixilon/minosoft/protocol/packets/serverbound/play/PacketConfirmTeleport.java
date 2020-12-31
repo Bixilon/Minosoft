@@ -20,8 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 
 public class PacketConfirmTeleport implements ServerboundPacket {
-
-    final int teleportId;
+private final int teleportId;
 
     public PacketConfirmTeleport(int teleportId) {
         this.teleportId = teleportId;

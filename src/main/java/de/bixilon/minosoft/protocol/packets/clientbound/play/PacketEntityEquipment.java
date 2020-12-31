@@ -29,7 +29,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE7;
 
 public class PacketEntityEquipment extends ClientboundPacket {
-    final HashMap<InventorySlots.EntityInventorySlots, Slot> slots = new HashMap<>();
+    private final HashMap<InventorySlots.EntityInventorySlots, Slot> slots = new HashMap<>();
     int entityId;
 
     @Override

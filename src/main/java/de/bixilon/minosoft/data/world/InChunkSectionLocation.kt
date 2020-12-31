@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+
 /**
  * Chunk X, Y and Z location (max 16x16x16)
  */
@@ -19,5 +21,9 @@ data class InChunkSectionLocation(val x: Int, val y: Int, val z: Int) {
 
     override fun toString(): String {
         return "($x $y $z)"
+    }
+
+    fun getInChunkLocation(sectionHeight: Byte): InChunkLocation {
+        return InChunkLocation(x, y + ProtocolDefinition.SECTION_HEIGHT_Y * sectionHeight, z)
     }
 }
