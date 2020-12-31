@@ -126,4 +126,8 @@ public class World {
     public void setBlockEntityData(HashMap<BlockPosition, BlockEntityMetaData> blockEntities) {
         blockEntities.forEach(this::setBlockEntityData);
     }
+
+    public HashMap<Integer, Entity> getEntities() {
+        return this.entities;
+    }
 }

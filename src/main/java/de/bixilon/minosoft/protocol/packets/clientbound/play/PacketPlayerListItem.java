@@ -87,7 +87,7 @@ public class PacketPlayerListItem extends ClientboundPacket {
         }
         for (PlayerListItemBulk bulk : getPlayerList()) {
             PlayerListItem item = connection.getPlayer().getPlayerList().get(bulk.getUUID());
-            if (item == null && !bulk.isLegacy()) {
+            if (bulk.getAction() != PlayerListItemActions.ADD && item == null && !bulk.isLegacy()) {
                 // Aaaaah. Fuck this shit. The server sends us bullshit!
                 continue;
             }

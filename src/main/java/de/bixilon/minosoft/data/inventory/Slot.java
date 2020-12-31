@@ -40,25 +40,30 @@ public class Slot {
     String skullOwner;
     byte hideFlags;
 
+
     public Slot(VersionMapping mapping, Item item, int itemCount, CompoundTag nbt) {
-        this.item = item;
+        this(item);
         this.itemCount = itemCount;
         setNBT(mapping, nbt);
     }
 
     public Slot(VersionMapping mapping, Item item, byte itemCount, short itemMetadata, CompoundTag nbt) {
-        this.item = item;
+        this(item);
         this.itemMetadata = itemMetadata;
         this.itemCount = itemCount;
         setNBT(mapping, nbt);
     }
 
     public Slot(Item item) {
-        this.item = item;
+        if (item.getFullIdentifier().equals("minecraft:air")) {
+            this.item = null;
+        } else {
+            this.item = item;
+        }
     }
 
     public Slot(Item item, byte itemCount) {
-        this.item = item;
+        this(item);
         this.itemCount = itemCount;
     }
 
@@ -91,8 +96,8 @@ public class Slot {
         }
         if (nbt.containsKey("Enchantments")) {
             for (CompoundTag enchantment : nbt.getListTag("Enchantments").<CompoundTag>getValue()) {
-                String[] spilittedIdentifier = enchantment.getStringTag("id").getValue().split(":");
-                this.enchantments.put(new Enchantment(spilittedIdentifier[0], spilittedIdentifier[1]), enchantment.getNumberTag("lvl").getAsInt());
+                String[] spilittIdentifier = enchantment.getStringTag("id").getValue().split(":");
+                this.enchantments.put(new Enchantment(spilittIdentifier[0], spilittIdentifier[1]), enchantment.getNumberTag("lvl").getAsInt());
             }
         } else if (nbt.containsKey("ench")) {
             for (CompoundTag enchantment : nbt.getListTag("ench").<CompoundTag>getValue()) {
@@ -165,7 +170,7 @@ public class Slot {
 
     @Override
     public String toString() {
-        return getDisplayName();
+        return getFullDisplayName();
     }
 
     public Item getItem() {
@@ -194,7 +199,45 @@ public class Slot {
         if (customName != null) {
             return customName.getANSIColoredMessage();
         }
-        return (this.item == null ? "AIR" : getLanguageName());
+        if (this.item == null) {
+            return "AIR";
+        }
+        return getLanguageName();
+    }
+
+    public String getFullDisplayName() {
+        if (this.item == null) {
+            return "AIR";
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append(getDisplayName());
+        builder.append('{');
+
+        if (this.itemCount != 1) {
+            builder.append("count: ");
+            builder.append(this.itemCount);
+            builder.append(", ");
+        }
+
+        if (!this.enchantments.isEmpty()) {
+            builder.append("enchantments: ");
+            builder.append(this.enchantments.toString());
+            builder.append(", ");
+        }
+        // ToDo all properties
+
+
+        String endString = builder.toString();
+        if (endString.endsWith(", ")) {
+            endString = endString.substring(0, endString.length() - 2);
+        }
+        endString += "}";
+
+        if (endString.endsWith("{}")) {
+            endString = endString.substring(0, endString.length() - 2);
+        }
+
+        return endString;
     }
 
     public String getLanguageName() {
@@ -294,8 +337,9 @@ public class Slot {
     public void setShouldHideEnchantments(boolean hideEnchantments) {
         if (hideEnchantments) {
             this.hideFlags |= 1;
-        } else
+        } else {
             this.hideFlags &= ~(1);
+        }
     }
 
     public void setShouldHideModifiers(boolean hideModifiers) {

@@ -85,6 +85,15 @@
         <kotlin.version>1.4.21</kotlin.version>
     </properties>
 
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+
     <dependencies>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -148,6 +157,11 @@
             <artifactId>kotlin-test</artifactId>
             <version>${kotlin.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.Bixilon</groupId>
+            <artifactId>ascii-table</artifactId>
+            <version>5375a4f</version>
         </dependency>
     </dependencies>
 </project>

@@ -70,12 +70,16 @@ public abstract class Entity {
         this.location = new Location(this.location.getX() + relativeLocation.getX(), this.location.getY() + relativeLocation.getY(), this.location.getZ() + relativeLocation.getZ());
     }
 
-    public void setEquipment(HashMap<InventorySlots.EntityInventorySlots, Slot> slots) {
-        this.equipment.putAll(slots);
-    }
-
     public Slot getEquipment(InventorySlots.EntityInventorySlots slot) {
         return this.equipment.get(slot);
+    }
+
+    public HashMap<InventorySlots.EntityInventorySlots, Slot> getEquipment() {
+        return this.equipment;
+    }
+
+    public void setEquipment(HashMap<InventorySlots.EntityInventorySlots, Slot> slots) {
+        this.equipment.putAll(slots);
     }
 
     public UUID getUUID() {

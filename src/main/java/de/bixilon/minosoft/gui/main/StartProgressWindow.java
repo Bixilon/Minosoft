@@ -32,7 +32,7 @@ import javafx.stage.Stage;
 import java.util.concurrent.CountDownLatch;
 
 public class StartProgressWindow extends Application {
-    public static final CountDownLatch TOOLKIT_LATCH = new CountDownLatch(2); // 2 if not started, 1 if started, 2 if loaded
+    public static final CountDownLatch TOOLKIT_LATCH = new CountDownLatch(2); // 2 if not started, 1 if started, 0 if loaded
     public static JFXAlert<Boolean> progressDialog;
     private static JFXProgressBar progressBar;
     private static Label progressLabel;
