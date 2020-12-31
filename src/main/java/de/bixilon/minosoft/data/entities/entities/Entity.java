@@ -248,28 +248,35 @@ public abstract class Entity {
 
     public TreeMap<String, Object> getEntityMetaDataFormatted() {
         // scan all methods of current class for EntityMetaDataFunction annotation and write it into a list
-        Class<? extends Entity> clazz = this.getClass();
         TreeMap<String, Object> values = new TreeMap<>();
-        for (Method method : clazz.getMethods()) {
-            if (!method.isAnnotationPresent(EntityMetaDataFunction.class)) {
-                continue;
-            }
-            if (method.getParameterCount() > 0) {
-                continue;
-            }
-            try {
-                String identifier = method.getAnnotation(EntityMetaDataFunction.class).identifier();
-                if (values.containsKey(identifier)) {
+        if (this.metaData == null) {
+            return values;
+        }
+        Class<?> clazz = this.getClass();
+        while (clazz != Object.class) {
+            for (Method method : clazz.getDeclaredMethods()) {
+                if (!method.isAnnotationPresent(EntityMetaDataFunction.class)) {
                     continue;
                 }
-                Object methodRetValue = method.invoke(this);
-                if (methodRetValue == null) {
+                if (method.getParameterCount() > 0) {
                     continue;
                 }
-                values.put(identifier, methodRetValue);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+                method.setAccessible(true);
+                try {
+                    String identifier = method.getAnnotation(EntityMetaDataFunction.class).identifier();
+                    if (values.containsKey(identifier)) {
+                        continue;
+                    }
+                    Object methodRetValue = method.invoke(this);
+                    if (methodRetValue == null) {
+                        continue;
+                    }
+                    values.put(identifier, methodRetValue);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
             }
+            clazz = clazz.getSuperclass();
         }
         return values;
     }
