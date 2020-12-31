@@ -162,7 +162,7 @@ public class AssetsManager {
         if (getAssetSize(hash) == -1) {
             return false;
         }
-        if (!Minosoft.config.getBoolean(ConfigurationPaths.BooleanPaths.DEBUG_VERIFY_ASSETS)) {
+        if (!Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.DEBUG_VERIFY_ASSETS)) {
             return true;
         }
         try {

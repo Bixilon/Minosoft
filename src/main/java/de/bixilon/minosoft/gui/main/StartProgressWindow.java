@@ -110,6 +110,7 @@ public class StartProgressWindow extends Application {
         });
     }
 
+
     @Override
     public void start(Stage stage) {
         Platform.setImplicitExit(false);
