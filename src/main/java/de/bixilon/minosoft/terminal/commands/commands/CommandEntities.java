@@ -32,7 +32,7 @@ public class CommandEntities extends Command {
                         new CommandLiteralNode("list", (connection, stack) -> {
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
-                            for (var entry : connection.getPlayer().getWorld().getEntities().entrySet()) {
+                            for (var entry : connection.getPlayer().getWorld().getEntityIdMap().entrySet()) {
                                 tableData.add(new Object[]{entry.getKey(), entry.getValue().getUUID(), entry.getValue().getEntityInformation(), entry.getValue().getEquipment(), entry.getValue().getLocation(), entry.getValue().getRotation()});
                             }
 

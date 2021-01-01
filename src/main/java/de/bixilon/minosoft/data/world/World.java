@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world;
 
+import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.mappings.Dimension;
@@ -20,13 +21,15 @@ import de.bixilon.minosoft.data.mappings.blocks.Block;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Collection of chunks
  */
 public class World {
     private final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
-    private final HashMap<Integer, Entity> entities = new HashMap<>();
+    private final HashBiMap<Integer, Entity> entityIdMap = HashBiMap.create();
+    private final HashBiMap<UUID, Entity> entityUUIDMap = HashBiMap.create();
     boolean hardcore;
     boolean raining;
     Dimension dimension; // used for sky color, etc
@@ -84,19 +87,29 @@ public class World {
     }
 
     public void addEntity(Entity entity) {
-        this.entities.put(entity.getEntityId(), entity);
+        this.entityIdMap.put(entity.getEntityId(), entity);
+        this.entityUUIDMap.put(entity.getUUID(), entity);
     }
 
     public Entity getEntity(int id) {
-        return this.entities.get(id);
+        return this.entityIdMap.get(id);
+    }
+
+    public Entity getEntity(UUID uuid) {
+        return this.entityUUIDMap.get(uuid);
     }
 
     public void removeEntity(Entity entity) {
-        removeEntity(entity.getEntityId());
+        this.entityIdMap.inverse().remove(entity);
+        this.entityUUIDMap.inverse().remove(entity);
     }
 
     public void removeEntity(int entityId) {
-        this.entities.remove(entityId);
+        removeEntity(this.entityIdMap.get(entityId));
+    }
+
+    public void removeEntity(UUID entityUUID) {
+        removeEntity(this.entityUUIDMap.get(entityUUID));
     }
 
     public Dimension getDimension() {
@@ -127,7 +140,11 @@ public class World {
         blockEntities.forEach(this::setBlockEntityData);
     }
 
-    public HashMap<Integer, Entity> getEntities() {
-        return this.entities;
+    public HashBiMap<Integer, Entity> getEntityIdMap() {
+        return this.entityIdMap;
+    }
+
+    public HashBiMap<UUID, Entity> getEntityUUIDMap() {
+        return this.entityUUIDMap;
     }
 }

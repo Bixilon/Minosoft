@@ -36,32 +36,45 @@ public class Player {
     private final ScoreboardManager scoreboardManager = new ScoreboardManager();
     private final World world = new World();
     private final HashMap<Integer, Inventory> inventories = new HashMap<>();
-    float health;
-    int food;
-    float saturation;
-    BlockPosition spawnLocation;
-    GameModes gameMode;
-    byte selectedSlot;
-    int level;
-    int totalExperience;
-    PlayerEntity entity;
-    boolean spawnConfirmed;
+    private float health;
+    private int food;
+    private float saturation;
+    private BlockPosition spawnLocation;
+    private GameModes gameMode;
+    private byte selectedSlot;
+    private int level;
+    private int totalExperience;
+    private PlayerEntity entity;
+    private boolean spawnConfirmed;
+    private UUID uuid;
+    private String playerName;
 
-    ChatComponent tabHeader;
-    ChatComponent tabFooter;
+    private ChatComponent tabHeader = ChatComponent.valueOf("");
+    private ChatComponent tabFooter = ChatComponent.valueOf("");
 
     public Player(Account account) {
         this.account = account;
+        this.uuid = account.getUUID();
+        this.playerName = account.getUsername();
         // create our own inventory without any properties
         this.inventories.put(PLAYER_INVENTORY_ID, new Inventory(null));
     }
 
     public String getPlayerName() {
-        return this.account.getUsername();
+        return this.playerName;
     }
 
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+
     public UUID getPlayerUUID() {
-        return this.account.getUUID();
+        return this.uuid;
+    }
+
+    public void setPlayerUUID(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public Account getAccount() {

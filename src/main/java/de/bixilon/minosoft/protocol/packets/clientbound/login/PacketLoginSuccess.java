@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
 import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.Util;
@@ -24,7 +25,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W12A;
 
 public class PacketLoginSuccess extends ClientboundPacket {
     UUID uuid;
-    String username;
+    String playerName;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -33,20 +34,26 @@ public class PacketLoginSuccess extends ClientboundPacket {
         } else {
             this.uuid = buffer.readUUID();
         }
-        this.username = buffer.readString();
+        this.playerName = buffer.readString();
         return true;
     }
 
     @Override
+    public void handle(Connection connection) {
+        connection.getPlayer().setPlayerUUID(getUUID());
+        connection.getPlayer().setPlayerName(getPlayerName());
+    }
+
+    @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving login success packet (username=%s, uuid=%s)", this.username, this.uuid));
+        Log.protocol(String.format("[IN] Receiving login success packet (username=%s, uuid=%s)", this.playerName, this.uuid));
     }
 
     public UUID getUUID() {
         return this.uuid;
     }
 
-    public String getUsername() {
-        return this.username;
+    public String getPlayerName() {
+        return this.playerName;
     }
 }

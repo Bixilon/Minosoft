@@ -16,6 +16,7 @@ package de.bixilon.minosoft.terminal.commands.commands;
 import com.github.freva.asciitable.AsciiTable;
 import de.bixilon.minosoft.data.commands.CommandLiteralNode;
 import de.bixilon.minosoft.data.commands.CommandNode;
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
 
 import java.util.ArrayList;
 
@@ -26,13 +27,19 @@ public class CommandTabList extends Command {
         parent.addChildren(
                 new CommandLiteralNode("tab",
                         new CommandLiteralNode("list", (connection, stack) -> {
+                            print(connection.getPlayer().getTabHeader().getANSIColoredMessage());
+
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
                             for (var entry : connection.getPlayer().playerList.entrySet()) {
-                                tableData.add(new Object[]{entry.getKey(), entry.getValue().getName(), entry.getValue().getDisplayName().getLegacyText(), entry.getValue().getGameMode(), entry.getValue().getPing() + "ms"});
+                                PlayerEntity playerEntity = (PlayerEntity) connection.getPlayer().getWorld().getEntity(entry.getValue().getUUID());
+                                Integer entityId = playerEntity != null ? playerEntity.getEntityId() : null;
+                                tableData.add(new Object[]{entry.getKey(), entityId, entry.getValue().getName(), entry.getValue().getDisplayName(), entry.getValue().getGameMode(), entry.getValue().getPing() + "ms"});
                             }
 
-                            print(AsciiTable.getTable(new String[]{"UUID", "Playername", "Displayname", "Gamemode", "Ping"}, tableData.toArray(new Object[0][0])));
+                            print(AsciiTable.getTable(new String[]{"UUID", "ENTITY ID", "PLAYER NAME", "DISPLAY NAME", "GAMEMODE", "PING"}, tableData.toArray(new Object[0][0])));
+
+                            print(connection.getPlayer().getTabFooter().getANSIColoredMessage());
                         })));
         return parent;
     }
