@@ -13,28 +13,29 @@
 
 package de.bixilon.minosoft.terminal.commands.commands;
 
-import de.bixilon.minosoft.data.commands.CommandArgumentNode;
+import com.github.freva.asciitable.AsciiTable;
+import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.commands.CommandLiteralNode;
 import de.bixilon.minosoft.data.commands.CommandNode;
-import de.bixilon.minosoft.data.commands.parser.StringParser;
-import de.bixilon.minosoft.data.commands.parser.properties.StringParserProperties;
+import de.bixilon.minosoft.data.mappings.versions.Versions;
 
-public class CommandHelp extends Command {
+import java.util.ArrayList;
+
+public class CommandServer extends Command {
 
     @Override
     public CommandNode build(CommandNode parent) {
         parent.addChildren(
-                new CommandLiteralNode("help", (stack) -> {
-                    print("============= help =============");
-                    print("Commands in [Brackets] are connection specific!");
-                    print("");
-                    print("help -> Get this list");
-                    print("connection -> Manage connections");
-                    print("[disconnect]] -> Disconnect from current connection");
-                    print("[chat] -> Write a command or chat message");
-                    print("[tab] -> Manage tab");
-                    print("[entity] -> See all entities");
-                }, new CommandArgumentNode("command", StringParser.STRING_PARSER, new StringParserProperties(StringParserProperties.StringSettings.QUOTABLE_PHRASE, false), (stack) -> print("Coming soon :)"))));
+                new CommandLiteralNode("server",
+                        new CommandLiteralNode("list", (stack) -> {
+                            ArrayList<Object[]> tableData = new ArrayList<>();
+
+                            for (var entry : Minosoft.getConfig().getServerList().entrySet()) {
+                                tableData.add(new Object[]{entry.getKey(), entry.getValue().getAddress(), Versions.getVersionById(entry.getValue().getDesiredVersionId())});
+                            }
+
+                            print(AsciiTable.getTable(new String[]{"ID", "ADDRESS", "DESIRED VERSION"}, tableData.toArray(new Object[0][0])));
+                        })));
         return parent;
     }
 }
