@@ -13,6 +13,5 @@ public class DummyRender {
         renderWindow.init();
         renderWindow.startLoop();
         renderWindow.exit();
-
     }
 }
