@@ -67,7 +67,7 @@ Minosoft is modding friendly. A decent API was introduced with !17. It is pretty
 On the ToDo List
 
 ## Contribution or helping out
-You're welcome. Because this is still work-in-progress, consider contacting us first, but feel free to take a look at [Contribution.md](/Contribution.md).
+You're welcome. Because this is still work-in-progress, consider contacting us first, but feel free to take a look at [Contributing.md](/Contributing.md).
 
 ## Tools and generators
 We wrote some tools to help out, see [Utility](util/ReadMe.md).
