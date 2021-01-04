@@ -303,6 +303,7 @@ public class AssetsManager {
         if (verifyAssetHash(hash)) {
             return;
         }
+        checkURL(url);
         Log.verbose(String.format("Downloading %s -> %s", url, hash));
         if (compressed) {
             Util.downloadFileAsGz(url, getAssetDiskPath(hash));
@@ -316,5 +317,11 @@ public class AssetsManager {
             throw new FileNotFoundException("Could not find asset with hash: null");
         }
         return StaticConfiguration.HOME_DIRECTORY + String.format("assets/objects/%s/%s.gz", hash.substring(0, 2), hash);
+    }
+
+    private static void checkURL(String url) {
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            throw new IllegalArgumentException("Not a valid url:" + url);
+        }
     }
 }
