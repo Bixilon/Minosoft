@@ -15,7 +15,9 @@ package de.bixilon.minosoft.gui.main;
 
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.text.BaseComponent;
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.ConnectionReasons;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
@@ -29,8 +31,8 @@ public class Server {
     private static int highestServerId;
     private final int id;
     private final ArrayList<Connection> connections = new ArrayList<>();
-    private BaseComponent name;
-    private BaseComponent addressName;
+    private ChatComponent name;
+    private ChatComponent addressName;
     private String address;
     private int desiredVersion;
     private byte[] favicon;
@@ -38,12 +40,12 @@ public class Server {
     private boolean readOnly;
     private ServerListCell cell;
 
-    public Server(int id, BaseComponent name, String address, int desiredVersion, byte[] favicon) {
+    public Server(int id, ChatComponent name, String address, int desiredVersion, byte[] favicon) {
         this(id, name, address, desiredVersion);
         this.favicon = favicon;
     }
 
-    public Server(int id, BaseComponent name, String address, int desiredVersion) {
+    public Server(int id, ChatComponent name, String address, int desiredVersion) {
         this.id = id;
         if (id > highestServerId) {
             highestServerId = id;
@@ -52,6 +54,10 @@ public class Server {
         this.address = address;
         this.addressName = new BaseComponent(address);
         this.desiredVersion = desiredVersion;
+    }
+
+    public Server(ChatComponent name, String address, Version version) {
+        this(getNextServerId(), name, address, version.getVersionId());
     }
 
     public Server(ServerAddress address) {
@@ -67,7 +73,7 @@ public class Server {
     }
 
     public static Server deserialize(JsonObject json) {
-        Server server = new Server(json.get("id").getAsInt(), new BaseComponent(json.get("name").getAsString()), json.get("address").getAsString(), json.get("version").getAsInt());
+        Server server = new Server(json.get("id").getAsInt(), ChatComponent.valueOf(json.get("name").getAsString()), json.get("address").getAsString(), json.get("version").getAsInt());
         if (json.has("favicon")) {
             server.setFavicon(Base64.getDecoder().decode(json.get("favicon").getAsString()));
         }
@@ -117,8 +123,8 @@ public class Server {
         return String.format("%s (%s)", getName(), getAddress());
     }
 
-    public BaseComponent getName() {
-        if (this.name.isEmpty()) {
+    public ChatComponent getName() {
+        if (this.name == null || ((BaseComponent) this.name).isEmpty()) {
             return this.addressName;
         }
         return this.name;

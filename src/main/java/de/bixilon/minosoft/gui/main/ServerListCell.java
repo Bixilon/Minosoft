@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.data.player.PingBars;
-import de.bixilon.minosoft.data.text.BaseComponent;
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.EventInvokerCallback;
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
@@ -213,7 +213,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         })));
     }
 
-    public void setName(BaseComponent name) {
+    public void setName(ChatComponent name) {
         this.nameField.getChildren().setAll(name.getJavaFXText());
         for (Node node : this.nameField.getChildren()) {
             node.setStyle("-fx-font-size: 15pt ;");

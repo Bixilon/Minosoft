@@ -34,6 +34,7 @@ public class Versions {
     public static final Version LOWEST_VERSION_SUPPORTED = new Version("Automatic", -1, -1, null, null);
     private static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<Integer, Version> VERSION_PROTOCOL_ID_MAP = HashBiMap.create(500);
+    private static final HashBiMap<String, Version> VERSION_NAME_MAP = HashBiMap.create(500);
     private static final HashSet<Version> LOADED_VERSIONS = new HashSet<>();
     public static VersionMapping PRE_FLATTENING_MAPPING;
 
@@ -43,6 +44,10 @@ public class Versions {
 
     public static Version getVersionByProtocolId(int protocolId) {
         return VERSION_PROTOCOL_ID_MAP.get(protocolId);
+    }
+
+    public static Version getVersionByName(String name) {
+        return VERSION_NAME_MAP.get(name);
     }
 
     public static void loadAvailableVersions(JsonObject json) {
@@ -97,6 +102,7 @@ public class Versions {
         Version version = new Version(versionName, versionId, protocolId, serverboundPacketMapping, clientboundPacketMapping);
         VERSION_ID_MAP.put(version.getVersionId(), version);
         VERSION_PROTOCOL_ID_MAP.put(version.getProtocolId(), version);
+        VERSION_NAME_MAP.put(version.getVersionName(), version);
         return version;
     }
 
