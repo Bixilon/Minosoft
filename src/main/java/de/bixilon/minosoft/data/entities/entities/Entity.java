@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.inventory.InventorySlots;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.MobEffect;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.util.logging.Log;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;

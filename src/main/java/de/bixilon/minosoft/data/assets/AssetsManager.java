@@ -21,12 +21,12 @@ import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
-import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.HTTP;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -303,7 +303,7 @@ public class AssetsManager {
         if (verifyAssetHash(hash)) {
             return;
         }
-        checkURL(url);
+        Util.checkURL(url);
         Log.verbose(String.format("Downloading %s -> %s", url, hash));
         if (compressed) {
             Util.downloadFileAsGz(url, getAssetDiskPath(hash));
@@ -317,11 +317,5 @@ public class AssetsManager {
             throw new FileNotFoundException("Could not find asset with hash: null");
         }
         return StaticConfiguration.HOME_DIRECTORY + String.format("assets/objects/%s/%s.gz", hash.substring(0, 2), hash);
-    }
-
-    private static void checkURL(String url) {
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            throw new IllegalArgumentException("Not a valid url:" + url);
-        }
     }
 }

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.locale.minecraft;
 
 import de.bixilon.minosoft.data.assets.AssetsManager;
-import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.io.IOException;
 

@@ -19,8 +19,8 @@ import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.accounts.MojangAccount;
 import de.bixilon.minosoft.data.accounts.OfflineAccount;
 import de.bixilon.minosoft.gui.main.Server;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.io.*;
 import java.nio.file.Files;

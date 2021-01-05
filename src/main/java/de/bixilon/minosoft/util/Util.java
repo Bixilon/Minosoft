@@ -317,4 +317,10 @@ public final class Util {
             throw new IllegalStateException();
         }
     }
+
+    public static void checkURL(String url) {
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            throw new IllegalArgumentException("Not a valid url:" + url);
+        }
+    }
 }

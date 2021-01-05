@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.gui.main.GUITools;
-import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.util.logging.Log;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;

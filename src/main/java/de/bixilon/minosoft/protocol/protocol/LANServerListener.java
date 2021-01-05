@@ -16,9 +16,9 @@ package de.bixilon.minosoft.protocol.protocol;
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.gui.main.ServerListCell;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
 import javafx.application.Platform;
 
 import java.net.*;

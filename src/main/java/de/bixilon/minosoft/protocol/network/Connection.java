@@ -22,8 +22,6 @@ import de.bixilon.minosoft.data.mappings.recipes.Recipes;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventInvoker;
 import de.bixilon.minosoft.modding.event.events.*;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -37,6 +35,8 @@ import de.bixilon.minosoft.terminal.CLI;
 import de.bixilon.minosoft.terminal.commands.commands.Command;
 import de.bixilon.minosoft.util.DNSUtil;
 import de.bixilon.minosoft.util.ServerAddress;
+import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
 import org.xbill.DNS.TextParseException;
 
 import javax.annotation.Nullable;

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.main;
 import com.jfoenix.controls.JFXComboBox;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.LogLevels;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;

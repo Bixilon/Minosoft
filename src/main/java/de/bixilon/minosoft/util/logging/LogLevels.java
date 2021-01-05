@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.logging;
+package de.bixilon.minosoft.util.logging;
 
 public enum LogLevels {
     FATAL,

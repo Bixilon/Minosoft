@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.clientbound.status;
 
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.StatusResponseEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -24,6 +23,7 @@ import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.protocol.ConnectionPing;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketStatusResponse extends ClientboundPacket {
     ServerListPing response;

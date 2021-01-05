@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.network;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.exceptions.PacketNotImplementedException;
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.UnknownPacketException;
@@ -25,6 +24,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
 
 public abstract class Network {
     protected final Connection connection;

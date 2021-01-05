@@ -16,8 +16,8 @@ package de.bixilon.minosoft.protocol.ping;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.Base64;
 

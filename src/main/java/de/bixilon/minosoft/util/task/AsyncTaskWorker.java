@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.util.task;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.HashSet;
 import java.util.LinkedList;

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.accounts.MojangAccount;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.gui.main.cells.AccountListCell;
-import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.mojang.api.MojangAuthentication;
 import de.bixilon.minosoft.util.mojang.api.exceptions.AuthenticationException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
