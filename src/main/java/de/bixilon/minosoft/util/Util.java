@@ -265,8 +265,9 @@ public final class Util {
         output.close();
     }
 
-    public static BufferedInputStream getInputStreamByURL(String url) throws IOException {
-        return new BufferedInputStream(new URL(url).openStream());
+    public static InputStream getInputStreamByURL(String url) throws IOException {
+        return new URL(url).openConnection().getInputStream();
+        // return new BufferedInputStream(new URL(url).openStream());
     }
 
     public static ThreadFactory getThreadFactory(String threadName) {

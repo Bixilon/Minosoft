@@ -16,6 +16,7 @@ import shutil
 import subprocess
 import tarfile
 import traceback
+import urllib.request
 
 import requests
 import ujson
@@ -30,7 +31,7 @@ FILES_PER_VERSION = ["blocks.json", "registries.json", "block_models.json"] + OP
 DOWNLOAD_BASE_URL = "https://apimon.de/mcdata/"
 RESOURCE_MAPPINGS_INDEX = ujson.load(open("../src/main/resources/assets/mapping/resources.json"))
 MOJANG_MINOSOFT_FIELD_MAPPINGS = ujson.load(open("entitiesFieldMojangMinosoftMappings.json"))
-VERSION_MANIFEST = requests.get('https://launchermeta.mojang.com/mc/game/version_manifest.json').json()
+VERSION_MANIFEST = ujson.loads(urllib.request.urlopen('https://launchermeta.mojang.com/mc/game/version_manifest.json').read().decode("utf-8"))
 VERBOSE_LOG = False
 DEFAULT_MAPPINGS = ujson.load(open("mappingsDefaults.json"))
 failedVersionIds = []
@@ -135,6 +136,7 @@ if not os.path.isdir(TEMP_FOLDER):
 
 
 def generateJarAssets(versionId):
+    print("Generating jar asset hash: %s" % versionId)
     generateProcess = ""
     try:
         generateProcess = subprocess.run(r'mvn exec:java -Dexec.mainClass="de.bixilon.minosoft.generator.JarHashGenerator" -Dexec.args="%s"' % versionId, cwd=r'../', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -180,9 +182,11 @@ for version in VERSION_MANIFEST["versions"]:
     if not os.path.isdir(versionTempBaseFolder):
         os.mkdir(versionTempBaseFolder)
 
-    versionJson = requests.get(version["url"]).json()
+    print("DEBUG: Downloading versions json...")
+    versionJson = ujson.loads(urllib.request.urlopen(version["url"]).read().decode("utf-8"))
 
-    burger = requests.get("https://pokechu22.github.io/Burger/%s.json" % version["id"]).json()[0]
+    print("DEBUG: Downloading burger data")
+    burger = ujson.loads(urllib.request.urlopen("https://pokechu22.github.io/Burger/%s.json" % version["id"]).read().decode("utf-8"))[0]
 
     for fileName in FILES_PER_VERSION:
         if os.path.isfile(versionTempBaseFolder + fileName):
@@ -223,7 +227,7 @@ for version in VERSION_MANIFEST["versions"]:
                     print("WARN: Can not generate entities.json for %s (missing deobfuscation map)" % version["id"])
                     continue
                 # download obfuscation map ToDo: make this much more efficient (aka no line looping, parsing!)
-                obfuscationMapLines = requests.get(versionJson["downloads"]["client_mappings"]["url"]).content.decode("utf-8").splitlines()
+                obfuscationMapLines = urllib.request.urlopen(versionJson["downloads"]["client_mappings"]["url"]).read().decode("utf-8").splitlines()
 
                 # entities
                 entities = {}
