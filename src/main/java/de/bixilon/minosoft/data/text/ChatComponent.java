@@ -17,6 +17,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
+import de.bixilon.minosoft.data.mappings.versions.Version;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -25,10 +26,14 @@ import javax.annotation.Nullable;
 
 public abstract class ChatComponent {
     public static ChatComponent valueOf(Object raw) {
-        return valueOf(null, raw);
+        return valueOf(null, null, raw);
     }
 
-    public static ChatComponent valueOf(@Nullable TextComponent parent, Object raw) {
+    public static ChatComponent valueOf(Version version, Object raw) {
+        return valueOf(version, null, raw);
+    }
+
+    public static ChatComponent valueOf(Version version, @Nullable TextComponent parent, Object raw) {
         if (raw == null) {
             return new BaseComponent();
         }
@@ -43,13 +48,13 @@ public abstract class ChatComponent {
             try {
                 json = JsonParser.parseString((String) raw).getAsJsonObject();
             } catch (JsonParseException | IllegalStateException ignored) {
-                return new BaseComponent((String) raw);
+                return new BaseComponent(version, (String) raw);
             }
         } else {
-            return new BaseComponent(parent, raw.toString());
+            return new BaseComponent(version, parent, raw.toString());
             // throw new IllegalArgumentException(String.format("%s is not a valid type here!", raw.getClass().getSimpleName()));
         }
-        return new BaseComponent(parent, json);
+        return new BaseComponent(version, parent, json);
     }
 
     /**

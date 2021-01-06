@@ -32,6 +32,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.ping.ForgeModInfo;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.logging.Log;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -284,17 +285,21 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (!this.canConnect || this.server.getLastPing() == null) {
             return;
         }
-        Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getConfig().getSelectedAccount()));
-        Version version;
-        if (this.server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
-            version = this.server.getLastPing().getVersion();
-        } else {
-            version = Versions.getVersionById(this.server.getDesiredVersionId());
-        }
-        this.optionsConnect.setDisable(true);
-        connection.connect(this.server.getLastPing().getAddress(), version);
-        connection.registerEvent(new EventInvokerCallback<>(ConnectionStateChangeEvent.class, this::handleConnectionCallback));
-        this.server.addConnection(connection);
+        new Thread(() -> {
+            Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getConfig().getSelectedAccount()));
+            Version version;
+            if (this.server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
+                version = this.server.getLastPing().getVersion();
+            } else {
+                version = Versions.getVersionById(this.server.getDesiredVersionId());
+            }
+            this.optionsConnect.setDisable(true);
+            // ToDo: show progress dialog
+
+            connection.connect(this.server.getLastPing().getAddress(), version, new CountUpAndDownLatch(1));
+            connection.registerEvent(new EventInvokerCallback<>(ConnectionStateChangeEvent.class, this::handleConnectionCallback));
+            this.server.addConnection(connection);
+        }, "ConnectThread").start();
 
     }
 

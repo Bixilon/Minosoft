@@ -40,7 +40,7 @@ class ItemStackParser : CommandParser() {
         if (stringReader.peek() == '{') {
             nbt = stringReader.readNBTCompoundTag()
         }
-        return Slot(connection.mapping, Item(argument.value.mod, argument.value.identifier), 1, nbt)
+        return Slot(connection.version, Item(argument.value.mod, argument.value.identifier), 1, nbt)
     }
 
     companion object {

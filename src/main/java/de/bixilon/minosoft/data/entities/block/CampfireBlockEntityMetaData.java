@@ -28,7 +28,7 @@ public class CampfireBlockEntityMetaData extends BlockEntityMetaData {
     public CampfireBlockEntityMetaData(ListTag nbt) {
         this.items = new Slot[4];
         for (CompoundTag tag : nbt.<CompoundTag>getValue()) {
-            this.items[tag.getByteTag("Slot").getValue()] = new Slot(new Item(tag.getStringTag("id").getValue()), tag.getByteTag("Count").getValue());
+            this.items[tag.getByteTag("Slot").getValue()] = new Slot(null, new Item(tag.getStringTag("id").getValue()), tag.getByteTag("Count").getValue()); // ToDo: version should not be null
         }
     }
 

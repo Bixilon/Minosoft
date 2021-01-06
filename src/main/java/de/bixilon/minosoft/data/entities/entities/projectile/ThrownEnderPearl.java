@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public class ThrownEnderPearl extends ThrowableItemProjectile {
-    private static final Slot DEFAULT_ITEM = new Slot(new Item("ender_pearl"));
+    private static final Slot DEFAULT_ITEM = new Slot(null, new Item("ender_pearl")); // ToDo: version should not be null
 
     public ThrownEnderPearl(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);

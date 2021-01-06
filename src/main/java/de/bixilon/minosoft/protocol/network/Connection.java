@@ -33,6 +33,7 @@ import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.terminal.CLI;
 import de.bixilon.minosoft.terminal.commands.commands.Command;
+import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.DNSUtil;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.logging.Log;
@@ -123,10 +124,21 @@ public class Connection {
         this.network.connect(this.address);
     }
 
-    public void connect(ServerAddress address, Version version) {
+    public void connect(ServerAddress address, Version version, CountUpAndDownLatch latch) {
         this.address = address;
         this.reason = ConnectionReasons.CONNECT;
         setVersion(version);
+        try {
+            version.initializeAssetManger(latch); // ToDo
+            version.loadMappings(latch);
+            this.customMapping.setVersion(version);
+            this.customMapping.setParentMapping(version.getMapping());
+        } catch (Exception e) {
+            Log.printException(e, LogLevels.DEBUG);
+            Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
+            this.lastException = new MappingsLoadingException("Mappings could not be loaded", e);
+            setConnectionState(ConnectionStates.FAILED_NO_RETRY);
+        }
         Log.info(String.format("Connecting to server: %s", address));
         this.network.connect(address);
     }
@@ -149,17 +161,8 @@ public class Connection {
         }
 
         this.version = version;
-        try {
-            Versions.loadVersionMappings(version);
-            this.customMapping.setVersion(version);
-            this.customMapping.setParentMapping(version.getMapping());
-        } catch (Exception e) {
-            Log.printException(e, LogLevels.DEBUG);
-            Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
-            this.lastException = new MappingsLoadingException("Mappings could not be loaded", e);
-            setConnectionState(ConnectionStates.FAILED_NO_RETRY);
-        }
     }
+
 
     public void handle(ClientboundPacket p) {
         this.handlingQueue.add(p);

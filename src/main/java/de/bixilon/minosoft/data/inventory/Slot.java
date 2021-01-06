@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.inventory;
 
-import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.data.mappings.Enchantment;
 import de.bixilon.minosoft.data.mappings.Item;
+import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -31,6 +31,7 @@ public class Slot {
     private final Item item;
     private final HashMap<Enchantment, Integer> enchantments = new HashMap<>();
     private final ArrayList<ChatComponent> lore = new ArrayList<>();
+    private final Version version;
     int itemCount;
     short itemMetadata;
     int repairCost;
@@ -41,20 +42,21 @@ public class Slot {
     byte hideFlags;
 
 
-    public Slot(VersionMapping mapping, Item item, int itemCount, CompoundTag nbt) {
-        this(item);
+    public Slot(Version version, Item item, int itemCount, CompoundTag nbt) {
+        this(version, item);
         this.itemCount = itemCount;
-        setNBT(mapping, nbt);
+        setNBT(nbt);
     }
 
-    public Slot(VersionMapping mapping, Item item, byte itemCount, short itemMetadata, CompoundTag nbt) {
-        this(item);
+    public Slot(Version version, Item item, byte itemCount, short itemMetadata, CompoundTag nbt) {
+        this(version, item);
         this.itemMetadata = itemMetadata;
         this.itemCount = itemCount;
-        setNBT(mapping, nbt);
+        setNBT(nbt);
     }
 
-    public Slot(Item item) {
+    public Slot(Version version, Item item) {
+        this.version = version;
         if (item.getFullIdentifier().equals("minecraft:air")) {
             this.item = null;
         } else {
@@ -62,12 +64,12 @@ public class Slot {
         }
     }
 
-    public Slot(Item item, byte itemCount) {
-        this(item);
+    public Slot(Version version, Item item, byte itemCount) {
+        this(version, item);
         this.itemCount = itemCount;
     }
 
-    private void setNBT(VersionMapping mapping, CompoundTag nbt) {
+    private void setNBT(CompoundTag nbt) {
         if (nbt == null) {
             return;
         }
@@ -77,11 +79,11 @@ public class Slot {
         if (nbt.containsKey("display")) {
             CompoundTag display = nbt.getCompoundTag("display");
             if (display.containsKey("Name")) {
-                this.customDisplayName = ChatComponent.valueOf(display.getStringTag("Name").getValue());
+                this.customDisplayName = ChatComponent.valueOf(this.version, display.getStringTag("Name").getValue());
             }
             if (display.containsKey("Lore")) {
                 for (StringTag lore : display.getListTag("Lore").<StringTag>getValue()) {
-                    this.lore.add(ChatComponent.valueOf(lore.getValue()));
+                    this.lore.add(ChatComponent.valueOf(this.version, lore.getValue()));
                 }
             }
         }
@@ -101,7 +103,7 @@ public class Slot {
             }
         } else if (nbt.containsKey("ench")) {
             for (CompoundTag enchantment : nbt.getListTag("ench").<CompoundTag>getValue()) {
-                this.enchantments.put(mapping.getEnchantmentById(enchantment.getNumberTag("id").getAsInt()), enchantment.getNumberTag("lvl").getAsInt());
+                this.enchantments.put(this.version.getMapping().getEnchantmentById(enchantment.getNumberTag("id").getAsInt()), enchantment.getNumberTag("lvl").getAsInt());
             }
         }
     }
@@ -244,8 +246,8 @@ public class Slot {
         // ToDo: What if an item identifier changed between versions? oOo
         String[] keys = {String.format("item.%s.%s", this.item.getMod(), this.item.getIdentifier()), String.format("block.%s.%s", this.item.getMod(), this.item.getIdentifier())};
         for (String key : keys) {
-            if (MinecraftLocaleManager.getLanguage().canTranslate(key)) {
-                return MinecraftLocaleManager.translate(key);
+            if (this.version.getLocaleManager().canTranslate(key)) {
+                return this.version.getLocaleManager().translate(key);
             }
         }
         return this.item.getFullIdentifier();

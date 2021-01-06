@@ -12,10 +12,12 @@
 import hashlib
 import os
 import re
-import requests
 import shutil
+import subprocess
 import tarfile
 import traceback
+
+import requests
 import ujson
 
 print("Minecraft mappings downloader (and generator)")
@@ -24,7 +26,7 @@ PRE_FLATTENING_UPDATE_VERSION = "17w46a"
 DATA_FOLDER = "../data/resources/"
 TEMP_FOLDER = DATA_FOLDER + "tmp/"
 OPTIONAL_FILES_PER_VERSION = ["entities.json"]
-FILES_PER_VERSION = ["blocks.json", "registries.json"] + OPTIONAL_FILES_PER_VERSION
+FILES_PER_VERSION = ["blocks.json", "registries.json", "block_models.json"] + OPTIONAL_FILES_PER_VERSION
 DOWNLOAD_BASE_URL = "https://apimon.de/mcdata/"
 RESOURCE_MAPPINGS_INDEX = ujson.load(open("../src/main/resources/assets/mapping/resources.json"))
 MOJANG_MINOSOFT_FIELD_MAPPINGS = ujson.load(open("entitiesFieldMojangMinosoftMappings.json"))
@@ -128,14 +130,50 @@ if not os.path.isdir(DATA_FOLDER):
 if not os.path.isdir(TEMP_FOLDER):
     os.mkdir(TEMP_FOLDER)
 
+
+# compile minosoft
+
+
+def generateJarAssets(versionId):
+    generateProcess = ""
+    try:
+        generateProcess = subprocess.run(r'mvn exec:java -Dexec.mainClass="de.bixilon.minosoft.generator.JarHashGenerator" -Dexec.args="%s"' % versionId, cwd=r'../', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # reload mappings
+        global RESOURCE_MAPPINGS_INDEX
+        RESOURCE_MAPPINGS_INDEX = ujson.load(open("../src/main/resources/assets/mapping/resources.json"))
+    except Exception:
+        print(generateProcess.stdout)
+        print(generateProcess.stderr)
+
+
+print("Compiling minosoft...")
+compileProcess = ""
+try:
+    compileProcess = subprocess.run(r'mvn compile', shell=True, check=True, cwd=r'../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+except Exception:
+    print(compileProcess.stdout)
+    print(compileProcess.stderr)
+    exit(1)
+print("Minosoft compiled!")
+
 for version in VERSION_MANIFEST["versions"]:
     if version["id"] == PRE_FLATTENING_UPDATE_VERSION:
         break
     versionTempBaseFolder = TEMP_FOLDER + version["id"] + "/"
-    resourcesJsonKey = ("mappings/%s" % version["id"])
-    if resourcesJsonKey in RESOURCE_MAPPINGS_INDEX and os.path.isfile(DATA_FOLDER + RESOURCE_MAPPINGS_INDEX[resourcesJsonKey][:2] + "/" + RESOURCE_MAPPINGS_INDEX[resourcesJsonKey] + ".tar.gz"):
-        print("Skipping %s" % (version["id"]))
-        continue
+    resourcesVersion = {}
+    if version["id"] in RESOURCE_MAPPINGS_INDEX["versions"]:
+        resourcesVersion = RESOURCE_MAPPINGS_INDEX["versions"][version["id"]]
+        if os.path.isfile(DATA_FOLDER + resourcesVersion["mappings"][:2] + "/" + resourcesVersion["mappings"] + ".tar.gz"):
+            if "jar_assets_hash" not in resourcesVersion:
+                print("=== %s === " % version["id"])
+                try:
+                    generateJarAssets(version["id"])
+                except Exception:
+                    failedVersionIds.append(version["id"])
+                continue
+            else:
+                print("Skipping %s" % (version["id"]))
+                continue
     print()
     print("=== %s === " % version["id"])
 
@@ -306,6 +344,10 @@ for version in VERSION_MANIFEST["versions"]:
                 with open(versionTempBaseFolder + "entities.json", 'w') as file:
                     file.write(ujson.dumps({"minecraft": entities}))
 
+            elif fileName == "block_models.json":
+                # blockModelsCombiner.py will do the trick for us
+                os.popen('python3 block_model_generator.py \"%s\" %s' % (versionTempBaseFolder + "block_models.json", versionJson['downloads']['client']['url'])).read()
+
         except Exception:
             traceback.print_exc()
             print("ERR: Could not generate %s for %s" % (fileName, version["id"]))
@@ -337,19 +379,31 @@ for version in VERSION_MANIFEST["versions"]:
         os.mkdir(DATA_FOLDER + sha1[:2])
     os.rename(versionTempBaseFolder + version["id"] + ".tar.gz", DATA_FOLDER + sha1[:2] + "/" + sha1 + ".tar.gz")
 
-    if resourcesJsonKey in RESOURCE_MAPPINGS_INDEX:
+    if "mappings" in resourcesVersion:
         # this file already has a mapping, delete it
-        hashToDelete = RESOURCE_MAPPINGS_INDEX[resourcesJsonKey]
+        hashToDelete = resourcesVersion["mappings"]
         filenameToDelete = DATA_FOLDER + hashToDelete[:2] + "/" + hashToDelete + ".tar.gz"
         if os.path.isfile(filenameToDelete):
             shutil.rmtree(filenameToDelete)
 
-    RESOURCE_MAPPINGS_INDEX[resourcesJsonKey] = sha1
+    resourcesVersion["mappings"] = sha1
+    resourcesVersion["index_version"] = versionJson["assetIndex"]["id"]
+    resourcesVersion["index_hash"] = versionJson["assetIndex"]["sha1"]
+    resourcesVersion["client_jar_hash"] = versionJson["downloads"]["client"]["sha1"]
+
+    RESOURCE_MAPPINGS_INDEX["versions"][version["id"]] = resourcesVersion
     # cleanup (delete temp folder)
     shutil.rmtree(versionTempBaseFolder)
     # dump resources index
     with open("../src/main/resources/assets/mapping/resources.json", 'w') as file:
         ujson.dump(RESOURCE_MAPPINGS_INDEX, file)
+
+    # start jar hash generator
+    # todo: don't download jar twice
+    try:
+        generateJarAssets(version["id"])
+    except Exception:
+        failedVersionIds.append(version["id"])
 
 print()
 print()

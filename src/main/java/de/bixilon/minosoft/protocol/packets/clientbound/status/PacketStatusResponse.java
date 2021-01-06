@@ -30,7 +30,7 @@ public class PacketStatusResponse extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        this.response = new ServerListPing(buffer.readJSON());
+        this.response = new ServerListPing(buffer.getConnection().getVersion(), buffer.readJSON());
         return true;
     }
 

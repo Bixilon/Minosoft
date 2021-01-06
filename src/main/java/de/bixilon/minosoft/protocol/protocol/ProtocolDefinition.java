@@ -62,8 +62,9 @@ public final class ProtocolDefinition {
 
 
     public static final String MOJANG_URL_VERSION_MANIFEST = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
-    public static final String MOJANG_URL_RESOURCES = "https://resources.download.minecraft.net/%s/%s";
-    public static final String MOJANG_URL_PACKAGES = "https://launchermeta.mojang.com/v1/packages/";
+    public static final String MINECRAFT_URL_RESOURCES = "https://resources.download.minecraft.net/%s/%s";
+    public static final String MOJANG_URL_PACKAGES = "https://launchermeta.mojang.com/v1/packages/%s/%s";
+    public static final String MOJANG_LAUNCHER_URL_PACKAGES = "https://launcher.mojang.com/v1/objects/%s/%s";
 
     public static final String MOJANG_URL_BLOCKED_SERVERS = "https://sessionserver.mojang.com/blockedservers";
     public static final String MOJANG_URL_LOGIN = "https://authserver.mojang.com/authenticate";

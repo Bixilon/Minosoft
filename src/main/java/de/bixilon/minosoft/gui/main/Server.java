@@ -52,7 +52,7 @@ public class Server {
         }
         this.name = name;
         this.address = address;
-        this.addressName = new BaseComponent(address);
+        this.addressName = ChatComponent.valueOf(address);
         this.desiredVersion = desiredVersion;
     }
 
@@ -62,7 +62,7 @@ public class Server {
 
     public Server(ServerAddress address) {
         this.id = getNextServerId();
-        this.name = new BaseComponent(String.format("LAN Server #%d", LANServerListener.getServerMap().size()));
+        this.name = ChatComponent.valueOf(String.format("LAN Server #%d", LANServerListener.getServerMap().size()));
         this.address = address.toString();
         this.desiredVersion = -1; // Automatic
         this.readOnly = true;
@@ -130,7 +130,7 @@ public class Server {
         return this.name;
     }
 
-    public void setName(BaseComponent name) {
+    public void setName(ChatComponent name) {
         this.name = name;
     }
 
@@ -140,7 +140,7 @@ public class Server {
 
     public void setAddress(String address) {
         this.address = address;
-        this.addressName = new BaseComponent(address);
+        this.addressName = ChatComponent.valueOf(address);
     }
 
     public void ping() {

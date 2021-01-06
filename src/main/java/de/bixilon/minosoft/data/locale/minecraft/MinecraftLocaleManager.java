@@ -13,35 +13,44 @@
 
 package de.bixilon.minosoft.data.locale.minecraft;
 
-import de.bixilon.minosoft.data.assets.AssetsManager;
+import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.io.IOException;
 
 public class MinecraftLocaleManager {
-    private static MinecraftLanguage language;
+    private final Version version;
+    private MinecraftLanguage language;
 
-    public static MinecraftLanguage getLanguage() {
-        return language;
+    public MinecraftLocaleManager(Version version) {
+        this.version = version;
     }
 
-    public static String translate(String key, Object... data) {
-        return language.translate(key, data);
+    public MinecraftLanguage getLanguage() {
+        return this.language;
     }
 
-    private static MinecraftLanguage loadLanguage(String language) throws IOException {
-        return new MinecraftLanguage(language, AssetsManager.readJsonAsset(String.format("minecraft/lang/%s.json", language.toLowerCase())).getAsJsonObject());
+    public String translate(String key, Object... data) {
+        return this.language.translate(key, data);
     }
 
-    public static void load(String language) {
+    private MinecraftLanguage loadLanguage(String language) throws IOException {
+        return new MinecraftLanguage(language, this.version.getAssetsManager().readJsonAsset(String.format("minecraft/lang/%s.json", language.toLowerCase())).getAsJsonObject());
+    }
+
+    public void load(String language) {
         long startTime = System.currentTimeMillis();
-        Log.verbose(String.format("Loading minecraft language file (%s)", language));
+        Log.verbose(String.format("Loading minecraft language file (%s) for %s", language, this.version));
         try {
-            MinecraftLocaleManager.language = loadLanguage(language);
+            this.language = loadLanguage(language);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.warn(String.format("Could not load minecraft language file: %s", language));
+            Log.warn("Could not load minecraft language file: %s for %s", language, this.version);
         }
-        Log.verbose(String.format("Loaded minecraft language files successfully in %dms", (System.currentTimeMillis() - startTime)));
+        Log.verbose("Loaded minecraft language files for %s successfully in %dms", this.version, (System.currentTimeMillis() - startTime));
+    }
+
+    public boolean canTranslate(String key) {
+        return getLanguage().canTranslate(key);
     }
 }

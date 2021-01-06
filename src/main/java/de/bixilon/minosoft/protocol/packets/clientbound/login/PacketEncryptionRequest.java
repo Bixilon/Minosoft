@@ -27,7 +27,6 @@ import java.math.BigInteger;
 import java.security.PublicKey;
 
 public class PacketEncryptionRequest extends ClientboundPacket {
-
     String serverId; // normally empty
     byte[] publicKey;
     byte[] verifyToken;

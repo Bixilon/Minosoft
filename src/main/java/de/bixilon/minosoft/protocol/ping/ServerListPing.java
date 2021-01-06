@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.ping;
 
 import com.google.gson.JsonObject;
+import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -30,7 +31,7 @@ public class ServerListPing {
     private final String serverBrand;
     byte[] favicon;
 
-    public ServerListPing(JsonObject json) {
+    public ServerListPing(Version version, JsonObject json) {
         int protocolId = json.getAsJsonObject("version").get("protocol").getAsInt();
         if (protocolId == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
             // Server did not send us a version, trying 1.8
@@ -48,7 +49,7 @@ public class ServerListPing {
         if (json.get("description").isJsonPrimitive()) {
             this.motd = ChatComponent.valueOf(json.get("description").getAsString());
         } else {
-            this.motd = new BaseComponent(json.getAsJsonObject("description"));
+            this.motd = new BaseComponent(version, json.getAsJsonObject("description"));
         }
         this.serverBrand = json.getAsJsonObject("version").get("name").getAsString();
 
