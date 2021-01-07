@@ -184,9 +184,20 @@ public class Version {
         Log.verbose(String.format("Loading mappings for version %s...", this));
         long startTime = System.currentTimeMillis();
 
+        if (this.mapping == null) {
+            this.mapping = new VersionMapping(this);
+        }
+
+        if (getVersionId() == ProtocolDefinition.PRE_FLATTENING_VERSION_ID && Versions.PRE_FLATTENING_MAPPING == null) {
+            Versions.PRE_FLATTENING_MAPPING = this.mapping;
+        } else {
+            this.mapping.setParentMapping(Versions.PRE_FLATTENING_MAPPING);
+        }
+
+
         HashMap<String, JsonObject> files;
         try {
-            files = Util.readJsonTarStream(AssetsManager.readAssetAsStreamByHash(this.assetsManager.getAssetVersion().getMinosoftMappings()));
+            files = Util.readJsonTarStream(AssetsManager.readAssetAsStreamByHash(Resources.getAssetVersionByVersion(this).getMinosoftMappings()));
         } catch (Exception e) {
             // should not happen, but if this version is not flattened, we can fallback to the flatten mappings. Some things might not work...
             Log.printException(e, LogLevels.VERBOSE);
@@ -222,14 +233,7 @@ public class Version {
     }
 
     public void loadVersionMappings(Mappings type, String mod, @Nullable JsonObject data) {
-        if (this.mapping == null) {
-            this.mapping = new VersionMapping(this);
-        }
         this.mapping.load(type, mod, data, this);
-
-        if (getVersionId() == ProtocolDefinition.PRE_FLATTENING_VERSION_ID && Versions.PRE_FLATTENING_MAPPING == null) {
-            Versions.PRE_FLATTENING_MAPPING = this.mapping;
-        }
     }
 
 }

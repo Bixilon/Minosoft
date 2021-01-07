@@ -37,7 +37,7 @@ public class PacketSpawnObject extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) throws Exception {
-        int entityId = buffer.readVarInt();
+        int entityId = buffer.readEntityId();
         UUID uuid = null;
         if (buffer.getVersionId() >= V_15W31A) {
             uuid = buffer.readUUID();

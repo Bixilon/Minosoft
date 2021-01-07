@@ -28,7 +28,7 @@ public class PacketSpawnExperienceOrb extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        int entityId = buffer.readVarInt();
+        int entityId = buffer.readEntityId();
         Location location;
         if (buffer.getVersionId() < V_16W06A) {
             location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
