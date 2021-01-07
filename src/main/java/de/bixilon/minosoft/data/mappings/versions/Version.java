@@ -30,7 +30,6 @@ import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.HashMap;
 
 public class Version {
@@ -151,22 +150,29 @@ public class Version {
     }
 
     public void initializeAssetManger(CountUpAndDownLatch latch) throws Exception {
-        if (this.assetsManager == null) {
-            this.assetsManager = new AssetsManager(Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.DEBUG_VERIFY_ASSETS), Resources.getAssetVersionByVersion(this));
-            this.assetsManager.downloadAllAssets(latch);
-            this.localeManager = new MinecraftLocaleManager(this);
+        if (this.assetsManager != null) {
+            return;
         }
+        if (!isFlattened() && getVersionId() != ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
+            this.assetsManager = Versions.PRE_FLATTENING_VERSION.getAssetsManager();
+            this.localeManager = Versions.PRE_FLATTENING_VERSION.getLocaleManager();
+            return;
+        }
+        this.assetsManager = new AssetsManager(Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.DEBUG_VERIFY_ASSETS), Resources.getAssetVersionByVersion(this));
+        this.assetsManager.downloadAllAssets(latch);
+        this.localeManager = new MinecraftLocaleManager(this);
+        this.localeManager.load(this, Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.GENERAL_LANGUAGE));
+
     }
 
-    public void loadMappings(CountUpAndDownLatch latch) throws IOException {
+    public void load(CountUpAndDownLatch latch) throws Exception {
         if (isLoaded()) {
             // already loaded
             return;
         }
-        Version preFlatteningVersion = Versions.getVersionById(ProtocolDefinition.PRE_FLATTENING_VERSION_ID);
-        if (!isFlattened() && this != preFlatteningVersion && !preFlatteningVersion.isLoaded()) {
+        if (!isFlattened() && this != Versions.PRE_FLATTENING_VERSION && !Versions.PRE_FLATTENING_VERSION.isLoaded()) {
             // no matter what, we need the version mapping for all pre flattening versions
-            preFlatteningVersion.loadMappings(latch);
+            Versions.PRE_FLATTENING_VERSION.load(latch);
         }
         if (isGettingLoaded()) {
             // async: we don't wanna load this version twice, skip
@@ -174,6 +180,7 @@ public class Version {
         }
         latch.countUp();
         this.isGettingLoaded = true;
+        initializeAssetManger(latch);
         Log.verbose(String.format("Loading mappings for version %s...", this));
         long startTime = System.currentTimeMillis();
 

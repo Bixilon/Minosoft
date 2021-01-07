@@ -215,6 +215,8 @@ public class AssetsManager {
         // generate jar assets index
         generateJarAssets();
 
+        this.assetsMap.putAll(parseAssetsIndex(this.assetVersion.getJarAssetsHash()));
+
         // download minosoft mappings
 
         downloadAsset(AssetsSource.MINOSOFT_GIT, this.assetVersion.getMinosoftMappings());
@@ -298,6 +300,10 @@ public class AssetsManager {
 
     public InputStreamReader readAsset(String name) throws IOException {
         return readAssetByHash(this.assetsMap.get(name));
+    }
+
+    public String readStringAsset(String name) throws IOException {
+        return Util.readFile(new BufferedReader(readAsset(name)), true);
     }
 
     public InputStream readAssetAsStream(String name) throws IOException {

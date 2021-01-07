@@ -24,7 +24,12 @@ public class Resources {
     }
 
     public static void loadVersion(String versionName, JsonObject json) {
-        loadVersion(Versions.getVersionByName(versionName), json);
+        Version version = Versions.getVersionByName(versionName);
+        if (version == null) {
+            // version not supported
+            return;
+        }
+        loadVersion(version, json);
     }
 
     public static void loadVersion(Version version, JsonObject json) {

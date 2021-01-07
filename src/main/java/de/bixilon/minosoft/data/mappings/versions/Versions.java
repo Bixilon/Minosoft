@@ -18,6 +18,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.HashMap;
 
@@ -27,6 +28,7 @@ public class Versions {
     private static final HashBiMap<Integer, Version> VERSION_PROTOCOL_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<String, Version> VERSION_NAME_MAP = HashBiMap.create(500);
     public static VersionMapping PRE_FLATTENING_MAPPING;
+    public static Version PRE_FLATTENING_VERSION;
 
     public static Version getVersionById(int versionId) {
         return VERSION_ID_MAP.get(versionId);
@@ -93,6 +95,9 @@ public class Versions {
         VERSION_ID_MAP.put(version.getVersionId(), version);
         VERSION_PROTOCOL_ID_MAP.put(version.getProtocolId(), version);
         VERSION_NAME_MAP.put(version.getVersionName(), version);
+        if (version.getVersionId() == ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
+            PRE_FLATTENING_VERSION = version;
+        }
         return version;
     }
 

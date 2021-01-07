@@ -129,18 +129,17 @@ public class Connection {
         this.reason = ConnectionReasons.CONNECT;
         setVersion(version);
         try {
-            version.initializeAssetManger(latch); // ToDo
-            version.loadMappings(latch);
+            version.load(latch);  // ToDo: show gui loader
             this.customMapping.setVersion(version);
             this.customMapping.setParentMapping(version.getMapping());
+            Log.info(String.format("Connecting to server: %s", address));
+            this.network.connect(address);
         } catch (Exception e) {
             Log.printException(e, LogLevels.DEBUG);
             Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
             this.lastException = new MappingsLoadingException("Mappings could not be loaded", e);
             setConnectionState(ConnectionStates.FAILED_NO_RETRY);
         }
-        Log.info(String.format("Connecting to server: %s", address));
-        this.network.connect(address);
     }
 
     public ServerAddress getAddress() {

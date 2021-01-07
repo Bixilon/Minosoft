@@ -243,7 +243,7 @@ public class Slot {
     }
 
     public String getLanguageName() {
-        // ToDo: What if an item identifier changed between versions? oOo
+        // ToDo: pre flattening names are completely broken
         String[] keys = {String.format("item.%s.%s", this.item.getMod(), this.item.getIdentifier()), String.format("block.%s.%s", this.item.getMod(), this.item.getIdentifier())};
         for (String key : keys) {
             if (this.version.getLocaleManager().canTranslate(key)) {

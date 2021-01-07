@@ -18,6 +18,8 @@ import de.bixilon.minosoft.util.logging.Log;
 
 import java.io.IOException;
 
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W02A;
+
 public class MinecraftLocaleManager {
     private final Version version;
     private MinecraftLanguage language;
@@ -34,18 +36,21 @@ public class MinecraftLocaleManager {
         return this.language.translate(key, data);
     }
 
-    private MinecraftLanguage loadLanguage(String language) throws IOException {
-        return new MinecraftLanguage(language, this.version.getAssetsManager().readJsonAsset(String.format("minecraft/lang/%s.json", language.toLowerCase())).getAsJsonObject());
+    private MinecraftLanguage loadLanguage(Version version, String language) throws IOException {
+        if (version.getVersionId() >= V_18W02A) {
+            return new MinecraftLanguage(language, this.version.getAssetsManager().readJsonAsset(String.format("minecraft/lang/%s.json", language.toLowerCase())).getAsJsonObject());
+        }
+        return new MinecraftLanguage(language, this.version.getAssetsManager().readStringAsset(String.format("minecraft/lang/%s.lang", language.toLowerCase())));
     }
 
-    public void load(String language) {
+    public void load(Version version, String language) throws IOException {
         long startTime = System.currentTimeMillis();
         Log.verbose(String.format("Loading minecraft language file (%s) for %s", language, this.version));
         try {
-            this.language = loadLanguage(language);
+            this.language = loadLanguage(version, language);
         } catch (Exception e) {
-            e.printStackTrace();
             Log.warn("Could not load minecraft language file: %s for %s", language, this.version);
+            throw e;
         }
         Log.verbose("Loaded minecraft language files for %s successfully in %dms", this.version, (System.currentTimeMillis() - startTime));
     }
