@@ -86,7 +86,7 @@ public abstract class Network {
             if (this.connection.getConnectionState() == ConnectionStates.PLAY) {
                 throw new PacketParseException(e);
             }
-            throw new RuntimeException(e);
+            throw new UnknownPacketException(e);
         }
     }
 

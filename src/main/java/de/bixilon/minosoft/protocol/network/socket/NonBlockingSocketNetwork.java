@@ -176,6 +176,7 @@ public class NonBlockingSocketNetwork extends Network {
             return;
         }
         this.connection.setConnectionState(ConnectionStates.DISCONNECTING);
+        this.queue.clear();
         try {
             this.socketChannel.close();
         } catch (IOException e) {

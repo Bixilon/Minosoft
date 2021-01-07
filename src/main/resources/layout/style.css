@@ -189,6 +189,21 @@
     -fx-border-width: 3px;
 }
 
+.list-cell-connecting {
+    -fx-border-color: yellow;
+    -fx-border-width: 3px;
+}
+
+.list-cell-disconnecting {
+    -fx-border-color: orange;
+    -fx-border-width: 3px;
+}
+
+.list-cell-failed {
+    -fx-border-color: red;
+    -fx-border-width: 3px;
+}
+
 .list-cell-selected {
     -fx-border-color: #00aa00;
     -fx-border-width: 3px;

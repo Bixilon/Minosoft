@@ -168,7 +168,6 @@ public class Connection {
     }
 
     public void disconnect() {
-        setConnectionState(ConnectionStates.DISCONNECTING);
         this.network.disconnect();
         this.handleThread.interrupt();
     }
@@ -287,12 +286,14 @@ public class Connection {
     }
 
     public void setConnectionState(ConnectionStates state) {
-        if (this.state == state) {
-            return;
-        }
-        Log.verbose("ConnectionState changed: " + state);
         ConnectionStates previousState = this.state;
-        this.state = state;
+        synchronized (state) {
+            if (this.state == state) {
+                return;
+            }
+            Log.verbose("ConnectionState changed: " + state);
+            this.state = state;
+        }
         switch (state) {
             case HANDSHAKING -> {
                 // get and add all events, that are connection specific
@@ -435,8 +436,12 @@ public class Connection {
         this.pong = pong;
     }
 
+    public boolean shouldDisconnect() {
+        return getConnectionState() == ConnectionStates.DISCONNECTING || getConnectionState() == ConnectionStates.DISCONNECTED || getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY;
+    }
+
     @Override
     public String toString() {
-        return String.format("(id=%d, address=%s, account=\"%s\")", getConnectionId(), getAddress(), getPlayer().getAccount());
+        return String.format("(id=%d, address=%s, account=\"%s\")", getConnectionId(), getAddress(), ((this.player == null) ? null : getPlayer().getAccount()));
     }
 }

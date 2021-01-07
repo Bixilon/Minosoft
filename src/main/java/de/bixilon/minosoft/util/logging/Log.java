@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.PostChatFormattingCodes;
 import de.bixilon.minosoft.data.text.RGBColor;
 
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -25,9 +26,15 @@ public class Log {
     public static final long MINOSOFT_START_TIME = System.currentTimeMillis();
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static final LinkedBlockingQueue<String> LOG_QUEUE = new LinkedBlockingQueue<>();
+    private static final PrintStream SYSTEM_ERR_STREAM = System.err;
+    private static final PrintStream SYSTEM_OUT_STREAM = System.out;
+    private static final PrintStream ERROR_PRINT_STREAM = new LogPrintStream(LogLevels.WARNING);
+    private static final PrintStream OUT_PRINT_STREAM = new LogPrintStream(LogLevels.INFO);
     private static LogLevels level = LogLevels.PROTOCOL;
 
     static {
+        System.setErr(ERROR_PRINT_STREAM);
+        System.setOut(OUT_PRINT_STREAM);
         new Thread(() -> {
             while (true) {
                 // something to print
@@ -38,8 +45,7 @@ public class Log {
                     e.printStackTrace();
                     continue;
                 }
-                System.out.println(message);
-                System.out.flush();
+                SYSTEM_OUT_STREAM.println(message);
 
                 // ToDo: log to file
             }
@@ -48,6 +54,19 @@ public class Log {
 
     public static void log(LogLevels level, RGBColor color, Object message, Object... format) {
         log(level, "", color, message, format);
+    }
+
+    public static void log(LogLevels level, Object message, Object... format) {
+        log(level, "", switch (level) {
+            case GAME -> ChatColors.GREEN;
+            case FATAL -> ChatColors.DARK_RED;
+            case WARNING -> ChatColors.RED;
+            case DEBUG -> ChatColors.GRAY;
+            case VERBOSE -> ChatColors.YELLOW;
+            case PROTOCOL -> ChatColors.BLUE;
+            case MOJANG -> ChatColors.AQUA;
+            case INFO -> ChatColors.WHITE;
+        }, message, format);
     }
 
     public static void log(LogLevels level, String prefix, RGBColor color, Object message, Object... format) {
@@ -96,7 +115,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void game(Object message, Object... format) {
-        log(LogLevels.GAME, ChatColors.GREEN, message, format);
+        log(LogLevels.GAME, message, format);
     }
 
     /**
@@ -105,7 +124,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void fatal(Object message, Object... format) {
-        log(LogLevels.FATAL, ChatColors.DARK_RED, message, format);
+        log(LogLevels.FATAL, message, format);
     }
 
     /**
@@ -114,7 +133,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void warn(Object message, Object... format) {
-        log(LogLevels.WARNING, ChatColors.RED, message, format);
+        log(LogLevels.WARNING, message, format);
     }
 
     /**
@@ -123,7 +142,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void debug(Object message, Object... format) {
-        log(LogLevels.DEBUG, ChatColors.GRAY, message, format);
+        log(LogLevels.DEBUG, message, format);
     }
 
     /**
@@ -132,7 +151,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void verbose(Object message, Object... format) {
-        log(LogLevels.VERBOSE, ChatColors.YELLOW, message, format);
+        log(LogLevels.VERBOSE, message, format);
     }
 
     /**
@@ -141,7 +160,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void protocol(Object message, Object... format) {
-        log(LogLevels.PROTOCOL, ChatColors.BLUE, message, format);
+        log(LogLevels.PROTOCOL, message, format);
     }
 
     /**
@@ -150,7 +169,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void mojang(Object message, Object... format) {
-        log(LogLevels.MOJANG, ChatColors.AQUA, message, format);
+        log(LogLevels.MOJANG, message, format);
     }
 
     /**
@@ -159,7 +178,7 @@ public class Log {
      * @param message Raw message to log
      */
     public static void info(Object message, Object... format) {
-        log(LogLevels.INFO, ChatColors.WHITE, message, format);
+        log(LogLevels.INFO, message, format);
     }
 
     public static LogLevels getLevel() {

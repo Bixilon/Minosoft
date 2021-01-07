@@ -112,6 +112,9 @@ public class VersionTweaker {
     }
 
     public static Block transformBlock(Block originalBlock, Chunk chunk, InChunkSectionLocation location, byte sectionHeight) {
+        if (originalBlock == null) {
+            return null;
+        }
         switch (originalBlock.getFullIdentifier()) {
             case "minecraft:grass" -> {
                 Block above = getBlockAbove(chunk, location, sectionHeight);

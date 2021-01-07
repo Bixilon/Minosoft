@@ -225,6 +225,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         // clear all cells
         setStyle(null);
         this.root.getStyleClass().removeAll("list-cell-connected");
+        this.root.getStyleClass().removeAll("list-cell-connecting");
         this.motdField.getChildren().clear();
         this.brandField.setText("");
         this.brandField.setTooltip(null);
@@ -285,6 +286,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (!this.canConnect || this.server.getLastPing() == null) {
             return;
         }
+        this.root.getStyleClass().add("list-cell-connecting");
         new Thread(() -> {
             Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getConfig().getSelectedAccount()));
             Version version;
@@ -314,19 +316,27 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             return;
         }
         Platform.runLater(() -> {
+            this.root.getStyleClass().removeAll("list-cell-connecting");
+            this.root.getStyleClass().removeAll("list-cell-connected");
+            this.root.getStyleClass().removeAll("list-cell-disconnecting");
+            this.root.getStyleClass().removeAll("list-cell-failed");
+            this.root.getStyleClass().add(switch (connection.getConnectionState()) {
+                case CONNECTING, HANDSHAKING, LOGIN -> "list-cell-connecting";
+                case PLAY -> "list-cell-connected";
+                case DISCONNECTING -> "list-cell-disconnecting";
+                case FAILED, FAILED_NO_RETRY -> "list-cell-failed";
+                default -> "";
+            });
+
             if (!connection.isConnected()) {
                 // maybe we got disconnected
                 if (!this.server.isConnected()) {
-                    setStyle(null);
-                    this.root.getStyleClass().removeAll("list-cell-connected");
                     this.optionsSessions.setDisable(true);
-                    this.optionsConnect.setDisable(false);
                     return;
                 }
             }
 
             this.optionsConnect.setDisable(Minosoft.getConfig().getSelectedAccount() == connection.getPlayer().getAccount());
-            this.root.getStyleClass().add("list-cell-connected");
             this.optionsSessions.setDisable(false);
         });
     }
