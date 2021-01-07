@@ -34,6 +34,12 @@ public class JarHashGenerator {
             versionJson.addProperty("jar_assets_hash", jarAssetsHash);
 
 
+            // reload json, because the generator is async
+
+            json = JsonParser.parseReader(new InputStreamReader(new FileInputStream("src/main/resources/assets/mapping/resources.json"))).getAsJsonObject();
+
+            json.getAsJsonObject("versions").add(version.getVersionName(), versionJson);
+
             File file = new File("src/main/resources/assets/mapping/resources.json");
             FileWriter writer = new FileWriter(file.getAbsoluteFile());
             writer.write(new Gson().toJson(json));
