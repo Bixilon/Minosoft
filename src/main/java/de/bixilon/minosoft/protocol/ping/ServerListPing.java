@@ -84,7 +84,7 @@ public class ServerListPing {
         return this.serverBrand;
     }
 
-    public ServerModInfo getServerModInfo() {
-        return this.serverModInfo;
+    public <T extends ServerModInfo> T getServerModInfo() {
+        return (T) this.serverModInfo;
     }
 }
