@@ -16,11 +16,11 @@ import shutil
 import subprocess
 import tarfile
 import threading
-import time
 import traceback
 import urllib.request
 
 import requests
+import time
 import ujson
 
 print("Minecraft mappings downloader (and generator)")
@@ -157,7 +157,7 @@ def generateJarAssets(versionId):
 print("Compiling minosoft...")
 compileProcess = ""
 try:
-    compileProcess = subprocess.run(r'mvn compile', shell=True, check=True, cwd=r'../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    compileProcess = subprocess.run(r'mvn compile', shell=True, check=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 except Exception:
     print(compileProcess.stdout)
     print(compileProcess.stderr)
