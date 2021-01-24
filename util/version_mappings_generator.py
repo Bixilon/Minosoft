@@ -16,16 +16,17 @@ import shutil
 import subprocess
 import tarfile
 import threading
+import time
 import traceback
 import urllib.request
 
 import requests
-import time
 import ujson
 
 print("Minecraft mappings downloader (and generator)")
 
-PRE_FLATTENING_UPDATE_VERSION = "17w46a"
+DOWNLOAD_UNTIL_VERSION = "18w01a"
+SKIP_VERSIONS = ["1.13-pre6", "1.13-pre5"]
 DATA_FOLDER = "../data/resources/"
 TEMP_FOLDER = DATA_FOLDER + "tmp/"
 OPTIONAL_FILES_PER_VERSION = ["entities.json"]
@@ -168,6 +169,10 @@ print("Minosoft compiled!")
 def downloadVersion(version):
     versionTempBaseFolder = TEMP_FOLDER + version["id"] + "/"
     resourcesVersion = {}
+    if version["id"] in SKIP_VERSIONS:
+        print("Force skipping %s" % version["id"])
+        return
+
     if version["id"] in RESOURCE_MAPPINGS_INDEX["versions"]:
         resourcesVersion = RESOURCE_MAPPINGS_INDEX["versions"][version["id"]]
         if os.path.isfile(DATA_FOLDER + resourcesVersion["mappings"][:2] + "/" + resourcesVersion["mappings"] + ".tar.gz"):
@@ -423,7 +428,7 @@ def downloadVersionInThread(version):
 
 
 for version in VERSION_MANIFEST["versions"]:
-    if version["id"] == PRE_FLATTENING_UPDATE_VERSION:
+    if version["id"] == DOWNLOAD_UNTIL_VERSION:
         break
     while threads > MAX_NUM_THREADS:
         time.sleep(1)

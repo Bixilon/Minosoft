@@ -51,7 +51,7 @@ public class PacketChunkData extends ClientboundPacket {
         }
 
         if (buffer.getVersionId() < V_14W26A) {
-            int sectionBitMask = buffer.readUnsignedShort();
+            long[] sectionBitMasks = {buffer.readUnsignedShort()};
             int addBitMask = buffer.readUnsignedShort();
 
             // decompress chunk data
@@ -62,16 +62,18 @@ public class PacketChunkData extends ClientboundPacket {
                 decompressed = buffer;
             }
 
-            this.chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, containsSkyLight);
+            this.chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMasks, addBitMask, groundUpContinuous, containsSkyLight);
             return true;
         }
-        int sectionBitMask;
+        long[] sectionBitMasks;
         if (buffer.getVersionId() < V_15W34C) {
-            sectionBitMask = buffer.readUnsignedShort();
+            sectionBitMasks = new long[]{buffer.readUnsignedShort()};
         } else if (buffer.getVersionId() < V_15W36D) {
-            sectionBitMask = buffer.readInt();
+            sectionBitMasks = new long[]{buffer.readInt()};
+        } else if (buffer.getVersionId() < V_21W03A) {
+            sectionBitMasks = new long[]{buffer.readVarInt()};
         } else {
-            sectionBitMask = buffer.readVarInt();
+            sectionBitMasks = buffer.readLongArray();
         }
 
         if (buffer.getVersionId() >= V_1_16_PRE7 && buffer.getVersionId() < V_1_16_2_PRE2) {
@@ -94,7 +96,7 @@ public class PacketChunkData extends ClientboundPacket {
 
 
         if (size > 0) {
-            this.chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, 0, groundUpContinuous, containsSkyLight);
+            this.chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMasks, 0, groundUpContinuous, containsSkyLight);
             // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
             buffer.setPosition(size + lastPos);
         }

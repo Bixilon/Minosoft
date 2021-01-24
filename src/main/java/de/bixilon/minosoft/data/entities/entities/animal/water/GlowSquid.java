@@ -11,37 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities;
+package de.bixilon.minosoft.data.entities.entities.animal.water;
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
-public abstract class Mob extends LivingEntity {
-    public Mob(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+public class GlowSquid extends Squid {
+
+    public GlowSquid(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    private boolean getMobFlags(int bitMask) {
-        return this.metaData.getSets().getBitMask(EntityMetaDataFields.MOB_FLAGS, bitMask);
-    }
-
-    @EntityMetaDataFunction(identifier = "isNoAI")
-    public boolean isNoAi() {
-        return getMobFlags(0x01);
-    }
-
-    @EntityMetaDataFunction(identifier = "isLeftHanded")
-    public boolean isLeftHanded() {
-        return getMobFlags(0x02);
-    }
-
-    @EntityMetaDataFunction(identifier = "isAggressive")
-    public boolean isAggressive() {
-        return getMobFlags(0x04);
+    @EntityMetaDataFunction(identifier = "Dark ticks remaining")
+    public int getDarkTicksRemaining() {
+        return this.metaData.getSets().getInt(EntityMetaDataFields.GLOW_SQUID_DARK_TICKS_REMAINING);
     }
 }
 

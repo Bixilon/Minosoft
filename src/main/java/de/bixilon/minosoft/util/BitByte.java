@@ -23,9 +23,9 @@ public final class BitByte {
         return ((in & mask) == mask);
     }
 
-    public static byte getBitCount(int input) {
+    public static byte getBitCount(long input) {
         byte ret = 0;
-        for (byte i = 0; i < Short.SIZE; i++) {
+        for (byte i = 0; i < Long.SIZE; i++) {
             if (isBitSet(input, i)) {
                 ret++;
             }

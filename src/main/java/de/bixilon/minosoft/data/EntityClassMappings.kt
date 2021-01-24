@@ -156,7 +156,8 @@ object EntityClassMappings {
             ZombiePigman::class.java to ModIdentifier("zombie_pigman"),
             ZombifiedPiglin::class.java to ModIdentifier("zombified_piglin"),
             PlayerEntity::class.java to ModIdentifier("player"),
-            FishingHook::class.java to ModIdentifier("fishing_bobber")
+            FishingHook::class.java to ModIdentifier("fishing_bobber"),
+            GlowSquid::class.java to ModIdentifier("glow_squid")
         )
     )
 
