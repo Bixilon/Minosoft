@@ -390,21 +390,24 @@ public class Connection {
         this.desiredVersionNumber = desiredVersionNumber;
     }
 
+    public void unregisterEvent(EventInvoker method) {
+        this.eventListeners.remove(method);
+
+    }
+
     public void registerEvent(EventInvoker method) {
-        this.eventListeners.add(method);
-        if (method.getEventType() == ServerListStatusArriveEvent.class) {
-            if (getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || this.lastPing != null) {
-                // ping done
-                method.invoke(new ServerListStatusArriveEvent(this, this.lastPing));
-            }
-        } else if (method.getEventType() == ServerListPongEvent.class) {
-            if (getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || this.lastPing != null) {
-                // ping done
-                if (this.pong != null) {
-                    method.invoke(this.pong);
-                }
-            }
+        if (method.getEventType().isAssignableFrom(ServerListStatusArriveEvent.class) && wasPingDone()) {
+            // ping done
+            method.invoke(new ServerListStatusArriveEvent(this, this.lastPing));
+        } else if (method.getEventType().isAssignableFrom(ServerListPongEvent.class) && wasPingDone() && this.pong != null) {
+            method.invoke(this.pong);
+        } else {
+            this.eventListeners.add(method);
         }
+    }
+
+    private boolean wasPingDone() {
+        return getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || this.lastPing != null;
     }
 
     public Throwable getLastConnectionException() {

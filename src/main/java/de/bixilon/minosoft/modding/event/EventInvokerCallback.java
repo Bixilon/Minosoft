@@ -25,7 +25,7 @@ public class EventInvokerCallback<V extends ConnectionEvent> extends EventInvoke
     }
 
     // if you need instant fireing support
-    public EventInvokerCallback(Class<? extends ConnectionEvent> eventType, InvokerCallback<V> callback) {
+    public EventInvokerCallback(InvokerCallback<V> callback) {
         this(false, callback);
     }
 

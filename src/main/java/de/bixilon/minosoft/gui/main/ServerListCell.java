@@ -111,16 +111,15 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         this.root.setVisible(server != null || !empty);
         this.hBox.setVisible(server != null || !empty);
         if (empty) {
-            resetCell();
             return;
         }
 
         if (server == null) {
-            resetCell();
             return;
         }
-
-        resetCell();
+        if (this.server != server) {
+            resetCell();
+        }
         server.setCell(this);
 
         this.server = server;
@@ -140,7 +139,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (server.getLastPing() == null) {
             server.ping();
         }
-        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListStatusArriveEvent>(ServerListStatusArriveEvent.class, event -> Platform.runLater(() -> {
+
+        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListStatusArriveEvent>(event -> Platform.runLater(() -> {
             ServerListPing ping = event.getServerListPing();
             if (server != this.server) {
                 // cell does not contains us anymore
@@ -201,7 +201,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 setErrorMotd(String.format("%s: %s", server.getLastPing().getLastConnectionException().getClass().getCanonicalName(), server.getLastPing().getLastConnectionException().getMessage()));
             }
         })));
-        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListPongEvent>(ServerListPongEvent.class, event -> Platform.runLater(() -> {
+        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListPongEvent>(event -> Platform.runLater(() -> {
             this.pingField.setText(String.format("%dms", event.getLatency()));
             switch (PingBars.byPing(event.getLatency())) {
                 case BARS_5 -> this.pingField.getStyleClass().add("ping-5-bars");
@@ -299,7 +299,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             // ToDo: show progress dialog
 
             connection.connect(this.server.getLastPing().getAddress(), version, new CountUpAndDownLatch(1));
-            connection.registerEvent(new EventInvokerCallback<>(ConnectionStateChangeEvent.class, this::handleConnectionCallback));
+            connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
             this.server.addConnection(connection);
         }, "ConnectThread").start();
 
