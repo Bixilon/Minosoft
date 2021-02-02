@@ -61,6 +61,7 @@ public final class Minosoft {
     public static void main(String[] args) {
         MinosoftCommandLineArguments.parseCommandLineArguments(args);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown(ShutdownReasons.UNKNOWN), "ShutdownHook"));
+        Util.initUtilClasses();
 
         Log.info("Starting...");
         AsyncTaskWorker taskWorker = new AsyncTaskWorker("StartUp");
@@ -245,4 +246,5 @@ public final class Minosoft {
     public static CountUpAndDownLatch getStartStatusLatch() {
         return START_STATUS_LATCH;
     }
+
 }

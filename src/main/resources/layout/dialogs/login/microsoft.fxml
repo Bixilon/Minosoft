@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.web.WebView?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="hBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/15.0.1" fx:controller="de.bixilon.minosoft.gui.main.dialogs.login.MicrosoftLoginController">
+    <WebView fx:id="webView" minHeight="100.0" minWidth="100.0" prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS"/>
+</HBox>

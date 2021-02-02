@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import java.nio.charset.StandardCharsets;
@@ -82,7 +82,7 @@ public class OutByteBuffer {
     }
 
     public void writeJSON(JsonObject json) {
-        writeString(new Gson().toJson(json));
+        writeString(Util.GSON.toJson(json));
     }
 
     public void writeString(String string) {

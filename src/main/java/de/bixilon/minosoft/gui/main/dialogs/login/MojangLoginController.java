@@ -11,17 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.main.dialogs;
+package de.bixilon.minosoft.gui.main.dialogs.login;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.accounts.MojangAccount;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
-import de.bixilon.minosoft.gui.main.cells.AccountListCell;
-import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.mojang.api.MojangAuthentication;
 import de.bixilon.minosoft.util.mojang.api.exceptions.AuthenticationException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
@@ -85,19 +83,10 @@ public class MojangLoginController implements Initializable {
         new Thread(() -> { // ToDo: recycle thread
             try {
                 MojangAccount account = MojangAuthentication.login(this.email.getText(), this.password.getText());
+                Account.addAccount(account);
 
-                account.setNeedRefresh(false);
-                Minosoft.getConfig().putAccount(account);
-                account.saveToConfig();
-                Log.info(String.format("Added and saved account (type=mojang, username=%s, email=%s, uuid=%s)", account.getUsername(), account.getEmail(), account.getUUID()));
-                Platform.runLater(() -> {
-                    AccountListCell.ACCOUNT_LIST_VIEW.getItems().add(account);
-                    close();
-                });
-                if (Minosoft.getConfig().getSelectedAccount() == null) {
-                    // select account
-                    Minosoft.selectAccount(account);
-                }
+                Platform.runLater(this::close);
+
             } catch (AuthenticationException | NoNetworkConnectionException e) {
                 e.printStackTrace();
                 Platform.runLater(() -> {

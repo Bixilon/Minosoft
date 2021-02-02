@@ -71,6 +71,15 @@ public final class ProtocolDefinition {
     public static final String MOJANG_URL_JOIN = "https://sessionserver.mojang.com/session/minecraft/join";
     public static final String MOJANG_URL_REFRESH = "https://authserver.mojang.com/refresh";
 
+    public static final String MICROSOFT_ACCOUNT_APPLICATION_ID = "00000000402b5328"; // ToDo: Should we use our own application id?
+    // public static final String MICROSOFT_ACCOUNT_APPLICATION_ID = "fe6f0fbf-3038-486a-9c84-6a28b71e0455";
+    public static final String MICROSOFT_ACCOUNT_OAUTH_FLOW_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id=" + MICROSOFT_ACCOUNT_APPLICATION_ID + "&scope=XboxLive.signin%20offline_access&response_type=code";
+    public static final String MICROSOFT_ACCOUNT_AUTH_TOKEN_URL = "https://login.live.com/oauth20_token.srf";
+    public static final String MICROSOFT_ACCOUNT_XBOX_LIVE_AUTHENTICATE_URL = "https://user.auth.xboxlive.com/user/authenticate";
+    public static final String MICROSOFT_ACCOUNT_XSTS_URL = "https://xsts.auth.xboxlive.com/xsts/authorize";
+    public static final String MICROSOFT_ACCOUNT_MINECRAFT_LOGIN_WITH_XBOX_URL = "https://api.minecraftservices.com/authentication/login_with_xbox";
+    public static final String MICROSOFT_ACCOUNT_GET_MOJANG_PROFILE_URL = "https://api.minecraftservices.com/minecraft/profile";
+
     public static final char[] OBFUSCATED_CHARS = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".toCharArray();
 
     static {
