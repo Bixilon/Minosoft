@@ -1,16 +1,12 @@
 #version 330 core
-out vec4 FragColor;
 
-in vec3 vertexColor;
-in vec2 TexCoord;
+out vec4 outColor;
+
+in vec3 passTextureCoordinates;
 
 // texture sampler
-uniform sampler2D texture0;
-uniform sampler2D texture1;
-
-uniform float visibility;
+uniform sampler2DArray texureArray;
 
 void main() {
-   vec2 newTextCoord = vec2(TexCoord.x, -TexCoord.y);
-   FragColor = mix(texture(texture0, newTextCoord), texture(texture1, newTextCoord), visibility);
+   outColor = texture(texureArray, passTextureCoordinates);
 }
