@@ -7,8 +7,9 @@ out vec3 vertexColor;
 out vec3 passTextureCoordinates;
 
 
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
+uniform vec3 chunkPosition;
 
 vec2 textureIndexCoordinates[4] = vec2[4](
 vec2(0.0f, 0.0f),
@@ -18,6 +19,6 @@ vec2(0.0f, 1.0f)
 );
 
 void main() {
-    gl_Position = projection * view * vec4(inPosition, 1.0f);
+    gl_Position = projectionMatrix * viewMatrix *  vec4(inPosition + vec3(chunkPosition.x * 16u, chunkPosition.y * 16u, chunkPosition.z * 16u), 1.0f);
     passTextureCoordinates = vec3(textureIndexCoordinates[int(textureIndex)], textureLayer);
 }

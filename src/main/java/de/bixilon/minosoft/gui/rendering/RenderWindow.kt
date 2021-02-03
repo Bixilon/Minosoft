@@ -1,7 +1,6 @@
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.protocol.network.Connection
 import org.lwjgl.*
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
@@ -11,8 +10,9 @@ import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.glClear
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
+import java.util.concurrent.ConcurrentLinkedQueue
 
-class RenderWindow {
+class RenderWindow(private val connection: Connection) {
     private var screenWidth = 800
     private var screenHeight = 600
     private var polygonEnabled = false
@@ -22,7 +22,11 @@ class RenderWindow {
     private var deltaTime = 0.0 // time between current frame and last frame
 
     private var lastFrame = 0.0
-    private lateinit var camera: Camera
+    lateinit var camera: Camera
+
+    val meshesToDraw = ConcurrentLinkedQueue<Mesh>()
+    val renderQueue = ConcurrentLinkedQueue<Runnable>()
+
 
     fun init() {
         // Setup an error callback. The default implementation
@@ -104,9 +108,11 @@ class RenderWindow {
     }
 
     fun startLoop() {
-        val chunk = DummyData.getDummyChunk()
+        // val world = World()
+        // world.setChunk(ChunkLocation(0, 0), DummyData.getDummyChunk())
+        // world.setChunk(ChunkLocation(1, 0), DummyData.getDummyChunk())
 
-        texture0 = TextureArray(arrayOf("/textures/emerald_block.png", "/textures/brown_wool.png"))
+        texture0 = TextureArray(arrayOf("/textures/bedrock.png", "/textures/dirt.png", "/textures/stone.png"))
         texture0.load()
 
         shader = Shader("vertex.glsl", "fragment.glsl")
@@ -117,21 +123,12 @@ class RenderWindow {
         camera.calculateProjectionMatrix(screenWidth, screenHeight, shader)
         camera.calculateViewMatrix(shader)
 
-        val preparedChunks = mutableListOf<Mesh>()
 
-
-
-        for ((sectionHeight, section) in chunk.sections) {
-            for ((location, block) in section.blocks) {
-                val textureIndex = when (block.fullIdentifier) {
-                    "minecraft:dirt" -> 1
-                    else -> 0
-                }
-                preparedChunks.add(Mesh(textureIndex, Vec3(location.x, location.y + ProtocolDefinition.SECTION_HEIGHT_Y * sectionHeight, location.z)))
-                // break
-            }
-            // break
-        }
+        // for ((chunkLocation, chunk) in world.allChunks) {
+        //     for ((sectionHeight, section) in chunk.sections) {
+        //         meshesToDraw.add(Mesh(ChunkPreparer.prepareChunk(world, chunkLocation, sectionHeight, section), chunkLocation, sectionHeight))
+        //     }
+        // }
 
 
         var framesLastSecond = 0
@@ -150,17 +147,9 @@ class RenderWindow {
 
             camera.calculateViewMatrix(shader)
 
-            for (mesh in preparedChunks) {
-                mesh.draw()
+            for (mesh in meshesToDraw) {
+                mesh.draw(shader)
             }
-
-            //   for ((key, value) in chunk.sections) {
-            //       for ((key1) in value.blocks) {
-            //           val model = Mat4().translate(Vec3(key1.x, key1.y + ProtocolDefinition.SECTION_HEIGHT_Y * key, key1.z))
-            //           shader.setMat4("model", model)
-            //           glDrawArrays(GL11.GL_TRIANGLES, 0, 36)
-            //       }
-            //   }
 
             glfwSwapBuffers(windowId) // swap the color buffers
 
@@ -175,6 +164,10 @@ class RenderWindow {
                 framesLastSecond = 0
             }
             framesLastSecond++
+            for (renderQueueElement in renderQueue) {
+                renderQueueElement.run()
+                renderQueue.remove(renderQueueElement)
+            }
         }
     }
 

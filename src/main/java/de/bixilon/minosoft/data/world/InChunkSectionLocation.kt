@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.minosoft.data.Directions
+
 /**
  * Chunk X, Y and Z location (max 16x16x16)
  */
@@ -19,5 +21,16 @@ data class InChunkSectionLocation(val x: Int, val y: Int, val z: Int) {
 
     override fun toString(): String {
         return "($x $y $z)"
+    }
+
+    fun getLocationByDirection(direction: Directions): InChunkSectionLocation {
+        return when (direction) {
+            Directions.DOWN -> InChunkSectionLocation(x, y - 1, z)
+            Directions.UP -> InChunkSectionLocation(x, y + 1, z)
+            Directions.NORTH -> InChunkSectionLocation(x, y, z - 1)
+            Directions.SOUTH -> InChunkSectionLocation(x, y, z + 1)
+            Directions.WEST -> InChunkSectionLocation(x - 1, y, z)
+            Directions.EAST -> InChunkSectionLocation(x + 1, y, z)
+        }
     }
 }

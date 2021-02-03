@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.mappings.recipes.Recipes;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
+import de.bixilon.minosoft.gui.rendering.Renderer;
 import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventInvoker;
@@ -69,6 +70,7 @@ public class Connection {
     private CommandRootNode commandRootNode;
     private ConnectionPing connectionStatusPing;
     private ServerListPongEvent pong;
+    private final Renderer renderer = new Renderer(this);
 
     public Connection(int connectionId, String hostname, Player player) {
         this.connectionId = connectionId;
@@ -360,7 +362,10 @@ public class Connection {
                 }
             }
             case FAILED_NO_RETRY -> handlePingCallbacks(null);
-            case PLAY -> Minosoft.CONNECTIONS.put(getConnectionId(), this);
+            case PLAY -> {
+                Minosoft.CONNECTIONS.put(getConnectionId(), this);
+                this.renderer.start();
+            }
         }
         // handle callbacks
         fireEvent(new ConnectionStateChangeEvent(this, previousState, state));
@@ -428,5 +433,9 @@ public class Connection {
     @Override
     public String toString() {
         return String.format("id=%d, address=%s, account=\"%s\")", getConnectionId(), getAddress(), getPlayer().getAccount());
+    }
+
+    public Renderer getRenderer() {
+        return this.renderer;
     }
 }

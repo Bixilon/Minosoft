@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world;
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.HashMap;
 
@@ -22,9 +23,9 @@ import java.util.HashMap;
  * Collection of 16 chunks sections
  */
 public class Chunk {
-    private final HashMap<Byte, ChunkSection> sections;
+    private final HashMap<Integer, ChunkSection> sections;
 
-    public Chunk(HashMap<Byte, ChunkSection> sections) {
+    public Chunk(HashMap<Integer, ChunkSection> sections) {
         this.sections = sections;
     }
 
@@ -33,7 +34,7 @@ public class Chunk {
     }
 
     public Block getBlock(int x, int y, int z) {
-        byte section = (byte) (y / 16);
+        int section = (y / 16);
         if (!this.sections.containsKey(section)) {
             return null;
         }
@@ -41,15 +42,15 @@ public class Chunk {
     }
 
     public void setBlock(int x, int y, int z, Block block) {
-        byte section = (byte) (y / 16);
+        int section = y / 16;
         createSection(section);
         this.sections.get(section).setBlock(x, y % 16, z, block);
     }
 
-    void createSection(byte section) {
-        if (this.sections.get(section) == null) {
+    void createSection(int height) {
+        if (this.sections.get(height) == null) {
             // section was empty before, creating it
-            this.sections.put(section, new ChunkSection());
+            this.sections.put(height, new ChunkSection());
         }
     }
 
@@ -58,13 +59,13 @@ public class Chunk {
     }
 
     public void setBlock(InChunkLocation location, Block block) {
-        byte section = (byte) (location.getY() / 16);
+        int section = (location.getY() / ProtocolDefinition.SECTION_HEIGHT_Y);
         createSection(section);
         this.sections.get(section).setBlock(location.getInChunkSectionLocation(), block);
     }
 
     public void setBlockEntityData(InChunkLocation position, BlockEntityMetaData data) {
-        ChunkSection section = this.sections.get((byte) (position.getY() / 16));
+        ChunkSection section = this.sections.get((position.getY() / ProtocolDefinition.SECTION_HEIGHT_Y));
         if (section == null) {
             return;
         }
@@ -72,7 +73,7 @@ public class Chunk {
     }
 
     public BlockEntityMetaData getBlockEntityData(InChunkLocation position) {
-        ChunkSection section = this.sections.get((byte) (position.getY() / 16));
+        ChunkSection section = this.sections.get((position.getY() / ProtocolDefinition.SECTION_HEIGHT_Y));
         if (section == null) {
             return null;
         }
@@ -83,7 +84,7 @@ public class Chunk {
         blockEntities.forEach(this::setBlockEntityData);
     }
 
-    public HashMap<Byte, ChunkSection> getSections() {
+    public HashMap<Integer, ChunkSection> getSections() {
         return this.sections;
     }
 }

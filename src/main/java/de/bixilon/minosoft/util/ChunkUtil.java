@@ -52,8 +52,8 @@ public final class ChunkUtil {
 
             // parse data
             int arrayPos = 0;
-            HashMap<Byte, ChunkSection> sectionMap = new HashMap<>();
-            for (byte c = 0; c < ProtocolDefinition.SECTIONS_PER_CHUNK; c++) { // max sections per chunks in chunk column
+            HashMap<Integer, ChunkSection> sectionMap = new HashMap<>();
+            for (int c = 0; c < ProtocolDefinition.SECTIONS_PER_CHUNK; c++) { // max sections per chunks in chunk column
                 if (BitByte.isBitSet(sectionBitMask, c)) {
                     HashMap<InChunkSectionLocation, Block> blockMap = new HashMap<>();
 
@@ -114,8 +114,8 @@ public final class ChunkUtil {
             }
 
             int arrayPos = 0;
-            HashMap<Byte, ChunkSection> sectionMap = new HashMap<>();
-            for (byte c = 0; c < ProtocolDefinition.SECTIONS_PER_CHUNK; c++) { // max sections per chunks in chunk column
+            HashMap<Integer, ChunkSection> sectionMap = new HashMap<>();
+            for (int c = 0; c < ProtocolDefinition.SECTIONS_PER_CHUNK; c++) { // max sections per chunks in chunk column
                 if (!BitByte.isBitSet(sectionBitMask, c)) {
                     continue;
                 }
@@ -140,8 +140,8 @@ public final class ChunkUtil {
             return new Chunk(sectionMap);
         }
         // really big thanks to: https://wiki.vg/index.php?title=Chunk_Format&oldid=13712
-        HashMap<Byte, ChunkSection> sectionMap = new HashMap<>();
-        for (byte c = 0; c < ProtocolDefinition.SECTIONS_PER_CHUNK; c++) { // max sections per chunks in chunk column
+        HashMap<Integer, ChunkSection> sectionMap = new HashMap<>();
+        for (int c = 0; c < ProtocolDefinition.SECTIONS_PER_CHUNK; c++) { // max sections per chunks in chunk column
             if (!BitByte.isBitSet(sectionBitMask, c)) {
                 continue;
             }

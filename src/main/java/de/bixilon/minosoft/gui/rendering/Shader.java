@@ -2,6 +2,7 @@ package de.bixilon.minosoft.gui.rendering;
 
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException;
 import glm_.mat4x4.Mat4;
+import glm_.vec3.Vec3;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBFragmentShader;
 import org.lwjgl.opengl.ARBShaderObjects;
@@ -77,10 +78,14 @@ public class Shader {
     }
 
     public void set4f(String variableName, float[] floats) {
-        glUniformMatrix4fv(glGetUniformLocation(this.programId, variableName), false, floats);
+        glUniformMatrix4fv(getUniformLocation(variableName), false, floats);
     }
 
     public void setMat4(String variableName, Mat4 mat4) {
-        glUniformMatrix4fv(glGetUniformLocation(this.programId, variableName), false, mat4.to(BufferUtils.createFloatBuffer(16)));
+        glUniformMatrix4fv(getUniformLocation(variableName), false, mat4.to(BufferUtils.createFloatBuffer(16)));
+    }
+
+    public void setVec3(String name, Vec3 vec3) {
+        glUniform3f(getUniformLocation(name), vec3.x, vec3.y, vec3.z);
     }
 }

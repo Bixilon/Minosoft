@@ -61,7 +61,7 @@ class Camera(private var fov: Float, private val windowId: Long) {
     }
 
     fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int, shader: Shader) {
-        shader.use().setMat4("projection", calculateProjectionMatrix(screenWidth, screenHeight))
+        shader.use().setMat4("projectionMatrix", calculateProjectionMatrix(screenWidth, screenHeight))
     }
 
     private fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int): Mat4 {
@@ -69,7 +69,7 @@ class Camera(private var fov: Float, private val windowId: Long) {
     }
 
     fun calculateViewMatrix(shader: Shader) {
-        shader.use().setMat4("view", calculateViewMatrix())
+        shader.use().setMat4("viewMatrix", calculateViewMatrix())
     }
 
     private fun calculateViewMatrix(): Mat4 {
@@ -78,6 +78,10 @@ class Camera(private var fov: Float, private val windowId: Long) {
 
     fun setFOV(fov: Float) {
         this.fov = fov
+    }
+
+    fun setPosition(position: Vec3) {
+        cameraPosition = position
     }
 
     companion object {

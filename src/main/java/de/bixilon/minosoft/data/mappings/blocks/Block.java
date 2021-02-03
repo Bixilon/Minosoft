@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.mappings.blocks;
 
+import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 
 import java.util.HashSet;
@@ -103,5 +104,9 @@ public class Block extends ModIdentifier {
             out.append(")");
         }
         return String.format("%s%s", getFullIdentifier(), out);
+    }
+
+    public boolean forceDrawFace(Directions direction) {
+        return false; // ToDo
     }
 }

@@ -21,9 +21,18 @@ public enum Directions {
     WEST,
     EAST;
 
-    private static final Directions[] DIRECTIONS = values();
+    public static final Directions[] DIRECTIONS = values();
 
     public static Directions byId(int id) {
         return DIRECTIONS[id];
+    }
+
+    public Directions inverse() {
+        var ordinal = ordinal();
+        if (ordinal % 2 == 0) {
+            return byId(ordinal + 1);
+        }
+        return byId(ordinal - 1);
+
     }
 }

@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.minosoft.data.Directions
+
 /**
  * Chunk X and Z location (block position / 16, rounded down)
  */
@@ -19,5 +21,15 @@ data class ChunkLocation(val x: Int, val z: Int) {
 
     override fun toString(): String {
         return "($x $z)"
+    }
+
+    fun getLocationByDirection(direction: Directions): ChunkLocation {
+        return when (direction) {
+            Directions.NORTH -> ChunkLocation(x, z - 1)
+            Directions.SOUTH -> ChunkLocation(x, z + 1)
+            Directions.WEST -> ChunkLocation(x - 1, z)
+            Directions.EAST -> ChunkLocation(x + 1, z)
+            else -> throw IllegalArgumentException("Chunk location is just 2d")
+        }
     }
 }

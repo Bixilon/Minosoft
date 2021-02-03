@@ -58,6 +58,7 @@ public class PacketPlayerPositionAndRotation extends ClientboundPacket {
         } else {
             connection.sendPacket(new PacketPlayerPositionAndRotationSending(getLocation(), getRotation(), isOnGround()));
         }
+        connection.getRenderer().teleport(this.location);
     }
 
     @Override
