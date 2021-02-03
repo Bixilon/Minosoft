@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.commands.parser.CommandParsers;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.terminal.commands.CommandStack;
@@ -26,6 +25,7 @@ import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
 import de.bixilon.minosoft.terminal.commands.executors.CommandConnectionExecutor;
 import de.bixilon.minosoft.terminal.commands.executors.CommandExecutor;
 import de.bixilon.minosoft.util.BitByte;
+import de.bixilon.minosoft.util.logging.Log;
 
 import javax.annotation.Nullable;
 

@@ -16,8 +16,8 @@ package de.bixilon.minosoft.util;
 import java.util.Objects;
 
 public class ServerAddress {
-    final String hostname;
-    final int port;
+    private final String hostname;
+    private final int port;
 
     public ServerAddress(String hostname, int port) {
         this.hostname = hostname;

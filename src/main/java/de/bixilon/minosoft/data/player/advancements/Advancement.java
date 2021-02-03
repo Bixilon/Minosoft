@@ -16,10 +16,10 @@ package de.bixilon.minosoft.data.player.advancements;
 import java.util.ArrayList;
 
 public class Advancement {
-    final String parentName;
-    final AdvancementDisplay display;
-    final ArrayList<String> criteria;
-    final ArrayList<String[]> requirements;
+    private final String parentName;
+    private final AdvancementDisplay display;
+    private final ArrayList<String> criteria;
+    private final ArrayList<String[]> requirements;
 
     public Advancement(String parentName, AdvancementDisplay display, ArrayList<String> criteria, ArrayList<String[]> requirements) {
         this.parentName = parentName;

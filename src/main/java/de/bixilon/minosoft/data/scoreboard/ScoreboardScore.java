@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.scoreboard;
 
 public class ScoreboardScore {
-    final String itemName;
+    private final String itemName;
     String scoreName;
     int score;
 

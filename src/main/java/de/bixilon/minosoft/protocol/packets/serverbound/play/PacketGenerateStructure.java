@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.world.BlockPosition;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W22A;
 
 public class PacketGenerateStructure implements ServerboundPacket {
-    final BlockPosition position;
-    final int levels;
-    final boolean keepJigsaw;
+    private final BlockPosition position;
+    private final int levels;
+    private final boolean keepJigsaw;
 
     public PacketGenerateStructure(BlockPosition position, int levels, boolean keepJigsaw) {
         this.position = position;

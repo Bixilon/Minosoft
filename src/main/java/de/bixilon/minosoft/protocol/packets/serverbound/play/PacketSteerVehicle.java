@@ -13,20 +13,19 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketSteerVehicle implements ServerboundPacket {
-
-    final float sideways;
-    final float forward;
-    final boolean jump;
-    final boolean unmount;
+    private final float sideways;
+    private final float forward;
+    private final boolean jump;
+    private final boolean unmount;
 
     public PacketSteerVehicle(float sideways, float forward, boolean jump, boolean unmount) {
         this.sideways = sideways;

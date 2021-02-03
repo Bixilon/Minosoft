@@ -19,17 +19,17 @@ import de.bixilon.minosoft.data.player.advancements.AdvancementDisplay;
 import de.bixilon.minosoft.data.player.advancements.AdvancementProgress;
 import de.bixilon.minosoft.data.player.advancements.CriterionProgress;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PacketAdvancements extends ClientboundPacket {
-    final HashMap<String, Advancement> advancements = new HashMap<>();
-    final HashMap<String, AdvancementProgress> progresses = new HashMap<>();
+    private final HashMap<String, Advancement> advancements = new HashMap<>();
+    private final HashMap<String, AdvancementProgress> progresses = new HashMap<>();
     boolean reset;
     String[] toRemove;
 

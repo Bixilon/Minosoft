@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.handshaking;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
@@ -21,12 +20,12 @@ import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.ServerAddress;
+import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketHandshake implements ServerboundPacket {
-
-    final ServerAddress address;
-    final ConnectionStates nextState;
-    final int version;
+    private final ServerAddress address;
+    private final ConnectionStates nextState;
+    private final int version;
 
     public PacketHandshake(ServerAddress address, ConnectionStates nextState, int protocolId) {
         this.address = address;

@@ -27,7 +27,7 @@ public class Pillager extends AbstractIllager {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "isChargingCrossbow")
+    @EntityMetaDataFunction(identifier = "Is charging crossbow")
     public boolean isChargingCrossbow() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.PILLAGER_IS_CHARGING_CROSSBOW);
     }

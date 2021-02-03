@@ -15,18 +15,32 @@ package de.bixilon.minosoft.data.accounts;
 
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.gui.main.cells.AccountListCell;
+import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.mojang.api.exceptions.MojangJoinServerErrorException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
+import javafx.application.Platform;
 
 import java.util.UUID;
 
 public abstract class Account {
-    private final String username;
-    private final UUID uuid;
+    protected final String username;
+    protected final UUID uuid;
 
     protected Account(String username, UUID uuid) {
         this.username = username;
         this.uuid = uuid;
+    }
+
+    public static void addAccount(Account account) {
+        Minosoft.getConfig().putAccount(account);
+        account.saveToConfig();
+        Log.info(String.format("Added and saved account (type=%s, id=%s,  username=%s, uuid=%s)", account.getClass().getSimpleName(), account.getId(), account.getUsername(), account.getUUID()));
+        Platform.runLater(() -> AccountListCell.ACCOUNT_LIST_VIEW.getItems().add(account));
+        if (Minosoft.getConfig().getSelectedAccount() == null) {
+            // select account
+            Minosoft.selectAccount(account);
+        }
     }
 
     public String getUsername() {

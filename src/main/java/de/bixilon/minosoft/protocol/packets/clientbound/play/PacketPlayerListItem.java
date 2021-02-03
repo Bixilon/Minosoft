@@ -19,11 +19,11 @@ import de.bixilon.minosoft.data.player.PlayerListItemBulk;
 import de.bixilon.minosoft.data.player.PlayerProperties;
 import de.bixilon.minosoft.data.player.PlayerProperty;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.PlayerListItemChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W19A;
 
 public class PacketPlayerListItem extends ClientboundPacket {
-    final ArrayList<PlayerListItemBulk> playerList = new ArrayList<>();
+    private final ArrayList<PlayerListItemBulk> playerList = new ArrayList<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -87,7 +87,7 @@ public class PacketPlayerListItem extends ClientboundPacket {
         }
         for (PlayerListItemBulk bulk : getPlayerList()) {
             PlayerListItem item = connection.getPlayer().getPlayerList().get(bulk.getUUID());
-            if (item == null && !bulk.isLegacy()) {
+            if (bulk.getAction() != PlayerListItemActions.ADD && item == null && !bulk.isLegacy()) {
                 // Aaaaah. Fuck this shit. The server sends us bullshit!
                 continue;
             }

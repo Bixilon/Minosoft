@@ -26,9 +26,8 @@ public enum StatisticCategories {
     KILLED(new ChangeableIdentifier("minecraft.killed"), 6),
     KILLED_BY(new ChangeableIdentifier("minecraft.killed_by"), 7),
     CUSTOM(new ChangeableIdentifier("minecraft.custom"), 8);
-
-    final ChangeableIdentifier changeableIdentifier;
-    final int id;
+    private final ChangeableIdentifier changeableIdentifier;
+    private final int id;
 
     StatisticCategories(ChangeableIdentifier changeableIdentifier, int id) {
         this.changeableIdentifier = changeableIdentifier;

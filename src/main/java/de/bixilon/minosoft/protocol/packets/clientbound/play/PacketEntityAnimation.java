@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.VersionValueMap;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.Map;
 
@@ -51,7 +51,7 @@ public class PacketEntityAnimation extends ClientboundPacket {
         SNEAK(Map.of(LOWEST_VERSION_SUPPORTED, 104, V_1_8_9, -1)),
         UN_SNEAK(Map.of(LOWEST_VERSION_SUPPORTED, 105, V_1_8_9, -1));
 
-        final VersionValueMap<Integer> valueMap;
+   private final VersionValueMap<Integer> valueMap;
 
         EntityAnimations(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);

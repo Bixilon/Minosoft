@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketRecipeBookState implements ServerboundPacket {
-    final RecipeBooks book;
-    final boolean bookOpen;
-    final boolean filterActive;
+    private final RecipeBooks book;
+    private final boolean bookOpen;
+    private final boolean filterActive;
 
     public PacketRecipeBookState(RecipeBooks book, boolean bookOpen, boolean filterActive) {
         this.book = book;

@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.status;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionPing;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketStatusPing implements ServerboundPacket {
-    final long id;
+    private final long id;
 
     public PacketStatusPing(long id) {
         this.id = id;

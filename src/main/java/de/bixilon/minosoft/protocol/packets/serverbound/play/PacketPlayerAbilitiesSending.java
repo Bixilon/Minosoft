@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE4;
 
 public class PacketPlayerAbilitiesSending implements ServerboundPacket {
-    final boolean flying;
+    private final boolean flying;
 
     public PacketPlayerAbilitiesSending(boolean flying) {
         this.flying = flying;

@@ -13,15 +13,16 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.ChunkUtil;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.HashMap;
 
@@ -29,7 +30,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W28A;
 
 public class PacketChunkBulk extends ClientboundPacket {
-    final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
+    private final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -50,7 +51,7 @@ public class PacketChunkBulk extends ClientboundPacket {
             for (int i = 0; i < chunkCount; i++) {
                 int x = buffer.readInt();
                 int z = buffer.readInt();
-                int sectionBitMask = buffer.readUnsignedShort();
+                long[] sectionBitMask = {buffer.readUnsignedShort()};
                 int addBitMask = buffer.readUnsignedShort();
 
                 this.chunks.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
@@ -61,14 +62,14 @@ public class PacketChunkBulk extends ClientboundPacket {
         int chunkCount = buffer.readVarInt();
         int[] x = new int[chunkCount];
         int[] z = new int[chunkCount];
-        int[] sectionBitMask = new int[chunkCount];
+        long[][] sectionBitMask = new long[chunkCount][];
 
         // ToDo: this was still compressed in 14w28a
 
         for (int i = 0; i < chunkCount; i++) {
             x[i] = buffer.readInt();
             z[i] = buffer.readInt();
-            sectionBitMask[i] = buffer.readUnsignedShort();
+            sectionBitMask[i] = new long[]{buffer.readUnsignedShort()};
         }
         for (int i = 0; i < chunkCount; i++) {
             this.chunks.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
@@ -78,6 +79,8 @@ public class PacketChunkBulk extends ClientboundPacket {
 
     @Override
     public void handle(Connection connection) {
+        this.chunks.values().forEach((chunk) -> VersionTweaker.transformChunk(chunk, connection.getVersion().getVersionId()));
+
         getChunks().forEach(((location, chunk) -> connection.fireEvent(new ChunkDataChangeEvent(connection, location, chunk))));
 
         connection.getPlayer().getWorld().setChunks(getChunks());

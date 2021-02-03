@@ -13,15 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketHeldItemChangeSending implements ServerboundPacket {
-
-    final short slot;
+private final short slot;
 
     public PacketHeldItemChangeSending(short slot) {
         this.slot = slot;

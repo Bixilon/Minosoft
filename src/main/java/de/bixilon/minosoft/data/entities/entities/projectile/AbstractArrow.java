@@ -22,6 +22,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public abstract class AbstractArrow extends Projectile {
+
     public AbstractArrow(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
@@ -30,22 +31,22 @@ public abstract class AbstractArrow extends Projectile {
         return this.metaData.getSets().getBitMask(EntityMetaDataFields.ABSTRACT_ARROW_FLAGS, bitMask);
     }
 
-    @EntityMetaDataFunction(identifier = "isCritical")
+    @EntityMetaDataFunction(identifier = "Is critical")
     public boolean isCritical() {
         return getAbstractArrowFlag(0x01);
     }
 
-    @EntityMetaDataFunction(identifier = "isNoClip")
+    @EntityMetaDataFunction(identifier = "Is no clip")
     public boolean isNoClip() {
         return getAbstractArrowFlag(0x02);
     }
 
-    @EntityMetaDataFunction(identifier = "piercingLevel")
+    @EntityMetaDataFunction(identifier = "Piercing level")
     public byte getPiercingLevel() {
         return this.metaData.getSets().getByte(EntityMetaDataFields.ABSTRACT_ARROW_PIERCE_LEVEL);
     }
 
-    @EntityMetaDataFunction(identifier = "ownerUUID")
+    @EntityMetaDataFunction(identifier = "Owner UUID")
     public UUID getOwnerUUID() {
         return this.metaData.getSets().getUUID(EntityMetaDataFields.ABSTRACT_ARROW_OWNER_UUID);
     }

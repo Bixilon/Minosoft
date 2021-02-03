@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.data.locale.minecraft;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class MinecraftLanguage {
     private final String language;
@@ -23,7 +26,21 @@ public class MinecraftLanguage {
 
     protected MinecraftLanguage(String language, JsonObject json) {
         this.language = language;
-        json.keySet().forEach((key) -> this.data.put(key.toLowerCase(), json.get(key).getAsString()));
+        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+            this.data.put(entry.getKey().toLowerCase(Locale.ROOT), entry.getValue().getAsString());
+        }
+    }
+
+    protected MinecraftLanguage(String language, String string) {
+        this.language = language;
+
+        for (String line : string.split("\\r?\\n")) {
+            if (line.isBlank()) {
+                continue;
+            }
+            String[] splitLine = line.split("=", 2);
+            this.data.put(splitLine[0].toLowerCase(Locale.ROOT), splitLine[1]);
+        }
     }
 
     public String getLanguage() {
@@ -35,7 +52,11 @@ public class MinecraftLanguage {
     }
 
     public String translate(String key, Object... data) {
-        return String.format(this.data.get(key), data);
+        String placeholder = this.data.get(key);
+        if (placeholder == null) {
+            return null;
+        }
+        return String.format(placeholder, data);
     }
 
     @Override

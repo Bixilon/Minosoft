@@ -25,13 +25,13 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public class ThrownEyeOfEnder extends Entity {
-    private static final Slot DEFAULT_ITEM = new Slot(new Item("ender_eye"));
+    private static final Slot DEFAULT_ITEM = new Slot(null, new Item("ender_eye")); // ToDo: version should not be null
 
     public ThrownEyeOfEnder(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "item")
+    @EntityMetaDataFunction(identifier = "Item")
     public Slot getItem() {
         Slot slot = this.metaData.getSets().getSlot(EntityMetaDataFields.THROWN_EYE_OF_ENDER_ITEM);
         if (slot == null) {

@@ -17,7 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 public class LongArrayTag extends NBTTag {
-    final long[] value;
+    private final long[] value;
 
     public LongArrayTag(long[] value) {
         this.value = value;

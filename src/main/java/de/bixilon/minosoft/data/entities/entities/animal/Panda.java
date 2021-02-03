@@ -27,27 +27,27 @@ public class Panda extends Animal {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "unhappyTimer")
+    @EntityMetaDataFunction(identifier = "Unhappy timer")
     public int getUnhappyTimer() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_UNHAPPY_TIMER);
     }
 
-    @EntityMetaDataFunction(identifier = "sneezeTimer")
+    @EntityMetaDataFunction(identifier = "Sneeze timer")
     public int getSneezeTimer() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_SNEEZE_TIMER);
     }
 
-    @EntityMetaDataFunction(identifier = "eatTimer")
+    @EntityMetaDataFunction(identifier = "Eat timer")
     public int getEatTimer() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_EAT_TIMER);
     }
 
-    @EntityMetaDataFunction(identifier = "mainGene")
+    @EntityMetaDataFunction(identifier = "Main gene")
     public Genes getMainGene() {
         return Genes.byId(this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_MAIN_GENE));
     }
 
-    @EntityMetaDataFunction(identifier = "hiddenGene")
+    @EntityMetaDataFunction(identifier = "Hidden gene")
     public Genes getHiddenGene() {
         return Genes.byId(this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_HIDDEN_GAME));
     }
@@ -56,22 +56,22 @@ public class Panda extends Animal {
         return this.metaData.getSets().getBitMask(EntityMetaDataFields.PANDA_FLAGS, bitMask);
     }
 
-    @EntityMetaDataFunction(identifier = "isSneezing")
+    @EntityMetaDataFunction(identifier = "Is sneezing")
     public boolean isSneezing() {
         return getPandaFlag(0x02);
     }
 
-    @EntityMetaDataFunction(identifier = "isRolling")
+    @EntityMetaDataFunction(identifier = "Is rolling")
     public boolean isRolling() {
         return getPandaFlag(0x04);
     }
 
-    @EntityMetaDataFunction(identifier = "isSitting")
+    @EntityMetaDataFunction(identifier = "Is sitting")
     public boolean isSitting() {
         return getPandaFlag(0x08);
     }
 
-    @EntityMetaDataFunction(identifier = "isOnBack")
+    @EntityMetaDataFunction(identifier = "Is on back")
     public boolean isOnBack() {
         return getPandaFlag(0x10);
     }

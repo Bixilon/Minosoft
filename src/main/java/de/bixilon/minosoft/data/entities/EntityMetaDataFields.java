@@ -270,6 +270,8 @@ public enum EntityMetaDataFields {
     AXOLOTL_PLAYING_DEAD(false),
     AXOLOTL_FROM_BUCKET(false),
 
+    GLOW_SQUID_DARK_TICKS_REMAINING(0),
+
     // pretty old stuff here. 1.8 mostly (or even after, I don't know and I don't care)
     LEGACY_SKELETON_TYPE((byte) 0),
     LEGACY_ENDERMAN_CARRIED_BLOCK(0),

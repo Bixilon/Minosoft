@@ -37,7 +37,7 @@ public class CommandSendChat extends Command {
                                         connection.getCommandRootNode().parse(connection, command);
                                     }
                                 } catch (CommandParseException e) {
-                                    printError("Command \"%s\" is invalid, %s: %s", command, e.getClass().getSimpleName(), e.getErrorMessage());
+                                    printError("Command \"%s\" is invalid, %s: %s", command, e.getClass().getSimpleName(), e.getMessage());
                                     return;
                                 }
                             }

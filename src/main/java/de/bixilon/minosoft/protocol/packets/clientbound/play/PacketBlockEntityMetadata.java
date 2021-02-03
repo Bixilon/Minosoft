@@ -16,11 +16,11 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.data.world.BlockPosition;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import java.util.Map;
@@ -86,7 +86,7 @@ public class PacketBlockEntityMetadata extends ClientboundPacket {
         SET_ITEMS_IN_CAMPFIRE(Map.of(V_19W02A, 13)),
         BEE_HIVE(Map.of(V_19W34A, 14));
 
-        final VersionValueMap<Integer> valueMap;
+   private final VersionValueMap<Integer> valueMap;
 
         BlockEntityActions(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);

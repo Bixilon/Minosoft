@@ -34,7 +34,7 @@ public class Chunk {
     }
 
     public Block getBlock(int x, int y, int z) {
-        int section = (y / 16);
+        int section = (y / ProtocolDefinition.SECTION_HEIGHT_Y);
         if (!this.sections.containsKey(section)) {
             return null;
         }
@@ -42,7 +42,7 @@ public class Chunk {
     }
 
     public void setBlock(int x, int y, int z, Block block) {
-        int section = y / 16;
+        int section = y / ProtocolDefinition.SECTION_HEIGHT_Y;
         createSection(section);
         this.sections.get(section).setBlock(x, y % 16, z, block);
     }

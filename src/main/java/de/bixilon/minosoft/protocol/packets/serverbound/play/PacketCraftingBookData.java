@@ -13,22 +13,20 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W50A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12_PRE6;
 
 public class PacketCraftingBookData implements ServerboundPacket {
-    final BookDataStatus action;
-
-    final int recipeId;
-
-    final boolean craftingBookOpen;
-    final boolean craftingFilter;
+    private final BookDataStatus action;
+    private final int recipeId;
+    private final boolean craftingBookOpen;
+    private final boolean craftingFilter;
     boolean blastingBookOpen;
     boolean blastingFilter;
     boolean smokingBookOpen;

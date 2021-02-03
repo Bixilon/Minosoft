@@ -17,7 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 public class ByteTag extends NumberTag {
-    final byte value;
+    private final byte value;
 
     public ByteTag(byte value) {
         this.value = value;

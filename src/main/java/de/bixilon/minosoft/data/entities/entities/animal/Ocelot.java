@@ -27,7 +27,7 @@ public class Ocelot extends Animal {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "trusting")
+    @EntityMetaDataFunction(identifier = "Trusting")
     public boolean isTrusting() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.OCELOT_IS_TRUSTING);
     }

@@ -16,10 +16,12 @@ package de.bixilon.minosoft.gui.main;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXProgressBar;
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
+import de.bixilon.minosoft.util.logging.Log;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
@@ -30,7 +32,7 @@ import javafx.stage.Stage;
 import java.util.concurrent.CountDownLatch;
 
 public class StartProgressWindow extends Application {
-    public static final CountDownLatch TOOLKIT_LATCH = new CountDownLatch(2); // 2 if not started, 1 if started, 2 if loaded
+    public static final CountDownLatch TOOLKIT_LATCH = new CountDownLatch(2); // 2 if not started, 1 if started, 0 if loaded
     public static JFXAlert<Boolean> progressDialog;
     private static JFXProgressBar progressBar;
     private static Label progressLabel;
@@ -67,7 +69,7 @@ public class StartProgressWindow extends Application {
 
                 Stage stage = (Stage) progressDialog.getDialogPane().getScene().getWindow();
                 stage.initModality(Modality.APPLICATION_MODAL);
-                stage.setOnCloseRequest((request) -> System.exit(0));
+                stage.setOnCloseRequest((request) -> Minosoft.shutdown(ShutdownReasons.REQUESTED_BY_USER));
                 if (exit) {
                     return;
                 }
@@ -107,6 +109,7 @@ public class StartProgressWindow extends Application {
             progressDialog.hide();
         });
     }
+
 
     @Override
     public void start(Stage stage) {

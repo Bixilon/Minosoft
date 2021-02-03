@@ -22,11 +22,12 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public abstract class AbstractChestedHorse extends AbstractHorse {
+
     public AbstractChestedHorse(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "hasChest")
+    @EntityMetaDataFunction(identifier = "Has chest")
     public boolean hasChest() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ABSTRACT_CHESTED_HORSE_HAS_CHEST);
     }

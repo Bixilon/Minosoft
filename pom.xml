@@ -122,10 +122,11 @@
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
-        <javafx.version>16-ea+5</javafx.version>
+        <javafx.version>16-ea+6</javafx.version>
         <kotlin.version>1.4.21</kotlin.version>
         <lwjgl.version>3.2.3</lwjgl.version>
     </properties>
+
 
     <repositories>
         <repository>
@@ -133,6 +134,7 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
+
 
     <dependencies>
         <dependency>
@@ -159,6 +161,12 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
             <version>${javafx.version}</version>
             <type>pom</type>
         </dependency>
@@ -197,6 +205,11 @@
             <artifactId>kotlin-test</artifactId>
             <version>${kotlin.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.Bixilon</groupId>
+            <artifactId>ascii-table</artifactId>
+            <version>5375a4f</version>
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>

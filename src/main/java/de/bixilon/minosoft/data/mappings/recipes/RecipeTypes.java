@@ -36,8 +36,7 @@ public enum RecipeTypes {
     CAMPFIRE("campfire_cooking"),
     STONE_CUTTING("stonecutting"),
     SMITHING("smithing");
-
-    final String name;
+    private final String name;
 
     RecipeTypes(String name) {
         this.name = name;

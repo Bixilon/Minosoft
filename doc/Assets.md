@@ -25,8 +25,10 @@ If not, we will download it and store it gzip compressed.
 
 ## Valid (Relevant) files
 Before downloading a file, the file is checked for relevance. Relevant files are prefixed with the following strings (or the file path):
- - `minecraft/lang/` -> Language files
- - `minecraft/sounds/` -> Sounds
+
+- `minecraft/lang/` -> Language files
+- `minecraft/sounds.json` -> Sound meta data and index file
+- `minecraft/sounds/` -> Sounds
  - `minecraft/textures/` -> Textures
  - `minecraft/font/` -> Fonts
 

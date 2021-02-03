@@ -20,6 +20,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public abstract class AbstractSchoolingFish extends AbstractFish {
+
     public AbstractSchoolingFish(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }

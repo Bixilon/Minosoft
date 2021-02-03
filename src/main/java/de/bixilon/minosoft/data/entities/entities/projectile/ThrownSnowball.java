@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public class ThrownSnowball extends ThrowableItemProjectile {
-    private static final Slot DEFAULT_ITEM = new Slot(new Item("snowball"));
+    private static final Slot DEFAULT_ITEM = new Slot(null, new Item("snowball")); // ToDo: version should not be null
 
     public ThrownSnowball(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);

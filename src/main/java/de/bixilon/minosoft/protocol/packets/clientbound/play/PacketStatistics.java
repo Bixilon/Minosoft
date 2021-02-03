@@ -15,16 +15,16 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.statistics.Statistic;
 import de.bixilon.minosoft.data.mappings.statistics.StatisticCategories;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.HashMap;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W47A;
 
 public class PacketStatistics extends ClientboundPacket {
-    final HashMap<Statistic, Integer> statistics = new HashMap<>();
+    private final HashMap<Statistic, Integer> statistics = new HashMap<>();
 
     @Override
     public boolean read(InByteBuffer buffer) {

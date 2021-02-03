@@ -20,9 +20,9 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 
 public class ForgeModInfo implements ServerModInfo {
-    final JsonObject modInfo;
-    final String info;
-    final ArrayList<ServerModItem> modList = new ArrayList<>();
+    private final JsonObject modInfo;
+    private final String info;
+    private final ArrayList<ServerModItem> modList = new ArrayList<>();
 
     public ForgeModInfo(JsonObject modInfo) {
         this.modInfo = modInfo;

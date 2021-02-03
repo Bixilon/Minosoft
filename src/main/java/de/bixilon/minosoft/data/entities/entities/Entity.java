@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.inventory.InventorySlots;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.MobEffect;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.util.logging.Log;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
@@ -70,12 +70,16 @@ public abstract class Entity {
         this.location = new Location(this.location.getX() + relativeLocation.getX(), this.location.getY() + relativeLocation.getY(), this.location.getZ() + relativeLocation.getZ());
     }
 
-    public void setEquipment(HashMap<InventorySlots.EntityInventorySlots, Slot> slots) {
-        this.equipment.putAll(slots);
-    }
-
     public Slot getEquipment(InventorySlots.EntityInventorySlots slot) {
         return this.equipment.get(slot);
+    }
+
+    public HashMap<InventorySlots.EntityInventorySlots, Slot> getEquipment() {
+        return this.equipment;
+    }
+
+    public void setEquipment(HashMap<InventorySlots.EntityInventorySlots, Slot> slots) {
+        this.equipment.putAll(slots);
     }
 
     public UUID getUUID() {
@@ -153,7 +157,7 @@ public abstract class Entity {
         return this.metaData.getSets().getBitMask(EntityMetaDataFields.ENTITY_FLAGS, bitMask);
     }
 
-    @EntityMetaDataFunction(identifier = "onFire")
+    @EntityMetaDataFunction(identifier = "On fire")
     public boolean isOnFire() {
         return getEntityFlag(0x01);
     }
@@ -162,7 +166,7 @@ public abstract class Entity {
         return getEntityFlag(0x02);
     }
 
-    @EntityMetaDataFunction(identifier = "isSprinting")
+    @EntityMetaDataFunction(identifier = "Is sprinting")
     public boolean isSprinting() {
         return getEntityFlag(0x08);
     }
@@ -171,12 +175,12 @@ public abstract class Entity {
         return getEntityFlag(0x10);
     }
 
-    @EntityMetaDataFunction(identifier = "isInvisible")
+    @EntityMetaDataFunction(identifier = "Is invisible")
     public boolean isInvisible() {
         return getEntityFlag(0x20);
     }
 
-    @EntityMetaDataFunction(identifier = "hasGlowingEffect")
+    @EntityMetaDataFunction(identifier = "Has glowing effect")
     public boolean hasGlowingEffect() {
         return getEntityFlag(0x20);
     }
@@ -185,33 +189,33 @@ public abstract class Entity {
         return getEntityFlag(0x80);
     }
 
-    @EntityMetaDataFunction(identifier = "airSupply")
+    @EntityMetaDataFunction(identifier = "Air supply")
     private int getAirSupply() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.ENTITY_AIR_SUPPLY);
     }
 
-    @EntityMetaDataFunction(identifier = "customName")
+    @EntityMetaDataFunction(identifier = "Custom name")
     @Nullable
     private ChatComponent getCustomName() {
         return this.metaData.getSets().getChatComponent(EntityMetaDataFields.ENTITY_CUSTOM_NAME);
     }
 
-    @EntityMetaDataFunction(identifier = "customNameVisible")
+    @EntityMetaDataFunction(identifier = "Is custom name visible")
     public boolean isCustomNameVisible() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_CUSTOM_NAME_VISIBLE);
     }
 
-    @EntityMetaDataFunction(identifier = "isSilent")
+    @EntityMetaDataFunction(identifier = "Is silent")
     public boolean isSilent() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_SILENT);
     }
 
-    @EntityMetaDataFunction(identifier = "hasNoGravity")
+    @EntityMetaDataFunction(identifier = "Has no gravity")
     public boolean hasNoGravity() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_NO_GRAVITY);
     }
 
-    @EntityMetaDataFunction(identifier = "pose")
+    @EntityMetaDataFunction(identifier = "Pose")
     public Poses getPose() {
         if (isCrouching()) {
             return Poses.SNEAKING;
@@ -225,7 +229,7 @@ public abstract class Entity {
         return this.metaData.getSets().getPose(EntityMetaDataFields.ENTITY_POSE);
     }
 
-    @EntityMetaDataFunction(identifier = "ticksFrozen")
+    @EntityMetaDataFunction(identifier = "Ticks frozen")
     public int getTicksFrozen() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.ENTITY_TICKS_FROZEN);
     }
@@ -244,28 +248,35 @@ public abstract class Entity {
 
     public TreeMap<String, Object> getEntityMetaDataFormatted() {
         // scan all methods of current class for EntityMetaDataFunction annotation and write it into a list
-        Class<? extends Entity> clazz = this.getClass();
         TreeMap<String, Object> values = new TreeMap<>();
-        for (Method method : clazz.getMethods()) {
-            if (!method.isAnnotationPresent(EntityMetaDataFunction.class)) {
-                continue;
-            }
-            if (method.getParameterCount() > 0) {
-                continue;
-            }
-            try {
-                String identifier = method.getAnnotation(EntityMetaDataFunction.class).identifier();
-                if (values.containsKey(identifier)) {
+        if (this.metaData == null) {
+            return values;
+        }
+        Class<?> clazz = this.getClass();
+        while (clazz != Object.class) {
+            for (Method method : clazz.getDeclaredMethods()) {
+                if (!method.isAnnotationPresent(EntityMetaDataFunction.class)) {
                     continue;
                 }
-                Object methodRetValue = method.invoke(this);
-                if (methodRetValue == null) {
+                if (method.getParameterCount() > 0) {
                     continue;
                 }
-                values.put(identifier, methodRetValue);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+                method.setAccessible(true);
+                try {
+                    String identifier = method.getAnnotation(EntityMetaDataFunction.class).identifier();
+                    if (values.containsKey(identifier)) {
+                        continue;
+                    }
+                    Object methodRetValue = method.invoke(this);
+                    if (methodRetValue == null) {
+                        continue;
+                    }
+                    values.put(identifier, methodRetValue);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
             }
+            clazz = clazz.getSuperclass();
         }
         return values;
     }

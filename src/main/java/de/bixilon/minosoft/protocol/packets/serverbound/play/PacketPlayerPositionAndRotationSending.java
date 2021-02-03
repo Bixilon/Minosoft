@@ -15,18 +15,18 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W06B;
 
 public class PacketPlayerPositionAndRotationSending implements ServerboundPacket {
-    final Location location;
-    final EntityRotation rotation;
-    final boolean onGround;
+    private final Location location;
+    private final EntityRotation rotation;
+    private final boolean onGround;
 
     public PacketPlayerPositionAndRotationSending(Location location, EntityRotation rotation, boolean onGround) {
         this.location = location;

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.inventory;
 
-import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.data.mappings.Enchantment;
 import de.bixilon.minosoft.data.mappings.Item;
+import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -28,9 +28,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Slot {
-    final Item item;
-    final HashMap<Enchantment, Integer> enchantments = new HashMap<>();
-    final ArrayList<ChatComponent> lore = new ArrayList<>();
+    private final Item item;
+    private final HashMap<Enchantment, Integer> enchantments = new HashMap<>();
+    private final ArrayList<ChatComponent> lore = new ArrayList<>();
+    private final Version version;
     int itemCount;
     short itemMetadata;
     int repairCost;
@@ -40,29 +41,35 @@ public class Slot {
     String skullOwner;
     byte hideFlags;
 
-    public Slot(VersionMapping mapping, Item item, int itemCount, CompoundTag nbt) {
-        this.item = item;
+
+    public Slot(Version version, Item item, int itemCount, CompoundTag nbt) {
+        this(version, item);
         this.itemCount = itemCount;
-        setNBT(mapping, nbt);
+        setNBT(nbt);
     }
 
-    public Slot(VersionMapping mapping, Item item, byte itemCount, short itemMetadata, CompoundTag nbt) {
-        this.item = item;
+    public Slot(Version version, Item item, byte itemCount, short itemMetadata, CompoundTag nbt) {
+        this(version, item);
         this.itemMetadata = itemMetadata;
         this.itemCount = itemCount;
-        setNBT(mapping, nbt);
+        setNBT(nbt);
     }
 
-    public Slot(Item item) {
-        this.item = item;
+    public Slot(Version version, Item item) {
+        this.version = version;
+        if (item.getFullIdentifier().equals("minecraft:air")) {
+            this.item = null;
+        } else {
+            this.item = item;
+        }
     }
 
-    public Slot(Item item, byte itemCount) {
-        this.item = item;
+    public Slot(Version version, Item item, byte itemCount) {
+        this(version, item);
         this.itemCount = itemCount;
     }
 
-    private void setNBT(VersionMapping mapping, CompoundTag nbt) {
+    private void setNBT(CompoundTag nbt) {
         if (nbt == null) {
             return;
         }
@@ -72,11 +79,11 @@ public class Slot {
         if (nbt.containsKey("display")) {
             CompoundTag display = nbt.getCompoundTag("display");
             if (display.containsKey("Name")) {
-                this.customDisplayName = ChatComponent.valueOf(display.getStringTag("Name").getValue());
+                this.customDisplayName = ChatComponent.valueOf(this.version, display.getStringTag("Name").getValue());
             }
             if (display.containsKey("Lore")) {
                 for (StringTag lore : display.getListTag("Lore").<StringTag>getValue()) {
-                    this.lore.add(ChatComponent.valueOf(lore.getValue()));
+                    this.lore.add(ChatComponent.valueOf(this.version, lore.getValue()));
                 }
             }
         }
@@ -91,12 +98,12 @@ public class Slot {
         }
         if (nbt.containsKey("Enchantments")) {
             for (CompoundTag enchantment : nbt.getListTag("Enchantments").<CompoundTag>getValue()) {
-                String[] spilittedIdentifier = enchantment.getStringTag("id").getValue().split(":");
-                this.enchantments.put(new Enchantment(spilittedIdentifier[0], spilittedIdentifier[1]), enchantment.getNumberTag("lvl").getAsInt());
+                String[] spilittIdentifier = enchantment.getStringTag("id").getValue().split(":");
+                this.enchantments.put(new Enchantment(spilittIdentifier[0], spilittIdentifier[1]), enchantment.getNumberTag("lvl").getAsInt());
             }
         } else if (nbt.containsKey("ench")) {
             for (CompoundTag enchantment : nbt.getListTag("ench").<CompoundTag>getValue()) {
-                this.enchantments.put(mapping.getEnchantmentById(enchantment.getNumberTag("id").getAsInt()), enchantment.getNumberTag("lvl").getAsInt());
+                this.enchantments.put(this.version.getMapping().getEnchantmentById(enchantment.getNumberTag("id").getAsInt()), enchantment.getNumberTag("lvl").getAsInt());
             }
         }
     }
@@ -165,7 +172,7 @@ public class Slot {
 
     @Override
     public String toString() {
-        return getDisplayName();
+        return getFullDisplayName();
     }
 
     public Item getItem() {
@@ -194,15 +201,53 @@ public class Slot {
         if (customName != null) {
             return customName.getANSIColoredMessage();
         }
-        return (this.item == null ? "AIR" : getLanguageName());
+        if (this.item == null) {
+            return "AIR";
+        }
+        return getLanguageName();
+    }
+
+    public String getFullDisplayName() {
+        if (this.item == null) {
+            return "AIR";
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append(getDisplayName());
+        builder.append('{');
+
+        if (this.itemCount != 1) {
+            builder.append("count: ");
+            builder.append(this.itemCount);
+            builder.append(", ");
+        }
+
+        if (!this.enchantments.isEmpty()) {
+            builder.append("enchantments: ");
+            builder.append(this.enchantments.toString());
+            builder.append(", ");
+        }
+        // ToDo all properties
+
+
+        String endString = builder.toString();
+        if (endString.endsWith(", ")) {
+            endString = endString.substring(0, endString.length() - 2);
+        }
+        endString += "}";
+
+        if (endString.endsWith("{}")) {
+            endString = endString.substring(0, endString.length() - 2);
+        }
+
+        return endString;
     }
 
     public String getLanguageName() {
-        // ToDo: What if an item identifier changed between versions? oOo
+        // ToDo: pre flattening names are completely broken
         String[] keys = {String.format("item.%s.%s", this.item.getMod(), this.item.getIdentifier()), String.format("block.%s.%s", this.item.getMod(), this.item.getIdentifier())};
         for (String key : keys) {
-            if (MinecraftLocaleManager.getLanguage().canTranslate(key)) {
-                return MinecraftLocaleManager.translate(key);
+            if (this.version.getLocaleManager().canTranslate(key)) {
+                return this.version.getLocaleManager().translate(key);
             }
         }
         return this.item.getFullIdentifier();
@@ -294,8 +339,9 @@ public class Slot {
     public void setShouldHideEnchantments(boolean hideEnchantments) {
         if (hideEnchantments) {
             this.hideFlags |= 1;
-        } else
+        } else {
             this.hideFlags &= ~(1);
+        }
     }
 
     public void setShouldHideModifiers(boolean hideModifiers) {

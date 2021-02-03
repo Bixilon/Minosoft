@@ -19,9 +19,8 @@ public enum PreChatFormattingCodes implements ChatFormattingCode {
     STRIKETHROUGH('m', "\u001b[9m"),
     UNDERLINED('n', "\u001b[4m"),
     ITALIC('o', "\u001b[3m");
-
-    final char c;
-    final String ansi;
+    private final char c;
+    private final String ansi;
 
     PreChatFormattingCodes(char c, String ansi) {
         this.c = c;

@@ -17,11 +17,11 @@ import de.bixilon.minosoft.data.scoreboard.Team;
 import de.bixilon.minosoft.data.text.ChatCode;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.Arrays;
 
@@ -180,7 +180,7 @@ public class PacketTeams extends ClientboundPacket {
         HIDE_FOR_OWN_TEAM("hideForOwnTeam"),
         NEVER("never");
 
-        final String name;
+   private final String name;
 
         TeamNameTagVisibilities(String name) {
             this.name = name;
@@ -206,7 +206,7 @@ public class PacketTeams extends ClientboundPacket {
         PUSH_OWN_TEAM("pushOwnOwnTeam"),
         NEVER("never");
 
-        final String name;
+        private final String name;
 
         TeamCollisionRules(String name) {
             this.name = name;

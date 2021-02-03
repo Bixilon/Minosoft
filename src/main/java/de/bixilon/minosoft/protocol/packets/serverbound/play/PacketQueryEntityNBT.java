@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketQueryEntityNBT implements ServerboundPacket {
-    final int transactionId;
-    final int entityId;
+    private final int transactionId;
+    private final int entityId;
 
     public PacketQueryEntityNBT(int transactionId, int entityId) {
         this.transactionId = transactionId;

@@ -19,12 +19,12 @@ import de.bixilon.minosoft.data.entities.Objects;
 import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.UnknownEntityException;
-import de.bixilon.minosoft.data.mappings.VersionTweaker;
-import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
@@ -37,7 +37,7 @@ public class PacketSpawnObject extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) throws Exception {
-        int entityId = buffer.readVarInt();
+        int entityId = buffer.readEntityId();
         UUID uuid = null;
         if (buffer.getVersionId() >= V_15W31A) {
             uuid = buffer.readUUID();

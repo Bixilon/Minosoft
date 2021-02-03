@@ -24,11 +24,11 @@ import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionExcepti
 import java.util.UUID;
 
 public class MojangAccount extends Account {
-    private final String id;
-    private final String email;
-    private String accessToken;
-    private RefreshStates lastRefreshStatus;
-    private boolean needsRefresh = true;
+    protected final String id;
+    protected final String email;
+    protected String accessToken;
+    protected RefreshStates lastRefreshStatus;
+    protected boolean needsRefresh = true;
 
     public MojangAccount(String username, JsonObject json) {
         super(json.getAsJsonObject("selectedProfile").get("name").getAsString(), Util.getUUIDFromString(json.getAsJsonObject("selectedProfile").get("id").getAsString()));

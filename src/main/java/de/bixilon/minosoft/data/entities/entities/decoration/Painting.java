@@ -40,12 +40,12 @@ public class Painting extends Entity {
         this.motive = motive;
     }
 
-    @EntityMetaDataFunction(identifier = "direction")
+    @EntityMetaDataFunction(identifier = "Direction")
     public Directions getDirection() {
         return this.direction;
     }
 
-    @EntityMetaDataFunction(identifier = "motive")
+    @EntityMetaDataFunction(identifier = "Motive")
     public Motive getMotive() {
         return this.motive;
     }

@@ -12,27 +12,37 @@
 import hashlib
 import os
 import re
-import requests
 import shutil
+import subprocess
 import tarfile
+import threading
+import time
 import traceback
+import urllib.request
+
+import requests
 import ujson
 
 print("Minecraft mappings downloader (and generator)")
 
-PRE_FLATTENING_UPDATE_VERSION = "17w46a"
+DOWNLOAD_UNTIL_VERSION = "18w01a"
+SKIP_VERSIONS = ["1.13-pre6", "1.13-pre5"]
 DATA_FOLDER = "../data/resources/"
 TEMP_FOLDER = DATA_FOLDER + "tmp/"
 OPTIONAL_FILES_PER_VERSION = ["entities.json"]
-FILES_PER_VERSION = ["blocks.json", "registries.json"] + OPTIONAL_FILES_PER_VERSION
+FILES_PER_VERSION = ["blocks.json", "registries.json", "block_models.json"] + OPTIONAL_FILES_PER_VERSION
 DOWNLOAD_BASE_URL = "https://apimon.de/mcdata/"
 RESOURCE_MAPPINGS_INDEX = ujson.load(open("../src/main/resources/assets/mapping/resources.json"))
 MOJANG_MINOSOFT_FIELD_MAPPINGS = ujson.load(open("entitiesFieldMojangMinosoftMappings.json"))
-VERSION_MANIFEST = requests.get('https://launchermeta.mojang.com/mc/game/version_manifest.json').json()
+VERSION_MANIFEST = ujson.loads(urllib.request.urlopen('https://launchermeta.mojang.com/mc/game/version_manifest.json').read().decode("utf-8"))
 VERBOSE_LOG = False
 DEFAULT_MAPPINGS = ujson.load(open("mappingsDefaults.json"))
 failedVersionIds = []
 partlyFailedVersionIds = []
+
+MAX_NUM_THREADS = 10
+
+threads = 0
 
 
 def sha1File(filename):
@@ -47,7 +57,7 @@ def sha1File(filename):
 
 
 def downloadAndReplace(url, filename, destination):
-    ret = requests.get(url).json()
+    ret = requests.get(url.replace(" ", "%20")).json()
     ret = {"minecraft": ret}
 
     if filename == "registries.json":
@@ -128,23 +138,63 @@ if not os.path.isdir(DATA_FOLDER):
 if not os.path.isdir(TEMP_FOLDER):
     os.mkdir(TEMP_FOLDER)
 
-for version in VERSION_MANIFEST["versions"]:
-    if version["id"] == PRE_FLATTENING_UPDATE_VERSION:
-        break
+
+# compile minosoft
+
+
+def generateJarAssets(versionId):
+    print("Generating jar asset hash: %s" % versionId)
+    generateProcess = ""
+    try:
+        generateProcess = subprocess.run(r'mvn exec:java -Dexec.mainClass="de.bixilon.minosoft.generator.JarHashGenerator" -Dexec.args="\"%s\""' % versionId, cwd=r'../', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # reload mappings
+        global RESOURCE_MAPPINGS_INDEX
+        RESOURCE_MAPPINGS_INDEX = ujson.load(open("../src/main/resources/assets/mapping/resources.json"))
+    except Exception:
+        print(generateProcess.stdout)
+        print(generateProcess.stderr)
+
+
+print("Compiling minosoft...")
+compileProcess = ""
+try:
+    compileProcess = subprocess.run(r'mvn compile', shell=True, check=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+except Exception:
+    print(compileProcess.stdout)
+    print(compileProcess.stderr)
+    exit(1)
+print("Minosoft compiled!")
+
+
+def downloadVersion(version):
     versionTempBaseFolder = TEMP_FOLDER + version["id"] + "/"
-    resourcesJsonKey = ("mappings/%s" % version["id"])
-    if resourcesJsonKey in RESOURCE_MAPPINGS_INDEX and os.path.isfile(DATA_FOLDER + RESOURCE_MAPPINGS_INDEX[resourcesJsonKey][:2] + "/" + RESOURCE_MAPPINGS_INDEX[resourcesJsonKey] + ".tar.gz"):
-        print("Skipping %s" % (version["id"]))
-        continue
+    resourcesVersion = {}
+    if version["id"] in SKIP_VERSIONS:
+        print("Force skipping %s" % version["id"])
+        return
+
+    if version["id"] in RESOURCE_MAPPINGS_INDEX["versions"]:
+        resourcesVersion = RESOURCE_MAPPINGS_INDEX["versions"][version["id"]]
+        if os.path.isfile(DATA_FOLDER + resourcesVersion["mappings"][:2] + "/" + resourcesVersion["mappings"] + ".tar.gz"):
+            if "jar_assets_hash" not in resourcesVersion:
+                try:
+                    generateJarAssets(version["id"])
+                except Exception:
+                    failedVersionIds.append(version["id"])
+                return
+            else:
+                print("Skipping %s" % (version["id"]))
+                return
     print()
-    print("=== %s === " % version["id"])
 
     if not os.path.isdir(versionTempBaseFolder):
         os.mkdir(versionTempBaseFolder)
 
-    versionJson = requests.get(version["url"]).json()
+    print("DEBUG: Downloading versions json for %s" % version["id"])
+    versionJson = ujson.loads(urllib.request.urlopen(version["url"]).read().decode("utf-8"))
 
-    burger = requests.get("https://pokechu22.github.io/Burger/%s.json" % version["id"]).json()[0]
+    print("DEBUG: Downloading burger data %s" % version["id"])
+    burger = ujson.loads(urllib.request.urlopen("https://pokechu22.github.io/Burger/%s.json" % version["id"].replace(" ", "%20")).read().decode("utf-8"))[0]
 
     for fileName in FILES_PER_VERSION:
         if os.path.isfile(versionTempBaseFolder + fileName):
@@ -185,7 +235,7 @@ for version in VERSION_MANIFEST["versions"]:
                     print("WARN: Can not generate entities.json for %s (missing deobfuscation map)" % version["id"])
                     continue
                 # download obfuscation map ToDo: make this much more efficient (aka no line looping, parsing!)
-                obfuscationMapLines = requests.get(versionJson["downloads"]["client_mappings"]["url"]).content.decode("utf-8").splitlines()
+                obfuscationMapLines = urllib.request.urlopen(versionJson["downloads"]["client_mappings"]["url"]).read().decode("utf-8").splitlines()
 
                 # entities
                 entities = {}
@@ -306,6 +356,10 @@ for version in VERSION_MANIFEST["versions"]:
                 with open(versionTempBaseFolder + "entities.json", 'w') as file:
                     file.write(ujson.dumps({"minecraft": entities}))
 
+            elif fileName == "block_models.json":
+                # blockModelsCombiner.py will do the trick for us
+                os.popen('python3 block_model_generator.py \"%s\" %s' % (versionTempBaseFolder + "block_models.json", versionJson['downloads']['client']['url'])).read()
+
         except Exception:
             traceback.print_exc()
             print("ERR: Could not generate %s for %s" % (fileName, version["id"]))
@@ -330,26 +384,62 @@ for version in VERSION_MANIFEST["versions"]:
     if failed:
         if os.path.isfile(versionTempBaseFolder + version["id"] + ".tar.gz"):
             os.remove(versionTempBaseFolder + version["id"] + ".tar.gz")
-        continue
+        return
     # generate sha and copy file to desired location
     sha1 = sha1File(versionTempBaseFolder + version["id"] + ".tar.gz")
     if not os.path.isdir(DATA_FOLDER + sha1[:2]):
         os.mkdir(DATA_FOLDER + sha1[:2])
     os.rename(versionTempBaseFolder + version["id"] + ".tar.gz", DATA_FOLDER + sha1[:2] + "/" + sha1 + ".tar.gz")
 
-    if resourcesJsonKey in RESOURCE_MAPPINGS_INDEX:
+    if "mappings" in resourcesVersion:
         # this file already has a mapping, delete it
-        hashToDelete = RESOURCE_MAPPINGS_INDEX[resourcesJsonKey]
+        hashToDelete = resourcesVersion["mappings"]
         filenameToDelete = DATA_FOLDER + hashToDelete[:2] + "/" + hashToDelete + ".tar.gz"
         if os.path.isfile(filenameToDelete):
             shutil.rmtree(filenameToDelete)
 
-    RESOURCE_MAPPINGS_INDEX[resourcesJsonKey] = sha1
+    resourcesVersion["mappings"] = sha1
+    resourcesVersion["index_version"] = versionJson["assetIndex"]["id"]
+    resourcesVersion["index_hash"] = versionJson["assetIndex"]["sha1"]
+    resourcesVersion["client_jar_hash"] = versionJson["downloads"]["client"]["sha1"]
+
+    RESOURCE_MAPPINGS_INDEX["versions"][version["id"]] = resourcesVersion
     # cleanup (delete temp folder)
     shutil.rmtree(versionTempBaseFolder)
     # dump resources index
     with open("../src/main/resources/assets/mapping/resources.json", 'w') as file:
         ujson.dump(RESOURCE_MAPPINGS_INDEX, file)
+
+    # start jar hash generator
+    # todo: don't download jar twice
+    try:
+        generateJarAssets(version["id"])
+    except Exception:
+        failedVersionIds.append(version["id"])
+
+
+def downloadVersionInThread(version):
+    global threads
+    try:
+        downloadVersion(version)
+    except Exception:
+        print("")
+    threads -= 1
+
+
+for version in VERSION_MANIFEST["versions"]:
+    if version["id"] == DOWNLOAD_UNTIL_VERSION:
+        break
+    while threads > MAX_NUM_THREADS:
+        time.sleep(1)
+
+    thread = threading.Thread(target=downloadVersionInThread, args=(version,))
+    threads += 1
+    time.sleep(0.1)
+    thread.start()
+
+while threads > 0:
+    time.sleep(1)
 
 print()
 print()

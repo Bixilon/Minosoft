@@ -17,6 +17,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.hash.BetterHashSet;
@@ -35,11 +36,11 @@ public class BaseComponent extends ChatComponent {
     public BaseComponent() {
     }
 
-    public BaseComponent(String text) {
-        this(null, text);
+    public BaseComponent(Version version, String text) {
+        this(version, null, text);
     }
 
-    public BaseComponent(@Nullable ChatComponent parent, String text) {
+    public BaseComponent(Version version, @Nullable ChatComponent parent, String text) {
         // legacy String
         StringBuilder currentText = new StringBuilder();
         RGBColor color = null;
@@ -92,19 +93,19 @@ public class BaseComponent extends ChatComponent {
         }
     }
 
-    public BaseComponent(JsonObject json) {
-        this(null, json);
+    public BaseComponent(Version version, JsonObject json) {
+        this(version, null, json);
     }
 
     @SuppressWarnings("unchecked")
-    public BaseComponent(@Nullable TextComponent parent, JsonElement data) {
+    public BaseComponent(Version version, @Nullable TextComponent parent, JsonElement data) {
         MultiChatComponent thisTextComponent = null;
         if (data instanceof JsonObject json) {
             if (json.has("text")) {
                 String text = json.get("text").getAsString();
                 if (text.contains(String.valueOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR))) {
                     // legacy text component
-                    this.parts.add(new BaseComponent(text));
+                    this.parts.add(new BaseComponent(version, text));
                     return;
                 }
                 RGBColor color;
@@ -160,14 +161,14 @@ public class BaseComponent extends ChatComponent {
             final TextComponent parentParameter = thisTextComponent == null ? parent : thisTextComponent;
             if (json.has("extra")) {
                 JsonArray extras = json.getAsJsonArray("extra");
-                extras.forEach((extra -> this.parts.add(new BaseComponent(parentParameter, extra))));
+                extras.forEach((extra -> this.parts.add(new BaseComponent(version, parentParameter, extra))));
             }
 
             if (json.has("translate")) {
-                this.parts.add(new TranslatableComponent(parentParameter, json.get("translate").getAsString(), json.getAsJsonArray("with")));
+                this.parts.add(new TranslatableComponent(version, parentParameter, json.get("translate").getAsString(), json.getAsJsonArray("with")));
             }
         } else if (data instanceof JsonPrimitive primitive) {
-            this.parts.add(new BaseComponent(parent, primitive.getAsString()));
+            this.parts.add(new BaseComponent(version, parent, primitive.getAsString()));
         }
     }
 
@@ -217,8 +218,8 @@ public class BaseComponent extends ChatComponent {
         return this;
     }
 
-    public BaseComponent append(String message) {
-        this.parts.add(new BaseComponent(message));
+    public BaseComponent append(Version version, String message) {
+        this.parts.add(new BaseComponent(version, message));
         return this;
     }
 

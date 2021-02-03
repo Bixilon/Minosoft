@@ -17,7 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 
 public class StringTag extends NBTTag {
-    final String value;
+    private final String value;
 
     public StringTag(String value) {
         this.value = value;

@@ -23,8 +23,6 @@ import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.gui.rendering.Renderer;
-import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventInvoker;
 import de.bixilon.minosoft.modding.event.events.*;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -36,8 +34,11 @@ import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.terminal.CLI;
 import de.bixilon.minosoft.terminal.commands.commands.Command;
+import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.DNSUtil;
 import de.bixilon.minosoft.util.ServerAddress;
+import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
 import org.xbill.DNS.TextParseException;
 
 import javax.annotation.Nullable;
@@ -125,12 +126,22 @@ public class Connection {
         this.network.connect(this.address);
     }
 
-    public void connect(ServerAddress address, Version version) {
+    public void connect(ServerAddress address, Version version, CountUpAndDownLatch latch) {
         this.address = address;
         this.reason = ConnectionReasons.CONNECT;
         setVersion(version);
-        Log.info(String.format("Connecting to server: %s", address));
-        this.network.connect(address);
+        try {
+            version.load(latch);  // ToDo: show gui loader
+            this.customMapping.setVersion(version);
+            this.customMapping.setParentMapping(version.getMapping());
+            Log.info(String.format("Connecting to server: %s", address));
+            this.network.connect(address);
+        } catch (Exception e) {
+            Log.printException(e, LogLevels.DEBUG);
+            Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
+            this.lastException = new MappingsLoadingException("Mappings could not be loaded", e);
+            setConnectionState(ConnectionStates.FAILED_NO_RETRY);
+        }
     }
 
     public ServerAddress getAddress() {
@@ -151,24 +162,14 @@ public class Connection {
         }
 
         this.version = version;
-        try {
-            Versions.loadVersionMappings(version);
-            this.customMapping.setVersion(version);
-            this.customMapping.setParentMapping(version.getMapping());
-        } catch (Exception e) {
-            Log.printException(e, LogLevels.DEBUG);
-            Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
-            this.lastException = new MappingsLoadingException("Mappings could not be loaded", e);
-            setConnectionState(ConnectionStates.FAILED_NO_RETRY);
-        }
     }
+
 
     public void handle(ClientboundPacket p) {
         this.handlingQueue.add(p);
     }
 
     public void disconnect() {
-        setConnectionState(ConnectionStates.DISCONNECTING);
         this.network.disconnect();
         this.handleThread.interrupt();
     }
@@ -208,7 +209,9 @@ public class Connection {
                     continue;
                 }
                 try {
-                    packet.log();
+                    if (Log.getLevel().ordinal() >= LogLevels.PROTOCOL.ordinal()) {
+                        packet.log();
+                    }
                     PacketReceiveEvent event = new PacketReceiveEvent(this, packet);
                     if (fireEvent(event)) {
                         continue;
@@ -285,12 +288,14 @@ public class Connection {
     }
 
     public void setConnectionState(ConnectionStates state) {
-        if (this.state == state) {
-            return;
-        }
-        Log.verbose("ConnectionState changed: " + state);
         ConnectionStates previousState = this.state;
-        this.state = state;
+        synchronized (state) {
+            if (this.state == state) {
+                return;
+            }
+            Log.verbose("ConnectionState changed: " + state);
+            this.state = state;
+        }
         switch (state) {
             case HANDSHAKING -> {
                 // get and add all events, that are connection specific
@@ -365,6 +370,10 @@ public class Connection {
             case PLAY -> {
                 Minosoft.CONNECTIONS.put(getConnectionId(), this);
                 this.renderer.start();
+
+                if (CLI.getCurrentConnection() == null) {
+                    CLI.setCurrentConnection(this);
+                }
             }
         }
         // handle callbacks
@@ -384,21 +393,24 @@ public class Connection {
         this.desiredVersionNumber = desiredVersionNumber;
     }
 
+    public void unregisterEvent(EventInvoker method) {
+        this.eventListeners.remove(method);
+
+    }
+
     public void registerEvent(EventInvoker method) {
-        this.eventListeners.add(method);
-        if (method.getEventType() == ServerListStatusArriveEvent.class) {
-            if (getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || this.lastPing != null) {
-                // ping done
-                method.invoke(new ServerListStatusArriveEvent(this, this.lastPing));
-            }
-        } else if (method.getEventType() == ServerListPongEvent.class) {
-            if (getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || this.lastPing != null) {
-                // ping done
-                if (this.pong != null) {
-                    method.invoke(this.pong);
-                }
-            }
+        if (method.getEventType().isAssignableFrom(ServerListStatusArriveEvent.class) && wasPingDone()) {
+            // ping done
+            method.invoke(new ServerListStatusArriveEvent(this, this.lastPing));
+        } else if (method.getEventType().isAssignableFrom(ServerListPongEvent.class) && wasPingDone() && this.pong != null) {
+            method.invoke(this.pong);
+        } else {
+            this.eventListeners.add(method);
         }
+    }
+
+    private boolean wasPingDone() {
+        return getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY || this.lastPing != null;
     }
 
     public Throwable getLastConnectionException() {
@@ -430,9 +442,13 @@ public class Connection {
         this.pong = pong;
     }
 
+    public boolean shouldDisconnect() {
+        return getConnectionState() == ConnectionStates.DISCONNECTING || getConnectionState() == ConnectionStates.DISCONNECTED || getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY;
+    }
+
     @Override
     public String toString() {
-        return String.format("id=%d, address=%s, account=\"%s\")", getConnectionId(), getAddress(), getPlayer().getAccount());
+        return String.format("(id=%d, address=%s, account=\"%s\")", getConnectionId(), getAddress(), ((this.player == null) ? null : getPlayer().getAccount()));
     }
 
     public Renderer getRenderer() {

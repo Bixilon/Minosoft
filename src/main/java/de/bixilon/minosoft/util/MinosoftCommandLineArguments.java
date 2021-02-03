@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.util;
 
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import org.apache.commons.cli.*;
 
@@ -43,7 +45,7 @@ public class MinosoftCommandLineArguments {
         } catch (ParseException e) {
             System.out.println(e.getMessage());
             HELP_FORMATTER.printHelp("java -jar Minosoft.jar", OPTIONS);
-            System.exit(1);
+            Minosoft.shutdown(e.getMessage(), ShutdownReasons.CLI_WRONG_PARAMETER);
         }
     }
 
@@ -54,7 +56,7 @@ public class MinosoftCommandLineArguments {
     private static void registerDefaultArguments() {
         registerCommandLineOption(new Option("?", "help", false, "Displays this help"), (value -> {
             HELP_FORMATTER.printHelp("java -jar Minosoft.jar", OPTIONS);
-            System.exit(1);
+            Minosoft.shutdown(ShutdownReasons.CLI_HELP);
         }));
         registerCommandLineOption(new Option("home_folder", true, "Home of Minosoft"), (value -> StaticConfiguration.HOME_DIRECTORY = value + "/"));
         registerCommandLineOption(new Option("colored_log", true, "Should the log be colored"), (value -> StaticConfiguration.COLORED_LOG = Boolean.parseBoolean(value)));

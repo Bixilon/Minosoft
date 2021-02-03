@@ -22,11 +22,12 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public class Arrow extends AbstractArrow {
+
     public Arrow(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "effectColor")
+    @EntityMetaDataFunction(identifier = "Effect color")
     public int getEffectColor() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.ARROW_EFFECT_COLOR);
     }

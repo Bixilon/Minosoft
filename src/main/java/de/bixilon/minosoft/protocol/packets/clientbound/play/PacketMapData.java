@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.ArrayList;
 
@@ -199,11 +199,11 @@ public class PacketMapData extends ClientboundPacket {
     }
 
     public static class MapPinSet {
-        final MapPinTypes type;
-        final byte direction;
-        final byte x;
-        final byte z;
-        final ChatComponent displayName;
+        private final MapPinTypes type;
+        private final byte direction;
+        private final byte x;
+        private final byte z;
+        private final ChatComponent displayName;
 
         public MapPinSet(MapPinTypes type, int direction, byte x, byte z) {
             this.type = type;

@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.world.BlockPosition;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W13A;
 
 public class PacketUpdateJigsawBlock implements ServerboundPacket {
-    final BlockPosition position;
-    final String targetPool;
-    final String finalState;
+    private final BlockPosition position;
+    private final String targetPool;
+    private final String finalState;
     String attachmentType;
     String name;
     String target;

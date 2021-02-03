@@ -17,15 +17,15 @@ import de.bixilon.minosoft.data.inventory.Slot;
 import org.checkerframework.common.value.qual.IntRange;
 
 public class Trade {
-    final Slot input1;
-    final Slot input2;
-    final boolean enabled;
-    final int usages;
-    final int maxUsages;
-    final int xp;
-    final int specialPrice;
-    final float priceMultiplier;
-    final int demand;
+    private final Slot input1;
+    private final Slot input2;
+    private final boolean enabled;
+    private final int usages;
+    private final int maxUsages;
+    private final int xp;
+    private final int specialPrice;
+    private final float priceMultiplier;
+    private final int demand;
 
     public Trade(Slot input1, Slot input2, boolean enabled, int usages, int maxUsages, int xp, int specialPrice, float priceMultiplier, int demand) {
         this.input1 = input1;

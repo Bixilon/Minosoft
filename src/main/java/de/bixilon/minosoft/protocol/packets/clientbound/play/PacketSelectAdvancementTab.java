@@ -15,9 +15,9 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.ChangeableIdentifier;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketSelectAdvancementTab extends ClientboundPacket {
     AdvancementTabs tab;
@@ -46,7 +46,7 @@ public class PacketSelectAdvancementTab extends ClientboundPacket {
         ADVENTURE(new ChangeableIdentifier("adventure/root")),
         HUSBANDRY(new ChangeableIdentifier("husbandry/root"));
 
-        final ChangeableIdentifier changeableIdentifier;
+   private final ChangeableIdentifier changeableIdentifier;
 
         AdvancementTabs(ChangeableIdentifier changeableIdentifier) {
             this.changeableIdentifier = changeableIdentifier;

@@ -15,9 +15,9 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.Tag;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
@@ -59,7 +59,7 @@ public class PacketTags extends ClientboundPacket {
     private Tag[] readTags(InByteBuffer buffer) {
         Tag[] ret = new Tag[buffer.readVarInt()];
         for (int i = 0; i < ret.length; i++) {
-            ret[i] = new Tag(buffer.readString(), buffer.readVarIntArray());
+            ret[i] = new Tag(buffer.readIdentifier(), buffer.readVarIntArray());
         }
         return ret;
     }

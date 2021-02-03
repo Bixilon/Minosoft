@@ -24,11 +24,12 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public abstract class Fireball extends AbstractHurtingProjectile {
+
     public Fireball(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "item")
+    @EntityMetaDataFunction(identifier = "Item")
     @Nullable
     private Slot getItem() {
         Slot slot = this.metaData.getSets().getSlot(EntityMetaDataFields.FIREBALL_ITEM);

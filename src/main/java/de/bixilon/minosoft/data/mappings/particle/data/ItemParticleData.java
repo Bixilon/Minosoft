@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 
 public class ItemParticleData extends ParticleData {
-    final Slot slot;
+    private final Slot slot;
 
     public ItemParticleData(Slot slot, Particle type) {
         super(type);

@@ -15,11 +15,11 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.GameModes;
 import de.bixilon.minosoft.data.VersionValueMap;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.ChangeGameStateEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.Map;
 
@@ -88,7 +88,7 @@ public class PacketChangeGameState extends ClientboundPacket {
         GUARDIAN_ELDER_EFFECT(Map.of(LOWEST_VERSION_SUPPORTED, 10)),
         IMMEDIATE_RESPAWN(Map.of(V_19W36A, 11));
 
-        final VersionValueMap<Integer> valueMap;
+   private final VersionValueMap<Integer> valueMap;
 
         Reason(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);

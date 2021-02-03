@@ -16,11 +16,11 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.inventory.InventorySlots;
 import de.bixilon.minosoft.data.inventory.Slot;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.EntityEquipmentChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE7;
 
 public class PacketEntityEquipment extends ClientboundPacket {
-    final HashMap<InventorySlots.EntityInventorySlots, Slot> slots = new HashMap<>();
+    private final HashMap<InventorySlots.EntityInventorySlots, Slot> slots = new HashMap<>();
     int entityId;
 
     @Override

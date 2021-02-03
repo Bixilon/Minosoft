@@ -27,7 +27,7 @@ public class SpellcasterIllager extends AbstractIllager {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "spell")
+    @EntityMetaDataFunction(identifier = "Spell")
     public Spells getSpell() {
         return Spells.byId(this.metaData.getSets().getInt(EntityMetaDataFields.SPELLCASTER_ILLAGER_SPELL));
     }

@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Team {
-    final String name;
-    final ArrayList<String> players;
+    private final String name;
+    private final ArrayList<String> players;
     ChatComponent displayName;
     ChatComponent prefix;
     ChatComponent suffix;

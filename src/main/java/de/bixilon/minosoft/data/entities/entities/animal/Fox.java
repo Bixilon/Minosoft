@@ -28,7 +28,7 @@ public class Fox extends Animal {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "variant")
+    @EntityMetaDataFunction(identifier = "Variant")
     public int getVariant() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.FOX_VARIANT);
     }
@@ -37,48 +37,48 @@ public class Fox extends Animal {
         return this.metaData.getSets().getBitMask(EntityMetaDataFields.FOX_FLAGS, bitMask);
     }
 
-    @EntityMetaDataFunction(identifier = "isSitting")
+    @EntityMetaDataFunction(identifier = "Is sitting")
     private boolean isSitting() {
         return getFoxFlag(0x01);
     }
 
-    @EntityMetaDataFunction(identifier = "isCrouching")
+    @EntityMetaDataFunction(identifier = "Is crouching")
     public boolean isCrouching() {
         return getFoxFlag(0x04);
     }
 
-    @EntityMetaDataFunction(identifier = "isInterested")
+    @EntityMetaDataFunction(identifier = "Is interested")
     public boolean isInterested() {
         return getFoxFlag(0x08);
     }
 
-    @EntityMetaDataFunction(identifier = "isPouncing")
+    @EntityMetaDataFunction(identifier = "Is pouncing")
     public boolean isPouncing() {
         return getFoxFlag(0x10);
     }
 
-    @EntityMetaDataFunction(identifier = "isSleeping")
+    @EntityMetaDataFunction(identifier = "Is sleeping")
     public boolean isSleeping() {
         return getFoxFlag(0x20);
     }
 
-    @EntityMetaDataFunction(identifier = "isFaceplanted")
+    @EntityMetaDataFunction(identifier = "Is faceplanted")
     public boolean isFaceplanted() {
         return getFoxFlag(0x40);
     }
 
-    @EntityMetaDataFunction(identifier = "isDefending")
+    @EntityMetaDataFunction(identifier = "Is defending")
     public boolean isDefending() {
         return getFoxFlag(0x80);
     }
 
-    @EntityMetaDataFunction(identifier = "trusted1")
+    @EntityMetaDataFunction(identifier = "Trusted 1")
     @Nullable
     public UUID getFirstTrusted() {
         return this.metaData.getSets().getUUID(EntityMetaDataFields.FOX_TRUSTED_1);
     }
 
-    @EntityMetaDataFunction(identifier = "trusted2")
+    @EntityMetaDataFunction(identifier = "Trusted 2")
     @Nullable
     public UUID getSecondTrusted() {
         return this.metaData.getSets().getUUID(EntityMetaDataFields.FOX_TRUSTED_2);

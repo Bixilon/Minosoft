@@ -13,22 +13,24 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.ResourcePackChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W45A;
 
 public class PacketResourcePackSend extends ClientboundPacket {
-    String url;
-    String hash;
-    boolean forced;
+    private String url;
+    private String hash;
+    private boolean forced;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.url = buffer.readString();
+        Util.checkURL(this.url);
         this.hash = buffer.readString();
         if (buffer.getVersionId() >= V_20W45A) {
             this.forced = buffer.readBoolean();
@@ -46,7 +48,7 @@ public class PacketResourcePackSend extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received resource pack send (url=\"%s\", hash=%s", this.url, this.hash));
+        Log.protocol(String.format("[IN] Received resource pack send (url=\"%s\", hash=%s)", this.url, this.hash));
     }
 
     public String getUrl() {

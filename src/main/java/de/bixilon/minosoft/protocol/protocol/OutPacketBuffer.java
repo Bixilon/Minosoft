@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 public class OutPacketBuffer extends OutByteBuffer {
-    final int command;
+    private final int command;
 
     public OutPacketBuffer(Connection connection, Packets.Serverbound command) {
         super(connection);

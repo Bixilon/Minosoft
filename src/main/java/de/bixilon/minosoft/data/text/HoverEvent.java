@@ -71,6 +71,10 @@ public class HoverEvent {
             } else {
                 json = (JsonObject) data;
             }
+            if (json.has("text")) {
+                // 1.14.3.... lol
+                json = JsonParser.parseString(json.get("text").getAsString()).getAsJsonObject();
+            }
             ModIdentifier type = null;
             if (json.has("type")) {
                 type = new ModIdentifier(json.get("type").getAsString());

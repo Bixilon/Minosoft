@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.protocol.network.socket;
 
-import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -27,6 +25,8 @@ import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.ServerAddress;
+import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -94,7 +94,7 @@ public class BlockingSocketNetwork extends Network {
 
                 initSendThread();
 
-                this.socketReceiveThread.setName(String.format("%d/SocketR", this.connection.getConnectionId()));
+                this.socketReceiveThread.setName(String.format("%d/SocketReceive", this.connection.getConnectionId()));
 
 
                 while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
@@ -107,13 +107,15 @@ public class BlockingSocketNetwork extends Network {
                         Log.printException(e, LogLevels.PROTOCOL);
                     }
                 }
-                disconnect();
+                this.connection.disconnect();
             } catch (Throwable e) {
                 // Could not connect
+                this.connection.setConnectionState(ConnectionStates.DISCONNECTING);
                 if (this.socketSendThread != null) {
                     this.socketSendThread.interrupt();
                 }
                 if (e instanceof SocketException && e.getMessage().equals("Socket closed")) {
+                    this.connection.setConnectionState(ConnectionStates.DISCONNECTED);
                     return;
                 }
                 Log.printException(e, LogLevels.PROTOCOL);
@@ -131,7 +133,12 @@ public class BlockingSocketNetwork extends Network {
 
     @Override
     public void disconnect() {
+        if (this.connection.shouldDisconnect()) {
+            // already trying
+            return;
+        }
         this.connection.setConnectionState(ConnectionStates.DISCONNECTING);
+        this.queue.clear();
         try {
             this.socket.close();
         } catch (IOException e) {
@@ -165,7 +172,9 @@ public class BlockingSocketNetwork extends Network {
                     }
 
                     ServerboundPacket packet = this.queue.take();
-                    packet.log();
+                    if (Log.getLevel().ordinal() >= LogLevels.PROTOCOL.ordinal()) {
+                        packet.log();
+                    }
 
                     this.outputStream.write(prepareServerboundPacket(packet));
                     this.outputStream.flush();
@@ -178,7 +187,7 @@ public class BlockingSocketNetwork extends Network {
                 }
             } catch (IOException | InterruptedException ignored) {
             }
-        }, String.format("%d/SocketS", this.connection.getConnectionId()));
+        }, String.format("%d/SocketSend", this.connection.getConnectionId()));
         this.socketSendThread.start();
     }
 

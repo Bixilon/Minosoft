@@ -14,20 +14,19 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.world.BlockPosition;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketUpdateCommandBlock implements ServerboundPacket {
-
-    final BlockPosition position;
-    final String command;
-    final CommandBlockType type;
-    final boolean trackOutput;
-    final boolean isConditional;
-    final boolean isAutomatic;
+    private final BlockPosition position;
+    private final String command;
+    private final CommandBlockType type;
+    private final boolean trackOutput;
+    private final boolean isConditional;
+    private final boolean isAutomatic;
 
     public PacketUpdateCommandBlock(BlockPosition position, String command, CommandBlockType type, boolean trackOutput, boolean isConditional, boolean isAutomatic) {
         this.position = position;

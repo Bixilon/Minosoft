@@ -13,20 +13,20 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W06B;
 
 public class PacketPlayerPositionSending implements ServerboundPacket {
-    final double x;
-    final double feetY;
-    final double headY;
-    final double z;
-    final boolean onGround;
+    private final double x;
+    private final double feetY;
+    private final double headY;
+    private final double z;
+    private final boolean onGround;
 
     public PacketPlayerPositionSending(double x, double feetY, double headY, double z, boolean onGround) {
         this.x = x;

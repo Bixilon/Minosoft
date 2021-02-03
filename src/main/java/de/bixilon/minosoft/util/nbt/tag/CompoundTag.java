@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CompoundTag extends NBTTag {
-    final String name;
-    final HashMap<String, NBTTag> data;
+    private final String name;
+    private final HashMap<String, NBTTag> data;
 
     public CompoundTag(String name, HashMap<String, NBTTag> data) {
         this.name = name;

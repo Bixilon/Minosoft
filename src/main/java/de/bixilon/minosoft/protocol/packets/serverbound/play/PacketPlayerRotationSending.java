@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketPlayerRotationSending implements ServerboundPacket {
-    final float yaw;
-    final float pitch;
-    final boolean onGround;
+    private final float yaw;
+    private final float pitch;
+    private final boolean onGround;
 
     public PacketPlayerRotationSending(float yaw, float pitch, boolean onGround) {
         this.yaw = yaw;

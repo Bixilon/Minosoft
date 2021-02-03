@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.protocol.network.socket;
 
-import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -25,6 +23,8 @@ import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.ServerAddress;
+import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -176,6 +176,7 @@ public class NonBlockingSocketNetwork extends Network {
             return;
         }
         this.connection.setConnectionState(ConnectionStates.DISCONNECTING);
+        this.queue.clear();
         try {
             this.socketChannel.close();
         } catch (IOException e) {

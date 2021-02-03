@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Version;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
+import de.bixilon.minosoft.util.logging.Log;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -73,7 +74,7 @@ public class Launcher {
                 root = loader.load();
             } catch (IOException e) {
                 e.printStackTrace();
-                System.exit(1);
+                Minosoft.shutdown(e.getMessage(), ShutdownReasons.LAUNCHER_FXML_LOAD_ERROR);
                 return;
             }
 
@@ -83,7 +84,7 @@ public class Launcher {
 
             stage.setTitle(LocaleManager.translate(Strings.MAIN_WINDOW_TITLE));
             GUITools.initializeScene(scene);
-            stage.setOnCloseRequest(windowEvent -> System.exit(0));
+            stage.setOnCloseRequest(windowEvent -> Minosoft.shutdown(ShutdownReasons.REQUESTED_BY_USER));
             if (exit) {
                 return;
             }

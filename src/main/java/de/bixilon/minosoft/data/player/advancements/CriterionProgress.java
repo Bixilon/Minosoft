@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.player.advancements;
 
 public class CriterionProgress {
-    final boolean archived;
-    final Long archiveTime;
+    private final boolean archived;
+    private final Long archiveTime;
 
     public CriterionProgress(boolean archived, Long archiveTime) {
         this.archived = archived;

@@ -15,9 +15,9 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.EntityProperty;
 import de.bixilon.minosoft.data.entities.EntityPropertyKeys;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -25,7 +25,7 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketEntityProperties extends ClientboundPacket {
-    final HashMap<EntityPropertyKeys, EntityProperty> properties = new HashMap<>();
+    private final HashMap<EntityPropertyKeys, EntityProperty> properties = new HashMap<>();
     int entityId;
 
     @Override

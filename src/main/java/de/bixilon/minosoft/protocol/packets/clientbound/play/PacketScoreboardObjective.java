@@ -15,10 +15,10 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
@@ -101,7 +101,7 @@ public class PacketScoreboardObjective extends ClientboundPacket {
         HEARTS("hearts");
 
         private static final ScoreboardObjectiveTypes[] SCOREBOARD_OBJECTIVE_TYPES = values();
-        final String name;
+        private final String name;
 
         ScoreboardObjectiveTypes(String name) {
             this.name = name;

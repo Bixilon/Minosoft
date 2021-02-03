@@ -13,17 +13,16 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketConfirmTransactionSending implements ServerboundPacket {
-
-    final byte windowId;
-    final short actionNumber;
-    final boolean accepted;
+    private final byte windowId;
+    private final short actionNumber;
+    private final boolean accepted;
 
     public PacketConfirmTransactionSending(byte windowId, short actionNumber, boolean accepted) {
         this.windowId = windowId;

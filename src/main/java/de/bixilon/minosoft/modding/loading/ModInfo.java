@@ -21,14 +21,14 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ModInfo {
-    final String versionName;
-    final String name;
-    final String[] authors;
-    final int moddingAPIVersion;
-    final String identifier;
-    final String mainClass;
-    final HashSet<ModDependency> hardDependencies = new HashSet<>();
-    final HashSet<ModDependency> softDependencies = new HashSet<>();
+    private final String versionName;
+    private final String name;
+    private final String[] authors;
+    private final int moddingAPIVersion;
+    private final String identifier;
+    private final String mainClass;
+    private final HashSet<ModDependency> hardDependencies = new HashSet<>();
+    private final HashSet<ModDependency> softDependencies = new HashSet<>();
     private final ModVersionIdentifier modVersionIdentifier;
     LoadingInfo loadingInfo;
 

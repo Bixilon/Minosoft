@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public class SmallFireball extends Fireball {
-    private static final Slot DEFAULT_ITEM = new Slot(new Item("fire_charge"));
+    private static final Slot DEFAULT_ITEM = new Slot(null, new Item("fire_charge")); // ToDo: version should not be null
 
     public SmallFireball(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);

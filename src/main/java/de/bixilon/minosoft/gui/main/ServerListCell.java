@@ -23,8 +23,7 @@ import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.data.player.PingBars;
-import de.bixilon.minosoft.data.text.BaseComponent;
-import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.EventInvokerCallback;
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
 import de.bixilon.minosoft.modding.event.events.ServerListPongEvent;
@@ -33,6 +32,8 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.ping.ForgeModInfo;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.CountUpAndDownLatch;
+import de.bixilon.minosoft.util.logging.Log;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -110,16 +111,15 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         this.root.setVisible(server != null || !empty);
         this.hBox.setVisible(server != null || !empty);
         if (empty) {
-            resetCell();
             return;
         }
 
         if (server == null) {
-            resetCell();
             return;
         }
-
-        resetCell();
+        if (this.server != server) {
+            resetCell();
+        }
         server.setCell(this);
 
         this.server = server;
@@ -139,7 +139,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (server.getLastPing() == null) {
             server.ping();
         }
-        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListStatusArriveEvent>(ServerListStatusArriveEvent.class, event -> Platform.runLater(() -> {
+
+        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListStatusArriveEvent>(event -> Platform.runLater(() -> {
             ServerListPing ping = event.getServerListPing();
             if (server != this.server) {
                 // cell does not contains us anymore
@@ -200,7 +201,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 setErrorMotd(String.format("%s: %s", server.getLastPing().getLastConnectionException().getClass().getCanonicalName(), server.getLastPing().getLastConnectionException().getMessage()));
             }
         })));
-        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListPongEvent>(ServerListPongEvent.class, event -> Platform.runLater(() -> {
+        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListPongEvent>(event -> Platform.runLater(() -> {
             this.pingField.setText(String.format("%dms", event.getLatency()));
             switch (PingBars.byPing(event.getLatency())) {
                 case BARS_5 -> this.pingField.getStyleClass().add("ping-5-bars");
@@ -213,7 +214,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         })));
     }
 
-    public void setName(BaseComponent name) {
+    public void setName(ChatComponent name) {
         this.nameField.getChildren().setAll(name.getJavaFXText());
         for (Node node : this.nameField.getChildren()) {
             node.setStyle("-fx-font-size: 15pt ;");
@@ -224,6 +225,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         // clear all cells
         setStyle(null);
         this.root.getStyleClass().removeAll("list-cell-connected");
+        this.root.getStyleClass().removeAll("list-cell-connecting");
         this.motdField.getChildren().clear();
         this.brandField.setText("");
         this.brandField.setTooltip(null);
@@ -284,17 +286,22 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (!this.canConnect || this.server.getLastPing() == null) {
             return;
         }
-        Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getConfig().getSelectedAccount()));
-        Version version;
-        if (this.server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
-            version = this.server.getLastPing().getVersion();
-        } else {
-            version = Versions.getVersionById(this.server.getDesiredVersionId());
-        }
-        this.optionsConnect.setDisable(true);
-        connection.connect(this.server.getLastPing().getAddress(), version);
-        connection.registerEvent(new EventInvokerCallback<>(ConnectionStateChangeEvent.class, this::handleConnectionCallback));
-        this.server.addConnection(connection);
+        this.root.getStyleClass().add("list-cell-connecting");
+        new Thread(() -> {
+            Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getConfig().getSelectedAccount()));
+            Version version;
+            if (this.server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
+                version = this.server.getLastPing().getVersion();
+            } else {
+                version = Versions.getVersionById(this.server.getDesiredVersionId());
+            }
+            this.optionsConnect.setDisable(true);
+            // ToDo: show progress dialog
+
+            connection.connect(this.server.getLastPing().getAddress(), version, new CountUpAndDownLatch(1));
+            connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
+            this.server.addConnection(connection);
+        }, "ConnectThread").start();
 
     }
 
@@ -309,19 +316,27 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             return;
         }
         Platform.runLater(() -> {
+            this.root.getStyleClass().removeAll("list-cell-connecting");
+            this.root.getStyleClass().removeAll("list-cell-connected");
+            this.root.getStyleClass().removeAll("list-cell-disconnecting");
+            this.root.getStyleClass().removeAll("list-cell-failed");
+            this.root.getStyleClass().add(switch (connection.getConnectionState()) {
+                case CONNECTING, HANDSHAKING, LOGIN -> "list-cell-connecting";
+                case PLAY -> "list-cell-connected";
+                case DISCONNECTING -> "list-cell-disconnecting";
+                case FAILED, FAILED_NO_RETRY -> "list-cell-failed";
+                default -> "";
+            });
+
             if (!connection.isConnected()) {
                 // maybe we got disconnected
                 if (!this.server.isConnected()) {
-                    setStyle(null);
-                    this.root.getStyleClass().removeAll("list-cell-connected");
                     this.optionsSessions.setDisable(true);
-                    this.optionsConnect.setDisable(false);
                     return;
                 }
             }
 
             this.optionsConnect.setDisable(Minosoft.getConfig().getSelectedAccount() == connection.getPlayer().getAccount());
-            this.root.getStyleClass().add("list-cell-connected");
             this.optionsSessions.setDisable(false);
         });
     }

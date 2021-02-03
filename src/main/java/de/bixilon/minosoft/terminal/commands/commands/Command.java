@@ -22,6 +22,10 @@ public abstract class Command {
     private static final String ERROR_MESSAGE_SUFFIX = PostChatFormattingCodes.RESET.getANSI();
 
     public static void print(String string, Object... format) {
+        if (format.length == 0) {
+            System.out.println(string);
+            return;
+        }
         System.out.printf(string + "%n", format);
     }
 

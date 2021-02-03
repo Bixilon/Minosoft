@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.protocol.ping;
 
 public class ServerModItem {
-    final String modId;
-    final String modVersion;
+    private final String modId;
+    private final String modVersion;
 
     public ServerModItem(String modId, String modVersion) {
         this.modId = modId;

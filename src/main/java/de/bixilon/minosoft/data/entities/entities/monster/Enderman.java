@@ -31,7 +31,7 @@ public class Enderman extends AbstractSkeleton {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "carriedBlock")
+    @EntityMetaDataFunction(identifier = "Carried block")
     @Nullable
     public Block getCarriedBlock() {
         if (this.versionId <= V_1_8_9) { // ToDo: No clue here
@@ -40,12 +40,12 @@ public class Enderman extends AbstractSkeleton {
         return this.metaData.getSets().getBlock(EntityMetaDataFields.ENDERMAN_CARRIED_BLOCK);
     }
 
-    @EntityMetaDataFunction(identifier = "isScreaming")
+    @EntityMetaDataFunction(identifier = "Is screaming")
     public boolean isScreaming() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_SCREAMING);
     }
 
-    @EntityMetaDataFunction(identifier = "isStarring")
+    @EntityMetaDataFunction(identifier = "Is starring")
     public boolean isStarring() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_STARRING);
     }

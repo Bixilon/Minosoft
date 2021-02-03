@@ -22,9 +22,9 @@ import java.util.UUID;
 // The holder for the data on <tab>
 public class PlayerListItem {
     // required fields
-    final UUID uuid;
-    final String name;
-    final boolean legacy;
+    private final UUID uuid;
+    private final String name;
+    private final boolean legacy;
     int ping;
     // optional fields
     GameModes gameMode;

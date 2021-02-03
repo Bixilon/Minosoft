@@ -43,6 +43,5 @@ public abstract class Mob extends LivingEntity {
     public boolean isAggressive() {
         return getMobFlags(0x04);
     }
-
 }
 

@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public class ThrownEgg extends ThrowableItemProjectile {
-    private static final Slot DEFAULT_ITEM = new Slot(new Item("egg"));
+    private static final Slot DEFAULT_ITEM = new Slot(null, new Item("egg")); // ToDo: version should not be null
 
     public ThrownEgg(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
