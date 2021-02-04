@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.gui.rendering;
+package de.bixilon.minosoft.gui.rendering.util;
 
 import org.lwjgl.opengl.ARBShaderObjects;
 

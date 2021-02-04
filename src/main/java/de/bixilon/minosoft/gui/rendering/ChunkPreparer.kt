@@ -107,6 +107,7 @@ object ChunkPreparer {
             "minecraft:dirt" -> 1
             "minecraft:stone" -> 2
             "minecraft:glass" -> 3
+            "minecraft:red_wool" -> 4
             else -> 2
         }
     }

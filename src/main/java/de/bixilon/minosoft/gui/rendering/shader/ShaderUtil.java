@@ -1,6 +1,7 @@
-package de.bixilon.minosoft.gui.rendering;
+package de.bixilon.minosoft.gui.rendering.shader;
 
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException;
+import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil;
 import de.bixilon.minosoft.util.Util;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;

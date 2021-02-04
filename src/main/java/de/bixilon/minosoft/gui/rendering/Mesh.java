@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.gui.rendering;
 
 import de.bixilon.minosoft.data.world.ChunkLocation;
+import de.bixilon.minosoft.gui.rendering.shader.Shader;
 import glm_.vec3.Vec3;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;

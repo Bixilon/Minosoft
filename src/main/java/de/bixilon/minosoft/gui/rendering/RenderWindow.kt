@@ -1,6 +1,8 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.data.world.ChunkLocation
+import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
 import org.lwjgl.*
 import org.lwjgl.glfw.Callbacks
@@ -111,7 +113,7 @@ class RenderWindow(private val connection: Connection) {
     }
 
     fun startLoop() {
-        texture0 = TextureArray(arrayOf("/textures/bedrock.png", "/textures/dirt.png", "/textures/stone.png", "/textures/glass.png"))
+        texture0 = TextureArray(connection.version.assetsManager, arrayOf("block/bedrock", "block/dirt", "block/stone", "block/glass", "block/red_wool"))
         texture0.load()
 
         shader = Shader("vertex.glsl", "fragment.glsl")

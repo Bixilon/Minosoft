@@ -1,6 +1,7 @@
-package de.bixilon.minosoft.gui.rendering;
+package de.bixilon.minosoft.gui.rendering.shader;
 
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException;
+import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil;
 import glm_.mat4x4.Mat4;
 import glm_.vec3.Vec3;
 import org.lwjgl.BufferUtils;
