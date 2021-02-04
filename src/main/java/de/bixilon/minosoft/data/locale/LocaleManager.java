@@ -16,8 +16,8 @@ package de.bixilon.minosoft.data.locale;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.io.IOException;
 

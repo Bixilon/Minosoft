@@ -16,8 +16,9 @@
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="640.0" fx:controller="de.bixilon.minosoft.gui.main.AccountWindow">
     <MenuBar VBox.vgrow="NEVER">
         <Menu mnemonicParsing="false" text="_Accounts">
-            <MenuItem fx:id="menuAddMojangAccount" mnemonicParsing="false" onAction="#addMojangAccount" text="-Add Mojang account-"/>
+            <MenuItem fx:id="menuAddMicrosoftAccount" mnemonicParsing="false" onAction="#addMicrosoftAccount" text="-Add Microsoft account-"/>
             <MenuItem fx:id="menuAddOfflineAccount" mnemonicParsing="false" onAction="#addOfflineAccount" text="-Add Offline account-"/>
+            <MenuItem fx:id="menuAddMojangAccount" mnemonicParsing="false" onAction="#addMojangAccount" text="-Add Mojang account-"/>
         </Menu>
     </MenuBar>
     <AnchorPane VBox.vgrow="ALWAYS">

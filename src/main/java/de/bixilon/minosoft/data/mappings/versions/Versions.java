@@ -16,26 +16,19 @@ package de.bixilon.minosoft.data.mappings.versions;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.data.Mappings;
-import de.bixilon.minosoft.data.assets.AssetsManager;
-import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
-import de.bixilon.minosoft.util.Util;
 
-import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class Versions {
     public static final Version LOWEST_VERSION_SUPPORTED = new Version("Automatic", -1, -1, null, null);
     private static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<Integer, Version> VERSION_PROTOCOL_ID_MAP = HashBiMap.create(500);
-    private static final HashSet<Version> LOADED_VERSIONS = new HashSet<>();
+    private static final HashBiMap<String, Version> VERSION_NAME_MAP = HashBiMap.create(500);
     public static VersionMapping PRE_FLATTENING_MAPPING;
+    public static Version PRE_FLATTENING_VERSION;
 
     public static Version getVersionById(int versionId) {
         return VERSION_ID_MAP.get(versionId);
@@ -43,6 +36,10 @@ public class Versions {
 
     public static Version getVersionByProtocolId(int protocolId) {
         return VERSION_PROTOCOL_ID_MAP.get(protocolId);
+    }
+
+    public static Version getVersionByName(String name) {
+        return VERSION_NAME_MAP.get(name);
     }
 
     public static void loadAvailableVersions(JsonObject json) {
@@ -97,73 +94,11 @@ public class Versions {
         Version version = new Version(versionName, versionId, protocolId, serverboundPacketMapping, clientboundPacketMapping);
         VERSION_ID_MAP.put(version.getVersionId(), version);
         VERSION_PROTOCOL_ID_MAP.put(version.getProtocolId(), version);
+        VERSION_NAME_MAP.put(version.getVersionName(), version);
+        if (version.getVersionId() == ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
+            PRE_FLATTENING_VERSION = version;
+        }
         return version;
-    }
-
-    public static void loadVersionMappings(Version version) throws IOException {
-        if (version.isLoaded()) {
-            // already loaded
-            return;
-        }
-        Version preFlatteningVersion = VERSION_ID_MAP.get(ProtocolDefinition.PRE_FLATTENING_VERSION_ID);
-        if (!version.isFlattened() && version != preFlatteningVersion && !preFlatteningVersion.isLoaded()) {
-            // no matter what, we need the version mapping for all pre flattening versions
-            loadVersionMappings(preFlatteningVersion);
-        }
-        if (version.isGettingLoaded()) {
-            // async: we don't wanna load this version twice, skip
-            return;
-        }
-        version.setGettingLoaded(true);
-        Log.verbose(String.format("Loading mappings for version %s...", version));
-        long startTime = System.currentTimeMillis();
-
-        HashMap<String, JsonObject> files;
-        try {
-            files = Util.readJsonTarStream(AssetsManager.readAssetAsStream(String.format("mappings/%s", version.getVersionName())));
-        } catch (Exception e) {
-            // should not happen, but if this version is not flattened, we can fallback to the flatten mappings. Some things might not work...
-            Log.printException(e, LogLevels.VERBOSE);
-            if (version.isFlattened() || version.getVersionId() == ProtocolDefinition.FLATTING_VERSION_ID) {
-                throw e;
-            }
-            files = new HashMap<>();
-        }
-
-        for (Mappings mapping : Mappings.values()) {
-            JsonObject data = null;
-            if (files.containsKey(mapping.getFilename() + ".json")) {
-                data = files.get(mapping.getFilename() + ".json");
-            }
-            if (data == null) {
-                loadVersionMappings(mapping, ProtocolDefinition.DEFAULT_MOD, null, version);
-                continue;
-            }
-            for (String mod : data.keySet()) {
-                loadVersionMappings(mapping, mod, data.getAsJsonObject(mod), version);
-            }
-        }
-        if (!files.isEmpty()) {
-            Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", version, (System.currentTimeMillis() - startTime), version.getVersionName()));
-        } else {
-            Log.verbose(String.format("Could not load mappings for version %s. Some features will be unavailable.", version));
-        }
-        version.setGettingLoaded(false);
-    }
-
-    public static void loadVersionMappings(Mappings type, String mod, @Nullable JsonObject data, Version version) {
-        VersionMapping mapping;
-        mapping = version.getMapping();
-        if (mapping == null) {
-            mapping = new VersionMapping(version);
-            version.setMapping(mapping);
-        }
-        mapping.load(type, mod, data, version);
-
-        if (version.getVersionId() == ProtocolDefinition.PRE_FLATTENING_VERSION_ID && PRE_FLATTENING_MAPPING == null) {
-            PRE_FLATTENING_MAPPING = mapping;
-        }
-        LOADED_VERSIONS.add(version);
     }
 
     public static HashBiMap<Integer, Version> getVersionIdMap() {

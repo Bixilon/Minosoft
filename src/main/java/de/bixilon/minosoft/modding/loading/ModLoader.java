@@ -15,10 +15,10 @@ package de.bixilon.minosoft.modding.loading;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.StaticConfiguration;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.MinosoftMod;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
 import org.xeustechnologies.jcl.JarClassLoader;
 import org.xeustechnologies.jcl.JclObjectFactory;
 

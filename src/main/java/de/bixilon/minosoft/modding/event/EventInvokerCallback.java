@@ -19,29 +19,26 @@ import de.bixilon.minosoft.modding.loading.Priorities;
 public class EventInvokerCallback<V extends ConnectionEvent> extends EventInvoker {
     private final InvokerCallback<V> callback;
 
-    Class<? extends ConnectionEvent> eventType = ConnectionEvent.class;
-
     public EventInvokerCallback(boolean ignoreCancelled, InvokerCallback<V> callback) {
         super(ignoreCancelled, Priorities.NORMAL, null);
         this.callback = callback;
     }
 
     // if you need instant fireing support
-    public EventInvokerCallback(Class<? extends ConnectionEvent> eventType, InvokerCallback<V> callback) {
+    public EventInvokerCallback(InvokerCallback<V> callback) {
         this(false, callback);
-        this.eventType = eventType; // ToDo: how to get the class of V? seems to be impossible
     }
 
     @SuppressWarnings("unchecked")
     public void invoke(ConnectionEvent event) {
-        if (this.eventType != event.getClass()) {
-            return;
+        try {
+            this.callback.handle((V) event);
+        } catch (ClassCastException ignored) {
         }
-        this.callback.handle((V) event);
     }
 
     public Class<? extends ConnectionEvent> getEventType() {
-        return this.eventType;
+        return ConnectionEvent.class;
     }
 
     public interface InvokerCallback<V> {

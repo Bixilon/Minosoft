@@ -16,11 +16,12 @@ package de.bixilon.minosoft.config;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.*;
 import de.bixilon.minosoft.data.accounts.Account;
+import de.bixilon.minosoft.data.accounts.MicrosoftAccount;
 import de.bixilon.minosoft.data.accounts.MojangAccount;
 import de.bixilon.minosoft.data.accounts.OfflineAccount;
 import de.bixilon.minosoft.gui.main.Server;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -77,6 +78,7 @@ public class Configuration {
             Account account = switch (data.get("type").getAsString()) {
                 case "mojang" -> MojangAccount.deserialize(data);
                 case "offline" -> OfflineAccount.deserialize(data);
+                case "microsoft" -> MicrosoftAccount.deserialize(data);
                 default -> throw new IllegalArgumentException("Unexpected value: " + data.get("type").getAsString());
             };
             this.accountList.put(account.getId(), account);
@@ -105,16 +107,16 @@ public class Configuration {
                 JsonObject jsonObject = DEFAULT_CONFIGURATION.deepCopy();
                 synchronized (this.config) {
 
-                    // accounts
-                    JsonObject accountsEntriesJson = jsonObject.getAsJsonObject("servers").getAsJsonObject("entries");
+                    // servers
+                    JsonObject serversEntriesJson = jsonObject.getAsJsonObject("servers").getAsJsonObject("entries");
                     for (Map.Entry<Integer, Server> entry : this.serverList.entrySet()) {
-                        accountsEntriesJson.add(String.valueOf(entry.getKey()), entry.getValue().serialize());
+                        serversEntriesJson.add(String.valueOf(entry.getKey()), entry.getValue().serialize());
                     }
 
-                    // servers
-                    JsonObject serversEntriesJson = jsonObject.getAsJsonObject("accounts").getAsJsonObject("entries");
+                    // accounts
+                    JsonObject accountsEntriesJson = jsonObject.getAsJsonObject("accounts").getAsJsonObject("entries");
                     for (Map.Entry<String, Account> entry : this.accountList.entrySet()) {
-                        serversEntriesJson.add(entry.getKey(), entry.getValue().serialize());
+                        accountsEntriesJson.add(entry.getKey(), entry.getValue().serialize());
                     }
 
                     // rest of data

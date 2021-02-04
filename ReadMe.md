@@ -21,8 +21,8 @@ Minosoft is an open source minecraft client, written from scratch in java. It ai
 
 - CPU: Minosoft benefits from multiple cores (at least for most stuff). CPU is kind of important, but for the rendering clock speed is more important. 4 cores recommended with at least 2 Ghz.
 - RAM: Our goal was it to run without compromises on an 8 Gib computer and at least limited on an 4 Gib one.
-- Disk space: Minosoft itself is pretty small (2-3 Mib), the libraries are a bit bigger (up to 100 MB). You also need to have the "normal" minecraft assets (~ 300 MB). So a total of 500 MB is recommended.
- - GPU: Currently only needed for rendering, no clue yet.
+- Disk space: Minosoft itself is pretty small (2-3 Mib), the libraries are a bit bigger. You also need to have the "normal" minecraft assets (~ 300 MB for one version). Assets never get saved duplicated, so if you use multiple versions, it is not a multiple of that value! If you only play 1 version, 500 MB is recommended. If not, use at least 1 GB.
+- GPU: Currently only needed for rendering, no clue yet.
  - Java 15 (This is really important, we use specific (experimental) features that are only available in the latest version. Java 8 is **not** supported).
  OpenJDK is (of course) also supported.
 
@@ -67,7 +67,7 @@ Minosoft is modding friendly. A decent API was introduced with !17. It is pretty
 On the ToDo List
 
 ## Contribution or helping out
-You're welcome. Because this is still work-in-progress, consider contacting us first, but feel free to take a look at [Contribution.md](/Contribution.md).
+You're welcome. Because this is still work-in-progress, consider contacting us first, but feel free to take a look at [Contributing.md](/Contributing.md).
 
 ## Tools and generators
 We wrote some tools to help out, see [Utility](util/ReadMe.md).

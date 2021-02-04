@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.mojang.api.exceptions.MojangJoinServerErrorException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
 
@@ -27,7 +27,6 @@ import java.math.BigInteger;
 import java.security.PublicKey;
 
 public class PacketEncryptionRequest extends ClientboundPacket {
-
     String serverId; // normally empty
     byte[] publicKey;
     byte[] verifyToken;

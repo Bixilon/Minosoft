@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="hBox" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="de.bixilon.minosoft.gui.main.dialogs.login.OfflineLoginController">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+    </padding>
+    <GridPane HBox.hgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+        </rowConstraints>
+        <Label fx:id="header" text="Please enter a username (and UUID)" textAlignment="CENTER" GridPane.halignment="CENTER">
+            <GridPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </GridPane.margin>
+            <font>
+                <Font size="23.0"/>
+            </font>
+        </Label>
+        <GridPane GridPane.rowIndex="1">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="ALWAYS"/>
+                <RowConstraints vgrow="ALWAYS"/>
+            </rowConstraints>
+            <Label fx:id="usernameLabel" text="USERNAME">
+                <GridPane.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                </GridPane.margin>
+            </Label>
+            <JFXTextField fx:id="username" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                </GridPane.margin>
+            </JFXTextField>
+            <Label fx:id="uuidLabel" text="UUID" GridPane.rowIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                </GridPane.margin>
+            </Label>
+            <JFXTextField fx:id="uuid" minWidth="-Infinity" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+                <GridPane.margin>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                </GridPane.margin>
+            </JFXTextField>
+        </GridPane>
+        <JFXButton fx:id="addButton" disable="true" maxHeight="Infinity" maxWidth="Infinity" mnemonicParsing="false" text="ADD" GridPane.rowIndex="3" onAction="#add">
+            <GridPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </GridPane.margin>
+            <font>
+                <Font name="System Bold" size="31.0"/>
+            </font>
+        </JFXButton>
+    </GridPane>
+</HBox>

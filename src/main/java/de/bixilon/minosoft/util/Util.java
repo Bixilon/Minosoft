@@ -14,24 +14,26 @@
 package de.bixilon.minosoft.util;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.microsoft.MicrosoftOAuthUtils;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
@@ -45,6 +47,8 @@ public final class Util {
 
     private static final Field JSON_READER_POS_FIELD;
     private static final Field JSON_READER_LINE_START_FIELD;
+
+    public static final Gson GSON = new Gson();
 
     static {
         new JsonReader(new StringReader(""));
@@ -265,8 +269,9 @@ public final class Util {
         output.close();
     }
 
-    public static BufferedInputStream getInputStreamByURL(String url) throws IOException {
-        return new BufferedInputStream(new URL(url).openStream());
+    public static InputStream getInputStreamByURL(String url) throws IOException {
+        return new URL(url).openConnection().getInputStream();
+        // return new BufferedInputStream(new URL(url).openStream());
     }
 
     public static ThreadFactory getThreadFactory(String threadName) {
@@ -316,5 +321,55 @@ public final class Util {
         } catch (IllegalAccessException e) {
             throw new IllegalStateException();
         }
+    }
+
+    public static void checkURL(String url) {
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            throw new IllegalArgumentException("Not a valid url:" + url);
+        }
+    }
+
+    public static <T> void forceClassInit(Class<T> clazz) {
+        try {
+            Class.forName(clazz.getName(), true, clazz.getClassLoader());
+        } catch (ClassNotFoundException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
+    public static void initUtilClasses() {
+        forceClassInit(Log.class);
+        forceClassInit(MicrosoftOAuthUtils.class);
+    }
+
+    public static Map<String, String> urlQueryToMap(String query) {
+        Map<String, String> map = new HashMap<>();
+        for (String parameter : query.split("&")) {
+            String[] split = parameter.split("=");
+            map.put(split[0], split[1]);
+        }
+        return map;
+    }
+
+    public static String mapToUrlQuery(Map<String, String> data) {
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            if (!builder.isEmpty()) {
+                builder.append("&");
+            }
+            builder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
+            builder.append("=");
+            builder.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
+        }
+        return builder.toString();
+    }
+
+    public static String[] headersMapToArray(Map<String, String> headers) {
+        List<String> headerList = new ArrayList<>();
+        for (var entry : headers.entrySet()) {
+            headerList.add(entry.getKey());
+            headerList.add(entry.getValue());
+        }
+        return headerList.toArray(new String[]{});
     }
 }

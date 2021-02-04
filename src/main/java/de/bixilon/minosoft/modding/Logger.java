@@ -15,8 +15,8 @@ package de.bixilon.minosoft.modding;
 
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.RGBColor;
-import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
 
 public class Logger {
     private final String modName;

@@ -15,5 +15,6 @@ package de.bixilon.minosoft.data.assets;
 
 public enum AssetsSource {
     MOJANG,
+    MINECRAFT,
     MINOSOFT_GIT
 }

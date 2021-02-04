@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.text;
 
 import com.google.gson.JsonArray;
-import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
+import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -27,12 +27,14 @@ public class TranslatableComponent extends ChatComponent {
     private final ArrayList<ChatComponent> data = new ArrayList<>();
     private final String key;
     private final TextComponent parent;
+    private final Version version;
 
-    public TranslatableComponent(String key, JsonArray data) {
-        this(null, key, data);
+    public TranslatableComponent(Version version, String key, JsonArray data) {
+        this(version, null, key, data);
     }
 
-    public TranslatableComponent(@Nullable TextComponent parent, String key, JsonArray data) {
+    public TranslatableComponent(Version version, @Nullable TextComponent parent, String key, JsonArray data) {
+        this.version = version;
         this.parent = parent;
         this.key = key;
         if (data == null) {
@@ -40,9 +42,9 @@ public class TranslatableComponent extends ChatComponent {
         }
         data.forEach((jsonElement -> {
             if (jsonElement.isJsonPrimitive()) {
-                this.data.add(ChatComponent.valueOf(parent, jsonElement.getAsString()));
+                this.data.add(ChatComponent.valueOf(version, parent, jsonElement.getAsString()));
             } else {
-                this.data.add(new BaseComponent(parent, jsonElement.getAsJsonObject()));
+                this.data.add(new BaseComponent(version, parent, jsonElement.getAsJsonObject()));
             }
         }));
     }
@@ -67,7 +69,7 @@ public class TranslatableComponent extends ChatComponent {
         // ToDo fix nested base component (formatting), not just a string
 
         // This is just a dirty workaround to enable formatting and coloring. Still need to do hover, click, ... stuff
-        return new BaseComponent(getLegacyText()).getJavaFXText(nodes);
+        return new BaseComponent(this.version, getLegacyText()).getJavaFXText(nodes);
     }
 
     // just used reflections to not write this twice anc only change the method name
@@ -94,7 +96,7 @@ public class TranslatableComponent extends ChatComponent {
                         });
                     }
                 }
-                builder.append(MinecraftLocaleManager.translate(this.key, data));
+                builder.append(this.version.getLocaleManager().translate(this.key, data));
                 for (ChatFormattingCode code : this.parent.getFormatting()) {
                     if (code instanceof PostChatFormattingCodes postCode) {
                         builder.append(switch (methodName) {
@@ -106,7 +108,7 @@ public class TranslatableComponent extends ChatComponent {
                 }
                 return builder.toString();
             }
-            String text = MinecraftLocaleManager.translate(this.key, data);
+            String text = this.version.getLocaleManager().translate(this.key, data);
             if (text == null) {
                 // Error, can not translate
                 text = "{invalid=true, key=" + this.key + ", data=" + Arrays.toString(data);

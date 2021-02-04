@@ -24,10 +24,10 @@ import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.data.text.BaseComponent;
-import de.bixilon.minosoft.logging.Log;
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.util.DNSUtil;
+import de.bixilon.minosoft.util.logging.Log;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -180,7 +180,7 @@ public class MainWindow implements Initializable {
 
         submitButton.setOnAction(actionEvent -> {
             Server server1 = server;
-            BaseComponent serverName = new BaseComponent(serverNameField.getText());
+            ChatComponent serverName = ChatComponent.valueOf(serverNameField.getText());
             String serverAddress = DNSUtil.correctHostName(serverAddressField.getText());
             int desiredVersionId = GUITools.VERSION_COMBO_BOX.getSelectionModel().getSelectedItem().getVersionId();
 

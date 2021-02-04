@@ -17,11 +17,11 @@ import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.data.world.Chunk;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.BlockChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 

@@ -16,8 +16,11 @@ package de.bixilon.minosoft.terminal.commands.commands;
 import com.github.freva.asciitable.AsciiTable;
 import de.bixilon.minosoft.data.commands.CommandLiteralNode;
 import de.bixilon.minosoft.data.commands.CommandNode;
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
+import de.bixilon.minosoft.data.player.PlayerListItem;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class CommandTabList extends Command {
 
@@ -26,14 +29,55 @@ public class CommandTabList extends Command {
         parent.addChildren(
                 new CommandLiteralNode("tab",
                         new CommandLiteralNode("list", (connection, stack) -> {
-                            ArrayList<Object[]> tableData = new ArrayList<>();
+                            print(connection.getPlayer().getTabHeader().getANSIColoredMessage());
 
-                            for (var entry : connection.getPlayer().playerList.entrySet()) {
-                                tableData.add(new Object[]{entry.getKey(), entry.getValue().getName(), entry.getValue().getDisplayName().getLegacyText(), entry.getValue().getGameMode(), entry.getValue().getPing() + "ms"});
+                            int entries = connection.getPlayer().getPlayerList().size();
+                            int columns = (entries / 20) + 1;
+                            if (columns > 4) {
+                                columns = 4;
+                            }
+                            int rows = (entries / columns);
+                            if (rows > 20) {
+                                rows = 20;
                             }
 
-                            print(AsciiTable.getTable(new String[]{"UUID", "Playername", "Displayname", "Gamemode", "Ping"}, tableData.toArray(new Object[0][0])));
-                        })));
+                            ArrayList<Object[]> tableData = new ArrayList<>();
+
+                            Iterator<PlayerListItem> playerListItems = connection.getPlayer().getPlayerList().values().iterator();
+                            for (int row = 0; row < rows; row++) {
+                                ArrayList<Object> current = new ArrayList<>();
+                                for (int column = 0; column < columns; column++) {
+                                    if (playerListItems.hasNext()) {
+                                        current.add(playerListItems.next().getDisplayName());
+                                    } else {
+                                        current.add(null);
+                                    }
+                                }
+                                tableData.add(current.toArray());
+                            }
+
+                            // ToDo: we need to sort this, look at net.minecraft.client.gui.components.PlayerTabOverlay
+
+
+                            print(AsciiTable.getTable(tableData.toArray(new Object[0][0])));
+
+                            print(connection.getPlayer().getTabFooter().getANSIColoredMessage());
+
+                        }, new CommandLiteralNode("all", (connection, stack) -> {
+                            print(connection.getPlayer().getTabHeader().getANSIColoredMessage());
+
+                            ArrayList<Object[]> tableData = new ArrayList<>();
+
+                            for (var entry : connection.getPlayer().getPlayerList().entrySet()) {
+                                PlayerEntity playerEntity = (PlayerEntity) connection.getPlayer().getWorld().getEntity(entry.getValue().getUUID());
+                                Integer entityId = playerEntity != null ? playerEntity.getEntityId() : null;
+                                tableData.add(new Object[]{entry.getKey(), entityId, entry.getValue().getName(), entry.getValue().getDisplayName(), entry.getValue().getGameMode(), entry.getValue().getPing() + "ms"});
+                            }
+
+                            print(AsciiTable.getTable(new String[]{"UUID", "ENTITY ID", "PLAYER NAME", "DISPLAY NAME", "GAMEMODE", "PING"}, tableData.toArray(new Object[0][0])));
+
+                            print(connection.getPlayer().getTabFooter().getANSIColoredMessage());
+                        }))));
         return parent;
     }
 }

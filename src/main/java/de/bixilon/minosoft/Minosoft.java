@@ -20,17 +20,14 @@ import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.accounts.Account;
-import de.bixilon.minosoft.data.assets.AssetsManager;
+import de.bixilon.minosoft.data.assets.Resources;
 import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.gui.main.GUITools;
 import de.bixilon.minosoft.gui.main.Launcher;
 import de.bixilon.minosoft.gui.main.ServerListCell;
 import de.bixilon.minosoft.gui.main.StartProgressWindow;
 import de.bixilon.minosoft.gui.main.cells.AccountListCell;
-import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.loading.ModLoader;
 import de.bixilon.minosoft.modding.loading.Priorities;
@@ -40,6 +37,8 @@ import de.bixilon.minosoft.terminal.CLI;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.MinosoftCommandLineArguments;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
 import de.bixilon.minosoft.util.task.AsyncTaskWorker;
 import de.bixilon.minosoft.util.task.Task;
 import de.bixilon.minosoft.util.task.TaskImportance;
@@ -62,6 +61,7 @@ public final class Minosoft {
     public static void main(String[] args) {
         MinosoftCommandLineArguments.parseCommandLineArguments(args);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown(ShutdownReasons.UNKNOWN), "ShutdownHook"));
+        Util.initUtilClasses();
 
         Log.info("Starting...");
         AsyncTaskWorker taskWorker = new AsyncTaskWorker("StartUp");
@@ -130,6 +130,8 @@ public final class Minosoft {
             long mappingStartLoadingTime = System.currentTimeMillis();
             Versions.loadAvailableVersions(Util.readJsonAsset("mapping/versions.json"));
             Log.info(String.format("Loaded %d versions in %dms", Versions.getVersionIdMap().size(), (System.currentTimeMillis() - mappingStartLoadingTime)));
+            Resources.load();
+            Log.info("Loaded all resources!");
         }, "Version mappings", "Load available minecraft versions inclusive mappings", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
@@ -140,10 +142,6 @@ public final class Minosoft {
 
         taskWorker.addTask(new Task(ModLoader::loadMods, "ModLoading", "Load all minosoft mods", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
 
-        taskWorker.addTask(new Task(AssetsManager::downloadAllAssets, "Assets", "Download and verify all minecraft assets", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
-
-        taskWorker.addTask(new Task(progress -> MinecraftLocaleManager.load(config.getString(ConfigurationPaths.StringPaths.GENERAL_LANGUAGE)), "Mojang language", "Load minecraft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Assets"));
-
         taskWorker.addTask(new Task(progress -> {
             if (!config.getBoolean(ConfigurationPaths.BooleanPaths.NETWORK_SHOW_LAN_SERVERS)) {
                 return;
@@ -151,7 +149,7 @@ public final class Minosoft {
             LANServerListener.listen();
         }, "LAN Server Listener", "Listener for LAN Servers", Priorities.LOWEST, TaskImportance.OPTIONAL, "Configuration"));
 
-        taskWorker.addTask(new Task(progress -> CLI.initialize(), "CLI", "Initialize CLI", Priorities.LOW, TaskImportance.OPTIONAL, "Assets", "Mojang language"));
+        taskWorker.addTask(new Task(progress -> CLI.initialize(), "CLI", "Initialize CLI", Priorities.LOW, TaskImportance.OPTIONAL));
 
         if (!StaticConfiguration.HEADLESS_MODE) {
             taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFX Toolkit", "Initialize JavaFX", Priorities.HIGHEST));
@@ -248,4 +246,5 @@ public final class Minosoft {
     public static CountUpAndDownLatch getStartStatusLatch() {
         return START_STATUS_LATCH;
     }
+
 }

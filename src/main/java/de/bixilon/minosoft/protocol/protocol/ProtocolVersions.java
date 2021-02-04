@@ -15,12 +15,18 @@ package de.bixilon.minosoft.protocol.protocol;
 
 @SuppressWarnings("unused")
 public class ProtocolVersions {
-    public static final int V_20W51A = 762;
-    public static final int V_20W49A = 761;
-    public static final int V_20W48A = 760;
-    public static final int V_20W46A = 759;
-    public static final int V_20W45A = 758;
-    public static final int V_1_16_4 = 757;
+    public static final int V_21W03A = 764;
+    public static final int V_20W51A = 763;
+    public static final int V_20W49A = 762;
+    public static final int V_20W48A = 761;
+    public static final int V_20W46A = 760;
+    public static final int V_20W45A = 759;
+
+    // dirty workaround, they got released after 20w51a
+    public static final int V_1_16_5 = 758;
+    public static final int V_1_16_5_RC1 = 757;
+    // public static final int V_1_16_4 = 757;
+
     public static final int V_1_16_4_RC1 = 756;
     public static final int V_1_16_4_PRE2 = 755;
     public static final int V_1_16_4_PRE1 = 754;

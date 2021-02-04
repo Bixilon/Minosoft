@@ -55,9 +55,10 @@ There is a config file located in:
 ```
 
 ## General
- - `version` The current version of the config. Used for migration between versions. A new version will be tagged, once a new release of minosoft is there, and the format of the config changed.
- - `log-level` Self explaining, valid log levels are defined in [LogLevels.java](/src/main/java/de/bixilon/minosoft/logging/LogLevels.java).
- - `language` Self explaining. All values are valid, if the specific language cannot be loaded (or specific strings are not available), `en_US` will be used (as fallback). 
+
+- `version` The current version of the config. Used for migration between versions. A new version will be tagged, once a new release of minosoft is there, and the format of the config changed.
+- `log-level` Self explaining, valid log levels are defined in [LogLevels.java](/src/main/java/de/bixilon/minosoft/util/logging/LogLevels.java).
+- `language` Self explaining. All values are valid, if the specific language cannot be loaded (or specific strings are not available), `en_US` will be used (as fallback).
 
 ## Network
  - `fake-network-brand` Minosoft send its brand to the server. If true, minosoft will say, that we use standard `vanilla`.

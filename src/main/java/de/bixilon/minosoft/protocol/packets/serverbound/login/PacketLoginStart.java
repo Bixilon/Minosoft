@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.login;
 
 import de.bixilon.minosoft.data.Player;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketLoginStart implements ServerboundPacket {
 private final String username;

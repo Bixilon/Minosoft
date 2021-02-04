@@ -42,21 +42,21 @@ public class VersionMapping {
     private final HashMap<EntityMetaDataFields, Integer> entityMetaIndexMap = new HashMap<>(100);
     private final HashMap<String, Pair<String, Integer>> entityMetaIndexOffsetParentMapping = new HashMap<>(100);
     private final HashBiMap<Integer, Class<? extends Entity>> entityIdClassMap = HashBiMap.create(100);
+    private final HashBiMap<String, Motive> motiveIdentifierMap = HashBiMap.create();
+    private final HashBiMap<String, Particle> particleIdentifierMap = HashBiMap.create();
+    private final HashBiMap<String, Statistic> statisticIdentifierMap = HashBiMap.create();
+    private final HashBiMap<Integer, Item> itemMap = HashBiMap.create();
+    private final HashBiMap<Integer, Motive> motiveIdMap = HashBiMap.create();
+    private final HashBiMap<Integer, MobEffect> mobEffectMap = HashBiMap.create();
+    private final HashBiMap<Integer, Block> blockMap = HashBiMap.create();
+    private final HashBiMap<Integer, BlockId> blockIdMap = HashBiMap.create();
+    private final HashBiMap<Integer, Enchantment> enchantmentMap = HashBiMap.create();
+    private final HashBiMap<Integer, Particle> particleIdMap = HashBiMap.create();
+    private final HashBiMap<Integer, Statistic> statisticIdMap = HashBiMap.create();
     private Version version;
     private VersionMapping parentMapping;
-    private HashBiMap<String, Motive> motiveIdentifierMap = HashBiMap.create();
-    private HashBiMap<String, Particle> particleIdentifierMap = HashBiMap.create();
-    private HashBiMap<String, Statistic> statisticIdentifierMap = HashBiMap.create();
     private HashMap<String, HashBiMap<String, Dimension>> dimensionIdentifierMap = new HashMap<>();
-    private HashBiMap<Integer, Item> itemMap = HashBiMap.create();
-    private HashBiMap<Integer, Motive> motiveIdMap = HashBiMap.create();
-    private HashBiMap<Integer, MobEffect> mobEffectMap = HashBiMap.create();
     private HashBiMap<Integer, Dimension> dimensionMap = HashBiMap.create();
-    private HashBiMap<Integer, Block> blockMap = HashBiMap.create();
-    private HashBiMap<Integer, BlockId> blockIdMap = HashBiMap.create();
-    private HashBiMap<Integer, Enchantment> enchantmentMap = HashBiMap.create();
-    private HashBiMap<Integer, Particle> particleIdMap = HashBiMap.create();
-    private HashBiMap<Integer, Statistic> statisticIdMap = HashBiMap.create();
 
     public VersionMapping(Version version) {
         this.version = version;
@@ -301,22 +301,6 @@ public class VersionMapping {
     public void load(Mappings type, String mod, @Nullable JsonObject data, Version version) {
         switch (type) {
             case REGISTRIES -> {
-                if (!version.isFlattened() && version.getVersionId() != ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
-                    // clone all values
-                    this.itemMap = Versions.PRE_FLATTENING_MAPPING.itemMap;
-                    this.enchantmentMap = Versions.PRE_FLATTENING_MAPPING.enchantmentMap;
-                    this.statisticIdMap = Versions.PRE_FLATTENING_MAPPING.statisticIdMap;
-                    this.statisticIdentifierMap = Versions.PRE_FLATTENING_MAPPING.statisticIdentifierMap;
-                    this.blockIdMap = Versions.PRE_FLATTENING_MAPPING.blockIdMap;
-                    this.motiveIdMap = Versions.PRE_FLATTENING_MAPPING.motiveIdMap;
-                    this.motiveIdentifierMap = Versions.PRE_FLATTENING_MAPPING.motiveIdentifierMap;
-                    this.particleIdMap = Versions.PRE_FLATTENING_MAPPING.particleIdMap;
-                    this.particleIdentifierMap = Versions.PRE_FLATTENING_MAPPING.particleIdentifierMap;
-                    this.mobEffectMap = Versions.PRE_FLATTENING_MAPPING.mobEffectMap;
-                    this.dimensionMap = Versions.PRE_FLATTENING_MAPPING.dimensionMap;
-                    break;
-                }
-
                 if (data == null) {
                     break;
                 }
@@ -384,12 +368,6 @@ public class VersionMapping {
                 }
             }
             case BLOCKS -> {
-                if (!version.isFlattened() && version.getVersionId() != ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
-                    // clone all values
-                    this.blockMap = Versions.PRE_FLATTENING_MAPPING.blockMap;
-                    break;
-                }
-
                 if (data == null) {
                     break;
                 }

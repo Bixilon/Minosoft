@@ -14,10 +14,22 @@
 package de.bixilon.minosoft.data.mappings.versions;
 
 import com.google.common.collect.HashBiMap;
+import com.google.gson.JsonObject;
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.config.ConfigurationPaths;
+import de.bixilon.minosoft.data.Mappings;
+import de.bixilon.minosoft.data.assets.AssetsManager;
+import de.bixilon.minosoft.data.assets.Resources;
+import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.CountUpAndDownLatch;
+import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 
 public class Version {
@@ -28,6 +40,8 @@ public class Version {
     String versionName;
     VersionMapping mapping;
     boolean isGettingLoaded;
+    private AssetsManager assetsManager;
+    private MinecraftLocaleManager localeManager;
 
     public Version(String versionName, int versionId, int protocolId, HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping, HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping) {
         this.versionName = versionName;
@@ -122,4 +136,104 @@ public class Version {
     public boolean isLoaded() {
         return getMapping() != null && getMapping().isFullyLoaded();
     }
+
+    public AssetsManager getAssetsManager() {
+        return this.assetsManager;
+    }
+
+    public void setAssetsManager(AssetsManager assetsManager) {
+        this.assetsManager = assetsManager;
+    }
+
+    public MinecraftLocaleManager getLocaleManager() {
+        return this.localeManager;
+    }
+
+    public void initializeAssetManger(CountUpAndDownLatch latch) throws Exception {
+        if (this.assetsManager != null) {
+            return;
+        }
+        if (!isFlattened() && getVersionId() != ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
+            this.assetsManager = Versions.PRE_FLATTENING_VERSION.getAssetsManager();
+            this.localeManager = Versions.PRE_FLATTENING_VERSION.getLocaleManager();
+            return;
+        }
+        this.assetsManager = new AssetsManager(Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.DEBUG_VERIFY_ASSETS), Resources.getAssetVersionByVersion(this));
+        this.assetsManager.downloadAllAssets(latch);
+        this.localeManager = new MinecraftLocaleManager(this);
+        this.localeManager.load(this, Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.GENERAL_LANGUAGE));
+
+    }
+
+    public void load(CountUpAndDownLatch latch) throws Exception {
+        if (isLoaded()) {
+            // already loaded
+            return;
+        }
+        if (!isFlattened() && this != Versions.PRE_FLATTENING_VERSION && !Versions.PRE_FLATTENING_VERSION.isLoaded()) {
+            // no matter what, we need the version mapping for all pre flattening versions
+            Versions.PRE_FLATTENING_VERSION.load(latch);
+        }
+        if (isGettingLoaded()) {
+            // async: we don't wanna load this version twice, skip
+            return;
+        }
+        latch.countUp();
+        this.isGettingLoaded = true;
+        initializeAssetManger(latch);
+        Log.verbose(String.format("Loading mappings for version %s...", this));
+        long startTime = System.currentTimeMillis();
+
+        if (this.mapping == null) {
+            this.mapping = new VersionMapping(this);
+        }
+
+        if (getVersionId() == ProtocolDefinition.PRE_FLATTENING_VERSION_ID && Versions.PRE_FLATTENING_MAPPING == null) {
+            Versions.PRE_FLATTENING_MAPPING = this.mapping;
+        } else {
+            this.mapping.setParentMapping(Versions.PRE_FLATTENING_MAPPING);
+        }
+
+
+        HashMap<String, JsonObject> files;
+        try {
+            files = Util.readJsonTarStream(AssetsManager.readAssetAsStreamByHash(Resources.getAssetVersionByVersion(this).getMinosoftMappings()));
+        } catch (Exception e) {
+            // should not happen, but if this version is not flattened, we can fallback to the flatten mappings. Some things might not work...
+            Log.printException(e, LogLevels.VERBOSE);
+            if (isFlattened() || getVersionId() == ProtocolDefinition.FLATTING_VERSION_ID) {
+                throw e;
+            }
+            files = new HashMap<>();
+        }
+
+        latch.addCount(Mappings.VALUES.length);
+        for (Mappings mapping : Mappings.VALUES) {
+            JsonObject data = null;
+            if (files.containsKey(mapping.getFilename() + ".json")) {
+                data = files.get(mapping.getFilename() + ".json");
+            }
+            if (data == null) {
+                loadVersionMappings(mapping, ProtocolDefinition.DEFAULT_MOD, null);
+                latch.countDown();
+                continue;
+            }
+            for (String mod : data.keySet()) {
+                loadVersionMappings(mapping, mod, data.getAsJsonObject(mod));
+            }
+            latch.countDown();
+        }
+        if (!files.isEmpty()) {
+            Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", this, (System.currentTimeMillis() - startTime), getVersionName()));
+        } else {
+            Log.verbose(String.format("Could not load mappings for version %s. Some features will be unavailable.", this));
+        }
+        this.isGettingLoaded = false;
+        latch.countDown();
+    }
+
+    public void loadVersionMappings(Mappings type, String mod, @Nullable JsonObject data) {
+        this.mapping.load(type, mod, data, this);
+    }
+
 }

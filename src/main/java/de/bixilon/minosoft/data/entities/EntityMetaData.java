@@ -20,11 +20,11 @@ import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.data.world.BlockPosition;
-import de.bixilon.minosoft.logging.Log;
-import de.bixilon.minosoft.logging.LogLevels;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
+import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import java.util.HashMap;

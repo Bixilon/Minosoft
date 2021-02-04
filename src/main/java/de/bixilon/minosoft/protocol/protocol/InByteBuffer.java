@@ -202,7 +202,7 @@ public class InByteBuffer {
     }
 
     public ChatComponent readChatComponent() {
-        return ChatComponent.valueOf(readString());
+        return ChatComponent.valueOf(this.connection.getVersion(), readString());
     }
 
     @IntRange(from = 0)
@@ -227,7 +227,7 @@ public class InByteBuffer {
         if (this.versionId < V_17W45A) {
             // old particle format
             return switch (type.getFullIdentifier()) {
-                case "minecraft:iconcrack" -> new ItemParticleData(new Slot(this.connection.getMapping().getItemByLegacy(readVarInt(), readVarInt())), type);
+                case "minecraft:iconcrack" -> new ItemParticleData(new Slot(this.connection.getVersion(), this.connection.getMapping().getItemByLegacy(readVarInt(), readVarInt())), type);
                 case "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlockById(readVarInt() << 4), type);
                 default -> new ParticleData(type);
             };
@@ -298,10 +298,10 @@ public class InByteBuffer {
                 metaData = readShort();
             }
             CompoundTag nbt = (CompoundTag) readNBT(this.versionId < V_14W28B);
-            return new Slot(this.connection.getMapping(), this.connection.getMapping().getItemByLegacy(id, metaData), count, metaData, nbt);
+            return new Slot(this.connection.getVersion(), this.connection.getMapping().getItemByLegacy(id, metaData), count, metaData, nbt);
         }
         if (readBoolean()) {
-            return new Slot(this.connection.getMapping(), this.connection.getMapping().getItemById(readVarInt()), readByte(), (CompoundTag) readNBT());
+            return new Slot(this.connection.getVersion(), this.connection.getMapping().getItemById(readVarInt()), readByte(), (CompoundTag) readNBT());
         }
         return null;
     }
@@ -528,4 +528,5 @@ public class InByteBuffer {
         }
         return new ModIdentifier(identifier);
     }
+
 }

@@ -18,6 +18,7 @@ public enum Mappings {
     BLOCKS,
     ENTITIES;
 
+    public static final Mappings[] VALUES = values();
     public String getFilename() {
         return name().toLowerCase();
     }

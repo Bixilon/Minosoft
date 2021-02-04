@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent;
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -26,6 +25,7 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.ChunkUtil;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public class PacketChunkData extends ClientboundPacket {
         }
 
         if (buffer.getVersionId() < V_14W26A) {
-            int sectionBitMask = buffer.readUnsignedShort();
+            long[] sectionBitMasks = {buffer.readUnsignedShort()};
             int addBitMask = buffer.readUnsignedShort();
 
             // decompress chunk data
@@ -62,16 +62,18 @@ public class PacketChunkData extends ClientboundPacket {
                 decompressed = buffer;
             }
 
-            this.chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, groundUpContinuous, containsSkyLight);
+            this.chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMasks, addBitMask, groundUpContinuous, containsSkyLight);
             return true;
         }
-        int sectionBitMask;
+        long[] sectionBitMasks;
         if (buffer.getVersionId() < V_15W34C) {
-            sectionBitMask = buffer.readUnsignedShort();
+            sectionBitMasks = new long[]{buffer.readUnsignedShort()};
         } else if (buffer.getVersionId() < V_15W36D) {
-            sectionBitMask = buffer.readInt();
+            sectionBitMasks = new long[]{buffer.readInt()};
+        } else if (buffer.getVersionId() < V_21W03A) {
+            sectionBitMasks = new long[]{buffer.readVarInt()};
         } else {
-            sectionBitMask = buffer.readVarInt();
+            sectionBitMasks = buffer.readLongArray();
         }
 
         if (buffer.getVersionId() >= V_1_16_PRE7 && buffer.getVersionId() < V_1_16_2_PRE2) {
@@ -94,7 +96,7 @@ public class PacketChunkData extends ClientboundPacket {
 
 
         if (size > 0) {
-            this.chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMask, 0, groundUpContinuous, containsSkyLight);
+            this.chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMasks, 0, groundUpContinuous, containsSkyLight);
             // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
             buffer.setPosition(size + lastPos);
         }

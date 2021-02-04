@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import java.util.UUID;
 
 public class ThrownExperienceBottle extends ThrowableItemProjectile {
-    private static final Slot DEFAULT_ITEM = new Slot(new Item("experience_bottle"));
+    private static final Slot DEFAULT_ITEM = new Slot(null, new Item("experience_bottle")); // ToDo: version should not be null
 
     public ThrownExperienceBottle(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);

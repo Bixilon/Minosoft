@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.status;
 
 import de.bixilon.minosoft.data.player.PingBars;
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.modding.event.events.ServerListPongEvent;
 import de.bixilon.minosoft.modding.event.events.StatusPongEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionPing;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketStatusPong extends ClientboundPacket {
     long pingId;

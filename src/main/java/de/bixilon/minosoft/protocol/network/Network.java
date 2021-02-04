@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.network;
 
-import de.bixilon.minosoft.logging.Log;
 import de.bixilon.minosoft.protocol.exceptions.PacketNotImplementedException;
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.UnknownPacketException;
@@ -25,6 +24,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.logging.Log;
 
 public abstract class Network {
     protected final Connection connection;
@@ -70,12 +70,18 @@ public abstract class Network {
             if (packetType == null) {
                 throw new UnknownPacketException(String.format("Server sent us an unknown packet (id=0x%x, length=%d, data=%s)", data.getCommand(), bytes.length, data.getBase64()));
             }
-            Class<? extends ClientboundPacket> clazz = packetType.getClazz();
 
-            if (clazz == null) {
+            ClientboundPacket packet;
+            try {
+                packet = packetType.createNewInstance();
+            } catch (NullPointerException exception) {
                 throw new PacketNotImplementedException(data, packetType, this.connection);
             }
-            ClientboundPacket packet = clazz.getConstructor().newInstance();
+
+            if (packet == null) {
+                throw new PacketNotImplementedException(data, packetType, this.connection);
+            }
+
             boolean success = packet.read(data);
             if (data.getBytesLeft() > 0 || !success) {
                 throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packetType, data.getPosition(), data.getBytesLeft(), data.getLength(), success));
@@ -86,7 +92,7 @@ public abstract class Network {
             if (this.connection.getConnectionState() == ConnectionStates.PLAY) {
                 throw new PacketParseException(e);
             }
-            throw new RuntimeException(e);
+            throw new UnknownPacketException(e);
         }
     }
 

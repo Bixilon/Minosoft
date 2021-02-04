@@ -859,5 +859,12 @@
       "DATA_PLAYING_DEAD": "AXOLOTL_PLAYING_DEAD",
       "FROM_BUCKET": "AXOLOTL_FROM_BUCKET"
     }
+  },
+  "GlowSquid": {
+    "identifier": "glow_squid",
+    "extends": "Squid",
+    "data": {
+      "DATA_DARK_TICKS_REMAINING": "GLOW_SQUID_DARK_TICKS_REMAINING"
+    }
   }
 }

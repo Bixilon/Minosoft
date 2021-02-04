@@ -81,7 +81,7 @@
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
-        <javafx.version>16-ea+5</javafx.version>
+        <javafx.version>16-ea+6</javafx.version>
         <kotlin.version>1.4.21</kotlin.version>
     </properties>
 
@@ -119,6 +119,12 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
             <version>${javafx.version}</version>
             <type>pom</type>
         </dependency>
