@@ -21,7 +21,7 @@ public class Mesh {
 
     public Mesh(float[] data, ChunkLocation location, int sectionHeight) {
         this.chunkPosition = new Vec3(location.getX(), sectionHeight, location.getZ());
-        this.trianglesCount = data.length / 5;
+        this.trianglesCount = data.length / 5; // <- bytes per vertex
         this.vAO = glGenVertexArrays();
         this.vBO = glGenBuffers();
 

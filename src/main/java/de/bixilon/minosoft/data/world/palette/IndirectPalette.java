@@ -20,21 +20,21 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 
-import java.util.HashMap;
-
 public class IndirectPalette implements Palette {
-    private final HashMap<Integer, Integer> map = new HashMap<>();
-    private final byte bitsPerBlock;
+    private final int bitsPerBlock;
+    private int[] palette;
     int versionId;
     VersionMapping mapping;
 
-    public IndirectPalette(byte bitsPerBlock) {
+    public IndirectPalette(int bitsPerBlock) {
         this.bitsPerBlock = bitsPerBlock;
     }
 
     @Override
-    public Block byId(int id) {
-        int blockId = this.map.getOrDefault(id, id);
+    public Block blockById(int blockId) {
+        if (blockId < this.palette.length) {
+            blockId = this.palette[blockId];
+        }
         Block block = this.mapping.getBlockById(blockId);
         if (StaticConfiguration.DEBUG_MODE) {
             if (block == null) {
@@ -55,7 +55,7 @@ public class IndirectPalette implements Palette {
     }
 
     @Override
-    public byte getBitsPerBlock() {
+    public int getBitsPerBlock() {
         return this.bitsPerBlock;
     }
 
@@ -63,9 +63,6 @@ public class IndirectPalette implements Palette {
     public void read(InByteBuffer buffer) {
         this.versionId = buffer.getVersionId();
         this.mapping = buffer.getConnection().getMapping();
-        int paletteLength = buffer.readVarInt();
-        for (int i = 0; i < paletteLength; i++) {
-            this.map.put(i, buffer.readVarInt());
-        }
+        this.palette = buffer.readVarIntArray();
     }
 }

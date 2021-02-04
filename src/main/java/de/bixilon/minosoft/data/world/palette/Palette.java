@@ -17,18 +17,18 @@ import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 public interface Palette {
-    static Palette choosePalette(byte bitsPerBlock) {
+    static Palette choosePalette(int bitsPerBlock) {
         if (bitsPerBlock <= 4) {
-            return new IndirectPalette((byte) 4);
+            return new IndirectPalette(4);
         } else if (bitsPerBlock <= 8) {
             return new IndirectPalette(bitsPerBlock);
         }
         return new DirectPalette();
     }
 
-    Block byId(int id);
+    Block blockById(int id);
 
-    byte getBitsPerBlock();
+    int getBitsPerBlock();
 
     void read(InByteBuffer buffer);
 }

@@ -60,6 +60,7 @@ public class PacketBlockChange extends ClientboundPacket {
             Block block = VersionTweaker.transformBlock(getBlock(), chunk, getPosition().getInChunkLocation());
             section.setBlock(getPosition().getInChunkLocation().getInChunkSectionLocation(), block);
         } else {
+            Log.debug("Replacing %s with %s", section.getBlock(getPosition().getInChunkLocation().getInChunkSectionLocation()), this.block);
             section.setBlock(getPosition().getInChunkLocation().getInChunkSectionLocation(), getBlock());
         }
 

@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.world.InChunkSectionLocation;
 import de.bixilon.minosoft.data.world.palette.Palette;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.BitSet;
 import java.util.HashMap;
@@ -27,9 +28,9 @@ import java.util.HashMap;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public final class ChunkUtil {
-    public static Chunk readChunkPacket(InByteBuffer buffer, long[] sectionBitMasks, int addBitMask, boolean groundUpContinuous, boolean containsSkyLight) {
+    public static Chunk readChunkPacket(InByteBuffer buffer, long[] sectionBitMasks, int addBitMask, boolean fullChunk, boolean containsSkyLight) {
         if (buffer.getVersionId() < V_14W26A) {
-            if (sectionBitMasks[0] == 0x00 && groundUpContinuous) {
+            if (sectionBitMasks[0] == 0x00 && fullChunk) {
                 // unload chunk
                 return null;
             }
@@ -46,7 +47,7 @@ public final class ChunkUtil {
                 skyLight = buffer.readBytes(halfBytes);
             }
             byte[] addBlockTypes = buffer.readBytes(Integer.bitCount(addBitMask) * (ProtocolDefinition.BLOCKS_PER_SECTION >> 1));
-            if (groundUpContinuous) {
+            if (fullChunk) {
                 byte[] biomes = buffer.readBytes(256);
             }
 
@@ -105,10 +106,10 @@ public final class ChunkUtil {
             if (containsSkyLight) {
                 skyLight = buffer.readBytes(halfBytes);
             }
-            if (groundUpContinuous) {
+            if (fullChunk) {
                 byte[] biomes = buffer.readBytes(256);
             }
-            if (sectionBitMasks[0] == 0x00 && groundUpContinuous) {
+            if (sectionBitMasks[0] == 0x00 && fullChunk) {
                 // unload chunk
                 return null;
             }
@@ -149,11 +150,11 @@ public final class ChunkUtil {
             if (buffer.getVersionId() >= V_18W43A) {
                 buffer.readShort(); // block count
             }
-            Palette palette = Palette.choosePalette(buffer.readByte());
+            Palette palette = Palette.choosePalette(buffer.readUnsignedByte());
             palette.read(buffer);
             int individualValueMask = ((1 << palette.getBitsPerBlock()) - 1);
 
-            long[] data = buffer.readLongArray(buffer.readVarInt());
+            long[] data = buffer.readLongArray();
 
             HashMap<InChunkSectionLocation, Block> blockMap = new HashMap<>();
             for (int nibbleY = 0; nibbleY < ProtocolDefinition.SECTION_HEIGHT_Y; nibbleY++) {
@@ -164,6 +165,8 @@ public final class ChunkUtil {
                         int startOffset = (blockNumber * palette.getBitsPerBlock()) % 64;
                         int endLong = ((blockNumber + 1) * palette.getBitsPerBlock() - 1) / 64;
 
+                        // ToDo: some things changed here in 1.16
+
                         int blockId;
                         if (startLong == endLong) {
                             blockId = (int) (data[startLong] >>> startOffset);
@@ -173,9 +176,12 @@ public final class ChunkUtil {
                         }
                         blockId &= individualValueMask;
 
-                        Block block = palette.byId(blockId);
+                        Block block = palette.blockById(blockId);
                         if (block == null) {
                             continue;
+                        }
+                        if (block.getIdentifier().equals("birch_sapling")) {
+                            Log.debug("");
                         }
                         blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), block);
                     }

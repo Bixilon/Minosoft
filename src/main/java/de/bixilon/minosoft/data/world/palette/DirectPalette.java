@@ -25,12 +25,12 @@ public class DirectPalette implements Palette {
     VersionMapping mapping;
 
     @Override
-    public Block byId(int id) {
+    public Block blockById(int id) {
         return this.mapping.getBlockById(id);
     }
 
     @Override
-    public byte getBitsPerBlock() {
+    public int getBitsPerBlock() {
         if (this.versionId < V_18W10D) {
             return 13;
         }

@@ -45,9 +45,9 @@ public class PacketChunkData extends ClientboundPacket {
         boolean containsSkyLight = buffer.getConnection().getPlayer().getWorld().getDimension().hasSkyLight();
         this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
 
-        boolean groundUpContinuous = true; // ToDo: how should we handle this now?
+        boolean fullChunk = true;
         if (buffer.getVersionId() < V_20W45A) {
-            groundUpContinuous = buffer.readBoolean();
+            fullChunk = buffer.readBoolean();
         }
 
         if (buffer.getVersionId() < V_14W26A) {
@@ -62,7 +62,7 @@ public class PacketChunkData extends ClientboundPacket {
                 decompressed = buffer;
             }
 
-            this.chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMasks, addBitMask, groundUpContinuous, containsSkyLight);
+            this.chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMasks, addBitMask, fullChunk, containsSkyLight);
             return true;
         }
         long[] sectionBitMasks;
@@ -83,7 +83,7 @@ public class PacketChunkData extends ClientboundPacket {
         if (buffer.getVersionId() >= V_18W44A) {
             this.heightMap = (CompoundTag) buffer.readNBT();
         }
-        if (groundUpContinuous) {
+        if (fullChunk) {
             if (buffer.getVersionId() >= V_20W28A) {
                 this.biomes = buffer.readVarIntArray();
             } else if (buffer.getVersionId() >= V_19W36A) {
@@ -96,7 +96,7 @@ public class PacketChunkData extends ClientboundPacket {
 
 
         if (size > 0) {
-            this.chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMasks, 0, groundUpContinuous, containsSkyLight);
+            this.chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMasks, 0, fullChunk, containsSkyLight);
             // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
             buffer.setPosition(size + lastPos);
         }

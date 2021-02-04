@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.mappings.blocks;
 
-import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.gui.rendering.models.BlockModel;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,6 +23,7 @@ import java.util.Objects;
 public class Block extends ModIdentifier {
     private final BlockRotations rotation;
     private final HashSet<BlockProperties> properties;
+    private BlockModel blockModel;
 
     public Block(String mod, String identifier, HashSet<BlockProperties> properties, BlockRotations rotation) {
         super(mod, identifier);
@@ -68,6 +69,14 @@ public class Block extends ModIdentifier {
         return this.properties;
     }
 
+    public BlockModel getBlockModel() {
+        return this.blockModel;
+    }
+
+    public void setBlockModel(BlockModel blockModel) {
+        this.blockModel = blockModel;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(this.mod, this.identifier, this.properties, this.rotation);
@@ -83,6 +92,32 @@ public class Block extends ModIdentifier {
         }
         if (obj instanceof Block their) {
             return getIdentifier().equals(their.getIdentifier()) && getRotation() == their.getRotation() && getProperties().equals(their.getProperties()) && getMod().equals(their.getMod());
+        }
+        if (obj instanceof ModIdentifier identifier) {
+            return super.equals(identifier);
+        }
+        return false;
+    }
+
+    public boolean bareEquals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Block their) {
+            if (!getMod().equals(their.getMod()) || !getIdentifier().equals(their.getIdentifier())) {
+                return false;
+            }
+            if (their.getRotation() != BlockRotations.NONE) {
+                if (their.getRotation() != getRotation()) {
+                    return false;
+                }
+            }
+            for (BlockProperties property : their.getProperties()) {
+                if (!getProperties().contains(property)) {
+                    return false;
+                }
+            }
+            return true;
         }
         if (obj instanceof ModIdentifier identifier) {
             return super.equals(identifier);
@@ -111,9 +146,5 @@ public class Block extends ModIdentifier {
             out.append(")");
         }
         return String.format("%s%s", getFullIdentifier(), out);
-    }
-
-    public boolean forceDrawFace(Directions direction) {
-        return false; // ToDo
     }
 }

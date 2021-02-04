@@ -17,6 +17,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.EntityClassMappings;
 import de.bixilon.minosoft.data.Mappings;
@@ -29,7 +30,10 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockProperties;
 import de.bixilon.minosoft.data.mappings.blocks.BlockRotations;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.statistics.Statistic;
+import de.bixilon.minosoft.gui.rendering.models.BlockModel;
+import de.bixilon.minosoft.gui.rendering.models.ConditionalModel;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.logging.Log;
 import javafx.util.Pair;
 
 import javax.annotation.Nullable;
@@ -38,21 +42,23 @@ import java.util.HashSet;
 
 public class VersionMapping {
     private final HashSet<Mappings> loaded = new HashSet<>();
-    private final HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap = HashBiMap.create(100);
-    private final HashMap<EntityMetaDataFields, Integer> entityMetaIndexMap = new HashMap<>(100);
-    private final HashMap<String, Pair<String, Integer>> entityMetaIndexOffsetParentMapping = new HashMap<>(100);
-    private final HashBiMap<Integer, Class<? extends Entity>> entityIdClassMap = HashBiMap.create(100);
-    private final HashBiMap<String, Motive> motiveIdentifierMap = HashBiMap.create();
-    private final HashBiMap<String, Particle> particleIdentifierMap = HashBiMap.create();
-    private final HashBiMap<String, Statistic> statisticIdentifierMap = HashBiMap.create();
-    private final HashBiMap<Integer, Item> itemMap = HashBiMap.create();
-    private final HashBiMap<Integer, Motive> motiveIdMap = HashBiMap.create();
-    private final HashBiMap<Integer, MobEffect> mobEffectMap = HashBiMap.create();
-    private final HashBiMap<Integer, Block> blockMap = HashBiMap.create();
-    private final HashBiMap<Integer, BlockId> blockIdMap = HashBiMap.create();
-    private final HashBiMap<Integer, Enchantment> enchantmentMap = HashBiMap.create();
-    private final HashBiMap<Integer, Particle> particleIdMap = HashBiMap.create();
-    private final HashBiMap<Integer, Statistic> statisticIdMap = HashBiMap.create();
+    private final HashBiMap<Class<? extends Entity>, EntityInformation> entityInformationMap = HashBiMap.create(120);
+    private final HashMap<EntityMetaDataFields, Integer> entityMetaIndexMap = new HashMap<>(180);
+    private final HashMap<String, Pair<String, Integer>> entityMetaIndexOffsetParentMapping = new HashMap<>(150);
+    private final HashBiMap<Integer, Class<? extends Entity>> entityIdClassMap = HashBiMap.create(120);
+    private final HashBiMap<String, Motive> motiveIdentifierMap = HashBiMap.create(30);
+    private final HashBiMap<String, Particle> particleIdentifierMap = HashBiMap.create(70);
+    private final HashBiMap<String, Statistic> statisticIdentifierMap = HashBiMap.create(80);
+    private final HashBiMap<Integer, Item> itemMap = HashBiMap.create(1200);
+    private final HashBiMap<Integer, Motive> motiveIdMap = HashBiMap.create(30);
+    private final HashBiMap<Integer, MobEffect> mobEffectMap = HashBiMap.create(40);
+    private final HashBiMap<Integer, Block> blockMap = HashBiMap.create(20000);
+    private final HashBiMap<Integer, BlockId> blockIdMap = HashBiMap.create(800);
+    private final HashBiMap<Integer, Enchantment> enchantmentMap = HashBiMap.create(50);
+    private final HashBiMap<Integer, Particle> particleIdMap = HashBiMap.create(80);
+    private final HashBiMap<Integer, Statistic> statisticIdMap = HashBiMap.create(80);
+    private final HashBiMap<ModIdentifier, BlockModel> blockModels = HashBiMap.create(500);
+    private final LinkedTreeMap<String, Integer> textureIndices = new LinkedTreeMap<>();
     private Version version;
     private VersionMapping parentMapping;
     private HashMap<String, HashBiMap<String, Dimension>> dimensionIdentifierMap = new HashMap<>();
@@ -377,47 +383,11 @@ public class VersionMapping {
                     JsonArray statesArray = identifierJSON.getAsJsonArray("states");
                     for (int i = 0; i < statesArray.size(); i++) {
                         JsonObject statesJSON = statesArray.get(i).getAsJsonObject();
-                        Block block;
-                        if (statesJSON.has("properties")) {
-                            // properties are optional
-                            JsonObject propertiesJSON = statesJSON.getAsJsonObject("properties");
-                            BlockRotations rotation = BlockRotations.NONE;
-                            if (propertiesJSON.has("facing")) {
-                                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("facing").getAsString());
-                                propertiesJSON.remove("facing");
-                            } else if (propertiesJSON.has("rotation")) {
-                                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("rotation").getAsString());
-                                propertiesJSON.remove("rotation");
-                            } else if (propertiesJSON.has("orientation")) {
-                                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("orientation").getAsString());
-                                propertiesJSON.remove("orientation");
-                            } else if (propertiesJSON.has("axis")) {
-                                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("axis").getAsString());
-                                propertiesJSON.remove("axis");
-                            }
+                        Block block = loadBlockState(mod, identifierName, statesJSON);
 
-                            HashSet<BlockProperties> properties = new HashSet<>();
-                            for (String propertyName : propertiesJSON.keySet()) {
-                                if (StaticConfiguration.DEBUG_MODE) {
-                                    if (BlockProperties.PROPERTIES_MAPPING.get(propertyName) == null) {
-                                        throw new RuntimeException(String.format("Unknown block property: %s (identifier=%s)", propertyName, identifierName));
-                                    }
-                                    if (BlockProperties.PROPERTIES_MAPPING.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()) == null) {
-                                        throw new RuntimeException(String.format("Unknown block property: %s -> %s (identifier=%s)", propertyName, propertiesJSON.get(propertyName).getAsString(), identifierName));
-                                    }
-                                }
-                                properties.add(BlockProperties.PROPERTIES_MAPPING.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()));
-                            }
-
-                            block = new Block(mod, identifierName, properties, rotation);
-
-                            if (version.isFlattened()) {
-                                // map block id
-                                this.blockIdMap.get(this.blockIdMap.inverse().get(new BlockId(block))).getBlocks().add(block);
-                            }
-                        } else {
-                            // no properties, directly add block
-                            block = new Block(mod, identifierName);
+                        if (this.version.isFlattened()) {
+                            // map block id
+                            this.blockIdMap.get(this.blockIdMap.inverse().get(new BlockId(block))).getBlocks().add(block);
                         }
                         int blockNumericId = getBlockId(statesJSON, !version.isFlattened());
                         if (StaticConfiguration.DEBUG_MODE) {
@@ -443,13 +413,132 @@ public class VersionMapping {
                 }
                 for (String identifier : data.keySet()) {
                     if (this.entityMetaIndexOffsetParentMapping.containsKey(identifier)) {
-                        continue;
+                        continue; // ToDo: Check this in the function (because of parent checking, etc)
                     }
                     loadEntityMapping(mod, identifier, data);
                 }
             }
+            case BLOCK_MODELS -> {
+                if (data == null) {
+                    break;
+                }
+                JsonObject models = data.getAsJsonObject("blockModels");
+                for (String identifier : models.keySet()) {
+                    if (this.blockModels.containsKey(new ModIdentifier(mod, identifier))) {
+                        continue;
+                    }
+                    loadBlockModel(mod, identifier, models);
+                }
+                JsonObject states = data.getAsJsonObject("blockStates");
+                for (String identifier : states.keySet()) {
+                    loadBlockModelState(mod, identifier, states);
+                }
+            }
         }
         this.loaded.add(type);
+    }
+
+    private BlockModel loadBlockModel(String mod, String identifierString, JsonObject fullModData) {
+        identifierString = correctBlockModelIdentifier(identifierString);
+        ModIdentifier identifier = new ModIdentifier(mod, identifierString);
+        BlockModel model = this.blockModels.get(identifier);
+        if (this.blockModels.containsKey(identifier)) {
+            return model;
+        }
+        JsonObject data = fullModData.getAsJsonObject(identifierString);
+
+        BlockModel parent = null;
+        if (data.has("parent")) {
+            parent = loadBlockModel(mod, data.get("parent").getAsString(), fullModData);
+        }
+
+        if (data.has("conditional")) {
+            model = new ConditionalModel(parent);
+        } else {
+            model = new BlockModel(parent);
+        }
+
+        model.deserialize(this.textureIndices, data);
+
+
+        this.blockModels.put(identifier, model);
+        return model;
+    }
+
+    private void loadBlockModelState(String mod, String identifierString, JsonObject fullModData) {
+        if (identifierString.equals("item_frame")) {
+            return; // ToDo
+        }
+        JsonObject blockData = fullModData.getAsJsonObject(identifierString);
+        ModIdentifier identifier = new ModIdentifier(mod, identifierString);
+
+        if (!blockData.has("states")) {
+            Log.warn("Block model state: Not states (%s)", identifier);
+            return;
+        }
+
+        HashSet<Block> blockStates = this.blockIdMap.get(this.blockIdMap.inverse().get(identifier)).getBlocks();
+
+        for (JsonElement entryElement : blockData.getAsJsonArray("states")) {
+            JsonObject entry = entryElement.getAsJsonObject();
+
+            Block state = loadBlockState(mod, identifierString, entry);
+            boolean ckecked = false;
+            for (Block blockState : blockStates) {
+                if (blockState.bareEquals(state)) {
+                    blockState.setBlockModel(this.blockModels.get(new ModIdentifier(entry.get("model").getAsString())));
+                    ckecked = true;
+                }
+            }
+            if (!ckecked) {
+                Log.warn("Block model state: Block is null (%s)", state);
+                continue;
+            }
+        }
+    }
+
+    private Block loadBlockState(String mod, String identifier, JsonObject blockStateJson) {
+        if (blockStateJson.has("properties")) {
+            // properties are optional
+            JsonObject propertiesJSON = blockStateJson.getAsJsonObject("properties");
+            BlockRotations rotation = BlockRotations.NONE;
+            if (propertiesJSON.has("facing")) {
+                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("facing").getAsString());
+                propertiesJSON.remove("facing");
+            } else if (propertiesJSON.has("rotation")) {
+                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("rotation").getAsString());
+                propertiesJSON.remove("rotation");
+            } else if (propertiesJSON.has("orientation")) {
+                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("orientation").getAsString());
+                propertiesJSON.remove("orientation");
+            } else if (propertiesJSON.has("axis")) {
+                rotation = BlockRotations.ROTATION_MAPPING.get(propertiesJSON.get("axis").getAsString());
+                propertiesJSON.remove("axis");
+            }
+
+            HashSet<BlockProperties> properties = new HashSet<>();
+            for (String propertyName : propertiesJSON.keySet()) {
+                if (StaticConfiguration.DEBUG_MODE) {
+                    if (BlockProperties.PROPERTIES_MAPPING.get(propertyName) == null) {
+                        throw new RuntimeException(String.format("Unknown block property: %s (identifier=%s)", propertyName, identifier));
+                    }
+                    if (BlockProperties.PROPERTIES_MAPPING.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()) == null) {
+                        throw new RuntimeException(String.format("Unknown block property: %s -> %s (identifier=%s)", propertyName, propertiesJSON.get(propertyName).getAsString(), identifier));
+                    }
+                }
+                properties.add(BlockProperties.PROPERTIES_MAPPING.get(propertyName).get(propertiesJSON.get(propertyName).getAsString()));
+            }
+
+            return new Block(mod, identifier, properties, rotation);
+
+        } else {
+            // no properties, directly add block
+            return new Block(mod, identifier);
+        }
+    }
+
+    private String correctBlockModelIdentifier(String identifier) {
+        return identifier.replaceAll("\\w+/", ""); // ToDo: Regenerate mappings to remove this here
     }
 
     private void loadEntityMapping(String mod, String identifier, JsonObject fullModData) {
@@ -514,6 +603,7 @@ public class VersionMapping {
         this.entityMetaIndexMap.clear();
         this.entityMetaIndexOffsetParentMapping.clear();
         this.entityIdClassMap.clear();
+        this.blockModels.clear();
     }
 
     public boolean isFullyLoaded() {
@@ -602,4 +692,7 @@ public class VersionMapping {
         return this.particleIdMap.containsValue(identifier);
     }
 
+    public LinkedTreeMap<String, Integer> getTextureIndices() {
+        return this.textureIndices;
+    }
 }

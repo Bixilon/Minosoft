@@ -55,7 +55,7 @@ class RenderWindow(private val connection: Connection) {
             glfwTerminate()
             throw RuntimeException("Failed to create the GLFW window")
         }
-        camera = Camera(45f, windowId)
+        camera = Camera(60f, windowId)
         glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
             override fun invoke(window: Long, width: Int, height: Int) {
                 GL11.glViewport(0, 0, width, height)
@@ -113,7 +113,7 @@ class RenderWindow(private val connection: Connection) {
     }
 
     fun startLoop() {
-        texture0 = TextureArray(connection.version.assetsManager, arrayOf("block/bedrock", "block/dirt", "block/stone", "block/glass", "block/red_wool"))
+        texture0 = TextureArray(connection.version.assetsManager, connection.version.mapping.textureIndices.keys.toTypedArray())
         texture0.load()
 
         shader = Shader("vertex.glsl", "fragment.glsl")

@@ -66,7 +66,7 @@ class Camera(private var fov: Float, private val windowId: Long) {
     }
 
     private fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int): Mat4 {
-        return glm.perspective(glm.radians(fov), screenWidth.toFloat() / screenHeight.toFloat(), 0.1f, 100f)
+        return glm.perspective(glm.radians(fov), screenWidth.toFloat() / screenHeight.toFloat(), 0.1f, 1000f)
     }
 
     fun calculateViewMatrix(shader: Shader) {

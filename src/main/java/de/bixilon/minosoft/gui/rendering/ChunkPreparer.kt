@@ -6,9 +6,6 @@ import de.bixilon.minosoft.data.world.ChunkLocation
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
-import glm_.vec4.Vec4
 
 object ChunkPreparer {
     fun prepareChunk(world: World, chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection): FloatArray {
@@ -82,33 +79,9 @@ object ChunkPreparer {
                     continue
                     // }
                 }
-
-                val model = Mat4().translate(Vec3(position.x, position.y, position.z))
-                val vertexArray = RenderConstants.VERTICIES[direction.ordinal]
-                var vertex = 0
-                while (vertex < vertexArray.size) {
-                    val input = Vec4(vertexArray[vertex++], vertexArray[vertex++], vertexArray[vertex++], 1.0f)
-                    val output = model * input
-                    // Log.debug("input=%s; position=%s; output=%s;", input, position, output);
-                    data.add(output.x)
-                    data.add(output.y)
-                    data.add(output.z)
-                    data.add(vertexArray[vertex++])
-                    data.add(getTextureLayerByBlock(block).toFloat()) // ToDo: Compact this
-                }
+                data.addAll(block.blockModel.render(position, direction))
             }
         }
         return data.toFloatArray()
-    }
-
-    private fun getTextureLayerByBlock(block: Block): Int {
-        return when (block.fullIdentifier) {
-            "minecraft:bedrock" -> 0
-            "minecraft:dirt" -> 1
-            "minecraft:stone" -> 2
-            "minecraft:glass" -> 3
-            "minecraft:red_wool" -> 4
-            else -> 2
-        }
     }
 }
