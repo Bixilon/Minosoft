@@ -8,9 +8,9 @@ import org.lwjgl.opengl.GL20;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL30.*;
 
 public class Mesh {
     int vAO;
@@ -43,5 +43,10 @@ public class Mesh {
         chunkShader.setVec3("chunkPosition", this.chunkPosition);
         glBindVertexArray(this.vAO);
         glDrawArrays(GL_TRIANGLES, 0, this.trianglesCount);
+    }
+
+    public void unload() {
+        glDeleteVertexArrays(this.vAO);
+        glDeleteBuffers(this.vBO);
     }
 }

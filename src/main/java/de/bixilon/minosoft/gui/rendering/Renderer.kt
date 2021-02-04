@@ -7,8 +7,10 @@ import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.ChunkPreparer.prepareChunk
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.logging.Log
 import glm_.vec3.Vec3
 import org.lwjgl.Version
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -18,7 +20,7 @@ class Renderer(private val connection: Connection) {
 
     fun start() {
         Thread({
-            println("Hello LWJGL " + Version.getVersion() + "!")
+            Log.info("Hello LWJGL " + Version.getVersion() + "!")
             renderWindow.init()
             renderWindow.startLoop()
             renderWindow.exit()
@@ -26,6 +28,7 @@ class Renderer(private val connection: Connection) {
     }
 
     fun prepareChunk(chunkLocation: ChunkLocation, chunk: Chunk) {
+        renderWindow.chunkSectionsToDraw[chunkLocation] = ConcurrentHashMap()
         for ((sectionHeight, section) in chunk.sections) {
             prepareChunkSection(chunkLocation, sectionHeight, section)
         }
@@ -34,8 +37,23 @@ class Renderer(private val connection: Connection) {
     fun prepareChunkSection(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection) {
         executor.execute {
             val data = prepareChunk(connection.player.world, chunkLocation, sectionHeight, section)
+            val sectionMap = renderWindow.chunkSectionsToDraw[chunkLocation]!!
             renderWindow.renderQueue.add {
-                renderWindow.meshesToDraw.add(Mesh(data, chunkLocation, sectionHeight))
+                sectionMap[sectionHeight]?.unload()
+                sectionMap.remove(sectionHeight)
+                sectionMap[sectionHeight] = Mesh(data, chunkLocation, sectionHeight)
+            }
+        }
+    }
+
+    fun clearCache() {
+        renderWindow.renderQueue.add {
+            for ((location, map) in renderWindow.chunkSectionsToDraw) {
+                for ((sectionHeight, mesh) in map) {
+                    mesh.unload()
+                    map.remove(sectionHeight)
+                }
+                renderWindow.chunkSectionsToDraw.remove(location)
             }
         }
     }
@@ -43,7 +61,6 @@ class Renderer(private val connection: Connection) {
     fun teleport(position: Location) {
         renderWindow.renderQueue.add {
             renderWindow.camera.setPosition(Vec3(position.x, position.y, position.z))
-
         }
     }
 

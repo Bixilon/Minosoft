@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
+import de.bixilon.minosoft.data.world.ChunkSection;
 import de.bixilon.minosoft.data.world.InChunkLocation;
 import de.bixilon.minosoft.modding.event.events.MultiBlockChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -25,6 +26,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
@@ -98,6 +100,17 @@ public class PacketMultiBlockChange extends ClientboundPacket {
                 }
                 chunk.setBlock(entry.getKey(), block);
             }
+        }
+
+        HashSet<Integer> sectionHeights = new HashSet<>();
+
+        for (var entry : this.blocks.entrySet()) {
+            sectionHeights.add(entry.getKey().getSectionHeight());
+        }
+
+        for (var sectionHeight : sectionHeights) {
+            ChunkSection section = chunk.getSectionOrCreate(sectionHeight);
+            connection.getRenderer().prepareChunkSection(getLocation(), sectionHeight, section);
         }
     }
 

@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.data.world.ChunkLocation
 import de.bixilon.minosoft.protocol.network.Connection
 import org.lwjgl.*
 import org.lwjgl.glfw.Callbacks
@@ -10,6 +11,7 @@ import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.glClear
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class RenderWindow(private val connection: Connection) {
@@ -24,8 +26,9 @@ class RenderWindow(private val connection: Connection) {
     private var lastFrame = 0.0
     lateinit var camera: Camera
 
-    val meshesToDraw = ConcurrentLinkedQueue<Mesh>()
     val renderQueue = ConcurrentLinkedQueue<Runnable>()
+
+    val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, Mesh>>()
 
 
     fun init() {
@@ -108,11 +111,7 @@ class RenderWindow(private val connection: Connection) {
     }
 
     fun startLoop() {
-        // val world = World()
-        // world.setChunk(ChunkLocation(0, 0), DummyData.getDummyChunk())
-        // world.setChunk(ChunkLocation(1, 0), DummyData.getDummyChunk())
-
-        texture0 = TextureArray(arrayOf("/textures/bedrock.png", "/textures/dirt.png", "/textures/stone.png"))
+        texture0 = TextureArray(arrayOf("/textures/bedrock.png", "/textures/dirt.png", "/textures/stone.png", "/textures/glass.png"))
         texture0.load()
 
         shader = Shader("vertex.glsl", "fragment.glsl")
@@ -122,13 +121,6 @@ class RenderWindow(private val connection: Connection) {
 
         camera.calculateProjectionMatrix(screenWidth, screenHeight, shader)
         camera.calculateViewMatrix(shader)
-
-
-        // for ((chunkLocation, chunk) in world.allChunks) {
-        //     for ((sectionHeight, section) in chunk.sections) {
-        //         meshesToDraw.add(Mesh(ChunkPreparer.prepareChunk(world, chunkLocation, sectionHeight, section), chunkLocation, sectionHeight))
-        //     }
-        // }
 
 
         var framesLastSecond = 0
@@ -147,8 +139,10 @@ class RenderWindow(private val connection: Connection) {
 
             camera.calculateViewMatrix(shader)
 
-            for (mesh in meshesToDraw) {
-                mesh.draw(shader)
+            for ((_, map) in chunkSectionsToDraw) {
+                for ((_, mesh) in map) {
+                    mesh.draw(shader)
+                }
             }
 
             glfwSwapBuffers(windowId) // swap the color buffers
@@ -157,17 +151,20 @@ class RenderWindow(private val connection: Connection) {
             // invoked during this call.
             glfwPollEvents()
             handleInput()
-            camera.handleInput(deltaTime)
-            if (glfwGetTime() - lastCalcTime >= 1.0) {
-                glfwSetWindowTitle(windowId, "FPS: $framesLastSecond")
-                lastCalcTime = glfwGetTime()
-                framesLastSecond = 0
-            }
-            framesLastSecond++
+
             for (renderQueueElement in renderQueue) {
                 renderQueueElement.run()
                 renderQueue.remove(renderQueueElement)
             }
+
+            camera.handleInput(deltaTime)
+
+            if (glfwGetTime() - lastCalcTime >= 0.5) {
+                glfwSetWindowTitle(windowId, "FPS: ${framesLastSecond * 2}")
+                lastCalcTime = glfwGetTime()
+                framesLastSecond = 0
+            }
+            framesLastSecond++
         }
     }
 

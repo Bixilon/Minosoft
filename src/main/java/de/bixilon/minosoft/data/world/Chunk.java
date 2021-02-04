@@ -87,4 +87,13 @@ public class Chunk {
     public HashMap<Integer, ChunkSection> getSections() {
         return this.sections;
     }
+
+    public ChunkSection getSectionOrCreate(int sectionHeight) {
+        ChunkSection section = this.sections.get(sectionHeight);
+        if (section == null) {
+            section = new ChunkSection();
+            this.sections.put(sectionHeight, section);
+        }
+        return section;
+    }
 }

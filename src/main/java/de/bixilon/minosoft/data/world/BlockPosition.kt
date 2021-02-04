@@ -17,7 +17,17 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 data class BlockPosition(val x: Int, val y: Int, val z: Int) {
 
     fun getChunkLocation(): ChunkLocation {
-        return ChunkLocation(this.x / ProtocolDefinition.SECTION_WIDTH_X, this.z / ProtocolDefinition.SECTION_WIDTH_Z)
+        val chunkX = if (this.x >= 0) {
+            this.x / ProtocolDefinition.SECTION_WIDTH_X
+        } else {
+            ((this.x + 1) / ProtocolDefinition.SECTION_WIDTH_X) - 1
+        }
+        val chunkY = if (this.z >= 0) {
+            this.z / ProtocolDefinition.SECTION_WIDTH_Z
+        } else {
+            ((this.z + 1) / ProtocolDefinition.SECTION_WIDTH_Z) - 1
+        }
+        return ChunkLocation(chunkX, chunkY)
     }
 
     fun getInChunkLocation(): InChunkLocation {
@@ -30,6 +40,10 @@ data class BlockPosition(val x: Int, val y: Int, val z: Int) {
             z += ProtocolDefinition.SECTION_WIDTH_Z
         }
         return InChunkLocation(x, this.y, z)
+    }
+
+    fun getSectionHeight(): Int {
+        return y / ProtocolDefinition.SECTION_HEIGHT_Y
     }
 
     override fun toString(): String {

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network;
 
 import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.Player;
 import de.bixilon.minosoft.data.VelocityHandler;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
@@ -57,6 +58,7 @@ public class Connection {
     private final Player player;
     private final String hostname;
     private final Recipes recipes = new Recipes();
+    private final Renderer renderer = new Renderer(this);
     private LinkedList<ServerAddress> addresses;
     private int desiredVersionNumber = -1;
     private ServerAddress address;
@@ -71,7 +73,6 @@ public class Connection {
     private CommandRootNode commandRootNode;
     private ConnectionPing connectionStatusPing;
     private ServerListPongEvent pong;
-    private final Renderer renderer = new Renderer(this);
 
     public Connection(int connectionId, String hostname, Player player) {
         this.connectionId = connectionId;
@@ -369,7 +370,9 @@ public class Connection {
             case FAILED_NO_RETRY -> handlePingCallbacks(null);
             case PLAY -> {
                 Minosoft.CONNECTIONS.put(getConnectionId(), this);
-                this.renderer.start();
+                if (!StaticConfiguration.HEADLESS_MODE) {
+                    this.renderer.start();
+                }
 
                 if (CLI.getCurrentConnection() == null) {
                     CLI.setCurrentConnection(this);

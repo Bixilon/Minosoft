@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.data.world.Chunk;
+import de.bixilon.minosoft.data.world.ChunkSection;
 import de.bixilon.minosoft.modding.event.events.BlockChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -51,14 +52,18 @@ public class PacketBlockChange extends ClientboundPacket {
         }
         connection.fireEvent(new BlockChangeEvent(connection, this));
 
+        int sectionHeight = getPosition().getSectionHeight();
+        ChunkSection section = chunk.getSectionOrCreate(sectionHeight);
 
         // tweak
         if (!connection.getVersion().isFlattened()) {
             Block block = VersionTweaker.transformBlock(getBlock(), chunk, getPosition().getInChunkLocation());
-            chunk.setBlock(getPosition().getInChunkLocation(), block);
+            section.setBlock(getPosition().getInChunkLocation().getInChunkSectionLocation(), block);
         } else {
-            chunk.setBlock(getPosition().getInChunkLocation(), getBlock());
+            section.setBlock(getPosition().getInChunkLocation().getInChunkSectionLocation(), getBlock());
         }
+
+        connection.getRenderer().prepareChunkSection(getPosition().getChunkLocation(), sectionHeight, section);
     }
 
     @Override

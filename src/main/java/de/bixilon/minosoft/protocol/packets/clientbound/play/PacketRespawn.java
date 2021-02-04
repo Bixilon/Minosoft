@@ -89,6 +89,8 @@ public class PacketRespawn extends ClientboundPacket {
         connection.getPlayer().getWorld().setDimension(getDimension());
         connection.getPlayer().setSpawnConfirmed(false);
         connection.getPlayer().setGameMode(getGameMode());
+
+        connection.getRenderer().clearCache();
     }
 
     @Override

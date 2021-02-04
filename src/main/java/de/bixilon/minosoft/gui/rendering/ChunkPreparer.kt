@@ -106,6 +106,7 @@ object ChunkPreparer {
             "minecraft:bedrock" -> 0
             "minecraft:dirt" -> 1
             "minecraft:stone" -> 2
+            "minecraft:glass" -> 3
             else -> 2
         }
     }

@@ -20,6 +20,10 @@ data class InChunkLocation(val x: Int, val y: Int, val z: Int) {
         return InChunkSectionLocation(x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z)
     }
 
+    fun getSectionHeight(): Int {
+        return y / ProtocolDefinition.SECTION_HEIGHT_Y
+    }
+
     override fun toString(): String {
         return "($x $y $z)"
     }
