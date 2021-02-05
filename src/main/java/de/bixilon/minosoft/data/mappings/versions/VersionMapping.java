@@ -31,7 +31,6 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockRotations;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.statistics.Statistic;
 import de.bixilon.minosoft.gui.rendering.models.BlockModel;
-import de.bixilon.minosoft.gui.rendering.models.ConditionalModel;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 import javafx.util.Pair;
@@ -453,12 +452,11 @@ public class VersionMapping {
         }
 
         if (data.has("conditional")) {
-            model = new ConditionalModel(parent);
+            // model = new ConditionalModel(parent);
         } else {
-            model = new BlockModel(parent);
+            // model = new BlockModel(this.textureIndices, data);
         }
-
-        model.deserialize(this.textureIndices, data);
+        model = new BlockModel(parent, this.textureIndices, data);
 
 
         this.blockModels.put(identifier, model);

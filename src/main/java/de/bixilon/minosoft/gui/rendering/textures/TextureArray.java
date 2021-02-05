@@ -32,7 +32,7 @@ public class TextureArray {
 
 
         // load and generate the texture
-        var textures = TextureLoader.Companion.loadTextureArray(this.assetsManager, this.texturePaths);
+        var textures = TextureLoader.INSTANCE.loadTextureArray(this.assetsManager, this.texturePaths);
 
         glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, 16, 16, textures.size(), 0, GL_RGBA, GL_UNSIGNED_BYTE, (ByteBuffer) null);
 

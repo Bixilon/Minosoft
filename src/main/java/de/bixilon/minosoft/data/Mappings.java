@@ -20,7 +20,6 @@ public enum Mappings {
     BLOCK_MODELS;
 
     public static final Mappings[] VALUES = values();
-
     public String getFilename() {
         return name().toLowerCase();
     }

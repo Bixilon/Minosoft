@@ -10,10 +10,9 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data
 
-package de.bixilon.minosoft.data;
-
-public enum Directions {
+enum class Directions {
     DOWN,
     UP,
     NORTH,
@@ -21,18 +20,21 @@ public enum Directions {
     WEST,
     EAST;
 
-    public static final Directions[] DIRECTIONS = values();
-
-    public static Directions byId(int id) {
-        return DIRECTIONS[id];
+    fun inverse(): Directions {
+        val ordinal = ordinal
+        return if (ordinal % 2 == 0) {
+            byId(ordinal + 1)
+        } else {
+            byId(ordinal - 1)
+        }
     }
 
-    public Directions inverse() {
-        var ordinal = ordinal();
-        if (ordinal % 2 == 0) {
-            return byId(ordinal + 1);
-        }
-        return byId(ordinal - 1);
+    companion object {
+        val DIRECTIONS = values()
 
+        @JvmStatic
+        fun byId(id: Int): Directions {
+            return DIRECTIONS[id]
+        }
     }
 }

@@ -71,12 +71,16 @@ object ChunkPreparer {
                         }
                     }
                 }
+
                 if (blockToCheck == null) {
                     blockToCheck = section.getBlock(position.getLocationByDirection(direction))
                 }
                 if (blockToCheck != null) {
+                    if (blockToCheck!!.blockModel.full && block.blockModel.full) {
+                        continue
+                    }
                     //  if (block.forceDrawFace(direction.inverse())) {
-                    continue
+                    //continue
                     // }
                 }
                 data.addAll(block.blockModel.render(position, direction))

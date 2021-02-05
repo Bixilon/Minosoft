@@ -299,7 +299,11 @@ public class AssetsManager {
     }
 
     public InputStreamReader readAsset(String name) throws IOException {
-        return readAssetByHash(this.assetsMap.get(name));
+        String hash = this.assetsMap.get(name);
+        if (hash == null) {
+            throw new FileNotFoundException(String.format("Can not find asset with name: %s", name));
+        }
+        return readAssetByHash(hash);
     }
 
     public String readStringAsset(String name) throws IOException {
@@ -307,7 +311,11 @@ public class AssetsManager {
     }
 
     public InputStream readAssetAsStream(String name) throws IOException {
-        return readAssetAsStreamByHash(this.assetsMap.get(name));
+        String hash = this.assetsMap.get(name);
+        if (hash == null) {
+            throw new FileNotFoundException(String.format("Can not find asset with name: %s", name));
+        }
+        return readAssetAsStreamByHash(hash);
     }
 
     public JsonElement readJsonAsset(String name) throws IOException {
