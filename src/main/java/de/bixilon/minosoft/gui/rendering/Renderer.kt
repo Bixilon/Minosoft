@@ -24,7 +24,7 @@ class Renderer(private val connection: Connection) {
         Thread({
             Log.info("Hello LWJGL " + Version.getVersion() + "!")
             renderWindow.init(latch)
-            renderWindow.startLoop()
+            renderWindow.startRenderLoop()
             renderWindow.exit()
         }, "Rendering").start()
     }
@@ -38,13 +38,13 @@ class Renderer(private val connection: Connection) {
 
     fun prepareChunkSection(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection) {
         executor.execute {
-            latch.waitUntilZero()
+            latch.waitUntilZero() // Wait until rendering is started
             val data = prepareChunk(connection.player.world, chunkLocation, sectionHeight, section)
             val sectionMap = renderWindow.chunkSectionsToDraw[chunkLocation]!!
             renderWindow.renderQueue.add {
                 sectionMap[sectionHeight]?.unload()
                 sectionMap.remove(sectionHeight)
-                sectionMap[sectionHeight] = Mesh(data, chunkLocation, sectionHeight)
+                sectionMap[sectionHeight] = Mesh(data, Vec3(chunkLocation.x, sectionHeight, chunkLocation.z))
             }
         }
     }

@@ -71,19 +71,17 @@ object ChunkPreparer {
                         }
                     }
                 }
-                // if(block.fullIdentifier != "minecraft:dispenser"){
-                //     continue
-                // }
+
                 fun drawFace() {
-                    block.blockModel?.render(position, direction)?.let { data.addAll(it) }
+                    block.blockModel.render(position, direction, data)
                 }
 
                 if (blockToCheck == null) {
                     blockToCheck = section.getBlock(position.getLocationByDirection(direction))
                 }
                 if (blockToCheck != null) {
-                    val blockTransparent = block.blockModel?.isTransparent(direction) ?: false
-                    val checkTransparent = blockToCheck!!.blockModel?.isTransparent(direction) ?: false
+                    val blockTransparent = block.blockModel.isTransparent(direction)
+                    val checkTransparent = blockToCheck!!.blockModel.isTransparent(direction)
                     if (blockTransparent && checkTransparent) {
                         continue
                     }
@@ -91,9 +89,10 @@ object ChunkPreparer {
                         drawFace()
                         continue
                     }
-                    if (block.blockModel?.isCullFace(direction) == true && blockToCheck!!.blockModel?.isCullFace(direction.inverse()) == true) {
+                    if (block.blockModel.isCullFace(direction) && blockToCheck!!.blockModel.isCullFace(direction.inverse())) {
                         continue
                     }
+                    // ToDo: Block rotations (this is buggy)
                 }
                 drawFace()
 

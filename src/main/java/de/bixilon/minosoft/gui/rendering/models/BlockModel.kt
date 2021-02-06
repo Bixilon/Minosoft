@@ -13,7 +13,7 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
     private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
     private var elements: MutableList<BlockModelElement> = parent?.elements?.toMutableList() ?: mutableListOf()
     private var rotation: Vec3
-    private var uvLock = false
+    private var uvLock = false // ToDo
 
     init {
         json["textures"]?.asJsonObject?.let {
@@ -51,24 +51,19 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
     }
 
 
-    open fun render(position: InChunkSectionLocation, direction: Directions): List<Float> {
-        // if (rotation.x == 0f && rotation.y == 0f && rotation.z == 0f) {
-        //     return emptyList() // ToDo
-        // }
-        val data: MutableList<Float> = mutableListOf()
-
+    open fun render(position: InChunkSectionLocation, direction: Directions, data: MutableList<Float>) {
         var model = Mat4().translate(Vec3(position.x, position.y, position.z))
         if (rotation.x > 0 || rotation.y > 0 || rotation.z > 0) {
             model = model.rotate(glm.radians(rotation.x), Vec3(-1, 0, 0))
                 .rotate(glm.radians(rotation.y), Vec3(0, -1, 0))
                 .rotate(glm.radians(rotation.z), Vec3(0, 0, -1))
+            // ToDo: this should be made easier/effizienter
         }
 
 
         for (element in elements) {
-            data.addAll(element.render(textureMapping, model, direction, rotation))
+            element.render(textureMapping, model, direction, rotation, data)
         }
-        return data
     }
 
 

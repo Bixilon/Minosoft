@@ -40,9 +40,9 @@ open class BlockModelElement(data: JsonObject) {
     private val positionDownRightFront = Vec3(BlockModel.positionToFloat(to.x), BlockModel.positionToFloat(from.y), BlockModel.positionToFloat(from.z))
     private val positionDownRightBack = Vec3(BlockModel.positionToFloat(to.x), BlockModel.positionToFloat(from.y), BlockModel.positionToFloat(to.z))
 
-    open fun render(textureMapping: MutableMap<String, Texture>, model: Mat4, direction: Directions, rotation: Vec3): List<Float> {
-        val face = faces[direction] ?: return emptyList()
-        val data: MutableList<Float> = mutableListOf()
+    open fun render(textureMapping: MutableMap<String, Texture>, model: Mat4, direction: Directions, rotation: Vec3, data: MutableList<Float>) {
+        val face = faces[direction] ?: return // Not our face
+
         val texture = textureMapping[face.textureName]?.id ?: TextureArray.DEBUG_TEXTURE.id
 
         fun addToData(vec3: Vec3, textureCoordinates: Vec2) {
@@ -56,25 +56,23 @@ open class BlockModelElement(data: JsonObject) {
             data.add(texture.toFloat()) // ToDo: Compact this
         }
 
-        fun createQuad(first: Vec3, second: Vec3, third: Vec3, fourth: Vec3, fifth: Vec2 = face.texturLeftDown, sixth: Vec2 = face.texturRightDown, seventh: Vec2 = face.texturRightUp, eighth: Vec2 = face.texturLeftUp) {
-            addToData(first, sixth)
-            addToData(fourth, seventh)
-            addToData(third, eighth)
-            addToData(third, eighth)
-            addToData(second, fifth)
-            addToData(first, sixth)
+        fun createQuad(vertexPosition1: Vec3, vertexPosition2: Vec3, vertexPosition3: Vec3, vertexPosition4: Vec3, texturePosition1: Vec2, texturePosition2: Vec2, texturePosition3: Vec2, texturePosition4: Vec2) {
+            addToData(vertexPosition1, texturePosition2)
+            addToData(vertexPosition4, texturePosition3)
+            addToData(vertexPosition3, texturePosition4)
+            addToData(vertexPosition3, texturePosition4)
+            addToData(vertexPosition2, texturePosition1)
+            addToData(vertexPosition1, texturePosition2)
         }
 
         when (direction) {
-            Directions.DOWN -> createQuad(positionDownLeftFront, positionDownLeftBack, positionDownRightBack, positionDownRightFront)
-            Directions.UP -> createQuad(positionUpLeftFront, positionUpLeftBack, positionUpRightBack, positionUpRightFront) // ToDo
+            Directions.DOWN -> createQuad(positionDownLeftFront, positionDownLeftBack, positionDownRightBack, positionDownRightFront, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
+            Directions.UP -> createQuad(positionUpLeftFront, positionUpLeftBack, positionUpRightBack, positionUpRightFront, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
             Directions.NORTH -> createQuad(positionDownLeftFront, positionUpLeftFront, positionUpRightFront, positionDownRightFront, face.texturRightDown, face.texturRightUp, face.texturLeftUp, face.texturLeftDown)
             Directions.SOUTH -> createQuad(positionDownLeftBack, positionUpLeftBack, positionUpRightBack, positionDownRightBack, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
             Directions.WEST -> createQuad(positionUpLeftBack, positionDownLeftBack, positionDownLeftFront, positionUpLeftFront, face.texturRightUp, face.texturRightDown, face.texturLeftDown, face.texturLeftUp)
             Directions.EAST -> createQuad(positionUpRightBack, positionDownRightBack, positionDownRightFront, positionUpRightFront, face.texturLeftUp, face.texturLeftDown, face.texturRightDown, face.texturRightUp)
         }
-
-        return data
     }
 
     fun isCullFace(direction: Directions): Boolean {

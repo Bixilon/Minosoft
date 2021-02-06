@@ -1,6 +1,5 @@
 package de.bixilon.minosoft.gui.rendering;
 
-import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.gui.rendering.shader.Shader;
 import glm_.vec3.Vec3;
 import org.lwjgl.opengl.GL11;
@@ -16,11 +15,11 @@ import static org.lwjgl.opengl.GL30.*;
 public class Mesh {
     int vAO;
     int vBO;
-    Vec3 chunkPosition;
+    Vec3 worldPosition;
     int trianglesCount;
 
-    public Mesh(float[] data, ChunkLocation location, int sectionHeight) {
-        this.chunkPosition = new Vec3(location.getX(), sectionHeight, location.getZ());
+    public Mesh(float[] data, Vec3 worldPosition) {
+        this.worldPosition = worldPosition;
         this.trianglesCount = data.length / 6; // <- bytes per vertex
         this.vAO = glGenVertexArrays();
         this.vBO = glGenBuffers();
@@ -41,7 +40,7 @@ public class Mesh {
     }
 
     public void draw(Shader chunkShader) {
-        chunkShader.setVec3("chunkPosition", this.chunkPosition);
+        chunkShader.setVec3("worldPosition", this.worldPosition);
         glBindVertexArray(this.vAO);
         glDrawArrays(GL_TRIANGLES, 0, this.trianglesCount);
     }

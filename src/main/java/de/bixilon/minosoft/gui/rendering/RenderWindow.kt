@@ -89,8 +89,8 @@ class RenderWindow(private val connection: Connection) {
         glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
         glfwSetCursorPosCallback(windowId) { windowId: Long, xPos: Double, yPos: Double -> camera.mouseCallback(xPos, yPos) }
         MemoryStack.stackPush().let { stack ->
-            val pWidth = stack.mallocInt(1) // int*
-            val pHeight = stack.mallocInt(1) // int*
+            val pWidth = stack.mallocInt(1)
+            val pHeight = stack.mallocInt(1)
 
             // Get the window size passed to glfwCreateWindow
             glfwGetWindowSize(windowId, pWidth, pHeight)
@@ -111,7 +111,7 @@ class RenderWindow(private val connection: Connection) {
         // Make the window visible
         glfwShowWindow(windowId)
         GL.createCapabilities()
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f)
+        glClearColor(137 / 256f, 207 / 256f, 240 / 256f, 1.0f)
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -129,7 +129,7 @@ class RenderWindow(private val connection: Connection) {
         latch?.countDown()
     }
 
-    fun startLoop() {
+    fun startRenderLoop() {
         var framesLastSecond = 0
         var lastCalcTime = glfwGetTime()
         var frameTimeLastCalc = 0.0
@@ -154,28 +154,27 @@ class RenderWindow(private val connection: Connection) {
                 }
             }
 
-            glfwSwapBuffers(windowId) // swap the color buffers
+            glfwSwapBuffers(windowId)
 
-            // Poll for window events. The key callback above will only be
-            // invoked during this call.
             glfwPollEvents()
-
-            for (renderQueueElement in renderQueue) {
-                renderQueueElement.run()
-                renderQueue.remove(renderQueueElement)
-            }
 
             camera.handleInput(deltaTime)
 
             frameTimeLastCalc += glfwGetTime() - currentFrame
 
             if (glfwGetTime() - lastCalcTime >= 0.5) {
-                glfwSetWindowTitle(windowId, "FPS: ${framesLastSecond * 2} (${(0.5 * framesLastSecond / (frameTimeLastCalc)).roundToInt()})")
+                glfwSetWindowTitle(windowId, "Minosoft | FPS: ${framesLastSecond * 2} (${(0.5 * framesLastSecond / (frameTimeLastCalc)).roundToInt()})")
                 lastCalcTime = glfwGetTime()
                 framesLastSecond = 0
                 frameTimeLastCalc = 0.0
             }
             framesLastSecond++
+
+
+            for (renderQueueElement in renderQueue) {
+                renderQueueElement.run()
+                renderQueue.remove(renderQueueElement)
+            }
         }
     }
 
