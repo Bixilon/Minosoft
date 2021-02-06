@@ -1,10 +1,13 @@
 package de.bixilon.minosoft.gui.rendering.models
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.Directions
 import glm_.vec2.Vec2
 
 class BlockModelFace(data: JsonObject) {
-    val texture: String = data.get("texture").asString
+    val textureName: String = data.get("texture").asString.removePrefix("#")
+    val cullFace: Directions?
+
     var textureStart = Vec2(0, 0)
     var textureEnd = Vec2(16, 16)
 
@@ -12,6 +15,13 @@ class BlockModelFace(data: JsonObject) {
         data["uv"]?.asJsonArray?.let {
             textureStart = Vec2(it[0].asFloat, it[1].asFloat)
             textureEnd = Vec2(it[2].asFloat, it[3].asFloat)
+        }
+        cullFace = data["cullface"]?.asString?.let {
+            return@let if (it == "bottom") {
+                Directions.DOWN
+            } else {
+                Directions.valueOf(it.toUpperCase())
+            }
         }
     }
 

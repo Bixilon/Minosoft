@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.world.InChunkSectionLocation;
 import de.bixilon.minosoft.data.world.palette.Palette;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
-import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.BitSet;
 import java.util.HashMap;
@@ -179,9 +178,6 @@ public final class ChunkUtil {
                         Block block = palette.blockById(blockId);
                         if (block == null) {
                             continue;
-                        }
-                        if (block.getIdentifier().equals("birch_sapling")) {
-                            Log.debug("");
                         }
                         blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), block);
                     }

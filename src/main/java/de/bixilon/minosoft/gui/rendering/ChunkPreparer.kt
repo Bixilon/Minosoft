@@ -71,19 +71,32 @@ object ChunkPreparer {
                         }
                     }
                 }
+                // if(block.fullIdentifier != "minecraft:dispenser"){
+                //     continue
+                // }
+                fun drawFace() {
+                    block.blockModel?.render(position, direction)?.let { data.addAll(it) }
+                }
 
                 if (blockToCheck == null) {
                     blockToCheck = section.getBlock(position.getLocationByDirection(direction))
                 }
                 if (blockToCheck != null) {
-                    if (blockToCheck!!.blockModel.full && block.blockModel.full) {
+                    val blockTransparent = block.blockModel?.isTransparent(direction) ?: false
+                    val checkTransparent = blockToCheck!!.blockModel?.isTransparent(direction) ?: false
+                    if (blockTransparent && checkTransparent) {
                         continue
                     }
-                    //  if (block.forceDrawFace(direction.inverse())) {
-                    //continue
-                    // }
+                    if (checkTransparent) {
+                        drawFace()
+                        continue
+                    }
+                    if (block.blockModel?.isCullFace(direction) == true && blockToCheck!!.blockModel?.isCullFace(direction.inverse()) == true) {
+                        continue
+                    }
                 }
-                data.addAll(block.blockModel.render(position, direction))
+                drawFace()
+
             }
         }
         return data.toFloatArray()

@@ -2,7 +2,8 @@ package de.bixilon.minosoft.gui.rendering.models
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.world.InChunkSectionLocation
+import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -39,11 +40,10 @@ open class BlockModelElement(data: JsonObject) {
     private val positionDownRightFront = Vec3(BlockModel.positionToFloat(to.x), BlockModel.positionToFloat(from.y), BlockModel.positionToFloat(from.z))
     private val positionDownRightBack = Vec3(BlockModel.positionToFloat(to.x), BlockModel.positionToFloat(from.y), BlockModel.positionToFloat(to.z))
 
-    open fun render(textureIndexMap: Map<String, Int>, position: InChunkSectionLocation, direction: Directions): List<Float> {
+    open fun render(textureMapping: MutableMap<String, Texture>, model: Mat4, direction: Directions, rotation: Vec3): List<Float> {
         val face = faces[direction] ?: return emptyList()
         val data: MutableList<Float> = mutableListOf()
-        val model = Mat4().translate(Vec3(position.x, position.y, position.z))
-        val texture = textureIndexMap[face.texture.removePrefix("#")]?.toFloat() ?: 0f
+        val texture = textureMapping[face.textureName]?.id ?: TextureArray.DEBUG_TEXTURE.id
 
         fun addToData(vec3: Vec3, textureCoordinates: Vec2) {
             val input = Vec4(vec3, 1.0f)
@@ -53,27 +53,35 @@ open class BlockModelElement(data: JsonObject) {
             data.add(output.z)
             data.add(textureCoordinates.x)
             data.add(textureCoordinates.y)
-            data.add(texture) // ToDo: Compact this
+            data.add(texture.toFloat()) // ToDo: Compact this
         }
 
-        fun createQuad(first: Vec3, second: Vec3, third: Vec3, fourth: Vec3) {
-            addToData(first, face.texturRightDown)
-            addToData(fourth, face.texturRightUp)
-            addToData(third, face.texturLeftUp)
-            addToData(third, face.texturLeftUp)
-            addToData(second, face.texturLeftDown)
-            addToData(first, face.texturRightDown)
+        fun createQuad(first: Vec3, second: Vec3, third: Vec3, fourth: Vec3, fifth: Vec2 = face.texturLeftDown, sixth: Vec2 = face.texturRightDown, seventh: Vec2 = face.texturRightUp, eighth: Vec2 = face.texturLeftUp) {
+            addToData(first, sixth)
+            addToData(fourth, seventh)
+            addToData(third, eighth)
+            addToData(third, eighth)
+            addToData(second, fifth)
+            addToData(first, sixth)
         }
 
         when (direction) {
             Directions.DOWN -> createQuad(positionDownLeftFront, positionDownLeftBack, positionDownRightBack, positionDownRightFront)
-            Directions.UP -> createQuad(positionUpLeftFront, positionUpLeftBack, positionUpRightBack, positionUpRightFront)
-            Directions.NORTH -> createQuad(positionDownLeftFront, positionUpLeftFront, positionUpRightFront, positionDownRightFront)
-            Directions.SOUTH -> createQuad(positionDownLeftBack, positionUpLeftBack, positionUpRightBack, positionDownRightBack)
-            Directions.WEST -> createQuad(positionUpLeftBack, positionDownLeftBack, positionDownLeftFront, positionUpLeftFront)
-            Directions.EAST -> createQuad(positionUpRightBack, positionDownRightBack, positionDownRightFront, positionUpRightFront)
+            Directions.UP -> createQuad(positionUpLeftFront, positionUpLeftBack, positionUpRightBack, positionUpRightFront) // ToDo
+            Directions.NORTH -> createQuad(positionDownLeftFront, positionUpLeftFront, positionUpRightFront, positionDownRightFront, face.texturRightDown, face.texturRightUp, face.texturLeftUp, face.texturLeftDown)
+            Directions.SOUTH -> createQuad(positionDownLeftBack, positionUpLeftBack, positionUpRightBack, positionDownRightBack, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
+            Directions.WEST -> createQuad(positionUpLeftBack, positionDownLeftBack, positionDownLeftFront, positionUpLeftFront, face.texturRightUp, face.texturRightDown, face.texturLeftDown, face.texturLeftUp)
+            Directions.EAST -> createQuad(positionUpRightBack, positionDownRightBack, positionDownRightFront, positionUpRightFront, face.texturLeftUp, face.texturLeftDown, face.texturRightDown, face.texturRightUp)
         }
 
         return data
+    }
+
+    fun isCullFace(direction: Directions): Boolean {
+        return faces[direction]?.cullFace == direction
+    }
+
+    fun getTexture(direction: Directions): String? {
+        return faces[direction]?.textureName
     }
 }

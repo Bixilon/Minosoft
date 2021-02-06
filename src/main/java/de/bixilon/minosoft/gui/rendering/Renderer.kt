@@ -6,6 +6,7 @@ import de.bixilon.minosoft.data.world.ChunkLocation
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.ChunkPreparer.prepareChunk
 import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec3.Vec3
@@ -16,12 +17,13 @@ import java.util.concurrent.Executors
 
 class Renderer(private val connection: Connection) {
     private val renderWindow: RenderWindow = RenderWindow(connection)
-    private val executor: ExecutorService = Executors.newFixedThreadPool(2, Util.getThreadFactory(String.format("Rendering#%d", connection.connectionId)))
+    private val latch = CountUpAndDownLatch(1)
+    private val executor: ExecutorService = Executors.newFixedThreadPool(4, Util.getThreadFactory(String.format("Rendering#%d", connection.connectionId)))
 
     fun start() {
         Thread({
             Log.info("Hello LWJGL " + Version.getVersion() + "!")
-            renderWindow.init()
+            renderWindow.init(latch)
             renderWindow.startLoop()
             renderWindow.exit()
         }, "Rendering").start()
@@ -36,6 +38,7 @@ class Renderer(private val connection: Connection) {
 
     fun prepareChunkSection(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection) {
         executor.execute {
+            latch.waitUntilZero()
             val data = prepareChunk(connection.player.world, chunkLocation, sectionHeight, section)
             val sectionMap = renderWindow.chunkSectionsToDraw[chunkLocation]!!
             renderWindow.renderQueue.add {

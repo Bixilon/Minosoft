@@ -17,7 +17,6 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.LinkedTreeMap;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.EntityClassMappings;
 import de.bixilon.minosoft.data.Mappings;
@@ -57,7 +56,6 @@ public class VersionMapping {
     private final HashBiMap<Integer, Particle> particleIdMap = HashBiMap.create(80);
     private final HashBiMap<Integer, Statistic> statisticIdMap = HashBiMap.create(80);
     private final HashBiMap<ModIdentifier, BlockModel> blockModels = HashBiMap.create(500);
-    private final LinkedTreeMap<String, Integer> textureIndices = new LinkedTreeMap<>();
     private Version version;
     private VersionMapping parentMapping;
     private HashMap<String, HashBiMap<String, Dimension>> dimensionIdentifierMap = new HashMap<>();
@@ -456,7 +454,7 @@ public class VersionMapping {
         } else {
             // model = new BlockModel(this.textureIndices, data);
         }
-        model = new BlockModel(parent, this.textureIndices, data);
+        model = new BlockModel(parent, data);
 
 
         this.blockModels.put(identifier, model);
@@ -484,7 +482,7 @@ public class VersionMapping {
             boolean ckecked = false;
             for (Block blockState : blockStates) {
                 if (blockState.bareEquals(state)) {
-                    blockState.setBlockModel(this.blockModels.get(new ModIdentifier(entry.get("model").getAsString())));
+                    blockState.setBlockModel(new BlockModel(this.blockModels.get(new ModIdentifier(entry.get("model").getAsString())), entry));
                     ckecked = true;
                 }
             }
@@ -690,7 +688,7 @@ public class VersionMapping {
         return this.particleIdMap.containsValue(identifier);
     }
 
-    public LinkedTreeMap<String, Integer> getTextureIndices() {
-        return this.textureIndices;
+    public HashBiMap<Integer, Block> getBlockMap() {
+        return this.blockMap;
     }
 }

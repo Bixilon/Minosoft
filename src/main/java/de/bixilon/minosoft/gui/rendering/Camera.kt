@@ -38,7 +38,11 @@ class Camera(private var fov: Float, private val windowId: Long) {
     }
 
     fun handleInput(deltaTime: Double) {
-        val cameraSpeed = movementSpeed * deltaTime
+        var cameraSpeed = movementSpeed * deltaTime
+
+        if (GLFW.glfwGetKey(windowId, GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS) {
+            cameraSpeed *= 5
+        }
         val currentY = cameraPosition.y
         if (GLFW.glfwGetKey(windowId, GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS) {
             cameraPosition = cameraPosition + cameraFront * cameraSpeed
