@@ -25,78 +25,41 @@ object ChunkPreparer {
         val east = world.allChunks[chunkLocation.getLocationByDirection(Directions.EAST)]?.sections?.get(sectionHeight)
 
         for ((position, block) in section.blocks) {
-            for (direction in Directions.DIRECTIONS) {
-                var blockToCheck: Block? = null
-                when (direction) {
-                    Directions.DOWN -> {
-                        if (position.y == 0) {
-                            below?.let {
-                                blockToCheck = it.getBlock(position.x, ProtocolDefinition.SECTION_HEIGHT_Y - 1, position.z)
-                            }
-                        }
-                    }
-                    Directions.UP -> {
-                        if (position.y == ProtocolDefinition.SECTION_HEIGHT_Y - 1) {
-                            above?.let {
-                                blockToCheck = it.getBlock(position.x, 0, position.z)
-                            }
-                        }
-                    }
-                    Directions.NORTH -> {
-                        if (position.z == 0) {
-                            north?.let {
-                                blockToCheck = it.getBlock(position.x, position.y, ProtocolDefinition.SECTION_WIDTH_Z - 1)
-                            }
-                        }
-                    }
-                    Directions.SOUTH -> {
-                        if (position.z == ProtocolDefinition.SECTION_WIDTH_Z - 1) {
-                            south?.let {
-                                blockToCheck = it.getBlock(position.x, position.y, 0)
-                            }
-                        }
-                    }
-                    Directions.WEST -> {
-                        if (position.x == 0) {
-                            west?.let {
-                                blockToCheck = it.getBlock(ProtocolDefinition.SECTION_WIDTH_X - 1, position.y, position.z)
-                            }
-                        }
-                    }
-                    Directions.EAST -> {
-                        if (position.x == ProtocolDefinition.SECTION_WIDTH_X - 1) {
-                            east?.let {
-                                blockToCheck = it.getBlock(0, position.y, position.z)
-                            }
-                        }
-                    }
-                }
-
-                fun drawFace() {
-                    block.blockModel.render(position, direction, data)
-                }
-
-                if (blockToCheck == null) {
-                    blockToCheck = section.getBlock(position.getLocationByDirection(direction))
-                }
-                if (blockToCheck != null) {
-                    val blockTransparent = block.blockModel.isTransparent(direction)
-                    val checkTransparent = blockToCheck!!.blockModel.isTransparent(direction)
-                    if (blockTransparent && checkTransparent) {
-                        continue
-                    }
-                    if (checkTransparent) {
-                        drawFace()
-                        continue
-                    }
-                    if (block.blockModel.isCullFace(direction) && blockToCheck!!.blockModel.isCullFace(direction.inverse())) {
-                        continue
-                    }
-                    // ToDo: Block rotations (this is buggy)
-                }
-                drawFace()
-
+            val blockBelow: Block? = if (position.y == 0 && below != null) {
+                below.getBlock(position.x, ProtocolDefinition.SECTION_HEIGHT_Y - 1, position.z)
+            } else {
+                section.getBlock(position.getLocationByDirection(Directions.DOWN))
             }
+            val blockAbove: Block? = if (position.y == ProtocolDefinition.SECTION_HEIGHT_Y - 1 && above != null) {
+                above.getBlock(position.x, 0, position.z)
+            } else {
+                section.getBlock(position.getLocationByDirection(Directions.UP))
+            }
+            val blockNorth: Block? = if (position.z == 0 && north != null) {
+                north.getBlock(position.x, position.y, ProtocolDefinition.SECTION_WIDTH_Z - 1)
+            } else {
+                section.getBlock(position.getLocationByDirection(Directions.NORTH))
+            }
+            val blockSouth: Block? = if (position.z == ProtocolDefinition.SECTION_WIDTH_Z - 1 && south != null) {
+                south.getBlock(position.x, position.y, 0)
+            } else {
+                section.getBlock(position.getLocationByDirection(Directions.SOUTH))
+            }
+            val blockWest: Block? = if (position.x == 0 && west != null) {
+                west.getBlock(ProtocolDefinition.SECTION_WIDTH_X - 1, position.y, position.x)
+            } else {
+                section.getBlock(position.getLocationByDirection(Directions.WEST))
+            }
+            val blockEast: Block? = if (position.x == ProtocolDefinition.SECTION_WIDTH_X - 1 && east != null) {
+                east.getBlock(0, position.y, position.x)
+            } else {
+                section.getBlock(position.getLocationByDirection(Directions.EAST))
+            }
+
+            fun drawBlock() {
+                block.blockModel.render(position, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
+            }
+            drawBlock()
         }
         return data.toFloatArray()
     }

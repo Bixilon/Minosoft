@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Location
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkLocation
@@ -64,6 +65,12 @@ class Renderer(private val connection: Connection) {
     fun teleport(position: Location) {
         renderWindow.renderQueue.add {
             renderWindow.camera.setPosition(Vec3(position.x, position.y, position.z))
+        }
+    }
+
+    fun rotate(rotation: EntityRotation) {
+        renderWindow.renderQueue.add {
+            renderWindow.camera.setRotation(rotation.yaw.toDouble(), rotation.pitch.toDouble())
         }
     }
 

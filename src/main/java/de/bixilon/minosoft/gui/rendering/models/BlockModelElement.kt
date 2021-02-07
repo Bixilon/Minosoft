@@ -13,6 +13,8 @@ open class BlockModelElement(data: JsonObject) {
     private var from: Vec3 = Vec3(0, 0, 0)
     private var to: Vec3 = Vec3(16, 16, 16)
     private val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
+    val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
+    var fullFace = false
 
     init {
         data["from"]?.let {
@@ -24,10 +26,47 @@ open class BlockModelElement(data: JsonObject) {
             to = Vec3(array[0].asFloat, array[1].asFloat, array[2].asFloat)
         }
         data["faces"]?.let {
-            for ((direction, json) in it.asJsonObject.entrySet()) {
-                faces[Directions.valueOf(direction.toUpperCase())] = BlockModelFace(json.asJsonObject)
+            for ((directionName, json) in it.asJsonObject.entrySet()) {
+                val direction = Directions.valueOf(directionName.toUpperCase())
+                when (direction) {
+                    Directions.DOWN -> {
+                        if ((from.y == 0f || to.y == 0f) && ((from.x == 0f && to.z == 16f) || (from.z == 16f && to.x == 0f))) {
+                            fullFace = true
+                        }
+                    }
+                    Directions.UP -> {
+                        if ((from.y == 16f || to.y == 16f) && ((from.x == 0f && to.z == 16f) || (from.z == 16f && to.x == 0f))) {
+                            fullFace = true
+                        }
+                    }
+                    Directions.NORTH -> {
+                        if ((from.x == 0f || to.x == 0f) && ((from.y == 0f && to.y == 16f) || (from.z == 16f && to.z == 0f))) {
+                            fullFace = true
+                        }
+                    }
+                    Directions.SOUTH -> {
+                        if ((from.x == 16f || to.x == 16f) && ((from.y == 0f && to.y == 16f) || (from.z == 16f && to.z == 0f))) {
+                            fullFace = true
+                        }
+                    }
+                    Directions.EAST -> {
+                        if ((from.z == 0f || to.z == 0f) && ((from.y == 0f && to.y == 16f) || (from.x == 16f && to.x == 0f))) {
+                            fullFace = true
+                        }
+                    }
+                    Directions.WEST -> {
+                        if ((from.z == 16f || to.z == 16f) && ((from.y == 0f && to.y == 16f) || (from.x == 16f && to.x == 0f))) {
+                            fullFace = true
+                        }
+                    }
+                }
+                faces[direction] = BlockModelFace(json.asJsonObject)
+                if (fullFace) {
+                    fullFaceDirections.add(direction)
+                }
             }
         }
+
     }
 
     private val positionUpLeftFront = Vec3(BlockModel.positionToFloat(from.x), BlockModel.positionToFloat(to.y), BlockModel.positionToFloat(from.z))
@@ -40,20 +79,24 @@ open class BlockModelElement(data: JsonObject) {
     private val positionDownRightFront = Vec3(BlockModel.positionToFloat(to.x), BlockModel.positionToFloat(from.y), BlockModel.positionToFloat(from.z))
     private val positionDownRightBack = Vec3(BlockModel.positionToFloat(to.x), BlockModel.positionToFloat(from.y), BlockModel.positionToFloat(to.z))
 
-    open fun render(textureMapping: MutableMap<String, Texture>, model: Mat4, direction: Directions, rotation: Vec3, data: MutableList<Float>) {
+    open fun render(textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, rotation: Vec3, data: MutableList<Float>) {
         val face = faces[direction] ?: return // Not our face
 
-        val texture = textureMapping[face.textureName]?.id ?: TextureArray.DEBUG_TEXTURE.id
+        val texture = textureMapping[face.textureName] ?: TextureArray.DEBUG_TEXTURE
+        if (texture.isTransparent) {
+            return
+        }
+
 
         fun addToData(vec3: Vec3, textureCoordinates: Vec2) {
             val input = Vec4(vec3, 1.0f)
-            val output = model * input
+            val output = modelMatrix * input
             data.add(output.x)
             data.add(output.y)
             data.add(output.z)
             data.add(textureCoordinates.x)
             data.add(textureCoordinates.y)
-            data.add(texture.toFloat()) // ToDo: Compact this
+            data.add(texture.id.toFloat()) // ToDo: Compact this
         }
 
         fun createQuad(vertexPosition1: Vec3, vertexPosition2: Vec3, vertexPosition3: Vec3, vertexPosition4: Vec3, texturePosition1: Vec2, texturePosition2: Vec2, texturePosition3: Vec2, texturePosition4: Vec2) {

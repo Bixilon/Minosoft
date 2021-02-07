@@ -34,7 +34,7 @@ class Camera(private var fov: Float, private val windowId: Long) {
         } else if (this.pitch < -89.0) {
             this.pitch = -89.0
         }
-        cameraFront = Vec3((cos(glm.radians(yaw)) * cos(glm.radians(pitch))).toFloat(), sin(glm.radians(pitch)).toFloat(), (sin(glm.radians(yaw)) * cos(glm.radians(pitch))).toFloat()).normalize()
+        setRotation(yaw, pitch)
     }
 
     fun handleInput(deltaTime: Double) {
@@ -56,7 +56,7 @@ class Camera(private var fov: Float, private val windowId: Long) {
         if (GLFW.glfwGetKey(windowId, GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS) {
             cameraPosition = cameraPosition + (cameraFront.cross(CAMERA_UP_VEC3).normalize()) * cameraSpeed
         }
-        this.cameraPosition.y = currentY // stay on xz line when moving (aka. no clip)
+        this.cameraPosition.y = currentY // stay on xz line when moving (aka. no clip): ToDo: make movement not slower when you look up
         if (GLFW.glfwGetKey(windowId, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS) {
             cameraPosition = cameraPosition - CAMERA_UP_VEC3 * cameraSpeed
         }
@@ -87,6 +87,10 @@ class Camera(private var fov: Float, private val windowId: Long) {
 
     fun setPosition(position: Vec3) {
         cameraPosition = position
+    }
+
+    fun setRotation(yaw: Double, pitch: Double) {
+        cameraFront = Vec3((cos(glm.radians(yaw)) * cos(glm.radians(pitch))).toFloat(), sin(glm.radians(pitch)).toFloat(), (sin(glm.radians(yaw)) * cos(glm.radians(pitch))).toFloat()).normalize()
     }
 
     companion object {

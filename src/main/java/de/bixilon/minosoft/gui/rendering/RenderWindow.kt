@@ -60,15 +60,6 @@ class RenderWindow(private val connection: Connection) {
         }
         camera = Camera(60f, windowId)
 
-        glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
-            override fun invoke(window: Long, width: Int, height: Int) {
-                glViewport(0, 0, width, height)
-                screenWidth = width
-                screenHeight = height
-                camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkShader)
-            }
-        })
-
         glfwSetKeyCallback(this.windowId) { windowId: Long, key: Int, scanCode: Int, action: Int, mods: Int ->
             run {
                 if (action != GLFW_RELEASE) {
@@ -126,6 +117,16 @@ class RenderWindow(private val connection: Connection) {
 
         camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkShader)
         camera.calculateViewMatrix(chunkShader)
+
+        glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
+            override fun invoke(window: Long, width: Int, height: Int) {
+                glViewport(0, 0, width, height)
+                screenWidth = width
+                screenHeight = height
+                camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkShader)
+            }
+        })
+
         latch?.countDown()
     }
 

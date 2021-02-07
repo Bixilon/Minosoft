@@ -2,6 +2,7 @@ package de.bixilon.minosoft.gui.rendering.models
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.world.InChunkSectionLocation
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.glm
@@ -12,6 +13,7 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
     private val textures: MutableMap<String, String> = parent?.textures?.toMutableMap() ?: mutableMapOf()
     private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
     private var elements: MutableList<BlockModelElement> = parent?.elements?.toMutableList() ?: mutableListOf()
+    private val fullFaceDirections: MutableSet<Directions> = parent?.fullFaceDirections?.toMutableSet() ?: mutableSetOf()
     private var rotation: Vec3
     private var uvLock = false // ToDo
 
@@ -28,41 +30,54 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
         }
         json["elements"]?.let { it ->
             elements.clear()
+            fullFaceDirections.clear()
             for (element in it.asJsonArray) {
-                elements.add(BlockModelElement(element.asJsonObject))
+                val blockModelElement = BlockModelElement(element.asJsonObject)
+                elements.add(blockModelElement)
+                fullFaceDirections.addAll(blockModelElement.fullFaceDirections)
             }
         }
-        var rotateX = parent?.rotation?.x ?: 0
-        var rotateY = parent?.rotation?.y ?: 0
-        var rotateZ = parent?.rotation?.z ?: 0
+        var rotateX = parent?.rotation?.x ?: 0f
+        var rotateY = parent?.rotation?.y ?: 0f
+        var rotateZ = parent?.rotation?.z ?: 0f
         json["x"]?.let {
-            rotateX = it.asInt
+            rotateX = it.asFloat
         }
         json["y"]?.let {
-            rotateY = it.asInt
+            rotateY = it.asFloat
         }
         json["z"]?.let {
-            rotateZ = it.asInt
+            rotateZ = it.asFloat
         }
         json["uvlock"]?.let {
             uvLock = it.asBoolean
         }
-        rotation = Vec3(rotateX, rotateY, rotateZ)
+        rotation = glm.radians(Vec3(rotateX, rotateY, rotateZ))
     }
 
 
-    open fun render(position: InChunkSectionLocation, direction: Directions, data: MutableList<Float>) {
-        var model = Mat4().translate(Vec3(position.x, position.y, position.z))
+    open fun render(position: InChunkSectionLocation, data: MutableList<Float>, neighbourBlocks: Array<Block?>) {
+        var modelMatrix = Mat4().translate(Vec3(position.x, position.y, position.z))
         if (rotation.x > 0 || rotation.y > 0 || rotation.z > 0) {
-            model = model.rotate(glm.radians(rotation.x), Vec3(-1, 0, 0))
-                .rotate(glm.radians(rotation.y), Vec3(0, -1, 0))
-                .rotate(glm.radians(rotation.z), Vec3(0, 0, -1))
-            // ToDo: this should be made easier/effizienter
+            modelMatrix = modelMatrix.rotate(rotation.x, Vec3(-1, 0, 0))
+                .rotate(rotation.y, Vec3(0, -1, 0))
+                .rotate(rotation.z, Vec3(0, 0, -1))
+            // ToDo: this should be made easier/more efficient
         }
 
 
-        for (element in elements) {
-            element.render(textureMapping, model, direction, rotation, data)
+        for (direction in Directions.DIRECTIONS) {
+            for (element in elements) {
+                val blockFullFace = fullFaceDirections.contains(direction)
+                val neighbourBlockFullFace = neighbourBlocks[direction.ordinal]?.blockModel?.fullFaceDirections?.contains(direction.inverse()) == true
+                if (blockFullFace && neighbourBlockFullFace) {
+                    continue
+                }
+                if (!blockFullFace && neighbourBlockFullFace) {
+                    continue
+                }
+                element.render(textureMapping, modelMatrix, direction, rotation, data)
+            }
         }
     }
 
