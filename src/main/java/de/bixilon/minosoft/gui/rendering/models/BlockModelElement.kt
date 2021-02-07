@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.models
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -8,6 +9,8 @@ import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
+import kotlin.math.cos
+import kotlin.math.sin
 
 open class BlockModelElement(data: JsonObject) {
     private var from: Vec3 = Vec3(0, 0, 0)
@@ -15,6 +18,7 @@ open class BlockModelElement(data: JsonObject) {
     private val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
     val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
     var fullFace = false
+    private var positions: Array<Vec3>
 
     init {
         data["from"]?.let {
@@ -66,18 +70,56 @@ open class BlockModelElement(data: JsonObject) {
                 }
             }
         }
+        positions = arrayOf(
+            Vec3(from),
+            Vec3(to.x,      from.y,     from.z),
+            Vec3(from.x,    from.y,     to.z),
+            Vec3(to.x,      from.y,     to.z),
+            Vec3(from.x,    to.y,       from.z),
+            Vec3(to.x,      to.y,       from.z),
+            Vec3(from.x,    to.y,       to.z),
+            Vec3(to),
+        )
 
+        fun getRotatedValues(x: Float, y: Float, sin: Double, cos: Double): Pair<Float, Float> {
+            return Pair((x * cos - y * sin).toFloat(), (x * sin + y * cos).toFloat())
+        }
+
+        fun rotate(axis: String, angle: Double, origin: Vec3) {
+            // TODO: optimize for 90deg, 180deg, 270deg rotations
+            val sin = sin(Math.toRadians(angle))
+            val cos = cos(Math.toRadians(angle))
+            for ((i, position) in positions.withIndex()) {
+                val transformedPosition = position - origin
+                when(axis) {
+                    "x" -> run {
+                        val rotatedValues = getRotatedValues(transformedPosition.y, transformedPosition.z, sin, cos)
+                        transformedPosition.y = rotatedValues.first
+                        transformedPosition.z = rotatedValues.second
+                    }
+                    "y" -> run {
+                        val rotatedValues = getRotatedValues(transformedPosition.x, transformedPosition.z, sin, cos)
+                        transformedPosition.x = rotatedValues.first
+                        transformedPosition.z = rotatedValues.second
+                    }
+                    "z" -> run {
+                        val rotatedValues = getRotatedValues(transformedPosition.x, transformedPosition.y, sin, cos)
+                        transformedPosition.x = rotatedValues.first
+                        transformedPosition.y = rotatedValues.second
+                    }
+                    else -> throw IllegalArgumentException("unexpected axis: $axis")
+                }
+                positions[i] = transformedPosition + origin
+            }
+        }
+        data["rotation"]?.let {
+            val rotation = it.asJsonObject
+            rotate(rotation["axis"].asString, rotation["angle"].asDouble, jsonArrayToVec3(rotation["origin"].asJsonArray))
+        }
+        for ((i, position) in positions.withIndex()) {
+            positions[i] = BlockModel.transformPosition(position)
+        }
     }
-
-    private val positionUpLeftFront = Vec3(BlockModel.positionToFloat(from.x), BlockModel.positionToFloat(to.y), BlockModel.positionToFloat(from.z))
-    private val positionUpLeftBack = Vec3(BlockModel.positionToFloat(from.x), BlockModel.positionToFloat(to.y), BlockModel.positionToFloat(to.z))
-    private val positionUpRightFront = Vec3(BlockModel.positionToFloat(to.x), BlockModel.positionToFloat(to.y), BlockModel.positionToFloat(from.z))
-    private val positionUpRightBack = Vec3(BlockModel.positionToFloat(to.x), BlockModel.positionToFloat(to.y), BlockModel.positionToFloat(to.z))
-
-    private val positionDownLeftFront = Vec3(BlockModel.positionToFloat(from.x), BlockModel.positionToFloat(from.y), BlockModel.positionToFloat(from.z))
-    private val positionDownLeftBack = Vec3(BlockModel.positionToFloat(from.x), BlockModel.positionToFloat(from.y), BlockModel.positionToFloat(to.z))
-    private val positionDownRightFront = Vec3(BlockModel.positionToFloat(to.x), BlockModel.positionToFloat(from.y), BlockModel.positionToFloat(from.z))
-    private val positionDownRightBack = Vec3(BlockModel.positionToFloat(to.x), BlockModel.positionToFloat(from.y), BlockModel.positionToFloat(to.z))
 
     open fun render(textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, rotation: Vec3, data: MutableList<Float>) {
         val face = faces[direction] ?: return // Not our face
@@ -86,7 +128,6 @@ open class BlockModelElement(data: JsonObject) {
         if (texture.isTransparent) {
             return
         }
-
 
         fun addToData(vec3: Vec3, textureCoordinates: Vec2) {
             val input = Vec4(vec3, 1.0f)
@@ -99,22 +140,24 @@ open class BlockModelElement(data: JsonObject) {
             data.add(texture.id.toFloat()) // ToDo: Compact this
         }
 
-        fun createQuad(vertexPosition1: Vec3, vertexPosition2: Vec3, vertexPosition3: Vec3, vertexPosition4: Vec3, texturePosition1: Vec2, texturePosition2: Vec2, texturePosition3: Vec2, texturePosition4: Vec2) {
-            addToData(vertexPosition1, texturePosition2)
-            addToData(vertexPosition4, texturePosition3)
-            addToData(vertexPosition3, texturePosition4)
-            addToData(vertexPosition3, texturePosition4)
-            addToData(vertexPosition2, texturePosition1)
-            addToData(vertexPosition1, texturePosition2)
+        fun createQuad(drawPositions: Array<Vec3>, texturePosition1: Vec2, texturePosition2: Vec2, texturePosition3: Vec2, texturePosition4: Vec2) {
+            addToData(drawPositions[0], texturePosition2)
+            addToData(drawPositions[3], texturePosition3)
+            addToData(drawPositions[2], texturePosition4)
+            addToData(drawPositions[2], texturePosition4)
+            addToData(drawPositions[1], texturePosition1)
+            addToData(drawPositions[0], texturePosition2)
         }
 
+        val positionTemplate = FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
+        val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
         when (direction) {
-            Directions.DOWN -> createQuad(positionDownLeftFront, positionDownLeftBack, positionDownRightBack, positionDownRightFront, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
-            Directions.UP -> createQuad(positionUpLeftFront, positionUpLeftBack, positionUpRightBack, positionUpRightFront, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
-            Directions.NORTH -> createQuad(positionDownLeftFront, positionUpLeftFront, positionUpRightFront, positionDownRightFront, face.texturRightDown, face.texturRightUp, face.texturLeftUp, face.texturLeftDown)
-            Directions.SOUTH -> createQuad(positionDownLeftBack, positionUpLeftBack, positionUpRightBack, positionDownRightBack, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
-            Directions.WEST -> createQuad(positionUpLeftBack, positionDownLeftBack, positionDownLeftFront, positionUpLeftFront, face.texturRightUp, face.texturRightDown, face.texturLeftDown, face.texturLeftUp)
-            Directions.EAST -> createQuad(positionUpRightBack, positionDownRightBack, positionDownRightFront, positionUpRightFront, face.texturLeftUp, face.texturLeftDown, face.texturRightDown, face.texturRightUp)
+            Directions.DOWN ->  createQuad(drawPositions, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
+            Directions.UP ->    createQuad(drawPositions, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
+            Directions.NORTH -> createQuad(drawPositions, face.texturRightDown, face.texturRightUp, face.texturLeftUp, face.texturLeftDown)
+            Directions.SOUTH -> createQuad(drawPositions, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
+            Directions.WEST ->  createQuad(drawPositions, face.texturRightUp, face.texturRightDown, face.texturLeftDown, face.texturLeftUp)
+            Directions.EAST ->  createQuad(drawPositions, face.texturLeftUp, face.texturLeftDown, face.texturRightDown, face.texturRightUp)
         }
     }
 
@@ -124,5 +167,13 @@ open class BlockModelElement(data: JsonObject) {
 
     fun getTexture(direction: Directions): String? {
         return faces[direction]?.textureName
+    }
+
+    companion object {
+        fun jsonArrayToVec3(array: JsonArray) : Vec3 {
+            return Vec3(array[0].asFloat, array[1].asFloat, array[2].asFloat)
+        }
+
+        val FACE_POSITION_MAP_TEMPLATE = arrayOf(intArrayOf(2, 3, 1, 0), intArrayOf(4, 5, 7, 6), intArrayOf(1, 5, 4, 0), intArrayOf(2, 6, 7, 3), intArrayOf(6, 2, 0, 4), intArrayOf(5, 1, 3, 7))
     }
 }

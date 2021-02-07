@@ -137,8 +137,12 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
 
 
     companion object {
-        fun positionToFloat(uv: Float): Float {
-            return (uv - 8f) / 16f
+        fun transformPosition(position: Vec3) : Vec3 {
+            fun positionToFloat(uv: Float): Float {
+                return (uv - 8f) / 16f
+            }
+
+            return Vec3(positionToFloat(position.x), positionToFloat(position.y), positionToFloat(position.z))
         }
     }
 
