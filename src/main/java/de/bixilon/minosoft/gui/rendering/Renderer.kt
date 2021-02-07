@@ -64,7 +64,7 @@ class Renderer(private val connection: Connection) {
 
     fun teleport(position: Location) {
         renderWindow.renderQueue.add {
-            renderWindow.camera.setPosition(Vec3(position.x, position.y, position.z))
+            renderWindow.camera.cameraPosition = Vec3(position.x, position.y, position.z)
         }
     }
 

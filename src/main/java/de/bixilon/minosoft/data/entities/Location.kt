@@ -13,9 +13,12 @@
 package de.bixilon.minosoft.data.entities
 
 import de.bixilon.minosoft.data.world.BlockPosition
+import glm_.vec3.Vec3
 
 
 data class Location(val x: Double, val y: Double, val z: Double) {
+
+    constructor(position: Vec3) : this(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
 
     override fun toString(): String {
         return "($x $y $z)"

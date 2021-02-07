@@ -12,11 +12,11 @@ class Camera(private var fov: Float, private val windowId: Long) {
     private var mouseSensitivity = 0.1
     private var movementSpeed = 7
     private var cameraFront = Vec3(0.0f, 0.0f, -1.0f)
-    private var cameraPosition = Vec3(0.0f, 0.0f, 3.0f)
+    var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
     private var lastMouseX = 0.0
     private var lastMouseY = 0.0
-    private var yaw = 0.0
-    private var pitch = 0.0
+    var yaw = 0.0
+    var pitch = 0.0
 
     fun mouseCallback(xPos: Double, yPos: Double) {
         var xOffset = xPos - this.lastMouseX
@@ -83,10 +83,6 @@ class Camera(private var fov: Float, private val windowId: Long) {
 
     fun setFOV(fov: Float) {
         this.fov = fov
-    }
-
-    fun setPosition(position: Vec3) {
-        cameraPosition = position
     }
 
     fun setRotation(yaw: Double, pitch: Double) {

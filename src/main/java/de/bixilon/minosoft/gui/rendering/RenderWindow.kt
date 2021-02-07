@@ -1,9 +1,12 @@
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.Location
 import de.bixilon.minosoft.data.world.ChunkLocation
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import org.lwjgl.*
 import org.lwjgl.glfw.Callbacks
@@ -135,6 +138,8 @@ class RenderWindow(private val connection: Connection) {
         var lastCalcTime = glfwGetTime()
         var frameTimeLastCalc = 0.0
 
+        var lastPositionChangeTime = 0.0
+
         while (!glfwWindowShouldClose(windowId)) {
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) // clear the framebuffer
 
@@ -170,6 +175,11 @@ class RenderWindow(private val connection: Connection) {
                 frameTimeLastCalc = 0.0
             }
             framesLastSecond++
+
+            if (glfwGetTime() - lastPositionChangeTime > 0.05) {
+                // ToDo: Replace this with proper movement and only send it, when out position changed
+                connection.sendPacket(PacketPlayerPositionAndRotationSending(Location(camera.cameraPosition), EntityRotation(camera.yaw, camera.pitch), false))
+            }
 
 
             for (renderQueueElement in renderQueue) {
