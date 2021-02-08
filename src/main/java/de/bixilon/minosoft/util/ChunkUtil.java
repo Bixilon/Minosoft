@@ -160,9 +160,18 @@ public final class ChunkUtil {
                 for (int nibbleZ = 0; nibbleZ < ProtocolDefinition.SECTION_WIDTH_Z; nibbleZ++) {
                     for (int nibbleX = 0; nibbleX < ProtocolDefinition.SECTION_WIDTH_X; nibbleX++) {
                         int blockNumber = (((nibbleY * ProtocolDefinition.SECTION_HEIGHT_Y) + nibbleZ) * ProtocolDefinition.SECTION_WIDTH_X) + nibbleX;
-                        int startLong = (blockNumber * palette.getBitsPerBlock()) / 64;
-                        int startOffset = (blockNumber * palette.getBitsPerBlock()) % 64;
-                        int endLong = ((blockNumber + 1) * palette.getBitsPerBlock() - 1) / 64;
+                        int startLong;
+                        int startOffset;
+                        int endLong;
+
+                        if (buffer.getVersionId() < V_20W49A) { // ToDo: When did this changed? is just a guess
+                            startLong = (blockNumber * palette.getBitsPerBlock()) / 64;
+                            startOffset = (blockNumber * palette.getBitsPerBlock()) % 64;
+                            endLong = ((blockNumber + 1) * palette.getBitsPerBlock() - 1) / 64;
+                        } else {
+                            startLong = endLong = blockNumber / (64 / palette.getBitsPerBlock());
+                            startOffset = (blockNumber % (64 / palette.getBitsPerBlock())) * palette.getBitsPerBlock();
+                        }
 
                         int blockId;
                         if (startLong == endLong) {
