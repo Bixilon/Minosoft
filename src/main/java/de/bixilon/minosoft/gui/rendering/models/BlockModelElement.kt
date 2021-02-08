@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
+import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -87,11 +88,11 @@ open class BlockModelElement(data: JsonObject) {
 
         fun rotate(axis: String, angle: Double, origin: Vec3) {
             // TODO: optimize for 90deg, 180deg, 270deg rotations
-            val sin = sin(Math.toRadians(angle))
-            val cos = cos(Math.toRadians(angle))
+            val sin = sin(glm.radians(angle))
+            val cos = cos(glm.radians(angle))
             for ((i, position) in positions.withIndex()) {
                 val transformedPosition = position - origin
-                when(axis) {
+                when (axis) {
                     "x" -> run {
                         val rotatedValues = getRotatedValues(transformedPosition.y, transformedPosition.z, sin, cos)
                         transformedPosition.y = rotatedValues.first
