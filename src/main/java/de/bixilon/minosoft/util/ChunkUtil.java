@@ -164,7 +164,7 @@ public final class ChunkUtil {
                         int startOffset;
                         int endLong;
 
-                        if (buffer.getVersionId() < V_20W49A) { // ToDo: When did this changed? is just a guess
+                        if (buffer.getVersionId() < V_1_16) { // ToDo: When did this changed? is just a guess
                             startLong = (blockNumber * palette.getBitsPerBlock()) / 64;
                             startOffset = (blockNumber * palette.getBitsPerBlock()) % 64;
                             endLong = ((blockNumber + 1) * palette.getBitsPerBlock() - 1) / 64;
