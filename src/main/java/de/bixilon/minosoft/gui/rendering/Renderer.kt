@@ -45,7 +45,7 @@ class Renderer(private val connection: Connection) {
             renderWindow.renderQueue.add {
                 sectionMap[sectionHeight]?.unload()
                 sectionMap.remove(sectionHeight)
-                sectionMap[sectionHeight] = Mesh(data, Vec3(chunkLocation.x, sectionHeight, chunkLocation.z))
+                sectionMap[sectionHeight] = WorldMesh(data, Vec3(chunkLocation.x, sectionHeight, chunkLocation.z))
             }
         }
     }

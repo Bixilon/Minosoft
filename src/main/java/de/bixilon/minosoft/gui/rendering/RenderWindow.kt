@@ -2,8 +2,12 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Location
+import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.world.ChunkLocation
+import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.Font2DMesh
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
@@ -27,7 +31,9 @@ class RenderWindow(private val connection: Connection) {
     private var screenHeight = 600
     private var polygonEnabled = false
     private lateinit var chunkShader: Shader
+    private lateinit var fontShader: Shader
     private lateinit var minecraftTextures: TextureArray
+    private lateinit var fontAtlasTexture: TextureArray
     private var windowId: Long = 0
     private var deltaTime = 0.0 // time between current frame and last frame
 
@@ -36,7 +42,8 @@ class RenderWindow(private val connection: Connection) {
 
     val renderQueue = ConcurrentLinkedQueue<Runnable>()
 
-    val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, Mesh>>()
+    val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, WorldMesh>>()
+    val font2DToDraw = ConcurrentLinkedQueue<Font2DMesh>()
 
 
     fun init(latch: CountUpAndDownLatch? = null) {
@@ -110,16 +117,34 @@ class RenderWindow(private val connection: Connection) {
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-        minecraftTextures = TextureArray(connection.version.assetsManager, connection.version.mapping.blockMap.values)
+        minecraftTextures = TextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockMap.values))
         minecraftTextures.load()
+        fontAtlasTexture = TextureArray(connection.version.assetsManager, listOf(Texture("font/unicode_page_00", 0)), 256)
+        fontAtlasTexture.load()
 
         chunkShader = Shader("chunk_vertex.glsl", "chunk_fragment.glsl")
         chunkShader.load()
         chunkShader.use()
-        chunkShader.setInt("texture0", 0)
 
         camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkShader)
         camera.calculateViewMatrix(chunkShader)
+
+        fontShader = Shader("font_vertex.glsl", "font_fragment.glsl")
+        fontShader.load()
+        fontShader.use()
+        fontShader.setFloat("atlasSize", 256f)
+
+        val font = Font()
+        val char = font.chars['§']!!
+        font2DToDraw.add(Font2DMesh(floatArrayOf(
+            -0.5f, -0.5f, char.column * 16f, char.row * 16f + char.width, font.atlasOffset + char.atlasPage.toFloat(),
+            -0.5f, 0f, char.column * 16f, char.row * 16f, font.atlasOffset + char.atlasPage.toFloat(),
+            0f, -0.5f, char.column * 16f + char.width, char.row * 16f + char.width, font.atlasOffset + char.atlasPage.toFloat(),
+            0f, -0.5f, char.column * 16f + char.width, char.row * 16f + char.width, font.atlasOffset + char.atlasPage.toFloat(),
+            -0.5f, 0f, char.column * 16f, char.row * 16f, font.atlasOffset + char.atlasPage.toFloat(),
+            0f, 0f, char.column * 16f + char.width, char.row * 16f, font.atlasOffset + char.atlasPage.toFloat(),
+        )))
+
 
         glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
             override fun invoke(window: Long, width: Int, height: Int) {
@@ -148,6 +173,8 @@ class RenderWindow(private val connection: Connection) {
             deltaTime = currentFrame - lastFrame
             lastFrame = currentFrame
 
+            glEnable(GL_DEPTH_TEST)
+
             minecraftTextures.use(GL_TEXTURE0)
 
             chunkShader.use()
@@ -158,6 +185,15 @@ class RenderWindow(private val connection: Connection) {
                 for ((_, mesh) in map) {
                     mesh.draw(chunkShader)
                 }
+            }
+
+            glDisable(GL_DEPTH_TEST)
+            fontAtlasTexture.use(GL_TEXTURE0)
+
+            fontShader.use()
+
+            for (font in font2DToDraw) {
+                font.draw()
             }
 
             glfwSwapBuffers(windowId)
@@ -179,6 +215,7 @@ class RenderWindow(private val connection: Connection) {
             if (glfwGetTime() - lastPositionChangeTime > 0.05) {
                 // ToDo: Replace this with proper movement and only send it, when out position changed
                 connection.sendPacket(PacketPlayerPositionAndRotationSending(Location(camera.cameraPosition), EntityRotation(camera.yaw, camera.pitch), false))
+                lastPositionChangeTime = glfwGetTime()
             }
 
 
@@ -206,5 +243,17 @@ class RenderWindow(private val connection: Connection) {
             GL_FILL
         })
         polygonEnabled = !polygonEnabled
+    }
+
+    private fun resolveBlockTextureIds(blocks: Set<Block>): List<Texture> {
+        val textures: MutableList<Texture> = mutableListOf()
+        textures.add(TextureArray.DEBUG_TEXTURE)
+        val textureMap: MutableMap<String, Texture> = mutableMapOf()
+        textureMap[TextureArray.DEBUG_TEXTURE.name] = TextureArray.DEBUG_TEXTURE
+
+        for (block in blocks) {
+            block.blockModel?.resolveTextures(textures, textureMap)
+        }
+        return textures
     }
 }

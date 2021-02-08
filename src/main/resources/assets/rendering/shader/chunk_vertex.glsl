@@ -3,7 +3,6 @@ layout (location = 0) in vec3 inPosition;
 layout (location = 1) in vec2 textureIndex;
 layout (location = 2) in float textureLayer;
 
-out vec3 vertexColor;
 out vec3 passTextureCoordinates;
 
 
