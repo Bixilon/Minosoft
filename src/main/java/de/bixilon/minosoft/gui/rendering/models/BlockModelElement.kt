@@ -2,6 +2,7 @@ package de.bixilon.minosoft.gui.rendering.models
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
@@ -10,8 +11,6 @@ import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
-import kotlin.math.cos
-import kotlin.math.sin
 
 open class BlockModelElement(data: JsonObject) {
     private var from: Vec3 = Vec3(0, 0, 0)
@@ -86,36 +85,35 @@ open class BlockModelElement(data: JsonObject) {
             return Pair((x * cos - y * sin).toFloat(), (x * sin + y * cos).toFloat())
         }
 
-        fun rotate(axis: String, angle: Double, origin: Vec3) {
+        fun rotate(axis: Axes, angle: Double, origin: Vec3) {
             // TODO: optimize for 90deg, 180deg, 270deg rotations
-            val sin = sin(glm.radians(angle))
-            val cos = cos(glm.radians(angle))
+            val sin = glm.sin(glm.radians(angle))
+            val cos = glm.cos(glm.radians(angle))
             for ((i, position) in positions.withIndex()) {
                 val transformedPosition = position - origin
                 when (axis) {
-                    "x" -> run {
+                    Axes.X -> {
                         val rotatedValues = getRotatedValues(transformedPosition.y, transformedPosition.z, sin, cos)
                         transformedPosition.y = rotatedValues.first
                         transformedPosition.z = rotatedValues.second
                     }
-                    "y" -> run {
+                    Axes.Y -> {
                         val rotatedValues = getRotatedValues(transformedPosition.x, transformedPosition.z, sin, cos)
                         transformedPosition.x = rotatedValues.first
                         transformedPosition.z = rotatedValues.second
                     }
-                    "z" -> run {
+                    Axes.Z -> {
                         val rotatedValues = getRotatedValues(transformedPosition.x, transformedPosition.y, sin, cos)
                         transformedPosition.x = rotatedValues.first
                         transformedPosition.y = rotatedValues.second
                     }
-                    else -> throw IllegalArgumentException("unexpected axis: $axis")
                 }
                 positions[i] = transformedPosition + origin
             }
         }
         data["rotation"]?.let {
             val rotation = it.asJsonObject
-            rotate(rotation["axis"].asString, rotation["angle"].asDouble, jsonArrayToVec3(rotation["origin"].asJsonArray))
+            rotate(Axes.valueOf(rotation["axis"].asString.toUpperCase()), rotation["angle"].asDouble, jsonArrayToVec3(rotation["origin"].asJsonArray))
         }
         for ((i, position) in positions.withIndex()) {
             positions[i] = BlockModel.transformPosition(position)

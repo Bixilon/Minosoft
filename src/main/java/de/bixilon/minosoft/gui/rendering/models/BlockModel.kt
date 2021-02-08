@@ -57,14 +57,11 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
 
 
     open fun render(position: InChunkSectionLocation, data: MutableList<Float>, neighbourBlocks: Array<Block?>) {
-        var modelMatrix = Mat4().translate(Vec3(position.x, position.y, position.z))
-        if (rotation.x > 0 || rotation.y > 0 || rotation.z > 0) {
-            modelMatrix = modelMatrix.rotate(rotation.x, Vec3(-1, 0, 0))
-                .rotate(rotation.y, Vec3(0, -1, 0))
-                .rotate(rotation.z, Vec3(0, 0, -1))
-            // ToDo: this should be made easier/more efficient
-        }
-
+        val modelMatrix = Mat4().translate(Vec3(position.x, position.y, position.z))
+            .rotate(rotation.x, Vec3(-1, 0, 0))
+            .rotate(rotation.y, Vec3(0, -1, 0))
+            .rotate(rotation.z, Vec3(0, 0, -1))
+        // ToDo: this should be made easier/more efficient
 
         for (direction in Directions.DIRECTIONS) {
             for (element in elements) {
@@ -137,7 +134,7 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
 
 
     companion object {
-        fun transformPosition(position: Vec3) : Vec3 {
+        fun transformPosition(position: Vec3): Vec3 {
             fun positionToFloat(uv: Float): Float {
                 return (uv - 8f) / 16f
             }
