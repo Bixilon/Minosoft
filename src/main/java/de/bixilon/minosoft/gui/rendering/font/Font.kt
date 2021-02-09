@@ -1,17 +1,44 @@
 package de.bixilon.minosoft.gui.rendering.font
 
+import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 
 class Font {
-    val chars: MutableMap<Char, FontChar> = mutableMapOf()
-    val atlasOffset = 0
+    lateinit var providers: List<FontProvider>
 
-    init {
-        for (page in 0 until 256) {
-            for (x in 0 until 16) {
-                for (y in 0 until 16) {
-                    chars[(page * 256 + (x * 16 + y)).toChar()] = FontChar(page, x, y)
-                }
+    fun load(assetsManager: AssetsManager) {
+        providers = FontLoader.loadFontProviders(assetsManager)
+    }
+
+    fun getChar(char: Char): FontChar {
+        for (provider in providers) {
+            provider.chars[char]?.let {
+                return it
             }
         }
+        throw IllegalStateException("$char can not be rendered!")
+    }
+
+    fun createAtlasTexture(): TextureArray {
+        val textures: MutableList<Texture> = mutableListOf()
+        for (provider in providers) {
+            for (atlasPage in provider.atlasTextures) {
+                textures.add(atlasPage)
+            }
+        }
+
+        val textureArray = TextureArray.createTextureArray(textures = textures)
+
+
+        val atlasWidthSinglePixel = 1f / textureArray.maxWidth
+        val atlasHeightSinglePixel = 1f / textureArray.maxHeight
+
+        for (provider in providers) {
+            for (char in provider.chars.values) {
+                char.calculateUV(provider.width, atlasWidthSinglePixel, atlasHeightSinglePixel)
+            }
+        }
+        return textureArray
     }
 }

@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
 import org.lwjgl.opengl.GL30.glGenerateMipmap
 import java.nio.ByteBuffer
 
-class TextureArray(private val assetsManager: AssetsManager, private val textures: List<Texture>, private val size: Int = 16) {
+class TextureArray(private val textures: List<Texture>, val maxWidth: Int, val maxHeight: Int) {
     var textureId = 0
 
     fun load(): Int {
@@ -21,12 +21,10 @@ class TextureArray(private val assetsManager: AssetsManager, private val texture
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
 
 
-        // load and generate the texture
-        val textureMap: Map<Texture, ByteBuffer> = TextureLoader.loadTextureArray(assetsManager, textures)
-        glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, size, size, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
+        glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, maxWidth, maxHeight, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
 
-        for ((key, value) in textureMap) {
-            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, key.id, size, size, 1, GL_RGBA, GL_UNSIGNED_BYTE, value)
+        for (texture in textures) {
+            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, texture.id, texture.width, texture.height, 1, GL_RGBA, GL_UNSIGNED_BYTE, texture.buffer)
         }
         glGenerateMipmap(GL_TEXTURE_2D_ARRAY)
         return textureId
@@ -40,5 +38,29 @@ class TextureArray(private val assetsManager: AssetsManager, private val texture
 
     companion object {
         val DEBUG_TEXTURE = Texture("block/debug", 0)
+        val TRANSPARENT_TEXTURES = listOf("block/glass")
+
+        fun createTextureArray(assetsManager: AssetsManager? = null, textures: List<Texture>, maxWidth: Int = -1, maxHeight: Int = -1): TextureArray {
+            var calculatedMaxWidth = 0
+            var calculatedMaxHeight = 0
+            for (texture in textures) {
+                if (!texture.loaded) {
+                    texture.load(assetsManager!!)
+                }
+                if (texture.width > calculatedMaxWidth) {
+                    calculatedMaxWidth = texture.width
+                }
+                if (texture.height > calculatedMaxHeight) {
+                    calculatedMaxHeight = texture.height
+                }
+            }
+            if (maxWidth != -1) {
+                calculatedMaxWidth = maxWidth
+            }
+            if (maxHeight != -1) {
+                calculatedMaxHeight = maxWidth
+            }
+            return TextureArray(textures, calculatedMaxWidth, calculatedMaxHeight)
+        }
     }
 }

@@ -56,10 +56,11 @@ object ChunkPreparer {
                 section.getBlock(position.getLocationByDirection(Directions.EAST))
             }
 
-            fun drawBlock() {
-                block.blockModel.render(position, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
-            }
-            drawBlock()
+            //  if(block.fullIdentifier != "minecraft:dropper"){
+            //      continue
+            //  }
+
+            block.blockModel.render(position, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
         }
         return data.toFloatArray()
     }

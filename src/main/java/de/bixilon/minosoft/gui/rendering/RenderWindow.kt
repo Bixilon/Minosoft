@@ -12,6 +12,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import glm_.vec2.Vec2
 import org.lwjgl.*
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
@@ -110,17 +111,14 @@ class RenderWindow(private val connection: Connection) {
 
 
         // Make the window visible
-        glfwShowWindow(windowId)
         GL.createCapabilities()
         glClearColor(137 / 256f, 207 / 256f, 240 / 256f, 1.0f)
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-        minecraftTextures = TextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockMap.values))
+        minecraftTextures = TextureArray.createTextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockMap.values), 16, 16) // ToDo :Remove fixed size
         minecraftTextures.load()
-        fontAtlasTexture = TextureArray(connection.version.assetsManager, listOf(Texture("font/unicode_page_00", 0)), 256)
-        fontAtlasTexture.load()
 
         chunkShader = Shader("chunk_vertex.glsl", "chunk_fragment.glsl")
         chunkShader.load()
@@ -132,18 +130,37 @@ class RenderWindow(private val connection: Connection) {
         fontShader = Shader("font_vertex.glsl", "font_fragment.glsl")
         fontShader.load()
         fontShader.use()
-        fontShader.setFloat("atlasSize", 256f)
 
         val font = Font()
-        val char = font.chars['§']!!
-        font2DToDraw.add(Font2DMesh(floatArrayOf(
-            -0.5f, -0.5f, char.column * 16f, char.row * 16f + char.width, font.atlasOffset + char.atlasPage.toFloat(),
-            -0.5f, 0f, char.column * 16f, char.row * 16f, font.atlasOffset + char.atlasPage.toFloat(),
-            0f, -0.5f, char.column * 16f + char.width, char.row * 16f + char.width, font.atlasOffset + char.atlasPage.toFloat(),
-            0f, -0.5f, char.column * 16f + char.width, char.row * 16f + char.width, font.atlasOffset + char.atlasPage.toFloat(),
-            -0.5f, 0f, char.column * 16f, char.row * 16f, font.atlasOffset + char.atlasPage.toFloat(),
-            0f, 0f, char.column * 16f + char.width, char.row * 16f, font.atlasOffset + char.atlasPage.toFloat(),
-        )))
+        font.load(connection.version.assetsManager)
+
+        fun drawLetterVertex(position: Vec2, uv: Vec2, atlasPage: Int, meshData: MutableList<Float>) {
+            meshData.add(position.x)
+            meshData.add(position.y)
+            meshData.add(uv.x)
+            meshData.add(uv.y)
+            meshData.add(atlasPage.toFloat())
+        }
+
+        fontAtlasTexture = font.createAtlasTexture()
+        fontAtlasTexture.load()
+
+
+        fun drawLetter(position: Vec2, char: Char) {
+            val fontChar = font.getChar(char)
+            val meshData: MutableList<Float> = mutableListOf()
+
+            drawLetterVertex(Vec2(-0.5f, -0.5f), fontChar.uvLeftDown, fontChar.atlasTextureIndex, meshData)
+            drawLetterVertex(Vec2(-0.5f, 0f), fontChar.uvLeftUp, fontChar.atlasTextureIndex, meshData)
+            drawLetterVertex(Vec2(0f, -0.5f), fontChar.uvRightDown, fontChar.atlasTextureIndex, meshData)
+            drawLetterVertex(Vec2(0f, -0.5f), fontChar.uvRightDown, fontChar.atlasTextureIndex, meshData)
+            drawLetterVertex(Vec2(-0.5f, 0f), fontChar.uvLeftUp, fontChar.atlasTextureIndex, meshData)
+            drawLetterVertex(Vec2(0f, 0f), fontChar.uvRightUp, fontChar.atlasTextureIndex, meshData)
+
+            font2DToDraw.add(Font2DMesh(meshData.toFloatArray()))
+        }
+
+        drawLetter(Vec2(0, 0), 'ä')
 
 
         glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
@@ -154,6 +171,8 @@ class RenderWindow(private val connection: Connection) {
                 camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkShader)
             }
         })
+
+        glfwShowWindow(windowId)
 
         latch?.countDown()
     }

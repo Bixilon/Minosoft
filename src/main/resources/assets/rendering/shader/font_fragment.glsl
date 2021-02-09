@@ -8,12 +8,13 @@ uniform sampler2DArray texureArray;
 
 
 void main() {
-    vec4 texColor = texture(texureArray, passTextureCoordinates);
-    if (texColor.a == 0) {
-        discard;
+    vec4 textureColor = texture(texureArray, passTextureCoordinates);
+    if (textureColor.a == 0) {
+        textureColor.a = 0.4f;
+        //discard;
     }
-    texColor.r = 0.8f;
-    texColor.g = 0.8f;
-    texColor.b = 0.0f;
-    outColor = texColor;
+    textureColor.r = 0.8f;
+    textureColor.g = 0.8f;
+    textureColor.b = 0.0f;
+    outColor = textureColor;
 }
