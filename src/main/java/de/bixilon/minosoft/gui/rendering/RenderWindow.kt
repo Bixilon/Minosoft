@@ -30,8 +30,8 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
     lateinit var camera: Camera
 
     // all renderers
-    lateinit var chunkRenderer: ChunkRenderer
-    lateinit var hudRenderer: HUDRenderer
+    val chunkRenderer: ChunkRenderer = ChunkRenderer(connection.player.world, this)
+    val hudRenderer: HUDRenderer = HUDRenderer()
 
     val renderQueue = ConcurrentLinkedQueue<Runnable>()
 
@@ -107,11 +107,9 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
 
-        chunkRenderer = ChunkRenderer(connection.player.world, this)
         chunkRenderer.init(connection)
 
 
-        hudRenderer = HUDRenderer()
         hudRenderer.init(connection)
 
 

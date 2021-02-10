@@ -58,7 +58,7 @@ public class Connection {
     private final Player player;
     private final String hostname;
     private final Recipes recipes = new Recipes();
-    private final Rendering rendering = new Rendering(this);
+    private Rendering rendering;
     private LinkedList<ServerAddress> addresses;
     private int desiredVersionNumber = -1;
     private ServerAddress address;
@@ -371,6 +371,7 @@ public class Connection {
             case PLAY -> {
                 Minosoft.CONNECTIONS.put(getConnectionId(), this);
                 if (!StaticConfiguration.HEADLESS_MODE) {
+                    this.rendering = new Rendering(this);
                     this.rendering.start();
                 }
 
