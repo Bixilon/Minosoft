@@ -13,14 +13,14 @@ import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
 open class BlockModelElement(data: JsonObject) {
-    private var from: Vec3 = Vec3(0, 0, 0)
-    private var to: Vec3 = Vec3(16, 16, 16)
     private val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
     val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
     var fullFace = false
     private var positions: Array<Vec3>
 
     init {
+        var from = Vec3(0, 0, 0)
+        var to = Vec3(16, 16, 16)
         data["from"]?.let {
             val array = it.asJsonArray
             from = Vec3(array[0].asFloat, array[1].asFloat, array[2].asFloat)
@@ -80,49 +80,58 @@ open class BlockModelElement(data: JsonObject) {
             Vec3(from.x,    to.y,       to.z),
             Vec3(to),
         )
-
-        fun getRotatedValues(x: Float, y: Float, sin: Double, cos: Double): Pair<Float, Float> {
-            return Pair((x * cos - y * sin).toFloat(), (x * sin + y * cos).toFloat())
-        }
-
-        fun rotate(axis: Axes, angle: Double, origin: Vec3) {
-            // TODO: optimize for 90deg, 180deg, 270deg rotations
-            val sin = glm.sin(glm.radians(angle))
-            val cos = glm.cos(glm.radians(angle))
-            for ((i, position) in positions.withIndex()) {
-                val transformedPosition = position - origin
-                when (axis) {
-                    Axes.X -> {
-                        val rotatedValues = getRotatedValues(transformedPosition.y, transformedPosition.z, sin, cos)
-                        transformedPosition.y = rotatedValues.first
-                        transformedPosition.z = rotatedValues.second
-                    }
-                    Axes.Y -> {
-                        val rotatedValues = getRotatedValues(transformedPosition.x, transformedPosition.z, sin, cos)
-                        transformedPosition.x = rotatedValues.first
-                        transformedPosition.z = rotatedValues.second
-                    }
-                    Axes.Z -> {
-                        val rotatedValues = getRotatedValues(transformedPosition.x, transformedPosition.y, sin, cos)
-                        transformedPosition.x = rotatedValues.first
-                        transformedPosition.y = rotatedValues.second
-                    }
-                }
-                positions[i] = transformedPosition + origin
-            }
-        }
         data["rotation"]?.let {
             val rotation = it.asJsonObject
-            rotate(Axes.valueOf(rotation["axis"].asString.toUpperCase()), rotation["angle"].asDouble, jsonArrayToVec3(rotation["origin"].asJsonArray))
+            rotate(Axes.byName(rotation["axis"].asString), glm.radians(rotation["angle"].asDouble), jsonArrayToVec3(rotation["origin"].asJsonArray))
         }
         for ((i, position) in positions.withIndex()) {
             positions[i] = BlockModel.transformPosition(position)
         }
     }
 
-    open fun render(textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, rotation: Vec3, data: MutableList<Float>) {
-        val face = faces[direction] ?: return // Not our face
+    fun rotate(axis: Axes, angle: Double, origin: Vec3) {
+        // TODO: optimize for 90deg, 180deg, 270deg rotations
+        for ((i, position) in positions.withIndex()) {
+            var transformedPosition = position - origin
+            transformedPosition = rotateVector(transformedPosition, angle, axis)
+            positions[i] = transformedPosition + origin
+        }
+    }
 
+    private fun rotateVector(original: Vec3, angle: Double, axis: Axes): Vec3 {
+        fun getRotatedValues(x: Float, y: Float, sin: Double, cos: Double): Pair<Float, Float> {
+            return Pair((x * cos - y * sin).toFloat(), (x * sin + y * cos).toFloat())
+        }
+        return when (axis) {
+            Axes.X -> run {
+                val rotatedValues = getRotatedValues(original.y, original.z, glm.sin(angle), glm.cos(angle))
+                return@run Vec3(original.x, rotatedValues.first, rotatedValues.second)
+            }
+            Axes.Y -> run {
+                val rotatedValues = getRotatedValues(original.x, original.z, glm.sin(angle), glm.cos(angle))
+                return@run Vec3(rotatedValues.first, original.y, rotatedValues.second)
+            }
+            Axes.Z -> run {
+                val rotatedValues = getRotatedValues(original.x, original.y, glm.sin(angle), glm.cos(angle))
+                return@run Vec3(rotatedValues.first, rotatedValues.second, original.z)
+            }
+        }
+    }
+
+    open fun render(textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, rotation: Vec3, data: MutableList<Float>, ) {
+        fun getRotatedDirection(): Directions {
+            if (rotation == Vec3(0, 0, 0)) {
+                return direction
+            }
+            var rotatedDirectionVector = rotateVector(direction.directionVector, rotation.x.toDouble(), Axes.X)
+            rotatedDirectionVector = rotateVector(rotatedDirectionVector, rotation.y.toDouble(), Axes.Y)
+            return Directions.byDirection(rotateVector(rotatedDirectionVector, rotation.z.toDouble(), Axes.Z))
+        }
+        val realDirection = getRotatedDirection()
+        val positionTemplate = FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
+        val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
+
+        val face = faces[realDirection] ?: return // Not our face
         val texture = textureMapping[face.textureName] ?: TextureArray.DEBUG_TEXTURE
         if (texture.isTransparent) {
             return
@@ -148,9 +157,7 @@ open class BlockModelElement(data: JsonObject) {
             addToData(drawPositions[0], texturePosition2)
         }
 
-        val positionTemplate = FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
-        val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
-        when (direction) {
+        when (realDirection) {
             Directions.DOWN ->  createQuad(drawPositions, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
             Directions.UP ->    createQuad(drawPositions, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
             Directions.NORTH -> createQuad(drawPositions, face.texturRightDown, face.texturRightUp, face.texturLeftUp, face.texturLeftDown)

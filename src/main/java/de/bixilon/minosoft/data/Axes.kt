@@ -19,5 +19,14 @@ enum class Axes {
 
     companion object {
         val AXES = values()
+
+        fun byName(name: String): Axes {
+            for (axis in values()) {
+                if (axis.name == name.toUpperCase()) {
+                    return axis
+                }
+            }
+            throw IllegalArgumentException("Unexpected value: $name")
+        }
     }
 }

@@ -12,13 +12,15 @@
  */
 package de.bixilon.minosoft.data
 
-enum class Directions {
-    DOWN,
-    UP,
-    NORTH,
-    SOUTH,
-    WEST,
-    EAST;
+import glm_.vec3.Vec3
+
+enum class Directions (direction: Vec3) {
+    DOWN(Vec3(0, -1, 0)),
+    UP(Vec3(0, 1, 0)),
+    NORTH(Vec3(0, 0, 1)),
+    SOUTH(Vec3(0, 0, -1)),
+    WEST(Vec3(-1, 0, 0)),
+    EAST(Vec3(1, 0, 0));
 
     fun inverse(): Directions {
         val ordinal = ordinal
@@ -29,12 +31,31 @@ enum class Directions {
         }
     }
 
+    val directionVector: Vec3 = direction
+
     companion object {
         val DIRECTIONS = values()
 
         @JvmStatic
         fun byId(id: Int): Directions {
             return DIRECTIONS[id]
+        }
+
+        private const val MIN_ERROR = 0.0001f
+
+        fun byDirection(direction: Vec3): Directions {
+            var minDirection = DIRECTIONS[0]
+            var minError = 2f
+            for (testDirection in DIRECTIONS) {
+                val error = (testDirection.directionVector - direction).length()
+                if (error < MIN_ERROR) {
+                    return testDirection
+                } else if (error < minError) {
+                    minError = error
+                    minDirection = testDirection
+                }
+            }
+            return minDirection
         }
     }
 }
