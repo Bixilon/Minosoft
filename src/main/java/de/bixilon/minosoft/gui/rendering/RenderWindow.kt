@@ -109,9 +109,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
         chunkRenderer.init(connection)
 
-
         hudRenderer.init(connection)
-
 
 
         glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {

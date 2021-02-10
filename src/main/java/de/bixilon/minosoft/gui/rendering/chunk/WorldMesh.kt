@@ -11,11 +11,9 @@ import org.lwjgl.opengl.GL30.*
 class WorldMesh(data: FloatArray, var worldPosition: Vec3) {
     var vAO: Int = glGenVertexArrays()
     var vBO: Int = glGenBuffers()
-    var trianglesCount: Int = data.size / 6
+    var trianglesCount: Int = data.size / 6 // <- bytes per vertex
 
     init {
-        // <- bytes per vertex
-
         // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
         glBindVertexArray(vAO)
         glBindBuffer(GL_ARRAY_BUFFER, vBO)

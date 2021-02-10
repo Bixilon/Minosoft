@@ -5,5 +5,6 @@ import de.bixilon.minosoft.protocol.network.Connection
 interface Renderer {
 
     fun init(connection: Connection)
+
     fun draw()
 }

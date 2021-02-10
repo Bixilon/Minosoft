@@ -71,6 +71,9 @@ object FontLoader {
             "legacy_unicode" -> {
                 loadUnicodeFontProvider(ModIdentifier(data["template"].asString), assetsManager.readAssetAsStream(ModIdentifier(data["sizes"].asString)), assetsManager, atlasTextureOffset)
             }
+            "ttf" -> {
+                TODO("True Type Fonts are not implemented yet")
+            }
             else -> throw IllegalArgumentException("${data["type"]} is not a valid font provider type!")
         }
     }
