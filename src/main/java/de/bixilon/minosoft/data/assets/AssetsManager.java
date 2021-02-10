@@ -308,7 +308,7 @@ public class AssetsManager {
     }
 
     public String readStringAsset(String name) throws IOException {
-        return Util.readFile(new BufferedReader(readAsset(name)), true);
+        return Util.readReader(new BufferedReader(readAsset(name)), true);
     }
 
     public InputStream readAssetAsStream(String name) throws IOException {

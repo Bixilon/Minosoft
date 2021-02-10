@@ -183,14 +183,14 @@ public final class Util {
         HashMap<String, String> ret = new HashMap<>();
         TarArchiveEntry entry;
         while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
-            ret.put(entry.getName(), readFile(new BufferedReader(new InputStreamReader(tarArchiveInputStream)), false));
+            ret.put(entry.getName(), readReader(new BufferedReader(new InputStreamReader(tarArchiveInputStream)), false));
         }
         tarArchiveInputStream.close();
 
         return ret;
     }
 
-    public static String readFile(BufferedReader reader, boolean closeStream) throws IOException {
+    public static String readReader(BufferedReader reader, boolean closeStream) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
@@ -216,18 +216,18 @@ public final class Util {
         return ret;
     }
 
-    public static JsonObject readJsonAsset(String path) throws IOException {
-        return readJsonAsset(path, Util.class);
+    public static JsonObject readJsonAssetResource(String path) throws IOException {
+        return readJsonAssetResource(path, Util.class);
     }
 
-    public static JsonObject readJsonAsset(String path, Class<?> clazz) throws IOException {
-        InputStreamReader reader = readAsset(path, clazz);
+    public static JsonObject readJsonAssetResource(String path, Class<?> clazz) throws IOException {
+        InputStreamReader reader = readAssetResource(path, clazz);
         JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
         reader.close();
         return json;
     }
 
-    public static InputStreamReader readAsset(String path, Class<?> clazz) {
+    public static InputStreamReader readAssetResource(String path, Class<?> clazz) {
         return new InputStreamReader(clazz.getResourceAsStream("/assets/" + path));
     }
 
@@ -307,8 +307,8 @@ public final class Util {
         return result.substring(0, result.indexOf(second));
     }
 
-    public static String readAsset(String path) throws IOException {
-        return readFile(new BufferedReader(readAsset(path, Util.class)), true);
+    public static String readAssetResource(String path) throws IOException {
+        return readReader(new BufferedReader(readAssetResource(path, Util.class)), true);
     }
 
     public static boolean doesStringContainsUppercaseLetters(String string) {
