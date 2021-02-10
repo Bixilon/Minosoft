@@ -11,6 +11,7 @@ data class FontChar(
     val endPixel: Int,
     val height: Int,
 ) {
+    val width = endPixel - startPixel
     lateinit var uvLeftUp: Vec2
     lateinit var uvRightUp: Vec2
     lateinit var uvRightDown: Vec2

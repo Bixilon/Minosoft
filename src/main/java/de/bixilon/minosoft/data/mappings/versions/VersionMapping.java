@@ -29,7 +29,7 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockProperties;
 import de.bixilon.minosoft.data.mappings.blocks.BlockRotations;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.statistics.Statistic;
-import de.bixilon.minosoft.gui.rendering.models.BlockModel;
+import de.bixilon.minosoft.gui.rendering.chunk.models.BlockModel;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 import javafx.util.Pair;

@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.mappings.recipes.Recipes;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.gui.rendering.Renderer;
+import de.bixilon.minosoft.gui.rendering.Rendering;
 import de.bixilon.minosoft.modding.event.EventInvoker;
 import de.bixilon.minosoft.modding.event.events.*;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -58,7 +58,7 @@ public class Connection {
     private final Player player;
     private final String hostname;
     private final Recipes recipes = new Recipes();
-    private final Renderer renderer = new Renderer(this);
+    private final Rendering rendering = new Rendering(this);
     private LinkedList<ServerAddress> addresses;
     private int desiredVersionNumber = -1;
     private ServerAddress address;
@@ -371,7 +371,7 @@ public class Connection {
             case PLAY -> {
                 Minosoft.CONNECTIONS.put(getConnectionId(), this);
                 if (!StaticConfiguration.HEADLESS_MODE) {
-                    this.renderer.start();
+                    this.rendering.start();
                 }
 
                 if (CLI.getCurrentConnection() == null) {
@@ -454,7 +454,7 @@ public class Connection {
         return String.format("(id=%d, address=%s, account=\"%s\")", getConnectionId(), getAddress(), ((this.player == null) ? null : getPlayer().getAccount()));
     }
 
-    public Renderer getRenderer() {
-        return this.renderer;
+    public Rendering getRenderer() {
+        return this.rendering;
     }
 }

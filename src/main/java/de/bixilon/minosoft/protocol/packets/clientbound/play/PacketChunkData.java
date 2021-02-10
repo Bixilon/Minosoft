@@ -123,7 +123,7 @@ public class PacketChunkData extends ClientboundPacket {
 
         connection.getPlayer().getWorld().setChunk(getLocation(), getChunk());
         connection.getPlayer().getWorld().setBlockEntityData(getBlockEntities());
-        connection.getRenderer().prepareChunk(this.location, this.chunk);
+        connection.getRenderer().getRenderWindow().getChunkRenderer().prepareChunk(this.location, this.chunk);
     }
 
     @Override

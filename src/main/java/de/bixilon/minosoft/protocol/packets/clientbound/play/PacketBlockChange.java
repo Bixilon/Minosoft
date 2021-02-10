@@ -64,7 +64,7 @@ public class PacketBlockChange extends ClientboundPacket {
             section.setBlock(getPosition().getInChunkLocation().getInChunkSectionLocation(), getBlock());
         }
 
-        connection.getRenderer().prepareChunkSection(getPosition().getChunkLocation(), sectionHeight, section);
+        connection.getRenderer().getRenderWindow().getChunkRenderer().prepareChunkSection(getPosition().getChunkLocation(), sectionHeight, section);
     }
 
     @Override

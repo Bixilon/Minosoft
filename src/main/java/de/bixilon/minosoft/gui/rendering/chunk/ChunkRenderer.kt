@@ -1,14 +1,30 @@
-package de.bixilon.minosoft.gui.rendering
+package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.blocks.Block
+import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkLocation
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.Renderer
+import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.textures.TextureArray
+import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.vec3.Vec3
+import org.lwjgl.opengl.GL11.GL_DEPTH_TEST
+import org.lwjgl.opengl.GL11.glEnable
+import org.lwjgl.opengl.GL13.GL_TEXTURE0
+import java.util.concurrent.ConcurrentHashMap
 
-object ChunkPreparer {
-    fun prepareChunk(world: World, chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection): FloatArray {
+class ChunkRenderer(private val world: World, val renderWindow: RenderWindow) : Renderer {
+    private lateinit var minecraftTextures: TextureArray
+    lateinit var chunkShader: Shader
+    private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, WorldMesh>>()
+
+    private fun prepareChunk(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection): FloatArray {
         val data: MutableList<Float> = mutableListOf()
 
         // ToDo: Greedy meshing!
@@ -63,5 +79,71 @@ object ChunkPreparer {
             block.blockModel.render(position, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
         }
         return data.toFloatArray()
+    }
+
+    override fun init(connection: Connection) {
+        minecraftTextures = TextureArray.createTextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockMap.values), 16, 16) // ToDo :Remove fixed size
+        minecraftTextures.load()
+
+        chunkShader = Shader("chunk_vertex.glsl", "chunk_fragment.glsl")
+        chunkShader.load()
+        chunkShader.use()
+    }
+
+    override fun draw() {
+        glEnable(GL_DEPTH_TEST)
+        minecraftTextures.use(GL_TEXTURE0)
+
+        chunkShader.use()
+
+        for ((_, map) in chunkSectionsToDraw) {
+            for ((_, mesh) in map) {
+                mesh.draw(chunkShader)
+            }
+        }
+    }
+
+    private fun resolveBlockTextureIds(blocks: Set<Block>): List<Texture> {
+        val textures: MutableList<Texture> = mutableListOf()
+        textures.add(TextureArray.DEBUG_TEXTURE)
+        val textureMap: MutableMap<String, Texture> = mutableMapOf()
+        textureMap[TextureArray.DEBUG_TEXTURE.name] = TextureArray.DEBUG_TEXTURE
+
+        for (block in blocks) {
+            block.blockModel?.resolveTextures(textures, textureMap)
+        }
+        return textures
+    }
+
+    fun prepareChunk(chunkLocation: ChunkLocation, chunk: Chunk) {
+        chunkSectionsToDraw[chunkLocation] = ConcurrentHashMap()
+        for ((sectionHeight, section) in chunk.sections) {
+            prepareChunkSection(chunkLocation, sectionHeight, section)
+        }
+    }
+
+    fun prepareChunkSection(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection) {
+        renderWindow.rendering.executor.execute {
+            renderWindow.rendering.latch.waitUntilZero() // Wait until rendering is started
+            val data = prepareChunk(chunkLocation, sectionHeight, section)
+            val sectionMap = chunkSectionsToDraw[chunkLocation]!!
+            renderWindow.renderQueue.add {
+                sectionMap[sectionHeight]?.unload()
+                sectionMap.remove(sectionHeight)
+                sectionMap[sectionHeight] = WorldMesh(data, Vec3(chunkLocation.x, sectionHeight, chunkLocation.z))
+            }
+        }
+    }
+
+    fun clearChunkCache() {
+        renderWindow.renderQueue.add {
+            for ((location, map) in chunkSectionsToDraw) {
+                for ((sectionHeight, mesh) in map) {
+                    mesh.unload()
+                    map.remove(sectionHeight)
+                }
+                chunkSectionsToDraw.remove(location)
+            }
+        }
     }
 }

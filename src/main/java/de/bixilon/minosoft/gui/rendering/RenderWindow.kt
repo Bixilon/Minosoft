@@ -2,17 +2,11 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Location
-import de.bixilon.minosoft.data.mappings.blocks.Block
-import de.bixilon.minosoft.data.world.ChunkLocation
-import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.font.Font2DMesh
-import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.gui.rendering.textures.TextureArray
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
+import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
 import de.bixilon.minosoft.util.CountUpAndDownLatch
-import glm_.vec2.Vec2
 import org.lwjgl.*
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
@@ -20,31 +14,26 @@ import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.glfw.GLFWWindowSizeCallback
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.roundToInt
 
-class RenderWindow(private val connection: Connection) {
+class RenderWindow(private val connection: Connection, val rendering: Rendering) {
     private var screenWidth = 800
     private var screenHeight = 600
     private var polygonEnabled = false
-    private lateinit var chunkShader: Shader
-    private lateinit var fontShader: Shader
-    private lateinit var minecraftTextures: TextureArray
-    private lateinit var fontAtlasTexture: TextureArray
     private var windowId: Long = 0
     private var deltaTime = 0.0 // time between current frame and last frame
 
     private var lastFrame = 0.0
     lateinit var camera: Camera
 
-    val renderQueue = ConcurrentLinkedQueue<Runnable>()
+    // all renderers
+    lateinit var chunkRenderer: ChunkRenderer
+    lateinit var hudRenderer: HUDRenderer
 
-    val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, WorldMesh>>()
-    val font2DToDraw = ConcurrentLinkedQueue<Font2DMesh>()
+    val renderQueue = ConcurrentLinkedQueue<Runnable>()
 
 
     fun init(latch: CountUpAndDownLatch? = null) {
@@ -71,7 +60,7 @@ class RenderWindow(private val connection: Connection) {
         }
         camera = Camera(60f, windowId)
 
-        glfwSetKeyCallback(this.windowId) { windowId: Long, key: Int, scanCode: Int, action: Int, mods: Int ->
+        glfwSetKeyCallback(this.windowId) { _: Long, key: Int, _: Int, action: Int, _: Int ->
             run {
                 if (action != GLFW_RELEASE) {
                     return@run
@@ -117,50 +106,14 @@ class RenderWindow(private val connection: Connection) {
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-        minecraftTextures = TextureArray.createTextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockMap.values), 16, 16) // ToDo :Remove fixed size
-        minecraftTextures.load()
 
-        chunkShader = Shader("chunk_vertex.glsl", "chunk_fragment.glsl")
-        chunkShader.load()
-        chunkShader.use()
-
-        camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkShader)
-        camera.calculateViewMatrix(chunkShader)
-
-        fontShader = Shader("font_vertex.glsl", "font_fragment.glsl")
-        fontShader.load()
-        fontShader.use()
-
-        val font = Font()
-        font.load(connection.version.assetsManager)
-
-        fun drawLetterVertex(position: Vec2, uv: Vec2, atlasPage: Int, meshData: MutableList<Float>) {
-            meshData.add(position.x)
-            meshData.add(position.y)
-            meshData.add(uv.x)
-            meshData.add(uv.y)
-            meshData.add(atlasPage.toFloat())
-        }
-
-        fontAtlasTexture = font.createAtlasTexture()
-        fontAtlasTexture.load()
+        chunkRenderer = ChunkRenderer(connection.player.world, this)
+        chunkRenderer.init(connection)
 
 
-        fun drawLetter(position: Vec2, char: Char) {
-            val fontChar = font.getChar(char)
-            val meshData: MutableList<Float> = mutableListOf()
+        hudRenderer = HUDRenderer()
+        hudRenderer.init(connection)
 
-            drawLetterVertex(Vec2(-0.5f, -0.5f), fontChar.uvLeftDown, fontChar.atlasTextureIndex, meshData)
-            drawLetterVertex(Vec2(-0.5f, 0f), fontChar.uvLeftUp, fontChar.atlasTextureIndex, meshData)
-            drawLetterVertex(Vec2(0f, -0.5f), fontChar.uvRightDown, fontChar.atlasTextureIndex, meshData)
-            drawLetterVertex(Vec2(0f, -0.5f), fontChar.uvRightDown, fontChar.atlasTextureIndex, meshData)
-            drawLetterVertex(Vec2(-0.5f, 0f), fontChar.uvLeftUp, fontChar.atlasTextureIndex, meshData)
-            drawLetterVertex(Vec2(0f, 0f), fontChar.uvRightUp, fontChar.atlasTextureIndex, meshData)
-
-            font2DToDraw.add(Font2DMesh(meshData.toFloatArray()))
-        }
-
-        drawLetter(Vec2(0, 0), 'ä')
 
 
         glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
@@ -168,9 +121,16 @@ class RenderWindow(private val connection: Connection) {
                 glViewport(0, 0, width, height)
                 screenWidth = width
                 screenHeight = height
-                camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkShader)
+                camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkRenderer.chunkShader)
+                hudRenderer.screenChangeResizeCallback(width, height)
             }
         })
+
+
+        hudRenderer.screenChangeResizeCallback(screenWidth, screenHeight)
+
+        camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkRenderer.chunkShader)
+        camera.calculateViewMatrix(chunkRenderer.chunkShader)
 
         glfwShowWindow(windowId)
 
@@ -192,28 +152,14 @@ class RenderWindow(private val connection: Connection) {
             deltaTime = currentFrame - lastFrame
             lastFrame = currentFrame
 
-            glEnable(GL_DEPTH_TEST)
 
-            minecraftTextures.use(GL_TEXTURE0)
+            camera.calculateViewMatrix(chunkRenderer.chunkShader)
 
-            chunkShader.use()
 
-            camera.calculateViewMatrix(chunkShader)
+            chunkRenderer.draw()
 
-            for ((_, map) in chunkSectionsToDraw) {
-                for ((_, mesh) in map) {
-                    mesh.draw(chunkShader)
-                }
-            }
+            hudRenderer.draw()
 
-            glDisable(GL_DEPTH_TEST)
-            fontAtlasTexture.use(GL_TEXTURE0)
-
-            fontShader.use()
-
-            for (font in font2DToDraw) {
-                font.draw()
-            }
 
             glfwSwapBuffers(windowId)
 
@@ -225,6 +171,7 @@ class RenderWindow(private val connection: Connection) {
 
             if (glfwGetTime() - lastCalcTime >= 0.5) {
                 glfwSetWindowTitle(windowId, "Minosoft | FPS: ${framesLastSecond * 2} (${(0.5 * framesLastSecond / (frameTimeLastCalc)).roundToInt()})")
+                hudRenderer.fps = framesLastSecond * 2
                 lastCalcTime = glfwGetTime()
                 framesLastSecond = 0
                 frameTimeLastCalc = 0.0
@@ -232,7 +179,7 @@ class RenderWindow(private val connection: Connection) {
             framesLastSecond++
 
             if (glfwGetTime() - lastPositionChangeTime > 0.05) {
-                // ToDo: Replace this with proper movement and only send it, when out position changed
+                // ToDo: Replace this with proper movement and only send it, when our position changed
                 connection.sendPacket(PacketPlayerPositionAndRotationSending(Location(camera.cameraPosition), EntityRotation(camera.yaw, camera.pitch), false))
                 lastPositionChangeTime = glfwGetTime()
             }
@@ -262,17 +209,5 @@ class RenderWindow(private val connection: Connection) {
             GL_FILL
         })
         polygonEnabled = !polygonEnabled
-    }
-
-    private fun resolveBlockTextureIds(blocks: Set<Block>): List<Texture> {
-        val textures: MutableList<Texture> = mutableListOf()
-        textures.add(TextureArray.DEBUG_TEXTURE)
-        val textureMap: MutableMap<String, Texture> = mutableMapOf()
-        textureMap[TextureArray.DEBUG_TEXTURE.name] = TextureArray.DEBUG_TEXTURE
-
-        for (block in blocks) {
-            block.blockModel?.resolveTextures(textures, textureMap)
-        }
-        return textures
     }
 }

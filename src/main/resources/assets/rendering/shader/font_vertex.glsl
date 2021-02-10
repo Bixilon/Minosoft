@@ -6,7 +6,9 @@ layout (location = 2) in float textureLayer;
 out vec3 passTextureCoordinates;
 
 
+uniform mat4 projectionMatrix;
+
 void main() {
-    gl_Position = vec4(inPosition, 0.0f, 1.0f);
+    gl_Position = projectionMatrix * vec4(inPosition, 0.0f, 1.0f);
     passTextureCoordinates = vec3(textureIndex, textureLayer);
 }
