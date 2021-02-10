@@ -20,6 +20,7 @@ import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.Util;
@@ -207,7 +208,7 @@ public class AssetsManager {
             return;
         }
         // download minecraft assets
-        if (!doesAssetExist(this.assetVersion.getIndexHash())) {
+        if (!verifyAssetHash(this.assetVersion.getIndexHash())) {
             downloadAssetsIndex();
         }
         this.assetsMap.putAll(verifyAssets(AssetsSource.MOJANG, latch, parseAssetsIndex(this.assetVersion.getIndexHash())));
@@ -307,7 +308,7 @@ public class AssetsManager {
     }
 
     public String readStringAsset(String name) throws IOException {
-        return Util.readFile(new BufferedReader(readAsset(name)), true);
+        return Util.readReader(new BufferedReader(readAsset(name)), true);
     }
 
     public InputStream readAssetAsStream(String name) throws IOException {
@@ -316,6 +317,10 @@ public class AssetsManager {
             throw new FileNotFoundException(String.format("Can not find asset with name: %s", name));
         }
         return readAssetAsStreamByHash(hash);
+    }
+
+    public InputStream readAssetAsStream(ModIdentifier identifier) throws IOException {
+        return readAssetAsStream(identifier.getMod() + "/" + identifier.getIdentifier());
     }
 
     public JsonElement readJsonAsset(String name) throws IOException {

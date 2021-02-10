@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.gui.rendering.models
+package de.bixilon.minosoft.gui.rendering.chunk.models
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions

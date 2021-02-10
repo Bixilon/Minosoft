@@ -85,7 +85,7 @@ public class PacketChunkBulk extends ClientboundPacket {
 
         connection.getPlayer().getWorld().setChunks(getChunks());
 
-        getChunks().forEach(((location, chunk) -> connection.getRenderer().prepareChunk(location, chunk)));
+        getChunks().forEach(((location, chunk) -> connection.getRenderer().getRenderWindow().getChunkRenderer().prepareChunk(location, chunk)));
     }
 
     @Override

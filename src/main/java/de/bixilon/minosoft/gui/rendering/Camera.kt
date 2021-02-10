@@ -65,16 +65,20 @@ class Camera(private var fov: Float, private val windowId: Long) {
         }
     }
 
-    fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int, shader: Shader) {
-        shader.use().setMat4("projectionMatrix", calculateProjectionMatrix(screenWidth, screenHeight))
+    fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int, vararg shaders: Shader) {
+        for (shader in shaders) {
+            shader.use().setMat4("projectionMatrix", calculateProjectionMatrix(screenWidth, screenHeight))
+        }
     }
 
     private fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int): Mat4 {
         return glm.perspective(glm.radians(fov), screenWidth.toFloat() / screenHeight.toFloat(), 0.1f, 1000f)
     }
 
-    fun calculateViewMatrix(shader: Shader) {
-        shader.use().setMat4("viewMatrix", calculateViewMatrix())
+    fun calculateViewMatrix(vararg shaders: Shader) {
+        for (shader in shaders) {
+            shader.use().setMat4("viewMatrix", calculateViewMatrix())
+        }
     }
 
     private fun calculateViewMatrix(): Mat4 {

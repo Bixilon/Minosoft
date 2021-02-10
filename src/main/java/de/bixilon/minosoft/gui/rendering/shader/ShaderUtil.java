@@ -19,7 +19,7 @@ public class ShaderUtil {
             throw new ShaderLoadingException();
         }
 
-        ARBShaderObjects.glShaderSourceARB(shaderId, Util.readAsset("/rendering/shader/" + shaderPath));
+        ARBShaderObjects.glShaderSourceARB(shaderId, Util.readAssetResource("/rendering/shader/" + shaderPath));
         ARBShaderObjects.glCompileShaderARB(shaderId);
 
         if (ARBShaderObjects.glGetObjectParameteriARB(shaderId, ARBShaderObjects.GL_OBJECT_COMPILE_STATUS_ARB) == GL11.GL_FALSE) {

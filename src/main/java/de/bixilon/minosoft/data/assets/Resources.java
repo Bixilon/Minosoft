@@ -14,7 +14,7 @@ public class Resources {
     private static final HashBiMap<Version, AssetVersion> ASSETS_VERSIONS = HashBiMap.create();
 
     public static void load() throws IOException {
-        JsonObject json = Util.readJsonAsset("mapping/resources.json");
+        JsonObject json = Util.readJsonAssetResource("mapping/resources.json");
 
         JsonObject versions = json.getAsJsonObject("versions");
         for (Map.Entry<String, JsonElement> versionEntry : versions.entrySet()) {

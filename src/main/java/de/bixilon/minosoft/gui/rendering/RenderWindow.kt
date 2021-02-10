@@ -2,9 +2,8 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Location
-import de.bixilon.minosoft.data.world.ChunkLocation
-import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.textures.TextureArray
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
+import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
 import de.bixilon.minosoft.util.CountUpAndDownLatch
@@ -15,28 +14,26 @@ import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.glfw.GLFWWindowSizeCallback
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.roundToInt
 
-class RenderWindow(private val connection: Connection) {
+class RenderWindow(private val connection: Connection, val rendering: Rendering) {
     private var screenWidth = 800
     private var screenHeight = 600
     private var polygonEnabled = false
-    private lateinit var chunkShader: Shader
-    private lateinit var minecraftTextures: TextureArray
     private var windowId: Long = 0
     private var deltaTime = 0.0 // time between current frame and last frame
 
     private var lastFrame = 0.0
     lateinit var camera: Camera
 
-    val renderQueue = ConcurrentLinkedQueue<Runnable>()
+    // all renderers
+    val chunkRenderer: ChunkRenderer = ChunkRenderer(connection.player.world, this)
+    val hudRenderer: HUDRenderer = HUDRenderer()
 
-    val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, Mesh>>()
+    val renderQueue = ConcurrentLinkedQueue<Runnable>()
 
 
     fun init(latch: CountUpAndDownLatch? = null) {
@@ -63,7 +60,7 @@ class RenderWindow(private val connection: Connection) {
         }
         camera = Camera(60f, windowId)
 
-        glfwSetKeyCallback(this.windowId) { windowId: Long, key: Int, scanCode: Int, action: Int, mods: Int ->
+        glfwSetKeyCallback(this.windowId) { _: Long, key: Int, _: Int, action: Int, _: Int ->
             run {
                 if (action != GLFW_RELEASE) {
                     return@run
@@ -103,32 +100,35 @@ class RenderWindow(private val connection: Connection) {
 
 
         // Make the window visible
-        glfwShowWindow(windowId)
         GL.createCapabilities()
         glClearColor(137 / 256f, 207 / 256f, 240 / 256f, 1.0f)
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-        minecraftTextures = TextureArray(connection.version.assetsManager, connection.version.mapping.blockMap.values)
-        minecraftTextures.load()
 
-        chunkShader = Shader("chunk_vertex.glsl", "chunk_fragment.glsl")
-        chunkShader.load()
-        chunkShader.use()
-        chunkShader.setInt("texture0", 0)
+        chunkRenderer.init(connection)
 
-        camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkShader)
-        camera.calculateViewMatrix(chunkShader)
+        hudRenderer.init(connection)
+
 
         glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
             override fun invoke(window: Long, width: Int, height: Int) {
                 glViewport(0, 0, width, height)
                 screenWidth = width
                 screenHeight = height
-                camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkShader)
+                camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkRenderer.chunkShader)
+                hudRenderer.screenChangeResizeCallback(width, height)
             }
         })
+
+
+        hudRenderer.screenChangeResizeCallback(screenWidth, screenHeight)
+
+        camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkRenderer.chunkShader)
+        camera.calculateViewMatrix(chunkRenderer.chunkShader)
+
+        glfwShowWindow(windowId)
 
         latch?.countDown()
     }
@@ -148,17 +148,14 @@ class RenderWindow(private val connection: Connection) {
             deltaTime = currentFrame - lastFrame
             lastFrame = currentFrame
 
-            minecraftTextures.use(GL_TEXTURE0)
 
-            chunkShader.use()
+            camera.calculateViewMatrix(chunkRenderer.chunkShader)
 
-            camera.calculateViewMatrix(chunkShader)
 
-            for ((_, map) in chunkSectionsToDraw) {
-                for ((_, mesh) in map) {
-                    mesh.draw(chunkShader)
-                }
-            }
+            chunkRenderer.draw()
+
+            hudRenderer.draw()
+
 
             glfwSwapBuffers(windowId)
 
@@ -170,6 +167,7 @@ class RenderWindow(private val connection: Connection) {
 
             if (glfwGetTime() - lastCalcTime >= 0.5) {
                 glfwSetWindowTitle(windowId, "Minosoft | FPS: ${framesLastSecond * 2} (${(0.5 * framesLastSecond / (frameTimeLastCalc)).roundToInt()})")
+                hudRenderer.fps = framesLastSecond * 2
                 lastCalcTime = glfwGetTime()
                 framesLastSecond = 0
                 frameTimeLastCalc = 0.0
@@ -177,8 +175,9 @@ class RenderWindow(private val connection: Connection) {
             framesLastSecond++
 
             if (glfwGetTime() - lastPositionChangeTime > 0.05) {
-                // ToDo: Replace this with proper movement and only send it, when out position changed
+                // ToDo: Replace this with proper movement and only send it, when our position changed
                 connection.sendPacket(PacketPlayerPositionAndRotationSending(Location(camera.cameraPosition), EntityRotation(camera.yaw, camera.pitch), false))
+                lastPositionChangeTime = glfwGetTime()
             }
 
 

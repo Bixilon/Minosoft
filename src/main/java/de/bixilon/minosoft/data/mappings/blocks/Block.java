@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.mappings.blocks;
 
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
-import de.bixilon.minosoft.gui.rendering.models.BlockModel;
+import de.bixilon.minosoft.gui.rendering.chunk.models.BlockModel;
 
 import java.util.Arrays;
 import java.util.HashSet;

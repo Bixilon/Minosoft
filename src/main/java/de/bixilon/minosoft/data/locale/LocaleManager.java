@@ -48,7 +48,7 @@ public class LocaleManager {
     }
 
     private static Language loadLanguage(String language) throws IOException {
-        return new Language(language, Util.readJsonAsset(String.format("locale/%s.json", language)));
+        return new Language(language, Util.readJsonAssetResource(String.format("locale/%s.json", language)));
     }
 
     public static void load(String language) {

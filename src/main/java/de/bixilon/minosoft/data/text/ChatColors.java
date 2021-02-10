@@ -16,6 +16,8 @@ package de.bixilon.minosoft.data.text;
 import com.google.common.collect.HashBiMap;
 import org.checkerframework.common.value.qual.IntRange;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public final class ChatColors {
     public static final RGBColor BLACK = new RGBColor(0, 0, 0);
     public static final RGBColor DARK_BLUE = new RGBColor(0, 0, 170);
@@ -117,5 +119,9 @@ public final class ChatColors {
             case "obfuscated" -> PreChatFormattingCodes.OBFUSCATED;
             default -> throw new IllegalArgumentException("Unexpected value: " + name);
         };
+    }
+
+    public static RGBColor getRandomColor() {
+        return getColorById(ThreadLocalRandom.current().nextInt(0, 15));
     }
 }

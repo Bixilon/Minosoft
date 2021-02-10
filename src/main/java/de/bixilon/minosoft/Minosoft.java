@@ -128,7 +128,7 @@ public final class Minosoft {
         taskWorker.addTask(new Task(progress -> {
             Log.info("Loading versions.json...");
             long mappingStartLoadingTime = System.currentTimeMillis();
-            Versions.loadAvailableVersions(Util.readJsonAsset("mapping/versions.json"));
+            Versions.loadAvailableVersions(Util.readJsonAssetResource("mapping/versions.json"));
             Log.info(String.format("Loaded %d versions in %dms", Versions.getVersionIdMap().size(), (System.currentTimeMillis() - mappingStartLoadingTime)));
             Resources.load();
             Log.info("Loaded all resources!");
