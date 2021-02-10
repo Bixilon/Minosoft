@@ -249,11 +249,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-runtime</artifactId>
-            <version>1.2.71</version>
-        </dependency>
-        <dependency>
             <groupId>com.github.Bixilon</groupId>
             <artifactId>ascii-table</artifactId>
             <version>5375a4f</version>
