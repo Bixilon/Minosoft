@@ -128,9 +128,9 @@ class ChunkRenderer(private val world: World, val renderWindow: RenderWindow) : 
             val data = prepareChunk(chunkLocation, sectionHeight, section)
             val sectionMap = chunkSectionsToDraw[chunkLocation]!!
             renderWindow.renderQueue.add {
+                val newMesh = WorldMesh(data, Vec3(chunkLocation.x, sectionHeight, chunkLocation.z))
                 sectionMap[sectionHeight]?.unload()
-                sectionMap.remove(sectionHeight)
-                sectionMap[sectionHeight] = WorldMesh(data, Vec3(chunkLocation.x, sectionHeight, chunkLocation.z))
+                sectionMap[sectionHeight] = newMesh
             }
         }
     }

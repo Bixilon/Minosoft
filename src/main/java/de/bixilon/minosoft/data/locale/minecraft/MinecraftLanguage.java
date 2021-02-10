@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.locale.minecraft;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -52,6 +53,13 @@ public class MinecraftLanguage {
     }
 
     public String translate(String key, Object... data) {
+        if (data.length == 1 && data[0] instanceof JsonArray jsonArray) {
+            data = new Object[jsonArray.size()];
+            int i = 0;
+            for (var element : jsonArray) {
+                data[i++] = element.getAsString();
+            }
+        }
         String placeholder = this.data.get(key);
         if (placeholder == null) {
             return null;

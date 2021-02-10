@@ -18,9 +18,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import de.bixilon.minosoft.data.mappings.versions.Version;
+import de.bixilon.minosoft.gui.rendering.font.Font;
+import de.bixilon.minosoft.gui.rendering.hud.HUDScale;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.hash.BetterHashSet;
+import glm_.vec2.Vec2;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
@@ -28,6 +31,7 @@ import javax.annotation.Nullable;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BaseComponent extends ChatComponent {
     private static final String LEGACY_RESET_SUFFIX = String.valueOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) + PostChatFormattingCodes.RESET.getChar();
@@ -43,7 +47,7 @@ public class BaseComponent extends ChatComponent {
     public BaseComponent(Version version, @Nullable ChatComponent parent, String text) {
         // legacy String
         StringBuilder currentText = new StringBuilder();
-        RGBColor color = null;
+        RGBColor color = ChatColors.WHITE;
         BetterHashSet<ChatFormattingCode> formattingCodes = new BetterHashSet<>();
         StringCharacterIterator iterator = new StringCharacterIterator(text);
         while (iterator.current() != CharacterIterator.DONE) {
@@ -165,7 +169,7 @@ public class BaseComponent extends ChatComponent {
             }
 
             if (json.has("translate")) {
-                this.parts.add(new TranslatableComponent(version, parentParameter, json.get("translate").getAsString(), json.getAsJsonArray("with")));
+                this.parts.add(new BaseComponent(version, version.getLocaleManager().translate(json.get("translate").getAsString(), json.getAsJsonArray("with"))));
             }
         } else if (data instanceof JsonPrimitive primitive) {
             this.parts.add(new BaseComponent(version, parent, primitive.getAsString()));
@@ -206,6 +210,13 @@ public class BaseComponent extends ChatComponent {
     public ObservableList<Node> getJavaFXText(ObservableList<Node> nodes) {
         this.parts.forEach((chatPart) -> chatPart.getJavaFXText(nodes));
         return nodes;
+    }
+
+    @Override
+    public void addVerticies(Vec2 startPosition, Vec2 offset, Font font, HUDScale hudScale, List<Float> meshData) {
+        for (var chatPart : this.parts) {
+            chatPart.addVerticies(startPosition, offset, font, hudScale, meshData);
+        }
     }
 
     @Unsafe

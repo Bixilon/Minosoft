@@ -18,11 +18,15 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import de.bixilon.minosoft.data.mappings.versions.Version;
+import de.bixilon.minosoft.gui.rendering.font.Font;
+import de.bixilon.minosoft.gui.rendering.hud.HUDScale;
+import glm_.vec2.Vec2;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public abstract class ChatComponent {
     public static ChatComponent valueOf(Object raw) {
@@ -83,4 +87,9 @@ public abstract class ChatComponent {
     public ObservableList<Node> getJavaFXText() {
         return getJavaFXText(FXCollections.observableArrayList());
     }
+
+    /**
+     * @return Adds all verticies to the array (used in opengl)
+     */
+    public abstract void addVerticies(Vec2 startPosition, Vec2 offset, Font font, HUDScale hudScale, List<Float> meshData);
 }

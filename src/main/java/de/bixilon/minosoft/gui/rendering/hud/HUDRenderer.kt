@@ -1,10 +1,8 @@
 package de.bixilon.minosoft.gui.rendering.hud
 
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.font.FontChar
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
@@ -16,12 +14,12 @@ import org.lwjgl.opengl.GL13.GL_TEXTURE0
 
 class HUDRenderer : Renderer {
     private val font = Font()
-    private val hudScale = HUDScale.LARGE
+    private val hudScale = HUDScale.MEDIUM
     var fps: Int = 0
     var frame = 0
     private lateinit var fontShader: Shader
     private lateinit var fontAtlasTexture: TextureArray
-    lateinit var hudMeshHUD: HUDFontMesh
+    private lateinit var hudMeshHUD: HUDFontMesh
 
 
     override fun init(connection: Connection) {
@@ -31,49 +29,14 @@ class HUDRenderer : Renderer {
 
         fontShader = Shader("font_vertex.glsl", "font_fragment.glsl")
         fontShader.load()
-        drawString(Vec2(100, 100), "FPS: $fps")
+        hudMeshHUD = HUDFontMesh(floatArrayOf())
     }
 
-
-    fun drawLetterVertex(position: Vec2, uv: Vec2, atlasPage: Int, color: RGBColor, meshData: MutableList<Float>) {
-        meshData.add(position.x)
-        meshData.add(position.y)
-        meshData.add(uv.x)
-        meshData.add(uv.y)
-        meshData.add(atlasPage.toFloat())
-        meshData.add(color.red / 256f)
-        meshData.add(color.green / 256f)
-        meshData.add(color.blue / 256f)
-    }
-
-    fun drawLetter(position: Vec2, scaledX: Float, fontChar: FontChar, color: RGBColor, meshData: MutableList<Float>) {
-        val scaledHeight = fontChar.height * hudScale.scale
-        drawLetterVertex(Vec2(position.x, position.y), fontChar.uvLeftDown, fontChar.atlasTextureIndex, color, meshData)
-        drawLetterVertex(Vec2(position.x, position.y + scaledHeight), fontChar.uvLeftUp, fontChar.atlasTextureIndex, color, meshData)
-        drawLetterVertex(Vec2(position.x + scaledX, position.y), fontChar.uvRightDown, fontChar.atlasTextureIndex, color, meshData)
-        drawLetterVertex(Vec2(position.x + scaledX, position.y), fontChar.uvRightDown, fontChar.atlasTextureIndex, color, meshData)
-        drawLetterVertex(Vec2(position.x, position.y + scaledHeight), fontChar.uvLeftUp, fontChar.atlasTextureIndex, color, meshData)
-        drawLetterVertex(Vec2(position.x + scaledX, position.y + scaledHeight), fontChar.uvRightUp, fontChar.atlasTextureIndex, color, meshData)
-    }
-
-    fun drawString(position: Vec2, text: String) {
-        if (this::hudMeshHUD.isInitialized) {
-            hudMeshHUD.unload()
-        }
-
+    fun drawChatComponent(position: Vec2, text: ChatComponent) {
+        hudMeshHUD.unload()
         val data: MutableList<Float> = mutableListOf()
-        val chars = text.toCharArray()
-        var xOffset = position.x
-
-        for (char in chars) {
-            val fontChar = font.getChar(char)
-            val scaledX = fontChar.endPixel * hudScale.scale
-            drawLetter(Vec2(xOffset, position.y), scaledX, fontChar, ChatColors.getRandomColor(), data)
-            xOffset += scaledX
-        }
-
+        text.addVerticies(position, Vec2(0, 0), font, hudScale, data)
         hudMeshHUD = HUDFontMesh(data.toFloatArray())
-
     }
 
     fun screenChangeResizeCallback(width: Int, height: Int) {
@@ -90,7 +53,7 @@ class HUDRenderer : Renderer {
 
         frame++
         if (frame % 30 == 0) {
-            drawString(Vec2(100, 100), "FPS: $fps")
+            drawChatComponent(Vec2(0, 0), ChatComponent.valueOf("§6FPS:§e$fps"))
         }
 
         hudMeshHUD.draw()
