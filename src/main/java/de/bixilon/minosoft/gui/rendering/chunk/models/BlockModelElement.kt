@@ -82,7 +82,7 @@ open class BlockModelElement(data: JsonObject) {
         )
         data["rotation"]?.let {
             val rotation = it.asJsonObject
-            rotate(Axes.byName(rotation["axis"].asString), glm.radians(rotation["angle"].asDouble), jsonArrayToVec3(rotation["origin"].asJsonArray))
+            rotate(Axes.valueOf(rotation["axis"].asString.toUpperCase()), glm.radians(rotation["angle"].asDouble), jsonArrayToVec3(rotation["origin"].asJsonArray))
         }
         for ((i, position) in positions.withIndex()) {
             positions[i] = BlockModel.transformPosition(position)
@@ -123,19 +123,20 @@ open class BlockModelElement(data: JsonObject) {
             if (rotation == Vec3(0, 0, 0)) {
                 return direction
             }
-            var rotatedDirectionVector = rotateVector(direction.directionVector, rotation.x.toDouble(), Axes.X)
+            var rotatedDirectionVector = rotateVector(direction.directionVector, rotation.z.toDouble(), Axes.Z)
             rotatedDirectionVector = rotateVector(rotatedDirectionVector, rotation.y.toDouble(), Axes.Y)
-            return Directions.byDirection(rotateVector(rotatedDirectionVector, rotation.z.toDouble(), Axes.Z))
+            return Directions.byDirection(rotateVector(rotatedDirectionVector, rotation.x.toDouble(), Axes.X))
         }
         val realDirection = getRotatedDirection()
         val positionTemplate = FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
-        val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
 
         val face = faces[realDirection] ?: return // Not our face
         val texture = textureMapping[face.textureName] ?: TextureArray.DEBUG_TEXTURE
         if (texture.isTransparent) {
             return
         }
+
+        val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
 
         fun addToData(vec3: Vec3, textureCoordinates: Vec2) {
             val input = Vec4(vec3, 1.0f)
@@ -180,6 +181,6 @@ open class BlockModelElement(data: JsonObject) {
             return Vec3(array[0].asFloat, array[1].asFloat, array[2].asFloat)
         }
 
-        val FACE_POSITION_MAP_TEMPLATE = arrayOf(intArrayOf(2, 3, 1, 0), intArrayOf(4, 5, 7, 6), intArrayOf(1, 5, 4, 0), intArrayOf(2, 6, 7, 3), intArrayOf(6, 2, 0, 4), intArrayOf(5, 1, 3, 7))
+        val FACE_POSITION_MAP_TEMPLATE = arrayOf(intArrayOf(0, 2, 3, 1), intArrayOf(6, 4, 5, 7), intArrayOf(1, 5, 4, 0), intArrayOf(2, 6, 7, 3), intArrayOf(6, 2, 0, 4), intArrayOf(5, 1, 3, 7))
     }
 }

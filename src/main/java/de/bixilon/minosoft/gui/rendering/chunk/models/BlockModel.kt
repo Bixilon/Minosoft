@@ -58,9 +58,9 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
 
     open fun render(position: InChunkSectionLocation, data: MutableList<Float>, neighbourBlocks: Array<Block?>) {
         val modelMatrix = Mat4().translate(Vec3(position.x, position.y, position.z))
-            .rotate(rotation.x, Vec3(-1, 0, 0))
-            .rotate(rotation.y, Vec3(0, -1, 0))
             .rotate(rotation.z, Vec3(0, 0, -1))
+            .rotate(rotation.y, Vec3(0, -1, 0))
+            .rotate(rotation.x, Vec3(-1, 0, 0))
         // ToDo: this should be made easier/more efficient
 
         for (direction in Directions.DIRECTIONS) {
