@@ -128,7 +128,7 @@ public class BaseComponent extends ChatComponent {
                     }
                 }
                 BetterHashSet<ChatFormattingCode> formattingCodes;
-                if (parent != null && parent.getFormatting() != null) {
+                if (parent != null) {
                     formattingCodes = (BetterHashSet<ChatFormattingCode>) parent.getFormatting().clone();
                 } else {
                     formattingCodes = new BetterHashSet<>();
@@ -213,9 +213,9 @@ public class BaseComponent extends ChatComponent {
     }
 
     @Override
-    public void addVerticies(Vec2 startPosition, Vec2 offset, Font font, HUDScale hudScale, List<Float> meshData) {
+    public void addVerticies(Vec2 startPosition, Vec2 offset, Font font, HUDScale hudScale, List<Float> meshData, Vec2 maxSize) {
         for (var chatPart : this.parts) {
-            chatPart.addVerticies(startPosition, offset, font, hudScale, meshData);
+            chatPart.addVerticies(startPosition, offset, font, hudScale, meshData, maxSize);
         }
     }
 

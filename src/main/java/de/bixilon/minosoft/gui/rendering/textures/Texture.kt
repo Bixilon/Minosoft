@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.data.text.RGBColor
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
@@ -30,9 +31,12 @@ class Texture(
         decoder.decode(buffer, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
         width = decoder.width
         height = decoder.height
-        buffer.flip()
-        if (TextureArray.TRANSPARENT_TEXTURES.contains(name)) { // ToDo: this should not be hardcoded!
-            isTransparent = true
+        buffer.rewind()
+        for (i in 0 until buffer.limit() step 4) {
+            val color = RGBColor(buffer.get(), buffer.get(), buffer.get(), buffer.get())
+            if (color.alpha < 0xFF) {
+                isTransparent = true
+            }
         }
         buffer.flip()
         loaded = true

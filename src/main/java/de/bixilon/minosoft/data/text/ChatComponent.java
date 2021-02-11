@@ -91,5 +91,5 @@ public abstract class ChatComponent {
     /**
      * @return Adds all verticies to the array (used in opengl)
      */
-    public abstract void addVerticies(Vec2 startPosition, Vec2 offset, Font font, HUDScale hudScale, List<Float> meshData);
+    public abstract void addVerticies(Vec2 startPosition, Vec2 offset, Font font, HUDScale hudScale, List<Float> meshData, Vec2 maxSize);
 }

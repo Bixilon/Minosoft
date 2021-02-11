@@ -31,7 +31,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
     // all renderers
     val chunkRenderer: ChunkRenderer = ChunkRenderer(connection.player.world, this)
-    val hudRenderer: HUDRenderer = HUDRenderer()
+    val hudRenderer: HUDRenderer = HUDRenderer(connection, this)
 
     val renderQueue = ConcurrentLinkedQueue<Runnable>()
 
@@ -78,7 +78,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         }
 
         glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
-        glfwSetCursorPosCallback(windowId) { windowId: Long, xPos: Double, yPos: Double -> camera.mouseCallback(xPos, yPos) }
+        glfwSetCursorPosCallback(windowId) { _: Long, xPos: Double, yPos: Double -> camera.mouseCallback(xPos, yPos) }
         MemoryStack.stackPush().let { stack ->
             val pWidth = stack.mallocInt(1)
             val pHeight = stack.mallocInt(1)
@@ -165,9 +165,9 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
             frameTimeLastCalc += glfwGetTime() - currentFrame
 
-            if (glfwGetTime() - lastCalcTime >= 0.5) {
-                glfwSetWindowTitle(windowId, "Minosoft | FPS: ${framesLastSecond * 2} (${(0.5 * framesLastSecond / (frameTimeLastCalc)).roundToInt()})")
-                hudRenderer.fps = framesLastSecond * 2
+            if (glfwGetTime() - lastCalcTime >= 0.25) {
+                glfwSetWindowTitle(windowId, "Minosoft | FPS: ${framesLastSecond * 4} (${(0.25 * framesLastSecond / (frameTimeLastCalc)).roundToInt()})")
+                hudRenderer.fps = framesLastSecond * 4
                 lastCalcTime = glfwGetTime()
                 framesLastSecond = 0
                 frameTimeLastCalc = 0.0

@@ -153,7 +153,7 @@ open class TextComponent : ChatComponent {
         val text = Text(text)
         text.fill = Color.WHITE
         if (Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.CHAT_COLORED)) {
-            text.fill = Color.web(color.toString())
+            text.fill = Color.rgb(color.red, color.green, color.blue)
         }
         for (chatFormattingCode in formatting) {
             if (chatFormattingCode is PreChatFormattingCodes) {
@@ -199,7 +199,7 @@ open class TextComponent : ChatComponent {
         return nodes
     }
 
-    override fun addVerticies(startPosition: Vec2, offset: Vec2, font: Font, hudScale: HUDScale, meshData: MutableList<Float>) {
+    override fun addVerticies(startPosition: Vec2, offset: Vec2, font: Font, hudScale: HUDScale, meshData: MutableList<Float>, maxSize: Vec2) {
         fun drawLetterVertex(position: Vec2, uv: Vec2, atlasPage: Int, color: RGBColor, meshData: MutableList<Float>) {
             meshData.add(position.x)
             meshData.add(position.y)
@@ -211,20 +211,24 @@ open class TextComponent : ChatComponent {
             meshData.add(color.blue / 256f)
         }
 
-        fun drawLetter(position: Vec2, scaledX: Float, fontChar: FontChar, color: RGBColor, meshData: MutableList<Float>) {
-            val scaledHeight = fontChar.height * hudScale.scale
-            drawLetterVertex(Vec2(position.x, position.y), fontChar.uvLeftDown, fontChar.atlasTextureIndex, color, meshData)
-            drawLetterVertex(Vec2(position.x, position.y + scaledHeight), fontChar.uvLeftUp, fontChar.atlasTextureIndex, color, meshData)
-            drawLetterVertex(Vec2(position.x + scaledX, position.y), fontChar.uvRightDown, fontChar.atlasTextureIndex, color, meshData)
-            drawLetterVertex(Vec2(position.x + scaledX, position.y), fontChar.uvRightDown, fontChar.atlasTextureIndex, color, meshData)
-            drawLetterVertex(Vec2(position.x, position.y + scaledHeight), fontChar.uvLeftUp, fontChar.atlasTextureIndex, color, meshData)
-            drawLetterVertex(Vec2(position.x + scaledX, position.y + scaledHeight), fontChar.uvRightUp, fontChar.atlasTextureIndex, color, meshData)
+        fun drawLetter(position: Vec2, scaledWidth: Float, scaledHeight: Float, fontChar: FontChar, color: RGBColor, meshData: MutableList<Float>) {
+            drawLetterVertex(Vec2(position.x, position.y), fontChar.uvLeftUp, fontChar.atlasTextureIndex, color, meshData)
+            drawLetterVertex(Vec2(position.x, position.y + scaledHeight), fontChar.uvLeftDown, fontChar.atlasTextureIndex, color, meshData)
+            drawLetterVertex(Vec2(position.x + scaledWidth, position.y), fontChar.uvRightUp, fontChar.atlasTextureIndex, color, meshData)
+            drawLetterVertex(Vec2(position.x + scaledWidth, position.y), fontChar.uvRightUp, fontChar.atlasTextureIndex, color, meshData)
+            drawLetterVertex(Vec2(position.x, position.y + scaledHeight), fontChar.uvLeftDown, fontChar.atlasTextureIndex, color, meshData)
+            drawLetterVertex(Vec2(position.x + scaledWidth, position.y + scaledHeight), fontChar.uvRightDown, fontChar.atlasTextureIndex, color, meshData)
         }
         for (c in text.toCharArray()) {
             val fontChar = font.getChar(c)
-            val scaledX = fontChar.endPixel * hudScale.scale
-            drawLetter(startPosition + offset, scaledX, fontChar, color, meshData)
-            offset += Vec2(scaledX, 0f)
+            val scaledX = fontChar.width * (font.charHeight / fontChar.height.toFloat()) * hudScale.scale
+            val scaledHeight = font.charHeight * hudScale.scale
+            drawLetter(startPosition + offset, scaledX, scaledHeight, fontChar, color, meshData)
+            offset += Vec2(scaledX + (hudScale.scale / 2), 0f)
+            maxSize.x += scaledX + (hudScale.scale / 2)
+            if (maxSize.y < scaledHeight) {
+                maxSize.y = scaledHeight
+            }
         }
     }
 }

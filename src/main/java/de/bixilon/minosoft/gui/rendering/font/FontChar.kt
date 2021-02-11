@@ -7,11 +7,11 @@ data class FontChar(
     val atlasTextureIndex: Int,
     val row: Int,
     val column: Int,
-    val startPixel: Int,
-    val endPixel: Int,
+    var startPixel: Int,
+    var endPixel: Int,
     val height: Int,
 ) {
-    val width = endPixel - startPixel
+    var width = endPixel - startPixel
     lateinit var uvLeftUp: Vec2
     lateinit var uvRightUp: Vec2
     lateinit var uvRightDown: Vec2

@@ -19,11 +19,15 @@ public final class RGBColor implements ChatCode {
     private final int color;
 
     public RGBColor(int red, int green, int blue, int alpha) {
-        this.color = blue | (green << 8) | (red << 16) | (alpha << 24);
+        this.color = (alpha) | (blue << 8) | (green << 16) | (red << 24);
+    }
+
+    public RGBColor(byte red, byte green, byte blue, byte alpha) {
+        this(red & 0xFF, green & 0xFF, blue & 0xFF, alpha & 0xFF);
     }
 
     public RGBColor(int red, int green, int blue) {
-        this.color = blue | (green << 8) | (red << 16);
+        this(red, green, blue, 0xFF);
     }
 
     public RGBColor(int color) {
@@ -39,22 +43,22 @@ public final class RGBColor implements ChatCode {
 
     @IntRange(from = 0, to = 255)
     public int getAlpha() {
-        return (this.color >> 24) & 0xFF;
+        return (this.color & 0xFF);
     }
 
     @IntRange(from = 0, to = 255)
     public int getRed() {
-        return (this.color >> 16) & 0xFF;
+        return (this.color >>> 24) & 0xFF;
     }
 
     @IntRange(from = 0, to = 255)
     public int getGreen() {
-        return (this.color >> 8) & 0xFF;
+        return (this.color >>> 16) & 0xFF;
     }
 
     @IntRange(from = 0, to = 255)
     public int getBlue() {
-        return this.color & 0xFF;
+        return (this.color >>> 8) & 0xFF;
     }
 
     @Override

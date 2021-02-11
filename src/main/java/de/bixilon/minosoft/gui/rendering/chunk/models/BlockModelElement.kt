@@ -127,14 +127,15 @@ open class BlockModelElement(data: JsonObject) {
             rotatedDirectionVector = rotateVector(rotatedDirectionVector, rotation.y.toDouble(), Axes.Y)
             return Directions.byDirection(rotateVector(rotatedDirectionVector, rotation.x.toDouble(), Axes.X))
         }
+
         val realDirection = getRotatedDirection()
         val positionTemplate = FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
 
         val face = faces[realDirection] ?: return // Not our face
         val texture = textureMapping[face.textureName] ?: TextureArray.DEBUG_TEXTURE
-        if (texture.isTransparent) {
-            return
-        }
+        // if (texture.isTransparent) {
+        //     return // ToDo: force render transparent faces
+        // }
 
         val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
 

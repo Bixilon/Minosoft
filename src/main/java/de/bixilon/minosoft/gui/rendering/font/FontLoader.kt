@@ -4,6 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import java.io.InputStream
@@ -21,7 +22,7 @@ object FontLoader {
     }
 
     private fun loadBitmapFontProvider(atlasPath: ModIdentifier, height: Int? = 8, ascent: Int, chars: List<Char>, assetsManager: AssetsManager, atlasOffset: Int): FontProvider {
-        val width = if (ascent == 7) {
+        val width = if (ascent == 7) { // ToDo: Why?
             8
         } else {
             9
@@ -29,12 +30,45 @@ object FontLoader {
         val provider = FontProvider(width)
         val atlasTexture = Texture((atlasPath.mod + "/textures/" + atlasPath.identifier), atlasOffset)
         atlasTexture.load(assetsManager)
-        provider.atlasTextures.add(atlasTexture)
         val height = height ?: atlasTexture.width / 16
+        provider.atlasTextures.add(atlasTexture)
+        val charsCoordinates: MutableList<MutableList<FontChar>> = mutableListOf() // ToDo: Remove this
         for ((i, char) in chars.withIndex()) {
-            val fontChar = FontChar(0, atlasOffset, i / FONT_ATLAS_SIZE, i % FONT_ATLAS_SIZE, 0, width, height)
+            if (i % 16 == 0) {
+                charsCoordinates.add(mutableListOf())
+            }
+            val fontChar = FontChar(0, atlasOffset, i / FONT_ATLAS_SIZE, i % FONT_ATLAS_SIZE, width, 0, height)
             provider.chars[char] = fontChar
+            charsCoordinates[i / 16].add(fontChar)
         }
+        atlasTexture.buffer.rewind()
+        // calculate start and endpixel for every char
+        for (y in 0 until atlasTexture.height) {
+            for (x in 0 until atlasTexture.width) {
+                val color = RGBColor(atlasTexture.buffer.get(), atlasTexture.buffer.get(), atlasTexture.buffer.get(), atlasTexture.buffer.get())
+                if (color.alpha == 0) {
+                    continue
+                }
+                val fontChar = charsCoordinates[y / height][x / width]
+                val pixel = x % width
+                if (fontChar.startPixel > pixel) {
+                    fontChar.startPixel = pixel
+                }
+                if (fontChar.endPixel <= pixel) {
+                    fontChar.endPixel = pixel + 1
+                }
+            }
+        }
+        for ((_, fontChar) in provider.chars) {
+            if (fontChar.startPixel == width && fontChar.endPixel == 0) {
+                // invisible char (like a space)
+                fontChar.startPixel = 0
+                fontChar.endPixel = width / 2 // <- Divide by 2, else spaces look really big...
+            }
+            fontChar.width = fontChar.endPixel - fontChar.startPixel
+
+        }
+        atlasTexture.buffer.flip()
         return provider
     }
 
@@ -56,7 +90,7 @@ object FontLoader {
                 provider.atlasTextures.add(currentAtlasTexture)
             }
             val sizeByte = sizes.read()
-            val fontChar = FontChar((i / 256), atlasOffset + (i / 256), (i % 256) / FONT_ATLAS_SIZE, (i % 256) % FONT_ATLAS_SIZE, (sizeByte shr 4) and 0x0F, sizeByte and 0x0F, 16)
+            val fontChar = FontChar((i / 256), atlasOffset + (i / 256), (i % 256) / FONT_ATLAS_SIZE, (i % 256) % FONT_ATLAS_SIZE, (sizeByte shr 4) and 0x0F, (sizeByte and 0x0F) + 1, 16)
             provider.chars[i.toChar()] = fontChar
             i++
         }

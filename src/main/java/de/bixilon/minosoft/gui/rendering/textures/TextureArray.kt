@@ -38,7 +38,6 @@ class TextureArray(private val textures: List<Texture>, val maxWidth: Int, val m
 
     companion object {
         val DEBUG_TEXTURE = Texture("block/debug", 0)
-        val TRANSPARENT_TEXTURES = listOf("block/glass")
 
         fun createTextureArray(assetsManager: AssetsManager? = null, textures: List<Texture>, maxWidth: Int = -1, maxHeight: Int = -1): TextureArray {
             var calculatedMaxWidth = 0

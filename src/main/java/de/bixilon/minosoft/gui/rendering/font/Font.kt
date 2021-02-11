@@ -6,6 +6,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 
 class Font {
     lateinit var providers: List<FontProvider>
+    val charHeight = 8
 
     fun load(assetsManager: AssetsManager) {
         providers = FontLoader.loadFontProviders(assetsManager)
@@ -36,7 +37,7 @@ class Font {
 
         for (provider in providers) {
             for (char in provider.chars.values) {
-                char.calculateUV(provider.width, atlasWidthSinglePixel, atlasHeightSinglePixel)
+                char.calculateUV(provider.width, atlasWidthSinglePixel, atlasHeightSinglePixel) // ToDo: Unicode: With should pe plus 1
             }
         }
         return textureArray
