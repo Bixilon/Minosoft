@@ -4,9 +4,11 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Location
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.hud.elements.RenderStats
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.logging.Log
 import org.lwjgl.*
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
@@ -17,26 +19,27 @@ import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import java.util.concurrent.ConcurrentLinkedQueue
-import kotlin.math.roundToInt
 
 class RenderWindow(private val connection: Connection, val rendering: Rendering) {
-    private var screenWidth = 800
-    private var screenHeight = 600
+    val renderStats = RenderStats()
+    var screenWidth = 800
+    var screenHeight = 600
     private var polygonEnabled = false
     private var windowId: Long = 0
     private var deltaTime = 0.0 // time between current frame and last frame
 
     private var lastFrame = 0.0
     lateinit var camera: Camera
+    var latch = CountUpAndDownLatch(1)
 
     // all renderers
-    val chunkRenderer: ChunkRenderer = ChunkRenderer(connection.player.world, this)
+    val chunkRenderer: ChunkRenderer = ChunkRenderer(connection, connection.player.world, this)
     val hudRenderer: HUDRenderer = HUDRenderer(connection, this)
 
     val renderQueue = ConcurrentLinkedQueue<Runnable>()
 
 
-    fun init(latch: CountUpAndDownLatch? = null) {
+    fun init(latch: CountUpAndDownLatch) {
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set()
@@ -107,9 +110,9 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
 
-        chunkRenderer.init(connection)
+        chunkRenderer.init()
 
-        hudRenderer.init(connection)
+        hudRenderer.init()
 
 
         glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
@@ -128,23 +131,22 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkRenderer.chunkShader)
         camera.calculateViewMatrix(chunkRenderer.chunkShader)
 
-        glfwShowWindow(windowId)
 
-        latch?.countDown()
+        Log.debug("Rendering is prepared and ready to go!")
+        latch.countDown()
+        latch.waitUntilZero()
+        this.latch.waitUntilZero()
+        glfwShowWindow(windowId)
     }
 
     fun startRenderLoop() {
-        var framesLastSecond = 0
-        var lastCalcTime = glfwGetTime()
-        var frameTimeLastCalc = 0.0
-
         var lastPositionChangeTime = 0.0
 
         while (!glfwWindowShouldClose(windowId)) {
+            renderStats.startFrame()
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) // clear the framebuffer
 
             val currentFrame = glfwGetTime()
-
             deltaTime = currentFrame - lastFrame
             lastFrame = currentFrame
 
@@ -153,26 +155,15 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
 
             chunkRenderer.draw()
-
             hudRenderer.draw()
+
+            renderStats.endDraw()
 
 
             glfwSwapBuffers(windowId)
-
             glfwPollEvents()
-
             camera.handleInput(deltaTime)
 
-            frameTimeLastCalc += glfwGetTime() - currentFrame
-
-            if (glfwGetTime() - lastCalcTime >= 0.25) {
-                glfwSetWindowTitle(windowId, "Minosoft | FPS: ${framesLastSecond * 4} (${(0.25 * framesLastSecond / (frameTimeLastCalc)).roundToInt()})")
-                hudRenderer.fps = framesLastSecond * 4
-                lastCalcTime = glfwGetTime()
-                framesLastSecond = 0
-                frameTimeLastCalc = 0.0
-            }
-            framesLastSecond++
 
             if (glfwGetTime() - lastPositionChangeTime > 0.05) {
                 // ToDo: Replace this with proper movement and only send it, when our position changed
@@ -181,10 +172,13 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             }
 
 
+            // handle opengl context tasks
             for (renderQueueElement in renderQueue) {
                 renderQueueElement.run()
                 renderQueue.remove(renderQueueElement)
             }
+
+            renderStats.endFrame()
         }
     }
 

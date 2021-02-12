@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.gui.rendering.hud
+package de.bixilon.minosoft.gui.rendering.hud.elements.text
 
 import glm_.BYTES
 import org.lwjgl.opengl.GL11.GL_FLOAT

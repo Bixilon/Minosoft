@@ -13,10 +13,10 @@ import java.util.concurrent.Executors
 
 class Rendering(private val connection: Connection) {
     val renderWindow: RenderWindow = RenderWindow(connection, this)
-    val latch = CountUpAndDownLatch(1)
     val executor: ExecutorService = Executors.newFixedThreadPool(4, Util.getThreadFactory(String.format("Rendering#%d", connection.connectionId)))
 
-    fun start() {
+    fun start(latch: CountUpAndDownLatch) {
+        latch.countUp()
         Thread({
             Log.info("Hello LWJGL " + Version.getVersion() + "!")
             renderWindow.init(latch)
@@ -27,6 +27,10 @@ class Rendering(private val connection: Connection) {
 
 
     fun teleport(position: Location) {
+        // tell the window we are ready (received position)
+        if (renderWindow.latch.count > 0) {
+            renderWindow.latch.countDown()
+        }
         renderWindow.renderQueue.add {
             renderWindow.camera.cameraPosition = Vec3(position.x, position.y, position.z)
         }

@@ -56,8 +56,6 @@ public class PacketChatMessageReceiving extends ClientboundPacket {
             case ABOVE_HOTBAR -> "[HOTBAR] ";
             default -> "[CHAT] ";
         } + event.getMessage());
-
-        connection.getRenderer().getRenderWindow().getHudRenderer().getChatMessages().add(new kotlin.Pair<>(this.message, System.currentTimeMillis()));
     }
 
     @Override

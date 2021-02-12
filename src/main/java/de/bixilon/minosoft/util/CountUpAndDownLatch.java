@@ -32,6 +32,14 @@ public class CountUpAndDownLatch {
         }
     }
 
+    public void waitUntilZero(long timeout) throws InterruptedException {
+        synchronized (this.lock) {
+            while (this.count > 0) {
+                this.lock.wait(timeout);
+            }
+        }
+    }
+
     public void countUp() {
         synchronized (this.lock) {
             this.total++;
@@ -41,6 +49,9 @@ public class CountUpAndDownLatch {
     }
 
     public void countDown() {
+        if (this.count == 0) {
+            throw new IllegalStateException("Can not count down, counter is already 0");
+        }
         synchronized (this.lock) {
             this.count--;
             this.lock.notifyAll();

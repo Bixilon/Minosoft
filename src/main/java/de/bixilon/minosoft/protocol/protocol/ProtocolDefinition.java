@@ -82,6 +82,10 @@ public final class ProtocolDefinition {
 
     public static final char[] OBFUSCATED_CHARS = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".toCharArray();
 
+
+    public static final int TICKS_PER_SECOND = 20;
+    public static final int TICK_TIME = 1000 / TICKS_PER_SECOND;
+
     static {
         // java does (why ever) not allow to directly assign a null
         InetAddress tempInetAddress;

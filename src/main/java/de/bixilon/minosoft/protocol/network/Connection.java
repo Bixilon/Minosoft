@@ -135,11 +135,18 @@ public class Connection {
             version.load(latch);  // ToDo: show gui loader
             this.customMapping.setVersion(version);
             this.customMapping.setParentMapping(version.getMapping());
+
+            if (!StaticConfiguration.HEADLESS_MODE) {
+                this.rendering = new Rendering(this);
+                this.rendering.start(latch);
+            }
+            latch.waitForChange();
             Log.info(String.format("Connecting to server: %s", address));
             this.network.connect(address);
+            latch.countDown();
         } catch (Exception e) {
             Log.printException(e, LogLevels.DEBUG);
-            Log.fatal(String.format("Could not load mapping for %s. This version seems to be unsupported!", version));
+            Log.fatal(String.format("Could not load version %s. This version seems to be unsupported!", version));
             this.lastException = new MappingsLoadingException("Mappings could not be loaded", e);
             setConnectionState(ConnectionStates.FAILED_NO_RETRY);
         }
@@ -164,7 +171,6 @@ public class Connection {
 
         this.version = version;
     }
-
 
     public void handle(ClientboundPacket p) {
         this.handlingQueue.add(p);
@@ -372,10 +378,6 @@ public class Connection {
             case FAILED_NO_RETRY -> handlePingCallbacks(null);
             case PLAY -> {
                 Minosoft.CONNECTIONS.put(getConnectionId(), this);
-                if (!StaticConfiguration.HEADLESS_MODE) {
-                    this.rendering = new Rendering(this);
-                    this.rendering.start();
-                }
 
                 if (CLI.getCurrentConnection() == null) {
                     CLI.setCurrentConnection(this);

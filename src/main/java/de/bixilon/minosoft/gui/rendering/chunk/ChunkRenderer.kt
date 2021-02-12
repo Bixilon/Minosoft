@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL11.glEnable
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import java.util.concurrent.ConcurrentHashMap
 
-class ChunkRenderer(private val world: World, val renderWindow: RenderWindow) : Renderer {
+class ChunkRenderer(private val connection: Connection, private val world: World, val renderWindow: RenderWindow) : Renderer {
     private lateinit var minecraftTextures: TextureArray
     lateinit var chunkShader: Shader
     private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, WorldMesh>>()
@@ -81,7 +81,7 @@ class ChunkRenderer(private val world: World, val renderWindow: RenderWindow) : 
         return data.toFloatArray()
     }
 
-    override fun init(connection: Connection) {
+    override fun init() {
         minecraftTextures = TextureArray.createTextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockMap.values), 16, 16) // ToDo :Remove fixed size
         minecraftTextures.load()
 
@@ -124,7 +124,6 @@ class ChunkRenderer(private val world: World, val renderWindow: RenderWindow) : 
 
     fun prepareChunkSection(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection) {
         renderWindow.rendering.executor.execute {
-            renderWindow.rendering.latch.waitUntilZero() // Wait until rendering is started
             try {
                 val data = prepareChunk(chunkLocation, sectionHeight, section)
                 val sectionMap = chunkSectionsToDraw[chunkLocation]!!

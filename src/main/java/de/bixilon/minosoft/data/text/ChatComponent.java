@@ -43,6 +43,9 @@ public abstract class ChatComponent {
         if (raw == null) {
             return new BaseComponent();
         }
+        if (raw instanceof ChatComponent component) {
+            return component;
+        }
         if (raw instanceof JsonPrimitive primitive) {
             raw = primitive.getAsString();
         }
