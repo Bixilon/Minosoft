@@ -12,6 +12,7 @@ import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
+
 open class BlockModelElement(data: JsonObject) {
     private val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
     val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
@@ -29,47 +30,6 @@ open class BlockModelElement(data: JsonObject) {
             val array = it.asJsonArray
             to = Vec3(array[0].asFloat, array[1].asFloat, array[2].asFloat)
         }
-        data["faces"]?.let {
-            for ((directionName, json) in it.asJsonObject.entrySet()) {
-                val direction = Directions.valueOf(directionName.toUpperCase())
-                when (direction) {
-                    Directions.DOWN -> {
-                        if ((from.y == 0f || to.y == 0f) && ((from.x == 0f && to.z == 16f) || (from.z == 16f && to.x == 0f))) {
-                            fullFace = true
-                        }
-                    }
-                    Directions.UP -> {
-                        if ((from.y == 16f || to.y == 16f) && ((from.x == 0f && to.z == 16f) || (from.z == 16f && to.x == 0f))) {
-                            fullFace = true
-                        }
-                    }
-                    Directions.NORTH -> {
-                        if ((from.x == 0f || to.x == 0f) && ((from.y == 0f && to.y == 16f) || (from.z == 16f && to.z == 0f))) {
-                            fullFace = true
-                        }
-                    }
-                    Directions.SOUTH -> {
-                        if ((from.x == 16f || to.x == 16f) && ((from.y == 0f && to.y == 16f) || (from.z == 16f && to.z == 0f))) {
-                            fullFace = true
-                        }
-                    }
-                    Directions.EAST -> {
-                        if ((from.z == 0f || to.z == 0f) && ((from.y == 0f && to.y == 16f) || (from.x == 16f && to.x == 0f))) {
-                            fullFace = true
-                        }
-                    }
-                    Directions.WEST -> {
-                        if ((from.z == 16f || to.z == 16f) && ((from.y == 0f && to.y == 16f) || (from.x == 16f && to.x == 0f))) {
-                            fullFace = true
-                        }
-                    }
-                }
-                faces[direction] = BlockModelFace(json.asJsonObject)
-                if (fullFace) {
-                    fullFaceDirections.add(direction)
-                }
-            }
-        }
         positions = arrayOf(
             Vec3(from),
             Vec3(to.x,      from.y,     from.z),
@@ -80,9 +40,28 @@ open class BlockModelElement(data: JsonObject) {
             Vec3(from.x,    to.y,       to.z),
             Vec3(to),
         )
+        var rotate = Vec3()
         data["rotation"]?.let {
             val rotation = it.asJsonObject
-            rotate(Axes.valueOf(rotation["axis"].asString.toUpperCase()), glm.radians(rotation["angle"].asDouble), jsonArrayToVec3(rotation["origin"].asJsonArray))
+            val axis = Axes.valueOf(rotation["axis"].asString.toUpperCase())
+            val angle = glm.radians(rotation["angle"].asDouble)
+            rotate(axis, angle, jsonArrayToVec3(rotation["origin"].asJsonArray))
+            rotate = when (axis) {
+                Axes.X -> run { return@run Vec3(angle, 0, 0) }
+                Axes.Y -> run { return@run Vec3(0, angle, 0) }
+                Axes.Z -> run { return@run Vec3(0, 0, angle) }
+            }
+        }
+        data["faces"]?.let {
+            for ((directionName, json) in it.asJsonObject.entrySet()) {
+                var direction = Directions.valueOf(directionName.toUpperCase())
+                faces[direction] = BlockModelFace(json.asJsonObject)
+                direction = getRotatedDirection(rotate, direction)
+                fullFace = positions.containsAll(fullTestPositions[direction]) // TODO: check if texture is transparent ==> && ! texture.isTransparent
+                if (fullFace) {
+                    fullFaceDirections.add(direction)
+                }
+            }
         }
         for ((i, position) in positions.withIndex()) {
             positions[i] = BlockModel.transformPosition(position)
@@ -118,17 +97,18 @@ open class BlockModelElement(data: JsonObject) {
         }
     }
 
-    open fun render(textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, rotation: Vec3, data: MutableList<Float>, ) {
-        fun getRotatedDirection(): Directions {
-            if (rotation == Vec3(0, 0, 0)) {
-                return direction
-            }
-            var rotatedDirectionVector = rotateVector(direction.directionVector, rotation.z.toDouble(), Axes.Z)
-            rotatedDirectionVector = rotateVector(rotatedDirectionVector, rotation.y.toDouble(), Axes.Y)
-            return Directions.byDirection(rotateVector(rotatedDirectionVector, rotation.x.toDouble(), Axes.X))
+    private fun getRotatedDirection(rotation: Vec3, direction: Directions): Directions {
+        if (rotation == Vec3(0, 0, 0)) {
+            return direction
         }
+        var rotatedDirectionVector = rotateVector(direction.directionVector, rotation.z.toDouble(), Axes.Z)
+        rotatedDirectionVector = rotateVector(rotatedDirectionVector, rotation.y.toDouble(), Axes.Y)
+        return Directions.byDirection(rotateVector(rotatedDirectionVector, rotation.x.toDouble(), Axes.X))
+    }
 
-        val realDirection = getRotatedDirection()
+    open fun render(textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, rotation: Vec3, data: MutableList<Float>) {
+
+        val realDirection = getRotatedDirection(rotation, direction)
         val positionTemplate = FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
 
         val face = faces[realDirection] ?: return // Not our face
@@ -181,7 +161,39 @@ open class BlockModelElement(data: JsonObject) {
         fun jsonArrayToVec3(array: JsonArray) : Vec3 {
             return Vec3(array[0].asFloat, array[1].asFloat, array[2].asFloat)
         }
+        private const val BLOCK_RESOLUTION = 16
 
         val FACE_POSITION_MAP_TEMPLATE = arrayOf(intArrayOf(0, 2, 3, 1), intArrayOf(6, 4, 5, 7), intArrayOf(1, 5, 4, 0), intArrayOf(2, 6, 7, 3), intArrayOf(6, 2, 0, 4), intArrayOf(5, 1, 3, 7))
+
+        private val POSITION_1 = Vec3(0, 0, 0)
+        private val POSITION_2 = Vec3(BLOCK_RESOLUTION, 0, 0)
+        private val POSITION_3 = Vec3(0, 0, BLOCK_RESOLUTION)
+        private val POSITION_4 = Vec3(BLOCK_RESOLUTION, 0, BLOCK_RESOLUTION)
+
+        private val POSITION_5 = Vec3(0, BLOCK_RESOLUTION, 0)
+        private val POSITION_6 = Vec3(BLOCK_RESOLUTION, BLOCK_RESOLUTION, 0)
+        private val POSITION_7 = Vec3(0, BLOCK_RESOLUTION, BLOCK_RESOLUTION)
+        private val POSITION_8 = Vec3(BLOCK_RESOLUTION, BLOCK_RESOLUTION, BLOCK_RESOLUTION)
+
+        val fullTestPositions = mapOf(
+            Pair(Directions.EAST, setOf(POSITION_1, POSITION_3, POSITION_5, POSITION_7)),
+                    Pair(Directions.WEST, setOf(POSITION_2, POSITION_4, POSITION_6, POSITION_8)),
+                    Pair(Directions.DOWN, setOf(POSITION_1, POSITION_2, POSITION_3, POSITION_4)),
+                    Pair(Directions.UP, setOf(POSITION_5, POSITION_6, POSITION_7, POSITION_8)),
+                    Pair(Directions.SOUTH, setOf(POSITION_1, POSITION_2, POSITION_5, POSITION_6)),
+                    Pair(Directions.NORTH, setOf(POSITION_3, POSITION_4, POSITION_7, POSITION_8)),
+                                     )
     }
+}
+
+private fun <T> Array<T>.containsAll(set: Set<T>?): Boolean {
+    if (set != null) {
+        for (value in set) {
+            if (! this.contains(value)) {
+                return false;
+            }
+        }
+        return true
+    }
+    return false
 }
