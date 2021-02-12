@@ -8,10 +8,8 @@ out vec3 passTextureCoordinates;
 
 out vec3 passCharColor;
 
-uniform mat4 projectionMatrix;
-
 void main() {
-    gl_Position = projectionMatrix * vec4(inPosition, 0.0f, 1.0f);
+    gl_Position = vec4(inPosition, 0.0f, 1.0f);
     passTextureCoordinates = vec3(textureIndex, textureLayer);
     passCharColor = charColor;
 }

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.locale.minecraft;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.bixilon.minosoft.data.text.ChatComponent;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -57,7 +58,7 @@ public class MinecraftLanguage {
             data = new Object[jsonArray.size()];
             int i = 0;
             for (var element : jsonArray) {
-                data[i++] = element.getAsString();
+                data[i++] = ChatComponent.valueOf(element.toString()).getLegacyText(); // ToDo
             }
         }
         String placeholder = this.data.get(key);

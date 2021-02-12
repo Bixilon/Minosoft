@@ -15,12 +15,15 @@ package de.bixilon.minosoft.data.text
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.ConfigurationPaths
 import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.FontBindings
 import de.bixilon.minosoft.gui.rendering.font.FontChar
 import de.bixilon.minosoft.gui.rendering.hud.HUDScale
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.hash.BetterHashSet
+import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
+import glm_.vec4.Vec4
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
@@ -199,10 +202,11 @@ open class TextComponent : ChatComponent {
         return nodes
     }
 
-    override fun addVerticies(startPosition: Vec2, offset: Vec2, font: Font, hudScale: HUDScale, meshData: MutableList<Float>, maxSize: Vec2) {
+    override fun addVerticies(startPosition: Vec2, offset: Vec2, perspectiveMatrix: Mat4, binding: FontBindings, font: Font, hudScale: HUDScale, meshData: MutableList<Float>, maxSize: Vec2) {
         fun drawLetterVertex(position: Vec2, uv: Vec2, atlasPage: Int, color: RGBColor, meshData: MutableList<Float>) {
-            meshData.add(position.x)
-            meshData.add(position.y)
+            val matrixPosition = perspectiveMatrix * Vec4(position.x, position.y, 0f, 1f)
+            meshData.add(matrixPosition.x)
+            meshData.add(matrixPosition.y)
             meshData.add(uv.x)
             meshData.add(uv.y)
             meshData.add(atlasPage.toFloat())
@@ -212,14 +216,23 @@ open class TextComponent : ChatComponent {
         }
 
         fun drawLetter(position: Vec2, scaledWidth: Float, scaledHeight: Float, fontChar: FontChar, color: RGBColor, meshData: MutableList<Float>) {
-            drawLetterVertex(Vec2(position.x, position.y), fontChar.uvLeftUp, fontChar.atlasTextureIndex, color, meshData)
-            drawLetterVertex(Vec2(position.x, position.y + scaledHeight), fontChar.uvLeftDown, fontChar.atlasTextureIndex, color, meshData)
-            drawLetterVertex(Vec2(position.x + scaledWidth, position.y), fontChar.uvRightUp, fontChar.atlasTextureIndex, color, meshData)
-            drawLetterVertex(Vec2(position.x + scaledWidth, position.y), fontChar.uvRightUp, fontChar.atlasTextureIndex, color, meshData)
-            drawLetterVertex(Vec2(position.x, position.y + scaledHeight), fontChar.uvLeftDown, fontChar.atlasTextureIndex, color, meshData)
-            drawLetterVertex(Vec2(position.x + scaledWidth, position.y + scaledHeight), fontChar.uvRightDown, fontChar.atlasTextureIndex, color, meshData)
+            drawLetterVertex(Vec2(position.x, position.y), fontChar.texturePosition[texturePositionCoordinates[binding.ordinal][0]], fontChar.atlasTextureIndex, color, meshData)
+            drawLetterVertex(Vec2(position.x, position.y + scaledHeight), fontChar.texturePosition[texturePositionCoordinates[binding.ordinal][3]], fontChar.atlasTextureIndex, color, meshData)
+            drawLetterVertex(Vec2(position.x + scaledWidth, position.y), fontChar.texturePosition[texturePositionCoordinates[binding.ordinal][1]], fontChar.atlasTextureIndex, color, meshData)
+            drawLetterVertex(Vec2(position.x + scaledWidth, position.y), fontChar.texturePosition[texturePositionCoordinates[binding.ordinal][1]], fontChar.atlasTextureIndex, color, meshData)
+            drawLetterVertex(Vec2(position.x, position.y + scaledHeight), fontChar.texturePosition[texturePositionCoordinates[binding.ordinal][3]], fontChar.atlasTextureIndex, color, meshData)
+            drawLetterVertex(Vec2(position.x + scaledWidth, position.y + scaledHeight), fontChar.texturePosition[texturePositionCoordinates[binding.ordinal][2]], fontChar.atlasTextureIndex, color, meshData)
         }
-        for (c in text.toCharArray()) {
+        // reverse text if right bound
+        val charArray = when (binding) {
+            FontBindings.RIGHT_UP, FontBindings.RIGHT_DOWN -> {
+                text.toCharArray().reversed()
+            }
+            FontBindings.LEFT_UP, FontBindings.LEFT_DOWN -> {
+                text.toCharArray().toList()
+            }
+        }
+        for (c in charArray) {
             val fontChar = font.getChar(c)
             val scaledX = fontChar.width * (font.charHeight / fontChar.height.toFloat()) * hudScale.scale
             val scaledHeight = font.charHeight * hudScale.scale
@@ -230,5 +243,14 @@ open class TextComponent : ChatComponent {
                 maxSize.y = scaledHeight
             }
         }
+    }
+
+    companion object {
+        private val texturePositionCoordinates = listOf(
+            listOf(0, 1, 2, 3),
+            listOf(1, 0, 3, 2),
+            listOf(2, 3, 0, 1),
+            listOf(3, 2, 1, 0),
+        ) // matches FontBindings::ordinal
     }
 }

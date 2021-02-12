@@ -12,15 +12,15 @@ data class FontChar(
     val height: Int,
 ) {
     var width = endPixel - startPixel
-    lateinit var uvLeftUp: Vec2
-    lateinit var uvRightUp: Vec2
-    lateinit var uvRightDown: Vec2
-    lateinit var uvLeftDown: Vec2
+
+    lateinit var texturePosition: List<Vec2>
 
     fun calculateUV(letterWidth: Int, atlasWidthSinglePixel: Float, atlasHeightSinglePixel: Float) {
-        uvLeftUp = Vec2(atlasWidthSinglePixel * (letterWidth * column + startPixel), atlasHeightSinglePixel * (height * row))
-        uvRightUp = Vec2(atlasWidthSinglePixel * (letterWidth * column + endPixel), atlasHeightSinglePixel * (height * row))
-        uvRightDown = Vec2(atlasWidthSinglePixel * (letterWidth * column + endPixel), atlasHeightSinglePixel * (height * (row + 1)))
-        uvLeftDown = Vec2(atlasWidthSinglePixel * (letterWidth * column + startPixel), atlasHeightSinglePixel * (height * (row + 1)))
+        texturePosition = listOf(
+            Vec2(atlasWidthSinglePixel * (letterWidth * column + startPixel), atlasHeightSinglePixel * (height * row)),
+            Vec2(atlasWidthSinglePixel * (letterWidth * column + endPixel), atlasHeightSinglePixel * (height * row)),
+            Vec2(atlasWidthSinglePixel * (letterWidth * column + endPixel), atlasHeightSinglePixel * (height * (row + 1))),
+            Vec2(atlasWidthSinglePixel * (letterWidth * column + startPixel), atlasHeightSinglePixel * (height * (row + 1))),
+        )
     }
 }

@@ -125,12 +125,16 @@ class ChunkRenderer(private val world: World, val renderWindow: RenderWindow) : 
     fun prepareChunkSection(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection) {
         renderWindow.rendering.executor.execute {
             renderWindow.rendering.latch.waitUntilZero() // Wait until rendering is started
-            val data = prepareChunk(chunkLocation, sectionHeight, section)
-            val sectionMap = chunkSectionsToDraw[chunkLocation]!!
-            renderWindow.renderQueue.add {
-                val newMesh = WorldMesh(data, Vec3(chunkLocation.x, sectionHeight, chunkLocation.z))
-                sectionMap[sectionHeight]?.unload()
-                sectionMap[sectionHeight] = newMesh
+            try {
+                val data = prepareChunk(chunkLocation, sectionHeight, section)
+                val sectionMap = chunkSectionsToDraw[chunkLocation]!!
+                renderWindow.renderQueue.add {
+                    val newMesh = WorldMesh(data, Vec3(chunkLocation.x, sectionHeight, chunkLocation.z))
+                    sectionMap[sectionHeight]?.unload()
+                    sectionMap[sectionHeight] = newMesh
+                }
+            } catch (exception: NullPointerException) {
+                exception.printStackTrace() // ToDo
             }
         }
     }
