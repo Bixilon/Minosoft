@@ -65,7 +65,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
                 section.getBlock(position.getLocationByDirection(Directions.WEST))
             }
             val blockEast: Block? = if (position.x == ProtocolDefinition.SECTION_WIDTH_X - 1 && east != null) {
-                east.getBlock(0, position.y, position.x)
+                east.getBlock(0, position.y, position.z)
             } else {
                 section.getBlock(position.getLocationByDirection(Directions.EAST))
             }
