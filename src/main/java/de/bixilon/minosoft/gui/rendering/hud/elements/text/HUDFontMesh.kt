@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL30.*
 class HUDFontMesh(data: FloatArray) {
     var vAO: Int = glGenVertexArrays()
     var vBO: Int = glGenBuffers()
-    var trianglesCount: Int = data.size / 8  // <- bytes per vertex
+    var trianglesCount: Int = data.size / 10  // <- bytes per vertex
 
     fun draw() {
         glBindVertexArray(vAO)
@@ -26,13 +26,13 @@ class HUDFontMesh(data: FloatArray) {
         glBindVertexArray(vAO)
         glBindBuffer(GL_ARRAY_BUFFER, vBO)
         glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW)
-        glVertexAttribPointer(0, 2, GL_FLOAT, false, 8 * Float.BYTES, 0L)
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 10 * Float.BYTES, 0L)
         glEnableVertexAttribArray(0)
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, 8 * Float.BYTES, (2 * Float.BYTES).toLong())
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 10 * Float.BYTES, (3 * Float.BYTES).toLong())
         glEnableVertexAttribArray(1)
-        glVertexAttribPointer(2, 1, GL_FLOAT, false, 8 * Float.BYTES, (4 * Float.BYTES).toLong())
+        glVertexAttribPointer(2, 1, GL_FLOAT, false, 10 * Float.BYTES, (5 * Float.BYTES).toLong())
         glEnableVertexAttribArray(2)
-        glVertexAttribPointer(3, 3, GL_FLOAT, false, 8 * Float.BYTES, (5 * Float.BYTES).toLong())
+        glVertexAttribPointer(3, 4, GL_FLOAT, false, 10 * Float.BYTES, (6 * Float.BYTES).toLong())
         glEnableVertexAttribArray(3)
 
         // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind

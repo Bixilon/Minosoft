@@ -9,6 +9,7 @@ class RenderStats {
 
     private var lastFPSCalcTime = 0L
     private var framesLastSecond = 0
+    private var frameTime = 0L
 
     private var frameStartTime = 0L
 
@@ -35,9 +36,12 @@ class RenderStats {
 
             framesLastSecond = 0
             lastFPSCalcTime = frameEndTime
+            this.frameTime = 0
         }
         frames++
         framesLastSecond++
 
+        this.frameTime += frameTime
+        this.avgFrameTime = this.frameTime / framesLastSecond
     }
 }

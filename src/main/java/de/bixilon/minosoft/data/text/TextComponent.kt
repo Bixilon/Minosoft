@@ -207,12 +207,14 @@ open class TextComponent : ChatComponent {
             val matrixPosition = perspectiveMatrix * Vec4(position.x, position.y, 0f, 1f)
             meshData.add(matrixPosition.x)
             meshData.add(matrixPosition.y)
+            meshData.add(-0.997f)
             meshData.add(uv.x)
             meshData.add(uv.y)
             meshData.add(atlasPage.toFloat())
             meshData.add(color.red / 256f)
             meshData.add(color.green / 256f)
             meshData.add(color.blue / 256f)
+            meshData.add(1f)
         }
 
         fun drawLetter(position: Vec2, scaledWidth: Float, scaledHeight: Float, fontChar: FontChar, color: RGBColor, meshData: MutableList<Float>) {

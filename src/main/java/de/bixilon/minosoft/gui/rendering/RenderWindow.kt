@@ -131,6 +131,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkRenderer.chunkShader)
         camera.calculateViewMatrix(chunkRenderer.chunkShader)
 
+        glEnable(GL_DEPTH_TEST)
 
         Log.debug("Rendering is prepared and ready to go!")
         latch.countDown()

@@ -14,8 +14,6 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3
-import org.lwjgl.opengl.GL11.GL_DEPTH_TEST
-import org.lwjgl.opengl.GL11.glEnable
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import java.util.concurrent.ConcurrentHashMap
 
@@ -91,7 +89,6 @@ class ChunkRenderer(private val connection: Connection, private val world: World
     }
 
     override fun draw() {
-        glEnable(GL_DEPTH_TEST)
         minecraftTextures.use(GL_TEXTURE0)
 
         chunkShader.use()

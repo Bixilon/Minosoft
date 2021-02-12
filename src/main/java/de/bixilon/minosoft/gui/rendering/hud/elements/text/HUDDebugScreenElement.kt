@@ -7,20 +7,20 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
 
     override fun prepare(chatComponents: Map<FontBindings, MutableList<Any>>) {
         chatComponents[FontBindings.LEFT_UP]!!.addAll(listOf(
-            "§fFPS: §8${getFPS()}",
-            "§fTimings: §8avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms",
-            "§fXYZ §8${getLocation()}",
-            "§fConnected to: §8${hudTextElement.connection.address}",
+            "§fFPS: ${getFPS()}",
+            "§fTimings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms",
+            "§fXYZ ${getLocation()}",
+            "§fConnected to: ${hudTextElement.connection.address}",
         ))
         chatComponents[FontBindings.RIGHT_UP]!!.addAll(listOf(
-            "§fJava: §8${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit",
-            "§fMemory: §8${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${getFormattedMaxMemory()}",
-            "§fAllocated: §8${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}",
-            " ",
-            "CPU: §8${runtime.availableProcessors()}x TODO",
-            "OS: §8${System.getProperty("os.name")}",
-            " ",
-            "Display: §8${getScreenDimensions()}",
+            "§fJava: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit",
+            "§fMemory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${getFormattedMaxMemory()}",
+            "§fAllocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}",
+            "",
+            "CPU: ${runtime.availableProcessors()}x TODO",
+            "OS: ${System.getProperty("os.name")}",
+            "",
+            "Display: ${getScreenDimensions()}",
         ))
     }
 

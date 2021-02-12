@@ -13,8 +13,7 @@ import de.bixilon.minosoft.protocol.network.Connection
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
-import org.lwjgl.opengl.GL11.GL_DEPTH_TEST
-import org.lwjgl.opengl.GL11.glDisable
+import glm_.vec4.Vec4
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 
 class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, val renderWindow: RenderWindow) : HUDElement {
@@ -41,15 +40,45 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
         prepare()
     }
 
+    private fun drawTextBackground(start: Vec2, end: Vec2, perspectiveMatrix: Mat4, meshData: MutableList<Float>) {
+        fun drawLetterVertex(position: Vec2) {
+            val matrixPosition = perspectiveMatrix * Vec4(position.x, position.y, 0f, 1f)
+            meshData.add(matrixPosition.x)
+            meshData.add(matrixPosition.y)
+            meshData.add(-0.995f)
+
+            meshData.add(0f)
+            meshData.add(0f)
+            meshData.add(0f)
+            meshData.add(0f)
+            meshData.add(0f)
+            meshData.add(0f)
+            meshData.add(0.2f)
+        }
+
+        drawLetterVertex(start)
+        drawLetterVertex(Vec2(end.x, start.y))
+        drawLetterVertex(Vec2(start.x, end.y))
+        drawLetterVertex(Vec2(start.x, end.y))
+        drawLetterVertex(Vec2(end.x, start.y))
+        drawLetterVertex(end)
+
+    }
+
     fun drawChatComponent(position: Vec2, binding: FontBindings, text: ChatComponent, meshData: MutableList<Float>, maxSize: Vec2) {
-        hudMeshHUD.unload()
-        text.addVerticies(position, Vec2(0, 0), fontBindingPerspectiveMatrices[binding.ordinal], binding, font, hudRenderer.hudScale, meshData, maxSize)
+        if (text.message.isBlank()) {
+            maxSize += Vec2(0, font.charHeight * hudRenderer.hudScale.scale)
+            return
+        }
+        text.addVerticies(position, Vec2(0), fontBindingPerspectiveMatrices[binding.ordinal], binding, font, hudRenderer.hudScale, meshData, maxSize)
+
+        drawTextBackground(position - 1, (position + maxSize) + 1, fontBindingPerspectiveMatrices[binding.ordinal], meshData)
     }
 
     override fun prepare() {
         componentsBindingMap = mapOf(
             FontBindings.LEFT_UP to mutableListOf(
-                "§aMinosoft (0.1-pre1)",
+                "§eMinosoft (0.1-pre1)",
             ),
             FontBindings.RIGHT_UP to mutableListOf(),
             FontBindings.RIGHT_DOWN to mutableListOf(),
@@ -98,7 +127,6 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
     override fun draw() {
         fontAtlasTexture.use(GL_TEXTURE0)
         fontShader.use()
-        glDisable(GL_DEPTH_TEST)
 
         for (hudTextElement in hudTextElements.values) {
             hudTextElement.draw()
