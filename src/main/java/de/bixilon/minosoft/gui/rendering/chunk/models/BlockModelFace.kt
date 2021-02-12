@@ -25,10 +25,10 @@ class BlockModelFace(data: JsonObject) {
         }
     }
 
-    val texturLeftDown = Vec2(uvToFloat(textureStart.x), uvToFloat(textureStart.y))
-    val texturLeftUp = Vec2(uvToFloat(textureStart.x), uvToFloat(textureEnd.y))
-    val texturRightUp = Vec2(uvToFloat(textureEnd.x), uvToFloat(textureEnd.y))
-    val texturRightDown = Vec2(uvToFloat(textureEnd.x), uvToFloat(textureStart.y))
+    val textureLeftDown = Vec2(uvToFloat(textureStart.x), uvToFloat(textureStart.y))
+    val textureLeftUp = Vec2(uvToFloat(textureStart.x), uvToFloat(textureEnd.y))
+    val textureRightUp = Vec2(uvToFloat(textureEnd.x), uvToFloat(textureEnd.y))
+    val textureRightDown = Vec2(uvToFloat(textureEnd.x), uvToFloat(textureStart.y))
 
 
     companion object {

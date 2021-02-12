@@ -160,12 +160,12 @@ open class BlockModelElement(data: JsonObject) {
         }
 
         when (realDirection) {
-            Directions.DOWN ->  createQuad(drawPositions, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
-            Directions.UP ->    createQuad(drawPositions, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
-            Directions.NORTH -> createQuad(drawPositions, face.texturRightDown, face.texturRightUp, face.texturLeftUp, face.texturLeftDown)
-            Directions.SOUTH -> createQuad(drawPositions, face.texturLeftDown, face.texturLeftUp, face.texturRightUp, face.texturRightDown)
-            Directions.WEST ->  createQuad(drawPositions, face.texturRightUp, face.texturRightDown, face.texturLeftDown, face.texturLeftUp)
-            Directions.EAST ->  createQuad(drawPositions, face.texturLeftUp, face.texturLeftDown, face.texturRightDown, face.texturRightUp)
+            Directions.DOWN ->  createQuad(drawPositions, face.textureLeftDown, face.textureLeftUp, face.textureRightUp, face.textureRightDown)
+            Directions.UP ->    createQuad(drawPositions, face.textureLeftDown, face.textureLeftUp, face.textureRightUp, face.textureRightDown)
+            Directions.NORTH -> createQuad(drawPositions, face.textureRightDown, face.textureRightUp, face.textureLeftUp, face.textureLeftDown)
+            Directions.SOUTH -> createQuad(drawPositions, face.textureLeftDown, face.textureLeftUp, face.textureRightUp, face.textureRightDown)
+            Directions.WEST ->  createQuad(drawPositions, face.textureRightUp, face.textureRightDown, face.textureLeftDown, face.textureLeftUp)
+            Directions.EAST ->  createQuad(drawPositions, face.textureLeftUp, face.textureLeftDown, face.textureRightDown, face.textureRightUp)
         }
     }
 
