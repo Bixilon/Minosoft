@@ -22,8 +22,8 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 class RenderWindow(private val connection: Connection, val rendering: Rendering) {
     val renderStats = RenderStats()
-    var screenWidth = 800
-    var screenHeight = 600
+    var screenWidth = 900
+    var screenHeight = 500
     private var polygonEnabled = false
     private var windowId: Long = 0
     private var deltaTime = 0.0 // time between current frame and last frame

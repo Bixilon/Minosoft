@@ -1,9 +1,22 @@
 package de.bixilon.minosoft.gui.rendering.hud.elements.text
 
 import de.bixilon.minosoft.gui.rendering.font.FontBindings
+import org.lwjgl.opengl.GL11.*
+import oshi.SystemInfo
+
 
 class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDText {
     private val runtime = Runtime.getRuntime()
+    private val systemInfo = SystemInfo()
+    private val systemInfoHardwareAbstractionLayer = systemInfo.hardware
+
+
+    private val processorText = " ${runtime.availableProcessors()}x ${systemInfoHardwareAbstractionLayer.processor.processorIdentifier.name}"
+    private lateinit var gpuText: String
+    private lateinit var gpuVersionText: String
+    private val maxMemoryText: String = getFormattedMaxMemory()
+    private val systemMemoryText: String = formatBytes(systemInfoHardwareAbstractionLayer.memory.total)
+
 
     override fun prepare(chatComponents: Map<FontBindings, MutableList<Any>>) {
         chatComponents[FontBindings.LEFT_UP]!!.addAll(listOf(
@@ -14,18 +27,26 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
         ))
         chatComponents[FontBindings.RIGHT_UP]!!.addAll(listOf(
             "§fJava: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit",
-            "§fMemory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${getFormattedMaxMemory()}",
+            "§fMemory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/$maxMemoryText",
             "§fAllocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}",
+            "§fSystem: $systemMemoryText",
             "",
-            "CPU: ${runtime.availableProcessors()}x TODO",
             "OS: ${System.getProperty("os.name")}",
+            "CPU: $processorText",
             "",
             "Display: ${getScreenDimensions()}",
+            "GPU: $gpuText",
+            "Version: $gpuVersionText",
         ))
     }
 
+    override fun init() {
+        gpuText = glGetString(GL_RENDERER) ?: "unknown"
+        gpuVersionText = glGetString(GL_VERSION) ?: "unknown"
+    }
+
     private fun nanoToMillis1d(nanos: Long): String {
-        return "%.1f".format(nanos / 1000000f)
+        return "%.1f".format(nanos / 1E6f)
     }
 
     private fun getFPS(): String {

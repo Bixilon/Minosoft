@@ -4,6 +4,7 @@ import de.bixilon.minosoft.gui.rendering.font.FontBindings
 
 interface HUDText {
 
+    fun init() {}
     fun prepare(chatComponents: Map<FontBindings, MutableList<Any>>)
     fun update() {}
     fun draw() {}

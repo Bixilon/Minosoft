@@ -122,6 +122,10 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
 
         fontAtlasTexture = font.createAtlasTexture()
         fontAtlasTexture.load()
+
+        for (hudTextElement in hudTextElements.values) {
+            hudTextElement.init()
+        }
     }
 
     override fun draw() {
