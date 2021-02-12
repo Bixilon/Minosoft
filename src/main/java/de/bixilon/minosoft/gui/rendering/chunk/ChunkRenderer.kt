@@ -149,4 +149,15 @@ class ChunkRenderer(private val connection: Connection, private val world: World
             }
         }
     }
+
+    fun unloadChunk(location: ChunkLocation) {
+        renderWindow.renderQueue.add {
+            chunkSectionsToDraw[location]?.let {
+                for ((_, mesh) in it) {
+                    mesh.unload()
+                }
+                chunkSectionsToDraw.remove(location)
+            }
+        }
+    }
 }

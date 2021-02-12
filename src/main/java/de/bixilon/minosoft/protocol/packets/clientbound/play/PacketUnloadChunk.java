@@ -31,6 +31,7 @@ public class PacketUnloadChunk extends ClientboundPacket {
     @Override
     public void handle(Connection connection) {
         connection.getPlayer().getWorld().unloadChunk(getLocation());
+        connection.getRenderer().getRenderWindow().getChunkRenderer().unloadChunk(this.location);
     }
 
     @Override
