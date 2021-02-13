@@ -403,7 +403,6 @@ public class Connection {
 
     public void unregisterEvent(EventInvoker method) {
         this.eventListeners.remove(method);
-
     }
 
     public void registerEvent(EventInvoker method) {

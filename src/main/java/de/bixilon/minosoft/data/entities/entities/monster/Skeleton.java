@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.entities.monster;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -23,5 +24,9 @@ public class Skeleton extends AbstractSkeleton {
 
     public Skeleton(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);
+    }
+
+    public boolean isFreezeConverting() {
+        return this.metaData.getSets().get(EntityMetaDataFields.SKELETON_STRAY_FREEZE_CONVERTING);
     }
 }

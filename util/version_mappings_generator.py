@@ -16,11 +16,11 @@ import shutil
 import subprocess
 import tarfile
 import threading
-import time
 import traceback
 import urllib.request
 
 import requests
+import time
 import ujson
 
 print("Minecraft mappings downloader (and generator)")
@@ -30,13 +30,13 @@ SKIP_VERSIONS = ["1.13-pre6", "1.13-pre5"]
 DATA_FOLDER = "../data/resources/"
 TEMP_FOLDER = DATA_FOLDER + "tmp/"
 OPTIONAL_FILES_PER_VERSION = ["entities.json"]
-FILES_PER_VERSION = ["blocks.json", "registries.json", "block_models.json"] + OPTIONAL_FILES_PER_VERSION
+FILES_PER_VERSION = ["blocks.json", "registries.json", "models.json"] + OPTIONAL_FILES_PER_VERSION
 DOWNLOAD_BASE_URL = "https://apimon.de/mcdata/"
 RESOURCE_MAPPINGS_INDEX = ujson.load(open("../src/main/resources/assets/mapping/resources.json"))
-MOJANG_MINOSOFT_FIELD_MAPPINGS = ujson.load(open("entitiesFieldMojangMinosoftMappings.json"))
+MOJANG_MINOSOFT_FIELD_MAPPINGS = ujson.load(open("entities_metadata_mappings.json"))
 VERSION_MANIFEST = ujson.loads(urllib.request.urlopen('https://launchermeta.mojang.com/mc/game/version_manifest.json').read().decode("utf-8"))
 VERBOSE_LOG = False
-DEFAULT_MAPPINGS = ujson.load(open("mappingsDefaults.json"))
+DEFAULT_MAPPINGS = ujson.load(open("mappings_defaults.json"))
 failedVersionIds = []
 partlyFailedVersionIds = []
 
@@ -175,7 +175,7 @@ def downloadVersion(version):
 
     if version["id"] in RESOURCE_MAPPINGS_INDEX["versions"]:
         resourcesVersion = RESOURCE_MAPPINGS_INDEX["versions"][version["id"]]
-        if os.path.isfile(DATA_FOLDER + resourcesVersion["mappings"][:2] + "/" + resourcesVersion["mappings"] + ".tar.gz"):
+        if "mappings" in resourcesVersion and os.path.isfile(DATA_FOLDER + resourcesVersion["mappings"][:2] + "/" + resourcesVersion["mappings"] + ".tar.gz"):
             if "jar_assets_hash" not in resourcesVersion:
                 try:
                     generateJarAssets(version["id"])
@@ -193,12 +193,27 @@ def downloadVersion(version):
     print("DEBUG: Downloading versions json for %s" % version["id"])
     versionJson = ujson.loads(urllib.request.urlopen(version["url"]).read().decode("utf-8"))
 
+    if "index_version" not in resourcesVersion:
+        resourcesVersion["index_version"] = versionJson["assetIndex"]["id"]
+        resourcesVersion["index_hash"] = versionJson["assetIndex"]["sha1"]
+        resourcesVersion["client_jar_hash"] = versionJson["downloads"]["client"]["sha1"]
+        RESOURCE_MAPPINGS_INDEX["versions"][version["id"]] = resourcesVersion
+        # dump resources index
+        with open("../src/main/resources/assets/mapping/resources.json", 'w') as file:
+            ujson.dump(RESOURCE_MAPPINGS_INDEX, file)
+        # start jar hash generator
+        try:
+            generateJarAssets(version["id"])
+        except Exception:
+            failedVersionIds.append(version["id"])
+            return
+
     print("DEBUG: Downloading burger data %s" % version["id"])
     burger = ujson.loads(urllib.request.urlopen("https://pokechu22.github.io/Burger/%s.json" % version["id"].replace(" ", "%20")).read().decode("utf-8"))[0]
 
     for fileName in FILES_PER_VERSION:
         if os.path.isfile(versionTempBaseFolder + fileName):
-            print("Skipping %s for %s (File already exists)" % (fileName, version["id"]))
+            print("Skipping %s for %s (File exists)" % (fileName, version["id"]))
             continue
 
         print("DEBUG: Generating %s for %s" % (fileName, version["id"]))
@@ -356,9 +371,9 @@ def downloadVersion(version):
                 with open(versionTempBaseFolder + "entities.json", 'w') as file:
                     file.write(ujson.dumps({"minecraft": entities}))
 
-            elif fileName == "block_models.json":
+            elif fileName == "models.json":
                 # blockModelsCombiner.py will do the trick for us
-                os.popen('python3 block_model_generator.py \"%s\" %s' % (versionTempBaseFolder + "block_models.json", versionJson['downloads']['client']['url'])).read()
+                os.popen('python3 model_generator.py \"%s\" %s' % (versionTempBaseFolder + "models.json", "/home/moritz/.local/share/minosoft/assets/objects/" + versionJson['downloads']['client']['sha1'][:2] + "/" + versionJson['downloads']['client']['sha1'] + ".gz")).read()
 
         except Exception:
             traceback.print_exc()
@@ -399,9 +414,6 @@ def downloadVersion(version):
             shutil.rmtree(filenameToDelete)
 
     resourcesVersion["mappings"] = sha1
-    resourcesVersion["index_version"] = versionJson["assetIndex"]["id"]
-    resourcesVersion["index_hash"] = versionJson["assetIndex"]["sha1"]
-    resourcesVersion["client_jar_hash"] = versionJson["downloads"]["client"]["sha1"]
 
     RESOURCE_MAPPINGS_INDEX["versions"][version["id"]] = resourcesVersion
     # cleanup (delete temp folder)
@@ -409,13 +421,6 @@ def downloadVersion(version):
     # dump resources index
     with open("../src/main/resources/assets/mapping/resources.json", 'w') as file:
         ujson.dump(RESOURCE_MAPPINGS_INDEX, file)
-
-    # start jar hash generator
-    # todo: don't download jar twice
-    try:
-        generateJarAssets(version["id"])
-    except Exception:
-        failedVersionIds.append(version["id"])
 
 
 def downloadVersionInThread(version):
