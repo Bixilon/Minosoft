@@ -1,7 +1,5 @@
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.Location
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.RenderStats
@@ -10,7 +8,6 @@ import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerPositionAndRotation
-import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log
 import org.lwjgl.*
@@ -88,7 +85,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             glfwTerminate()
             throw RuntimeException("Failed to create the GLFW window")
         }
-        camera = Camera(60f, windowId)
+        camera = Camera(connection, 60f, windowId)
 
         glfwSetKeyCallback(this.windowId) { _: Long, key: Int, _: Int, action: Int, _: Int ->
             run {
@@ -147,7 +144,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
                 glViewport(0, 0, width, height)
                 screenWidth = width
                 screenHeight = height
-                camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkRenderer.chunkShader)
+                camera.screenChangeResizeCallback(screenWidth, screenHeight)
                 hudRenderer.screenChangeResizeCallback(width, height)
             }
         })
@@ -155,8 +152,9 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
         hudRenderer.screenChangeResizeCallback(screenWidth, screenHeight)
 
-        camera.calculateProjectionMatrix(screenWidth, screenHeight, chunkRenderer.chunkShader)
-        camera.calculateViewMatrix(chunkRenderer.chunkShader)
+        camera.addShaders(chunkRenderer.chunkShader)
+
+        camera.screenChangeResizeCallback(screenWidth, screenHeight)
 
         glEnable(GL_DEPTH_TEST)
 
@@ -179,8 +177,6 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             lastFrame = currentFrame
 
 
-            camera.calculateViewMatrix(chunkRenderer.chunkShader)
-
 
             chunkRenderer.draw()
             hudRenderer.draw()
@@ -190,14 +186,8 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
             glfwSwapBuffers(windowId)
             glfwPollEvents()
+            camera.draw()
             camera.handleInput(deltaTime)
-
-
-            if (glfwGetTime() - lastPositionChangeTime > 0.05) {
-                // ToDo: Replace this with proper movement and only send it, when our position changed
-                connection.sendPacket(PacketPlayerPositionAndRotationSending(Location(camera.cameraPosition), EntityRotation(camera.yaw, camera.pitch), false))
-                lastPositionChangeTime = glfwGetTime()
-            }
 
 
             // handle opengl context tasks

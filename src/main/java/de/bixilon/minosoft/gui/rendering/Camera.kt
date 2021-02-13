@@ -1,22 +1,38 @@
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.Location
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
-import org.lwjgl.glfw.GLFW
+import org.lwjgl.glfw.GLFW.*
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Camera(private var fov: Float, private val windowId: Long) {
+class Camera(private val connection: Connection, private var fov: Float, private val windowId: Long) {
     private var mouseSensitivity = 0.1
     private var movementSpeed = 7
-    private var cameraFront = Vec3(0.0f, 0.0f, -1.0f)
     var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
     private var lastMouseX = 0.0
     private var lastMouseY = 0.0
     var yaw = 0.0
     var pitch = 0.0
+    private var zoom = 0f
+
+    private var lastPositionChange = 0L
+    private var currentPositionSent = false
+
+    private var cameraFront = Vec3(0.0f, 0.0f, -1.0f)
+    private var cameraRight = Vec3(0.0f, 0.0f, -1.0f)
+    private var cameraUp = Vec3(0.0f, 1.0f, 0.0f)
+
+    private var screenHeight = 0
+    private var screenWidth = 0
+    private val shaders: MutableList<Shader> = mutableListOf()
 
     fun mouseCallback(xPos: Double, yPos: Double) {
         var xOffset = xPos - this.lastMouseX
@@ -46,42 +62,68 @@ class Camera(private var fov: Float, private val windowId: Long) {
     fun handleInput(deltaTime: Double) {
         var cameraSpeed = movementSpeed * deltaTime
 
-        if (GLFW.glfwGetKey(windowId, GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS) {
+        if (glfwGetKey(windowId, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
             cameraSpeed *= 5
         }
+        val lastPosition = cameraPosition
         val currentY = cameraPosition.y
-        if (GLFW.glfwGetKey(windowId, GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS) {
+        if (glfwGetKey(windowId, GLFW_KEY_W) == GLFW_PRESS) {
             cameraPosition = cameraPosition + cameraFront * cameraSpeed
         }
-        if (GLFW.glfwGetKey(windowId, GLFW.GLFW_KEY_S) == GLFW.GLFW_PRESS) {
+        if (glfwGetKey(windowId, GLFW_KEY_S) == GLFW_PRESS) {
             cameraPosition = cameraPosition - cameraFront * cameraSpeed
         }
-        if (GLFW.glfwGetKey(windowId, GLFW.GLFW_KEY_A) == GLFW.GLFW_PRESS) {
-            cameraPosition = cameraPosition - (cameraFront.cross(CAMERA_UP_VEC3).normalize()) * cameraSpeed
+        if (glfwGetKey(windowId, GLFW_KEY_A) == GLFW_PRESS) {
+            cameraPosition = cameraPosition - cameraRight * cameraSpeed
         }
-        if (GLFW.glfwGetKey(windowId, GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS) {
-            cameraPosition = cameraPosition + (cameraFront.cross(CAMERA_UP_VEC3).normalize()) * cameraSpeed
+        if (glfwGetKey(windowId, GLFW_KEY_D) == GLFW_PRESS) {
+            cameraPosition = cameraPosition + cameraRight * cameraSpeed
         }
         this.cameraPosition.y = currentY // stay on xz line when moving (aka. no clip): ToDo: make movement not slower when you look up
-        if (GLFW.glfwGetKey(windowId, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS) {
+        if (glfwGetKey(windowId, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
             cameraPosition = cameraPosition - CAMERA_UP_VEC3 * cameraSpeed
         }
-        if (GLFW.glfwGetKey(windowId, GLFW.GLFW_KEY_SPACE) == GLFW.GLFW_PRESS) {
+        if (glfwGetKey(windowId, GLFW_KEY_SPACE) == GLFW_PRESS) {
             cameraPosition = cameraPosition + CAMERA_UP_VEC3 * cameraSpeed
         }
+        if (lastPosition != cameraPosition) {
+            recalculateViewMatrix()
+            sendPositionToServer()
+        }
+
+        val lastZoom = zoom
+        zoom = if (glfwGetKey(windowId, GLFW_KEY_C) == GLFW_PRESS) {
+            2f
+        } else {
+            0f
+        }
+        if (lastZoom != zoom) {
+            recalculateProjectionMatrix()
+        }
+
     }
 
-    fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int, vararg shaders: Shader) {
+    fun addShaders(vararg shaders: Shader) {
+        this.shaders.addAll(shaders)
+    }
+
+    fun screenChangeResizeCallback(screenWidth: Int, screenHeight: Int) {
+        this.screenWidth = screenWidth
+        this.screenHeight = screenHeight
+        recalculateProjectionMatrix()
+    }
+
+    private fun recalculateProjectionMatrix() {
         for (shader in shaders) {
             shader.use().setMat4("projectionMatrix", calculateProjectionMatrix(screenWidth, screenHeight))
         }
     }
 
     private fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int): Mat4 {
-        return glm.perspective(glm.radians(fov), screenWidth.toFloat() / screenHeight.toFloat(), 0.1f, 1000f)
+        return glm.perspective(glm.radians(fov / (zoom + 1.0f)), screenWidth.toFloat() / screenHeight.toFloat(), 0.1f, 1000f)
     }
 
-    fun calculateViewMatrix(vararg shaders: Shader) {
+    private fun recalculateViewMatrix() {
         for (shader in shaders) {
             shader.use().setMat4("viewMatrix", calculateViewMatrix())
         }
@@ -96,7 +138,33 @@ class Camera(private var fov: Float, private val windowId: Long) {
     }
 
     fun setRotation(yaw: Double, pitch: Double) {
-        cameraFront = Vec3((cos(glm.radians(yaw + 90)) * cos(glm.radians(-pitch))).toFloat(), sin(glm.radians(-pitch)).toFloat(), (sin(glm.radians(yaw + 90)) * cos(glm.radians(-pitch))).toFloat()).normalize()
+        cameraFront = Vec3(
+            (cos(glm.radians(yaw + 90)) * cos(glm.radians(-pitch))).toFloat(),
+            sin(glm.radians(-pitch)).toFloat(),
+            (sin(glm.radians(yaw + 90)) * cos(glm.radians(-pitch))).toFloat())
+            .normalize()
+
+        cameraRight = cameraFront.cross(CAMERA_UP_VEC3).normalize()
+        cameraUp = cameraRight.cross(cameraFront).normalize()
+        recalculateViewMatrix()
+        sendPositionToServer()
+    }
+
+    fun draw() {
+        if (!currentPositionSent) {
+            sendPositionToServer()
+        }
+    }
+
+    private fun sendPositionToServer() {
+        if (System.currentTimeMillis() - lastPositionChange > ProtocolDefinition.TICK_TIME) {
+            // ToDo: Replace this with proper movement and only send it, when our position changed
+            connection.sendPacket(PacketPlayerPositionAndRotationSending(Location(cameraPosition), EntityRotation(yaw, pitch), false))
+            lastPositionChange = System.currentTimeMillis()
+            currentPositionSent = true
+            return
+        }
+        currentPositionSent = false
     }
 
     companion object {
