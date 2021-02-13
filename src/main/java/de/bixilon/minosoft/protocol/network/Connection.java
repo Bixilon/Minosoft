@@ -450,7 +450,7 @@ public class Connection {
         this.pong = pong;
     }
 
-    public boolean shouldDisconnect() {
+    public boolean isDisconnected() {
         return getConnectionState() == ConnectionStates.DISCONNECTING || getConnectionState() == ConnectionStates.DISCONNECTED || getConnectionState() == ConnectionStates.FAILED || getConnectionState() == ConnectionStates.FAILED_NO_RETRY;
     }
 

@@ -1,12 +1,9 @@
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.Location
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
-import glm_.vec3.Vec3
 import org.lwjgl.Version
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -24,22 +21,4 @@ class Rendering(private val connection: Connection) {
             renderWindow.exit()
         }, "Rendering").start()
     }
-
-
-    fun teleport(position: Location) {
-        // tell the window we are ready (received position)
-        if (renderWindow.latch.count > 0) {
-            renderWindow.latch.countDown()
-        }
-        renderWindow.renderQueue.add {
-            renderWindow.camera.cameraPosition = Vec3(position.x, position.y, position.z)
-        }
-    }
-
-    fun rotate(rotation: EntityRotation) {
-        renderWindow.renderQueue.add {
-            renderWindow.camera.setRotation(rotation.yaw.toDouble(), rotation.pitch.toDouble())
-        }
-    }
-
 }

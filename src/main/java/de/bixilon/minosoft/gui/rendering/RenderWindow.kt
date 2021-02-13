@@ -5,7 +5,11 @@ import de.bixilon.minosoft.data.entities.Location
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.RenderStats
+import de.bixilon.minosoft.modding.event.EventInvokerCallback
+import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
+import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerPositionAndRotation
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log
@@ -30,13 +34,36 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
     private var lastFrame = 0.0
     lateinit var camera: Camera
-    var latch = CountUpAndDownLatch(1)
+    private val latch = CountUpAndDownLatch(1)
 
     // all renderers
     val chunkRenderer: ChunkRenderer = ChunkRenderer(connection, connection.player.world, this)
     val hudRenderer: HUDRenderer = HUDRenderer(connection, this)
 
     val renderQueue = ConcurrentLinkedQueue<Runnable>()
+
+    init {
+        connection.registerEvent(EventInvokerCallback<ConnectionStateChangeEvent> {
+            if (it.connection.isDisconnected) {
+                renderQueue.add {
+                    glfwSetWindowShouldClose(windowId, true)
+                }
+            }
+        })
+        connection.registerEvent(EventInvokerCallback<PacketReceiveEvent> {
+            val packet = it.packet
+            if (packet !is PacketPlayerPositionAndRotation) {
+                return@EventInvokerCallback
+            }
+            if (latch.count > 0) {
+                latch.countDown()
+            }
+            renderQueue.add {
+                camera.cameraPosition = packet.location.toVec3()
+                camera.setRotation(packet.rotation.yaw.toDouble(), packet.rotation.pitch.toDouble())
+            }
+        })
+    }
 
 
     fun init(latch: CountUpAndDownLatch) {
@@ -191,6 +218,9 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         // Terminate GLFW and free the error callback
         glfwTerminate()
         glfwSetErrorCallback(null)!!.free()
+
+        // disconnect
+        connection.disconnect()
     }
 
     private fun switchPolygonMode() {

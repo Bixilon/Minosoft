@@ -76,7 +76,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     public MenuButton optionsMenu;
     public Label pingField;
 
-    boolean canConnect;
+    private boolean canConnect;
     private Server server;
 
     public static ServerListCell newInstance() {
@@ -286,21 +286,26 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (!this.canConnect || this.server.getLastPing() == null) {
             return;
         }
+        if (this.server.isConnected()) {
+            return;
+        }
         this.root.getStyleClass().add("list-cell-connecting");
         new Thread(() -> {
             Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getConfig().getSelectedAccount()));
+            this.server.addConnection(connection);
+            Platform.runLater(() -> {
+                this.optionsConnect.setDisable(true);
+            });
             Version version;
             if (this.server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
                 version = this.server.getLastPing().getVersion();
             } else {
                 version = Versions.getVersionById(this.server.getDesiredVersionId());
             }
-            this.optionsConnect.setDisable(true);
             // ToDo: show progress dialog
 
             connection.connect(this.server.getLastPing().getAddress(), version, new CountUpAndDownLatch(1));
             connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
-            this.server.addConnection(connection);
         }, "ConnectThread").start();
 
     }
@@ -328,15 +333,19 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 default -> "";
             });
 
-            if (!connection.isConnected()) {
-                // maybe we got disconnected
-                if (!this.server.isConnected()) {
-                    this.optionsSessions.setDisable(true);
-                    return;
-                }
+            if (connection.isConnected()) {
+                this.optionsConnect.setDisable(Minosoft.getConfig().getSelectedAccount() == connection.getPlayer().getAccount());
+                this.optionsSessions.setDisable(false);
+                return;
             }
 
-            this.optionsConnect.setDisable(Minosoft.getConfig().getSelectedAccount() == connection.getPlayer().getAccount());
+            if (this.server.isConnected()) {
+                this.optionsSessions.setDisable(false);
+                this.optionsConnect.setDisable(false);
+                return;
+            }
+
+            this.optionsConnect.setDisable(false);
             this.optionsSessions.setDisable(false);
         });
     }

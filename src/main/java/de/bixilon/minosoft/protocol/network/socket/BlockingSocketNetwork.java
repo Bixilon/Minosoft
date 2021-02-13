@@ -133,7 +133,7 @@ public class BlockingSocketNetwork extends Network {
 
     @Override
     public void disconnect() {
-        if (this.connection.shouldDisconnect()) {
+        if (this.connection.isDisconnected()) {
             // already trying
             return;
         }
