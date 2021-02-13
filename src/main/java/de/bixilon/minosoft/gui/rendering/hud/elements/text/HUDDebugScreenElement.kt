@@ -66,7 +66,6 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
         return nanoToMillis1d(hudTextElement.renderWindow.renderStats.maxFrameTime)
     }
 
-
     private fun getUsedMemory(): Long {
         return runtime.totalMemory() - runtime.freeMemory()
     }

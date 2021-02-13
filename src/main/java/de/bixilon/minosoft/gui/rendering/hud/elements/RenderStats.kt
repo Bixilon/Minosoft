@@ -2,10 +2,15 @@ package de.bixilon.minosoft.gui.rendering.hud.elements
 
 class RenderStats {
     var fpsLastSecond = -1
+        private set
     var minFrameTime = Long.MAX_VALUE
+        private set
     var maxFrameTime = 0L
+        private set
     var avgFrameTime = 0L
+        private set
     var frames = 0L
+        private set
 
     private var lastFPSCalcTime = 0L
     private var framesLastSecond = 0
