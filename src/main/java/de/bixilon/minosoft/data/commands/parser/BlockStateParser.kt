@@ -56,7 +56,7 @@ class BlockStateParser : CommandParser() {
                 val blockProperty = blockPropertyKey[pair.value] ?: throw UnknownBlockPropertyCommandParseException(stringReader, pair.value)
                 allProperties.add(blockProperty)
             }
-            block = Block(identifier.value.mod, identifier.value.identifier, allProperties, rotation)
+            block = Block(identifier.value.mod, identifier.value.identifier, allProperties, rotation ?: BlockRotations.NONE)
         }
 
         if (this == BLOCK_PREDICATE_PARSER) {

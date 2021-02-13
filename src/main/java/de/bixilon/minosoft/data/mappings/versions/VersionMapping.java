@@ -415,20 +415,21 @@ public class VersionMapping {
                     loadEntityMapping(mod, identifier, data);
                 }
             }
-            case BLOCK_MODELS -> {
+            case MODELS -> {
                 if (data == null) {
                     break;
                 }
-                JsonObject models = data.getAsJsonObject("blockModels");
-                for (String identifier : models.keySet()) {
+                JsonObject block = data.getAsJsonObject("block");
+                JsonObject blockModels = block.getAsJsonObject("models");
+                for (String identifier : blockModels.keySet()) {
                     if (this.blockModels.containsKey(new ModIdentifier(mod, identifier))) {
                         continue;
                     }
-                    loadBlockModel(mod, identifier, models);
+                    loadBlockModel(mod, identifier, blockModels);
                 }
-                JsonObject states = data.getAsJsonObject("blockStates");
-                for (String identifier : states.keySet()) {
-                    loadBlockModelState(mod, identifier, states);
+                JsonObject blockStates = block.getAsJsonObject("states");
+                for (String identifier : blockStates.keySet()) {
+                    loadBlockModelState(mod, identifier, blockStates);
                 }
             }
         }
@@ -436,7 +437,7 @@ public class VersionMapping {
     }
 
     private BlockModel loadBlockModel(String mod, String identifierString, JsonObject fullModData) {
-        identifierString = correctBlockModelIdentifier(identifierString);
+        identifierString = identifierString.replace("block/", "");
         ModIdentifier identifier = new ModIdentifier(mod, identifierString);
         BlockModel model = this.blockModels.get(identifier);
         if (this.blockModels.containsKey(identifier)) {
@@ -482,7 +483,9 @@ public class VersionMapping {
             boolean ckecked = false;
             for (Block blockState : blockStates) {
                 if (blockState.bareEquals(state)) {
-                    blockState.setBlockModel(new BlockModel(this.blockModels.get(new ModIdentifier(entry.get("model").getAsString())), entry));
+                    for (var type : entry.getAsJsonArray("types")) {
+                        blockState.getBlockModels().add(new BlockModel(this.blockModels.get(new ModIdentifier(type.getAsJsonObject().get("model").getAsString().replace("block/", ""))), entry));
+                    }
                     ckecked = true;
                 }
             }
@@ -533,9 +536,6 @@ public class VersionMapping {
         }
     }
 
-    private String correctBlockModelIdentifier(String identifier) {
-        return identifier.replaceAll("\\w+/", ""); // ToDo: Regenerate mappings to remove this here
-    }
 
     private void loadEntityMapping(String mod, String identifier, JsonObject fullModData) {
         JsonObject data = fullModData.getAsJsonObject(identifier);

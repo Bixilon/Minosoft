@@ -66,7 +66,17 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
         for (direction in Directions.DIRECTIONS) {
             for (element in elements) {
                 val blockFullFace = fullFaceDirections.contains(direction)
-                val neighbourBlockFullFace = neighbourBlocks[direction.ordinal]?.blockModel?.fullFaceDirections?.contains(direction.inverse()) == true
+
+                var neighbourBlockFullFace = false
+                neighbourBlocks[direction.ordinal]?.blockModels?.let { // ToDo: Improve this
+                    for (model in it) {
+                        if (model.fullFaceDirections.contains(direction.inverse())) {
+                            neighbourBlockFullFace = true
+                            break
+                        }
+                    }
+                }
+
                 if (blockFullFace && neighbourBlockFullFace) {
                     continue
                 }

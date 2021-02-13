@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 data class BlockPosition(val x: Int, val y: Int, val z: Int) {
+    constructor(chunkLocation: ChunkLocation, sectionHeight: Int, inChunkSectionLocation: InChunkSectionLocation) : this(chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X + inChunkSectionLocation.x, sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inChunkSectionLocation.y, chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z + inChunkSectionLocation.z) // ToDo
 
     fun getChunkLocation(): ChunkLocation {
         val chunkX = if (this.x >= 0) {

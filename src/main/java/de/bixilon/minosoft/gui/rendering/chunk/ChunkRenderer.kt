@@ -2,10 +2,7 @@ package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.blocks.Block
-import de.bixilon.minosoft.data.world.Chunk
-import de.bixilon.minosoft.data.world.ChunkLocation
-import de.bixilon.minosoft.data.world.ChunkSection
-import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.*
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
@@ -77,7 +74,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
             //      continue
             //  }
 
-            block.blockModel.render(position, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
+            block.getBlockModel(BlockPosition(chunkLocation, sectionHeight, position)).render(position, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
         }
         return data.toFloatArray()
     }
@@ -112,7 +109,9 @@ class ChunkRenderer(private val connection: Connection, private val world: World
         textureMap[TextureArray.DEBUG_TEXTURE.name] = TextureArray.DEBUG_TEXTURE
 
         for (block in blocks) {
-            block.blockModel?.resolveTextures(textures, textureMap)
+            for (model in block.blockModels) {
+                model.resolveTextures(textures, textureMap)
+            }
         }
         return textures
     }

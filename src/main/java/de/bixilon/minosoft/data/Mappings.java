@@ -17,9 +17,10 @@ public enum Mappings {
     REGISTRIES,
     BLOCKS,
     ENTITIES,
-    BLOCK_MODELS;
+    MODELS;
 
     public static final Mappings[] VALUES = values();
+
     public String getFilename() {
         return name().toLowerCase();
     }
