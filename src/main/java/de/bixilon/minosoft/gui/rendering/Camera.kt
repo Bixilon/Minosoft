@@ -26,14 +26,20 @@ class Camera(private var fov: Float, private val windowId: Long) {
         xOffset *= mouseSensitivity
         yOffset *= mouseSensitivity
         yaw += xOffset
-        pitch += yOffset
+        pitch -= yOffset
 
         // make sure that when pitch is out of bounds, screen doesn't get flipped
-        if (this.pitch > 89.0) {
-            this.pitch = 89.0
-        } else if (this.pitch < -89.0) {
-            this.pitch = -89.0
+        if (this.pitch > 89.9) {
+            this.pitch = 89.9
+        } else if (this.pitch < -89.9) {
+            this.pitch = -89.9
         }
+        if (this.yaw > 180) {
+            this.yaw -= 360
+        } else if (this.yaw < -180) {
+            this.yaw += 360
+        }
+        this.yaw %= 180
         setRotation(yaw, pitch)
     }
 
@@ -90,7 +96,7 @@ class Camera(private var fov: Float, private val windowId: Long) {
     }
 
     fun setRotation(yaw: Double, pitch: Double) {
-        cameraFront = Vec3((cos(glm.radians(yaw)) * cos(glm.radians(pitch))).toFloat(), sin(glm.radians(pitch)).toFloat(), (sin(glm.radians(yaw)) * cos(glm.radians(pitch))).toFloat()).normalize()
+        cameraFront = Vec3((cos(glm.radians(yaw + 90)) * cos(glm.radians(-pitch))).toFloat(), sin(glm.radians(-pitch)).toFloat(), (sin(glm.radians(yaw + 90)) * cos(glm.radians(-pitch))).toFloat()).normalize()
     }
 
     companion object {

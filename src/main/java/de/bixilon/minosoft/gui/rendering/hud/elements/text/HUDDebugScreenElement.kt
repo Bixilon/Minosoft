@@ -1,5 +1,9 @@
 package de.bixilon.minosoft.gui.rendering.hud.elements.text
 
+import de.bixilon.minosoft.data.entities.Location
+import de.bixilon.minosoft.data.world.BlockPosition
+import de.bixilon.minosoft.data.world.ChunkLocation
+import de.bixilon.minosoft.data.world.InChunkSectionLocation
 import de.bixilon.minosoft.gui.rendering.font.FontBindings
 import org.lwjgl.opengl.GL11.*
 import oshi.SystemInfo
@@ -11,27 +15,41 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
     private val systemInfoHardwareAbstractionLayer = systemInfo.hardware
 
 
-    private val processorText = " ${runtime.availableProcessors()}x ${systemInfoHardwareAbstractionLayer.processor.processorIdentifier.name}"
+    private val processorText = " ${runtime.availableProcessors()}x ${systemInfoHardwareAbstractionLayer.processor.processorIdentifier.name.replace("\\s{2,}".toRegex(), "")}"
     private lateinit var gpuText: String
     private lateinit var gpuVersionText: String
     private val maxMemoryText: String = getFormattedMaxMemory()
     private val systemMemoryText: String = formatBytes(systemInfoHardwareAbstractionLayer.memory.total)
+    private val osText: String = "${System.getProperty("os.name")}: ${systemInfo.operatingSystem.family} ${systemInfo.operatingSystem.bitness}bit"
 
+    // only calculate once per update values
+    private lateinit var location: Location
+    private lateinit var blockPosition: BlockPosition
+    private lateinit var chunkLocation: ChunkLocation
+    private var sectionHeight: Int = 0
+    private lateinit var inChunkSectionLocation: InChunkSectionLocation
 
     override fun prepare(chatComponents: Map<FontBindings, MutableList<Any>>) {
+        calculateDynamicValues()
+
         chatComponents[FontBindings.LEFT_UP]!!.addAll(listOf(
-            "§fFPS: ${getFPS()}",
-            "§fTimings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms",
-            "§fXYZ ${getLocation()}",
-            "§fConnected to: ${hudTextElement.connection.address}",
+            "FPS: ${getFPS()}",
+            "Timings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms",
+            "Connected to: ${hudTextElement.connection.address}",
+            "",
+            "XYZ ${getLocation()}",
+            "Block ${getBlockPosition()}",
+            "Chunk ${getChunkLocation()}",
+            "Facing ${getFacing()}",
+            "Dimension ${hudTextElement.connection.player.world.dimension}",
         ))
         chatComponents[FontBindings.RIGHT_UP]!!.addAll(listOf(
-            "§fJava: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit",
-            "§fMemory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/$maxMemoryText",
-            "§fAllocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}",
-            "§fSystem: $systemMemoryText",
+            "Java: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit",
+            "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/$maxMemoryText",
+            "Allocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}",
+            "System: $systemMemoryText",
             "",
-            "OS: ${System.getProperty("os.name")}",
+            "OS: $osText",
             "CPU: $processorText",
             "",
             "Display: ${getScreenDimensions()}",
@@ -98,18 +116,39 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
         return getAllocatedMemory() * 100 / runtime.maxMemory()
     }
 
-    private fun getLocation(): String {
-        val cameraPosition = hudTextElement.renderWindow.camera.cameraPosition
-        return "${formatCoordinate(cameraPosition.x)} / ${formatCoordinate(cameraPosition.y)} / ${formatCoordinate(cameraPosition.z)}"
-    }
-
     private fun getScreenDimensions(): String {
         return "${hudTextElement.renderWindow.screenWidth}x${hudTextElement.renderWindow.screenHeight}"
     }
 
+    private fun getLocation(): String {
+        return "${formatCoordinate(location.x)} / ${formatCoordinate(location.y)} / ${formatCoordinate(location.z)}"
+    }
+
+    private fun getBlockPosition(): String {
+        return "${blockPosition.x} / ${blockPosition.y} / ${blockPosition.z}"
+    }
+
+    private fun getChunkLocation(): String {
+        return "${inChunkSectionLocation.x} ${inChunkSectionLocation.y} ${inChunkSectionLocation.z} in ${chunkLocation.x} $sectionHeight ${chunkLocation.z}"
+    }
+
+    private fun getFacing(): String {
+        val yaw = hudTextElement.renderWindow.camera.yaw
+        val pitch = hudTextElement.renderWindow.camera.pitch
+        return "todo (${formatRotation(yaw)} / ${formatRotation(pitch)})"
+    }
+
+    private fun calculateDynamicValues() {
+        location = Location(hudTextElement.renderWindow.camera.cameraPosition)
+        blockPosition = location.toBlockPosition()
+        chunkLocation = blockPosition.getChunkLocation()
+        sectionHeight = blockPosition.getSectionHeight()
+        inChunkSectionLocation = blockPosition.getInChunkSectionLocation()
+    }
+
 
     companion object {
-        private val UNITS = listOf("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB")
+        private val UNITS = listOf("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB")
         fun formatBytes(bytes: Long): String {
             var lastFactor = 1L
             var currentFactor = 1024L
@@ -126,8 +165,12 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
             throw IllegalArgumentException()
         }
 
-        fun formatCoordinate(coordinate: Float): String {
-            return "%.4f".format(coordinate)
+        fun formatCoordinate(coordinate: Double): String {
+            return "%.3f".format(coordinate)
+        }
+
+        fun formatRotation(rotation: Double): String {
+            return "%.1f".format(rotation)
         }
     }
 }

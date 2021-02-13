@@ -50,10 +50,11 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
             meshData.add(0f)
             meshData.add(0f)
             meshData.add(0f)
+
             meshData.add(0f)
             meshData.add(0f)
             meshData.add(0f)
-            meshData.add(0.2f)
+            meshData.add(0.3f)
         }
 
         drawLetterVertex(start)

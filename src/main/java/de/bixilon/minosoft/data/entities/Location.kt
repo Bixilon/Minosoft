@@ -28,6 +28,10 @@ data class Location(val x: Double, val y: Double, val z: Double) {
         return Vec3(x, y, z)
     }
 
+    fun toBlockPosition(): BlockPosition {
+        return BlockPosition((x - 0.5).toInt(), y.toInt(), (z - 0.5).toInt()) // ToDo
+    }
+
     companion object {
         @JvmStatic
         fun fromPosition(position: BlockPosition): Location {
