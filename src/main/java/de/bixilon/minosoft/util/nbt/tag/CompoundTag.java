@@ -144,8 +144,12 @@ public class CompoundTag extends NBTTag {
     }
 
     @Nullable
-    public boolean getBoolean(String key) {
-        return getNumberTag(key).getAsByte() == 0x01;
+    public Boolean getBoolean(String key) {
+        NumberTag tag = getNumberTag(key);
+        if (tag == null) {
+            return null;
+        }
+        return tag.getAsByte() == 0x01;
     }
 
     public void writeTag(String name, NBTTag tag) {
