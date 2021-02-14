@@ -17,11 +17,20 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 data class InChunkLocation(val x: Int, val y: Int, val z: Int) {
 
     fun getInChunkSectionLocation(): InChunkSectionLocation {
-        return InChunkSectionLocation(x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z)
+        return InChunkSectionLocation(x,
+            if (y < 0) {
+                ((ProtocolDefinition.SECTION_HEIGHT_Y + (y % ProtocolDefinition.SECTION_HEIGHT_Y))) % ProtocolDefinition.SECTION_HEIGHT_Y
+            } else {
+                y % ProtocolDefinition.SECTION_HEIGHT_Y
+            }, z)
     }
 
     fun getSectionHeight(): Int {
-        return y / ProtocolDefinition.SECTION_HEIGHT_Y
+        return if (y < 0) {
+            (y + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
+        } else {
+            y / ProtocolDefinition.SECTION_HEIGHT_Y
+        }
     }
 
     override fun toString(): String {

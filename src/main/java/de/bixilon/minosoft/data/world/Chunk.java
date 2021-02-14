@@ -38,7 +38,7 @@ public class Chunk {
         if (!this.sections.containsKey(section)) {
             return null;
         }
-        return this.sections.get(section).getBlock(x, y % 16, z);
+        return this.sections.get(section).getBlock(x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z);
     }
 
     public void setBlock(int x, int y, int z, Block block) {

@@ -148,7 +148,7 @@ public class Slot {
                 ListTag enchantmentList = new ListTag(TagTypes.COMPOUND, new ArrayList<>());
                 this.enchantments.forEach((id, level) -> {
                     CompoundTag tag = new CompoundTag();
-                    tag.writeTag("id", new ShortTag((short) (int) mapping.getIdByEnchantment(id)));
+                    tag.writeTag("id", new ShortTag((short) (int) mapping.getEnchantmentId(id)));
                     tag.writeTag("lvl", new ShortTag(level.shortValue()));
                     enchantmentList.getValue().add(tag);
                 });

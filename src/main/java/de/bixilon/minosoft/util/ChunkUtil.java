@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util;
 
+import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkSection;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public final class ChunkUtil {
-    public static Chunk readChunkPacket(InByteBuffer buffer, long[] sectionBitMasks, int addBitMask, boolean fullChunk, boolean containsSkyLight) {
+    public static Chunk readChunkPacket(InByteBuffer buffer, Dimension dimension, long[] sectionBitMasks, int addBitMask, boolean fullChunk, boolean containsSkyLight) {
         if (buffer.getVersionId() < V_14W26A) {
             if (sectionBitMasks[0] == 0x00 && fullChunk) {
                 // unload chunk
@@ -88,7 +89,7 @@ public final class ChunkUtil {
                             }
                         }
                     }
-                    sectionMap.put(c, new ChunkSection(blockMap));
+                    sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap));
                 }
             }
             return new Chunk(sectionMap);
@@ -135,7 +136,7 @@ public final class ChunkUtil {
                         }
                     }
                 }
-                sectionMap.put(c, new ChunkSection(blockMap));
+                sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap));
             }
             return new Chunk(sectionMap);
         }
@@ -198,7 +199,7 @@ public final class ChunkUtil {
                 }
             }
 
-            sectionMap.put(c, new ChunkSection(blockMap));
+            sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap));
         }
         if (buffer.getVersionId() < V_19W36A) {
             byte[] biomes = buffer.readBytes(256);

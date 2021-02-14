@@ -434,7 +434,16 @@ public enum BlockProperties {
 
     SCULK_SENSOR_PHASE_INACTIVE("sculk_sensor_phase", "inactive"),
     SCULK_SENSOR_PHASE_ACTIVE("sculk_sensor_phase", "active"),
-    SCULK_SENSOR_PHASE_COOLDOWN("sculk_sensor_phase", "cooldown");
+    SCULK_SENSOR_PHASE_COOLDOWN("sculk_sensor_phase", "cooldown"),
+
+    DRIPSTONE_TILT_NONE,
+    DRIPSTONE_TILT_UNSTABLE,
+    DRIPSTONE_TILT_PARTIAL,
+    DRIPSTONE_TILT_FULL,
+
+    CAVE_VINES_BERRIES_YES,
+    CAVE_VINES_BERRIES_NO,
+    ;
 
     public static final HashMap<String, HashMap<String, BlockProperties>> PROPERTIES_MAPPING = new HashMap<>();
 

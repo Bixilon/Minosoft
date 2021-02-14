@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
+
 import java.net.InetAddress;
 import java.util.regex.Pattern;
 
@@ -85,6 +87,10 @@ public final class ProtocolDefinition {
 
     public static final int TICKS_PER_SECOND = 20;
     public static final int TICK_TIME = 1000 / TICKS_PER_SECOND;
+
+
+    public static final ModIdentifier DEFAULT_DIMENSION = new ModIdentifier("overworld");
+    public static final ModIdentifier NETHER_DIMENSION = new ModIdentifier("nether");
 
     static {
         // java does (why ever) not allow to directly assign a null

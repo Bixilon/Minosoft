@@ -146,6 +146,10 @@ public class InByteBuffer {
         return ret;
     }
 
+    public String[] readStringArray() {
+        return readStringArray(readVarInt());
+    }
+
     public String readString(int length) {
         return new String(readBytes(length));
     }
@@ -196,7 +200,7 @@ public class InByteBuffer {
             int z = (int) (raw & 0x3FFFFFF);
             return new BlockPosition(x, y, z);
         }
-        int y = (int) (raw & 0xFFF);
+        int y = (int) (raw << 52 >> 52);
         int z = (int) (raw << 26 >> 38);
         return new BlockPosition(x, y, z);
     }

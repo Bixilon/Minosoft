@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
+import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.data.world.Chunk;
@@ -42,7 +43,7 @@ public class PacketChunkData extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        boolean containsSkyLight = buffer.getConnection().getPlayer().getWorld().getDimension().hasSkyLight();
+        Dimension dimension = buffer.getConnection().getPlayer().getWorld().getDimension();
         this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
 
         boolean fullChunk = true;
@@ -62,7 +63,7 @@ public class PacketChunkData extends ClientboundPacket {
                 decompressed = buffer;
             }
 
-            this.chunk = ChunkUtil.readChunkPacket(decompressed, sectionBitMasks, addBitMask, fullChunk, containsSkyLight);
+            this.chunk = ChunkUtil.readChunkPacket(decompressed, dimension, sectionBitMasks, addBitMask, fullChunk, dimension.getHasSkyLight());
             return true;
         }
         long[] sectionBitMasks;
@@ -96,7 +97,7 @@ public class PacketChunkData extends ClientboundPacket {
 
 
         if (size > 0) {
-            this.chunk = ChunkUtil.readChunkPacket(buffer, sectionBitMasks, 0, fullChunk, containsSkyLight);
+            this.chunk = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMasks, 0, fullChunk, dimension.getHasSkyLight());
             // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
             buffer.setPosition(size + lastPos);
         }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
@@ -34,6 +35,7 @@ public class PacketChunkBulk extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
+        Dimension dimension = buffer.getConnection().getPlayer().getWorld().getDimension();
         if (buffer.getVersionId() < V_14W26A) {
             int chunkCount = buffer.readUnsignedShort();
             int dataLen = buffer.readInt();
@@ -54,7 +56,7 @@ public class PacketChunkBulk extends ClientboundPacket {
                 long[] sectionBitMask = {buffer.readUnsignedShort()};
                 int addBitMask = buffer.readUnsignedShort();
 
-                this.chunks.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(decompressed, sectionBitMask, addBitMask, true, containsSkyLight));
+                this.chunks.put(new ChunkLocation(x, z), ChunkUtil.readChunkPacket(decompressed, dimension, sectionBitMask, addBitMask, true, containsSkyLight));
             }
             return true;
         }
@@ -72,7 +74,7 @@ public class PacketChunkBulk extends ClientboundPacket {
             sectionBitMask[i] = new long[]{buffer.readUnsignedShort()};
         }
         for (int i = 0; i < chunkCount; i++) {
-            this.chunks.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, sectionBitMask[i], (short) 0, true, containsSkyLight));
+            this.chunks.put(new ChunkLocation(x[i], z[i]), ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask[i], (short) 0, true, containsSkyLight));
         }
         return true;
     }

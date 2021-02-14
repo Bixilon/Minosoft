@@ -22,16 +22,15 @@ import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositio
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
-import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W42A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketPlayerPositionAndRotation extends ClientboundPacket {
-    Location location;
-    EntityRotation rotation;
-    boolean onGround;
-    byte flags;
-
-    int teleportId;
+    private Location location;
+    private EntityRotation rotation;
+    private boolean onGround;
+    private byte flags;
+    private int teleportId;
+    private boolean dismountVehicle = true;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -46,6 +45,10 @@ public class PacketPlayerPositionAndRotation extends ClientboundPacket {
         if (buffer.getVersionId() >= V_15W42A) {
             this.teleportId = buffer.readVarInt();
         }
+        if (buffer.getVersionId() < V_21W05A) {
+            return true;
+        }
+        this.dismountVehicle = buffer.readBoolean();
         return true;
     }
 

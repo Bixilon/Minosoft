@@ -23,7 +23,7 @@ class Block : ModIdentifier {
     var properties: Set<BlockProperties> = setOf()
     val blockModels: MutableList<BlockModel> = mutableListOf()
 
-    constructor(mod: String, identifier: String, properties: HashSet<BlockProperties>, rotation: BlockRotations) : super(mod, identifier) {
+    constructor(mod: String, identifier: String, properties: Set<BlockProperties>, rotation: BlockRotations) : super(mod, identifier) {
         this.properties = properties
         this.rotation = rotation
     }

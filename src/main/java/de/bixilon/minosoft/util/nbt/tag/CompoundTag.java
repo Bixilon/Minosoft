@@ -142,6 +142,11 @@ public class CompoundTag extends NBTTag {
         return this.data.get(key);
     }
 
+
+    public boolean getBoolean(String key) {
+        return getNumberTag(key).getAsByte() == 0x01;
+    }
+
     public void writeTag(String name, NBTTag tag) {
         if (this.isFinal) {
             throw new IllegalArgumentException("This tag is marked as final!");

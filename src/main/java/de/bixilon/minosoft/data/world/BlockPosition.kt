@@ -45,11 +45,15 @@ data class BlockPosition(val x: Int, val y: Int, val z: Int) {
 
     fun getInChunkSectionLocation(): InChunkSectionLocation {
         val location = getInChunkLocation()
-        return InChunkSectionLocation(location.x, this.y % 16, location.z)
+        return InChunkSectionLocation(location.x, this.y % ProtocolDefinition.SECTION_HEIGHT_Y, location.z)
     }
 
     fun getSectionHeight(): Int {
-        return y / ProtocolDefinition.SECTION_HEIGHT_Y
+        return if (y < 0) {
+            (y + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
+        } else {
+            y / ProtocolDefinition.SECTION_HEIGHT_Y
+        }
     }
 
     override fun toString(): String {

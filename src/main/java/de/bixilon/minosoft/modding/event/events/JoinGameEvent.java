@@ -18,10 +18,9 @@ import de.bixilon.minosoft.data.Difficulties;
 import de.bixilon.minosoft.data.GameModes;
 import de.bixilon.minosoft.data.LevelTypes;
 import de.bixilon.minosoft.data.mappings.Dimension;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketJoinGame;
-
-import java.util.HashMap;
 
 public class JoinGameEvent extends CancelableEvent {
     private final int entityId;
@@ -35,9 +34,9 @@ public class JoinGameEvent extends CancelableEvent {
     private final boolean reducedDebugScreen;
     private final boolean enableRespawnScreen;
     private final long hashedSeed;
-    private final HashMap<String, HashBiMap<String, Dimension>> dimensions;
+    private final HashBiMap<ModIdentifier, Dimension> dimensions;
 
-    public JoinGameEvent(Connection connection, int entityId, boolean hardcore, GameModes gameMode, Dimension dimension, Difficulties difficulty, int viewDistance, int maxPlayers, LevelTypes levelType, boolean reducedDebugScreen, boolean enableRespawnScreen, long hashedSeed, HashMap<String, HashBiMap<String, Dimension>> dimensions) {
+    public JoinGameEvent(Connection connection, int entityId, boolean hardcore, GameModes gameMode, Dimension dimension, Difficulties difficulty, int viewDistance, int maxPlayers, LevelTypes levelType, boolean reducedDebugScreen, boolean enableRespawnScreen, long hashedSeed, HashBiMap<ModIdentifier, Dimension> dimensions) {
         super(connection);
         this.entityId = entityId;
         this.hardcore = hardcore;
@@ -113,7 +112,7 @@ public class JoinGameEvent extends CancelableEvent {
         return this.hashedSeed;
     }
 
-    public HashMap<String, HashBiMap<String, Dimension>> getDimensions() {
+    public HashBiMap<ModIdentifier, Dimension> getDimensions() {
         return this.dimensions;
     }
 }
