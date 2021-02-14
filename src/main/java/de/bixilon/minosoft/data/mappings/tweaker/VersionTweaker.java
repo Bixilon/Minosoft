@@ -115,7 +115,7 @@ public class VersionTweaker {
         if (originalBlock == null) {
             return null;
         }
-        switch (originalBlock.getFullIdentifier()) {
+        switch (originalBlock.getIdentifier().getFullIdentifier()) {
             case "minecraft:grass" -> {
                 Block above = getBlockAbove(chunk, location, sectionHeight);
                 if (above == null) {

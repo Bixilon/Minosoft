@@ -18,6 +18,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 import org.checkerframework.common.value.qual.IntRange;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -142,7 +143,7 @@ public class CompoundTag extends NBTTag {
         return this.data.get(key);
     }
 
-
+    @Nullable
     public boolean getBoolean(String key) {
         return getNumberTag(key).getAsByte() == 0x01;
     }

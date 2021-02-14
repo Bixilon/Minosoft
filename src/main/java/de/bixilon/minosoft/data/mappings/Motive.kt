@@ -10,16 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.mappings
 
-package de.bixilon.minosoft.data.mappings;
-
-public class Item extends ModIdentifier {
-
-    public Item(String fullIdentifier) {
-        super(fullIdentifier);
-    }
-
-    public Item(String mod, String identifier) {
-        super(mod, identifier);
+data class Motive(val identifier: ModIdentifier) {
+    override fun toString(): String {
+        return identifier.toString()
     }
 }

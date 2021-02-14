@@ -18,34 +18,31 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.BlockModel
 import java.util.*
 import kotlin.random.Random
 
-class Block : ModIdentifier {
+data class Block(val identifier: ModIdentifier) {
     var rotation: BlockRotations = BlockRotations.NONE
     var properties: Set<BlockProperties> = setOf()
     val blockModels: MutableList<BlockModel> = mutableListOf()
 
-    constructor(mod: String, identifier: String, properties: Set<BlockProperties>, rotation: BlockRotations) : super(mod, identifier) {
+    constructor(identifier: ModIdentifier, properties: Set<BlockProperties>, rotation: BlockRotations) : this(identifier) {
         this.properties = properties
         this.rotation = rotation
     }
 
-    constructor(mod: String, identifier: String, properties: HashSet<BlockProperties>) : super(mod, identifier) {
+    constructor(identifier: ModIdentifier, properties: Set<BlockProperties>) : this(identifier) {
         this.properties = properties
     }
 
-    constructor(fullIdentifier: String, vararg properties: BlockProperties) : super(fullIdentifier) {
+    constructor(identifier: ModIdentifier, vararg properties: BlockProperties) : this(identifier) {
         this.properties = setOf(*properties)
     }
 
-    constructor(mod: String, identifier: String, rotation: BlockRotations) : super(mod, identifier) {
+    constructor(identifier: ModIdentifier, rotation: BlockRotations) : this(identifier) {
         this.rotation = rotation
     }
 
-    constructor(mod: String, identifier: String) : super(mod, identifier)
-
-    constructor(fullIdentifier: String?) : super(fullIdentifier)
 
     override fun hashCode(): Int {
-        return Objects.hash(mod, identifier, properties, rotation)
+        return Objects.hash(identifier, properties, rotation)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -59,7 +56,7 @@ class Block : ModIdentifier {
             return false
         }
         if (other is Block) {
-            return identifier == other.identifier && rotation == other.rotation && properties == other.properties && mod == other.mod
+            return identifier == other.identifier && rotation == other.rotation && properties == other.properties && identifier.mod == other.identifier.mod
         }
         if (other is ModIdentifier) {
             return super.equals(other)
@@ -72,7 +69,7 @@ class Block : ModIdentifier {
             return true
         }
         if (obj is Block) {
-            if (getMod() != obj.getMod() || getIdentifier() != obj.getIdentifier()) {
+            if (identifier.mod != obj.identifier.mod || identifier.identifier != obj.identifier.identifier) {
                 return false
             }
             if (obj.rotation != BlockRotations.NONE) {
@@ -111,7 +108,7 @@ class Block : ModIdentifier {
         if (out.isNotEmpty()) {
             out.append(")")
         }
-        return String.format("%s%s", getFullIdentifier(), out)
+        return String.format("%s%s", identifier, out)
     }
 
     fun getBlockModel(position: BlockPosition): BlockModel {

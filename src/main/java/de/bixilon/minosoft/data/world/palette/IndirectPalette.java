@@ -35,7 +35,7 @@ public class IndirectPalette implements Palette {
         if (blockId < this.palette.length) {
             blockId = this.palette[blockId];
         }
-        Block block = this.mapping.getBlockById(blockId);
+        Block block = this.mapping.getBlock(blockId);
         if (StaticConfiguration.DEBUG_MODE) {
             if (block == null) {
                 if (blockId == ProtocolDefinition.NULL_BLOCK_ID) {

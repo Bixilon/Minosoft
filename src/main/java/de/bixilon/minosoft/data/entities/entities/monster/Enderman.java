@@ -35,7 +35,7 @@ public class Enderman extends AbstractSkeleton {
     @Nullable
     public Block getCarriedBlock() {
         if (this.versionId <= V_1_8_9) { // ToDo: No clue here
-            return this.connection.getMapping().getBlockById(this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK) << 4 | this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK_DATA));
+            return this.connection.getMapping().getBlock(this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK) << 4 | this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK_DATA));
         }
         return this.metaData.getSets().getBlock(EntityMetaDataFields.ENDERMAN_CARRIED_BLOCK);
     }

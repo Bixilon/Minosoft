@@ -34,11 +34,11 @@ public class PacketBlockChange extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionByte();
-            this.block = buffer.getConnection().getMapping().getBlockById((buffer.readVarInt() << 4) | buffer.readByte()); // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
+            this.block = buffer.getConnection().getMapping().getBlock((buffer.readVarInt() << 4) | buffer.readByte()); // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
             return true;
         }
         this.position = buffer.readPosition();
-        this.block = buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
+        this.block = buffer.getConnection().getMapping().getBlock(buffer.readVarInt());
         return true;
 
     }

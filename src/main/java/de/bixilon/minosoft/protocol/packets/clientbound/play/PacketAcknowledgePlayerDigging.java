@@ -29,7 +29,7 @@ public class PacketAcknowledgePlayerDigging extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         this.position = buffer.readPosition();
-        this.block = buffer.getConnection().getMapping().getBlockById(buffer.readVarInt());
+        this.block = buffer.getConnection().getMapping().getBlock(buffer.readVarInt());
         this.status = PacketPlayerDigging.DiggingStatus.byId(buffer.readVarInt());
         this.successful = buffer.readBoolean();
         return true;

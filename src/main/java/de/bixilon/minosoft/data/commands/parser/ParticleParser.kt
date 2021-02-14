@@ -16,7 +16,6 @@ import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.ParticleNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.mappings.particle.Particle
 import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData
 import de.bixilon.minosoft.data.mappings.particle.data.ItemParticleData
@@ -29,10 +28,7 @@ class ParticleParser : CommandParser() {
     override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): ParticleData {
         val identifier = stringReader.readModIdentifier()
 
-        if (!connection.mapping.doesParticleExist(identifier.value)) {
-            throw ParticleNotFoundCommandParseException(stringReader, identifier.key)
-        }
-        val particle = Particle(identifier.value.fullIdentifier)
+        val particle = connection.mapping.getParticle(identifier.value) ?: throw ParticleNotFoundCommandParseException(stringReader, identifier.key)
 
         stringReader.skipWhitespaces()
 

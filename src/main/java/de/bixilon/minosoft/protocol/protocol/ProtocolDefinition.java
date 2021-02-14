@@ -92,6 +92,8 @@ public final class ProtocolDefinition {
     public static final ModIdentifier DEFAULT_DIMENSION = new ModIdentifier("overworld");
     public static final ModIdentifier NETHER_DIMENSION = new ModIdentifier("nether");
 
+    public static final ModIdentifier AIR_IDENTIFIER = new ModIdentifier("air");
+
     static {
         // java does (why ever) not allow to directly assign a null
         InetAddress tempInetAddress;

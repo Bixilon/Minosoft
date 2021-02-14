@@ -17,12 +17,13 @@ import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.Item;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
 public class SmallFireball extends Fireball {
-    private static final Slot DEFAULT_ITEM = new Slot(null, new Item("fire_charge")); // ToDo: version should not be null
+    private static final Slot DEFAULT_ITEM = new Slot(null, new Item(new ModIdentifier("fire_charge"))); // ToDo: version should not be null
 
     public SmallFireball(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);

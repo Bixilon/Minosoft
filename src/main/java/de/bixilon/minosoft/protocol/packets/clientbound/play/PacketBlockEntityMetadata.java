@@ -37,12 +37,12 @@ public class PacketBlockEntityMetadata extends ClientboundPacket {
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionShort();
             this.action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
-            this.data = BlockEntityMetaData.getData(this.action, (CompoundTag) buffer.readNBT(true));
+            this.data = BlockEntityMetaData.getData(buffer.getConnection(), this.action, (CompoundTag) buffer.readNBT(true));
             return true;
         }
         this.position = buffer.readPosition();
         this.action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
-        this.data = BlockEntityMetaData.getData(this.action, (CompoundTag) buffer.readNBT());
+        this.data = BlockEntityMetaData.getData(buffer.getConnection(), this.action, (CompoundTag) buffer.readNBT());
         return true;
     }
 

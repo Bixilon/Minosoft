@@ -10,16 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities
 
-package de.bixilon.minosoft.data.mappings;
+import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.mappings.ModIdentifier
 
-public class MobEffect extends ModIdentifier {
+data class EntityInformation(
+    val identifier: ModIdentifier,
+    val width: Float,
+    val height: Float,
+) {
 
-    public MobEffect(String mod, String identifier) {
-        super(mod, identifier);
-    }
-
-    public MobEffect(String fullIdentifier) {
-        super(fullIdentifier);
+    companion object {
+        fun deserialize(identifier: ModIdentifier, data: JsonObject): EntityInformation? {
+            return if (data.has("width") && data.has("height")) {
+                EntityInformation(identifier, data["width"].asFloat, data["height"].asFloat)
+            } else null
+        }
     }
 }

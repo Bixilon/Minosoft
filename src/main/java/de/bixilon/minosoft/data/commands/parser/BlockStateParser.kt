@@ -31,10 +31,9 @@ class BlockStateParser : CommandParser() {
             stringReader.skip()
         }
         val identifier = stringReader.readModIdentifier() // ToDo: check tags
-        var block = Block(identifier.value.mod, identifier.value.identifier)
-        if (!connection.mapping.doesBlockExist(identifier.value)) {
-            throw BlockNotFoundCommandParseException(stringReader, identifier.key)
-        }
+        val blockId = connection.mapping.getBlockId(identifier.value) ?: throw BlockNotFoundCommandParseException(stringReader, identifier.key)
+        var block: Block? = null
+
         if (stringReader.canRead() && stringReader.peek() == '[') {
             val propertyMap = stringReader.readProperties()
 
@@ -56,7 +55,17 @@ class BlockStateParser : CommandParser() {
                 val blockProperty = blockPropertyKey[pair.value] ?: throw UnknownBlockPropertyCommandParseException(stringReader, pair.value)
                 allProperties.add(blockProperty)
             }
-            block = Block(identifier.value.mod, identifier.value.identifier, allProperties, rotation ?: BlockRotations.NONE)
+            for (state in blockId.blocks) {
+                if (state.bareEquals(Block(identifier.value, allProperties, rotation ?: BlockRotations.NONE))) {
+                    block = state
+                    break
+                }
+            }
+        } else {
+            block = Block(blockId.identifier)
+        }
+        check(block != null) {
+            throw BlockNotFoundCommandParseException(stringReader, identifier.key)
         }
 
         if (this == BLOCK_PREDICATE_PARSER) {

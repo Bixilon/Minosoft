@@ -223,21 +223,21 @@ public class InByteBuffer {
     }
 
     public ParticleData readParticle() {
-        Particle type = this.connection.getMapping().getParticleById(readVarInt());
+        Particle type = this.connection.getMapping().getParticle(readVarInt());
         return readParticleData(type);
     }
 
     public ParticleData readParticleData(Particle type) {
         if (this.versionId < V_17W45A) {
             // old particle format
-            return switch (type.getFullIdentifier()) {
-                case "minecraft:iconcrack" -> new ItemParticleData(new Slot(this.connection.getVersion(), this.connection.getMapping().getItemByLegacy(readVarInt(), readVarInt())), type);
-                case "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlockById(readVarInt() << 4), type);
+            return switch (type.getIdentifier().getFullIdentifier()) {
+                case "minecraft:iconcrack" -> new ItemParticleData(new Slot(this.connection.getVersion(), this.connection.getMapping().getItem(readVarInt(), readVarInt())), type);
+                case "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlock(readVarInt() << 4), type);
                 default -> new ParticleData(type);
             };
         }
-        return switch (type.getFullIdentifier()) {
-            case "minecraft:block", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlockById(readVarInt()), type);
+        return switch (type.getIdentifier().getFullIdentifier()) {
+            case "minecraft:block", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlock(readVarInt()), type);
             case "minecraft:dust" -> new DustParticleData(readFloat(), readFloat(), readFloat(), readFloat(), type);
             case "minecraft:item" -> new ItemParticleData(readSlot(), type);
             default -> new ParticleData(type);
@@ -302,10 +302,10 @@ public class InByteBuffer {
                 metaData = readShort();
             }
             CompoundTag nbt = (CompoundTag) readNBT(this.versionId < V_14W28B);
-            return new Slot(this.connection.getVersion(), this.connection.getMapping().getItemByLegacy(id, metaData), count, metaData, nbt);
+            return new Slot(this.connection.getVersion(), this.connection.getMapping().getItem(id, metaData), count, metaData, nbt);
         }
         if (readBoolean()) {
-            return new Slot(this.connection.getVersion(), this.connection.getMapping().getItemById(readVarInt()), readByte(), (CompoundTag) readNBT());
+            return new Slot(this.connection.getVersion(), this.connection.getMapping().getItem(readVarInt()), readByte(), (CompoundTag) readNBT());
         }
         return null;
     }

@@ -26,7 +26,7 @@ public class DirectPalette implements Palette {
 
     @Override
     public Block blockById(int id) {
-        return this.mapping.getBlockById(id);
+        return this.mapping.getBlock(id);
     }
 
     @Override

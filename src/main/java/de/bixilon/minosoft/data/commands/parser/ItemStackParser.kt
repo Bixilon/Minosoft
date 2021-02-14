@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidItemPredicateC
 import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.ItemNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.inventory.Slot
-import de.bixilon.minosoft.data.mappings.Item
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
@@ -33,14 +32,15 @@ class ItemStackParser : CommandParser() {
             stringReader.skip()
         }
         val argument = stringReader.readModIdentifier() // ToDo: Check predicates
-        if (!connection.mapping.doesItemExist(argument.value)) {
+        val item = connection.mapping.getItem(argument.value)
+        check(item != null) {
             throw ItemNotFoundCommandParseException(stringReader, argument.key)
         }
         var nbt: CompoundTag? = null
         if (stringReader.peek() == '{') {
             nbt = stringReader.readNBTCompoundTag()
         }
-        return Slot(connection.version, Item(argument.value.mod, argument.value.identifier), 1, nbt)
+        return Slot(connection.version, item, 1, nbt)
     }
 
     companion object {

@@ -80,7 +80,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
     }
 
     override fun init() {
-        minecraftTextures = TextureArray.createTextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockMap.values), 16, 16) // ToDo :Remove fixed size
+        minecraftTextures = TextureArray.createTextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockIdMap.values), 16, 16) // ToDo :Remove fixed size
         minecraftTextures.load()
 
         chunkShader = Shader("chunk_vertex.glsl", "chunk_fragment.glsl")

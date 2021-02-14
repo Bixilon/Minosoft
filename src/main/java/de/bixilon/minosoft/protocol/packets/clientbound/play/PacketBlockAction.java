@@ -38,9 +38,12 @@ public class PacketBlockAction extends ClientboundPacket {
         }
         short byte1 = buffer.readUnsignedByte();
         short byte2 = buffer.readUnsignedByte();
-        BlockId blockId = buffer.getConnection().getMapping().getBlockIdById(buffer.readVarInt());
+        BlockId blockId = buffer.getConnection().getMapping().getBlockId(buffer.readVarInt());
+        if (blockId == null) {
+            return true;
+        }
 
-        this.data = switch (blockId.getFullIdentifier()) {
+        this.data = switch (blockId.getIdentifier().getFullIdentifier()) {
             case "minecraft:noteblock" -> new NoteBlockAction(byte1, byte2); // ToDo: was replaced in 17w47a (346) with the block id
             case "minecraft:sticky_piston", "minecraft:piston" -> new PistonAction(byte1, byte2);
             case "minecraft:chest", "minecraft:ender_chest", "minecraft:trapped_chest", "minecraft:white_shulker_box", "minecraft:shulker_box", "minecraft:orange_shulker_box", "minecraft:magenta_shulker_box", "minecraft:light_blue_shulker_box", "minecraft:yellow_shulker_box", "minecraft:lime_shulker_box", "minecraft:pink_shulker_box", "minecraft:gray_shulker_box", "minecraft:silver_shulker_box", "minecraft:cyan_shulker_box", "minecraft:purple_shulker_box", "minecraft:blue_shulker_box", "minecraft:brown_shulker_box", "minecraft:green_shulker_box", "minecraft:red_shulker_box", "minecraft:black_shulker_box" -> new ChestAction(byte1, byte2);

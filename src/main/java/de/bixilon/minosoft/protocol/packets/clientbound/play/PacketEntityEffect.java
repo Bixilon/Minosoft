@@ -34,10 +34,10 @@ public class PacketEntityEffect extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_14W04A) {
-            this.effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readShort());
+            this.effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffect(buffer.readByte()), buffer.readByte() + 1, buffer.readShort());
             return true;
         }
-        this.effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectById(buffer.readByte()), buffer.readByte() + 1, buffer.readVarInt());
+        this.effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffect(buffer.readByte()), buffer.readByte() + 1, buffer.readVarInt());
         if (buffer.getVersionId() < V_1_9_4) { // ToDo
             if (buffer.getVersionId() >= V_14W06B) {
                 this.hideParticles = buffer.readBoolean();

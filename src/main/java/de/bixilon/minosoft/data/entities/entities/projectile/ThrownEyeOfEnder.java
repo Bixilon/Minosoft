@@ -20,12 +20,13 @@ import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.Item;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
 public class ThrownEyeOfEnder extends Entity {
-    private static final Slot DEFAULT_ITEM = new Slot(null, new Item("ender_eye")); // ToDo: version should not be null
+    private static final Slot DEFAULT_ITEM = new Slot(null, new Item(new ModIdentifier("ender_eye"))); // ToDo: version should not be null
 
     public ThrownEyeOfEnder(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);

@@ -17,12 +17,13 @@ import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.Item;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
 public class ThrownExperienceBottle extends ThrowableItemProjectile {
-    private static final Slot DEFAULT_ITEM = new Slot(null, new Item("experience_bottle")); // ToDo: version should not be null
+    private static final Slot DEFAULT_ITEM = new Slot(null, new Item(new ModIdentifier("experience_bottle"))); // ToDo: version should not be null
 
     public ThrownExperienceBottle(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);

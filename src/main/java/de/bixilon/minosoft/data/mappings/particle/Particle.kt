@@ -10,16 +10,12 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.mappings.particle
 
-package de.bixilon.minosoft.data.mappings;
+import de.bixilon.minosoft.data.mappings.ModIdentifier
 
-public class Enchantment extends ModIdentifier {
-
-    public Enchantment(String mod, String identifier) {
-        super(mod, identifier);
-    }
-
-    public Enchantment(String fullIdentifier) {
-        super(fullIdentifier);
+data class Particle(val identifier: ModIdentifier) {
+    override fun toString(): String {
+        return identifier.toString()
     }
 }

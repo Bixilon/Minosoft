@@ -83,7 +83,7 @@ public final class ChunkUtil {
                                     arrayPos++;
                                     continue;
                                 }
-                                Block block = buffer.getConnection().getMapping().getBlockById(fullBlockId);
+                                Block block = buffer.getConnection().getMapping().getBlock(fullBlockId);
                                 blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), block);
                                 arrayPos++;
                             }
@@ -126,7 +126,7 @@ public final class ChunkUtil {
                     for (int nibbleZ = 0; nibbleZ < ProtocolDefinition.SECTION_WIDTH_Z; nibbleZ++) {
                         for (int nibbleX = 0; nibbleX < ProtocolDefinition.SECTION_WIDTH_X; nibbleX++) {
                             int blockId = blockData[arrayPos];
-                            Block block = buffer.getConnection().getMapping().getBlockById(blockId);
+                            Block block = buffer.getConnection().getMapping().getBlock(blockId);
                             if (block == null) {
                                 arrayPos++;
                                 continue;

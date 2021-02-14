@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.mappings.Item;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import javax.annotation.Nullable;
@@ -26,9 +27,9 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_8_9;
 
 public class Horse extends AbstractHorse {
-    private static final Item LEGACY_IRON_ARMOR = new Item("iron_horse_armor");
-    private static final Item LEGACY_GOLD_ARMOR = new Item("golden_horse_armor");
-    private static final Item LEGACY_DIAMOND_ARMOR = new Item("diamond_horse_armor");
+    private static final Item LEGACY_IRON_ARMOR = new Item(new ModIdentifier("iron_horse_armor"));
+    private static final Item LEGACY_GOLD_ARMOR = new Item(new ModIdentifier("golden_horse_armor"));
+    private static final Item LEGACY_DIAMOND_ARMOR = new Item(new ModIdentifier("diamond_horse_armor"));
 
     public Horse(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
         super(connection, entityId, uuid, location, rotation);

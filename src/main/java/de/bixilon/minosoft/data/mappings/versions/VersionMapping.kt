@@ -34,105 +34,164 @@ import javafx.util.Pair
 import java.util.*
 
 
-class VersionMapping {
+class VersionMapping(var version: Version) {
     private val availableFeatures = HashSet<Mappings>()
+
+    private val motiveIdMap = HashBiMap.create<Int, Motive>(30)
+    private val motiveIdentifierMap = HashBiMap.create<ModIdentifier, Motive>(30)
+    private val itemIdMap = HashBiMap.create<Int, Item>(1200)
+    private val itemIdentifierMap = HashBiMap.create<ModIdentifier, Item>(1200)
+    private val enchantmentIdMap = HashBiMap.create<Int, Enchantment>(50)
+    private val enchantmentIdentifierMap = HashBiMap.create<ModIdentifier, Enchantment>(50)
+    private val particleIdMap = HashBiMap.create<Int, Particle>(70)
+    private val particleIdentifierMap = HashBiMap.create<ModIdentifier, Particle>(70)
+    private val mobEffectIdMap = HashBiMap.create<Int, MobEffect>(40)
+    private val mobEffectIdentifierMap = HashBiMap.create<ModIdentifier, MobEffect>(40)
+    private val blockIdIdMap = HashBiMap.create<Int, BlockId>(800)
+    private val blockIdIdentifierMap = HashBiMap.create<ModIdentifier, BlockId>(800)
+    private val statisticIdMap = HashBiMap.create<Int, Statistic>(80)
+    private val statisticIdentifierMap = HashBiMap.create<ModIdentifier, Statistic>(80)
+    private val dimensionIdMap = HashBiMap.create<Int, Dimension>()
+    var dimensionIdentifierMap: HashBiMap<ModIdentifier, Dimension> = HashBiMap.create()
+
+    val blockIdMap = HashBiMap.create<Int, Block>(20000)
+
     private val entityInformationMap = HashBiMap.create<Class<out Entity>, EntityInformation>(120)
     private val entityMetaIndexMap = HashMap<EntityMetaDataFields, Int>(180)
-    private val entityMetaIndexOffsetParentMapping = HashMap<String, Pair<String, Int>>(150)
+    private val entityMetaIndexOffsetParentMapping: MutableMap<ModIdentifier, Pair<ModIdentifier, Int>> = mutableMapOf() // identifier, <Parent, Offset>
     private val entityIdClassMap = HashBiMap.create<Int, Class<out Entity?>>(120)
-    private val motiveIdentifierMap = HashBiMap.create<String, Motive>(30)
-    private val particleIdentifierMap = HashBiMap.create<String, Particle>(70)
-    private val statisticIdentifierMap = HashBiMap.create<String, Statistic>(80)
-    private val itemMap = HashBiMap.create<Int, Item?>(1200)
-    private val motiveIdMap = HashBiMap.create<Int, Motive>(30)
-    private val mobEffectMap = HashBiMap.create<Int, MobEffect>(40)
-    val blockMap = HashBiMap.create<Int, Block>(20000)
-    private val blockIdMap = HashBiMap.create<Int, BlockId>(800)
-    private val enchantmentMap = HashBiMap.create<Int, Enchantment>(50)
-    private val particleIdMap = HashBiMap.create<Int, Particle>(80)
-    private val statisticIdMap = HashBiMap.create<Int, Statistic>(80)
-    private val blockModels = HashBiMap.create<ModIdentifier, BlockModel>(500)
-    private var dimensionIdentifierMap: HashBiMap<ModIdentifier, Dimension> = HashBiMap.create()
-    private var dimensionMap = HashBiMap.create<Int, Dimension>()
 
-    var version: Version
+    private val blockModels = HashBiMap.create<ModIdentifier, BlockModel>(500)
+
     var parentMapping: VersionMapping? = null
 
-    constructor(version: Version) {
-        this.version = version
+
+    fun getItem(itemId: Int, metaData: Int): Item? {
+        var versionItemId = itemId shl 16
+        if (metaData > 0 && metaData < Short.MAX_VALUE) {
+            versionItemId = versionItemId or metaData
+        }
+        return getItemByIdIgnoreFlattened(versionItemId) ?: getItemByIdIgnoreFlattened(itemId shl 16) // ignore meta data ?
     }
 
-    constructor(version: Version, parentMapping: VersionMapping?) {
-        this.version = version
-        this.parentMapping = parentMapping
+    fun getItem(identifier: ModIdentifier): Item? {
+        return parentMapping?.getItem(identifier) ?: itemIdentifierMap[identifier]
     }
 
-    fun getMotiveByIdentifier(identifier: String): Motive? {
-        return parentMapping?.getMotiveByIdentifier(identifier) ?: motiveIdentifierMap[identifier]
-    }
-
-    fun getStatisticByIdentifier(identifier: String): Statistic? {
-        return parentMapping?.getStatisticByIdentifier(identifier) ?: statisticIdentifierMap[identifier]
-    }
-
-    fun getParticleByIdentifier(identifier: String): Particle? {
-        return parentMapping?.getParticleByIdentifier(identifier) ?: particleIdentifierMap[identifier]
-    }
-
-    fun getItemById(itemId: Int): Item? {
+    fun getItem(itemId: Int): Item? {
         return if (!version.isFlattened) {
-            getItemByLegacy(itemId ushr 16, itemId and 0xFFFF)
+            getItem(itemId ushr 16, itemId and 0xFFFF)
         } else {
             getItemByIdIgnoreFlattened(itemId)
         }
     }
 
+    fun getItemId(item: Item): Int? {
+        return parentMapping?.getItemId(item) ?: itemIdMap.inverse()[item]
+    }
+
     private fun getItemByIdIgnoreFlattened(itemId: Int): Item? {
-        return parentMapping?.getItemById(itemId) ?: itemMap[itemId]
+        return parentMapping?.getItem(itemId) ?: itemIdMap[itemId]
     }
 
-    fun getItemId(item: Item?): Int? {
-        return parentMapping?.getItemId(item) ?: itemMap.inverse()[item]
+    fun getMotive(identifier: ModIdentifier): Motive? {
+        return parentMapping?.getMotive(identifier) ?: motiveIdentifierMap[identifier]
     }
 
-    fun getMotiveById(motiveId: Int): Motive? {
-        return parentMapping?.getMotiveById(motiveId) ?: motiveIdMap[motiveId]
+    fun getMotive(motiveId: Int): Motive? {
+        return parentMapping?.getMotive(motiveId) ?: motiveIdMap[motiveId]
     }
 
-    fun getMobEffectById(mobEffectId: Int): MobEffect? {
-        return parentMapping?.getMobEffectById(mobEffectId) ?: mobEffectMap[mobEffectId]
+    fun getMotiveId(motive: Motive): Int {
+        return parentMapping?.getMotiveId(motive) ?: motiveIdMap.inverse()[motive]!!
     }
 
-    fun getDimensionById(dimensionId: Int): Dimension? {
-        return parentMapping?.getDimensionById(dimensionId) ?: dimensionMap[dimensionId]
+    fun getEnchantment(identifier: ModIdentifier): Enchantment? {
+        return parentMapping?.getEnchantment(identifier) ?: enchantmentIdentifierMap[identifier]
     }
 
-    fun getBlockById(blockId: Int): Block? {
+    fun getEnchantment(enchantmentId: Int): Enchantment? {
+        return parentMapping?.getEnchantment(enchantmentId) ?: enchantmentIdMap[enchantmentId]
+    }
+
+    fun getEnchantmentId(enchantment: Enchantment): Int {
+        return parentMapping?.getEnchantmentId(enchantment) ?: enchantmentIdMap.inverse()[enchantment]!!
+    }
+
+    fun getParticle(identifier: ModIdentifier): Particle? {
+        return parentMapping?.getParticle(identifier) ?: particleIdentifierMap[identifier]
+    }
+
+    fun getParticle(particleId: Int): Particle? {
+        return parentMapping?.getParticle(particleId) ?: particleIdMap[particleId]
+    }
+
+    fun getParticleId(particle: Particle): Int {
+        return parentMapping?.getParticleId(particle) ?: particleIdMap.inverse()[particle]!!
+    }
+
+    fun getMobEffect(identifier: ModIdentifier): MobEffect? {
+        return parentMapping?.getMobEffect(identifier) ?: mobEffectIdentifierMap[identifier]
+    }
+
+    fun getMobEffect(mobEffectId: Int): MobEffect? {
+        return parentMapping?.getMobEffect(mobEffectId) ?: mobEffectIdMap[mobEffectId]
+    }
+
+    fun getMobEffectID(mobEffect: MobEffect): Int {
+        return parentMapping?.getMobEffectID(mobEffect) ?: mobEffectIdMap.inverse()[mobEffect]!!
+    }
+
+    fun getBlockId(identifier: ModIdentifier): BlockId? {
+        return parentMapping?.getBlockId(identifier) ?: blockIdIdentifierMap[identifier]
+    }
+
+    fun getBlockId(blockId: Int): BlockId? {
+        return parentMapping?.getBlockId(blockId) ?: blockIdIdMap[blockId]
+    }
+
+    fun getBlockIdId(blockId: BlockId): Int {
+        return parentMapping?.getBlockIdId(blockId) ?: blockIdIdMap.inverse()[blockId]!!
+    }
+
+    fun getStatistic(identifier: ModIdentifier): Statistic? {
+        return parentMapping?.getStatistic(identifier) ?: statisticIdentifierMap[identifier]
+    }
+
+    fun getStatistic(statisticId: Int): Statistic? {
+        return parentMapping?.getStatistic(statisticId) ?: statisticIdMap[statisticId]
+    }
+
+    fun getStatisticId(statistic: Statistic): Int {
+        return parentMapping?.getStatisticId(statistic) ?: statisticIdMap.inverse()[statistic]!!
+    }
+
+    fun getDimension(identifier: ModIdentifier): Dimension? {
+        return parentMapping?.getDimension(identifier) ?: dimensionIdentifierMap[identifier]
+    }
+
+    fun getDimension(dimensionId: Int): Dimension? {
+        return parentMapping?.getDimension(dimensionId) ?: dimensionIdMap[dimensionId]
+    }
+
+    fun getDimensionId(dimension: Dimension): Int {
+        return parentMapping?.getDimensionId(dimension) ?: dimensionIdMap.inverse()[dimension]!!
+    }
+
+    fun getBlock(blockId: Int): Block? {
         if (blockId == ProtocolDefinition.NULL_BLOCK_ID) {
             return null
         }
-        return parentMapping?.getBlockById(blockId) ?: blockMap[blockId]
+        return parentMapping?.getBlock(blockId) ?: blockIdMap[blockId]
     }
 
-    fun getBlockIdById(blockIdId: Int): BlockId? {
-        return parentMapping?.getBlockIdById(blockIdId) ?: blockIdMap[blockIdId]
+    fun getBlockId(block: Block): Int {
+        if (block.identifier == ProtocolDefinition.AIR_IDENTIFIER) {
+            return ProtocolDefinition.NULL_BLOCK_ID
+        }
+        return parentMapping?.getBlockId(block) ?: blockIdMap.inverse()[block]!!
     }
 
-    fun getEnchantmentById(enchantmentId: Int): Enchantment? {
-        return parentMapping?.getEnchantmentById(enchantmentId) ?: enchantmentMap[enchantmentId]
-    }
-
-    fun getParticleById(particleId: Int): Particle? {
-        return parentMapping?.getParticleById(particleId) ?: particleIdMap[particleId]
-    }
-
-    fun getStatisticById(statisticId: Int): Statistic? {
-        return parentMapping?.getStatisticById(statisticId) ?: statisticIdMap[statisticId]
-    }
-
-    fun getEnchantmentId(enchantment: Enchantment): Int? {
-        return parentMapping?.getEnchantmentId(enchantment) ?: enchantmentMap.inverse()[enchantment]
-    }
 
     fun getEntityInformation(clazz: Class<out Entity?>): EntityInformation? {
         return parentMapping?.getEntityInformation(clazz) ?: entityInformationMap[clazz]
@@ -146,21 +205,6 @@ class VersionMapping {
         return parentMapping?.getEntityClassById(entityTypeId) ?: entityIdClassMap[entityTypeId]
     }
 
-    fun getDimensionByIdentifier(identifier: ModIdentifier): Dimension? {
-        return parentMapping?.getDimensionByIdentifier(identifier) ?: dimensionIdentifierMap[identifier]
-    }
-
-    fun setDimensions(dimensions: HashBiMap<ModIdentifier, Dimension>) {
-        dimensionIdentifierMap = dimensions
-    }
-
-    fun getItemByLegacy(itemId: Int, metaData: Int): Item? {
-        var versionItemId = itemId shl 16
-        if (metaData > 0 && metaData < Short.MAX_VALUE) {
-            versionItemId = versionItemId or metaData
-        }
-        return getItemByIdIgnoreFlattened(versionItemId) ?: getItemByIdIgnoreFlattened(itemId shl 16) // ignore meta data ?
-    }
 
     fun load(type: Mappings, mod: String, data: JsonObject?, version: Version) {
         if (data == null) {
@@ -169,104 +213,143 @@ class VersionMapping {
         }
         when (type) {
             Mappings.REGISTRIES -> {
-                val itemJson = data.getAsJsonObject("item").getAsJsonObject("entries")
-                for (identifier in itemJson.keySet()) {
-                    val item = Item(mod, identifier)
-                    val identifierJSON = itemJson.getAsJsonObject(identifier)
-                    var itemId = identifierJSON["id"].asInt
-                    if (version.versionId < ProtocolDefinition.FLATTING_VERSION_ID) {
-                        itemId = itemId shl 16
-                        if (identifierJSON.has("meta")) {
-                            // old format (with metadata)
-                            itemId = itemId or identifierJSON["meta"].asInt
+                data["item"]?.asJsonObject?.getAsJsonObject("entries")?.let {
+                    for ((key, value) in it.entrySet()) {
+                        check(value is JsonObject) { "Invalid motive json" }
+                        val identifier = ModIdentifier(mod, key)
+                        val item = Item(identifier)
+                        value["id"]?.asInt?.let { id ->
+                            var itemId = id
+                            if (version.versionId < ProtocolDefinition.FLATTING_VERSION_ID) {
+                                itemId = itemId shl 16
+                                value["meta"]?.asInt?.let { meta ->
+                                    itemId = itemId or meta
+                                }
+                            }
+                            itemIdMap[id] = item
                         }
+                        itemIdentifierMap[identifier] = item
                     }
-                    itemMap[itemId] = item
                 }
-                val enchantmentJson = data.getAsJsonObject("enchantment").getAsJsonObject("entries")
-                for (identifier in enchantmentJson.keySet()) {
-                    val enchantment = Enchantment(mod, identifier)
-                    enchantmentMap[enchantmentJson.getAsJsonObject(identifier)["id"].asInt] = enchantment
-                }
-                val statisticJson = data.getAsJsonObject("custom_stat").getAsJsonObject("entries")
-                for (identifier in statisticJson.keySet()) {
-                    val statistic = Statistic(mod, identifier)
-                    if (statisticJson.getAsJsonObject(identifier).has("id")) {
-                        statisticIdMap[statisticJson.getAsJsonObject(identifier)["id"].asInt] = statistic
+
+                data["enchantment"]?.asJsonObject?.getAsJsonObject("entries")?.let {
+                    for ((key, value) in it.entrySet()) {
+                        check(value is JsonObject) { "Invalid enchantment json" }
+                        val identifier = ModIdentifier(mod, key)
+                        val enchantment = Enchantment(identifier)
+                        value["id"]?.asInt?.let { id ->
+                            enchantmentIdMap[id] = enchantment
+                        }
+                        enchantmentIdentifierMap[identifier] = enchantment
                     }
-                    statisticIdentifierMap[identifier] = statistic
                 }
-                val blockIdJson = data.getAsJsonObject("block").getAsJsonObject("entries")
-                for (identifier in blockIdJson.keySet()) {
-                    val blockId = BlockId(mod, identifier)
-                    blockIdMap[blockIdJson.getAsJsonObject(identifier)["id"].asInt] = blockId
-                }
-                val motiveJson = data.getAsJsonObject("motive").getAsJsonObject("entries")
-                for (identifier in motiveJson.keySet()) {
-                    val motive = Motive(mod, identifier)
-                    if (motiveJson.getAsJsonObject(identifier).has("id")) {
-                        motiveIdMap[motiveJson.getAsJsonObject(identifier)["id"].asInt] = motive
+
+                data["custom_stat"]?.asJsonObject?.getAsJsonObject("entries")?.let {
+                    for ((key, value) in it.entrySet()) {
+                        check(value is JsonObject) { "Invalid statistics json" }
+                        val identifier = ModIdentifier(mod, key)
+                        val statistic = Statistic(identifier)
+                        value["id"]?.asInt?.let { id ->
+                            statisticIdMap[id] = statistic
+                        }
+                        statisticIdentifierMap[identifier] = statistic
                     }
-                    motiveIdentifierMap[identifier] = motive
                 }
-                val particleJson = data.getAsJsonObject("particle_type").getAsJsonObject("entries")
-                for (identifier in particleJson.keySet()) {
-                    val particle = Particle(mod, identifier)
-                    if (particleJson.getAsJsonObject(identifier).has("id")) {
-                        particleIdMap[particleJson.getAsJsonObject(identifier)["id"].asInt] = particle
+
+                data["block"]?.asJsonObject?.getAsJsonObject("entries")?.let {
+                    for ((key, value) in it.entrySet()) {
+                        check(value is JsonObject) { "Invalid block id json" }
+                        val identifier = ModIdentifier(mod, key)
+                        val blockId = BlockId(identifier)
+                        value["id"]?.asInt?.let { id ->
+                            blockIdIdMap[id] = blockId
+                        }
+                        blockIdIdentifierMap[identifier] = blockId
                     }
-                    particleIdentifierMap[identifier] = particle
                 }
-                val mobEffectJson = data.getAsJsonObject("mob_effect").getAsJsonObject("entries")
-                for (identifier in mobEffectJson.keySet()) {
-                    val mobEffect = MobEffect(mod, identifier)
-                    mobEffectMap[mobEffectJson.getAsJsonObject(identifier)["id"].asInt] = mobEffect
+
+                data["motive"]?.asJsonObject?.getAsJsonObject("entries")?.let {
+                    for ((key, value) in it.entrySet()) {
+                        check(value is JsonObject) { "Invalid motive json" }
+                        val identifier = ModIdentifier(mod, key)
+                        val motive = Motive(identifier)
+                        value["id"]?.asInt?.let { id ->
+                            motiveIdMap[id] = motive
+                        }
+                        motiveIdentifierMap[identifier] = motive
+                    }
                 }
-                if (data.has("dimension_type")) {
-                    dimensionMap = HashBiMap.create()
-                    val dimensionJson = data.getAsJsonObject("dimension_type").getAsJsonObject("entries")
-                    for (identifier in dimensionJson.keySet()) {
-                        val dimension = Dimension(ModIdentifier(mod, identifier).fullIdentifier, hasSkyLight = dimensionJson.getAsJsonObject(identifier)["has_skylight"].asBoolean)
-                        dimensionMap[dimensionJson.getAsJsonObject(identifier)["id"].asInt] = dimension
+
+                data["particle"]?.asJsonObject?.getAsJsonObject("entries")?.let {
+                    for ((key, value) in it.entrySet()) {
+                        check(value is JsonObject) { "Invalid particle json" }
+                        val identifier = ModIdentifier(mod, key)
+                        val particle = Particle(identifier)
+                        value["id"]?.asInt?.let { id ->
+                            particleIdMap[id] = particle
+                        }
+                        particleIdentifierMap[identifier] = particle
+                    }
+                }
+
+                data["mob_effect"]?.asJsonObject?.getAsJsonObject("entries")?.let {
+                    for ((key, value) in it.entrySet()) {
+                        check(value is JsonObject) { "Invalid mob effect json" }
+                        val identifier = ModIdentifier(mod, key)
+                        val mobEffect = MobEffect(identifier)
+                        value["id"]?.asInt?.let { id ->
+                            mobEffectIdMap[id] = mobEffect
+                        }
+                        mobEffectIdentifierMap[identifier] = mobEffect
+                    }
+                }
+
+                data["dimension_type"]?.asJsonObject?.getAsJsonObject("entries")?.let {
+                    for ((key, value) in it.entrySet()) {
+                        check(value is JsonObject) { "Invalid dimension json" }
+                        val identifier = ModIdentifier(mod, key)
+                        val dimension = Dimension.deserialize(identifier, value)
+                        value["id"]?.asInt?.let { id ->
+                            dimensionIdMap[id] = dimension
+                        }
+                        dimensionIdentifierMap[identifier] = dimension
                     }
                 }
             }
             Mappings.BLOCKS -> {
-                for (identifierName in data.keySet()) {
-                    val identifierJSON = data.getAsJsonObject(identifierName)
-                    val statesArray = identifierJSON.getAsJsonArray("states")
-                    var i = 0
-                    while (i < statesArray.size()) {
-                        val statesJSON = statesArray[i].asJsonObject
-                        val block = loadBlockState(mod, identifierName!!, statesJSON)
+                for ((identifierName, json) in data.entrySet()) {
+                    check(json is JsonObject) { "Invalid block json" }
+
+                    for (statesJson in json.getAsJsonArray("states")) {
+                        check(statesJson is JsonObject) { "Invalid block state json" }
+
+                        val block = loadBlockState(ModIdentifier(mod, identifierName!!), statesJson)
+                        var blockId = getBlockId(block.identifier)
                         if (this.version.isFlattened) {
                             // map block id
-                            blockIdMap[blockIdMap.inverse()[BlockId(block)]]!!.blocks.add(block)
+                            blockId!!.blocks.add(block)
                         }
-                        val blockNumericId = getBlockId(statesJSON, !version.isFlattened)
+                        val blockNumericId = getBlockId(statesJson, !version.isFlattened)
                         if (StaticConfiguration.DEBUG_MODE) {
-                            checkIfBlockIsIsPresent(blockNumericId, identifierName, blockMap)
+                            checkIfBlockIsIsPresent(blockNumericId, block.identifier, blockIdMap)
                         }
                         if (!version.isFlattened) {
                             // map block id
-                            var blockId = blockIdMap[blockIdMap.inverse()[BlockId(block)]]
                             if (blockId == null) {
-                                blockId = BlockId(block)
-                                blockIdMap[blockNumericId] = blockId
+                                blockId = BlockId(block.identifier)
+                                blockIdIdMap[blockNumericId] = blockId
                             }
                             blockId.blocks.add(block)
                         }
-                        blockMap[blockNumericId] = block
-                        i++
+                        blockIdMap[blockNumericId] = block
                     }
                 }
             }
             Mappings.ENTITIES -> {
-                for (identifier in data.keySet()) {
-                    if (entityMetaIndexOffsetParentMapping.containsKey(identifier)) {
-                        continue  // ToDo: Check this in the function (because of parent checking, etc)
-                    }
-                    loadEntityMapping(mod, identifier!!, data)
+                for ((identifierName, json) in data.entrySet()) {
+                    check(json is JsonObject) { "Invalid entity meta data json" }
+                    val identifier = ModIdentifier(mod, identifierName)
+                    loadEntityMapping(identifier, json, data)
                 }
             }
             Mappings.MODELS -> {
@@ -323,12 +406,12 @@ class VersionMapping {
             return
         }
 
-        val blockStates = blockIdMap[blockIdMap.inverse()[identifier]!!]!!.blocks
+        val blockStates = getBlockId(identifier)!!.blocks
 
         for (value in states) {
             check(value is JsonObject) { "Invalid model json" }
 
-            val state = loadBlockState(mod, identifierString, value)
+            val state = loadBlockState(identifier, value)
             var ckecked = false
             for (blockState in blockStates) {
                 if (blockState.bareEquals(state)) {
@@ -346,7 +429,7 @@ class VersionMapping {
     }
 
 
-    private fun loadBlockState(mod: String, identifier: String, blockStateJson: JsonObject): Block {
+    private fun loadBlockState(identifier: ModIdentifier, blockStateJson: JsonObject): Block {
         blockStateJson["properties"]?.asJsonObject?.let {
             var rotation: BlockRotations = BlockRotations.NONE
             for (rotationName in ROTATION_PROPERTIES) {
@@ -372,15 +455,14 @@ class VersionMapping {
                 }
                 properties.add(BlockProperties.PROPERTIES_MAPPING[propertyName]!![it[propertyName].asString]!!)
             }
-            return Block(mod, identifier, properties, rotation)
+            return Block(identifier, properties, rotation)
         }
-        return Block(mod, identifier)
+        return Block(identifier)
     }
 
-    private fun loadEntityMapping(mod: String, identifier: String, fullModData: JsonObject) {
-        val data = fullModData.getAsJsonObject(identifier)
-        val clazz = EntityClassMappings.getByIdentifier(mod, identifier)
-        val information: EntityInformation? = EntityInformation.deserialize(mod, identifier, data)
+    private fun loadEntityMapping(identifier: ModIdentifier, data: JsonObject, fullModData: JsonObject) {
+        val clazz = EntityClassMappings.getByIdentifier(identifier)
+        val information: EntityInformation? = EntityInformation.deserialize(identifier, data)
         information?.let {
             // not abstract, has id and attributes
             entityInformationMap[clazz] = information
@@ -389,25 +471,25 @@ class VersionMapping {
             }
 
         }
-        var parent: String? = null
+        var parent: ModIdentifier? = null
         var metaDataIndexOffset = 0
         data["extends"]?.asString?.let {
-            parent = it
+            parent = ModIdentifier(it)
             // check if parent has been loaded
             val metaParent = entityMetaIndexOffsetParentMapping[parent]
             if (metaParent == null) {
-                loadEntityMapping(mod, it, fullModData)
+                loadEntityMapping(ModIdentifier(identifier.mod, it), fullModData[it].asJsonObject, fullModData)
             }
             metaDataIndexOffset += entityMetaIndexOffsetParentMapping[parent]!!.value
         }
         data["data"]?.let {
-            when {
-                it is JsonArray -> {
+            when (it) {
+                is JsonArray -> {
                     for (jsonElement in it) {
                         this.entityMetaIndexMap[EntityMetaDataFields.valueOf(jsonElement.asString)] = metaDataIndexOffset++
                     }
                 }
-                it is JsonObject -> {
+                is JsonObject -> {
                     for ((key, value) in it.entrySet()) {
                         this.entityMetaIndexMap[EntityMetaDataFields.valueOf(key)] = value.asInt
                         metaDataIndexOffset++
@@ -423,23 +505,12 @@ class VersionMapping {
     }
 
     fun unload() {
-        motiveIdentifierMap.clear()
-        particleIdentifierMap.clear()
-        statisticIdentifierMap.clear()
-        itemMap.clear()
-        motiveIdMap.clear()
-        mobEffectMap.clear()
-        dimensionMap.clear()
-        blockMap.clear()
-        blockIdMap.clear()
-        enchantmentMap.clear()
-        particleIdMap.clear()
-        statisticIdMap.clear()
-        entityInformationMap.clear()
-        entityMetaIndexMap.clear()
-        entityMetaIndexOffsetParentMapping.clear()
-        entityIdClassMap.clear()
-        blockModels.clear()
+        for (field in this::class.java.fields) {
+            if (!field.type.isAssignableFrom(Map::class.java)) {
+                continue
+            }
+            field.javaClass.getMethod("clear").invoke(this)
+        }
     }
 
     val isFullyLoaded: Boolean
@@ -455,29 +526,6 @@ class VersionMapping {
             return true
         }
 
-    fun doesItemExist(identifier: ModIdentifier): Boolean {
-        return parentMapping?.doesItemExist(identifier) ?: itemMap[identifier] != null
-    }
-
-    fun doesBlockExist(identifier: ModIdentifier): Boolean {
-        return parentMapping?.doesBlockExist(identifier) ?: blockIdMap[identifier] != null
-    }
-
-    fun doesEnchantmentExist(identifier: ModIdentifier): Boolean {
-        return parentMapping?.doesEnchantmentExist(identifier) ?: enchantmentMap[identifier] != null
-    }
-
-    fun doesMobEffectExist(identifier: ModIdentifier): Boolean {
-        return parentMapping?.doesMobEffectExist(identifier) ?: mobEffectMap[identifier] != null
-    }
-
-    fun doesDimensionExist(identifier: ModIdentifier): Boolean {
-        return parentMapping?.doesDimensionExist(identifier) ?: dimensionMap[identifier] != null
-    }
-
-    fun doesParticleExist(identifier: ModIdentifier): Boolean {
-        return parentMapping?.doesParticleExist(identifier) ?: particleIdMap[identifier] != null
-    }
 
     companion object {
         private val ROTATION_PROPERTIES = setOf("facing", "rotation", "orientation", "axis")
@@ -493,9 +541,9 @@ class VersionMapping {
             return blockId
         }
 
-        private fun checkIfBlockIsIsPresent(blockId: Int, identifierName: String, versionMapping: HashBiMap<Int, Block>) {
-            if (versionMapping.containsKey(blockId)) {
-                throw RuntimeException(String.format("Block Id %s is already present for %s! (identifier=%s)", blockId, versionMapping[blockId], identifierName))
+        private fun checkIfBlockIsIsPresent(blockId: Int, identifier: ModIdentifier, blockIdMap: HashBiMap<Int, Block>) {
+            blockIdMap[blockId]?.let {
+                throw RuntimeException(String.format("Block Id %s is already present for %s! (identifier=%s)", blockId, it, identifier))
             }
         }
     }

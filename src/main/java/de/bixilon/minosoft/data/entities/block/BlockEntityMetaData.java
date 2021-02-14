@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.data.entities.block;
 
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockEntityMetadata;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import javax.annotation.Nullable;
 
 public abstract class BlockEntityMetaData {
-    public static BlockEntityMetaData getData(@Nullable PacketBlockEntityMetadata.BlockEntityActions action, CompoundTag nbt) {
+    public static BlockEntityMetaData getData(Connection connection, @Nullable PacketBlockEntityMetadata.BlockEntityActions action, CompoundTag nbt) {
         String item;
         if (action != null) {
             item = action.name();
@@ -32,8 +33,8 @@ public abstract class BlockEntityMetaData {
             }
 
         return switch (item) { // ToDo: https://minecraft.gamepedia.com/Block_entity
-            case "minecraft:bed", "SET_BED_COLOR" -> new BedEntityMetaData(nbt.getTag("color"));
-            case "minecraft:campfire", "SET_ITEMS_IN_CAMPFIRE" -> new CampfireBlockEntityMetaData(nbt.getListTag("Items"));
+            case "minecraft:bed", "SET_BED_COLOR" -> new BedEntityMetaData(connection, nbt.getTag("color"));
+            case "minecraft:campfire", "SET_ITEMS_IN_CAMPFIRE" -> new CampfireBlockEntityMetaData(connection, nbt.getListTag("Items"));
             default -> null;
         };
     }

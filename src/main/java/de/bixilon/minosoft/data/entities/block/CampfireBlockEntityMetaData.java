@@ -14,7 +14,8 @@
 package de.bixilon.minosoft.data.entities.block;
 
 import de.bixilon.minosoft.data.inventory.Slot;
-import de.bixilon.minosoft.data.mappings.Item;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.util.nbt.tag.ListTag;
 
@@ -25,10 +26,10 @@ public class CampfireBlockEntityMetaData extends BlockEntityMetaData {
         this.items = items;
     }
 
-    public CampfireBlockEntityMetaData(ListTag nbt) {
+    public CampfireBlockEntityMetaData(Connection connection, ListTag nbt) {
         this.items = new Slot[4];
         for (CompoundTag tag : nbt.<CompoundTag>getValue()) {
-            this.items[tag.getByteTag("Slot").getValue()] = new Slot(null, new Item(tag.getStringTag("id").getValue()), tag.getByteTag("Count").getValue()); // ToDo: version should not be null
+            this.items[tag.getByteTag("Slot").getValue()] = new Slot(null, connection.getMapping().getItem(new ModIdentifier(tag.getStringTag("id").getValue())), tag.getByteTag("Count").getValue()); // ToDo: version should not be null
         }
     }
 

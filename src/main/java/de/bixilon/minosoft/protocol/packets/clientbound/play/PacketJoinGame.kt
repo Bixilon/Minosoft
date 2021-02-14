@@ -60,21 +60,17 @@ class PacketJoinGame : ClientboundPacket() {
             gameMode = GameModes.byId(buffer.readUnsignedByte().toInt())
         }
 
-        if (buffer.versionId < ProtocolVersions.V_20W21A) {
-            if (buffer.versionId < ProtocolVersions.V_1_9_1) {
-                dimension = buffer.connection.mapping.getDimensionById(buffer.readByte().toInt())!!
-                difficulty = Difficulties.byId(buffer.readUnsignedByte().toInt())
-                maxPlayers = buffer.readByte().toInt()
-                if (buffer.versionId >= ProtocolVersions.V_13W42B) {
-                    levelType = LevelTypes.byType(buffer.readString())
-                }
-                if (buffer.versionId < ProtocolVersions.V_14W29A) {
-                    return true
-                }
-                isReducedDebugScreen = buffer.readBoolean()
-            } else {
-                dimension = buffer.connection.mapping.getDimensionById(buffer.readInt())!!
+        if (buffer.versionId < ProtocolVersions.V_1_9_1) {
+            dimension = buffer.connection.mapping.getDimension(buffer.readByte().toInt())!!
+            difficulty = Difficulties.byId(buffer.readUnsignedByte().toInt())
+            maxPlayers = buffer.readByte().toInt()
+            if (buffer.versionId >= ProtocolVersions.V_13W42B) {
+                levelType = LevelTypes.byType(buffer.readString())
             }
+            if (buffer.versionId < ProtocolVersions.V_14W29A) {
+                return true
+            }
+            isReducedDebugScreen = buffer.readBoolean()
         }
 
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE6) {
@@ -84,7 +80,7 @@ class PacketJoinGame : ClientboundPacket() {
             val worlds = buffer.readStringArray()
         }
         if (buffer.versionId < ProtocolVersions.V_20W21A) {
-            dimension = buffer.connection.mapping.getDimensionById(buffer.readInt())!!
+            dimension = buffer.connection.mapping.getDimension(buffer.readInt())!!
         } else {
             val dimensionCodec = buffer.readNBT()
             dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
@@ -138,7 +134,7 @@ class PacketJoinGame : ClientboundPacket() {
         }
         connection.player.gameMode = gameMode
         connection.player.world.isHardcore = isHardcore
-        connection.mapping.setDimensions(dimensions)
+        connection.mapping.dimensionIdentifierMap = dimensions
         connection.player.world.dimension = dimension
         val entity = PlayerEntity(connection, entityId, connection.player.playerUUID, null, null, connection.player.playerName, null, null)
         connection.player.entity = entity

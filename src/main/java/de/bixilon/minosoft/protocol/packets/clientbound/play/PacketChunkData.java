@@ -105,7 +105,7 @@ public class PacketChunkData extends ClientboundPacket {
             int blockEntitiesCount = buffer.readVarInt();
             for (int i = 0; i < blockEntitiesCount; i++) {
                 CompoundTag tag = (CompoundTag) buffer.readNBT();
-                BlockEntityMetaData data = BlockEntityMetaData.getData(null, tag);
+                BlockEntityMetaData data = BlockEntityMetaData.getData(buffer.getConnection(), null, tag);
                 if (data == null) {
                     continue;
                 }

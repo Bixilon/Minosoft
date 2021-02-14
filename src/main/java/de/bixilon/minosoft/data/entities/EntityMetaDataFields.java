@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities;
 import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.entities.entities.animal.Axolotl;
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.data.text.ChatComponent;
@@ -53,7 +54,7 @@ public enum EntityMetaDataFields {
     AREA_EFFECT_CLOUD_RADIUS(0.5f),
     AREA_EFFECT_CLOUD_COLOR(0),
     AREA_EFFECT_CLOUD_WAITING(false),
-    AREA_EFFECT_CLOUD_PARTICLE(new ParticleData(new Particle("effect"))),
+    AREA_EFFECT_CLOUD_PARTICLE(new ParticleData(new Particle(new ModIdentifier("effect")))),
 
     ABSTRACT_ARROW_FLAGS((byte) 0),
     ABSTRACT_ARROW_PIERCE_LEVEL((byte) 0),

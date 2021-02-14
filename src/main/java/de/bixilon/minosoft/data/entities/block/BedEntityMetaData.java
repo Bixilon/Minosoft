@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.block;
 
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.RGBColor;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.nbt.tag.IntTag;
 import de.bixilon.minosoft.util.nbt.tag.NBTTag;
 import de.bixilon.minosoft.util.nbt.tag.StringTag;
@@ -22,11 +23,11 @@ import de.bixilon.minosoft.util.nbt.tag.StringTag;
 public class BedEntityMetaData extends BlockEntityMetaData {
     private final RGBColor color;
 
-    public BedEntityMetaData(RGBColor color) {
+    public BedEntityMetaData(Connection connection, RGBColor color) {
         this.color = color;
     }
 
-    public BedEntityMetaData(NBTTag nbt) {
+    public BedEntityMetaData(Connection connection, NBTTag nbt) {
         if (nbt == null) {
             this.color = ChatColors.RED;
             return;
