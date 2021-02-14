@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
@@ -15,10 +16,17 @@ class Rendering(private val connection: Connection) {
     fun start(latch: CountUpAndDownLatch) {
         latch.countUp()
         Thread({
-            Log.info("Hello LWJGL " + Version.getVersion() + "!")
-            renderWindow.init(latch)
-            renderWindow.startRenderLoop()
-            renderWindow.exit()
+            try {
+                Log.info("Hello LWJGL " + Version.getVersion() + "!")
+                renderWindow.init(latch)
+                renderWindow.startRenderLoop()
+                renderWindow.exit()
+            } catch (exception: Throwable) {
+                if (connection.isConnected) {
+                    connection.disconnect()
+                }
+                connection.connectionState = ConnectionStates.FAILED_NO_RETRY
+            }
         }, "Rendering").start()
     }
 }

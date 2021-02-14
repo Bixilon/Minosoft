@@ -95,12 +95,13 @@ data class Version(
 
         if (versionId == ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
             Versions.PRE_FLATTENING_MAPPING = mapping
-        } else {
+        } else if (!isFlattened()) {
             mapping.parentMapping = Versions.PRE_FLATTENING_MAPPING
         }
+
         val files: Map<String, JsonObject> = try {
             Util.readJsonTarStream(AssetsManager.readAssetAsStreamByHash(Resources.getAssetVersionByVersion(this).minosoftMappings))
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // should not happen, but if this version is not flattened, we can fallback to the flatten mappings. Some things might not work...
             Log.printException(e, LogLevels.VERBOSE)
             if (isFlattened()) {
@@ -133,6 +134,7 @@ data class Version(
         } else {
             Log.verbose(String.format("Could not load mappings for version %s. Some features will be unavailable.", this))
         }
+        isLoaded = true
         isGettingLoaded = false
         latch.countDown()
     }

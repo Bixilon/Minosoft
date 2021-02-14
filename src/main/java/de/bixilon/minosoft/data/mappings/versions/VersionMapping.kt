@@ -325,11 +325,7 @@ class VersionMapping(var version: Version?) {
 
                         val block = loadBlockState(ModIdentifier(mod, identifierName!!), statesJson)
                         var blockId = getBlockId(block.identifier)
-                        if (this.version!!.isFlattened()) {
-                            // map block id
-                            blockId!!.blocks.add(block)
-                        }
-                        val blockNumericId = getBlockId(statesJson, version.isFlattened())
+                        val blockNumericId = getBlockId(statesJson, !version.isFlattened())
                         if (StaticConfiguration.DEBUG_MODE) {
                             checkIfBlockIsIsPresent(blockNumericId, block.identifier, blockIdMap)
                         }
@@ -338,9 +334,10 @@ class VersionMapping(var version: Version?) {
                             if (blockId == null) {
                                 blockId = BlockId(block.identifier)
                                 blockIdIdMap[blockNumericId] = blockId
+                                blockIdIdentifierMap[block.identifier] = blockId
                             }
-                            blockId.blocks.add(block)
                         }
+                        blockId!!.blocks.add(block)
                         blockIdMap[blockNumericId] = block
                     }
                 }
