@@ -24,7 +24,7 @@ class ComponentParser : CommandParser() {
     @Throws(CommandParseException::class)
     override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         try {
-            return BaseComponent(connection.version, stringReader.readJson().asJsonObject)
+            return BaseComponent(connection.version.localeManager, stringReader.readJson().asJsonObject)
         } catch (exception: Exception) {
             stringReader.skip(-1)
             throw InvalidComponentCommandParseException(stringReader, stringReader.read().toString(), exception)

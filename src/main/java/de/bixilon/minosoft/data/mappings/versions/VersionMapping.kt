@@ -34,7 +34,7 @@ import javafx.util.Pair
 import java.util.*
 
 
-class VersionMapping(var version: Version) {
+class VersionMapping(var version: Version?) {
     private val availableFeatures = HashSet<Mappings>()
 
     private val motiveIdMap = HashBiMap.create<Int, Motive>(30)
@@ -79,7 +79,7 @@ class VersionMapping(var version: Version) {
     }
 
     fun getItem(itemId: Int): Item? {
-        return if (!version.isFlattened) {
+        return if (version!!.isFlattened()) {
             getItem(itemId ushr 16, itemId and 0xFFFF)
         } else {
             getItemByIdIgnoreFlattened(itemId)
@@ -325,15 +325,15 @@ class VersionMapping(var version: Version) {
 
                         val block = loadBlockState(ModIdentifier(mod, identifierName!!), statesJson)
                         var blockId = getBlockId(block.identifier)
-                        if (this.version.isFlattened) {
+                        if (this.version!!.isFlattened()) {
                             // map block id
                             blockId!!.blocks.add(block)
                         }
-                        val blockNumericId = getBlockId(statesJson, !version.isFlattened)
+                        val blockNumericId = getBlockId(statesJson, version.isFlattened())
                         if (StaticConfiguration.DEBUG_MODE) {
                             checkIfBlockIsIsPresent(blockNumericId, block.identifier, blockIdMap)
                         }
-                        if (!version.isFlattened) {
+                        if (!version.isFlattened()) {
                             // map block id
                             if (blockId == null) {
                                 blockId = BlockId(block.identifier)

@@ -17,7 +17,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import de.bixilon.minosoft.data.mappings.versions.Version;
+import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.gui.rendering.font.Font;
 import de.bixilon.minosoft.gui.rendering.font.FontBindings;
 import de.bixilon.minosoft.gui.rendering.hud.HUDScale;
@@ -35,11 +35,11 @@ public abstract class ChatComponent {
         return valueOf(null, null, raw);
     }
 
-    public static ChatComponent valueOf(Version version, Object raw) {
-        return valueOf(version, null, raw);
+    public static ChatComponent valueOf(MinecraftLocaleManager localeManager, Object raw) {
+        return valueOf(localeManager, null, raw);
     }
 
-    public static ChatComponent valueOf(Version version, @Nullable TextComponent parent, Object raw) {
+    public static ChatComponent valueOf(MinecraftLocaleManager localeManager, @Nullable TextComponent parent, Object raw) {
         if (raw == null) {
             return new BaseComponent();
         }
@@ -57,13 +57,13 @@ public abstract class ChatComponent {
             try {
                 json = JsonParser.parseString((String) raw).getAsJsonObject();
             } catch (JsonParseException | IllegalStateException ignored) {
-                return new BaseComponent(version, (String) raw);
+                return new BaseComponent(localeManager, (String) raw);
             }
         } else {
-            return new BaseComponent(version, parent, raw.toString());
+            return new BaseComponent(localeManager, parent, raw.toString());
             // throw new IllegalArgumentException(String.format("%s is not a valid type here!", raw.getClass().getSimpleName()));
         }
-        return new BaseComponent(version, parent, json);
+        return new BaseComponent(localeManager, parent, json);
     }
 
     /**

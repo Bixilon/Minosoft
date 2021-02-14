@@ -304,8 +304,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
             // ToDo: show progress dialog
 
-            connection.connect(this.server.getLastPing().getAddress(), version, new CountUpAndDownLatch(1));
             connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
+            connection.connect(this.server.getLastPing().getAddress(), version, new CountUpAndDownLatch(1));
         }, "ConnectThread").start();
 
     }
@@ -346,7 +346,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             }
 
             this.optionsConnect.setDisable(false);
-            this.optionsSessions.setDisable(false);
+            this.optionsSessions.setDisable(true);
         });
     }
 

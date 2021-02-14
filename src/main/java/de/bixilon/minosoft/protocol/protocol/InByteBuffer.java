@@ -206,7 +206,7 @@ public class InByteBuffer {
     }
 
     public ChatComponent readChatComponent() {
-        return ChatComponent.valueOf(this.connection.getVersion(), readString());
+        return ChatComponent.valueOf(this.connection.getVersion().getLocaleManager(), readString());
     }
 
     @IntRange(from = 0)

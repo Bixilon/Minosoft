@@ -147,6 +147,11 @@ public class Connection {
         } catch (Exception e) {
             Log.printException(e, LogLevels.DEBUG);
             Log.fatal(String.format("Could not load version %s. This version seems to be unsupported!", version));
+            if (this.customMapping.getVersion() != null) {
+                this.customMapping.getVersion().getMapping().setParentMapping(null);
+            }
+            this.customMapping.setVersion(null);
+            version.unload();
             this.lastException = new MappingsLoadingException("Mappings could not be loaded", e);
             setConnectionState(ConnectionStates.FAILED_NO_RETRY);
         }
@@ -178,7 +183,9 @@ public class Connection {
 
     public void disconnect() {
         this.network.disconnect();
-        this.handleThread.interrupt();
+        if (this.handleThread != null) {
+            this.handleThread.interrupt();
+        }
     }
 
     public Player getPlayer() {

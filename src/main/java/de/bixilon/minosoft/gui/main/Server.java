@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.main;
 
+import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.mappings.versions.Version;
@@ -24,13 +25,13 @@ import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.util.ServerAddress;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Set;
 
 public class Server {
     private static int highestServerId;
     private final int id;
-    private final ArrayList<Connection> connections = new ArrayList<>();
+    private final Set<Connection> connections = Sets.newConcurrentHashSet();
     private ChatComponent name;
     private ChatComponent addressName;
     private String address;
@@ -158,7 +159,7 @@ public class Server {
         this.desiredVersion = versionId;
     }
 
-    public ArrayList<Connection> getConnections() {
+    public Set<Connection> getConnections() {
         return this.connections;
     }
 

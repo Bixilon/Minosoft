@@ -17,7 +17,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import de.bixilon.minosoft.data.mappings.versions.Version;
+import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.gui.rendering.font.Font;
 import de.bixilon.minosoft.gui.rendering.font.FontBindings;
 import de.bixilon.minosoft.gui.rendering.hud.HUDScale;
@@ -42,11 +42,11 @@ public class BaseComponent extends ChatComponent {
     public BaseComponent() {
     }
 
-    public BaseComponent(Version version, String text) {
-        this(version, null, text);
+    public BaseComponent(MinecraftLocaleManager localeManager, String text) {
+        this(localeManager, null, text);
     }
 
-    public BaseComponent(Version version, @Nullable ChatComponent parent, String text) {
+    public BaseComponent(MinecraftLocaleManager localeManager, @Nullable ChatComponent parent, String text) {
         // legacy String
         StringBuilder currentText = new StringBuilder();
         RGBColor color = ChatColors.WHITE;
@@ -99,23 +99,23 @@ public class BaseComponent extends ChatComponent {
         }
     }
 
-    public BaseComponent(Version version, JsonObject json) {
-        this(version, null, json);
+    public BaseComponent(MinecraftLocaleManager localeManager, JsonObject json) {
+        this(localeManager, null, json);
     }
 
     @SuppressWarnings("unchecked")
-    public BaseComponent(Version version, @Nullable TextComponent parent, JsonElement data) {
+    public BaseComponent(MinecraftLocaleManager localeManager, @Nullable TextComponent parent, JsonElement data) {
         MultiChatComponent thisTextComponent = null;
         if (data instanceof JsonObject json) {
             if (json.has("text")) {
                 String text = json.get("text").getAsString();
                 if (text.contains(String.valueOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR))) {
                     // legacy text component
-                    this.parts.add(new BaseComponent(version, text));
+                    this.parts.add(new BaseComponent(localeManager, text));
                     return;
                 }
                 RGBColor color;
-                if (parent != null && parent.getColor() != null) {
+                if (parent != null) {
                     color = parent.getColor();
                 } else {
                     color = null;
@@ -167,14 +167,14 @@ public class BaseComponent extends ChatComponent {
             final TextComponent parentParameter = thisTextComponent == null ? parent : thisTextComponent;
             if (json.has("extra")) {
                 JsonArray extras = json.getAsJsonArray("extra");
-                extras.forEach((extra -> this.parts.add(new BaseComponent(version, parentParameter, extra))));
+                extras.forEach((extra -> this.parts.add(new BaseComponent(localeManager, parentParameter, extra))));
             }
 
             if (json.has("translate")) {
-                this.parts.add(new BaseComponent(version, version.getLocaleManager().translate(json.get("translate").getAsString(), json.getAsJsonArray("with"))));
+                this.parts.add(new BaseComponent(localeManager, localeManager.translate(json.get("translate").getAsString(), json.getAsJsonArray("with"))));
             }
         } else if (data instanceof JsonPrimitive primitive) {
-            this.parts.add(new BaseComponent(version, parent, primitive.getAsString()));
+            this.parts.add(new BaseComponent(localeManager, parent, primitive.getAsString()));
         }
     }
 
@@ -237,8 +237,8 @@ public class BaseComponent extends ChatComponent {
         return this;
     }
 
-    public BaseComponent append(Version version, String message) {
-        this.parts.add(new BaseComponent(version, message));
+    public BaseComponent append(MinecraftLocaleManager localeManager, String message) {
+        this.parts.add(new BaseComponent(localeManager, message));
         return this;
     }
 

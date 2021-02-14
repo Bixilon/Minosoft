@@ -21,9 +21,10 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Versions {
-    public static final Version LOWEST_VERSION_SUPPORTED = new Version("Automatic", -1, -1, null, null);
+    public static final Version LOWEST_VERSION_SUPPORTED = new Version("Automatic", -1, -1, Map.of(), Map.of());
     private static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<Integer, Version> VERSION_PROTOCOL_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<String, Version> VERSION_NAME_MAP = HashBiMap.create(500);
@@ -57,8 +58,8 @@ public class Versions {
             return VERSION_ID_MAP.get(versionId);
         }
 
-        HashMap<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
-        HashMap<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
+        Map<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
+        Map<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
         if (versionJson.get("mapping").isJsonPrimitive()) {
             // inherits or copies mapping from an other version
             Version parent = VERSION_ID_MAP.get(versionJson.get("mapping").getAsInt());
