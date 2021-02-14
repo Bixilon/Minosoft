@@ -14,6 +14,7 @@ import org.lwjgl.*
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
+import org.lwjgl.glfw.GLFWWindowFocusCallback
 import org.lwjgl.glfw.GLFWWindowSizeCallback
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
@@ -32,6 +33,8 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
     private var lastFrame = 0.0
     lateinit var camera: Camera
     private val latch = CountUpAndDownLatch(1)
+
+    private var renderingPaused = false
 
     // all renderers
     val chunkRenderer: ChunkRenderer = ChunkRenderer(connection, connection.player.world, this)
@@ -149,6 +152,12 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             }
         })
 
+        glfwSetWindowFocusCallback(windowId, object : GLFWWindowFocusCallback() {
+            override fun invoke(window: Long, focused: Boolean) {
+                renderingPaused = !focused
+            }
+        })
+
 
         hudRenderer.screenChangeResizeCallback(screenWidth, screenHeight)
 
@@ -166,9 +175,12 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
     }
 
     fun startRenderLoop() {
-        var lastPositionChangeTime = 0.0
-
         while (!glfwWindowShouldClose(windowId)) {
+            if (renderingPaused) {
+                glfwSwapBuffers(windowId)
+                glfwPollEvents()
+                continue
+            }
             renderStats.startFrame()
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) // clear the framebuffer
 
