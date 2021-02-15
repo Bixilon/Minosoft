@@ -34,7 +34,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
     lateinit var camera: Camera
     private val latch = CountUpAndDownLatch(1)
 
-    private var renderingPaused = false
+    private var slowerRendering = false
 
     // all renderers
     val chunkRenderer: ChunkRenderer = ChunkRenderer(connection, connection.player.world, this)
@@ -154,7 +154,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
         glfwSetWindowFocusCallback(windowId, object : GLFWWindowFocusCallback() {
             override fun invoke(window: Long, focused: Boolean) {
-                renderingPaused = !focused
+                slowerRendering = !focused
             }
         })
 
@@ -176,11 +176,6 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
     fun startRenderLoop() {
         while (!glfwWindowShouldClose(windowId)) {
-            if (renderingPaused) {
-                glfwSwapBuffers(windowId)
-                glfwPollEvents()
-                continue
-            }
             renderStats.startFrame()
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) // clear the framebuffer
 
@@ -206,6 +201,10 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             for (renderQueueElement in renderQueue) {
                 renderQueueElement.run()
                 renderQueue.remove(renderQueueElement)
+            }
+
+            if (slowerRendering) {
+                Thread.sleep(100L)
             }
 
             renderStats.endFrame()

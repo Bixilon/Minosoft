@@ -10,18 +10,18 @@ import org.lwjgl.opengl.GL30.*
 class WorldMesh(data: FloatArray) {
     var vAO: Int = glGenVertexArrays()
     var vBO: Int = glGenBuffers()
-    var trianglesCount: Int = data.size / BYTES_PER_VERTEX
+    var trianglesCount: Int = data.size / FLOATS_PER_VERTEX
 
     init {
         // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
         glBindVertexArray(vAO)
         glBindBuffer(GL_ARRAY_BUFFER, vBO)
         glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW)
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, BYTES_PER_VERTEX * Float.BYTES, 0L)
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, 0L)
         glEnableVertexAttribArray(0)
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, BYTES_PER_VERTEX * Float.BYTES, (3 * Float.BYTES).toLong())
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (3 * Float.BYTES).toLong())
         glEnableVertexAttribArray(1)
-        glVertexAttribPointer(2, 1, GL_FLOAT, false, BYTES_PER_VERTEX * Float.BYTES, (5 * Float.BYTES).toLong())
+        glVertexAttribPointer(2, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (5 * Float.BYTES).toLong())
         glEnableVertexAttribArray(2)
 
         // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
@@ -39,6 +39,6 @@ class WorldMesh(data: FloatArray) {
     }
 
     companion object {
-        private const val BYTES_PER_VERTEX = 6
+        private const val FLOATS_PER_VERTEX = 6
     }
 }

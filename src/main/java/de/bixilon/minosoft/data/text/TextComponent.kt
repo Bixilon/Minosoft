@@ -225,21 +225,51 @@ open class TextComponent : ChatComponent {
         // reverse text if right bound
         val charArray = when (binding) {
             FontBindings.RIGHT_UP, FontBindings.RIGHT_DOWN -> {
-                text.toCharArray().reversed()
+                if (text.contains('\n')) {
+                    // ToDo: This needs to be improved
+                    val arrays: MutableList<List<Char>> = mutableListOf()
+                    for (split in text.split('\n')) {
+                        arrays.add(split.toCharArray().reversed())
+                        arrays.add(listOf('\n'))
+                    }
+                    val outList: MutableList<Char> = mutableListOf()
+                    for (list in arrays) {
+                        for (char in list) {
+                            outList.add(char)
+                        }
+                    }
+                    if (outList.last() == '\n') {
+                        outList.removeLast()
+                    }
+                    outList
+                } else {
+                    text.toCharArray().toList().reversed()
+                }
             }
             FontBindings.LEFT_UP, FontBindings.LEFT_DOWN -> {
                 text.toCharArray().toList()
             }
         }
-        for (c in charArray) {
-            val fontChar = font.getChar(c)
-            val scaledX = fontChar.width * (font.charHeight / fontChar.height.toFloat()) * hudScale.scale
+        for (char in charArray) {
             val scaledHeight = font.charHeight * hudScale.scale
+            if (char == '\n') {
+                val yOffset = offset.y
+                offset *= 0
+                offset += Vec2(0, yOffset + scaledHeight)
+                maxSize += Vec2(0, yOffset + scaledHeight)
+                continue
+            }
+            val fontChar = font.getChar(char)
+            val scaledX = fontChar.width * (font.charHeight / fontChar.height.toFloat()) * hudScale.scale
             drawLetter(startPosition + offset, scaledX, scaledHeight, fontChar, color, meshData)
             offset += Vec2(scaledX + (hudScale.scale / 2), 0f)
-            maxSize.x += scaledX + (hudScale.scale / 2)
-            if (maxSize.y < scaledHeight) {
-                maxSize.y = scaledHeight
+            if (offset.x >= maxSize.x) {
+                maxSize.x += scaledX + (hudScale.scale / 2)
+            }
+            if (offset.y >= maxSize.y) {
+                if (maxSize.y < scaledHeight) {
+                    maxSize.y = scaledHeight
+                }
             }
         }
     }

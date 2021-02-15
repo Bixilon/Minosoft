@@ -40,7 +40,7 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
             "",
             "XYZ ${getLocation()}",
             "Block ${getBlockPosition()}",
-            "Chunk ${getChunkLocation()}",
+            "Chunk \n${getChunkLocation()}",
             "Facing ${getFacing()}",
             "Dimension ${hudTextElement.connection.player.world.dimension}",
         ))
@@ -50,7 +50,7 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
             "Allocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}",
             "System: $systemMemoryText",
             "",
-            "OS: $osText",
+            "OS:\n $osText",
             "CPU: $processorText",
             "",
             "Display: ${getScreenDimensions()}",
