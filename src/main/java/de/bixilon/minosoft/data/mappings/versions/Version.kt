@@ -118,14 +118,23 @@ data class Version(
             files[mapping.filename + ".json"]?.let {
                 data = it
             }
-            if (data == null) {
-                loadVersionMappings(mapping, ProtocolDefinition.DEFAULT_MOD, null)
-                latch.countDown()
-                continue
-            }
-            for ((mod, json) in data!!.entrySet()) {
-                check(json is JsonObject) { "Invalid mod json" }
-                loadVersionMappings(mapping, mod, json)
+            try {
+                if (data == null) {
+                    loadVersionMappings(mapping, ProtocolDefinition.DEFAULT_MOD, null)
+                    latch.countDown()
+                    continue
+                }
+                for ((mod, json) in data!!.entrySet()) {
+                    check(json is JsonObject) { "Invalid mod json" }
+                    loadVersionMappings(mapping, mod, json)
+                }
+            } catch (exception: Exception) {
+                if (mapping == Mappings.ENTITIES) {
+                    Log.verbose(String.format("Could not load entities mapping for version %s. Some features will be unavailable.", this))
+                    Log.printException(exception, LogLevels.VERBOSE)
+                } else {
+                    throw exception
+                }
             }
             latch.countDown()
         }
