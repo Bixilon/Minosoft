@@ -5,6 +5,7 @@ import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.ChunkLocation
 import de.bixilon.minosoft.data.world.InChunkSectionLocation
 import de.bixilon.minosoft.gui.rendering.font.FontBindings
+import de.bixilon.minosoft.modding.loading.ModLoader
 import org.lwjgl.opengl.GL11.*
 import oshi.SystemInfo
 
@@ -35,7 +36,7 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
         chatComponents[FontBindings.LEFT_UP]!!.addAll(listOf(
             "FPS: ${getFPS()}",
             "Timings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms",
-            "Connected to: ${hudTextElement.connection.address}",
+            "Connected to ${hudTextElement.connection.address} with ${hudTextElement.connection.version}",
             "",
             "XYZ ${getLocation()}",
             "Block ${getBlockPosition()}",
@@ -55,6 +56,8 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
             "Display: ${getScreenDimensions()}",
             "GPU: $gpuText",
             "Version: $gpuVersionText",
+            "",
+            "Mods: ${ModLoader.MOD_MAP.size} active, ${hudTextElement.connection.eventListenerSize} listeners",
         ))
     }
 

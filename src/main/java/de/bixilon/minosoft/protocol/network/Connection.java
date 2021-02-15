@@ -468,4 +468,8 @@ public class Connection {
     public Rendering getRenderer() {
         return this.rendering;
     }
+
+    public int getEventListenerSize() {
+        return this.eventListeners.size();
+    }
 }
