@@ -35,6 +35,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.terminal.CLI;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
+import de.bixilon.minosoft.util.GitInfo;
 import de.bixilon.minosoft.util.MinosoftCommandLineArguments;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
@@ -64,6 +65,7 @@ public final class Minosoft {
         Util.initUtilClasses();
 
         Log.info("Starting...");
+        GitInfo.INSTANCE.load();
         AsyncTaskWorker taskWorker = new AsyncTaskWorker("StartUp");
 
         taskWorker.setFatalError((exception) -> {

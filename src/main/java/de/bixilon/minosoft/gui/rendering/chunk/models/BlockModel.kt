@@ -15,6 +15,7 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
     private val fullFaceDirections: MutableSet<Directions> = parent?.fullFaceDirections?.toMutableSet() ?: mutableSetOf()
     private var rotation: Vec3
     private var uvLock = false // ToDo
+    private var rescale = false // ToDo
 
     init {
         json["textures"]?.asJsonObject?.let {
@@ -50,6 +51,9 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
         }
         json["uvlock"]?.let {
             uvLock = it.asBoolean
+        }
+        json["rescale"]?.let {
+            rescale = it.asBoolean
         }
         rotation = glm.radians(Vec3(rotateX, rotateY, rotateZ))
     }

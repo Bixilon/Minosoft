@@ -359,10 +359,6 @@ class VersionMapping(var version: Version?) {
                 }
                 val blockStates = block.getAsJsonObject("states")
                 for (identifier in blockStates.keySet()) {
-                    if (identifier == "dispenser") {
-                        Log.debug("")
-                    }
-
                     loadBlockModelState(mod, identifier!!, blockStates)
                 }
             }
@@ -519,7 +515,7 @@ class VersionMapping(var version: Version?) {
             if (availableFeatures.size == Mappings.values().size) {
                 return true
             }
-            for (mapping in Mappings.values()) {
+            for (mapping in Mappings.VALUES) {
                 if (!availableFeatures.contains(mapping)) {
                     return false
                 }

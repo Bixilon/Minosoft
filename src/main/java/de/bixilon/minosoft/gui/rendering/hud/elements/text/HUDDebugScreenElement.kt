@@ -6,6 +6,7 @@ import de.bixilon.minosoft.data.world.ChunkLocation
 import de.bixilon.minosoft.data.world.InChunkSectionLocation
 import de.bixilon.minosoft.gui.rendering.font.FontBindings
 import de.bixilon.minosoft.modding.loading.ModLoader
+import de.bixilon.minosoft.util.GitInfo
 import org.lwjgl.opengl.GL11.*
 import oshi.SystemInfo
 
@@ -56,6 +57,8 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
             "Display: ${getScreenDimensions()}",
             "GPU: $gpuText",
             "Version: $gpuVersionText",
+            "",
+            "Commit: ${GitInfo.GIT_COMMIT_ID_DESCRIBE}: ${GitInfo.GIT_COMMIT_MESSAGE_SHORT}",
             "",
             "Mods: ${ModLoader.MOD_MAP.size} active, ${hudTextElement.connection.eventListenerSize} listeners",
         ))
