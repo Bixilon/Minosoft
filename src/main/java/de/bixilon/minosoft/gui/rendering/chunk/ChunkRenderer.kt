@@ -70,7 +70,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
                 section.getBlock(position.getLocationByDirection(Directions.EAST))
             }
 
-            //  if(block.fullIdentifier != "minecraft:dropper"){
+            //  if (block.identifier.fullIdentifier != "minecraft:dispenser") {
             //      continue
             //  }
 

@@ -322,7 +322,6 @@ class VersionMapping(var version: Version?) {
 
                     for (statesJson in json.getAsJsonArray("states")) {
                         check(statesJson is JsonObject) { "Invalid block state json" }
-
                         val block = loadBlockState(ModIdentifier(mod, identifierName!!), statesJson)
                         var blockId = getBlockId(block.identifier)
                         val blockNumericId = getBlockId(statesJson, !version.isFlattened())
@@ -360,6 +359,10 @@ class VersionMapping(var version: Version?) {
                 }
                 val blockStates = block.getAsJsonObject("states")
                 for (identifier in blockStates.keySet()) {
+                    if (identifier == "dispenser") {
+                        Log.debug("")
+                    }
+
                     loadBlockModelState(mod, identifier!!, blockStates)
                 }
             }
@@ -413,7 +416,8 @@ class VersionMapping(var version: Version?) {
             for (blockState in blockStates) {
                 if (blockState.bareEquals(state)) {
                     for (type in value.getAsJsonArray("types")) {
-                        blockState.blockModels.add(BlockModel(blockModels[ModIdentifier(type.asJsonObject["model"].asString.replace("block/", ""))], value))
+                        check(type is JsonObject) { "Invalid block type json" }
+                        blockState.blockModels.add(BlockModel(blockModels[ModIdentifier(type["model"].asString.replace("block/", ""))], type))
                     }
                     ckecked = true
                 }
