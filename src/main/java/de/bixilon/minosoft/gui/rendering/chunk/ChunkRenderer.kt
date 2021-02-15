@@ -74,7 +74,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
             //      continue
             //  }
 
-            block.getBlockModel(BlockPosition(chunkLocation, sectionHeight, position)).render(position, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
+            block.getBlockModel(BlockPosition(chunkLocation, sectionHeight, position)).render(Vec3(position.x + chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X, position.y + sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y, position.z + chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z), data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
         }
         return data.toFloatArray()
     }
@@ -129,7 +129,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
                 val data = prepareChunk(chunkLocation, sectionHeight, section)
                 val sectionMap = chunkSectionsToDraw[chunkLocation]!!
                 renderWindow.renderQueue.add {
-                    val newMesh = WorldMesh(data, Vec3(chunkLocation.x, sectionHeight, chunkLocation.z))
+                    val newMesh = WorldMesh(data)
                     sectionMap[sectionHeight]?.unload()
                     sectionMap[sectionHeight] = newMesh
                 }

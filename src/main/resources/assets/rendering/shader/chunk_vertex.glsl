@@ -8,9 +8,8 @@ out vec3 passTextureCoordinates;
 
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
-uniform vec3 worldPosition;
 
 void main() {
-    gl_Position = projectionMatrix * viewMatrix *  vec4(inPosition + vec3(worldPosition.x * 16u, worldPosition.y * 16u, worldPosition.z * 16u), 1.0f);
+    gl_Position = projectionMatrix * viewMatrix *  vec4(inPosition, 1.0f);
     passTextureCoordinates = vec3(textureIndex, textureLayer);
 }

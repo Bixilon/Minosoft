@@ -2,6 +2,7 @@ package de.bixilon.minosoft.gui.rendering.hud.elements.text
 
 import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontBindings
@@ -49,12 +50,9 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
 
             meshData.add(0f)
             meshData.add(0f)
-            meshData.add(0f)
+            meshData.add(Float.fromBits(0))
 
-            meshData.add(0f)
-            meshData.add(0f)
-            meshData.add(0f)
-            meshData.add(0.3f)
+            meshData.add(Float.fromBits(RGBColor(0, 0, 0, 76).color))
         }
 
         drawLetterVertex(start)

@@ -77,7 +77,7 @@ public final class RGBColor implements ChatCode {
 
     @Override
     public String toString() {
-        if (getAlpha() > 0) {
+        if (getAlpha() != 255) {
             return String.format("#%08X", this.color);
         }
         return String.format("#%06X", (0xFFFFFF & this.color));

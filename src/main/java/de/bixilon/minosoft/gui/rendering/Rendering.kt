@@ -22,6 +22,7 @@ class Rendering(private val connection: Connection) {
                 renderWindow.startRenderLoop()
                 renderWindow.exit()
             } catch (exception: Throwable) {
+                exception.printStackTrace()
                 if (connection.isConnected) {
                     connection.disconnect()
                 }

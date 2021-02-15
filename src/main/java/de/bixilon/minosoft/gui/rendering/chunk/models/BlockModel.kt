@@ -3,7 +3,6 @@ package de.bixilon.minosoft.gui.rendering.chunk.models
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.blocks.Block
-import de.bixilon.minosoft.data.world.InChunkSectionLocation
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.glm
 import glm_.mat4x4.Mat4
@@ -56,8 +55,8 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
     }
 
 
-    open fun render(position: InChunkSectionLocation, data: MutableList<Float>, neighbourBlocks: Array<Block?>) {
-        val modelMatrix = Mat4().translate(Vec3(position.x, position.y, position.z))
+    open fun render(position: Vec3, data: MutableList<Float>, neighbourBlocks: Array<Block?>) {
+        val modelMatrix = Mat4().translate(position)
             .rotate(rotation.z, Vec3(0, 0, -1))
             .rotate(rotation.y, Vec3(0, -1, 0))
             .rotate(rotation.x, Vec3(1, 0, 0))

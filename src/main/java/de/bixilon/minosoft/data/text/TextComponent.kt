@@ -210,11 +210,8 @@ open class TextComponent : ChatComponent {
             meshData.add(-0.997f)
             meshData.add(uv.x)
             meshData.add(uv.y)
-            meshData.add(atlasPage.toFloat())
-            meshData.add(color.red / 256f)
-            meshData.add(color.green / 256f)
-            meshData.add(color.blue / 256f)
-            meshData.add(1f)
+            meshData.add(Float.fromBits(atlasPage))
+            meshData.add(Float.fromBits(color.color))
         }
 
         fun drawLetter(position: Vec2, scaledWidth: Float, scaledHeight: Float, fontChar: FontChar, color: RGBColor, meshData: MutableList<Float>) {
