@@ -129,23 +129,16 @@ open class BlockModelElement(data: JsonObject) {
             data.add(Float.fromBits(texture.id)) // ToDo: Compact this
         }
 
-        fun createQuad(drawPositions: Array<Vec3>, texturePosition1: Vec2, texturePosition2: Vec2, texturePosition3: Vec2, texturePosition4: Vec2) {
-            addToData(drawPositions[0], texturePosition2)
-            addToData(drawPositions[3], texturePosition3)
-            addToData(drawPositions[2], texturePosition4)
-            addToData(drawPositions[2], texturePosition4)
-            addToData(drawPositions[1], texturePosition1)
-            addToData(drawPositions[0], texturePosition2)
+        fun createQuad(drawPositions: Array<Vec3>, texturePositions: IntArray) {
+            addToData(drawPositions[0], face.positions[texturePositions[1]])
+            addToData(drawPositions[3], face.positions[texturePositions[2]])
+            addToData(drawPositions[2], face.positions[texturePositions[3]])
+            addToData(drawPositions[2], face.positions[texturePositions[3]])
+            addToData(drawPositions[1], face.positions[texturePositions[0]])
+            addToData(drawPositions[0], face.positions[texturePositions[1]])
         }
 
-        when (realDirection) {
-            Directions.DOWN ->  createQuad(drawPositions, face.textureLeftDown, face.textureLeftUp, face.textureRightUp, face.textureRightDown)
-            Directions.UP ->    createQuad(drawPositions, face.textureLeftDown, face.textureLeftUp, face.textureRightUp, face.textureRightDown)
-            Directions.NORTH -> createQuad(drawPositions, face.textureRightDown, face.textureRightUp, face.textureLeftUp, face.textureLeftDown)
-            Directions.SOUTH -> createQuad(drawPositions, face.textureLeftDown, face.textureLeftUp, face.textureRightUp, face.textureRightDown)
-            Directions.WEST ->  createQuad(drawPositions, face.textureRightUp, face.textureRightDown, face.textureLeftDown, face.textureLeftUp)
-            Directions.EAST ->  createQuad(drawPositions, face.textureLeftUp, face.textureLeftDown, face.textureRightDown, face.textureRightUp)
-        }
+        createQuad(drawPositions, FACE_TEXTURE_POSITION[realDirection.ordinal])
     }
 
     fun isCullFace(direction: Directions): Boolean {
@@ -163,7 +156,23 @@ open class BlockModelElement(data: JsonObject) {
 
         private const val BLOCK_RESOLUTION = 16
 
-        val FACE_POSITION_MAP_TEMPLATE = arrayOf(intArrayOf(0, 2, 3, 1), intArrayOf(6, 4, 5, 7), intArrayOf(1, 5, 4, 0), intArrayOf(2, 6, 7, 3), intArrayOf(6, 2, 0, 4), intArrayOf(5, 1, 3, 7))
+        val FACE_POSITION_MAP_TEMPLATE = arrayOf(
+            intArrayOf(0, 2, 3, 1),
+            intArrayOf(6, 4, 5, 7),
+            intArrayOf(1, 5, 4, 0),
+            intArrayOf(2, 6, 7, 3),
+            intArrayOf(6, 2, 0, 4),
+            intArrayOf(5, 1, 3, 7),
+        )
+
+        val FACE_TEXTURE_POSITION = arrayOf(
+            intArrayOf(0, 1, 2, 3),
+            intArrayOf(0, 1, 2, 3),
+            intArrayOf(3, 2, 1, 0),
+            intArrayOf(0, 1, 2, 3),
+            intArrayOf(2, 3, 0, 1),
+            intArrayOf(1, 0, 3, 2),
+        )
 
         private val POSITION_1 = Vec3(0, 0, 0)
         private val POSITION_2 = Vec3(BLOCK_RESOLUTION, 0, 0)
