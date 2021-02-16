@@ -11,11 +11,8 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerPositio
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log
 import org.lwjgl.*
-import org.lwjgl.glfw.Callbacks
+import org.lwjgl.glfw.*
 import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.glfw.GLFWErrorCallback
-import org.lwjgl.glfw.GLFWWindowFocusCallback
-import org.lwjgl.glfw.GLFWWindowSizeCallback
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryStack
@@ -34,7 +31,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
     lateinit var camera: Camera
     private val latch = CountUpAndDownLatch(1)
 
-    private var slowerRendering = false
+    private var renderingStatus = RenderingStates.RUNNING
 
     // all renderers
     val chunkRenderer: ChunkRenderer = ChunkRenderer(connection, connection.player.world, this)
@@ -154,7 +151,21 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
         glfwSetWindowFocusCallback(windowId, object : GLFWWindowFocusCallback() {
             override fun invoke(window: Long, focused: Boolean) {
-                slowerRendering = !focused
+                setRenderStatus(if (focused) {
+                    RenderingStates.RUNNING
+                } else {
+                    RenderingStates.SLOW
+                })
+            }
+        })
+
+        glfwSetWindowIconifyCallback(windowId, object : GLFWWindowIconifyCallback() {
+            override fun invoke(window: Long, iconified: Boolean) {
+                setRenderStatus(if (iconified) {
+                    RenderingStates.PAUSED
+                } else {
+                    RenderingStates.RUNNING
+                })
             }
         })
 
@@ -176,6 +187,11 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
     fun startRenderLoop() {
         while (!glfwWindowShouldClose(windowId)) {
+            if (renderingStatus == RenderingStates.PAUSED) {
+                Thread.sleep(100L)
+                glfwPollEvents()
+                continue
+            }
             renderStats.startFrame()
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) // clear the framebuffer
 
@@ -203,10 +219,12 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
                 renderQueue.remove(renderQueueElement)
             }
 
-            if (slowerRendering) {
-                Thread.sleep(100L)
+            when (renderingStatus) {
+                RenderingStates.SLOW -> Thread.sleep(100L)
+                RenderingStates.RUNNING, RenderingStates.PAUSED -> {
+                }
+                RenderingStates.STOPPED -> glfwSetWindowShouldClose(windowId, true)
             }
-
             renderStats.endFrame()
         }
     }
@@ -231,5 +249,16 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             GL_FILL
         })
         polygonEnabled = !polygonEnabled
+    }
+
+    private fun setRenderStatus(renderingStatus: RenderingStates) {
+        if (renderingStatus == this.renderingStatus) {
+            return
+        }
+        if (this.renderingStatus == RenderingStates.PAUSED) {
+            renderQueue.clear()
+            chunkRenderer.refreshChunkCache()
+        }
+        this.renderingStatus = renderingStatus
     }
 }

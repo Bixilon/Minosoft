@@ -146,16 +146,17 @@ class ChunkRenderer(private val connection: Connection, private val world: World
 
     fun prepareChunkSection(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection) {
         renderWindow.rendering.executor.execute {
-            try {
-                val data = prepareChunk(chunkLocation, sectionHeight, section)
-                val sectionMap = chunkSectionsToDraw[chunkLocation]!!
-                renderWindow.renderQueue.add {
-                    val newMesh = WorldMesh(data)
-                    sectionMap[sectionHeight]?.unload()
-                    sectionMap[sectionHeight] = newMesh
-                }
-            } catch (exception: NullPointerException) {
-                exception.printStackTrace() // ToDo
+            val data = prepareChunk(chunkLocation, sectionHeight, section)
+
+            var sectionMap = chunkSectionsToDraw[chunkLocation]
+            if (sectionMap == null) {
+                sectionMap = ConcurrentHashMap()
+                chunkSectionsToDraw[chunkLocation] = sectionMap
+            }
+            renderWindow.renderQueue.add {
+                val newMesh = WorldMesh(data)
+                sectionMap[sectionHeight]?.unload()
+                sectionMap[sectionHeight] = newMesh
             }
         }
     }
@@ -172,14 +173,25 @@ class ChunkRenderer(private val connection: Connection, private val world: World
         }
     }
 
-    fun unloadChunk(location: ChunkLocation) {
+    fun unloadChunk(chunkLocation: ChunkLocation) {
         renderWindow.renderQueue.add {
-            chunkSectionsToDraw[location]?.let {
+            chunkSectionsToDraw[chunkLocation]?.let {
                 for ((_, mesh) in it) {
                     mesh.unload()
                 }
-                chunkSectionsToDraw.remove(location)
+                chunkSectionsToDraw.remove(chunkLocation)
             }
         }
+    }
+
+    fun prepareWorld(world: World) {
+        for ((chunkLocation, chunk) in world.allChunks) {
+            prepareChunk(chunkLocation, chunk)
+        }
+    }
+
+    fun refreshChunkCache() {
+        clearChunkCache()
+        prepareWorld(connection.player.world)
     }
 }
