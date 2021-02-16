@@ -47,9 +47,9 @@ open class BlockModelElement(data: JsonObject) {
             val angle = glm.radians(rotation["angle"].asDouble)
             rotate(axis, angle, jsonArrayToVec3(rotation["origin"].asJsonArray))
             rotate = when (axis) {
-                Axes.X -> run { return@run Vec3(angle, 0, 0) }
-                Axes.Y -> run { return@run Vec3(0, angle, 0) }
-                Axes.Z -> run { return@run Vec3(0, 0, angle) }
+                Axes.X -> Vec3(angle, 0, 0)
+                Axes.Y -> Vec3(0, angle, 0)
+                Axes.Z -> Vec3(0, 0, angle)
             }
         }
         data["faces"]?.let {
@@ -107,7 +107,6 @@ open class BlockModelElement(data: JsonObject) {
     }
 
     open fun render(textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, rotation: Vec3, data: MutableList<Float>) {
-
         val realDirection = getRotatedDirection(rotation, direction)
         val positionTemplate = FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
 
@@ -125,8 +124,8 @@ open class BlockModelElement(data: JsonObject) {
             data.add(output.x)
             data.add(output.y)
             data.add(output.z)
-            data.add(textureCoordinates.x)
-            data.add(textureCoordinates.y)
+            data.add(textureCoordinates.x * texture.widthFactor)
+            data.add(textureCoordinates.y * texture.heightFactor)
             data.add(texture.id.toFloat()) // ToDo: Compact this
         }
 
@@ -158,9 +157,10 @@ open class BlockModelElement(data: JsonObject) {
     }
 
     companion object {
-        fun jsonArrayToVec3(array: JsonArray) : Vec3 {
+        fun jsonArrayToVec3(array: JsonArray): Vec3 {
             return Vec3(array[0].asFloat, array[1].asFloat, array[2].asFloat)
         }
+
         private const val BLOCK_RESOLUTION = 16
 
         val FACE_POSITION_MAP_TEMPLATE = arrayOf(intArrayOf(0, 2, 3, 1), intArrayOf(6, 4, 5, 7), intArrayOf(1, 5, 4, 0), intArrayOf(2, 6, 7, 3), intArrayOf(6, 2, 0, 4), intArrayOf(5, 1, 3, 7))
@@ -177,20 +177,20 @@ open class BlockModelElement(data: JsonObject) {
 
         val fullTestPositions = mapOf(
             Pair(Directions.EAST, setOf(POSITION_1, POSITION_3, POSITION_5, POSITION_7)),
-                    Pair(Directions.WEST, setOf(POSITION_2, POSITION_4, POSITION_6, POSITION_8)),
-                    Pair(Directions.DOWN, setOf(POSITION_1, POSITION_2, POSITION_3, POSITION_4)),
-                    Pair(Directions.UP, setOf(POSITION_5, POSITION_6, POSITION_7, POSITION_8)),
-                    Pair(Directions.SOUTH, setOf(POSITION_1, POSITION_2, POSITION_5, POSITION_6)),
-                    Pair(Directions.NORTH, setOf(POSITION_3, POSITION_4, POSITION_7, POSITION_8)),
-                                     )
+            Pair(Directions.WEST, setOf(POSITION_2, POSITION_4, POSITION_6, POSITION_8)),
+            Pair(Directions.DOWN, setOf(POSITION_1, POSITION_2, POSITION_3, POSITION_4)),
+            Pair(Directions.UP, setOf(POSITION_5, POSITION_6, POSITION_7, POSITION_8)),
+            Pair(Directions.SOUTH, setOf(POSITION_1, POSITION_2, POSITION_5, POSITION_6)),
+            Pair(Directions.NORTH, setOf(POSITION_3, POSITION_4, POSITION_7, POSITION_8)),
+        )
     }
 }
 
 private fun <T> Array<T>.containsAll(set: Set<T>?): Boolean {
-    if (set != null) {
+    set?.let {
         for (value in set) {
-            if (! this.contains(value)) {
-                return false;
+            if (!this.contains(value)) {
+                return false
             }
         }
         return true

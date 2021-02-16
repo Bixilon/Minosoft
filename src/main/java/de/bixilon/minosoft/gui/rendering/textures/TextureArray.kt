@@ -59,6 +59,12 @@ class TextureArray(private val textures: List<Texture>, val maxWidth: Int, val m
             if (maxHeight != -1) {
                 calculatedMaxHeight = maxWidth
             }
+            // calculate width and height factor for every texture
+            for (texture in textures) {
+                texture.widthFactor = texture.width.toFloat() / calculatedMaxWidth
+                texture.heightFactor = texture.height.toFloat() / calculatedMaxHeight
+            }
+
             return TextureArray(textures, calculatedMaxWidth, calculatedMaxHeight)
         }
     }

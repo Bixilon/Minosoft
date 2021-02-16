@@ -17,6 +17,9 @@ class Texture(
     lateinit var buffer: ByteBuffer
     var loaded = false
 
+    var widthFactor = 1f
+    var heightFactor = 1f
+
     fun load(assetsManager: AssetsManager) {
         if (loaded) {
             return
