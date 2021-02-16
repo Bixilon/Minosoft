@@ -3,6 +3,7 @@ package de.bixilon.minosoft.gui.rendering.shader
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil
 import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.ARBFragmentShader.GL_FRAGMENT_SHADER_ARB
@@ -55,25 +56,41 @@ class Shader(private val vertexPath: String, private val fragmentPath: String) {
         return glGetUniformLocation(programId, variableName)
     }
 
-    fun setFloat(name: String, value: Float) {
-        glUniform1f(getUniformLocation(name), value)
+    fun setFloat(uniformName: String, value: Float) {
+        glUniform1f(getUniformLocation(uniformName), value)
     }
 
-    fun setInt(name: String, value: Int) {
-        glUniform1i(getUniformLocation(name), value)
+    fun setInt(uniformName: String, value: Int) {
+        glUniform1i(getUniformLocation(uniformName), value)
     }
 
-    fun set4f(variableName: String, floats: FloatArray) {
-        glUniform4f(getUniformLocation(variableName), floats[0], floats[1], floats[2], floats[3])
+    fun set4f(uniformName: String, floats: FloatArray) {
+        glUniform4f(getUniformLocation(uniformName), floats[0], floats[1], floats[2], floats[3])
     }
 
-    fun setMat4(variableName: String, mat4: Mat4) {
-        glUniformMatrix4fv(getUniformLocation(variableName), false, mat4 to BufferUtils.createFloatBuffer(16))
+    fun setMat4(uniformName: String, mat4: Mat4) {
+        glUniformMatrix4fv(getUniformLocation(uniformName), false, mat4 to BufferUtils.createFloatBuffer(16))
     }
 
-    fun setVec3(name: String, vec3: Vec3) {
-        glUniform3f(getUniformLocation(name), vec3.x, vec3.y, vec3.z)
+    fun setVec3(uniformName: String, vec3: Vec3) {
+        glUniform3f(getUniformLocation(uniformName), vec3.x, vec3.y, vec3.z)
     }
+
+    fun setArray(uniformName: String, array: Array<*>) {
+        for ((i, value) in array.withIndex()) {
+            val currentUniformName = "$uniformName[$i]"
+            val currentUniformLocation = getUniformLocation(currentUniformName)
+            when (value) {
+                is Array<*> -> setArray(currentUniformName, value)
+                is Int -> glUniform1i(currentUniformLocation, value)
+                is Float -> glUniform1f(currentUniformLocation, value)
+                is Mat4 -> glUniformMatrix4fv(currentUniformLocation, false, value to BufferUtils.createFloatBuffer(16))
+                is Vec3 -> glUniform3f(currentUniformLocation, value.x, value.y, value.z)
+                is Vec2 -> glUniform2f(currentUniformLocation, value.x, value.y)
+            }
+        }
+    }
+
 
     companion object {
         private var usedShader: Shader? = null

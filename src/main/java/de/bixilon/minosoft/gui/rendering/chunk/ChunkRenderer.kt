@@ -21,6 +21,8 @@ class ChunkRenderer(private val connection: Connection, private val world: World
     private lateinit var minecraftTextures: TextureArray
     lateinit var chunkShader: Shader
     private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, WorldMesh>>()
+    private var currentTick = 0 // for animation usage
+    private var lastTickIncrementTime = 0L
 
     private fun prepareChunk(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection): FloatArray {
         val data: MutableList<Float> = mutableListOf()
@@ -84,8 +86,22 @@ class ChunkRenderer(private val connection: Connection, private val world: World
         minecraftTextures.load()
 
         chunkShader = Shader("chunk_vertex.glsl", "chunk_fragment.glsl")
+        // ToDo: chunkShader.replace("%{textureSize}", minecraftTextures.textures.size)
         chunkShader.load()
         chunkShader.use()
+        chunkShader.setInt("textureCount", minecraftTextures.textures.size)
+        val animatedTextureFrameTimes: MutableList<Int> = mutableListOf()
+        val animatedTextureAnimations: MutableList<Int> = mutableListOf()
+        val textureSingleSizeY: MutableList<Float> = mutableListOf()
+
+        for (texture in minecraftTextures.textures) {
+            animatedTextureFrameTimes.add(texture.animationFrameTime)
+            animatedTextureAnimations.add(texture.animations)
+            textureSingleSizeY.add(texture.heightFactor)
+        }
+        chunkShader.setArray("animatedTextureFrameTimes", animatedTextureFrameTimes.toTypedArray())
+        chunkShader.setArray("animatedTextureAnimations", animatedTextureAnimations.toTypedArray())
+        chunkShader.setArray("textureSingleSizeY", textureSingleSizeY.toTypedArray())
     }
 
     override fun draw() {
@@ -93,6 +109,11 @@ class ChunkRenderer(private val connection: Connection, private val world: World
         minecraftTextures.use(GL_TEXTURE0)
 
         chunkShader.use()
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastTickIncrementTime >= ProtocolDefinition.TICK_TIME) {
+            chunkShader.setInt("currentTick", currentTick++)
+            lastTickIncrementTime = currentTime
+        }
 
         for ((_, map) in chunkSectionsToDraw) {
             for ((_, mesh) in map) {

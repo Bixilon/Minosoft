@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
 import org.lwjgl.opengl.GL30.glGenerateMipmap
 import java.nio.ByteBuffer
 
-class TextureArray(private val textures: List<Texture>, val maxWidth: Int, val maxHeight: Int) {
+class TextureArray(val textures: List<Texture>, val maxWidth: Int, val maxHeight: Int) {
     var textureId = 0
 
     fun load(): Int {
@@ -62,7 +62,8 @@ class TextureArray(private val textures: List<Texture>, val maxWidth: Int, val m
             // calculate width and height factor for every texture
             for (texture in textures) {
                 texture.widthFactor = texture.width.toFloat() / calculatedMaxWidth
-                texture.heightFactor = texture.height.toFloat() / calculatedMaxHeight
+                texture.animations = (texture.height / texture.width)
+                texture.heightFactor = texture.height.toFloat() / calculatedMaxHeight * (texture.width.toFloat() / texture.height)
             }
 
             return TextureArray(textures, calculatedMaxWidth, calculatedMaxHeight)

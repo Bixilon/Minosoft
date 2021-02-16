@@ -126,7 +126,7 @@ open class BlockModelElement(data: JsonObject) {
             data.add(output.z)
             data.add(textureCoordinates.x * texture.widthFactor)
             data.add(textureCoordinates.y * texture.heightFactor)
-            data.add(texture.id.toFloat()) // ToDo: Compact this
+            data.add(Float.fromBits(texture.id)) // ToDo: Compact this
         }
 
         fun createQuad(drawPositions: Array<Vec3>, texturePosition1: Vec2, texturePosition2: Vec2, texturePosition3: Vec2, texturePosition4: Vec2) {

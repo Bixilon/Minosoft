@@ -20,6 +20,9 @@ class Texture(
     var widthFactor = 1f
     var heightFactor = 1f
 
+    var animations: Int = 0
+    var animationFrameTime: Int = 0
+
     fun load(assetsManager: AssetsManager) {
         if (loaded) {
             return
@@ -42,6 +45,14 @@ class Texture(
             }
         }
         buffer.flip()
+
+        // load .mcmeta
+        try {
+            val json = assetsManager.readJsonAsset("$texturePath.mcmeta").asJsonObject
+            animationFrameTime = json["animation"].asJsonObject["frametime"].asInt
+        } catch (exception: Exception) {
+        }
+
         loaded = true
     }
 }
