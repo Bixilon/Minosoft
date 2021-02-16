@@ -96,7 +96,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
 
         for ((_, map) in chunkSectionsToDraw) {
             for ((_, mesh) in map) {
-                mesh.draw(chunkShader)
+                mesh.draw()
             }
         }
         glDisable(GL_CULL_FACE)

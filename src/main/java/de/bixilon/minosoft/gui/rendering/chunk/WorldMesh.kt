@@ -1,6 +1,5 @@
 package de.bixilon.minosoft.gui.rendering.chunk
 
-import de.bixilon.minosoft.gui.rendering.shader.Shader
 import glm_.BYTES
 import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
@@ -28,7 +27,7 @@ class WorldMesh(data: FloatArray) {
         glBindBuffer(GL_ARRAY_BUFFER, 0)
     }
 
-    fun draw(chunkShader: Shader) {
+    fun draw() {
         glBindVertexArray(vAO)
         glDrawArrays(GL_TRIANGLES, 0, trianglesCount)
     }

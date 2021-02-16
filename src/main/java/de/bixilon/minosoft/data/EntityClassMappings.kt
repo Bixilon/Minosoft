@@ -45,6 +45,7 @@ import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.data.mappings.ModIdentifier
 
 object EntityClassMappings {
+    @SuppressWarnings("deprecation")
     private val ENTITY_CLASS_MAPPINGS: HashBiMap<Class<out Entity>, ModIdentifier> = HashBiMap.create(
         mapOf(
             AreaEffectCloud::class.java to ModIdentifier("area_effect_cloud"),

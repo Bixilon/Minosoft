@@ -77,7 +77,7 @@ class PacketJoinGame : ClientboundPacket() {
             buffer.readByte() // previous game mode
         }
         if (buffer.versionId >= ProtocolVersions.V_20W22A) {
-            val worlds = buffer.readStringArray()
+            buffer.readStringArray() // world
         }
         if (buffer.versionId < ProtocolVersions.V_20W21A) {
             dimension = buffer.connection.mapping.getDimension(buffer.readInt())!!

@@ -32,6 +32,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_8_9;
 
 public class VersionTweaker {
     // some data was packed in mata data in early versions (1.8). This function converts it to the real identifier
+    @SuppressWarnings("deprecation")
     public static Class<? extends Entity> getRealEntityClass(Class<? extends Entity> fakeClass, EntityMetaData metaData, int versionId) {
         if (fakeClass == ZombiePigman.class) {
             return ZombifiedPiglin.class;
