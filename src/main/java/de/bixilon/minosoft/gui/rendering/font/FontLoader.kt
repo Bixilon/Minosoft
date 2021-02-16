@@ -11,6 +11,8 @@ import java.io.InputStream
 
 object FontLoader {
     private const val FONT_ATLAS_SIZE = 16
+    private const val UNICODE_CHARS_PER_PAGE = FONT_ATLAS_SIZE * FONT_ATLAS_SIZE
+    private const val UNICODE_SIZE = 16
     private val MISSING_UNICODE_PAGES = listOf(0x08, 0xD8, 0xD9, 0xDA, 0xDB, 0xDC, 0xDD, 0xDE, 0xDF, 0xE0, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8, 0xE9, 0xEA, 0xEB, 0xEC, 0xEE, 0xED, 0xEE, 0xEF, 0xF0, 0xF1, 0xF2, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8)
 
     private fun getCharArray(data: JsonArray): List<Char> {
@@ -30,16 +32,16 @@ object FontLoader {
         val provider = FontProvider(width)
         val atlasTexture = Texture((atlasPath.mod + "/textures/" + atlasPath.identifier), atlasOffset)
         atlasTexture.load(assetsManager)
-        val height = height ?: atlasTexture.width / 16
+        val height = height ?: atlasTexture.width / FONT_ATLAS_SIZE
         provider.atlasTextures.add(atlasTexture)
         val charsCoordinates: MutableList<MutableList<FontChar>> = mutableListOf() // ToDo: Remove this
         for ((i, char) in chars.withIndex()) {
-            if (i % 16 == 0) {
+            if (i % FONT_ATLAS_SIZE == 0) {
                 charsCoordinates.add(mutableListOf())
             }
             val fontChar = FontChar(0, atlasOffset, i / FONT_ATLAS_SIZE, i % FONT_ATLAS_SIZE, width, 0, height)
             provider.chars[char] = fontChar
-            charsCoordinates[i / 16].add(fontChar)
+            charsCoordinates[i / FONT_ATLAS_SIZE].add(fontChar)
         }
         atlasTexture.buffer.rewind()
         // calculate start and endpixel for every char
@@ -74,14 +76,14 @@ object FontLoader {
 
 
     private fun loadUnicodeFontProvider(template: ModIdentifier, sizes: InputStream, assetsManager: AssetsManager, atlasOffset: Int): FontProvider {
-        val provider = FontProvider(16)
+        val provider = FontProvider(UNICODE_SIZE)
         var i = 0
         lateinit var currentAtlasTexture: Texture
         while (sizes.available() > 0) {
             if (i % 256 == 0) {
-                currentAtlasTexture = if (MISSING_UNICODE_PAGES.contains(i / 256)) {
+                currentAtlasTexture = if (MISSING_UNICODE_PAGES.contains(i / UNICODE_CHARS_PER_PAGE)) {
                     // ToDo: Why is this texture missing in minecraft?
-                    Texture(TextureArray.DEBUG_TEXTURE.name, i / 256)
+                    Texture(TextureArray.DEBUG_TEXTURE.name, i / UNICODE_CHARS_PER_PAGE)
                 } else {
                     // new page (texture)
                     Texture((template.mod + "/textures/" + template.identifier).format("%02x".format(i / 256)), atlasOffset + (i / 256))
@@ -90,7 +92,7 @@ object FontLoader {
                 provider.atlasTextures.add(currentAtlasTexture)
             }
             val sizeByte = sizes.read()
-            val fontChar = FontChar((i / 256), atlasOffset + (i / 256), (i % 256) / FONT_ATLAS_SIZE, (i % 256) % FONT_ATLAS_SIZE, (sizeByte shr 4) and 0x0F, (sizeByte and 0x0F) + 1, 16)
+            val fontChar = FontChar((i / UNICODE_CHARS_PER_PAGE), atlasOffset + (i / UNICODE_CHARS_PER_PAGE), (i % UNICODE_CHARS_PER_PAGE) / FONT_ATLAS_SIZE, (i % UNICODE_CHARS_PER_PAGE) % FONT_ATLAS_SIZE, (sizeByte shr 4) and 0x0F, (sizeByte and 0x0F) + 1, UNICODE_SIZE)
             provider.chars[i.toChar()] = fontChar
             i++
         }
