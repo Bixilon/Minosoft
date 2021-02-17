@@ -192,7 +192,7 @@
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
-        <javafx.version>16-ea+6</javafx.version>
+        <javafx.version>16-ea+7</javafx.version>
         <kotlin.version>1.4.30</kotlin.version>
         <lwjgl.version>3.2.3</lwjgl.version>
     </properties>
