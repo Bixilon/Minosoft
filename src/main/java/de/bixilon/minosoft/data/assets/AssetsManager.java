@@ -167,11 +167,11 @@ public class AssetsManager {
     }
 
     private void downloadAsset(String url, String hash, boolean compressed) throws IOException {
-        if (verifyAssetHash(hash)) {
+        if (verifyAssetHash(hash, compressed)) {
             return;
         }
         Util.checkURL(url);
-        Log.verbose(String.format("Downloading %s -> %s", url, hash));
+        Log.debug("Downloading %s -> %s", url, hash);
         if (compressed) {
             Util.downloadFileAsGz(url, getAssetDiskPath(hash));
             return;
