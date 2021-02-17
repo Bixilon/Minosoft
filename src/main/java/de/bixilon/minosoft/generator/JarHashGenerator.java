@@ -8,6 +8,7 @@ import de.bixilon.minosoft.data.assets.Resources;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 
 import java.io.*;
+import java.util.Collections;
 
 public class JarHashGenerator {
 
@@ -17,7 +18,7 @@ public class JarHashGenerator {
             return;
         }
         try {
-            Version version = new Version(args[0], -1, -1, null, null);
+            Version version = new Version(args[0], -1, -1, Collections.emptyMap(), Collections.emptyMap());
 
             JsonObject json = JsonParser.parseReader(new InputStreamReader(new FileInputStream("src/main/resources/assets/mapping/resources.json"))).getAsJsonObject();
 
@@ -46,6 +47,7 @@ public class JarHashGenerator {
             writer.close();
             System.exit(0);
         } catch (Exception e) {
+            e.printStackTrace();
             System.exit(1);
         }
     }

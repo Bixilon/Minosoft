@@ -112,7 +112,6 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             } else if (keyAction == KeyBinding.KeyAction.RELEASE) {
                 keysDown.remove(keyCode)
             }
-            Log.verbose("Keycode $keyCode: $keyAction")
 
             for ((identifier, keyCallbackPair) in keyBindingCallbacks) {
                 run {
@@ -157,7 +156,6 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
                         return@run
                     }
 
-                    Log.debug("Keycode ($identifier) -> $keyCode: $keyAction")
                     if (keyAction == KeyBinding.KeyAction.PRESS) {
                         keyBindingDown.add(keyBinding)
                     } else if (keyAction == KeyBinding.KeyAction.RELEASE) {
