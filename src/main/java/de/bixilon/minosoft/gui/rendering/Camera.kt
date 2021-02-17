@@ -1,7 +1,10 @@
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Location
+import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
@@ -34,6 +37,14 @@ class Camera(private val connection: Connection, private var fov: Float, private
     private var screenWidth = 0
     private val shaders: MutableList<Shader> = mutableListOf()
 
+    private var keyForwardDown = false
+    private var keyLeftDown = false
+    private var keyRightDown = false
+    private var keyBackDown = false
+    private var keyFlyUp = false
+    private var keyFlyDown = false
+    private var keySprintDown = false
+
     fun mouseCallback(xPos: Double, yPos: Double) {
         var xOffset = xPos - this.lastMouseX
         var yOffset = this.lastMouseY - yPos // reversed since y-coordinates go from bottom to top
@@ -59,31 +70,55 @@ class Camera(private val connection: Connection, private var fov: Float, private
         setRotation(yaw, pitch)
     }
 
+    fun init(renderWindow: RenderWindow) {
+        renderWindow.registerKeyCallback(ModIdentifier("minosoft:move_forward")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
+            keyForwardDown = keyAction == KeyBinding.KeyAction.PRESS
+        }
+        renderWindow.registerKeyCallback(ModIdentifier("minosoft:move_left")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
+            keyLeftDown = keyAction == KeyBinding.KeyAction.PRESS
+        }
+        renderWindow.registerKeyCallback(ModIdentifier("minosoft:move_back")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
+            keyBackDown = keyAction == KeyBinding.KeyAction.PRESS
+        }
+        renderWindow.registerKeyCallback(ModIdentifier("minosoft:move_right")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
+            keyRightDown = keyAction == KeyBinding.KeyAction.PRESS
+        }
+        renderWindow.registerKeyCallback(ModIdentifier("minosoft:fly_up")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
+            keyFlyUp = keyAction == KeyBinding.KeyAction.PRESS
+        }
+        renderWindow.registerKeyCallback(ModIdentifier("minosoft:fly_down")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
+            keyFlyDown = keyAction == KeyBinding.KeyAction.PRESS
+        }
+        renderWindow.registerKeyCallback(ModIdentifier("minosoft:sprint")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
+            keySprintDown = keyAction == KeyBinding.KeyAction.PRESS
+        }
+    }
+
     fun handleInput(deltaTime: Double) {
         var cameraSpeed = movementSpeed * deltaTime
 
-        if (glfwGetKey(windowId, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+        if (keySprintDown) {
             cameraSpeed *= 5
         }
         val lastPosition = cameraPosition
         val currentY = cameraPosition.y
-        if (glfwGetKey(windowId, GLFW_KEY_W) == GLFW_PRESS) {
+        if (keyForwardDown) {
             cameraPosition = cameraPosition + cameraFront * cameraSpeed
         }
-        if (glfwGetKey(windowId, GLFW_KEY_S) == GLFW_PRESS) {
+        if (keyBackDown) {
             cameraPosition = cameraPosition - cameraFront * cameraSpeed
         }
-        if (glfwGetKey(windowId, GLFW_KEY_A) == GLFW_PRESS) {
+        if (keyLeftDown) {
             cameraPosition = cameraPosition - cameraRight * cameraSpeed
         }
-        if (glfwGetKey(windowId, GLFW_KEY_D) == GLFW_PRESS) {
+        if (keyRightDown) {
             cameraPosition = cameraPosition + cameraRight * cameraSpeed
         }
         this.cameraPosition.y = currentY // stay on xz line when moving (aka. no clip): ToDo: make movement not slower when you look up
-        if (glfwGetKey(windowId, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+        if (keyFlyDown) {
             cameraPosition = cameraPosition - CAMERA_UP_VEC3 * cameraSpeed
         }
-        if (glfwGetKey(windowId, GLFW_KEY_SPACE) == GLFW_PRESS) {
+        if (keyFlyUp) {
             cameraPosition = cameraPosition + CAMERA_UP_VEC3 * cameraSpeed
         }
         if (lastPosition != cameraPosition) {

@@ -23,6 +23,7 @@ import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
+import de.bixilon.minosoft.util.GitInfo;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
 
@@ -30,6 +31,7 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
@@ -247,7 +249,13 @@ public class AssetsManager {
     private void downloadAsset(AssetsSource source, String hash) throws IOException {
         switch (source) {
             case MINECRAFT -> downloadAsset(String.format(ProtocolDefinition.MINECRAFT_URL_RESOURCES, hash.substring(0, 2), hash), hash);
-            case MINOSOFT_GIT -> downloadAsset(String.format(Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.RESOURCES_URL), hash.substring(0, 2), hash), hash, false);
+            case MINOSOFT_GIT -> downloadAsset(Util.formatString(
+                    Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.RESOURCES_URL),
+                    Map.of(
+                            "branch", GitInfo.INSTANCE.getGIT_BRANCH(),
+                            "hashPrefix", hash.substring(0, 2),
+                            "fullHash", hash)
+            ), hash, false);
         }
     }
 

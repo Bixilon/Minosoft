@@ -1,5 +1,10 @@
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.RenderStats
@@ -20,10 +25,12 @@ import org.lwjgl.system.MemoryUtil
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class RenderWindow(private val connection: Connection, val rendering: Rendering) {
+    private val keyBindingCallbacks: MutableMap<ModIdentifier, Pair<KeyBinding, MutableSet<((keyCode: KeyCodes, keyEvent: KeyBinding.KeyAction) -> Unit)>>> = mutableMapOf()
+    private val keysDown: MutableSet<KeyCodes> = mutableSetOf()
+    private val keyBindingDown: MutableSet<KeyBinding> = mutableSetOf()
     val renderStats = RenderStats()
     var screenWidth = 900
     var screenHeight = 500
-    private var polygonEnabled = false
     private var windowId: Long = 0
     private var deltaTime = 0.0 // time between current frame and last frame
 
@@ -32,6 +39,9 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
     private val latch = CountUpAndDownLatch(1)
 
     private var renderingStatus = RenderingStates.RUNNING
+
+    private var polygonEnabled = false
+    private var mouseCatch = !StaticConfiguration.DEBUG_MODE
 
     // all renderers
     val chunkRenderer: ChunkRenderer = ChunkRenderer(connection, connection.player.world, this)
@@ -86,25 +96,84 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             throw RuntimeException("Failed to create the GLFW window")
         }
         camera = Camera(connection, 60f, windowId)
+        camera.init(this)
+
 
         glfwSetKeyCallback(this.windowId) { _: Long, key: Int, _: Int, action: Int, _: Int ->
-            run {
-                if (action != GLFW_RELEASE) {
-                    return@run
-                }
-                when (key) {
-                    GLFW_KEY_ESCAPE -> {
-                        glfwSetWindowShouldClose(this.windowId, true)
+            val keyCode = KeyCodes.KEY_CODE_GLFW_ID_MAP[key] ?: KeyCodes.KEY_UNKNOWN
+            val keyAction = when (action) {
+                GLFW_PRESS -> KeyBinding.KeyAction.PRESS
+                GLFW_RELEASE -> KeyBinding.KeyAction.RELEASE
+                // ToDo: Double, Hold
+                else -> return@glfwSetKeyCallback
+            }
+            if (keyAction == KeyBinding.KeyAction.PRESS) {
+                keysDown.add(keyCode)
+            } else if (keyAction == KeyBinding.KeyAction.RELEASE) {
+                keysDown.remove(keyCode)
+            }
+            Log.verbose("Keycode $keyCode: $keyAction")
+
+            for ((identifier, keyCallbackPair) in keyBindingCallbacks) {
+                run {
+                    val keyBinding = keyCallbackPair.first
+                    val keyCallbacks = keyCallbackPair.second
+
+                    var anyCheckRun = false
+                    keyBinding.action[KeyBinding.KeyAction.MODIFIER]?.let {
+                        val previousKeysDown = if (keyAction == KeyBinding.KeyAction.RELEASE) {
+                            val previousKeysDown = keysDown.toMutableList()
+                            previousKeysDown.add(keyCode)
+                            previousKeysDown
+                        } else {
+                            keysDown
+                        }
+                        if (!previousKeysDown.containsAll(it)) {
+                            return@run
+                        }
+                        anyCheckRun = true
                     }
-                    GLFW_KEY_P -> {
-                        switchPolygonMode()
+                    keyBinding.action[KeyBinding.KeyAction.CHANGE]?.let {
+                        if (!it.contains(keyCode)) {
+                            return@run
+                        }
+                        anyCheckRun = true
+                    }
+
+                    // release or press
+                    if (keyBinding.action[KeyBinding.KeyAction.CHANGE] == null) {
+                        keyBinding.action[keyAction].let {
+                            if (it == null) {
+                                return@run
+                            }
+                            if (!it.contains(keyCode)) {
+                                return@run
+                            }
+                            anyCheckRun = true
+                        }
+                    }
+
+                    if (!anyCheckRun) {
+                        return@run
+                    }
+
+                    Log.debug("Keycode ($identifier) -> $keyCode: $keyAction")
+                    if (keyAction == KeyBinding.KeyAction.PRESS) {
+                        keyBindingDown.add(keyBinding)
+                    } else if (keyAction == KeyBinding.KeyAction.RELEASE) {
+                        keyBindingDown.remove(keyBinding)
+                    }
+                    for (keyCallback in keyCallbacks) {
+                        keyCallback.invoke(keyCode, keyAction)
                     }
                 }
             }
-
         }
 
-        glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
+
+        if (mouseCatch) {
+            glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
+        }
         glfwSetCursorPosCallback(windowId) { _: Long, xPos: Double, yPos: Double -> camera.mouseCallback(xPos, yPos) }
         MemoryStack.stackPush().let { stack ->
             val pWidth = stack.mallocInt(1)
@@ -169,6 +238,25 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             }
         })
 
+        registerKeyCallback(ModIdentifier("minosoft:debug_polygen")) { _: KeyCodes, _: KeyBinding.KeyAction ->
+            polygonEnabled = !polygonEnabled
+            glPolygonMode(GL_FRONT_AND_BACK, if (polygonEnabled) {
+                GL_LINE
+            } else {
+                GL_FILL
+            })
+        }
+        registerKeyCallback(ModIdentifier("minosoft:debug_mouse_catch")) { _: KeyCodes, _: KeyBinding.KeyAction ->
+            mouseCatch = !mouseCatch
+            if (mouseCatch) {
+                glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
+            } else {
+                glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_NORMAL)
+            }
+        }
+        registerKeyCallback(ModIdentifier("minosoft:quit")) { _: KeyCodes, _: KeyBinding.KeyAction ->
+            glfwSetWindowShouldClose(windowId, true)
+        }
 
         hudRenderer.screenChangeResizeCallback(screenWidth, screenHeight)
 
@@ -242,15 +330,6 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         connection.disconnect()
     }
 
-    private fun switchPolygonMode() {
-        glPolygonMode(GL_FRONT_AND_BACK, if (polygonEnabled) {
-            GL_LINE
-        } else {
-            GL_FILL
-        })
-        polygonEnabled = !polygonEnabled
-    }
-
     private fun setRenderStatus(renderingStatus: RenderingStates) {
         if (renderingStatus == this.renderingStatus) {
             return
@@ -260,5 +339,15 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             chunkRenderer.refreshChunkCache()
         }
         this.renderingStatus = renderingStatus
+    }
+
+    fun registerKeyCallback(identifier: ModIdentifier, callback: ((keyCode: KeyCodes, keyEvent: KeyBinding.KeyAction) -> Unit)) {
+        var identifierCallbacks = keyBindingCallbacks[identifier]?.second
+        if (identifierCallbacks == null) {
+            identifierCallbacks = mutableSetOf()
+            val keyBinding = Minosoft.getConfig().keyBindings[identifier] ?: return
+            keyBindingCallbacks[identifier] = Pair(keyBinding, identifierCallbacks)
+        }
+        identifierCallbacks.add(callback)
     }
 }

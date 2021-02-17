@@ -43,12 +43,10 @@ public final class Util {
     public static final Pattern UUID_FIX_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
     public static final char[] RANDOM_STRING_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static final Gson GSON = new Gson();
     private static final Random THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
-
     private static final Field JSON_READER_POS_FIELD;
     private static final Field JSON_READER_LINE_START_FIELD;
-
-    public static final Gson GSON = new Gson();
 
     static {
         new JsonReader(new StringReader(""));
@@ -371,5 +369,13 @@ public final class Util {
             headerList.add(entry.getValue());
         }
         return headerList.toArray(new String[]{});
+    }
+
+    public static String formatString(String string, Map<String, Object> format) {
+        String output = string;
+        for (var entry : format.entrySet()) {
+            output = output.replace("${" + entry.getKey() + "}", entry.getValue().toString());
+        }
+        return output;
     }
 }

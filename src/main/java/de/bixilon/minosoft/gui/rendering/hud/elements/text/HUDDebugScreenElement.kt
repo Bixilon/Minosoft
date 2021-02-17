@@ -1,6 +1,10 @@
 package de.bixilon.minosoft.gui.rendering.hud.elements.text
 
+import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.Location
+import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.ChunkLocation
 import de.bixilon.minosoft.data.world.InChunkSectionLocation
@@ -31,7 +35,12 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
     private var sectionHeight: Int = 0
     private lateinit var inChunkSectionLocation: InChunkSectionLocation
 
+    private var debugScreenEnabled = StaticConfiguration.DEBUG_MODE
+
     override fun prepare(chatComponents: Map<FontBindings, MutableList<Any>>) {
+        if (!debugScreenEnabled) {
+            return
+        }
         calculateDynamicValues()
 
         chatComponents[FontBindings.LEFT_UP]!!.addAll(listOf(
@@ -67,6 +76,10 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
     override fun init() {
         gpuText = glGetString(GL_RENDERER) ?: "unknown"
         gpuVersionText = glGetString(GL_VERSION) ?: "unknown"
+
+        hudTextElement.renderWindow.registerKeyCallback(ModIdentifier("minosoft:debug_screen")) { _: KeyCodes, _: KeyBinding.KeyAction ->
+            debugScreenEnabled = !debugScreenEnabled
+        }
     }
 
     private fun nanoToMillis1d(nanos: Long): String {

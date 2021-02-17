@@ -15,10 +15,12 @@ package de.bixilon.minosoft.config;
 
 import com.google.common.collect.HashBiMap;
 import com.google.gson.*;
+import de.bixilon.minosoft.config.key.KeyBinding;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.accounts.MicrosoftAccount;
 import de.bixilon.minosoft.data.accounts.MojangAccount;
 import de.bixilon.minosoft.data.accounts.OfflineAccount;
+import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.gui.main.Server;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
@@ -35,6 +37,7 @@ public class Configuration {
     private final HashMap<ConfigurationPaths.ConfigurationPath, Object> config = new HashMap<>();
     private final HashBiMap<String, Account> accountList = HashBiMap.create();
     private final HashBiMap<Integer, Server> serverList = HashBiMap.create();
+    private final HashBiMap<ModIdentifier, KeyBinding> keyBindings = HashBiMap.create();
     private final Object lock = new Object();
 
     public Configuration() throws IOException, ConfigMigrationException {
@@ -84,6 +87,12 @@ public class Configuration {
             this.accountList.put(account.getId(), account);
         }
 
+        // key bindings
+        for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject("game").getAsJsonObject("key_bindings").entrySet()) {
+            final var identifier = ModIdentifier.getIdentifier(entry.getKey());
+            this.keyBindings.put(identifier, KeyBinding.Companion.deserialize(identifier, entry.getValue().getAsJsonObject()));
+        }
+
         final File finalFile = file;
         new Thread(() -> {
             while (true) {
@@ -117,6 +126,12 @@ public class Configuration {
                     JsonObject accountsEntriesJson = jsonObject.getAsJsonObject("accounts").getAsJsonObject("entries");
                     for (Map.Entry<String, Account> entry : this.accountList.entrySet()) {
                         accountsEntriesJson.add(entry.getKey(), entry.getValue().serialize());
+                    }
+
+                    // key combinations
+                    JsonObject keyBindingsJson = jsonObject.getAsJsonObject("game").getAsJsonObject("key_bindings");
+                    for (Map.Entry<ModIdentifier, KeyBinding> entry : this.keyBindings.entrySet()) {
+                        keyBindingsJson.add(entry.getKey().getFullIdentifier(), entry.getValue().serialize());
                     }
 
                     // rest of data
@@ -209,6 +224,10 @@ public class Configuration {
         return this.accountList;
     }
 
+    public HashBiMap<ModIdentifier, KeyBinding> getKeyBindings() {
+        return this.keyBindings;
+    }
+
     private void migrateConfiguration() throws ConfigMigrationException {
         int configVersion = getInt(ConfigurationPaths.IntegerPaths.GENERAL_CONFIG_VERSION);
         Log.info(String.format("Migrating config from version %d to  %d", configVersion, LATEST_CONFIG_VERSION));
@@ -231,9 +250,9 @@ public class Configuration {
     private Object getData(JsonObject json, ConfigurationPaths.ConfigurationPath path) {
         if (path instanceof ConfigurationPaths.BooleanPaths booleanPath) {
             return switch (booleanPath) {
-                case NETWORK_FAKE_CLIENT_BRAND -> json.getAsJsonObject("network").get("fake-network-brand").getAsBoolean();
-                case NETWORK_SHOW_LAN_SERVERS -> json.getAsJsonObject("network").get("show-lan-servers").getAsBoolean();
-                case DEBUG_VERIFY_ASSETS -> json.getAsJsonObject("debug").get("verify-assets").getAsBoolean();
+                case NETWORK_FAKE_CLIENT_BRAND -> json.getAsJsonObject("network").get("fake_network_brand").getAsBoolean();
+                case NETWORK_SHOW_LAN_SERVERS -> json.getAsJsonObject("network").get("show_lan_servers").getAsBoolean();
+                case DEBUG_VERIFY_ASSETS -> json.getAsJsonObject("debug").get("verify_assets").getAsBoolean();
                 case CHAT_COLORED -> json.getAsJsonObject("chat").get("colored").getAsBoolean();
                 case CHAT_OBFUSCATED -> json.getAsJsonObject("chat").get("obfuscated").getAsBoolean();
             };
@@ -241,16 +260,16 @@ public class Configuration {
         if (path instanceof ConfigurationPaths.IntegerPaths integerPath) {
             return switch (integerPath) {
                 case GENERAL_CONFIG_VERSION -> json.getAsJsonObject("general").get("version").getAsInt();
-                case GAME_RENDER_DISTANCE -> json.getAsJsonObject("game").get("render-distance").getAsInt();
+                case GAME_RENDER_DISTANCE -> json.getAsJsonObject("game").get("render_distance").getAsInt();
             };
         }
         if (path instanceof ConfigurationPaths.StringPaths stringPath) {
             return switch (stringPath) {
                 case ACCOUNT_SELECTED -> json.getAsJsonObject("accounts").get("selected").getAsString();
-                case GENERAL_LOG_LEVEL -> json.getAsJsonObject("general").get("log-level").getAsString();
+                case GENERAL_LOG_LEVEL -> json.getAsJsonObject("general").get("log_level").getAsString();
                 case GENERAL_LANGUAGE -> json.getAsJsonObject("general").get("language").getAsString();
                 case RESOURCES_URL -> json.getAsJsonObject("download").getAsJsonObject("urls").get("resources").getAsString();
-                case CLIENT_TOKEN -> json.getAsJsonObject("accounts").get("client-token").getAsString();
+                case CLIENT_TOKEN -> json.getAsJsonObject("accounts").get("client_token").getAsString();
             };
         }
         throw new IllegalArgumentException();
@@ -259,24 +278,24 @@ public class Configuration {
     private void saveData(JsonObject input, ConfigurationPaths.ConfigurationPath path, Object data) {
         if (data instanceof Boolean bool) {
             switch ((ConfigurationPaths.BooleanPaths) path) {
-                case NETWORK_FAKE_CLIENT_BRAND -> input.getAsJsonObject("network").addProperty("fake-network-brand", bool);
-                case NETWORK_SHOW_LAN_SERVERS -> input.getAsJsonObject("network").addProperty("show-lan-servers", bool);
-                case DEBUG_VERIFY_ASSETS -> input.getAsJsonObject("debug").addProperty("verify-assets", bool);
+                case NETWORK_FAKE_CLIENT_BRAND -> input.getAsJsonObject("network").addProperty("fake_network_brand", bool);
+                case NETWORK_SHOW_LAN_SERVERS -> input.getAsJsonObject("network").addProperty("show_lan_servers", bool);
+                case DEBUG_VERIFY_ASSETS -> input.getAsJsonObject("debug").addProperty("verify_assets", bool);
                 case CHAT_COLORED -> input.getAsJsonObject("chat").addProperty("colored", bool);
                 case CHAT_OBFUSCATED -> input.getAsJsonObject("chat").addProperty("obfuscated", bool);
             }
         } else if (data instanceof Integer integer) {
             switch ((ConfigurationPaths.IntegerPaths) path) {
                 case GENERAL_CONFIG_VERSION -> input.getAsJsonObject("general").addProperty("version", integer);
-                case GAME_RENDER_DISTANCE -> input.getAsJsonObject("game").addProperty("render-distance", integer);
+                case GAME_RENDER_DISTANCE -> input.getAsJsonObject("game").addProperty("render_distance", integer);
             }
         } else if (data instanceof String string) {
             switch ((ConfigurationPaths.StringPaths) path) {
                 case ACCOUNT_SELECTED -> input.getAsJsonObject("accounts").addProperty("selected", string);
-                case GENERAL_LOG_LEVEL -> input.getAsJsonObject("general").addProperty("log-level", string);
+                case GENERAL_LOG_LEVEL -> input.getAsJsonObject("general").addProperty("log_level", string);
                 case GENERAL_LANGUAGE -> input.getAsJsonObject("general").addProperty("language", string);
                 case RESOURCES_URL -> input.getAsJsonObject("download").getAsJsonObject("urls").addProperty("resources", string);
-                case CLIENT_TOKEN -> input.getAsJsonObject("accounts").addProperty("client-token", string);
+                case CLIENT_TOKEN -> input.getAsJsonObject("accounts").addProperty("client_token", string);
             }
         } else {
             throw new IllegalArgumentException();

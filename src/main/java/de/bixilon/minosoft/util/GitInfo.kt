@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat
 
 
 object GitInfo {
-    var GIT_BRANCH: String = ""
+    var GIT_BRANCH: String = "master"
         private set
     var GIT_BUILD_HOST_BRANCH: String = ""
         private set
