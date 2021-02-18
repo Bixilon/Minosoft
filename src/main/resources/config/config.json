@@ -77,6 +77,16 @@
           ]
         ]
       },
+      "minosoft:zoom": {
+        "change": [
+          "C"
+        ],
+        "when": [
+          [
+            "minosoft:in_game"
+          ]
+        ]
+      },
       "minosoft:debug_screen": {
         "release": [
           "F3"

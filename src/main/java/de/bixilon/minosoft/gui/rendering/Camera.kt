@@ -12,7 +12,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
-import org.lwjgl.glfw.GLFW.*
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -44,6 +43,7 @@ class Camera(private val connection: Connection, private var fov: Float, private
     private var keyFlyUp = false
     private var keyFlyDown = false
     private var keySprintDown = false
+    private var keyZoomDown = false
 
     fun mouseCallback(xPos: Double, yPos: Double) {
         var xOffset = xPos - this.lastMouseX
@@ -92,6 +92,9 @@ class Camera(private val connection: Connection, private var fov: Float, private
         renderWindow.registerKeyCallback(ModIdentifier("minosoft:sprint")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
             keySprintDown = keyAction == KeyBinding.KeyAction.PRESS
         }
+        renderWindow.registerKeyCallback(ModIdentifier("minosoft:zoom")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
+            keyZoomDown = keyAction == KeyBinding.KeyAction.PRESS
+        }
     }
 
     fun handleInput(deltaTime: Double) {
@@ -127,7 +130,7 @@ class Camera(private val connection: Connection, private var fov: Float, private
         }
 
         val lastZoom = zoom
-        zoom = if (glfwGetKey(windowId, GLFW_KEY_C) == GLFW_PRESS) {
+        zoom = if (keyZoomDown) {
             2f
         } else {
             0f
@@ -155,7 +158,7 @@ class Camera(private val connection: Connection, private var fov: Float, private
     }
 
     private fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int): Mat4 {
-        return glm.perspective(glm.radians(fov / (zoom + 1.0f)), screenWidth.toFloat() / screenHeight.toFloat(), 0.1f, 1000f)
+        return glm.perspective(glm.radians(fov / (zoom + 1.0f)), screenWidth.toFloat() / screenHeight.toFloat(), 0.2f, 1000f)
     }
 
     private fun recalculateViewMatrix() {

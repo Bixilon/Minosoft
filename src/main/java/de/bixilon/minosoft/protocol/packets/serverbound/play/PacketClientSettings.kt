@@ -21,7 +21,8 @@ import de.bixilon.minosoft.protocol.protocol.Packets
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketClientSettings(val locale: String = "en_US", val renderDistance: Int = 10, val mainHand: Hands = Hands.MAIN_HAND, val disableTextFiltering: Boolean = true) : ServerboundPacket {
+class PacketClientSettings(private val locale: String = "en_US", private val renderDistance: Int = 10, private val mainHand: Hands = Hands.MAIN_HAND, private val disableTextFiltering: Boolean = true) : ServerboundPacket {
+
     override fun write(connection: Connection): OutPacketBuffer {
         val buffer = OutPacketBuffer(connection, Packets.Serverbound.PLAY_CLIENT_SETTINGS)
         buffer.writeString(locale) // locale
