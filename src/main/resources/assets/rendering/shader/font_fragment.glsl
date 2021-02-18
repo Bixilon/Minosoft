@@ -18,11 +18,11 @@ out vec4 outColor;
 in vec3 passTextureCoordinates;
 in vec4 passCharColor;
 
-uniform sampler2DArray texureArray;
+uniform sampler2DArray fontTextureArray;
 
 
 void main() {
-    vec4 textureColor = texture(texureArray, passTextureCoordinates);
+    vec4 textureColor = texture(fontTextureArray, passTextureCoordinates);
     if (passCharColor.a == 1.0f && textureColor.a == 0) {
         discard;
     }

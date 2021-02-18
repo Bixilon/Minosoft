@@ -35,6 +35,12 @@ class HUDRenderer(private val connection: Connection, renderWindow: RenderWindow
         }
     }
 
+    override fun postInit() {
+        for (element in hudElements.values) {
+            element.postInit()
+        }
+    }
+
     override fun screenChangeResizeCallback(width: Int, height: Int) {
         for (element in hudElements.values) {
             element.screenChangeResizeCallback(width, height)

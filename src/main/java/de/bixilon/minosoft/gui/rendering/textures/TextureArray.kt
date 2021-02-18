@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.minosoft.data.assets.AssetsManager
-import org.lwjgl.opengl.GL11.*
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import org.lwjgl.opengl.GL12.glTexImage3D
 import org.lwjgl.opengl.GL12.glTexSubImage3D
-import org.lwjgl.opengl.GL13.glActiveTexture
+import org.lwjgl.opengl.GL13.*
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
 import org.lwjgl.opengl.GL30.glGenerateMipmap
 import java.nio.ByteBuffer
@@ -48,6 +48,12 @@ class TextureArray(val textures: List<Texture>, val maxWidth: Int, val maxHeight
     fun use(textureMode: Int) {
         glActiveTexture(textureMode)
         glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
+    }
+
+    fun use(shader: Shader, arrayName: String) {
+        glActiveTexture(GL_TEXTURE0 + textureId)
+        glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
+        shader.use().setTexture(arrayName, this)
     }
 
     companion object {

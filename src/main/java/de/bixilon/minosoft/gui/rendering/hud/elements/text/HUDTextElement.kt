@@ -28,7 +28,6 @@ import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec4.Vec4
-import org.lwjgl.opengl.GL13.GL_TEXTURE0
 
 class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, val renderWindow: RenderWindow) : HUDElement {
     private val fontBindingPerspectiveMatrices = mutableListOf(Mat4(), Mat4(), Mat4(), Mat4()) // according to FontBindings::ordinal
@@ -125,23 +124,32 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
         hudMeshHUD = HUDFontMesh(meshData.toFloatArray())
     }
 
+
     override fun init() {
         font.load(connection.version.assetsManager)
-        fontShader = Shader("font_vertex.glsl", "font_fragment.glsl")
-        fontShader.load()
-        hudMeshHUD = HUDFontMesh(floatArrayOf())
-
 
         fontAtlasTexture = font.createAtlasTexture()
         fontAtlasTexture.load()
+
+        hudMeshHUD = HUDFontMesh(floatArrayOf())
+
+        fontShader = Shader("font_vertex.glsl", "font_fragment.glsl")
+        fontShader.load()
+
+
+        // fontAtlasTexture.use(fontShader, "textureArray")
+
 
         for (hudTextElement in hudTextElements.values) {
             hudTextElement.init()
         }
     }
 
+    override fun postInit() {
+        fontAtlasTexture.use(fontShader, "fontTextureArray")
+    }
+
     override fun draw() {
-        fontAtlasTexture.use(GL_TEXTURE0)
         fontShader.use()
 
         for (hudTextElement in hudTextElements.values) {

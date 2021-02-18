@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -31,6 +32,12 @@ public class OutByteBuffer {
     private final ArrayList<Byte> bytes;
     private final Connection connection;
     private final int versionId;
+
+    public OutByteBuffer() {
+        this.bytes = new ArrayList<>();
+        this.connection = null;
+        this.versionId = -1;
+    }
 
     public OutByteBuffer(Connection connection) {
         this.bytes = new ArrayList<>();
@@ -247,5 +254,11 @@ public class OutByteBuffer {
 
     public Connection getConnection() {
         return this.connection;
+    }
+
+    public void writeTo(ByteBuffer buffer) {
+        for (byte b : this.bytes) {
+            buffer.put(b);
+        }
     }
 }

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.hud.elements
 interface HUDElement {
 
     fun init()
+    fun postInit()
     fun prepare()
     fun update()
     fun draw()

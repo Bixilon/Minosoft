@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.shader
 
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
+import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
@@ -65,8 +66,8 @@ class Shader(private val vertexPath: String, private val fragmentPath: String) {
         return this
     }
 
-    private fun getUniformLocation(variableName: String): Int {
-        return glGetUniformLocation(programId, variableName)
+    fun getUniformLocation(uniformName: String): Int {
+        return glGetUniformLocation(programId, uniformName)
     }
 
     fun setFloat(uniformName: String, value: Float) {
@@ -102,6 +103,10 @@ class Shader(private val vertexPath: String, private val fragmentPath: String) {
                 is Vec2 -> glUniform2f(currentUniformLocation, value.x, value.y)
             }
         }
+    }
+
+    fun setTexture(uniformName: String, textureArray: TextureArray) {
+        glUniform1i(getUniformLocation(uniformName), textureArray.textureId)
     }
 
 

@@ -19,20 +19,23 @@ import de.bixilon.minosoft.data.world.*
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.shader.ShaderTextureBuffer
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3
 import org.lwjgl.opengl.GL11.GL_CULL_FACE
 import org.lwjgl.opengl.GL11.glEnable
-import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL13.glDisable
+import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentHashMap
 
 class ChunkRenderer(private val connection: Connection, private val world: World, val renderWindow: RenderWindow) : Renderer {
     private lateinit var minecraftTextures: TextureArray
     lateinit var chunkShader: Shader
+    lateinit var chunkShaderDataBuffer: ShaderTextureBuffer
     private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, WorldMesh>>()
     private var currentTick = 0 // for animation usage
     private var lastTickIncrementTime = 0L
@@ -98,28 +101,31 @@ class ChunkRenderer(private val connection: Connection, private val world: World
         minecraftTextures = TextureArray.createTextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockIdMap.values))
         minecraftTextures.load()
 
+        chunkShaderDataBuffer = ShaderTextureBuffer()
+
+        for (texture in minecraftTextures.textures) {
+            val buffer = ByteBuffer.allocate(12)
+            val byteBuffer = OutByteBuffer()
+            byteBuffer.writeInt(texture.animationFrameTime)
+            byteBuffer.writeInt(texture.animations)
+            byteBuffer.writeFloat(texture.heightFactor)
+            byteBuffer.writeTo(buffer)
+            chunkShaderDataBuffer.data[texture.id] = buffer
+        }
+        // chunkShaderDataBuffer.load()
+
         chunkShader = Shader("chunk_vertex.glsl", "chunk_fragment.glsl")
         // ToDo: chunkShader.replace("%{textureSize}", minecraftTextures.textures.size)
         chunkShader.load()
-        chunkShader.use()
-        chunkShader.setInt("textureCount", minecraftTextures.textures.size)
-        val animatedTextureFrameTimes: MutableList<Int> = mutableListOf()
-        val animatedTextureAnimations: MutableList<Int> = mutableListOf()
-        val textureSingleSizeY: MutableList<Float> = mutableListOf()
 
-        for (texture in minecraftTextures.textures) {
-            animatedTextureFrameTimes.add(texture.animationFrameTime)
-            animatedTextureAnimations.add(texture.animations)
-            textureSingleSizeY.add(texture.heightFactor)
-        }
-        chunkShader.setArray("animatedTextureFrameTimes", animatedTextureFrameTimes.toTypedArray())
-        chunkShader.setArray("animatedTextureAnimations", animatedTextureAnimations.toTypedArray())
-        chunkShader.setArray("textureSingleSizeY", textureSingleSizeY.toTypedArray())
+    }
+
+    override fun postInit() {
+        minecraftTextures.use(chunkShader, "blockTextureArray")
     }
 
     override fun draw() {
         glEnable(GL_CULL_FACE)
-        minecraftTextures.use(GL_TEXTURE0)
 
         chunkShader.use()
         val currentTime = System.currentTimeMillis()
