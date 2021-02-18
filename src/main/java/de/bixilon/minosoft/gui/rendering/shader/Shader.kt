@@ -66,7 +66,7 @@ class Shader(private val vertexPath: String, private val fragmentPath: String) {
         return this
     }
 
-    fun getUniformLocation(uniformName: String): Int {
+    private fun getUniformLocation(uniformName: String): Int {
         return glGetUniformLocation(programId, uniformName)
     }
 
@@ -106,7 +106,7 @@ class Shader(private val vertexPath: String, private val fragmentPath: String) {
     }
 
     fun setTexture(uniformName: String, textureArray: TextureArray) {
-        glUniform1i(getUniformLocation(uniformName), textureArray.textureId)
+        glUniform1i(getUniformLocation(uniformName), textureArray.textureId - 1)
     }
 
 

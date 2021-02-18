@@ -140,6 +140,11 @@ open class BlockModelElement(data: JsonObject) {
             data.add(textureCoordinates.x * texture.widthFactor)
             data.add(textureCoordinates.y * texture.heightFactor)
             data.add(Float.fromBits(texture.id)) // ToDo: Compact this
+
+            // ToDo: Send this only once per texture
+            data.add(texture.animationFrameTime.toFloat())
+            data.add(texture.animations.toFloat())
+            data.add(texture.heightFactor)
         }
 
         fun createQuad(drawPositions: Array<Vec3>, texturePositions: IntArray) {

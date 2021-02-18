@@ -51,7 +51,7 @@ class TextureArray(val textures: List<Texture>, val maxWidth: Int, val maxHeight
     }
 
     fun use(shader: Shader, arrayName: String) {
-        glActiveTexture(GL_TEXTURE0 + textureId)
+        glActiveTexture(GL_TEXTURE0 + textureId - 1)
         glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
         shader.use().setTexture(arrayName, this)
     }

@@ -13,29 +13,26 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.world.*
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.shader.ShaderTextureBuffer
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3
 import org.lwjgl.opengl.GL11.GL_CULL_FACE
 import org.lwjgl.opengl.GL11.glEnable
 import org.lwjgl.opengl.GL13.glDisable
-import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentHashMap
 
 class ChunkRenderer(private val connection: Connection, private val world: World, val renderWindow: RenderWindow) : Renderer {
     private lateinit var minecraftTextures: TextureArray
     lateinit var chunkShader: Shader
-    lateinit var chunkShaderDataBuffer: ShaderTextureBuffer
     private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, WorldMesh>>()
     private var currentTick = 0 // for animation usage
     private var lastTickIncrementTime = 0L
@@ -101,18 +98,6 @@ class ChunkRenderer(private val connection: Connection, private val world: World
         minecraftTextures = TextureArray.createTextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockIdMap.values))
         minecraftTextures.load()
 
-        chunkShaderDataBuffer = ShaderTextureBuffer()
-
-        for (texture in minecraftTextures.textures) {
-            val buffer = ByteBuffer.allocate(12)
-            val byteBuffer = OutByteBuffer()
-            byteBuffer.writeInt(texture.animationFrameTime)
-            byteBuffer.writeInt(texture.animations)
-            byteBuffer.writeFloat(texture.heightFactor)
-            byteBuffer.writeTo(buffer)
-            chunkShaderDataBuffer.data[texture.id] = buffer
-        }
-        // chunkShaderDataBuffer.load()
 
         chunkShader = Shader("chunk_vertex.glsl", "chunk_fragment.glsl")
         // ToDo: chunkShader.replace("%{textureSize}", minecraftTextures.textures.size)
@@ -128,10 +113,12 @@ class ChunkRenderer(private val connection: Connection, private val world: World
         glEnable(GL_CULL_FACE)
 
         chunkShader.use()
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - lastTickIncrementTime >= ProtocolDefinition.TICK_TIME) {
-            chunkShader.setInt("currentTick", currentTick++)
-            lastTickIncrementTime = currentTime
+        if (Minosoft.getConfig().config.game.animations.textures) {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastTickIncrementTime >= ProtocolDefinition.TICK_TIME) {
+                chunkShader.setInt("animationTick", currentTick++)
+                lastTickIncrementTime = currentTime
+            }
         }
 
         for ((_, map) in chunkSectionsToDraw) {

@@ -29,12 +29,18 @@ class WorldMesh(data: FloatArray) {
         glBindVertexArray(vAO)
         glBindBuffer(GL_ARRAY_BUFFER, vBO)
         glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW)
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, 0L)
-        glEnableVertexAttribArray(0)
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (3 * Float.BYTES).toLong())
-        glEnableVertexAttribArray(1)
-        glVertexAttribPointer(2, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (5 * Float.BYTES).toLong())
-        glEnableVertexAttribArray(2)
+        var index = 0
+        glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, 0L)
+        glEnableVertexAttribArray(index++)
+
+        glVertexAttribPointer(index, 2, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (3 * Float.BYTES).toLong())
+        glEnableVertexAttribArray(index++)
+
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (5 * Float.BYTES).toLong())
+        glEnableVertexAttribArray(index++)
+
+        glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (6 * Float.BYTES).toLong())
+        glEnableVertexAttribArray(index)
 
         // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
         glBindBuffer(GL_ARRAY_BUFFER, 0)
@@ -51,6 +57,6 @@ class WorldMesh(data: FloatArray) {
     }
 
     companion object {
-        private const val FLOATS_PER_VERTEX = 6
+        private const val FLOATS_PER_VERTEX = 9
     }
 }
