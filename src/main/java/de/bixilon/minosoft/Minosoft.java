@@ -17,7 +17,6 @@ import com.google.common.collect.HashBiMap;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXDialogLayout;
 import de.bixilon.minosoft.config.Configuration;
-import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.assets.Resources;
@@ -39,7 +38,6 @@ import de.bixilon.minosoft.util.GitInfo;
 import de.bixilon.minosoft.util.MinosoftCommandLineArguments;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
-import de.bixilon.minosoft.util.logging.LogLevels;
 import de.bixilon.minosoft.util.task.AsyncTaskWorker;
 import de.bixilon.minosoft.util.task.Task;
 import de.bixilon.minosoft.util.task.TaskImportance;
@@ -48,9 +46,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.HashSet;
-import java.util.UUID;
 
 public final class Minosoft {
     public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
@@ -114,18 +110,17 @@ public final class Minosoft {
             Log.info("Reading config file...");
             try {
                 config = new Configuration();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 Log.fatal("Failed to load config file!");
-                e.printStackTrace();
-                return;
+                throw e;
             }
-            Log.info(String.format("Loaded config file (version=%s)", config.getInt(ConfigurationPaths.IntegerPaths.GENERAL_CONFIG_VERSION)));
+            Log.info(String.format("Loaded config file (version=%s)", config.getConfig().getGeneral().getVersion()));
             // set log level from config
-            Log.setLevel(LogLevels.valueOf(config.getString(ConfigurationPaths.StringPaths.GENERAL_LOG_LEVEL)));
+            Log.setLevel(config.getConfig().getGeneral().getLogLevel());
             Log.info(String.format("Logging info with level: %s", Log.getLevel()));
         }, "Configuration", String.format("Load config file (%s)", StaticConfiguration.CONFIG_FILENAME), Priorities.HIGHEST, TaskImportance.REQUIRED));
 
-        taskWorker.addTask(new Task(progress -> LocaleManager.load(config.getString(ConfigurationPaths.StringPaths.GENERAL_LANGUAGE)), "Minosoft Language", "Load minosoft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
+        taskWorker.addTask(new Task(progress -> LocaleManager.load(config.getConfig().getGeneral().getLanguage()), "Minosoft Language", "Load minosoft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             Log.info("Loading versions.json...");
@@ -138,14 +133,13 @@ public final class Minosoft {
 
         taskWorker.addTask(new Task(progress -> {
             Log.debug("Refreshing account token...");
-            checkClientToken();
-            selectAccount(config.getAccounts().get(config.getString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED)));
+            selectAccount(config.getConfig().getAccount().getEntries().get(config.getConfig().getAccount().getSelected()));
         }, "Token refresh", "Refresh selected account token", Priorities.LOW, TaskImportance.OPTIONAL, "Configuration"));
 
         taskWorker.addTask(new Task(ModLoader::loadMods, "ModLoading", "Load all minosoft mods", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
-            if (!config.getBoolean(ConfigurationPaths.BooleanPaths.NETWORK_SHOW_LAN_SERVERS)) {
+            if (!config.getConfig().getNetwork().getShowLanServers()) {
                 return;
             }
             LANServerListener.listen();
@@ -171,22 +165,15 @@ public final class Minosoft {
         Launcher.start();
     }
 
-    public static void checkClientToken() {
-        if (config.getString(ConfigurationPaths.StringPaths.CLIENT_TOKEN).isBlank()) {
-            config.putString(ConfigurationPaths.StringPaths.CLIENT_TOKEN, UUID.randomUUID().toString());
-            config.saveToFile();
-        }
-    }
-
     public static boolean selectAccount(Account account) {
         if (account == null) {
-            config.putString(ConfigurationPaths.StringPaths.ACCOUNT_SELECTED, "");
+            config.getConfig().getAccount().setSelected("");
             config.saveToFile();
             return false;
         }
         if (account.select()) {
-            config.putAccount(account);
-            config.selectAccount(account);
+            config.getConfig().getAccount().getEntries().put(account.getId(), account);
+            config.getConfig().getAccount().setSelected(account.getId());
             config.saveToFile();
             if (Launcher.getMainWindow() != null) {
                 Launcher.getMainWindow().selectAccount(account);
@@ -197,7 +184,7 @@ public final class Minosoft {
         }
         account.logout();
         AccountListCell.ACCOUNT_LIST_VIEW.getItems().remove(account);
-        config.removeAccount(account);
+        config.getConfig().getAccount().getEntries().remove(account.getId());
         config.saveToFile();
         return false;
     }

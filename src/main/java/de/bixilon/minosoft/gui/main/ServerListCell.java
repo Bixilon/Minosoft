@@ -291,7 +291,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
         this.root.getStyleClass().add("list-cell-connecting");
         new Thread(() -> {
-            Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getConfig().getSelectedAccount()));
+            Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getConfig().getConfig().getAccount().getEntries().get(Minosoft.getConfig().getConfig().getAccount().getSelected())));
             this.server.addConnection(connection);
             Platform.runLater(() -> {
                 this.optionsConnect.setDisable(true);
@@ -334,7 +334,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             });
 
             if (connection.isConnected()) {
-                this.optionsConnect.setDisable(Minosoft.getConfig().getSelectedAccount() == connection.getPlayer().getAccount());
+                this.optionsConnect.setDisable(Minosoft.getConfig().getConfig().getAccount().getSelected().equals(connection.getPlayer().getAccount().getId()));
                 this.optionsSessions.setDisable(false);
                 return;
             }

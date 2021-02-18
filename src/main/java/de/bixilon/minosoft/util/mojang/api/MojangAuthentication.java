@@ -16,7 +16,6 @@ package de.bixilon.minosoft.util.mojang.api;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.accounts.MojangAccount;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -33,7 +32,7 @@ import java.net.http.HttpResponse;
 public final class MojangAuthentication {
 
     public static MojangAccount login(String username, String password) throws AuthenticationException, NoNetworkConnectionException {
-        return login(Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.CLIENT_TOKEN), username, password);
+        return login(Minosoft.getConfig().getConfig().getAccount().getClientToken(), username, password);
     }
 
     public static MojangAccount login(String clientToken, String username, String password) throws NoNetworkConnectionException, AuthenticationException {
@@ -100,7 +99,7 @@ public final class MojangAuthentication {
     }
 
     public static String refresh(String accessToken) throws NoNetworkConnectionException, AuthenticationException {
-        return refresh(Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.CLIENT_TOKEN), accessToken);
+        return refresh(Minosoft.getConfig().getConfig().getAccount().getClientToken(), accessToken);
     }
 
     public static String refresh(String clientToken, String accessToken) throws NoNetworkConnectionException, AuthenticationException {

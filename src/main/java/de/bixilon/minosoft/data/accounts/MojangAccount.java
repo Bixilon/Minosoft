@@ -21,6 +21,8 @@ import de.bixilon.minosoft.util.mojang.api.exceptions.AuthenticationException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.MojangJoinServerErrorException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class MojangAccount extends Account {
@@ -44,18 +46,18 @@ public class MojangAccount extends Account {
         this.email = email;
     }
 
-    public static MojangAccount deserialize(JsonObject json) {
-        return new MojangAccount(json.get("accessToken").getAsString(), json.get("id").getAsString(), Util.getUUIDFromString(json.get("uuid").getAsString()), json.get("username").getAsString(), json.get("email").getAsString());
+    public static MojangAccount deserialize(Map<String, Object> json) {
+        return new MojangAccount((String) json.get("accessToken"), (String) json.get("id"), Util.getUUIDFromString((String) json.get("uuid")), (String) json.get("username"), (String) json.get("email"));
     }
 
-    public JsonObject serialize() {
-        JsonObject json = new JsonObject();
-        json.addProperty("id", this.id);
-        json.addProperty("accessToken", this.accessToken);
-        json.addProperty("uuid", getUUID().toString());
-        json.addProperty("username", getUsername());
-        json.addProperty("email", this.email);
-        json.addProperty("type", "mojang");
+    public Map<String, Object> serialize() {
+        Map<String, Object> json = new HashMap<>();
+        json.put("id", this.id);
+        json.put("accessToken", this.accessToken);
+        json.put("uuid", getUUID().toString());
+        json.put("username", getUsername());
+        json.put("email", this.email);
+        json.put("type", "mojang");
         return json;
     }
 
@@ -73,7 +75,7 @@ public class MojangAccount extends Account {
 
     @Override
     public void logout() {
-        Minosoft.getConfig().removeAccount(this);
+        Minosoft.getConfig().getConfig().getAccount().getEntries().remove(this.getId());
         Minosoft.getConfig().saveToFile();
     }
 

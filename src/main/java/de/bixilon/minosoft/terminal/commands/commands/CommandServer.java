@@ -42,7 +42,7 @@ public class CommandServer extends Command {
                         new CommandLiteralNode("list", (stack) -> {
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
-                            for (var entry : Minosoft.getConfig().getServerList().entrySet()) {
+                            for (var entry : Minosoft.getConfig().getConfig().getServer().getEntries().entrySet()) {
                                 tableData.add(new Object[]{entry.getKey(), entry.getValue().getName(), entry.getValue().getAddress(), Versions.getVersionById(entry.getValue().getDesiredVersionId())});
                             }
 
@@ -54,12 +54,12 @@ public class CommandServer extends Command {
                                                 new CommandArgumentNode("version", VersionParser.VERSION_PARSER, ((stack) -> addServer(stack.getNonLiteralArgument(0), stack.getNonLiteralArgument(1), stack.getNonLiteralArgument(2))))))),
 
                         new CommandLiteralNode("delete", new CommandArgumentNode("id", IntegerParser.INTEGER_PARSER, new IntegerParserProperties(0, Integer.MAX_VALUE), (stack -> {
-                            Server server = Minosoft.getConfig().getServerList().get(stack.getInt(0));
+                            Server server = Minosoft.getConfig().getConfig().getServer().getEntries().get(stack.getInt(0));
                             if (server == null) {
                                 printError("Server not found!");
                                 return;
                             }
-                            Minosoft.getConfig().removeServer(server);
+                            Minosoft.getConfig().getConfig().getServer().getEntries().remove(server.getId());
                             ServerListCell.SERVER_LIST_VIEW.getItems().remove(server);
                         })))
                 ));

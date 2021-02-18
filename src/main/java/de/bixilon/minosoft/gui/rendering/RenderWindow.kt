@@ -2,6 +2,8 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.mappings.ModIdentifier
@@ -25,7 +27,7 @@ import org.lwjgl.system.MemoryUtil
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class RenderWindow(private val connection: Connection, val rendering: Rendering) {
-    private val keyBindingCallbacks: MutableMap<ModIdentifier, Pair<KeyBinding, MutableSet<((keyCode: KeyCodes, keyEvent: KeyBinding.KeyAction) -> Unit)>>> = mutableMapOf()
+    private val keyBindingCallbacks: MutableMap<ModIdentifier, Pair<KeyBinding, MutableSet<((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)>>> = mutableMapOf()
     private val keysDown: MutableSet<KeyCodes> = mutableSetOf()
     private val keyBindingDown: MutableSet<KeyBinding> = mutableSetOf()
     val renderStats = RenderStats()
@@ -95,32 +97,32 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             glfwTerminate()
             throw RuntimeException("Failed to create the GLFW window")
         }
-        camera = Camera(connection, 60f, windowId)
+        camera = Camera(connection, Minosoft.getConfig().config.game.camera.fov)
         camera.init(this)
 
 
         glfwSetKeyCallback(this.windowId) { _: Long, key: Int, _: Int, action: Int, _: Int ->
             val keyCode = KeyCodes.KEY_CODE_GLFW_ID_MAP[key] ?: KeyCodes.KEY_UNKNOWN
             val keyAction = when (action) {
-                GLFW_PRESS -> KeyBinding.KeyAction.PRESS
-                GLFW_RELEASE -> KeyBinding.KeyAction.RELEASE
+                GLFW_PRESS -> KeyAction.PRESS
+                GLFW_RELEASE -> KeyAction.RELEASE
                 // ToDo: Double, Hold
                 else -> return@glfwSetKeyCallback
             }
-            if (keyAction == KeyBinding.KeyAction.PRESS) {
+            if (keyAction == KeyAction.PRESS) {
                 keysDown.add(keyCode)
-            } else if (keyAction == KeyBinding.KeyAction.RELEASE) {
+            } else if (keyAction == KeyAction.RELEASE) {
                 keysDown.remove(keyCode)
             }
 
-            for ((identifier, keyCallbackPair) in keyBindingCallbacks) {
+            for ((_, keyCallbackPair) in keyBindingCallbacks) {
                 run {
                     val keyBinding = keyCallbackPair.first
                     val keyCallbacks = keyCallbackPair.second
 
                     var anyCheckRun = false
-                    keyBinding.action[KeyBinding.KeyAction.MODIFIER]?.let {
-                        val previousKeysDown = if (keyAction == KeyBinding.KeyAction.RELEASE) {
+                    keyBinding.action[KeyAction.MODIFIER]?.let {
+                        val previousKeysDown = if (keyAction == KeyAction.RELEASE) {
                             val previousKeysDown = keysDown.toMutableList()
                             previousKeysDown.add(keyCode)
                             previousKeysDown
@@ -132,7 +134,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
                         }
                         anyCheckRun = true
                     }
-                    keyBinding.action[KeyBinding.KeyAction.CHANGE]?.let {
+                    keyBinding.action[KeyAction.CHANGE]?.let {
                         if (!it.contains(keyCode)) {
                             return@run
                         }
@@ -140,7 +142,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
                     }
 
                     // release or press
-                    if (keyBinding.action[KeyBinding.KeyAction.CHANGE] == null) {
+                    if (keyBinding.action[KeyAction.CHANGE] == null) {
                         keyBinding.action[keyAction].let {
                             if (it == null) {
                                 return@run
@@ -156,9 +158,9 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
                         return@run
                     }
 
-                    if (keyAction == KeyBinding.KeyAction.PRESS) {
+                    if (keyAction == KeyAction.PRESS) {
                         keyBindingDown.add(keyBinding)
-                    } else if (keyAction == KeyBinding.KeyAction.RELEASE) {
+                    } else if (keyAction == KeyAction.RELEASE) {
                         keyBindingDown.remove(keyBinding)
                     }
                     for (keyCallback in keyCallbacks) {
@@ -236,7 +238,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             }
         })
 
-        registerKeyCallback(ModIdentifier("minosoft:debug_polygen")) { _: KeyCodes, _: KeyBinding.KeyAction ->
+        registerKeyCallback(KeyBindingsNames.DEBUG_POLYGEN) { _: KeyCodes, _: KeyAction ->
             polygonEnabled = !polygonEnabled
             glPolygonMode(GL_FRONT_AND_BACK, if (polygonEnabled) {
                 GL_LINE
@@ -244,7 +246,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
                 GL_FILL
             })
         }
-        registerKeyCallback(ModIdentifier("minosoft:debug_mouse_catch")) { _: KeyCodes, _: KeyBinding.KeyAction ->
+        registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH) { _: KeyCodes, _: KeyAction ->
             mouseCatch = !mouseCatch
             if (mouseCatch) {
                 glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
@@ -252,7 +254,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
                 glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_NORMAL)
             }
         }
-        registerKeyCallback(ModIdentifier("minosoft:quit")) { _: KeyCodes, _: KeyBinding.KeyAction ->
+        registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { _: KeyCodes, _: KeyAction ->
             glfwSetWindowShouldClose(windowId, true)
         }
 
@@ -339,11 +341,11 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         this.renderingStatus = renderingStatus
     }
 
-    fun registerKeyCallback(identifier: ModIdentifier, callback: ((keyCode: KeyCodes, keyEvent: KeyBinding.KeyAction) -> Unit)) {
+    fun registerKeyCallback(identifier: ModIdentifier, callback: ((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)) {
         var identifierCallbacks = keyBindingCallbacks[identifier]?.second
         if (identifierCallbacks == null) {
             identifierCallbacks = mutableSetOf()
-            val keyBinding = Minosoft.getConfig().keyBindings[identifier] ?: return
+            val keyBinding = Minosoft.getConfig().config.game.controls.keyBindings.entries[identifier] ?: return
             keyBindingCallbacks[identifier] = Pair(keyBinding, identifierCallbacks)
         }
         identifierCallbacks.add(callback)

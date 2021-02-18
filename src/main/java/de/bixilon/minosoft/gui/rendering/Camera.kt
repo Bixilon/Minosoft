@@ -1,10 +1,11 @@
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Location
-import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
@@ -15,8 +16,8 @@ import glm_.vec3.Vec3
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Camera(private val connection: Connection, private var fov: Float, private val windowId: Long) {
-    private var mouseSensitivity = 0.1
+class Camera(private val connection: Connection, private var fov: Float) {
+    private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
     private var movementSpeed = 7
     var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
     private var lastMouseX = 0.0
@@ -34,7 +35,7 @@ class Camera(private val connection: Connection, private var fov: Float, private
 
     private var screenHeight = 0
     private var screenWidth = 0
-    private val shaders: MutableList<Shader> = mutableListOf()
+    private val shaders: MutableSet<Shader> = mutableSetOf()
 
     private var keyForwardDown = false
     private var keyLeftDown = false
@@ -71,29 +72,29 @@ class Camera(private val connection: Connection, private var fov: Float, private
     }
 
     fun init(renderWindow: RenderWindow) {
-        renderWindow.registerKeyCallback(ModIdentifier("minosoft:move_forward")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
-            keyForwardDown = keyAction == KeyBinding.KeyAction.PRESS
+        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_FORWARD) { _: KeyCodes, keyAction: KeyAction ->
+            keyForwardDown = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(ModIdentifier("minosoft:move_left")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
-            keyLeftDown = keyAction == KeyBinding.KeyAction.PRESS
+        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_LEFT) { _: KeyCodes, keyAction: KeyAction ->
+            keyLeftDown = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(ModIdentifier("minosoft:move_back")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
-            keyBackDown = keyAction == KeyBinding.KeyAction.PRESS
+        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_BACKWARDS) { _: KeyCodes, keyAction: KeyAction ->
+            keyBackDown = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(ModIdentifier("minosoft:move_right")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
-            keyRightDown = keyAction == KeyBinding.KeyAction.PRESS
+        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_RIGHT) { _: KeyCodes, keyAction: KeyAction ->
+            keyRightDown = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(ModIdentifier("minosoft:fly_up")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
-            keyFlyUp = keyAction == KeyBinding.KeyAction.PRESS
+        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_FLY_UP) { _: KeyCodes, keyAction: KeyAction ->
+            keyFlyUp = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(ModIdentifier("minosoft:fly_down")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
-            keyFlyDown = keyAction == KeyBinding.KeyAction.PRESS
+        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_FLY_DOWN) { _: KeyCodes, keyAction: KeyAction ->
+            keyFlyDown = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(ModIdentifier("minosoft:sprint")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
-            keySprintDown = keyAction == KeyBinding.KeyAction.PRESS
+        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_SPRINT) { _: KeyCodes, keyAction: KeyAction ->
+            keySprintDown = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(ModIdentifier("minosoft:zoom")) { keyCodes: KeyCodes, keyAction: KeyBinding.KeyAction ->
-            keyZoomDown = keyAction == KeyBinding.KeyAction.PRESS
+        renderWindow.registerKeyCallback(KeyBindingsNames.ZOOM) { _: KeyCodes, keyAction: KeyAction ->
+            keyZoomDown = keyAction == KeyAction.PRESS
         }
     }
 

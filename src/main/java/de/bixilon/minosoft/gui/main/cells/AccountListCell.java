@@ -87,7 +87,7 @@ public class AccountListCell extends ListCell<Account> implements Initializable 
         }
 
         resetCell();
-        if (Minosoft.getConfig().getSelectedAccount() == account) {
+        if (this.account != null && Minosoft.getConfig().getConfig().getAccount().getSelected().equals(this.account.getId())) {
             this.hBox.getStyleClass().add("list-cell-selected");
             this.selectIcon.setDisable(true);
         }
@@ -110,7 +110,7 @@ public class AccountListCell extends ListCell<Account> implements Initializable 
     public void select() {
         Minosoft.selectAccount(this.account);
 
-        if (Minosoft.getConfig().getSelectedAccount() == this.account) {
+        if (Minosoft.getConfig().getConfig().getAccount().getSelected().equals(this.account.getId())) {
             // ToDo: Why isn't his working correct?
             this.hBox.getStyleClass().add("list-cell-selected");
             this.selectIcon.setDisable(true);
@@ -119,13 +119,13 @@ public class AccountListCell extends ListCell<Account> implements Initializable 
 
     public void logout() {
         this.account.logout();
-        Minosoft.getConfig().removeAccount(this.account);
+        Minosoft.getConfig().getConfig().getAccount().getEntries().remove(this.account.getId());
         Minosoft.getConfig().saveToFile();
-        if (Minosoft.getConfig().getSelectedAccount() == this.account) {
-            if (Minosoft.getConfig().getAccounts().isEmpty()) {
+        if (Minosoft.getConfig().getConfig().getAccount().getSelected().equals(this.account.getId())) {
+            if (Minosoft.getConfig().getConfig().getAccount().getEntries().isEmpty()) {
                 Minosoft.selectAccount(null);
             } else {
-                Minosoft.selectAccount(Minosoft.getConfig().getAccounts().values().iterator().next());
+                Minosoft.selectAccount(Minosoft.getConfig().getConfig().getAccount().getEntries().values().iterator().next());
             }
             ACCOUNT_LIST_VIEW.refresh();
         }

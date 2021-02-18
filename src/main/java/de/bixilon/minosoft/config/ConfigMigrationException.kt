@@ -10,27 +10,6 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.config
 
-package de.bixilon.minosoft.config;
-
-public class ConfigMigrationException extends Exception {
-
-    public ConfigMigrationException() {
-    }
-
-    public ConfigMigrationException(String message) {
-        super(message);
-    }
-
-    public ConfigMigrationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ConfigMigrationException(Throwable cause) {
-        super(cause);
-    }
-
-    public ConfigMigrationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
-}
+class ConfigMigrationException(message: String) : Exception(message)

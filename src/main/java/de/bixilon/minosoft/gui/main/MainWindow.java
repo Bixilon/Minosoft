@@ -72,7 +72,7 @@ public class MainWindow implements Initializable {
             GUITools.initializeScene(stage.getScene());
             Platform.setImplicitExit(false);
             stage.setOnCloseRequest(event -> {
-                if (Minosoft.getConfig().getSelectedAccount() == null) {
+                if (Minosoft.getConfig().getConfig().getAccount().getSelected().isBlank()) {
                     event.consume();
                     JFXAlert<?> alert = new JFXAlert<>();
                     GUITools.initializePane(alert.getDialogPane());
@@ -186,7 +186,7 @@ public class MainWindow implements Initializable {
 
             if (server1 == null) {
                 server1 = new Server(Server.getNextServerId(), serverName, serverAddress, desiredVersionId);
-                Minosoft.getConfig().putServer(server1);
+                Minosoft.getConfig().getConfig().getServer().getEntries().put(server1.getId(), server1);
                 ServerListCell.SERVER_LIST_VIEW.getItems().add(server1);
             } else {
                 server1.setName(serverName);
@@ -248,7 +248,7 @@ public class MainWindow implements Initializable {
         this.menuHelp.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP));
         this.menuHelpAbout.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP_ABOUT));
         this.menuAccountManage.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_MANAGE));
-        selectAccount(Minosoft.getConfig().getSelectedAccount());
+        selectAccount(Minosoft.getConfig().getConfig().getAccount().getEntries().get(Minosoft.getConfig().getConfig().getAccount().getSelected()));
     }
 
     @FXML

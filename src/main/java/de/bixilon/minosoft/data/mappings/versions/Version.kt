@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.mappings.versions
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.ConfigurationPaths
 import de.bixilon.minosoft.data.Mappings
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.assets.Resources
@@ -64,10 +63,10 @@ data class Version(
             localeManager = Versions.PRE_FLATTENING_VERSION.localeManager
             return
         }
-        assetsManager = AssetsManager(Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.DEBUG_VERIFY_ASSETS), Resources.getAssetVersionByVersion(this))
+        assetsManager = AssetsManager(Minosoft.getConfig().config.debug.verifyAssets, Resources.getAssetVersionByVersion(this))
         assetsManager.downloadAllAssets(latch)
         localeManager = MinecraftLocaleManager(this)
-        localeManager.load(this, Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.GENERAL_LANGUAGE))
+        localeManager.load(this, Minosoft.getConfig().config.general.language)
     }
 
     fun load(latch: CountUpAndDownLatch) {

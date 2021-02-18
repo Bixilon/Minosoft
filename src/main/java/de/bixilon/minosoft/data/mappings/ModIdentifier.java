@@ -14,10 +14,11 @@
 package de.bixilon.minosoft.data.mappings;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class ModIdentifier {
+public class ModIdentifier implements Comparable<ModIdentifier> {
     protected final String mod;
     protected final String identifier;
     public final String fullIdentifier;
@@ -90,5 +91,10 @@ public class ModIdentifier {
     @Override
     public String toString() {
         return getFullIdentifier();
+    }
+
+    @Override
+    public int compareTo(@NotNull ModIdentifier identifier) {
+        return identifier.hashCode() - this.hashCode();
     }
 }

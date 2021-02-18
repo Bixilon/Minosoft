@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.accounts;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.util.Util;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class MicrosoftAccount extends MojangAccount {
@@ -28,9 +29,9 @@ public class MicrosoftAccount extends MojangAccount {
         return new MicrosoftAccount(json.get("accessToken").getAsString(), json.get("id").getAsString(), Util.getUUIDFromString(json.get("uuid").getAsString()), json.get("username").getAsString());
     }
 
-    public JsonObject serialize() {
-        JsonObject json = super.serialize();
-        json.addProperty("type", "microsoft");
+    public Map<String, Object> serialize() {
+        Map<String, Object> json = super.serialize();
+        json.put("type", "microsoft");
         json.remove("email");
         return json;
     }

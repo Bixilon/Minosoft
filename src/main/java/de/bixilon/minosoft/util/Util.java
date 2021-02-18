@@ -247,6 +247,11 @@ public final class Util {
         return json;
     }
 
+    public static String readFile(String fileName) throws IOException {
+        FileReader reader = new FileReader(fileName);
+        return readReader(new BufferedReader(reader), true);
+    }
+
     public static void downloadFile(String url, String destination) throws IOException {
         createParentFolderIfNotExist(destination);
         copyStream(getInputStreamByURL(url), new FileOutputStream(destination));

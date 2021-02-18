@@ -40,7 +40,7 @@ public class AccountWindow implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         AccountListCell.ACCOUNT_LIST_VIEW.setCellFactory((lv) -> AccountListCell.newInstance());
 
-        ObservableList<Account> accounts = FXCollections.observableArrayList(Minosoft.getConfig().getAccounts().values());
+        ObservableList<Account> accounts = FXCollections.observableArrayList(Minosoft.getConfig().getConfig().getAccount().getEntries().values());
         AccountListCell.ACCOUNT_LIST_VIEW.setItems(accounts);
         this.accountPane.setCenter(AccountListCell.ACCOUNT_LIST_VIEW);
 

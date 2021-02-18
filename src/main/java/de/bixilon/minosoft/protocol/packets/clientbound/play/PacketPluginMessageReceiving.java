@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.modding.event.events.PluginMessageReceiveEvent;
@@ -49,9 +48,10 @@ public class PacketPluginMessageReceiving extends ClientboundPacket {
     @Override
     public void handle(Connection connection) {
         if (getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableIdentifier().get(connection.getVersion().getVersionId()))) {
+            // ToDo: Register mod to do this
             InByteBuffer data = getDataAsBuffer();
             String serverVersion;
-            String clientVersion = (Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.NETWORK_FAKE_CLIENT_BRAND) ? "vanilla" : "Minosoft");
+            String clientVersion = (Minosoft.getConfig().getConfig().getNetwork().getFakeNetworkBrand() ? "vanilla" : "Minosoft");
             OutByteBuffer toSend = new OutByteBuffer(connection);
             if (connection.getVersion().getVersionId() < V_14W29A) {
                 // no length prefix

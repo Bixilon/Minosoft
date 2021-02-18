@@ -1,10 +1,10 @@
 package de.bixilon.minosoft.gui.rendering.hud.elements.text
 
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.Location
-import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.ChunkLocation
 import de.bixilon.minosoft.data.world.InChunkSectionLocation
@@ -77,7 +77,7 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
         gpuText = glGetString(GL_RENDERER) ?: "unknown"
         gpuVersionText = glGetString(GL_VERSION) ?: "unknown"
 
-        hudTextElement.renderWindow.registerKeyCallback(ModIdentifier("minosoft:debug_screen")) { _: KeyCodes, _: KeyBinding.KeyAction ->
+        hudTextElement.renderWindow.registerKeyCallback(KeyBindingsNames.DEBUG_SCREEN) { _: KeyCodes, _: KeyAction ->
             debugScreenEnabled = !debugScreenEnabled
         }
     }

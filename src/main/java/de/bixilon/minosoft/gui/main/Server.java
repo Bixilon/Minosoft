@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.main;
 
 import com.google.common.collect.Sets;
-import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.text.BaseComponent;
@@ -26,6 +25,8 @@ import de.bixilon.minosoft.util.ServerAddress;
 
 import javax.annotation.Nullable;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class Server {
@@ -73,10 +74,10 @@ public class Server {
         return ++highestServerId;
     }
 
-    public static Server deserialize(JsonObject json) {
-        Server server = new Server(json.get("id").getAsInt(), ChatComponent.valueOf(json.get("name").getAsString()), json.get("address").getAsString(), json.get("version").getAsInt());
-        if (json.has("favicon")) {
-            server.setFavicon(Base64.getDecoder().decode(json.get("favicon").getAsString()));
+    public static Server deserialize(Map<String, Object> json) {
+        Server server = new Server((int) (double) json.get("id"), ChatComponent.valueOf(json.get("name")), (String) json.get("address"), (int) (double) json.get("version"));
+        if (json.containsKey("favicon")) {
+            server.setFavicon(Base64.getDecoder().decode((String) json.get("favicon")));
         }
         return server;
     }
@@ -98,7 +99,7 @@ public class Server {
         if (isReadOnly()) {
             return;
         }
-        Minosoft.getConfig().putServer(this);
+        Minosoft.getConfig().getConfig().getServer().getEntries().put(this.getId(), this);
         Minosoft.getConfig().saveToFile();
     }
 
@@ -106,7 +107,7 @@ public class Server {
         if (isReadOnly()) {
             return;
         }
-        Minosoft.getConfig().removeServer(this);
+        Minosoft.getConfig().getConfig().getServer().getEntries().remove(this.getId());
         Minosoft.getConfig().saveToFile();
     }
 
@@ -176,14 +177,14 @@ public class Server {
         return false;
     }
 
-    public JsonObject serialize() {
-        JsonObject json = new JsonObject();
-        json.addProperty("id", this.id);
-        json.addProperty("name", this.name.getLegacyText());
-        json.addProperty("address", this.address);
-        json.addProperty("version", this.desiredVersion);
+    public Map<String, Object> serialize() {
+        Map<String, Object> json = new HashMap<>();
+        json.put("id", this.id);
+        json.put("name", this.name.getLegacyText());
+        json.put("address", this.address);
+        json.put("version", this.desiredVersion);
         if (this.favicon != null) {
-            json.addProperty("favicon", getBase64Favicon());
+            json.put("favicon", getBase64Favicon());
         }
         return json;
     }

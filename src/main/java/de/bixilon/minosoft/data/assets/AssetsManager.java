@@ -18,7 +18,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -250,7 +249,7 @@ public class AssetsManager {
         switch (source) {
             case MINECRAFT -> downloadAsset(String.format(ProtocolDefinition.MINECRAFT_URL_RESOURCES, hash.substring(0, 2), hash), hash);
             case MINOSOFT_GIT -> downloadAsset(Util.formatString(
-                    Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.RESOURCES_URL),
+                    Minosoft.getConfig().getConfig().getDownload().getUrl().getResources(),
                     Map.of(
                             "branch", GitInfo.INSTANCE.getGIT_BRANCH(),
                             "hashPrefix", hash.substring(0, 2),

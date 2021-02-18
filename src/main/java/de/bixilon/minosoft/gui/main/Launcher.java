@@ -64,7 +64,7 @@ public class Launcher {
             ServerListCell.SERVER_LIST_VIEW.setCellFactory((lv) -> ServerListCell.newInstance());
 
             ObservableList<Server> servers = FXCollections.observableArrayList();
-            servers.addAll(Minosoft.getConfig().getServerList().values());
+            servers.addAll(Minosoft.getConfig().getConfig().getServer().getEntries().values());
             ServerListCell.SERVER_LIST_VIEW.setItems(servers);
             LANServerListener.removeAll(); // remove all LAN Servers
 
@@ -93,7 +93,7 @@ public class Launcher {
 
 
             stage.show();
-            if (Minosoft.getConfig().getSelectedAccount() == null) {
+            if (Minosoft.getConfig().getConfig().getAccount().getSelected().isBlank()) {
                 MainWindow.manageAccounts();
             }
             latch.countDown();

@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.ConfigurationPaths
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontBindings
 import de.bixilon.minosoft.gui.rendering.font.FontChar
@@ -155,7 +154,7 @@ open class TextComponent : ChatComponent {
     override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> {
         val text = Text(text)
         text.fill = Color.WHITE
-        if (Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.CHAT_COLORED)) {
+        if (Minosoft.getConfig().config.chat.colored) {
             text.fill = Color.rgb(color.red, color.green, color.blue)
         }
         for (chatFormattingCode in formatting) {
@@ -163,7 +162,7 @@ open class TextComponent : ChatComponent {
                 when (chatFormattingCode) {
                     PreChatFormattingCodes.OBFUSCATED -> {
                         // ToDo: potential memory leak: Stop timeline, when TextComponent isn't shown anymore
-                        val obfuscatedTimeline = if (Minosoft.getConfig().getBoolean(ConfigurationPaths.BooleanPaths.CHAT_OBFUSCATED)) {
+                        val obfuscatedTimeline = if (Minosoft.getConfig().config.chat.obfuscated) {
                             Timeline(KeyFrame(Duration.millis(50.0), {
                                 val chars = text.text.toCharArray()
                                 for (i in chars.indices) {

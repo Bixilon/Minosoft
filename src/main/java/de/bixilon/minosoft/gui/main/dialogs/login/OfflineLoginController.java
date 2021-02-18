@@ -80,14 +80,14 @@ public class OfflineLoginController implements Initializable {
             account = new OfflineAccount(this.username.getText(), Util.getUUIDFromString(this.uuid.getText()));
         }
 
-        Minosoft.getConfig().putAccount(account);
+        Minosoft.getConfig().getConfig().getAccount().getEntries().put(account.getId(), account);
         account.saveToConfig();
         Log.info(String.format("Added and saved account (type=offline, username=%s, uuid=%s)", account.getUsername(), account.getUUID()));
         Platform.runLater(() -> {
             AccountListCell.ACCOUNT_LIST_VIEW.getItems().add(account);
             close();
         });
-        if (Minosoft.getConfig().getSelectedAccount() == null) {
+        if (Minosoft.getConfig().getConfig().getAccount().getSelected().isBlank()) {
             // select account
             Minosoft.selectAccount(account);
         }
