@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.mappings.blocks.Block
 data class BlockInfo(
     val block: Block,
     var metaData: BlockEntityMetaData? = null,
-    val info: BlockStaticInfo = BlockStaticInfo(),
+    val info: BlockFloatingInfo = BlockFloatingInfo(),
 ) {
     constructor(block: Block) : this(block, null) // ToDo: For java compatibility
 }

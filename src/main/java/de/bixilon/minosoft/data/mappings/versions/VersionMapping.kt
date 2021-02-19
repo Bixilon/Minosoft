@@ -53,6 +53,8 @@ class VersionMapping(var version: Version?) {
     private val blockIdIdentifierMap = HashBiMap.create<ModIdentifier, BlockId>(800)
     private val statisticIdMap = HashBiMap.create<Int, Statistic>(80)
     private val statisticIdentifierMap = HashBiMap.create<ModIdentifier, Statistic>(80)
+    private val biomeIdMap = HashBiMap.create<Int, Biome>(30)
+    private val biomeIdentifierMap = HashBiMap.create<ModIdentifier, Biome>(30)
     private val dimensionIdMap = HashBiMap.create<Int, Dimension>()
     var dimensionIdentifierMap: HashBiMap<ModIdentifier, Dimension> = HashBiMap.create()
 
@@ -303,6 +305,19 @@ class VersionMapping(var version: Version?) {
                             mobEffectIdMap[id] = mobEffect
                         }
                         mobEffectIdentifierMap[identifier] = mobEffect
+                    }
+                }
+
+                data["biome"]?.asJsonObject?.getAsJsonObject("entries")?.let {
+                    for ((key, value) in it.entrySet()) {
+                        check(value is JsonObject) { "Invalid biomes json" }
+                        val identifier = ModIdentifier(mod, key)
+                        val biome = Biome(identifier)
+                        // ToDo: Load color data and temperature, ...
+                        value["id"]?.asInt?.let { id ->
+                            biomeIdMap[id] = biome
+                        }
+                        biomeIdentifierMap[identifier] = biome
                     }
                 }
 

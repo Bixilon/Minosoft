@@ -51,7 +51,7 @@ class Chunk(val sections: MutableMap<Int, ChunkSection> = mutableMapOf()) {
                 it.blocks.remove(inChunkSectionLocation)
                 return
             }
-            it.setBlockInfo(inChunkSectionLocation, BlockInfo(block, info = it.blocksStaticInfo[inChunkSectionLocation] ?: BlockStaticInfo()))
+            it.setBlockInfo(inChunkSectionLocation, BlockInfo(block, info = it.blocksFloatingInfo[inChunkSectionLocation] ?: BlockFloatingInfo()))
         }
 
     }

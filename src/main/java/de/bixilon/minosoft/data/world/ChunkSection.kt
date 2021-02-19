@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.mappings.blocks.Block
  */
 class ChunkSection constructor(
     val blocks: MutableMap<InChunkSectionLocation, BlockInfo> = mutableMapOf(),
-    val blocksStaticInfo: MutableMap<InChunkSectionLocation, BlockStaticInfo> = mutableMapOf(),
+    val blocksFloatingInfo: MutableMap<InChunkSectionLocation, BlockFloatingInfo> = mutableMapOf(),
 ) {
 
     fun getBlockInfo(location: InChunkSectionLocation): BlockInfo? {
@@ -47,6 +47,6 @@ class ChunkSection constructor(
             setBlockInfo(location, null)
             return
         }
-        setBlockInfo(location, BlockInfo(block, info = blocksStaticInfo[location] ?: BlockStaticInfo()))
+        setBlockInfo(location, BlockInfo(block, info = blocksFloatingInfo[location] ?: BlockFloatingInfo()))
     }
 }

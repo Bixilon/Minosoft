@@ -45,6 +45,7 @@ class Texture(
         } else {
             "minecraft/textures/${name}.png"
         }
+
         val decoder = PNGDecoder(assetsManager.readAssetAsStream(texturePath))
         buffer = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
         decoder.decode(buffer, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)

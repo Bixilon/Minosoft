@@ -99,7 +99,7 @@ object VersionTweaker {
                     section.setBlockInfo(location, null)
                     continue
                 }
-                section.setBlockInfo(location, BlockInfo(newBlock, blockInfo.metaData, section.blocksStaticInfo[location] ?: BlockStaticInfo()))
+                section.setBlockInfo(location, BlockInfo(newBlock, blockInfo.metaData, section.blocksFloatingInfo[location] ?: BlockFloatingInfo()))
             }
         }
         return chunk
