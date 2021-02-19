@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import glm_.vec4.Vec4
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.ARBFragmentShader.GL_FRAGMENT_SHADER_ARB
 import org.lwjgl.opengl.ARBShaderObjects.*
@@ -78,31 +79,44 @@ class Shader(private val vertexPath: String, private val fragmentPath: String) {
         glUniform1i(getUniformLocation(uniformName), value)
     }
 
-    fun set4f(uniformName: String, floats: FloatArray) {
-        glUniform4f(getUniformLocation(uniformName), floats[0], floats[1], floats[2], floats[3])
-    }
-
     fun setMat4(uniformName: String, mat4: Mat4) {
         glUniformMatrix4fv(getUniformLocation(uniformName), false, mat4 to BufferUtils.createFloatBuffer(16))
+    }
+
+    fun setVec2(uniformName: String, vec2: Vec2) {
+        glUniform2f(getUniformLocation(uniformName), vec2.x, vec2.y)
     }
 
     fun setVec3(uniformName: String, vec3: Vec3) {
         glUniform3f(getUniformLocation(uniformName), vec3.x, vec3.y, vec3.z)
     }
 
+    fun setVec4(uniformName: String, vec4: Vec4) {
+        glUniform4f(getUniformLocation(uniformName), vec4.x, vec4.y, vec4.z, vec4.w)
+    }
+
     fun setArray(uniformName: String, array: Array<*>) {
         for ((i, value) in array.withIndex()) {
             val currentUniformName = "$uniformName[$i]"
-            val currentUniformLocation = getUniformLocation(currentUniformName)
-            when (value) {
-                is Array<*> -> setArray(currentUniformName, value)
-                is Int -> glUniform1i(currentUniformLocation, value)
-                is Float -> glUniform1f(currentUniformLocation, value)
-                is Mat4 -> glUniformMatrix4fv(currentUniformLocation, false, value to BufferUtils.createFloatBuffer(16))
-                is Vec3 -> glUniform3f(currentUniformLocation, value.x, value.y, value.z)
-                is Vec2 -> glUniform2f(currentUniformLocation, value.x, value.y)
-            }
+            setUniform(currentUniformName, value)
         }
+    }
+
+    fun setUniform(uniformName: String, data: Any?) {
+        if (data == null) {
+            return
+        }
+        when (data) {
+            is Array<*> -> setArray(uniformName, data)
+            is Int -> setInt(uniformName, data)
+            is Float -> setFloat(uniformName, data)
+            is Mat4 -> setMat4(uniformName, data)
+            is Vec4 -> setVec4(uniformName, data)
+            is Vec3 -> setVec3(uniformName, data)
+            is Vec2 -> setVec2(uniformName, data)
+            is TextureArray -> setTexture(uniformName, data)
+        }
+
     }
 
     fun setTexture(uniformName: String, textureArray: TextureArray) {
