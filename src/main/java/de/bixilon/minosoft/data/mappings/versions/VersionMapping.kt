@@ -27,7 +27,9 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.BlockRotations
 import de.bixilon.minosoft.data.mappings.particle.Particle
 import de.bixilon.minosoft.data.mappings.statistics.Statistic
-import de.bixilon.minosoft.gui.rendering.chunk.models.BlockModel
+import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockCondition
+import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
+import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
 import javafx.util.Pair
@@ -61,7 +63,7 @@ class VersionMapping(var version: Version?) {
     private val entityMetaIndexOffsetParentMapping: MutableMap<ModIdentifier, Pair<ModIdentifier, Int>> = mutableMapOf() // identifier, <Parent, Offset>
     private val entityIdClassMap = HashBiMap.create<Int, Class<out Entity?>>(120)
 
-    private val blockModels = HashBiMap.create<ModIdentifier, BlockModel>(500)
+    val blockModels = HashBiMap.create<ModIdentifier, BlockModel>(500)
 
     var parentMapping: VersionMapping? = null
 
@@ -379,11 +381,7 @@ class VersionMapping(var version: Version?) {
         data["parent"]?.asString?.let {
             parent = loadBlockModel(mod, it, fullModData)
         }
-
-        model = data["conditional"]?.let {
-            // ToDo
-            return@let BlockModel(parent, data)
-        } ?: BlockModel(parent, data)
+        model = BlockModel(parent, data)
 
         blockModels[identifier] = model
         return model
@@ -396,31 +394,47 @@ class VersionMapping(var version: Version?) {
         }
         val blockData = fullModData.getAsJsonObject(identifierString)
         val identifier = ModIdentifier(mod, identifierString)
-        val states: JsonArray? = blockData["states"]?.asJsonArray
-        if (states == null) {
-            Log.warn("Block model state: Not states (%s)", identifier)
-            return
-        }
-
         val blockStates = getBlockId(identifier)!!.blocks
 
-        for (value in states) {
-            check(value is JsonObject) { "Invalid model json" }
-
-            val state = loadBlockState(identifier, value)
-            var ckecked = false
-            for (blockState in blockStates) {
-                if (blockState.bareEquals(state)) {
-                    for (type in value.getAsJsonArray("types")) {
-                        check(type is JsonObject) { "Invalid block type json" }
-                        blockState.blockModels.add(BlockModel(blockModels[ModIdentifier(type["model"].asString.replace("block/", ""))], type))
+        blockData["states"]?.let {
+            for (value in it.asJsonArray) {
+                check(value is JsonObject) { "Invalid model json" }
+                val state = loadBlockState(identifier, value)
+                var ckecked = false
+                for (blockState in blockStates) {
+                    if (blockState.bareEquals(state)) {
+                        for (type in value.getAsJsonArray("types")) {
+                            check(type is JsonObject) { "Invalid block type json" }
+                            blockState.blockRenderers.add(BlockRenderer(type, this))
+                        }
+                        ckecked = true
                     }
-                    ckecked = true
+                }
+                if (!ckecked) {
+                    Log.warn("Block model state: Block is null (%s)", state)
+                    continue
                 }
             }
-            if (!ckecked) {
-                Log.warn("Block model state: Block is null (%s)", state)
-                continue
+        }
+        blockData["conditional"]?.let {
+            val conditions = mutableListOf<Pair<BlockCondition, JsonObject>>()
+            for (entry in it.asJsonArray) {
+                entry.asJsonObject?.let conditionLet@ { condition ->
+                    condition["properties"]?.let { properties ->
+                        conditions.add(Pair(BlockCondition(properties.asJsonObject), condition))
+                        return@conditionLet
+                    }
+                    conditions.add(Pair(BlockCondition.TRUE_CONDITION, condition))
+                }
+            }
+            for (blockState in blockStates) {
+                val apply = mutableListOf<JsonObject>()
+                for (condition in conditions) {
+                    if (condition.key.contains(blockState)) {
+                        apply.add(condition.value)
+                    }
+                }
+                blockState.blockRenderers.add(BlockRenderer(apply, this))
             }
         }
     }
@@ -466,7 +480,6 @@ class VersionMapping(var version: Version?) {
             data["id"]?.asInt.let {
                 entityIdClassMap[it] = clazz
             }
-
         }
         var parent: ModIdentifier? = null
         var metaDataIndexOffset = 0
@@ -496,7 +509,6 @@ class VersionMapping(var version: Version?) {
                     throw RuntimeException("entities.json is invalid")
                 }
             }
-
         }
         entityMetaIndexOffsetParentMapping[identifier] = Pair(parent, metaDataIndexOffset)
     }

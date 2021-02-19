@@ -84,12 +84,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
             } else {
                 section.getBlock(position.getLocationByDirection(Directions.EAST))
             }
-
-            //  if (block.identifier.fullIdentifier != "minecraft:dispenser") {
-            //      continue
-            //  }
-
-            block.getBlockModel(BlockPosition(chunkLocation, sectionHeight, position)).render(Vec3(position.x + chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X, position.y + sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y, position.z + chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z), data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
+            block.getBlockRenderer(BlockPosition(chunkLocation, sectionHeight, position)).render(Vec3(position.x + chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X, position.y + sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y, position.z + chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z), data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
         }
         return data.toFloatArray()
     }
@@ -136,7 +131,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
         textureMap[TextureArray.DEBUG_TEXTURE.name] = TextureArray.DEBUG_TEXTURE
 
         for (block in blocks) {
-            for (model in block.blockModels) {
+            for (model in block.blockRenderers) {
                 model.resolveTextures(textures, textureMap)
             }
         }

@@ -15,7 +15,8 @@ package de.bixilon.minosoft.data.mappings.blocks
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.data.world.BlockPosition
-import de.bixilon.minosoft.gui.rendering.chunk.models.BlockModel
+import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
+import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
 import java.util.*
 import kotlin.random.Random
 
@@ -23,6 +24,7 @@ data class Block(val identifier: ModIdentifier) {
     var rotation: BlockRotations = BlockRotations.NONE
     var properties: Set<BlockProperties> = setOf()
     val blockModels: MutableList<BlockModel> = mutableListOf()
+    val blockRenderers: MutableList<BlockRenderer> = mutableListOf()
 
     constructor(identifier: ModIdentifier, properties: Set<BlockProperties>, rotation: BlockRotations) : this(identifier) {
         this.properties = properties
@@ -112,11 +114,11 @@ data class Block(val identifier: ModIdentifier) {
         return String.format("%s%s", identifier, out)
     }
 
-    fun getBlockModel(position: BlockPosition): BlockModel {
+    fun getBlockRenderer(position: BlockPosition): BlockRenderer {
         if (Minosoft.getConfig().config.game.other.antiMoirePattern) {
             // ToDo: Support weight attribute
-            return blockModels.random(Random(position.hashCode()))
+            return blockRenderers.random(Random(position.hashCode()))
         }
-        return blockModels.iterator().next()
+        return blockRenderers.iterator().next()
     }
 }
