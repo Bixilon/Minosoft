@@ -53,38 +53,40 @@ class ChunkRenderer(private val connection: Connection, private val world: World
         val west = world.allChunks[chunkLocation.getLocationByDirection(Directions.WEST)]?.sections?.get(sectionHeight)
         val east = world.allChunks[chunkLocation.getLocationByDirection(Directions.EAST)]?.sections?.get(sectionHeight)
 
-        for ((position, block) in section.blocks) {
-            val blockBelow: Block? = if (position.y == 0 && below != null) {
-                below.getBlock(position.x, ProtocolDefinition.SECTION_HEIGHT_Y - 1, position.z)
+        for ((position, blockInfo) in section.blocks) {
+            val blockBelow: BlockInfo? = if (position.y == 0 && below != null) {
+                below.getBlockInfo(position.x, ProtocolDefinition.SECTION_HEIGHT_Y - 1, position.z)
             } else {
-                section.getBlock(position.getLocationByDirection(Directions.DOWN))
+                section.getBlockInfo(position.getLocationByDirection(Directions.DOWN))
             }
-            val blockAbove: Block? = if (position.y == ProtocolDefinition.SECTION_HEIGHT_Y - 1 && above != null) {
-                above.getBlock(position.x, 0, position.z)
+            val blockAbove: BlockInfo? = if (position.y == ProtocolDefinition.SECTION_HEIGHT_Y - 1 && above != null) {
+                above.getBlockInfo(position.x, 0, position.z)
             } else {
-                section.getBlock(position.getLocationByDirection(Directions.UP))
+                section.getBlockInfo(position.getLocationByDirection(Directions.UP))
             }
-            val blockNorth: Block? = if (position.z == 0 && north != null) {
-                north.getBlock(position.x, position.y, ProtocolDefinition.SECTION_WIDTH_Z - 1)
+            val blockNorth: BlockInfo? = if (position.z == 0 && north != null) {
+                north.getBlockInfo(position.x, position.y, ProtocolDefinition.SECTION_WIDTH_Z - 1)
             } else {
-                section.getBlock(position.getLocationByDirection(Directions.NORTH))
+                section.getBlockInfo(position.getLocationByDirection(Directions.NORTH))
             }
-            val blockSouth: Block? = if (position.z == ProtocolDefinition.SECTION_WIDTH_Z - 1 && south != null) {
-                south.getBlock(position.x, position.y, 0)
+            val blockSouth: BlockInfo? = if (position.z == ProtocolDefinition.SECTION_WIDTH_Z - 1 && south != null) {
+                south.getBlockInfo(position.x, position.y, 0)
             } else {
-                section.getBlock(position.getLocationByDirection(Directions.SOUTH))
+                section.getBlockInfo(position.getLocationByDirection(Directions.SOUTH))
             }
-            val blockWest: Block? = if (position.x == 0 && west != null) {
-                west.getBlock(ProtocolDefinition.SECTION_WIDTH_X - 1, position.y, position.x)
+            val blockWest: BlockInfo? = if (position.x == 0 && west != null) {
+                west.getBlockInfo(ProtocolDefinition.SECTION_WIDTH_X - 1, position.y, position.x)
             } else {
-                section.getBlock(position.getLocationByDirection(Directions.WEST))
+                section.getBlockInfo(position.getLocationByDirection(Directions.WEST))
             }
-            val blockEast: Block? = if (position.x == ProtocolDefinition.SECTION_WIDTH_X - 1 && east != null) {
-                east.getBlock(0, position.y, position.z)
+            val blockEast: BlockInfo? = if (position.x == ProtocolDefinition.SECTION_WIDTH_X - 1 && east != null) {
+                east.getBlockInfo(0, position.y, position.z)
             } else {
-                section.getBlock(position.getLocationByDirection(Directions.EAST))
+                section.getBlockInfo(position.getLocationByDirection(Directions.EAST))
             }
-            block.getBlockRenderer(BlockPosition(chunkLocation, sectionHeight, position)).render(Vec3(position.x + chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X, position.y + sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y, position.z + chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z), data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
+            val worldPosition = Vec3(position.x + chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X, position.y + sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y, position.z + chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z)
+
+            blockInfo.block.getBlockRenderer(BlockPosition(chunkLocation, sectionHeight, position)).render(blockInfo, worldPosition, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
         }
         return data.toFloatArray()
     }

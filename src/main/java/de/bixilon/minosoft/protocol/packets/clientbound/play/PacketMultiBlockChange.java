@@ -33,7 +33,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketMultiBlockChange extends ClientboundPacket {
     private final HashMap<InChunkLocation, Block> blocks = new HashMap<>();
-    ChunkLocation location;
+    private ChunkLocation location;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -89,16 +89,16 @@ public class PacketMultiBlockChange extends ClientboundPacket {
             return;
         }
         connection.fireEvent(new MultiBlockChangeEvent(connection, this));
-        chunk.setBlocks(getBlocks());
+        chunk.setRawBlocks(getBlocks());
 
         // tweak
         if (!connection.getVersion().isFlattened()) {
             for (Map.Entry<InChunkLocation, Block> entry : getBlocks().entrySet()) {
-                Block block = VersionTweaker.transformBlock(entry.getValue(), chunk, entry.getKey());
+                Block block = VersionTweaker.transformBlock(entry.getValue(), chunk, entry.getKey().getInChunkSectionLocation(), entry.getKey().getSectionHeight());
                 if (block == entry.getValue()) {
                     continue;
                 }
-                chunk.setBlock(entry.getKey(), block);
+                chunk.setRawBlock(entry.getKey(), block);
             }
         }
 

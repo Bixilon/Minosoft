@@ -30,19 +30,19 @@ public class World {
     private final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
     private final HashBiMap<Integer, Entity> entityIdMap = HashBiMap.create();
     private final HashBiMap<UUID, Entity> entityUUIDMap = HashBiMap.create();
-    boolean hardcore;
-    boolean raining;
-    Dimension dimension; // used for sky color, etc
+    private boolean hardcore;
+    private boolean raining;
+    private Dimension dimension; // used for sky color, etc
 
     public HashMap<ChunkLocation, Chunk> getAllChunks() {
         return this.chunks;
     }
 
     @Nullable
-    public Block getBlock(BlockPosition pos) {
+    public BlockInfo getBlockInfo(BlockPosition pos) {
         ChunkLocation loc = pos.getChunkLocation();
         if (getChunk(loc) != null) {
-            return getChunk(loc).getBlock(pos.getInChunkLocation());
+            return getChunk(loc).getBlockInfo(pos.getInChunkLocation());
         }
         return null;
     }
@@ -53,7 +53,7 @@ public class World {
 
     public void setBlock(BlockPosition pos, Block block) {
         if (getChunk(pos.getChunkLocation()) != null) {
-            getChunk(pos.getChunkLocation()).setBlock(pos.getInChunkLocation(), block);
+            getChunk(pos.getChunkLocation()).setRawBlock(pos.getInChunkLocation(), block);
         }
         // do nothing if chunk is unloaded
     }
@@ -125,16 +125,17 @@ public class World {
         if (chunk == null) {
             return;
         }
-        chunk.setBlockEntityData(position.getInChunkLocation(), data);
+        var section = chunk.getSections().get(position.getSectionHeight());
+        if (section == null) {
+            return;
+        }
+        var blockInfo = section.getBlockInfo(position.getInChunkSectionLocation());
+        if (blockInfo == null) {
+            return;
+        }
+        blockInfo.setMetaData(data);
     }
 
-    public BlockEntityMetaData getBlockEntityData(BlockPosition position) {
-        Chunk chunk = this.chunks.get(position.getChunkLocation());
-        if (chunk == null) {
-            return null;
-        }
-        return chunk.getBlockEntityData(position.getInChunkLocation());
-    }
 
     public void setBlockEntityData(HashMap<BlockPosition, BlockEntityMetaData> blockEntities) {
         blockEntities.forEach(this::setBlockEntityData);
