@@ -1,3 +1,16 @@
+/*
+ * Minosoft
+ * Copyright (C) 2021 Moritz Zwerger, Lukas Eisenhauer
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
 import com.google.gson.JsonObject
@@ -9,24 +22,26 @@ import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
 
-class BlockRenderer() {
+class BlockRenderer {
+    private val transparentFaces: MutableSet<Directions> = mutableSetOf()
+    private val cullFaces: MutableSet<Directions> = mutableSetOf()
     val textures: MutableMap<String, String> = mutableMapOf()
     private val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
     private val elements: MutableSet<ElementRenderer> = mutableSetOf()
-    private val rotation: Vec3 = Vec3()
     private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
 
-    constructor(entry: JsonObject, mapping: VersionMapping) : this() {
+    constructor(entry: JsonObject, mapping: VersionMapping) {
         loadElements(entry, mapping)
     }
 
     private fun loadElements(entry: JsonObject, mapping: VersionMapping) {
-        this.elements.addAll(ElementRenderer.createElements(entry, mapping))
+        val newElements = ElementRenderer.createElements(entry, mapping)
+        this.elements.addAll(newElements)
         val parent = mapping.blockModels[ModIdentifier(entry["model"].asString.replace("block/", ""))]
         textures.putAll(parent!!.textures)
     }
 
-    constructor(models: List<JsonObject>, mapping: VersionMapping) : this() {
+    constructor(models: List<JsonObject>, mapping: VersionMapping) {
         for (state in models) {
             loadElements(state, mapping)
         }
@@ -49,35 +64,42 @@ class BlockRenderer() {
                 textureMapping[key] = texture!!
             }
         }
+        for (direction in Directions.DIRECTIONS) {
+            for (element in elements) {
+                if (element.isCullFace(direction)) {
+                    cullFaces.add(direction)
+                }
+                if (textureMapping[element.getTexture(direction)]?.isTransparent == true) { // THIS IS BROKEN!
+                    transparentFaces.add(direction)
+                }
+                if (element.isFullTowards(direction)) {
+                    fullFaceDirections.add(direction)
+                }
+            }
+        }
     }
 
     fun render(position: Vec3, data: MutableList<Float>, neighbourBlocks: Array<Block?>) {
-        val modelMatrix = Mat4().translate(Vec3(position.x, position.y, position.z))
-            .rotate(rotation.z, Vec3(0, 0, -1))
-            .rotate(rotation.y, Vec3(0, -1, 0))
-            .rotate(rotation.x, Vec3(1, 0, 0 ))
-        // ToDo: this should be made easier/more efficient
+        val modelMatrix = Mat4().translate(position)
 
         for (direction in Directions.DIRECTIONS) {
             for (element in elements) {
-                val blockFullFace = fullFaceDirections.contains(direction)
+                val cullFace = cullFaces.contains(direction)
 
                 var neighbourBlockFullFace = false
-                neighbourBlocks[direction.ordinal]?.blockModels?.let { // ToDo: Improve this
+                neighbourBlocks[direction.ordinal]?.blockRenderers?.let { // ToDo: Improve this
+                    val testDirection = direction.inverse()
                     for (model in it) {
-                        if (model.fullFaceDirections.contains(direction.inverse())) {
+                        if (model.fullFaceDirections.contains(testDirection) && ! model.transparentFaces.contains(testDirection)) {
                             neighbourBlockFullFace = true
                             break
                         }
                     }
                 }
-                if (blockFullFace && neighbourBlockFullFace) {
+                if (neighbourBlockFullFace && cullFace) {
                     continue
                 }
-                if (!blockFullFace && neighbourBlockFullFace) {
-                    continue
-                }
-                element.render(textureMapping, modelMatrix, direction, rotation, data)
+                element.render(textureMapping, modelMatrix, direction, data)
             }
         }
     }

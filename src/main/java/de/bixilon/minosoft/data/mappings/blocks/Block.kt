@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger, Lukas Eisenhauer
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.mappings.blocks
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.data.world.BlockPosition
-import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
 import java.util.*
 import kotlin.random.Random
@@ -23,7 +22,6 @@ import kotlin.random.Random
 data class Block(val identifier: ModIdentifier) {
     var rotation: BlockRotations = BlockRotations.NONE
     var properties: Set<BlockProperties> = setOf()
-    val blockModels: MutableList<BlockModel> = mutableListOf()
     val blockRenderers: MutableList<BlockRenderer> = mutableListOf()
 
     constructor(identifier: ModIdentifier, properties: Set<BlockProperties>, rotation: BlockRotations) : this(identifier) {

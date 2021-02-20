@@ -14,17 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.loading
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.glm
 import glm_.vec3.Vec3
 
 open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
     val textures: MutableMap<String, String> = parent?.textures?.toMutableMap() ?: mutableMapOf()
-    private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
     var elements: MutableList<BlockModelElement> = parent?.elements?.toMutableList() ?: mutableListOf()
-    val fullFaceDirections: MutableSet<Directions> = parent?.fullFaceDirections?.toMutableSet() ?: mutableSetOf()
-    private var rotation: Vec3
+    var rotation: Vec3
     private var uvLock = false // ToDo
     private var rescale = false // ToDo
 
@@ -41,11 +37,9 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
         }
         json["elements"]?.let { it ->
             elements.clear()
-            fullFaceDirections.clear()
             for (element in it.asJsonArray) {
                 val blockModelElement = BlockModelElement(element.asJsonObject)
                 elements.add(blockModelElement)
-                fullFaceDirections.addAll(blockModelElement.fullFaceDirections)
             }
         }
         var rotateX = parent?.rotation?.x ?: 0f
@@ -69,7 +63,6 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
         rotation = glm.radians(Vec3(rotateX, rotateY, rotateZ))
     }
 
-
     private fun getTextureByType(type: String): String {
         var currentValue: String = type
         while (currentValue.startsWith("#")) {
@@ -81,24 +74,5 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
             }
         }
         return currentValue
-    }
-
-    fun isCullFace(direction: Directions): Boolean {
-        for (element in elements) {
-            if (element.isCullFace(direction)) {
-                return true
-            }
-        }
-        return false
-    }
-
-    fun isTransparent(direction: Directions): Boolean {
-        for (element in elements) {
-            if (textureMapping[element.getTexture(direction)]?.isTransparent == true) {
-                return true
-            }
-        }
-        return false
-
     }
 }

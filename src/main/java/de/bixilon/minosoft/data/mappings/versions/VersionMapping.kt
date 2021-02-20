@@ -56,7 +56,7 @@ class VersionMapping(var version: Version?) {
     private val dimensionIdMap = HashBiMap.create<Int, Dimension>()
     var dimensionIdentifierMap: HashBiMap<ModIdentifier, Dimension> = HashBiMap.create()
 
-    val blockIdMap = HashBiMap.create<Int, Block>(20000)
+    val blockIdMap: HashBiMap<Int, Block> = HashBiMap.create(20000)
 
     private val entityInformationMap = HashBiMap.create<Class<out Entity>, EntityInformation>(120)
     private val entityMetaIndexMap = HashMap<EntityMetaDataFields, Int>(180)
