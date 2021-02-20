@@ -86,7 +86,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
             }
             val worldPosition = Vec3(position.x + chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X, position.y + sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y, position.z + chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z)
 
-            blockInfo.block.getBlockRenderer(BlockPosition(chunkLocation, sectionHeight, position)).render(blockInfo, worldPosition, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
+            blockInfo.block.getBlockRenderer(BlockPosition(chunkLocation, sectionHeight, position)).render(blockInfo, worldPosition, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
         }
         return data.toFloatArray()
     }

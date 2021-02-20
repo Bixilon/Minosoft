@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.ModIdentifier
-import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.world.BlockInfo
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
@@ -79,7 +79,7 @@ class BlockRenderer {
         }
     }
 
-    fun render(position: Vec3, data: MutableList<Float>, neighbourBlocks: Array<Block?>) {
+    fun render(blockInfo: BlockInfo, position: Vec3, data: MutableList<Float>, neighbourBlocks: Array<BlockInfo?>) {
         val modelMatrix = Mat4().translate(position)
 
         for (direction in Directions.DIRECTIONS) {
@@ -87,10 +87,10 @@ class BlockRenderer {
                 val cullFace = cullFaces.contains(direction)
 
                 var neighbourBlockFullFace = false
-                neighbourBlocks[direction.ordinal]?.blockRenderers?.let { // ToDo: Improve this
+                neighbourBlocks[direction.ordinal]?.block?.blockRenderers?.let { // ToDo: Improve this
                     val testDirection = direction.inverse()
                     for (model in it) {
-                        if (model.fullFaceDirections.contains(testDirection) && ! model.transparentFaces.contains(testDirection)) {
+                        if (model.fullFaceDirections.contains(testDirection) && !model.transparentFaces.contains(testDirection)) {
                             neighbourBlockFullFace = true
                             break
                         }

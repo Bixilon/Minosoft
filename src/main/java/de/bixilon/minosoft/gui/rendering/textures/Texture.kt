@@ -36,6 +36,8 @@ class Texture(
     var animations: Int = 0
     var animationFrameTime: Int = 0
 
+    var tintIndex = 0
+
     fun load(assetsManager: AssetsManager) {
         if (loaded) {
             return
@@ -44,6 +46,10 @@ class Texture(
             name
         } else {
             "minecraft/textures/${name}.png"
+        }
+
+        if (texturePath == "minecraft/textures/block/grass_block_top.png") {
+            tintIndex = 1
         }
 
         val decoder = PNGDecoder(assetsManager.readAssetAsStream(texturePath))

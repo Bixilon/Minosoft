@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -72,6 +73,12 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
             data.add(texture.animationFrameTime.toFloat())
             data.add(texture.animations.toFloat())
             data.add(texture.heightFactor)
+
+            if (texture.tintIndex == 1) {
+                data.add(Float.fromBits(RGBColor(0x10, 0xee, 0x10).color))
+            } else {
+                data.add(0f)
+            }
         }
 
         fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>) {
@@ -109,7 +116,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
         }
 
         private fun vec3InJsonObject(json: JsonObject): Vec3 {
-            return Vec3(json["x"]?.asFloat?: 0, json["y"]?.asFloat?: 0, json["z"]?.asFloat?: 0)
+            return Vec3(json["x"]?.asFloat ?: 0, json["y"]?.asFloat ?: 0, json["z"]?.asFloat ?: 0)
         }
 
         val drawOrder = arrayOf(
@@ -119,7 +126,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
             Pair(2, 3),
             Pair(1, 0),
             Pair(0, 1),
-                               )
+        )
 
         private fun Array<Vec3>.containsAllVectors(set: Set<Vec3>?, margin: Float): Boolean {
             for (position in set!!) {
@@ -129,7 +136,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
                         isIn = true
                     }
                 }
-                if (! isIn) {
+                if (!isIn) {
                     return false
                 }
             }
