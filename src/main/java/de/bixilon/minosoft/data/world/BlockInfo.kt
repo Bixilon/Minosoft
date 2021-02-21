@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,24 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#version 330 core
+package de.bixilon.minosoft.data.world
 
-out vec4 outColor;
+import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData
+import de.bixilon.minosoft.data.mappings.blocks.Block
 
-in vec3 passTextureCoordinates;
-in vec4 passTintColor;
-
-uniform sampler2DArray blockTextureArray;
-
-void main() {
-    vec4 texelColor = texture(blockTextureArray, passTextureCoordinates);
-    if (texelColor.a == 0.0f) { // ToDo: This only works for alpha == 0. What about semi transparency? We would need to sort the faces, etc. See: https://learnopengl.com/Advanced-OpenGL/Blending
-        discard;
-    }
-    //vec3 mixedColor = mix(texelColor.rgb, passTintColor.rgb, passTintColor.a);
-    vec3 mixedColor = texelColor.rgb;
-    if (passTintColor.a > 0.0f){
-        mixedColor *= passTintColor.rgb;
-    }
-    outColor = vec4(mixedColor, texelColor.a);
+data class BlockInfo(
+    val block: Block,
+    var metaData: BlockEntityMetaData? = null,
+    val info: BlockFloatingInfo = BlockFloatingInfo(),
+) {
+    constructor(block: Block) : this(block, null) // ToDo: For java compatibility
 }

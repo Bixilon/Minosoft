@@ -57,11 +57,10 @@ public class PacketBlockChange extends ClientboundPacket {
 
         // tweak
         if (!connection.getVersion().isFlattened()) {
-            Block block = VersionTweaker.transformBlock(getBlock(), chunk, getPosition().getInChunkLocation());
-            section.setBlock(getPosition().getInChunkLocation().getInChunkSectionLocation(), block);
+            Block block = VersionTweaker.transformBlock(getBlock(), chunk, this.position.getInChunkSectionLocation(), this.position.getSectionHeight());
+            section.setRawBlock(getPosition().getInChunkLocation().getInChunkSectionLocation(), block);
         } else {
-            Log.debug("Replacing %s with %s", section.getBlock(getPosition().getInChunkLocation().getInChunkSectionLocation()), this.block);
-            section.setBlock(getPosition().getInChunkLocation().getInChunkSectionLocation(), getBlock());
+            section.setRawBlock(getPosition().getInChunkLocation().getInChunkSectionLocation(), getBlock());
         }
 
         connection.getRenderer().getRenderWindow().getChunkRenderer().prepareChunkSection(getPosition().getChunkLocation(), sectionHeight, section);

@@ -40,7 +40,13 @@ class WorldMesh(data: FloatArray) {
         glEnableVertexAttribArray(index++)
 
         glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (6 * Float.BYTES).toLong())
-        glEnableVertexAttribArray(index)
+        glEnableVertexAttribArray(index++)
+
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (9 * Float.BYTES).toLong())
+        glEnableVertexAttribArray(index++)
+
+        // don't remove the ++ above!
+        index.let { }
 
         // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
         glBindBuffer(GL_ARRAY_BUFFER, 0)
@@ -57,6 +63,6 @@ class WorldMesh(data: FloatArray) {
     }
 
     companion object {
-        private const val FLOATS_PER_VERTEX = 9
+        private const val FLOATS_PER_VERTEX = 10
     }
 }
