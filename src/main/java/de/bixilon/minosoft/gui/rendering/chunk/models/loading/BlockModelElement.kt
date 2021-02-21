@@ -49,7 +49,8 @@ open class BlockModelElement(data: JsonObject) {
             val rotation = it.asJsonObject
             val axis = Axes.valueOf(rotation["axis"].asString.toUpperCase())
             val angle = glm.radians(rotation["angle"].asDouble)
-            rotatePositions(positions, axis, angle, jsonArrayToVec3(rotation["origin"].asJsonArray))
+            val rescale = data["rescale"]?.asBoolean ?: false
+            rotatePositions(positions, axis, angle, jsonArrayToVec3(rotation["origin"].asJsonArray), rescale)
         }
         data["faces"]?.let {
             for ((directionName, json) in it.asJsonObject.entrySet()) {
@@ -115,7 +116,7 @@ open class BlockModelElement(data: JsonObject) {
             }
         }
 
-        fun rotatePositions(positions: Array<Vec3>, axis: Axes, angle: Double, origin: Vec3) {
+        fun rotatePositions(positions: Array<Vec3>, axis: Axes, angle: Double, origin: Vec3, rescale: Boolean) {
             // TODO: optimize for 90deg, 180deg, 270deg rotations
             if (angle == 0.0) {
                 return
@@ -123,6 +124,9 @@ open class BlockModelElement(data: JsonObject) {
             for ((i, position) in positions.withIndex()) {
                 var transformedPosition = position - origin
                 transformedPosition = rotateVector(transformedPosition, angle, axis)
+                if (rescale) {
+                    transformedPosition = transformedPosition / glm.cos(angle)
+                }
                 positions[i] = transformedPosition + origin
             }
         }

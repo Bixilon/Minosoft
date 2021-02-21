@@ -28,14 +28,14 @@ import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
-class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolean) {
+class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolean, rescale: Boolean) {
     private val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
     private val faces: MutableMap<Directions, BlockModelFace> = element.faces
     private var positions: Array<Vec3> = element.positions.clone()
     private val directionMapping: MutableMap<Directions, Directions> = mutableMapOf()
 
     init {
-        rotatePositionsAxes(positions, rotation)
+        rotatePositionsAxes(positions, rotation, rescale)
         // TODO : uvlock
         for (direction in Directions.DIRECTIONS) {
             if (positions.containsAllVectors(BlockModelElement.fullTestPositions[direction], 0.0001f)) { // TODO: check if texture is transparent ==> && ! texture.isTransparent
@@ -47,7 +47,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
 
 
     fun render(textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, data: MutableList<Float>) {
-        val realDirection = directionMapping[direction]!! // BlockModelElement.getRotatedDirection(rotation, direction)
+        val realDirection = directionMapping[direction]!!
         val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
 
         val face = faces[realDirection] ?: return // Not our face
@@ -100,10 +100,11 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
         fun createElements(state: JsonObject, mapping: VersionMapping): MutableList<ElementRenderer> {
             val rotation = glm.radians(vec3InJsonObject(state))
             val uvlock = state["uvlock"]?.asBoolean ?: false
+            val rescale = state["rescale"]?.asBoolean ?: false
             val parentElements = mapping.blockModels[ModIdentifier(state["model"].asString.replace("block/", ""))]!!.elements
             val result: MutableList<ElementRenderer> = mutableListOf()
             for (parentElement in parentElements) {
-                result.add(ElementRenderer(parentElement, rotation, uvlock))
+                result.add(ElementRenderer(parentElement, rotation, uvlock, rescale))
             }
             return result
         }
@@ -145,13 +146,13 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
             return Directions.byDirection(BlockModelElement.rotateVector(rotatedDirectionVector, rotation.x.toDouble(), Axes.X))
         }
 
-        fun rotatePositionsAxes(positions: Array<Vec3>, angles: Vec3) {
+        fun rotatePositionsAxes(positions: Array<Vec3>, angles: Vec3, rescale: Boolean) {
             if (angles == Vec3()) {
                 return
             }
-            BlockModelElement.rotatePositions(positions, Axes.X, angles.x.toDouble(), Vec3())
-            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y.toDouble(), Vec3())
-            BlockModelElement.rotatePositions(positions, Axes.Z, angles.z.toDouble(), Vec3())
+            BlockModelElement.rotatePositions(positions, Axes.X, angles.x.toDouble(), Vec3(), rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y.toDouble(), Vec3(), rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Z, angles.z.toDouble(), Vec3(), rescale)
         }
     }
 }
