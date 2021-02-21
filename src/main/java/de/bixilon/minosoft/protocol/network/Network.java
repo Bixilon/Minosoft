@@ -49,7 +49,6 @@ public abstract class Network {
         return this.lastException;
     }
 
-
     protected ClientboundPacket receiveClientboundPacket(byte[] bytes) throws PacketParseException {
         if (this.compressionThreshold >= 0) {
             // compression is enabled

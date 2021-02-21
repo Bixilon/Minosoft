@@ -10,25 +10,12 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.mappings
 
-#version 330 core
+data class Biome(val identifier: ModIdentifier) {
+    val temperature = 0.95f
 
-out vec4 outColor;
-
-in vec3 passTextureCoordinates;
-in vec4 passTintColor;
-
-uniform sampler2DArray blockTextureArray;
-
-void main() {
-    vec4 texelColor = texture(blockTextureArray, passTextureCoordinates);
-    if (texelColor.a == 0.0f) { // ToDo: This only works for alpha == 0. What about semi transparency? We would need to sort the faces, etc. See: https://learnopengl.com/Advanced-OpenGL/Blending
-        discard;
+    override fun toString(): String {
+        return identifier.toString()
     }
-    //vec3 mixedColor = mix(texelColor.rgb, passTintColor.rgb, passTintColor.a);
-    vec3 mixedColor = texelColor.rgb;
-    if (passTintColor.a > 0.0f){
-        mixedColor *= passTintColor.rgb;
-    }
-    outColor = vec4(mixedColor, texelColor.a);
 }

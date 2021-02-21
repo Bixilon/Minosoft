@@ -19,7 +19,10 @@ layout (location = 2) in int textureLayer;
 
 layout (location = 3) in vec3 animatedTextureData;
 
+layout (location = 4) in uint tintColor;
+
 out vec3 passTextureCoordinates;
+out vec4 passTintColor;
 
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
@@ -28,6 +31,8 @@ uniform int animationTick;
 
 void main() {
     gl_Position = projectionMatrix * viewMatrix * vec4(inPosition, 1.0f);
+    passTintColor = vec4(((tintColor >> 24u) & 0xFFu) / 255.0f, ((tintColor >> 16u) & 0xFFu) / 255.0f, ((tintColor >> 8u) & 0xFFu) / 255.0f, (tintColor & 0xFFu) / 255.0f);
+
     if (animatedTextureData.y == 1.0f) {
         passTextureCoordinates = vec3(textureIndex, textureLayer);
         return;

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.util;
 
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.world.BlockInfo;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkSection;
 import de.bixilon.minosoft.data.world.InChunkSectionLocation;
@@ -24,6 +25,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.Map;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
@@ -56,7 +58,7 @@ public final class ChunkUtil {
             HashMap<Integer, ChunkSection> sectionMap = new HashMap<>();
             for (int c = 0; c < ProtocolDefinition.SECTIONS_PER_CHUNK; c++) { // max sections per chunks in chunk column
                 if (BitByte.isBitSet(sectionBitMasks[0], c)) {
-                    HashMap<InChunkSectionLocation, Block> blockMap = new HashMap<>();
+                    HashMap<InChunkSectionLocation, BlockInfo> blockMap = new HashMap<>();
 
                     for (int nibbleY = 0; nibbleY < ProtocolDefinition.SECTION_HEIGHT_Y; nibbleY++) {
                         for (int nibbleZ = 0; nibbleZ < ProtocolDefinition.SECTION_WIDTH_Z; nibbleZ++) {
@@ -84,12 +86,12 @@ public final class ChunkUtil {
                                     continue;
                                 }
                                 Block block = buffer.getConnection().getMapping().getBlock(fullBlockId);
-                                blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), block);
+                                blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), new BlockInfo(block));
                                 arrayPos++;
                             }
                         }
                     }
-                    sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap));
+                    sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap, Map.of())); // ToDo
                 }
             }
             return new Chunk(sectionMap);
@@ -120,7 +122,7 @@ public final class ChunkUtil {
                 if (!BitByte.isBitSet(sectionBitMasks[0], c)) {
                     continue;
                 }
-                HashMap<InChunkSectionLocation, Block> blockMap = new HashMap<>();
+                HashMap<InChunkSectionLocation, BlockInfo> blockMap = new HashMap<>();
 
                 for (int nibbleY = 0; nibbleY < ProtocolDefinition.SECTION_HEIGHT_Y; nibbleY++) {
                     for (int nibbleZ = 0; nibbleZ < ProtocolDefinition.SECTION_WIDTH_Z; nibbleZ++) {
@@ -131,12 +133,12 @@ public final class ChunkUtil {
                                 arrayPos++;
                                 continue;
                             }
-                            blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), block);
+                            blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), new BlockInfo(block));
                             arrayPos++;
                         }
                     }
                 }
-                sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap));
+                sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap, Map.of()));
             }
             return new Chunk(sectionMap);
         }
@@ -156,7 +158,7 @@ public final class ChunkUtil {
 
             long[] data = buffer.readLongArray();
 
-            HashMap<InChunkSectionLocation, Block> blockMap = new HashMap<>();
+            HashMap<InChunkSectionLocation, BlockInfo> blockMap = new HashMap<>();
             for (int nibbleY = 0; nibbleY < ProtocolDefinition.SECTION_HEIGHT_Y; nibbleY++) {
                 for (int nibbleZ = 0; nibbleZ < ProtocolDefinition.SECTION_WIDTH_Z; nibbleZ++) {
                     for (int nibbleX = 0; nibbleX < ProtocolDefinition.SECTION_WIDTH_X; nibbleX++) {
@@ -187,7 +189,7 @@ public final class ChunkUtil {
                         if (block == null) {
                             continue;
                         }
-                        blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), block);
+                        blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), new BlockInfo(block));
                     }
                 }
             }
@@ -199,7 +201,7 @@ public final class ChunkUtil {
                 }
             }
 
-            sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap));
+            sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap, Map.of()));
         }
         if (buffer.getVersionId() < V_19W36A) {
             byte[] biomes = buffer.readBytes(256);

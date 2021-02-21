@@ -49,7 +49,7 @@ open class BlockModelElement(data: JsonObject) {
             val rotation = it.asJsonObject
             val axis = Axes.valueOf(rotation["axis"].asString.toUpperCase())
             val angle = glm.radians(rotation["angle"].asDouble)
-            val rescale = data["rescale"]?.asBoolean ?: false
+            val rescale = rotation["rescale"]?.asBoolean ?: false
             rotatePositions(positions, axis, angle, jsonArrayToVec3(rotation["origin"].asJsonArray), rescale)
         }
         data["faces"]?.let {
