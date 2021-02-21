@@ -17,12 +17,12 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import java.util.*
 
 class BlockModelFace(data: JsonObject, from: Vec3, to: Vec3, direction: Directions) {
     val textureName: String = data.get("texture").asString.removePrefix("#")
     val cullFace: Directions?
-
-    private var positions: Array<Vec2>
+    private var positions: MutableList<Vec2>
 
     init {
         var textureStart = Vec2(0, 0)
@@ -45,13 +45,6 @@ class BlockModelFace(data: JsonObject, from: Vec3, to: Vec3, direction: Directio
             textureStart = Vec2(it[0].asFloat, it[1].asFloat)
             textureEnd = Vec2(it[2].asFloat, it[3].asFloat)
         }
-        positions = arrayOf(
-            uvToFloat(Vec2(textureStart.x, textureStart.y)),
-            uvToFloat(Vec2(textureStart.x, textureEnd.y)),
-            uvToFloat(Vec2(textureEnd.x, textureEnd.y)),
-            uvToFloat(Vec2(textureEnd.x, textureStart.y)),
-        )
-
         cullFace = data["cullface"]?.asString?.let {
             return@let if (it == "bottom") {
                 Directions.DOWN
@@ -59,12 +52,14 @@ class BlockModelFace(data: JsonObject, from: Vec3, to: Vec3, direction: Directio
                 Directions.valueOf(it.toUpperCase())
             }
         }
-        positions = arrayOf(
+        positions = mutableListOf(
             Vec2(uvToFloat(textureStart.x),  uvToFloat(textureStart.y)),
             Vec2(uvToFloat(textureStart.x),  uvToFloat(textureEnd.y)),
             Vec2(uvToFloat(textureEnd.x),    uvToFloat(textureEnd.y)),
             Vec2(uvToFloat(textureEnd.x),    uvToFloat(textureStart.y)),
         )
+        val rotation = data["rotation"]?.asInt?.div(90) ?: 0
+        Collections.rotate(positions, rotation)
     }
 
     fun getTexturePositionArray(direction: Directions): Array<Vec2?> {
