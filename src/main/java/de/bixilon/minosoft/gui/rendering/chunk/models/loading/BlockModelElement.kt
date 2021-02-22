@@ -18,6 +18,7 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
 import glm_.glm
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
 open class BlockModelElement(data: JsonObject) {
@@ -96,22 +97,23 @@ open class BlockModelElement(data: JsonObject) {
             Directions.NORTH to setOf(POSITION_3, POSITION_4, POSITION_7, POSITION_8),
         )
 
+        fun getRotatedValues(x: Float, y: Float, sin: Double, cos: Double): Vec2 {
+            return Vec2((x * cos - y * sin).toFloat(), (x * sin + y * cos).toFloat())
+        }
+
         fun rotateVector(original: Vec3, angle: Double, axis: Axes): Vec3 {
-            fun getRotatedValues(x: Float, y: Float, sin: Double, cos: Double): Pair<Float, Float> {
-                return Pair((x * cos - y * sin).toFloat(), (x * sin + y * cos).toFloat())
-            }
             return when (axis) {
                 Axes.X -> {
                     val rotatedValues = getRotatedValues(original.y, original.z, glm.sin(angle), glm.cos(angle))
-                    Vec3(original.x, rotatedValues.first, rotatedValues.second)
+                    Vec3(original.x, rotatedValues)
                 }
                 Axes.Y -> {
                     val rotatedValues = getRotatedValues(original.x, original.z, glm.sin(angle), glm.cos(angle))
-                    Vec3(rotatedValues.first, original.y, rotatedValues.second)
+                    Vec3(rotatedValues.x, original.y, rotatedValues.y)
                 }
                 Axes.Z -> {
                     val rotatedValues = getRotatedValues(original.x, original.y, glm.sin(angle), glm.cos(angle))
-                    Vec3(rotatedValues.first, rotatedValues.second, original.z)
+                    Vec3(rotatedValues.x, rotatedValues.y, original.z)
                 }
             }
         }

@@ -31,7 +31,7 @@ import glm_.vec4.Vec4
 
 class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolean, rescale: Boolean) {
     private val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
-    private val faces: MutableMap<Directions, BlockModelFace> = element.faces
+    private val faces: MutableMap<Directions, BlockModelFace> = HashMap(element.faces)
     private var positions: Array<Vec3> = element.positions.clone()
     private val directionMapping: MutableMap<Directions, Directions> = mutableMapOf()
 
@@ -43,6 +43,9 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
                 fullFaceDirections.add(direction)
             }
             directionMapping[direction] = getRotatedDirection(rotation, direction)
+            for (face in faces.values) {
+                face.rotate(rotation.y.toDouble())
+            }
         }
     }
 
@@ -111,7 +114,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
             val parentElements = mapping.blockModels[ModIdentifier(state["model"].asString.replace("block/", ""))]!!.elements
             val result: MutableList<ElementRenderer> = mutableListOf()
             for (parentElement in parentElements) {
-                result.add(ElementRenderer(parentElement, rotation, uvlock, rescale))
+                result.add(ElementRenderer(parentElement, rotation, true, rescale)) // uvlock is not yet implemented in the data generator
             }
             return result
         }
