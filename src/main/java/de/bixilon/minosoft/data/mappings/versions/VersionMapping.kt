@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.mappings.versions
 
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.EntityClassMappings
 import de.bixilon.minosoft.data.entities.EntityInformation
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -126,10 +127,33 @@ class VersionMapping(var version: Version?) {
         biomeRegistry.initialize(pixlyzerData["biomes"]?.asJsonObject, this, Biome.Companion)
         dimensionRegistry.initialize(pixlyzerData["dimensions"]?.asJsonObject, this, Dimension.Companion)
 
-
+        loadEntities(pixlyzerData["entities"]?.asJsonObject)
         // post init
         biomeRegistry.postInit(this)
         isFullyLoaded = true
+    }
+
+    private fun loadEntities(data: JsonObject?) {
+        if (data == null) {
+            return
+        }
+
+        for ((identifierName, entity) in data.entrySet()) {
+            check(entity is JsonObject)
+            val identifier = ModIdentifier(identifierName)
+            EntityClassMappings.getByIdentifier(identifier)?.let {
+                // not abstract
+                entityInformationMap[it] = EntityInformation.deserialize(identifier, entity)
+                entityIdClassMap[entity["id"].asInt] = it
+            }
+            entity["meta"]?.asJsonObject?.let {
+                for ((minosoftFieldName, index) in it.entrySet()) {
+                    val minosoftField = EntityMetaDataFields.valueOf(minosoftFieldName)
+                    entityMetaIndexMap[minosoftField] = index.asInt
+                }
+            }
+
+        }
     }
 
 

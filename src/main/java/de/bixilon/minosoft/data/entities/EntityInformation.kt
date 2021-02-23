@@ -17,15 +17,23 @@ import de.bixilon.minosoft.data.mappings.ModIdentifier
 
 data class EntityInformation(
     val identifier: ModIdentifier,
+    val descriptionId: String?,
     val width: Float,
     val height: Float,
+    val size_fixed: Boolean,
+    val fireImmune: Boolean,
 ) {
 
     companion object {
-        fun deserialize(identifier: ModIdentifier, data: JsonObject): EntityInformation? {
-            return if (data.has("width") && data.has("height")) {
-                EntityInformation(identifier, data["width"].asFloat, data["height"].asFloat)
-            } else null
+        fun deserialize(identifier: ModIdentifier, data: JsonObject): EntityInformation {
+            return EntityInformation(
+                identifier = identifier,
+                descriptionId = data["description_id"]?.asString,
+                width = data["width"].asFloat,
+                height = data["height"].asFloat,
+                fireImmune = data["fire_immune"]?.asBoolean ?: false,
+                size_fixed = data["site_fixed"]?.asBoolean ?: false
+            )
         }
     }
 }
