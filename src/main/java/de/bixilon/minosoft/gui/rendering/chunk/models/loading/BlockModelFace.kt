@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.models.loading
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
+import glm_.Java.Companion.glm
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import java.util.*
@@ -53,10 +54,10 @@ class BlockModelFace(data: JsonObject, from: Vec3, to: Vec3, direction: Directio
             }
         }
         positions = mutableListOf(
-            Vec2(uvToFloat(textureStart.x),  uvToFloat(textureStart.y)),
-            Vec2(uvToFloat(textureStart.x),  uvToFloat(textureEnd.y)),
-            Vec2(uvToFloat(textureEnd.x),    uvToFloat(textureEnd.y)),
-            Vec2(uvToFloat(textureEnd.x),    uvToFloat(textureStart.y)),
+            uvToFloat(Vec2(textureStart.x, textureStart.y)),
+            uvToFloat(Vec2(textureStart.x, textureEnd.y)),
+            uvToFloat(Vec2(textureEnd.x,   textureEnd.y)),
+            uvToFloat(Vec2(textureEnd.x,   textureStart.y)),
         )
         val rotation = data["rotation"]?.asInt?.div(90) ?: 0
         Collections.rotate(positions, rotation)
@@ -71,6 +72,17 @@ class BlockModelFace(data: JsonObject, from: Vec3, to: Vec3, direction: Directio
         return result
     }
 
+    fun rotate(angle: Double) {
+        if (angle == 0.0) {
+            return
+        }
+        val sin = glm.sin(angle)
+        val cos = glm.cos(angle)
+        for (i in positions.indices) {
+            val offset = positions[i] - Vec2(0.5f, 0.5f)
+            positions[i] = BlockModelElement.getRotatedValues(offset.x, offset.y, sin, cos) + Vec2(0.5f, 0.5f)
+        }
+    }
 
     companion object {
         private fun uvToFloat(uv: Float): Float {
