@@ -28,12 +28,12 @@ public class ZombieVillager extends Zombie {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Is converting")
+    @EntityMetaDataFunction(name = "Is converting")
     public boolean isConverting() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ZOMBIE_VILLAGER_IS_CONVERTING);
     }
 
-    @EntityMetaDataFunction(identifier = "Villager data")
+    @EntityMetaDataFunction(name = "Villager data")
     public VillagerData getVillagerData() {
         return this.metaData.getSets().getVillagerData(EntityMetaDataFields.ZOMBIE_VILLAGER_DATA);
     }

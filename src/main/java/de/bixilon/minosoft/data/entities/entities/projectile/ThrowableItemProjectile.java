@@ -28,7 +28,7 @@ public abstract class ThrowableItemProjectile extends ThrowableProjectile {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Item")
+    @EntityMetaDataFunction(name = "Item")
     public Slot getItem() {
         Slot slot = this.metaData.getSets().getSlot(EntityMetaDataFields.THROWABLE_ITEM_PROJECTILE_ITEM);
         if (slot == null) {

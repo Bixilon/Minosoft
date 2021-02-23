@@ -25,7 +25,7 @@ public class ModInfo {
     private final String name;
     private final String[] authors;
     private final int moddingAPIVersion;
-    private final String identifier;
+    private final String resourceNamespace;
     private final String mainClass;
     private final HashSet<ModDependency> hardDependencies = new HashSet<>();
     private final HashSet<ModDependency> softDependencies = new HashSet<>();
@@ -44,7 +44,7 @@ public class ModInfo {
         if (this.moddingAPIVersion > ModLoader.CURRENT_MODDING_API_VERSION) {
             throw new ModLoadingException(String.format("Mod was written with for a newer version of minosoft (moddingAPIVersion=%d, expected=%d)", this.moddingAPIVersion, ModLoader.CURRENT_MODDING_API_VERSION));
         }
-        this.identifier = json.get("identifier").getAsString();
+        this.resourceNamespace = json.get("resourceNamespace").getAsString();
         this.mainClass = json.get("mainClass").getAsString();
         if (json.has("loading")) {
             JsonObject loading = json.getAsJsonObject("loading");
@@ -68,8 +68,8 @@ public class ModInfo {
         return this.authors;
     }
 
-    public String getIdentifier() {
-        return this.identifier;
+    public String getResourceNamespace() {
+        return this.resourceNamespace;
     }
 
     public String getMainClass() {
@@ -90,7 +90,7 @@ public class ModInfo {
         return this.modVersionIdentifier.getVersionId();
     }
 
-    public ModVersionIdentifier getModIdentifier() {
+    public ModVersionIdentifier getModVersionIdentifier() {
         return this.modVersionIdentifier;
     }
 

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.Tag;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
@@ -44,8 +44,8 @@ public class PacketTags extends ClientboundPacket {
         }
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
-            ModIdentifier identifier = buffer.readIdentifier();
-            switch (identifier.getFullIdentifier()) {
+            ResourceLocation resourceLocation = buffer.readResourceLocation();
+            switch (resourceLocation.getFull()) {
                 case "minecraft:block" -> this.blockTags = readTags(buffer);
                 case "minecraft:item" -> this.itemTags = readTags(buffer);
                 case "minecraft:fluid" -> this.fluidTags = readTags(buffer);
@@ -59,7 +59,7 @@ public class PacketTags extends ClientboundPacket {
     private Tag[] readTags(InByteBuffer buffer) {
         Tag[] ret = new Tag[buffer.readVarInt()];
         for (int i = 0; i < ret.length; i++) {
-            ret[i] = new Tag(buffer.readIdentifier(), buffer.readVarIntArray());
+            ret[i] = new Tag(buffer.readResourceLocation(), buffer.readVarIntArray());
         }
         return ret;
     }

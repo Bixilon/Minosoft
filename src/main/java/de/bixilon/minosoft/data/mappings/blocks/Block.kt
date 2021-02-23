@@ -13,15 +13,16 @@
 package de.bixilon.minosoft.data.mappings.blocks
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.IdentifierDeserializer
 import de.bixilon.minosoft.data.mappings.Item
-import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.data.mappings.RegistryItem
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 
 data class Block(
-    val identifier: ModIdentifier,
+    val resourceLocation: ResourceLocation,
     val explosionResistance: Float = 0.0f,
     val hasCollision: Boolean = false,
     val hasDynamicShape: Boolean = false,
@@ -35,14 +36,15 @@ data class Block(
         item = versionMapping.itemRegistry.get(itemId)!!
     }
 
-    companion object : IdentifierDeserializer<Block> {
-        override fun deserialize(mappings: VersionMapping, identifier: ModIdentifier, data: JsonObject): Block {
+    companion object : ResourceLocationDeserializer<Block> {
+        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Block {
+
             val block = Block(
-                identifier = identifier,
+                resourceLocation = resourceLocation,
                 explosionResistance = data["explosion_resistance"]?.asFloat ?: 0.0f,
                 hasCollision = data["has_collision"]?.asBoolean ?: false,
                 hasDynamicShape = data["has_dynamic_shape"]?.asBoolean ?: false,
-                tintColor = data["tint_color"]?.asInt?.let { RGBColor.noAlpha(it) },
+                tintColor = data["tint_color"]?.asInt?.let { TintColorCalculator.getColor(it) },
                 itemId = data["item"]?.asInt ?: 0,
             )
 

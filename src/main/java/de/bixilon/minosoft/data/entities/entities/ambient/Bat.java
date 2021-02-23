@@ -31,7 +31,7 @@ public class Bat extends AmbientCreature {
         return this.metaData.getSets().getBitMask(EntityMetaDataFields.BAT_FLAGS, bitMask);
     }
 
-    @EntityMetaDataFunction(identifier = "Hanging")
+    @EntityMetaDataFunction(name = "Hanging")
     public boolean isHanging() {
         return getBatFlag(0x01);
     }

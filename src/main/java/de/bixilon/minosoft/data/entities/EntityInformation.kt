@@ -13,10 +13,10 @@
 package de.bixilon.minosoft.data.entities
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 
 data class EntityInformation(
-    val identifier: ModIdentifier,
+    val resourceLocation: ResourceLocation,
     val descriptionId: String?,
     val width: Float,
     val height: Float,
@@ -25,9 +25,9 @@ data class EntityInformation(
 ) {
 
     companion object {
-        fun deserialize(identifier: ModIdentifier, data: JsonObject): EntityInformation {
+        fun deserialize(resourceLocation: ResourceLocation, data: JsonObject): EntityInformation {
             return EntityInformation(
-                identifier = identifier,
+                resourceLocation = resourceLocation,
                 descriptionId = data["description_id"]?.asString,
                 width = data["width"].asFloat,
                 height = data["height"].asFloat,

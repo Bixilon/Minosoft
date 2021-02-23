@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.commands.parser
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidItemPredicateCommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.ItemNotFoundCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.ItemNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.inventory.Slot
 import de.bixilon.minosoft.protocol.network.Connection
@@ -31,7 +31,7 @@ class ItemStackParser : CommandParser() {
             }
             stringReader.skip()
         }
-        val argument = stringReader.readModIdentifier() // ToDo: Check predicates
+        val argument = stringReader.readResourceLocation() // ToDo: Check predicates
         val item = connection.mapping.itemRegistry.get(argument.value)
         check(item != null) {
             throw ItemNotFoundCommandParseException(stringReader, argument.key)

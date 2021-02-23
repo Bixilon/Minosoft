@@ -19,7 +19,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.StaticConfiguration;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.Util;
@@ -326,8 +326,8 @@ public class AssetsManager {
         return readAssetAsStreamByHash(hash);
     }
 
-    public InputStream readAssetAsStream(ModIdentifier identifier) throws IOException {
-        return readAssetAsStream(identifier.getMod() + "/" + identifier.getIdentifier());
+    public InputStream readAssetAsStream(ResourceLocation resourceLocation) throws IOException {
+        return readAssetAsStream(resourceLocation.getNamespace() + "/" + resourceLocation.getPath());
     }
 
     public JsonElement readJsonAsset(String name) throws IOException {

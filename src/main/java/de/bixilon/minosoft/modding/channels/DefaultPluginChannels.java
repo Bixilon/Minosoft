@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.modding.channels;
 
-import de.bixilon.minosoft.data.ChangeableIdentifier;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.ChangeableResourceLocation;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 
 import java.util.Map;
 
@@ -22,27 +22,27 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.LOWEST_VERS
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_PRE3;
 
 public enum DefaultPluginChannels {
-    MC_BRAND(new ChangeableIdentifier(Map.of(LOWEST_VERSION_SUPPORTED, "MC|Brand", V_1_13_PRE3, "minecraft:brand"))),
-    STOP_SOUND(new ChangeableIdentifier("MC|StopSound")),
-    REGISTER(new ChangeableIdentifier(Map.of(LOWEST_VERSION_SUPPORTED, "REGISTER", V_1_13_PRE3, "minecraft:register"))),
-    UNREGISTER(new ChangeableIdentifier(Map.of(LOWEST_VERSION_SUPPORTED, "UNREGISTER", V_1_13_PRE3, "minecraft:unregister")));
+    MC_BRAND(new ChangeableResourceLocation(Map.of(LOWEST_VERSION_SUPPORTED, "MC|Brand", V_1_13_PRE3, "minecraft:brand"))),
+    STOP_SOUND(new ChangeableResourceLocation("MC|StopSound")),
+    REGISTER(new ChangeableResourceLocation(Map.of(LOWEST_VERSION_SUPPORTED, "REGISTER", V_1_13_PRE3, "minecraft:register"))),
+    UNREGISTER(new ChangeableResourceLocation(Map.of(LOWEST_VERSION_SUPPORTED, "UNREGISTER", V_1_13_PRE3, "minecraft:unregister")));
 
-    private final ChangeableIdentifier changeableIdentifier;
+    private final ChangeableResourceLocation changeableResourceLocation;
 
-    DefaultPluginChannels(ChangeableIdentifier changeableIdentifier) {
-        this.changeableIdentifier = changeableIdentifier;
+    DefaultPluginChannels(ChangeableResourceLocation changeableResourceLocation) {
+        this.changeableResourceLocation = changeableResourceLocation;
     }
 
-    public static DefaultPluginChannels byIdentifier(ModIdentifier identifier, int versionId) {
+    public static DefaultPluginChannels byResourceLocation(ResourceLocation resourceLocation, int versionId) {
         for (DefaultPluginChannels channel : values()) {
-            if (channel.getChangeableIdentifier().get(versionId).equals(identifier)) {
+            if (channel.getChangeableResourceLocation().get(versionId).equals(resourceLocation)) {
                 return channel;
             }
         }
         return null;
     }
 
-    public ChangeableIdentifier getChangeableIdentifier() {
-        return this.changeableIdentifier;
+    public ChangeableResourceLocation getChangeableResourceLocation() {
+        return this.changeableResourceLocation;
     }
 }

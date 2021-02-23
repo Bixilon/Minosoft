@@ -28,7 +28,7 @@ public abstract class Raider extends PatrollingMonster {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Is celebrating")
+    @EntityMetaDataFunction(name = "Is celebrating")
     public boolean isCelebrating() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.RAIDER_IS_CELEBRATING);
     }

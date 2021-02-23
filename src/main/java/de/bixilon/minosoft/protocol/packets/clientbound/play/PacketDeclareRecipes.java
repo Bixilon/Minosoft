@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.inventory.Slot;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.recipes.Ingredient;
 import de.bixilon.minosoft.data.mappings.recipes.Recipe;
 import de.bixilon.minosoft.data.mappings.recipes.RecipeTypes;
@@ -27,20 +27,20 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W03A;
 
 public class PacketDeclareRecipes extends ClientboundPacket {
-    private final HashBiMap<ModIdentifier, Recipe> recipes = HashBiMap.create();
+    private final HashBiMap<ResourceLocation, Recipe> recipes = HashBiMap.create();
 
     @Override
     public boolean read(InByteBuffer buffer) {
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
             Recipe recipe;
-            ModIdentifier identifier;
+            ResourceLocation resourceLocation;
             String typeName;
             if (buffer.getVersionId() >= V_19W03A) { // ToDo: find out version
                 typeName = buffer.readString();
-                identifier = buffer.readIdentifier();
+                resourceLocation = buffer.readResourceLocation();
             } else {
-                identifier = buffer.readIdentifier();
+                resourceLocation = buffer.readResourceLocation();
                 typeName = buffer.readString();
             }
             RecipeTypes type = RecipeTypes.byName(typeName);
@@ -81,7 +81,7 @@ public class PacketDeclareRecipes extends ClientboundPacket {
                 }
                 default -> recipe = new Recipe(type);
             }
-            this.recipes.put(identifier, recipe);
+            this.recipes.put(resourceLocation, recipe);
         }
         return true;
     }
@@ -96,7 +96,7 @@ public class PacketDeclareRecipes extends ClientboundPacket {
         Log.protocol(String.format("[IN] Received declare recipe packet (recipeLength=%d)", this.recipes.size()));
     }
 
-    public HashBiMap<ModIdentifier, Recipe> getRecipes() {
+    public HashBiMap<ResourceLocation, Recipe> getRecipes() {
         return this.recipes;
     }
 }

@@ -16,18 +16,18 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 data class Motive(
-    val identifier: ModIdentifier,
+    val resourceLocation: ResourceLocation,
     val width: Int,
     val height: Int,
 ) : RegistryItem {
     override fun toString(): String {
-        return identifier.toString()
+        return resourceLocation.toString()
     }
 
-    companion object : IdentifierDeserializer<Motive> {
-        override fun deserialize(mappings: VersionMapping, identifier: ModIdentifier, data: JsonObject): Motive {
+    companion object : ResourceLocationDeserializer<Motive> {
+        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Motive {
             return Motive(
-                identifier = identifier,
+                resourceLocation = resourceLocation,
                 width = data["width"].asInt,
                 height = data["height"].asInt,
             )

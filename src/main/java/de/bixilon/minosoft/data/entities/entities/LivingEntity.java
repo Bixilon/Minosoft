@@ -34,47 +34,47 @@ public abstract class LivingEntity extends Entity {
     }
 
     // = isUsingItem
-    @EntityMetaDataFunction(identifier = "Is hand active")
+    @EntityMetaDataFunction(name = "Is hand active")
     public boolean isHandActive() {
         return getLivingEntityFlag(0x01);
     }
 
-    @EntityMetaDataFunction(identifier = "Main hand")
+    @EntityMetaDataFunction(name = "Main hand")
     public Hands getMainHand() {
         return getLivingEntityFlag(0x04) ? Hands.OFF_HAND : Hands.MAIN_HAND;
     }
 
-    @EntityMetaDataFunction(identifier = "Is auto spin attack")
+    @EntityMetaDataFunction(name = "Is auto spin attack")
     public boolean isAutoSpinAttack() {
         return getLivingEntityFlag(0x04);
     }
 
-    @EntityMetaDataFunction(identifier = "Health")
+    @EntityMetaDataFunction(name = "Health")
     public float getHealth() {
         return this.metaData.getSets().getFloat(EntityMetaDataFields.LIVING_ENTITY_HEALTH);
     }
 
-    @EntityMetaDataFunction(identifier = "Effect color")
+    @EntityMetaDataFunction(name = "Effect color")
     public int getEffectColor() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_EFFECT_COLOR);
     }
 
-    @EntityMetaDataFunction(identifier = "Is effect ambient")
+    @EntityMetaDataFunction(name = "Is effect ambient")
     public boolean getEffectAmbient() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.LIVING_ENTITY_EFFECT_AMBIENCE);
     }
 
-    @EntityMetaDataFunction(identifier = "Arrows in entity")
+    @EntityMetaDataFunction(name = "Arrows in entity")
     public int getArrowCount() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ARROW_COUNT);
     }
 
-    @EntityMetaDataFunction(identifier = "Absorption hearts")
+    @EntityMetaDataFunction(name = "Absorption hearts")
     public int getAbsorptionHearts() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ABSORPTION_HEARTS);
     }
 
-    @EntityMetaDataFunction(identifier = "Bed location")
+    @EntityMetaDataFunction(name = "Bed location")
     @Nullable
     public BlockPosition getBedLocation() {
         return this.metaData.getSets().getPosition(EntityMetaDataFields.LIVING_ENTITY_BED_POSITION);

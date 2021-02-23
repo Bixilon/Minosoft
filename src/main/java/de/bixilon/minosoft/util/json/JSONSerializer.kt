@@ -22,7 +22,7 @@ object JSONSerializer {
         .add(KotlinJsonAdapterFactory())
         .add(AccountSerializer())
         .add(ServerSerializer())
-        .add(ModIdentifierSerializer())
+        .add(ResourceLocationSerializer())
         .build()!!
 
     val CONFIG_ADAPTER = MOSHI.adapter(Config::class.java)!!

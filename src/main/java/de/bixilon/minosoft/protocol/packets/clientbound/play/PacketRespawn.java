@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.Difficulties;
 import de.bixilon.minosoft.data.GameModes;
 import de.bixilon.minosoft.data.LevelTypes;
 import de.bixilon.minosoft.data.mappings.Dimension;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.modding.event.events.RespawnEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -46,10 +46,10 @@ public class PacketRespawn extends ClientboundPacket {
                 this.dimension = buffer.getConnection().getMapping().getDimensionRegistry().get(buffer.readInt());
             }
         } else if (buffer.getVersionId() < V_1_16_2_PRE3) {
-            this.dimension = buffer.getConnection().getMapping().getDimensionRegistry().get(buffer.readIdentifier());
+            this.dimension = buffer.getConnection().getMapping().getDimensionRegistry().get(buffer.readResourceLocation());
         } else {
             CompoundTag tag = (CompoundTag) buffer.readNBT();
-            this.dimension = buffer.getConnection().getMapping().getDimensionRegistry().get(new ModIdentifier(tag.getStringTag("effects").getValue())); // ToDo
+            this.dimension = buffer.getConnection().getMapping().getDimensionRegistry().get(new ResourceLocation(tag.getStringTag("effects").getValue())); // ToDo
         }
         if (buffer.getVersionId() < V_19W11A) {
             this.difficulty = Difficulties.byId(buffer.readUnsignedByte());

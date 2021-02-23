@@ -12,15 +12,15 @@
  */
 package de.bixilon.minosoft.data.mappings.tweaker
 
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 
 object TweakBlocks {
-    val GRASS_BLOCK_SNOWY_YES = BlockState(Block(ModIdentifier("grass")), setOf(BlockProperties.GRASS_SNOWY_YES))
-    val GRASS_BLOCK_SNOWY_NO = BlockState(Block(ModIdentifier("grass")), setOf(BlockProperties.GRASS_SNOWY_NO))
+    val GRASS_BLOCK_SNOWY_YES = BlockState(Block(ResourceLocation("grass")), setOf(BlockProperties.GRASS_SNOWY_YES))
+    val GRASS_BLOCK_SNOWY_NO = BlockState(Block(ResourceLocation("grass")), setOf(BlockProperties.GRASS_SNOWY_NO))
 
-    val SNOW_IDENTIFIER = ModIdentifier("snow")
-    val SNOW_LAYER_IDENTIFIER = ModIdentifier("snow_layer")
+    val SNOW_RESOURCE_LOCATION = ResourceLocation("snow")
+    val SNOW_LAYER_RESOURCE_LOCAION = ResourceLocation("snow_layer")
 }

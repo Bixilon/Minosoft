@@ -17,20 +17,20 @@ import de.bixilon.minosoft.data.EntityClassMappings;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.entity.UnknownEntityCommandParseException;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.protocol.network.Connection;
 
-public class IdentifierSelectorArgumentParser extends EntitySelectorArgumentParser {
-    public static final IdentifierSelectorArgumentParser ENTITY_TYPE_IDENTIFIER_SELECTOR_ARGUMENT_PARSER = new IdentifierSelectorArgumentParser();
+public class ResourceLocationSelectorArgumentParser extends EntitySelectorArgumentParser {
+    public static final ResourceLocationSelectorArgumentParser ENTITY_TYPE_RESOURCE_LOCATION_SELECTOR_ARGUMENT_PARSER = new ResourceLocationSelectorArgumentParser();
 
     @Override
     public void isParsable(Connection connection, CommandStringReader stringReader, String value) throws CommandParseException {
         if (value.startsWith("!")) {
             value = value.substring(1);
         }
-        ModIdentifier identifier = new ModIdentifier(value);
-        if (this == ENTITY_TYPE_IDENTIFIER_SELECTOR_ARGUMENT_PARSER) {
-            if (EntityClassMappings.INSTANCE.getByIdentifier(identifier) == null) {
+        ResourceLocation resourceLocation = new ResourceLocation(value);
+        if (this == ENTITY_TYPE_RESOURCE_LOCATION_SELECTOR_ARGUMENT_PARSER) {
+            if (EntityClassMappings.INSTANCE.getByResourceLocation(resourceLocation) == null) {
                 throw new UnknownEntityCommandParseException(stringReader, value);
             }
             return;

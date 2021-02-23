@@ -10,17 +10,27 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.commands.parser.exceptions.identifier
 
-import de.bixilon.minosoft.data.commands.CommandStringReader
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
+package de.bixilon.minosoft.util.json
 
-class ParticleNotFoundCommandParseException : CommandParseException {
-    constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
+import com.squareup.moshi.*
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 
-    constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
+class ResourceLocationSerializer : JsonAdapter<ResourceLocation>() {
+    @FromJson
+    override fun fromJson(jsonReader: JsonReader): ResourceLocation? {
+        if (jsonReader.peek() == JsonReader.Token.NULL) {
+            return null
+        }
+        return ResourceLocation.getResourceLocation(jsonReader.nextString())
+    }
 
-    companion object {
-        private const val ERROR_MESSAGE = "Particle not found!"
+    @ToJson
+    override fun toJson(jsonWriter: JsonWriter, resourceLocation: ResourceLocation?) {
+        if (resourceLocation == null) {
+            jsonWriter.nullValue()
+            return
+        }
+        jsonWriter.value(resourceLocation.full)
     }
 }

@@ -10,17 +10,36 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.commands.parser.exceptions.identifier
 
-import de.bixilon.minosoft.data.commands.CommandStringReader
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
+package de.bixilon.minosoft.data.mappings;
 
-class DimensionNotFoundCommandParseException : CommandParseException {
-    constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
+public class LegacyResourceLocation extends ResourceLocation {
 
-    constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
+    public LegacyResourceLocation(String resourceLocation) {
+        super(null, resourceLocation);
+    }
 
-    companion object {
-        private const val ERROR_MESSAGE = "Dimension not found!"
+    @Override
+    public String getFull() {
+        return getPath();
+    }
+
+    @Override
+    public int hashCode() {
+        return this.path.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) {
+            return true;
+        }
+        if (hashCode() != obj.hashCode()) {
+            return false;
+        }
+        if (obj instanceof ResourceLocation legacyResourceLocation) {
+            return getPath().equals(legacyResourceLocation.getPath());
+        }
+        return false;
     }
 }

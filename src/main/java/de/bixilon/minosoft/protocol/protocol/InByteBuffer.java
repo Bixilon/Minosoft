@@ -24,8 +24,8 @@ import de.bixilon.minosoft.data.entities.EntityMetaData;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.Poses;
 import de.bixilon.minosoft.data.inventory.Slot;
-import de.bixilon.minosoft.data.mappings.LegacyModIdentifier;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.LegacyResourceLocation;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData;
 import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData;
@@ -230,13 +230,13 @@ public class InByteBuffer {
     public ParticleData readParticleData(Particle type) {
         if (this.versionId < V_17W45A) {
             // old particle format
-            return switch (type.getIdentifier().getFullIdentifier()) {
+            return switch (type.getResourceLocation().getFull()) {
                 case "minecraft:iconcrack" -> new ItemParticleData(new Slot(this.connection.getVersion(), this.connection.getMapping().getItemRegistry().get((readVarInt() << 16) | readVarInt())), type);
                 case "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlockState(readVarInt() << 4), type);
                 default -> new ParticleData(type);
             };
         }
-        return switch (type.getIdentifier().getFullIdentifier()) {
+        return switch (type.getResourceLocation().getFull()) {
             case "minecraft:block", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlockState(readVarInt()), type);
             case "minecraft:dust" -> new DustParticleData(readFloat(), readFloat(), readFloat(), readFloat(), type);
             case "minecraft:item" -> new ItemParticleData(readSlot(), type);
@@ -523,14 +523,14 @@ public class InByteBuffer {
         };
     }
 
-    public ModIdentifier readIdentifier() {
-        String identifier = readString();
+    public ResourceLocation readResourceLocation() {
+        String resourceLocation = readString();
 
-        if (Util.doesStringContainsUppercaseLetters(identifier)) {
-            // just a string but wrapped into a identifier (like old plugin channels MC|BRAND or ...)
-            return new LegacyModIdentifier(identifier);
+        if (Util.doesStringContainsUppercaseLetters(resourceLocation)) {
+            // just a string but wrapped into a resourceLocation (like old plugin channels MC|BRAND or ...)
+            return new LegacyResourceLocation(resourceLocation);
         }
-        return new ModIdentifier(identifier);
+        return new ResourceLocation(resourceLocation);
     }
 
 }

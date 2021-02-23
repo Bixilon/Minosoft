@@ -10,17 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.commands.parser.exceptions.identifier
+package de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 
-class MobEffectNotFoundCommandParseException : CommandParseException {
+class EnchantmentNotFoundCommandParseException : CommandParseException {
     constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
 
     constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
 
     companion object {
-        private const val ERROR_MESSAGE = "Mob effect not found!"
+        private const val ERROR_MESSAGE = "Enchantment not found!"
     }
 }

@@ -27,23 +27,23 @@ public class AreaEffectCloud extends Entity {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Radius")
+    @EntityMetaDataFunction(name = "Radius")
     public float getRadius() {
         return getMetaData().getSets().getFloat(EntityMetaDataFields.AREA_EFFECT_CLOUD_RADIUS);
     }
 
-    @EntityMetaDataFunction(identifier = "Color")
+    @EntityMetaDataFunction(name = "Color")
     public int getColor() {
         return getMetaData().getSets().getInt(EntityMetaDataFields.AREA_EFFECT_CLOUD_COLOR);
     }
 
     // ignore radius???
-    @EntityMetaDataFunction(identifier = "Is waiting")
+    @EntityMetaDataFunction(name = "Is waiting")
     public boolean isWaiting() {
         return getMetaData().getSets().getBoolean(EntityMetaDataFields.AREA_EFFECT_CLOUD_WAITING);
     }
 
-    @EntityMetaDataFunction(identifier = "Particle")
+    @EntityMetaDataFunction(name = "Particle")
     public ParticleData getParticle() {
         return getMetaData().getSets().getParticle(EntityMetaDataFields.AREA_EFFECT_CLOUD_PARTICLE);
     }

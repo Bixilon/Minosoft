@@ -31,22 +31,22 @@ public class Bee extends Animal {
         return this.metaData.getSets().getBitMask(EntityMetaDataFields.BEE_FLAGS, bitMask);
     }
 
-    @EntityMetaDataFunction(identifier = "Is angry")
+    @EntityMetaDataFunction(name = "Is angry")
     public boolean isAngry() {
         return getBeeFlag(0x02);
     }
 
-    @EntityMetaDataFunction(identifier = "Has stung")
+    @EntityMetaDataFunction(name = "Has stung")
     public boolean hasStung() {
         return getBeeFlag(0x04);
     }
 
-    @EntityMetaDataFunction(identifier = "has Nectar")
+    @EntityMetaDataFunction(name = "has Nectar")
     public boolean hasNectar() {
         return getBeeFlag(0x08);
     }
 
-    @EntityMetaDataFunction(identifier = "Remaining angar time")
+    @EntityMetaDataFunction(name = "Remaining angar time")
     public int getRemainingAngerTimer() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.BEE_REMAINING_ANGER_TIME);
     }

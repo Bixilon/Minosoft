@@ -13,14 +13,14 @@
 package de.bixilon.minosoft.data.mappings.biomes
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.IdentifierDeserializer
-import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.data.mappings.RegistryItem
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
 
 data class Biome(
-    val identifier: ModIdentifier,
+    val resourceLocation: ResourceLocation,
     val depth: Float,
     val scale: Float,
     val temperature: Float,
@@ -35,13 +35,13 @@ data class Biome(
 ) : RegistryItem {
 
     override fun toString(): String {
-        return identifier.toString()
+        return resourceLocation.toString()
     }
 
-    companion object : IdentifierDeserializer<Biome> {
-        override fun deserialize(mappings: VersionMapping, identifier: ModIdentifier, data: JsonObject): Biome {
+    companion object : ResourceLocationDeserializer<Biome> {
+        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Biome {
             return Biome(
-                identifier = identifier,
+                resourceLocation = resourceLocation,
                 depth = data["depth"]?.asFloat ?: 0f,
                 scale = data["scale"]?.asFloat ?: 0f,
                 temperature = data["temperature"]?.asFloat ?: 0f,

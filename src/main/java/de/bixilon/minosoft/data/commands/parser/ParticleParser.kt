@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.ParticleNotFoundCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.ParticleNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData
@@ -26,13 +26,13 @@ class ParticleParser : CommandParser() {
 
     @Throws(CommandParseException::class)
     override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): ParticleData {
-        val identifier = stringReader.readModIdentifier()
+        val resourceLocation = stringReader.readResourceLocation()
 
-        val particle = connection.mapping.particleRegistry.get(identifier.value) ?: throw ParticleNotFoundCommandParseException(stringReader, identifier.key)
+        val particle = connection.mapping.particleRegistry.get(resourceLocation.value) ?: throw ParticleNotFoundCommandParseException(stringReader, resourceLocation.key)
 
         stringReader.skipWhitespaces()
 
-        return when (identifier.value.fullIdentifier) {
+        return when (resourceLocation.value.full) {
             "minecraft:block", "minecraft:falling_dust" -> BlockParticleData(BlockStateParser.BLOCK_STACK_PARSER.parse(connection, properties, stringReader), particle)
             "minecraft:dust" -> {
                 val red = stringReader.readFloat()

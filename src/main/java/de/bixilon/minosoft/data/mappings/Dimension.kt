@@ -18,15 +18,15 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
 class Dimension(
-    val identifier: ModIdentifier,
+    val resourceLocation: ResourceLocation,
     val piglinSafe: Boolean = false,
     val natural: Boolean = true,
     val ambientLight: Float = 0.0f,
-    val infiniBurn: ModIdentifier = ModIdentifier("infiniburn_overworld"),
+    val infiniBurn: ResourceLocation = ResourceLocation("infiniburn_overworld"),
     val respawnAnchorWorks: Boolean = false,
     val hasSkyLight: Boolean = true,
     val bedWorks: Boolean = true,
-    val effects: ModIdentifier = ModIdentifier("overworld"),
+    val effects: ResourceLocation = ResourceLocation("overworld"),
     val hasRaids: Boolean = true,
     val logicalHeight: Int = 256,
     val coordinateScale: Double = 0.0,
@@ -42,21 +42,21 @@ class Dimension(
     }
 
     override fun toString(): String {
-        return identifier.toString()
+        return resourceLocation.toString()
     }
 
-    companion object : IdentifierDeserializer<Dimension> {
-        fun deserialize(identifier: ModIdentifier, nbt: CompoundTag): Dimension {
+    companion object : ResourceLocationDeserializer<Dimension> {
+        fun deserialize(resourceLocation: ResourceLocation, nbt: CompoundTag): Dimension {
             return Dimension(
-                identifier = identifier,
+                resourceLocation = resourceLocation,
                 piglinSafe = nbt.getBoolean("piglin_safe") == true,
                 natural = nbt.getBoolean("natural") == true,
                 ambientLight = nbt.getFloatTag("ambient_light")?.value ?: 0f,
-                infiniBurn = ModIdentifier(nbt.getStringTag("infiniburn")?.value ?: "infiniburn_overworld"),
+                infiniBurn = ResourceLocation(nbt.getStringTag("infiniburn")?.value ?: "infiniburn_overworld"),
                 respawnAnchorWorks = nbt.getBoolean("respawn_anchor_works") == true,
                 hasSkyLight = nbt.getBoolean("has_skylight") == true,
                 bedWorks = nbt.getBoolean("bed_works") == true,
-                effects = ModIdentifier(nbt.getStringTag("effects")?.value ?: "overworld"),
+                effects = ResourceLocation(nbt.getStringTag("effects")?.value ?: "overworld"),
                 hasRaids = nbt.getBoolean("has_raids") == true,
                 logicalHeight = nbt.getNumberTag("logical_height")?.asInt ?: 256,
                 coordinateScale = nbt.getDoubleTag("coordinate_scale")?.value ?: 0.0,
@@ -67,17 +67,17 @@ class Dimension(
             )
         }
 
-        override fun deserialize(mappings: VersionMapping, identifier: ModIdentifier, data: JsonObject): Dimension {
+        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Dimension {
             return Dimension(
-                identifier = identifier,
+                resourceLocation = resourceLocation,
                 piglinSafe = data.get("piglin_safe")?.asBoolean == true,
                 natural = data.get("natural")?.asBoolean == true,
                 ambientLight = data.get("ambient_light")?.asFloat ?: 0f,
-                infiniBurn = ModIdentifier(data.get("ambient_light")?.asString ?: "infiniburn_overworld"),
+                infiniBurn = ResourceLocation(data.get("ambient_light")?.asString ?: "infiniburn_overworld"),
                 respawnAnchorWorks = data.get("respawn_anchor_works")?.asBoolean == true,
                 hasSkyLight = data.get("has_skylight")?.asBoolean == true,
                 bedWorks = data.get("bed_works")?.asBoolean == true,
-                effects = ModIdentifier(data.get("effects")?.asString ?: "overworld"),
+                effects = ResourceLocation(data.get("effects")?.asString ?: "overworld"),
                 hasRaids = data.get("has_raids")?.asBoolean == true,
                 logicalHeight = data.get("logical_height")?.asInt ?: 256,
                 coordinateScale = data.get("coordinate_scale")?.asDouble ?: 0.0,

@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.InvalidIdentifierCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.InvalidResourceLocationCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -25,7 +25,7 @@ class ObjectiveParser : CommandParser() {
     override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val argument = stringReader.readUnquotedString()
         if (!ProtocolDefinition.SCOREBOARD_OBJECTIVE_PATTERN.matcher(argument).matches()) {
-            throw InvalidIdentifierCommandParseException(stringReader, argument)
+            throw InvalidResourceLocationCommandParseException(stringReader, argument)
         }
         return argument
     }

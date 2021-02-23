@@ -30,8 +30,8 @@ class BlockStateParser : CommandParser() {
             }
             stringReader.skip()
         }
-        val identifier = stringReader.readModIdentifier() // ToDo: check tags
-        val block = connection.mapping.blockRegistry.get(identifier.value) ?: throw BlockNotFoundCommandParseException(stringReader, identifier.key)
+        val resourceLocation = stringReader.readResourceLocation() // ToDo: check tags
+        val block = connection.mapping.blockRegistry.get(resourceLocation.value) ?: throw BlockNotFoundCommandParseException(stringReader, resourceLocation.key)
         var blockState: BlockState? = null
 
         if (stringReader.canRead() && stringReader.peek() == '[') {
@@ -65,7 +65,7 @@ class BlockStateParser : CommandParser() {
             blockState = BlockState(block)
         }
         check(blockState != null) {
-            throw BlockNotFoundCommandParseException(stringReader, identifier.key)
+            throw BlockNotFoundCommandParseException(stringReader, resourceLocation.key)
         }
 
         if (this == BLOCK_PREDICATE_PARSER) {

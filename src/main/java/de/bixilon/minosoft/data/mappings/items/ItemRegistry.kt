@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.data.mappings.items
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.IdentifierDeserializer
 import de.bixilon.minosoft.data.mappings.Item
-import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.data.mappings.Registry
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 class ItemRegistry(
@@ -41,7 +41,7 @@ class ItemRegistry(
         }
     }
 
-    override fun initialize(data: Map<ModIdentifier, JsonObject>?, mappings: VersionMapping, deserializer: IdentifierDeserializer<Item>, flattened: Boolean, metaType: MetaTypes) {
+    override fun initialize(data: Map<ResourceLocation, JsonObject>?, mappings: VersionMapping, deserializer: ResourceLocationDeserializer<Item>, flattened: Boolean, metaType: MetaTypes) {
         this.flattened = flattened
         super.initialize(data, mappings, deserializer, flattened, metaType)
     }

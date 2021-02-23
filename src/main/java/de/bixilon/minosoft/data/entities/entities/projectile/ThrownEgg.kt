@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Location
 import de.bixilon.minosoft.data.inventory.Slot
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.Connection
 import java.util.*
 
@@ -26,6 +26,6 @@ class ThrownEgg(connection: Connection, entityId: Int, uuid: UUID?, location: Lo
     }
 
     companion object {
-        private val DEFAULT_ITEM = ModIdentifier("egg")
+        private val DEFAULT_ITEM = ResourceLocation("egg")
     }
 }

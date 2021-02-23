@@ -18,13 +18,13 @@ import de.bixilon.minosoft.data.entities.Location
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.inventory.Slot
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.Connection
 import java.util.*
 
 class ThrownEyeOfEnder(connection: Connection?, entityId: Int, uuid: UUID?, location: Location?, rotation: EntityRotation?) : Entity(connection, entityId, uuid, location, rotation) {
 
-    @get:EntityMetaDataFunction(identifier = "Item")
+    @get:EntityMetaDataFunction(name = "Item")
     val item: Slot
         get() = metaData.sets.getSlot(EntityMetaDataFields.THROWN_EYE_OF_ENDER_ITEM) ?: getDefaultItem()
 
@@ -33,6 +33,6 @@ class ThrownEyeOfEnder(connection: Connection?, entityId: Int, uuid: UUID?, loca
     }
 
     companion object {
-        private val DEFAULT_ITEM = ModIdentifier("ender_eye")
+        private val DEFAULT_ITEM = ResourceLocation("ender_eye")
     }
 }

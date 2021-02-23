@@ -45,7 +45,7 @@ public class PacketOpenWindow extends ClientboundPacket {
             return true;
         }
         this.windowId = buffer.readByte();
-        this.type = InventoryTypes.byIdentifier(buffer.readIdentifier());
+        this.type = InventoryTypes.byResourceLocation(buffer.readResourceLocation());
         this.title = buffer.readChatComponent();
         if (buffer.getVersionId() < V_19W02A || buffer.getVersionId() >= V_19W11A) {
             this.slotCount = buffer.readByte();

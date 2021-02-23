@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.BufferUtils
@@ -43,7 +44,8 @@ class Texture(
         val texturePath = if (name.endsWith(".png")) {
             name
         } else {
-            "minecraft/textures/${name}.png"
+            val resourceLocation = ResourceLocation(name)
+            "${resourceLocation.namespace}/textures/${resourceLocation.path}.png"
         }
 
         val decoder = PNGDecoder(assetsManager.readAssetAsStream(texturePath))

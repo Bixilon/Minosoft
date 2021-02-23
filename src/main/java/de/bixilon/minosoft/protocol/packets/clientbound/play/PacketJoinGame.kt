@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.GameModes
 import de.bixilon.minosoft.data.LevelTypes
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.Dimension
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.modding.event.events.JoinGameEvent
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
@@ -45,7 +45,7 @@ class PacketJoinGame : ClientboundPacket() {
     var isReducedDebugScreen = false
     var isEnableRespawnScreen = true
     var hashedSeed: Long = 0L
-    var dimensions: HashBiMap<ModIdentifier, Dimension> = HashBiMap.create()
+    var dimensions: HashBiMap<ResourceLocation, Dimension> = HashBiMap.create()
 
     override fun read(buffer: InByteBuffer): Boolean {
         entityId = buffer.readInt()
@@ -85,7 +85,7 @@ class PacketJoinGame : ClientboundPacket() {
             val dimensionCodec = buffer.readNBT()
             dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
             dimension = if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
-                dimensions[ModIdentifier(buffer.readString())]!!
+                dimensions[ResourceLocation(buffer.readString())]!!
             } else {
                 val tag = buffer.readNBT() as CompoundTag
                 if (tag.getByteTag("has_skylight").value.toInt() == 0x01) { // ToDo: this is just for not messing up the skylight
@@ -142,11 +142,11 @@ class PacketJoinGame : ClientboundPacket() {
         connection.sender.sendChatMessage("I am alive! ~ Minosoft")
     }
 
-    private fun parseDimensionCodec(nbt: NBTTag, versionId: Int): HashBiMap<ModIdentifier, Dimension> {
+    private fun parseDimensionCodec(nbt: NBTTag, versionId: Int): HashBiMap<ResourceLocation, Dimension> {
         if (nbt !is CompoundTag) {
             throw IllegalArgumentException()
         }
-        val dimensionMap: HashBiMap<ModIdentifier, Dimension> = HashBiMap.create()
+        val dimensionMap: HashBiMap<ResourceLocation, Dimension> = HashBiMap.create()
         val listTag: ListTag = if (versionId < ProtocolVersions.V_20W28A) {
             nbt.getListTag("dimension")
         } else {
@@ -155,7 +155,7 @@ class PacketJoinGame : ClientboundPacket() {
         for (tag in listTag.getValue<NBTTag>()) {
             check(tag is CompoundTag) { "Invalid dimension codec!" }
 
-            val dimensionIdentifier = tag.getStringTag(if (versionId < ProtocolVersions.V_1_16_PRE3) {
+            val dimensionResourceLocation = tag.getStringTag(if (versionId < ProtocolVersions.V_1_16_PRE3) {
                 "key"
             } else {
                 "name"
@@ -165,7 +165,7 @@ class PacketJoinGame : ClientboundPacket() {
             } else {
                 tag
             }
-            dimensionMap[ModIdentifier(dimensionIdentifier)] = Dimension.deserialize(ModIdentifier(dimensionIdentifier), dimensionPropertyTag)
+            dimensionMap[ResourceLocation(dimensionResourceLocation)] = Dimension.deserialize(ResourceLocation(dimensionResourceLocation), dimensionPropertyTag)
         }
         return dimensionMap
     }

@@ -31,17 +31,17 @@ public abstract class TamableAnimal extends Animal {
         return this.metaData.getSets().getBitMask(EntityMetaDataFields.TAMABLE_ENTITY_FLAGS, bitMask);
     }
 
-    @EntityMetaDataFunction(identifier = "Is sitting")
+    @EntityMetaDataFunction(name = "Is sitting")
     public boolean isSitting() {
         return getTameableFlag(0x01);
     }
 
-    @EntityMetaDataFunction(identifier = "Is tamed")
+    @EntityMetaDataFunction(name = "Is tamed")
     public boolean isTamed() {
         return getTameableFlag(0x04);
     }
 
-    @EntityMetaDataFunction(identifier = "Owner UUID")
+    @EntityMetaDataFunction(name = "Owner UUID")
     @Nullable
     public UUID getOwner() {
         return this.metaData.getSets().getUUID(EntityMetaDataFields.TAMABLE_ENTITY_OWNER_UUID);

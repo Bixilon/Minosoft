@@ -27,7 +27,7 @@ public class GlowSquid extends Squid {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Dark ticks remaining")
+    @EntityMetaDataFunction(name = "Dark ticks remaining")
     public int getDarkTicksRemaining() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.GLOW_SQUID_DARK_TICKS_REMAINING);
     }

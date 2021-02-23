@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.commands.parser.CommandParser;
 import de.bixilon.minosoft.data.commands.parser.CommandParsers;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.terminal.commands.CommandStack;
@@ -36,22 +36,22 @@ public class CommandArgumentNode extends CommandLiteralNode {
 
     public CommandArgumentNode(byte flags, InByteBuffer buffer) {
         super(flags, buffer);
-        ModIdentifier parserIdentifier = buffer.readIdentifier();
-        this.parser = CommandParsers.INSTANCE.getParserInstance(parserIdentifier);
+        ResourceLocation parserResourceLocation = buffer.readResourceLocation();
+        this.parser = CommandParsers.INSTANCE.getParserInstance(parserResourceLocation);
         if (this.parser == null) {
-            Log.verbose("Unknown command parser: %s", parserIdentifier);
+            Log.verbose("Unknown command parser: %s", parserResourceLocation);
         } else {
             this.properties = this.parser.readParserProperties(buffer);
         }
         if (BitByte.isBitMask(flags, 0x10)) {
-            String fullIdentifier = buffer.readIdentifier().getFullIdentifier();
-            this.suggestionType = switch (fullIdentifier) {
+            String resourceLocation = buffer.readResourceLocation().getFull();
+            this.suggestionType = switch (resourceLocation) {
                 case "minecraft:ask_server" -> CommandArgumentNode.SuggestionTypes.ASK_SERVER;
                 case "minecraft:all_recipes" -> CommandArgumentNode.SuggestionTypes.ALL_RECIPES;
                 case "minecraft:available_sounds" -> CommandArgumentNode.SuggestionTypes.AVAILABLE_SOUNDS;
                 case "minecraft:summonable_entities" -> CommandArgumentNode.SuggestionTypes.SUMMONABLE_ENTITIES;
                 case "minecraft:available_biomes" -> CommandArgumentNode.SuggestionTypes.AVAILABLE_BIOMES;
-                default -> throw new IllegalArgumentException("Unexpected value: " + fullIdentifier);
+                default -> throw new IllegalArgumentException("Unexpected value: " + resourceLocation);
             };
         }
     }

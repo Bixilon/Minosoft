@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,12 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation
 
-package de.bixilon.minosoft.data.mappings
+import de.bixilon.minosoft.data.commands.CommandStringReader
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 
-import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+class InvalidResourceLocationCommandParseException : CommandParseException {
+    constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
 
-interface IdentifierDeserializer<T> {
-    fun deserialize(mappings: VersionMapping, identifier: ModIdentifier, data: JsonObject): T
+    constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
+
+    companion object {
+        private const val ERROR_MESSAGE = "Resource Location is invalid!"
+    }
 }

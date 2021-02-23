@@ -30,13 +30,13 @@ public class EndCrystal extends Entity {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Beam target")
+    @EntityMetaDataFunction(name = "Beam target")
     @Nullable
     public BlockPosition getBeamTarget() {
         return getMetaData().getSets().getPosition(EntityMetaDataFields.END_CRYSTAL_BEAM_TARGET);
     }
 
-    @EntityMetaDataFunction(identifier = "Show bottom")
+    @EntityMetaDataFunction(name = "Show bottom")
     public boolean shotBottom() {
         return getMetaData().getSets().getBoolean(EntityMetaDataFields.END_CRYSTAL_SHOW_BOTTOM);
     }

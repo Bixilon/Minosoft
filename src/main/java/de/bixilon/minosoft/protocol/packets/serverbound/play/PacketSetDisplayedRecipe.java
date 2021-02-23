@@ -30,7 +30,7 @@ public class PacketSetDisplayedRecipe implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_SET_DISPLAYED_RECIPE);
-        buffer.writeString(this.recipe.getResult().getItem().getIdentifier().getFullIdentifier());
+        buffer.writeString(this.recipe.getResult().getItem().getResourceLocation().getFull());
         return buffer;
     }
 

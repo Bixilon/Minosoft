@@ -21,7 +21,6 @@ import com.google.gson.stream.JsonReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.BooleanCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidJSONCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.StringCommandParseException;
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.InvalidIdentifierCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.nbt.CompoundTagBadFormatCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.nbt.ListTagBadFormatCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.DoubleCommandParseException;
@@ -30,7 +29,8 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.number.IntegerCommand
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.LongCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.properties.BadPropertyMapCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.properties.DuplicatedPropertyKeyCommandParseException;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.InvalidResourceLocationCommandParseException;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.nbt.tag.*;
@@ -212,7 +212,7 @@ public class CommandStringReader {
     }
 
     @NotNull
-    public Pair<String, ModIdentifier> readModIdentifier() throws InvalidIdentifierCommandParseException {
+    public Pair<String, ResourceLocation> readResourceLocation() throws InvalidResourceLocationCommandParseException {
         StringBuilder builder = new StringBuilder();
         while (canRead()) {
             char next = peek();
@@ -223,11 +223,11 @@ public class CommandStringReader {
             }
             break;
         }
-        String identifier = builder.toString();
+        String resourceLocation = builder.toString();
         try {
-            return new Pair<>(identifier, ModIdentifier.getIdentifier(builder.toString()));
+            return new Pair<>(resourceLocation, ResourceLocation.getResourceLocation(builder.toString()));
         } catch (IllegalArgumentException exception) {
-            throw new InvalidIdentifierCommandParseException(this, identifier, exception);
+            throw new InvalidResourceLocationCommandParseException(this, resourceLocation, exception);
         }
     }
 

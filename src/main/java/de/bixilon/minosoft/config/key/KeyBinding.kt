@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.config.key
 
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 
 class KeyBinding(
     val action: MutableMap<KeyAction, MutableSet<KeyCodes>>,
-    val `when`: MutableSet<MutableSet<ModIdentifier>>,
+    val `when`: MutableSet<MutableSet<ResourceLocation>>,
 )

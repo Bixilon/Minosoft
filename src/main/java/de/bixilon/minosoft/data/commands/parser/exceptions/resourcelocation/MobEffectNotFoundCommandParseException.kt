@@ -10,36 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation
 
-package de.bixilon.minosoft.data.mappings;
+import de.bixilon.minosoft.data.commands.CommandStringReader
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 
-public class LegacyModIdentifier extends ModIdentifier {
+class MobEffectNotFoundCommandParseException : CommandParseException {
+    constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
 
-    public LegacyModIdentifier(String identifier) {
-        super(null, identifier);
-    }
+    constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
 
-    @Override
-    public String getFullIdentifier() {
-        return getIdentifier();
-    }
-
-    @Override
-    public int hashCode() {
-        return this.identifier.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
-        }
-        if (hashCode() != obj.hashCode()) {
-            return false;
-        }
-        if (obj instanceof ModIdentifier legacyModIdentifier) {
-            return getIdentifier().equals(legacyModIdentifier.getIdentifier());
-        }
-        return false;
+    companion object {
+        private const val ERROR_MESSAGE = "Mob effect not found!"
     }
 }

@@ -13,22 +13,22 @@
 package de.bixilon.minosoft.data.mappings.particle
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.IdentifierDeserializer
-import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.data.mappings.RegistryItem
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 data class Particle(
-    val identifier: ModIdentifier,
+    val resourceLocation: ResourceLocation,
     // ToDo
 ) : RegistryItem {
     override fun toString(): String {
-        return identifier.toString()
+        return resourceLocation.toString()
     }
 
-    companion object : IdentifierDeserializer<Particle> {
-        override fun deserialize(mappings: VersionMapping, identifier: ModIdentifier, data: JsonObject): Particle {
-            return Particle(identifier)
+    companion object : ResourceLocationDeserializer<Particle> {
+        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Particle {
+            return Particle(resourceLocation)
         }
 
     }

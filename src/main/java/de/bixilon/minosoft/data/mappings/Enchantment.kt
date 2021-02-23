@@ -16,16 +16,16 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 data class Enchantment(
-    val identifier: ModIdentifier,
+    val resourceLocation: ResourceLocation,
     // ToDo
 ) : RegistryItem {
     override fun toString(): String {
-        return identifier.toString()
+        return resourceLocation.toString()
     }
 
-    companion object : IdentifierDeserializer<Enchantment> {
-        override fun deserialize(mappings: VersionMapping, identifier: ModIdentifier, data: JsonObject): Enchantment {
-            return Enchantment(identifier)
+    companion object : ResourceLocationDeserializer<Enchantment> {
+        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Enchantment {
+            return Enchantment(resourceLocation)
         }
 
     }

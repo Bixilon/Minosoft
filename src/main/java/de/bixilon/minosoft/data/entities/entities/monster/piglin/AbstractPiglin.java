@@ -28,7 +28,7 @@ public abstract class AbstractPiglin extends Monster {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Is immune to zombification")
+    @EntityMetaDataFunction(name = "Is immune to zombification")
     public boolean isImmuneToZombification() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ABSTRACT_PIGLIN_IMMUNE_TO_ZOMBIFICATION);
     }

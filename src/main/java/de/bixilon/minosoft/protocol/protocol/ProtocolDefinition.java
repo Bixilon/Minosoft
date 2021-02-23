@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 
 import java.net.InetAddress;
 import java.util.regex.Pattern;
@@ -50,7 +50,7 @@ public final class ProtocolDefinition {
     public static final String COMMAND_SEPARATOR = " ";
 
     public static final Pattern MINECRAFT_NAME_VALIDATOR = Pattern.compile("\\w{3,16}");
-    public static final Pattern IDENTIFIER_PATTERN = Pattern.compile("([a-z_]+:)?[a-z_]+");
+    public static final Pattern RESOURCE_LOCATION_PATTERN = Pattern.compile("([a-z_]+:)?[a-z_]+");
     public static final Pattern SCOREBOARD_OBJECTIVE_PATTERN = Pattern.compile("[a-zA-z-.+]{1,16}");
 
     public static final int SECTION_WIDTH_X = 16;
@@ -89,10 +89,10 @@ public final class ProtocolDefinition {
     public static final int TICK_TIME = 1000 / TICKS_PER_SECOND;
 
 
-    public static final ModIdentifier DEFAULT_DIMENSION = new ModIdentifier("overworld");
-    public static final ModIdentifier NETHER_DIMENSION = new ModIdentifier("nether");
+    public static final ResourceLocation DEFAULT_DIMENSION = new ResourceLocation("overworld");
+    public static final ResourceLocation NETHER_DIMENSION = new ResourceLocation("nether");
 
-    public static final ModIdentifier AIR_IDENTIFIER = new ModIdentifier("air");
+    public static final ResourceLocation AIR_RESOURCE_LOCATION = new ResourceLocation("air");
 
     static {
         // java does (why ever) not allow to directly assign a null

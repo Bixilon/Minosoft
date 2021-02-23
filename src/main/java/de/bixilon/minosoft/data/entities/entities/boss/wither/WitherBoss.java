@@ -28,22 +28,22 @@ public class WitherBoss extends Monster {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Center head target entity id")
+    @EntityMetaDataFunction(name = "Center head target entity id")
     public int getCenterHeadTargetEntityId() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID);
     }
 
-    @EntityMetaDataFunction(identifier = "Left head target entity id")
+    @EntityMetaDataFunction(name = "Left head target entity id")
     public int getLeftHeadTargetEntityId() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID);
     }
 
-    @EntityMetaDataFunction(identifier = "Right head target entity id")
+    @EntityMetaDataFunction(name = "Right head target entity id")
     public int getRightHeadTargetEntityId() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_RIGHT_HEAD_TARGET_ENTITY_ID);
     }
 
-    @EntityMetaDataFunction(identifier = "Invulnerable time")
+    @EntityMetaDataFunction(name = "Invulnerable time")
     public int getInvulnerableTime() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_INVULNERABLE_TIME);
     }

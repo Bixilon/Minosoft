@@ -30,7 +30,7 @@ public class Slime extends Mob {
     }
 
     @IntRange(from = 0)
-    @EntityMetaDataFunction(identifier = "Size")
+    @EntityMetaDataFunction(name = "Size")
     public int getSize() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.SLIME_SIZE);
     }

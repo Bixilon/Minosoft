@@ -10,25 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation
 
-package de.bixilon.minosoft.data;
+import de.bixilon.minosoft.data.commands.CommandStringReader
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation;
+class ParticleNotFoundCommandParseException : CommandParseException {
+    constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
 
-public class Tag {
-    private final ResourceLocation resourceLocation;
-    private final int[] idList;
+    constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
 
-    public Tag(ResourceLocation resourceLocation, int[] idList) {
-        this.resourceLocation = resourceLocation;
-        this.idList = idList;
-    }
-
-    public ResourceLocation getResourceLocation() {
-        return this.resourceLocation;
-    }
-
-    public int[] getIdList() {
-        return this.idList;
+    companion object {
+        private const val ERROR_MESSAGE = "Particle not found!"
     }
 }

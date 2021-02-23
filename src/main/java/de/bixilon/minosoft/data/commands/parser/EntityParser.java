@@ -51,7 +51,7 @@ public class EntityParser extends CommandParser {
         ENTITY_FILTER_PARAMETER_LIST.put("x_rotation", RangeSelectorArgumentParser.ROTATION_SELECTOR_ARGUMENT_PARSER);
         ENTITY_FILTER_PARAMETER_LIST.put("y_rotation", RangeSelectorArgumentParser.ROTATION_SELECTOR_ARGUMENT_PARSER);
         ENTITY_FILTER_PARAMETER_LIST.put("tag", StringSelectorArgumentParser.STRING_SELECTOR_ARGUMENT_PARSER);
-        ENTITY_FILTER_PARAMETER_LIST.put("type", IdentifierSelectorArgumentParser.ENTITY_TYPE_IDENTIFIER_SELECTOR_ARGUMENT_PARSER);
+        ENTITY_FILTER_PARAMETER_LIST.put("type", ResourceLocationSelectorArgumentParser.ENTITY_TYPE_RESOURCE_LOCATION_SELECTOR_ARGUMENT_PARSER);
 
         // ToDo: advancements, nbt, scores
     }

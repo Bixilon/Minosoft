@@ -13,30 +13,31 @@
 
 package de.bixilon.minosoft.data.mappings.statistics;
 
-import de.bixilon.minosoft.data.ChangeableIdentifier;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.ChangeableResourceLocation;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 
+@Deprecated
 public enum StatisticCategories {
-    MINED(new ChangeableIdentifier("minecraft.mined"), 0),
-    CRAFTED(new ChangeableIdentifier("minecraft.crafted"), 1),
-    USED(new ChangeableIdentifier("minecraft.used"), 2),
-    BROKEN(new ChangeableIdentifier("minecraft.broken"), 3),
-    PICKED_UP(new ChangeableIdentifier("minecraft.picked_up"), 4),
-    DROPPED(new ChangeableIdentifier("minecraft.dropped"), 5),
-    KILLED(new ChangeableIdentifier("minecraft.killed"), 6),
-    KILLED_BY(new ChangeableIdentifier("minecraft.killed_by"), 7),
-    CUSTOM(new ChangeableIdentifier("minecraft.custom"), 8);
-    private final ChangeableIdentifier changeableIdentifier;
+    MINED(new ChangeableResourceLocation("minecraft.mined"), 0),
+    CRAFTED(new ChangeableResourceLocation("minecraft.crafted"), 1),
+    USED(new ChangeableResourceLocation("minecraft.used"), 2),
+    BROKEN(new ChangeableResourceLocation("minecraft.broken"), 3),
+    PICKED_UP(new ChangeableResourceLocation("minecraft.picked_up"), 4),
+    DROPPED(new ChangeableResourceLocation("minecraft.dropped"), 5),
+    KILLED(new ChangeableResourceLocation("minecraft.killed"), 6),
+    KILLED_BY(new ChangeableResourceLocation("minecraft.killed_by"), 7),
+    CUSTOM(new ChangeableResourceLocation("minecraft.custom"), 8);
+    private final ChangeableResourceLocation changeableResourceLocation;
     private final int id;
 
-    StatisticCategories(ChangeableIdentifier changeableIdentifier, int id) {
-        this.changeableIdentifier = changeableIdentifier;
+    StatisticCategories(ChangeableResourceLocation changeableResourceLocation, int id) {
+        this.changeableResourceLocation = changeableResourceLocation;
         this.id = id;
     }
 
-    public static StatisticCategories byName(ModIdentifier identifier, int versionId) {
+    public static StatisticCategories byName(ResourceLocation resourceLocation, int versionId) {
         for (StatisticCategories category : values()) {
-            if (category.getChangeableIdentifier().isValidIdentifier(identifier, versionId)) {
+            if (category.getChangeableResourceLocation().isValidResourceLocation(resourceLocation, versionId)) {
                 return category;
             }
         }
@@ -52,8 +53,8 @@ public enum StatisticCategories {
         return null;
     }
 
-    public ChangeableIdentifier getChangeableIdentifier() {
-        return this.changeableIdentifier;
+    public ChangeableResourceLocation getChangeableResourceLocation() {
+        return this.changeableResourceLocation;
     }
 
     public int getId() {

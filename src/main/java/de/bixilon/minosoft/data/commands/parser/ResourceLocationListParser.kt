@@ -15,34 +15,34 @@ package de.bixilon.minosoft.data.commands.parser
 import de.bixilon.minosoft.data.EntityClassMappings
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.DimensionNotFoundCommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.EnchantmentNotFoundCommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.EntityNotFoundCommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.MobEffectNotFoundCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.DimensionNotFoundCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.EnchantmentNotFoundCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.EntityNotFoundCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.MobEffectNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.Connection
 
-class IdentifierListParser : CommandParser() {
+class ResourceLocationListParser : CommandParser() {
 
     @Throws(CommandParseException::class)
     override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
-        val identifier = stringReader.readModIdentifier()
+        val resourceLocation = stringReader.readResourceLocation()
 
 
         if (this == ENCHANTMENT_PARSER) {
-            return connection.mapping.enchantmentRegistry.get(identifier.value) ?: throw EnchantmentNotFoundCommandParseException(stringReader, identifier.key)
+            return connection.mapping.enchantmentRegistry.get(resourceLocation.value) ?: throw EnchantmentNotFoundCommandParseException(stringReader, resourceLocation.key)
         }
         if (this == MOB_EFFECT_PARSER) {
-            return connection.mapping.mobEffectRegistry.get(identifier.value) ?: throw MobEffectNotFoundCommandParseException(stringReader, identifier.key)
+            return connection.mapping.mobEffectRegistry.get(resourceLocation.value) ?: throw MobEffectNotFoundCommandParseException(stringReader, resourceLocation.key)
         }
         if (this == DIMENSION_EFFECT_PARSER) {
-            return connection.mapping.dimensionRegistry.get(identifier.value) ?: throw DimensionNotFoundCommandParseException(stringReader, identifier.key)
+            return connection.mapping.dimensionRegistry.get(resourceLocation.value) ?: throw DimensionNotFoundCommandParseException(stringReader, resourceLocation.key)
         }
         if (this == SUMMONABLE_ENTITY_PARSER) {
             // ToDo: only summonable entities, not all of them
 
-            if (EntityClassMappings.getByIdentifier(identifier.value) == null) {
-                throw EntityNotFoundCommandParseException(stringReader, identifier.key)
+            if (EntityClassMappings.getByResourceLocation(resourceLocation.value) == null) {
+                throw EntityNotFoundCommandParseException(stringReader, resourceLocation.key)
             }
             return null // ToDo
         }
@@ -50,9 +50,9 @@ class IdentifierListParser : CommandParser() {
     }
 
     companion object {
-        val ENCHANTMENT_PARSER = IdentifierListParser()
-        val MOB_EFFECT_PARSER = IdentifierListParser()
-        val DIMENSION_EFFECT_PARSER = IdentifierListParser()
-        val SUMMONABLE_ENTITY_PARSER = IdentifierListParser()
+        val ENCHANTMENT_PARSER = ResourceLocationListParser()
+        val MOB_EFFECT_PARSER = ResourceLocationListParser()
+        val DIMENSION_EFFECT_PARSER = ResourceLocationListParser()
+        val SUMMONABLE_ENTITY_PARSER = ResourceLocationListParser()
     }
 }

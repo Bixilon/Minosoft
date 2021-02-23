@@ -18,14 +18,14 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.animal.horse.*
 import de.bixilon.minosoft.data.entities.entities.monster.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.*
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
 object VersionTweaker {
-    // some data was packed in mata data in early versions (1.8). This function converts it to the real identifier
+    // some data was packed in mata data in early versions (1.8). This function converts it to the real resource location
     @JvmStatic
     fun getRealEntityClass(fakeClass: Class<out Entity>, metaData: EntityMetaData, versionId: Int): Class<out Entity> {
         if (versionId > ProtocolVersions.V_1_8_9) { // ToDo: No clue here
@@ -110,10 +110,10 @@ object VersionTweaker {
     // ToDo: Broken
     @JvmStatic
     fun transformBlock(originalBlock: BlockState, chunk: Chunk, location: InChunkSectionLocation, sectionHeight: Int): BlockState? {
-        when (originalBlock.owner.identifier) {
-            ModIdentifier("minecraft:grass") -> {
+        when (originalBlock.owner.resourceLocation) {
+            ResourceLocation("minecraft:grass") -> {
                 getBlockAbove(chunk, location, sectionHeight)?.let {
-                    if (it.owner.identifier == TweakBlocks.SNOW_IDENTIFIER || it.owner.identifier == TweakBlocks.SNOW_LAYER_IDENTIFIER) {
+                    if (it.owner.resourceLocation == TweakBlocks.SNOW_RESOURCE_LOCATION || it.owner.resourceLocation == TweakBlocks.SNOW_LAYER_RESOURCE_LOCAION) {
                         return TweakBlocks.GRASS_BLOCK_SNOWY_YES
                     }
                 }

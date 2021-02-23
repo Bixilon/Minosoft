@@ -29,7 +29,7 @@ import de.bixilon.minosoft.data.mappings.particle.Particle
 import de.bixilon.minosoft.data.mappings.statistics.Statistic
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.json.IdentifierJsonMap
+import de.bixilon.minosoft.util.json.ResourceLocationJsonMap
 import java.util.*
 
 
@@ -55,7 +55,7 @@ class VersionMapping(var version: Version?) {
     private val entityMetaIndexMap = HashMap<EntityMetaDataFields, Int>(180)
     private val entityIdClassMap = HashBiMap.create<Int, Class<out Entity?>>(120)
 
-    internal val models = HashBiMap.create<ModIdentifier, BlockModel>(500)
+    internal val models = HashBiMap.create<ResourceLocation, BlockModel>(500)
 
 
     var isFullyLoaded = false
@@ -89,7 +89,7 @@ class VersionMapping(var version: Version?) {
     }
 
     fun getBlockId(blockState: BlockState): Int {
-        if (blockState.owner.identifier == ProtocolDefinition.AIR_IDENTIFIER) {
+        if (blockState.owner.resourceLocation == ProtocolDefinition.AIR_RESOURCE_LOCATION) {
             return ProtocolDefinition.NULL_BLOCK_ID
         }
         return blockStateIdMap.inverse()[blockState] ?: _parentMapping?.getBlockId(blockState)!!
@@ -111,13 +111,13 @@ class VersionMapping(var version: Version?) {
 
     fun load(pixlyzerData: JsonObject) {
         // pre init stuff
-        loadBlockModels(IdentifierJsonMap.create(pixlyzerData["models"].asJsonObject))
+        loadBlockModels(ResourceLocationJsonMap.create(pixlyzerData["models"].asJsonObject))
 
         // id stuff
         biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.asJsonObject, this, BiomeCategory.Companion)
         biomePrecipationRegistry.initialize(pixlyzerData["biome_precipations"]?.asJsonObject, this, BiomePrecipation.Companion)
 
-        // id identifier stuff
+        // id resource location stuff
         motiveRegistry.initialize(pixlyzerData["motives"]?.asJsonObject, this, Motive.Companion, version!!.isFlattened())
         blockRegistry.initialize(pixlyzerData["blocks"]?.asJsonObject, this, Block.Companion, version!!.isFlattened(), Registry.MetaTypes.BITS_4)
         itemRegistry.initialize(pixlyzerData["items"]?.asJsonObject, this, Item.Companion, version!!.isFlattened(), Registry.MetaTypes.BITS_16)
@@ -138,12 +138,12 @@ class VersionMapping(var version: Version?) {
             return
         }
 
-        for ((identifierName, entity) in data.entrySet()) {
+        for ((resourceLocationName, entity) in data.entrySet()) {
             check(entity is JsonObject)
-            val identifier = ModIdentifier(identifierName)
-            EntityClassMappings.getByIdentifier(identifier)?.let {
+            val resourceLocation = ResourceLocation(resourceLocationName)
+            EntityClassMappings.getByResourceLocation(resourceLocation)?.let {
                 // not abstract
-                entityInformationMap[it] = EntityInformation.deserialize(identifier, entity)
+                entityInformationMap[it] = EntityInformation.deserialize(resourceLocation, entity)
                 entityIdClassMap[entity["id"].asInt] = it
             }
             entity["meta"]?.asJsonObject?.let {
@@ -157,28 +157,28 @@ class VersionMapping(var version: Version?) {
     }
 
 
-    private fun loadBlockModels(data: Map<ModIdentifier, JsonObject>) {
-        for ((identifier, model) in data) {
-            if (models.containsKey(identifier)) {
+    private fun loadBlockModels(data: Map<ResourceLocation, JsonObject>) {
+        for ((resourceLocation, model) in data) {
+            if (models.containsKey(resourceLocation)) {
                 continue
             }
-            loadBlockModel(identifier, model, data)
+            loadBlockModel(resourceLocation, model, data)
         }
     }
 
-    private fun loadBlockModel(identifier: ModIdentifier, modelData: JsonObject, fullModelData: Map<ModIdentifier, JsonObject>): BlockModel {
-        var model = models[identifier]
+    private fun loadBlockModel(resourceLocation: ResourceLocation, modelData: JsonObject, fullModelData: Map<ResourceLocation, JsonObject>): BlockModel {
+        var model = models[resourceLocation]
         model?.let {
             return it
         }
         var parent: BlockModel? = null
         modelData["parent"]?.asString?.let {
-            val parentIdentifier = ModIdentifier(it)
-            parent = loadBlockModel(parentIdentifier, fullModelData[parentIdentifier]!!, fullModelData)
+            val parentResourceLocation = ResourceLocation(it)
+            parent = loadBlockModel(parentResourceLocation, fullModelData[parentResourceLocation]!!, fullModelData)
         }
         model = BlockModel(parent, modelData)
 
-        models[identifier] = model
+        models[resourceLocation] = model
         return model
     }
 

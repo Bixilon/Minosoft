@@ -10,17 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.commands.parser.exceptions.identifier
+package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
+import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
+import de.bixilon.minosoft.protocol.network.Connection
 
-class InvalidIdentifierCommandParseException : CommandParseException {
-    constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
+class ResourceLocationParser : CommandParser() {
 
-    constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
+    @Throws(CommandParseException::class)
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+        return stringReader.readResourceLocation().value
+    }
 
     companion object {
-        private const val ERROR_MESSAGE = "Identifier is invalid!"
+        val RESOURCE_LOCATION_PARSER = ResourceLocationParser()
     }
 }

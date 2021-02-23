@@ -17,9 +17,10 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
+import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
 import java.util.*
@@ -48,9 +49,9 @@ data class BlockState(
             return false
         }
         if (other is BlockState) {
-            return owner.identifier == other.owner.identifier && rotation == other.rotation && properties == other.properties && owner.identifier.mod == other.owner.identifier.mod
+            return owner.resourceLocation == other.owner.resourceLocation && rotation == other.rotation && properties == other.properties && owner.resourceLocation.namespace == other.owner.resourceLocation.namespace
         }
-        if (other is ModIdentifier) {
+        if (other is ResourceLocation) {
             return super.equals(other)
         }
         return false
@@ -61,7 +62,7 @@ data class BlockState(
             return true
         }
         if (obj is BlockState) {
-            if (owner.identifier.mod != obj.owner.identifier.mod || owner.identifier.identifier != obj.owner.identifier.identifier) {
+            if (owner.resourceLocation.namespace != obj.owner.resourceLocation.namespace || owner.resourceLocation.path != obj.owner.resourceLocation.path) {
                 return false
             }
             if (obj.rotation != BlockRotations.NONE) {
@@ -76,7 +77,7 @@ data class BlockState(
             }
             return true
         }
-        return if (obj is ModIdentifier) {
+        return if (obj is ResourceLocation) {
             super.equals(obj)
         } else false
     }
@@ -100,7 +101,7 @@ data class BlockState(
         if (out.isNotEmpty()) {
             out.append(")")
         }
-        return String.format("%s%s", owner.identifier, out)
+        return String.format("%s%s", owner.resourceLocation, out)
     }
 
     fun getBlockRenderer(position: BlockPosition): BlockRenderer {
@@ -115,7 +116,7 @@ data class BlockState(
     companion object {
         private val ROTATION_PROPERTIES = setOf("facing", "rotation", "orientation", "axis")
 
-        fun deserialize(owner: Block, data: JsonObject, models: HashBiMap<ModIdentifier, BlockModel>): BlockState {
+        fun deserialize(owner: Block, data: JsonObject, models: HashBiMap<ResourceLocation, BlockModel>): BlockState {
             var rotation: BlockRotations = BlockRotations.NONE
             val properties: MutableSet<BlockProperties> = mutableSetOf()
 
@@ -167,7 +168,7 @@ data class BlockState(
                 }
             }
 
-            val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { RGBColor.noAlpha(it) } ?: owner.tintColor
+            val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getColor(it) } ?: owner.tintColor
 
 
             return BlockState(
@@ -179,8 +180,8 @@ data class BlockState(
             )
         }
 
-        private fun addBlockModel(data: JsonObject, renders: MutableSet<BlockRenderer>, models: HashBiMap<ModIdentifier, BlockModel>) {
-            val model = models[ModIdentifier(data["model"].asString)] ?: error("Can not find block model ${data["model"]}")
+        private fun addBlockModel(data: JsonObject, renders: MutableSet<BlockRenderer>, models: HashBiMap<ResourceLocation, BlockModel>) {
+            val model = models[ResourceLocation(data["model"].asString)] ?: error("Can not find block model ${data["model"]}")
 
             renders.add(BlockRenderer(data, model))
         }

@@ -57,7 +57,7 @@ public class PacketUnlockRecipes extends ClientboundPacket {
             if (buffer.getVersionId() < V_17W48A) {
                 this.listed[i] = buffer.getConnection().getRecipes().getRecipeById(buffer.readVarInt());
             } else {
-                this.listed[i] = buffer.getConnection().getRecipes().getRecipe(buffer.readIdentifier());
+                this.listed[i] = buffer.getConnection().getRecipes().getRecipe(buffer.readResourceLocation());
             }
         }
         if (this.action == UnlockRecipeActions.INITIALIZE) {
@@ -66,7 +66,7 @@ public class PacketUnlockRecipes extends ClientboundPacket {
                 if (buffer.getVersionId() < V_17W48A) {
                     this.tagged[i] = buffer.getConnection().getRecipes().getRecipeById(buffer.readVarInt());
                 } else {
-                    this.tagged[i] = buffer.getConnection().getRecipes().getRecipe(buffer.readIdentifier());
+                    this.tagged[i] = buffer.getConnection().getRecipes().getRecipe(buffer.readResourceLocation());
                 }
             }
         }

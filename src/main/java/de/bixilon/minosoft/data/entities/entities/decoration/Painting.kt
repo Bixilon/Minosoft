@@ -27,6 +27,6 @@ class Painting(
     entityId: Int,
     uuid: UUID,
     position: BlockPosition,
-    @get:EntityMetaDataFunction(identifier = "Direction") val direction: Directions,
-    @get:EntityMetaDataFunction(identifier = "Motive") val motive: Motive,
+    @get:EntityMetaDataFunction(name = "Direction") val direction: Directions,
+    @get:EntityMetaDataFunction(name = "Motive") val motive: Motive,
 ) : Entity(connection, entityId, uuid, fromPosition(position), EntityRotation(0f, 0f, 0f))

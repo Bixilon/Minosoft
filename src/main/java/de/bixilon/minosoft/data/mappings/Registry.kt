@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.mappings
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
-import de.bixilon.minosoft.util.json.IdentifierJsonMap
+import de.bixilon.minosoft.util.json.ResourceLocationJsonMap
 
 open class Registry<T : RegistryItem>(
     private var parentRegistry: Registry<T>? = null,
@@ -24,11 +24,11 @@ open class Registry<T : RegistryItem>(
 ) {
     private var initialized = false
     private val idMap = HashBiMap.create<Int, T>(initialSize)
-    private val identifierMap = HashBiMap.create<ModIdentifier, T>(initialSize)
+    private val resourceLocationMap = HashBiMap.create<ResourceLocation, T>(initialSize)
 
 
-    open fun get(identifier: ModIdentifier): T? {
-        return identifierMap[identifier] ?: parentRegistry?.get(identifier)
+    open fun get(resourceLocation: ResourceLocation): T? {
+        return resourceLocationMap[resourceLocation] ?: parentRegistry?.get(resourceLocation)
     }
 
     open fun get(id: Int): T? {
@@ -43,16 +43,16 @@ open class Registry<T : RegistryItem>(
         this.parentRegistry = registry
     }
 
-    open fun initialize(data: Map<ModIdentifier, JsonObject>?, mappings: VersionMapping, deserializer: IdentifierDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE) {
+    open fun initialize(data: Map<ResourceLocation, JsonObject>?, mappings: VersionMapping, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE) {
         check(!initialized) { "Already initialized" }
 
         if (data == null) {
             return
         }
 
-        for ((identifier, value) in data) {
-            val item = deserializer.deserialize(mappings, identifier, value)
-            value["id"].asInt.let { id ->
+        for ((resourceLocation, value) in data) {
+            val item = deserializer.deserialize(mappings, resourceLocation, value)
+            value["id"]?.asInt?.let { id ->
                 var itemId = id
                 if (!flattened) {
                     when (metaType) {
@@ -65,41 +65,41 @@ open class Registry<T : RegistryItem>(
                             itemId = itemId shl 16
                         }
                     }
-                    value["meta"].asInt.let { meta ->
+                    value["meta"]?.asInt?.let { meta ->
                         itemId = itemId or meta
                     }
                 }
                 idMap[id] = item
             }
-            identifierMap[identifier] = item
+            resourceLocationMap[resourceLocation] = item
         }
         initialized = true
     }
 
-    open fun initialize(data: JsonObject?, mappings: VersionMapping, deserializer: IdentifierDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE) {
-        initialize(IdentifierJsonMap.create(data), mappings, deserializer, flattened, metaType)
+    open fun initialize(data: JsonObject?, mappings: VersionMapping, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE) {
+        initialize(ResourceLocationJsonMap.create(data), mappings, deserializer, flattened, metaType)
     }
 
 
     fun postInit(versionMapping: VersionMapping) {
-        for ((_, value) in identifierMap) {
+        for ((_, value) in resourceLocationMap) {
             value.postInit(versionMapping)
         }
     }
 
-    fun setData(identifierMap: HashBiMap<ModIdentifier, T> = HashBiMap.create(), idMap: HashBiMap<Int, T> = HashBiMap.create()) {
-        this.identifierMap.clear()
-        this.identifierMap.putAll(identifierMap)
+    fun setData(resourceLocationMap: HashBiMap<ResourceLocation, T> = HashBiMap.create(), idMap: HashBiMap<Int, T> = HashBiMap.create()) {
+        this.resourceLocationMap.clear()
+        this.resourceLocationMap.putAll(resourceLocationMap)
         this.idMap.clear()
         this.idMap.putAll(idMap)
     }
 
     override fun toString(): String {
-        return super.toString() + ": ${identifierMap.size}x"
+        return super.toString() + ": ${resourceLocationMap.size}x"
     }
 
     fun unload() {
-        identifierMap.clear()
+        resourceLocationMap.clear()
         idMap.clear()
     }
 

@@ -46,12 +46,12 @@ public class PlayerEntity extends LivingEntity {
         this.currentItem = currentItem;
     }
 
-    @EntityMetaDataFunction(identifier = "Absorption hearts")
+    @EntityMetaDataFunction(name = "Absorption hearts")
     public float getPlayerAbsorptionHearts() {
         return this.metaData.getSets().getFloat(EntityMetaDataFields.PLAYER_ABSORPTION_HEARTS);
     }
 
-    @EntityMetaDataFunction(identifier = "Score")
+    @EntityMetaDataFunction(name = "Score")
     public int getScore() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.PLAYER_SCORE);
     }
@@ -60,29 +60,29 @@ public class PlayerEntity extends LivingEntity {
         return this.metaData.getSets().getBitMask(EntityMetaDataFields.PLAYER_SKIN_PARTS_FLAGS, bitMask);
     }
 
-    @EntityMetaDataFunction(identifier = "Main hand")
+    @EntityMetaDataFunction(name = "Main hand")
     public Hands getMainHand() {
         return this.metaData.getSets().getByte(EntityMetaDataFields.PLAYER_SKIN_MAIN_HAND) == 0x01 ? Hands.OFF_HAND : Hands.MAIN_HAND;
     }
 
-    @EntityMetaDataFunction(identifier = "Left shoulder entity data")
+    @EntityMetaDataFunction(name = "Left shoulder entity data")
     @Nullable
     public CompoundTag getLeftShoulderData() {
         return this.metaData.getSets().getNBT(EntityMetaDataFields.PLAYER_LEFT_SHOULDER_DATA);
     }
 
-    @EntityMetaDataFunction(identifier = "Right shoulder entity data")
+    @EntityMetaDataFunction(name = "Right shoulder entity data")
     @Nullable
     public CompoundTag getRightShoulderData() {
         return this.metaData.getSets().getNBT(EntityMetaDataFields.PLAYER_RIGHT_SHOULDER_DATA);
     }
 
-    @EntityMetaDataFunction(identifier = "Name")
+    @EntityMetaDataFunction(name = "Name")
     public String getName() {
         return this.name;
     }
 
-    @EntityMetaDataFunction(identifier = "Properties")
+    @EntityMetaDataFunction(name = "Properties")
     @Nullable
     public HashSet<PlayerPropertyData> getProperties() {
         return this.properties;

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements.text
 
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -37,9 +37,9 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
     private val font = Font()
     private lateinit var componentsBindingMap: Map<FontBindings, MutableList<Any>>
 
-    var hudTextElements: MutableMap<ModIdentifier, HUDText> = mutableMapOf(
-        ModIdentifier("minosoft:debug_screen") to HUDDebugScreenElement(this),
-        ModIdentifier("minosoft:chat") to HUDChatElement(this),
+    var hudTextElements: MutableMap<ResourceLocation, HUDText> = mutableMapOf(
+        ResourceLocation("minosoft:debug_screen") to HUDDebugScreenElement(this),
+        ResourceLocation("minosoft:chat") to HUDChatElement(this),
     )
 
     override fun screenChangeResizeCallback(width: Int, height: Int) {

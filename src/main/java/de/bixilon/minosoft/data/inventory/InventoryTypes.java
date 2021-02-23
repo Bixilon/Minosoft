@@ -14,46 +14,46 @@
 package de.bixilon.minosoft.data.inventory;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 
 public enum InventoryTypes {
-    CHEST(new ModIdentifier("minecraft:chest")),
-    WORKBENCH(new ModIdentifier("minecraft:crafting_table")),
-    FURNACE(new ModIdentifier("minecraft:furnace")),
-    DISPENSER(new ModIdentifier("minecraft:dispenser")),
-    ENCHANTMENT_TABLE(new ModIdentifier("minecraft:enchanting_table")),
-    BREWING_STAND(new ModIdentifier("minecraft:brewing_stand")),
-    NPC_TRACE(new ModIdentifier("minecraft:villager")),
-    BEACON(new ModIdentifier("minecraft:beacon")),
-    ANVIL(new ModIdentifier("minecraft:anvil")),
-    HOPPER(new ModIdentifier("minecraft:hopper")),
-    DROPPER(new ModIdentifier("minecraft:dropper")),
-    HORSE(new ModIdentifier("EntityHorse"));
+    CHEST(new ResourceLocation("minecraft:chest")),
+    WORKBENCH(new ResourceLocation("minecraft:crafting_table")),
+    FURNACE(new ResourceLocation("minecraft:furnace")),
+    DISPENSER(new ResourceLocation("minecraft:dispenser")),
+    ENCHANTMENT_TABLE(new ResourceLocation("minecraft:enchanting_table")),
+    BREWING_STAND(new ResourceLocation("minecraft:brewing_stand")),
+    NPC_TRACE(new ResourceLocation("minecraft:villager")),
+    BEACON(new ResourceLocation("minecraft:beacon")),
+    ANVIL(new ResourceLocation("minecraft:anvil")),
+    HOPPER(new ResourceLocation("minecraft:hopper")),
+    DROPPER(new ResourceLocation("minecraft:dropper")),
+    HORSE(new ResourceLocation("EntityHorse"));
 
     private static final InventoryTypes[] INVENTORY_TYPES = values();
-    private static final HashBiMap<ModIdentifier, InventoryTypes> IDENTIFIER_TYPE_MAP = HashBiMap.create();
+    private static final HashBiMap<ResourceLocation, InventoryTypes> RESOURCE_LOCATION_TYPE_MAP = HashBiMap.create();
 
     static {
         for (InventoryTypes type : INVENTORY_TYPES) {
-            IDENTIFIER_TYPE_MAP.put(type.getIdentifier(), type);
+            RESOURCE_LOCATION_TYPE_MAP.put(type.getResourceLocation(), type);
         }
     }
 
-    private final ModIdentifier identifier;
+    private final ResourceLocation resourceLocation;
 
-    InventoryTypes(ModIdentifier identifier) {
-        this.identifier = identifier;
+    InventoryTypes(ResourceLocation resourceLocation) {
+        this.resourceLocation = resourceLocation;
     }
 
     public static InventoryTypes byId(int id) {
         return INVENTORY_TYPES[id];
     }
 
-    public static InventoryTypes byIdentifier(ModIdentifier identifier) {
-        return IDENTIFIER_TYPE_MAP.get(identifier);
+    public static InventoryTypes byResourceLocation(ResourceLocation resourceLocation) {
+        return RESOURCE_LOCATION_TYPE_MAP.get(resourceLocation);
     }
 
-    public ModIdentifier getIdentifier() {
-        return this.identifier;
+    public ResourceLocation getResourceLocation() {
+        return this.resourceLocation;
     }
 }

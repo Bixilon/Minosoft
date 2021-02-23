@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Location
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.Item
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import java.util.*
@@ -31,16 +31,16 @@ class Horse(connection: Connection?, entityId: Int, uuid: UUID?, location: Locat
     private val variant: Int
         get() = metaData.sets.getInt(EntityMetaDataFields.HORSE_VARIANT)
 
-    @get:EntityMetaDataFunction(identifier = "Color")
+    @get:EntityMetaDataFunction(name = "Color")
     val color: HorseColors
         get() = HorseColors.byId(variant and 0xFF)
 
-    @get:EntityMetaDataFunction(identifier = "Dots")
+    @get:EntityMetaDataFunction(name = "Dots")
     val dots: HorseDots
         get() = HorseDots.byId(variant shr 8)
 
     // ToDo
-    @get:EntityMetaDataFunction(identifier = "Armor")
+    @get:EntityMetaDataFunction(name = "Armor")
     val armor: Item?
         get() {
             if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo
@@ -87,8 +87,8 @@ class Horse(connection: Connection?, entityId: Int, uuid: UUID?, location: Locat
     }
 
     companion object {
-        private val LEGACY_IRON_ARMOR = ModIdentifier("iron_horse_armor")
-        private val LEGACY_GOLD_ARMOR = ModIdentifier("golden_horse_armor")
-        private val LEGACY_DIAMOND_ARMOR = ModIdentifier("diamond_horse_armor")
+        private val LEGACY_IRON_ARMOR = ResourceLocation("iron_horse_armor")
+        private val LEGACY_GOLD_ARMOR = ResourceLocation("golden_horse_armor")
+        private val LEGACY_DIAMOND_ARMOR = ResourceLocation("diamond_horse_armor")
     }
 }

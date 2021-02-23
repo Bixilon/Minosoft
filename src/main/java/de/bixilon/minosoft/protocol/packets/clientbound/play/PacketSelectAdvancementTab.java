@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.ChangeableIdentifier;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.ChangeableResourceLocation;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
@@ -25,7 +25,7 @@ public class PacketSelectAdvancementTab extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.readBoolean()) {
-            this.tab = AdvancementTabs.byIdentifier(buffer.readIdentifier(), buffer.getVersionId());
+            this.tab = AdvancementTabs.byResourceLocation(buffer.readResourceLocation(), buffer.getVersionId());
         }
         return true;
     }
@@ -40,29 +40,29 @@ public class PacketSelectAdvancementTab extends ClientboundPacket {
     }
 
     public enum AdvancementTabs {
-        STORY(new ChangeableIdentifier("story/root")),
-        NETHER(new ChangeableIdentifier("nether/root")),
-        END(new ChangeableIdentifier("end/root")),
-        ADVENTURE(new ChangeableIdentifier("adventure/root")),
-        HUSBANDRY(new ChangeableIdentifier("husbandry/root"));
+        STORY(new ChangeableResourceLocation("story/root")),
+        NETHER(new ChangeableResourceLocation("nether/root")),
+        END(new ChangeableResourceLocation("end/root")),
+        ADVENTURE(new ChangeableResourceLocation("adventure/root")),
+        HUSBANDRY(new ChangeableResourceLocation("husbandry/root"));
 
-   private final ChangeableIdentifier changeableIdentifier;
+        private final ChangeableResourceLocation changeableResourceLocation;
 
-        AdvancementTabs(ChangeableIdentifier changeableIdentifier) {
-            this.changeableIdentifier = changeableIdentifier;
+        AdvancementTabs(ChangeableResourceLocation changeableResourceLocation) {
+            this.changeableResourceLocation = changeableResourceLocation;
         }
 
-        public static AdvancementTabs byIdentifier(ModIdentifier identifier, int versionId) {
+        public static AdvancementTabs byResourceLocation(ResourceLocation resourceLocation, int versionId) {
             for (AdvancementTabs advancementTab : values()) {
-                if (advancementTab.getChangeableIdentifier().get(versionId).equals(identifier)) {
+                if (advancementTab.getChangeableResourceLocation().get(versionId).equals(resourceLocation)) {
                     return advancementTab;
                 }
             }
             return null;
         }
 
-        public ChangeableIdentifier getChangeableIdentifier() {
-            return this.changeableIdentifier;
+        public ChangeableResourceLocation getChangeableResourceLocation() {
+            return this.changeableResourceLocation;
         }
     }
 }

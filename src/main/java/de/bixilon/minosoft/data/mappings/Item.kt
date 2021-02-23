@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 data class Item(
-    val identifier: ModIdentifier,
+    val resourceLocation: ResourceLocation,
     val rarity: Rarities = Rarities.COMMON,
     val maxStackSize: Int = 64,
     val maxDamage: Int = 0,
@@ -25,13 +25,13 @@ data class Item(
     val descriptionId: String?,
 ) : RegistryItem {
     override fun toString(): String {
-        return identifier.toString()
+        return resourceLocation.toString()
     }
 
-    companion object : IdentifierDeserializer<Item> {
-        override fun deserialize(mappings: VersionMapping, identifier: ModIdentifier, data: JsonObject): Item {
+    companion object : ResourceLocationDeserializer<Item> {
+        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Item {
             return Item(
-                identifier = identifier,
+                resourceLocation = resourceLocation,
                 rarity = data["rarity"]?.asInt?.let { Rarities.VALUES[it] } ?: Rarities.COMMON,
                 maxStackSize = data["max_stack_size"]?.asInt ?: 64,
                 maxDamage = data["max_damage"]?.asInt ?: 0,

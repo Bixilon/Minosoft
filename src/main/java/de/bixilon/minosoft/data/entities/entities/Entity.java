@@ -157,7 +157,7 @@ public abstract class Entity {
         return this.metaData.getSets().getBitMask(EntityMetaDataFields.ENTITY_FLAGS, bitMask);
     }
 
-    @EntityMetaDataFunction(identifier = "On fire")
+    @EntityMetaDataFunction(name = "On fire")
     public boolean isOnFire() {
         return getEntityFlag(0x01);
     }
@@ -166,7 +166,7 @@ public abstract class Entity {
         return getEntityFlag(0x02);
     }
 
-    @EntityMetaDataFunction(identifier = "Is sprinting")
+    @EntityMetaDataFunction(name = "Is sprinting")
     public boolean isSprinting() {
         return getEntityFlag(0x08);
     }
@@ -175,12 +175,12 @@ public abstract class Entity {
         return getEntityFlag(0x10);
     }
 
-    @EntityMetaDataFunction(identifier = "Is invisible")
+    @EntityMetaDataFunction(name = "Is invisible")
     public boolean isInvisible() {
         return getEntityFlag(0x20);
     }
 
-    @EntityMetaDataFunction(identifier = "Has glowing effect")
+    @EntityMetaDataFunction(name = "Has glowing effect")
     public boolean hasGlowingEffect() {
         return getEntityFlag(0x20);
     }
@@ -189,33 +189,33 @@ public abstract class Entity {
         return getEntityFlag(0x80);
     }
 
-    @EntityMetaDataFunction(identifier = "Air supply")
+    @EntityMetaDataFunction(name = "Air supply")
     private int getAirSupply() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.ENTITY_AIR_SUPPLY);
     }
 
-    @EntityMetaDataFunction(identifier = "Custom name")
+    @EntityMetaDataFunction(name = "Custom name")
     @Nullable
     private ChatComponent getCustomName() {
         return this.metaData.getSets().getChatComponent(EntityMetaDataFields.ENTITY_CUSTOM_NAME);
     }
 
-    @EntityMetaDataFunction(identifier = "Is custom name visible")
+    @EntityMetaDataFunction(name = "Is custom name visible")
     public boolean isCustomNameVisible() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_CUSTOM_NAME_VISIBLE);
     }
 
-    @EntityMetaDataFunction(identifier = "Is silent")
+    @EntityMetaDataFunction(name = "Is silent")
     public boolean isSilent() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_SILENT);
     }
 
-    @EntityMetaDataFunction(identifier = "Has no gravity")
+    @EntityMetaDataFunction(name = "Has no gravity")
     public boolean hasNoGravity() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENTITY_NO_GRAVITY);
     }
 
-    @EntityMetaDataFunction(identifier = "Pose")
+    @EntityMetaDataFunction(name = "Pose")
     public Poses getPose() {
         if (isCrouching()) {
             return Poses.SNEAKING;
@@ -229,7 +229,7 @@ public abstract class Entity {
         return this.metaData.getSets().getPose(EntityMetaDataFields.ENTITY_POSE);
     }
 
-    @EntityMetaDataFunction(identifier = "Ticks frozen")
+    @EntityMetaDataFunction(name = "Ticks frozen")
     public int getTicksFrozen() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.ENTITY_TICKS_FROZEN);
     }
@@ -263,15 +263,15 @@ public abstract class Entity {
                 }
                 method.setAccessible(true);
                 try {
-                    String identifier = method.getAnnotation(EntityMetaDataFunction.class).identifier();
-                    if (values.containsKey(identifier)) {
+                    String resourceLocation = method.getAnnotation(EntityMetaDataFunction.class).name();
+                    if (values.containsKey(resourceLocation)) {
                         continue;
                     }
                     Object methodRetValue = method.invoke(this);
                     if (methodRetValue == null) {
                         continue;
                     }
-                    values.put(identifier, methodRetValue);
+                    values.put(resourceLocation, methodRetValue);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }

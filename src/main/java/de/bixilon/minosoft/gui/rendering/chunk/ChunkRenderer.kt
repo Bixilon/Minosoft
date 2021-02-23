@@ -97,7 +97,6 @@ class ChunkRenderer(private val connection: Connection, private val world: World
 
 
         chunkShader = Shader("chunk_vertex.glsl", "chunk_fragment.glsl")
-        // ToDo: chunkShader.replace("%{textureSize}", minecraftTextures.textures.size)
         chunkShader.load()
 
     }

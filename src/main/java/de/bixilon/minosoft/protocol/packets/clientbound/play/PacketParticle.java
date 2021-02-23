@@ -38,7 +38,7 @@ public class PacketParticle extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W19A) {
-            this.particleType = buffer.getConnection().getMapping().getParticleRegistry().get(buffer.readIdentifier());
+            this.particleType = buffer.getConnection().getMapping().getParticleRegistry().get(buffer.readResourceLocation());
         } else {
             this.particleType = buffer.getConnection().getMapping().getParticleRegistry().get(buffer.readInt());
         }

@@ -28,21 +28,21 @@ public enum EntityPropertyKeys {
 
     static {
         for (EntityPropertyKeys key : values()) {
-            KEYS.put(key.getIdentifier(), key);
+            KEYS.put(key.getResourceLocation(), key);
         }
     }
 
-    private final String identifier;
+    private final String resourceLocation;
 
-    EntityPropertyKeys(String identifier) {
-        this.identifier = identifier;
+    EntityPropertyKeys(String resourceLocation) {
+        this.resourceLocation = resourceLocation;
     }
 
     public static EntityPropertyKeys byName(String name) {
         return KEYS.get(name);
     }
 
-    public String getIdentifier() {
-        return this.identifier;
+    public String getResourceLocation() {
+        return this.resourceLocation;
     }
 }

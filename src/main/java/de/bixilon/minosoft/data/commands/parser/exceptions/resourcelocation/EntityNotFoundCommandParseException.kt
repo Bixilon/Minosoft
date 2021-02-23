@@ -10,27 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation
 
-package de.bixilon.minosoft.util.json
+import de.bixilon.minosoft.data.commands.CommandStringReader
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 
-import com.squareup.moshi.*
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+class EntityNotFoundCommandParseException : CommandParseException {
+    constructor(command: CommandStringReader, currentArgument: String) : super(ERROR_MESSAGE, command, currentArgument)
 
-class ModIdentifierSerializer : JsonAdapter<ModIdentifier>() {
-    @FromJson
-    override fun fromJson(jsonReader: JsonReader): ModIdentifier? {
-        if (jsonReader.peek() == JsonReader.Token.NULL) {
-            return null
-        }
-        return ModIdentifier.getIdentifier(jsonReader.nextString())
-    }
+    constructor(command: CommandStringReader, currentArgument: String, cause: Throwable) : super(ERROR_MESSAGE, command, currentArgument, cause)
 
-    @ToJson
-    override fun toJson(jsonWriter: JsonWriter, modIdentifier: ModIdentifier?) {
-        if (modIdentifier == null) {
-            jsonWriter.nullValue()
-            return
-        }
-        jsonWriter.value(modIdentifier.fullIdentifier)
+    companion object {
+        private const val ERROR_MESSAGE = "Entity not found!"
     }
 }

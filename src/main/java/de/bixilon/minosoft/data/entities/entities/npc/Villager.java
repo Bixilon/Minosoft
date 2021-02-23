@@ -27,7 +27,7 @@ public class Villager extends AbstractVillager {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Villager data")
+    @EntityMetaDataFunction(name = "Villager data")
     public VillagerData getVillagerDate() {
         return this.metaData.getSets().getVillagerData(EntityMetaDataFields.VILLAGER_VILLAGER_DATA);
     }
