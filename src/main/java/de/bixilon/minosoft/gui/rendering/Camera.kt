@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger, Lukas Eisenhauer
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -113,17 +113,18 @@ class Camera(private val connection: Connection, private var fov: Float) {
 
     fun handleInput(deltaTime: Double) {
         var cameraSpeed = movementSpeed * deltaTime
-
+        val movementFront = Vec3(cameraFront)
+        movementFront.y = 0f
+        movementFront.normalizeAssign() // when moving forwards, do not move down
         if (keySprintDown) {
             cameraSpeed *= 5
         }
         val lastPosition = cameraPosition
-        val currentY = cameraPosition.y
         if (keyForwardDown) {
-            cameraPosition = cameraPosition + cameraFront * cameraSpeed
+            cameraPosition = cameraPosition + movementFront * cameraSpeed
         }
         if (keyBackDown) {
-            cameraPosition = cameraPosition - cameraFront * cameraSpeed
+            cameraPosition = cameraPosition - movementFront * cameraSpeed
         }
         if (keyLeftDown) {
             cameraPosition = cameraPosition - cameraRight * cameraSpeed
@@ -131,7 +132,6 @@ class Camera(private val connection: Connection, private var fov: Float) {
         if (keyRightDown) {
             cameraPosition = cameraPosition + cameraRight * cameraSpeed
         }
-        this.cameraPosition.y = currentY // stay on xz line when moving (aka. no clip): ToDo: make movement not slower when you look up
         if (keyFlyDown) {
             cameraPosition = cameraPosition - CAMERA_UP_VEC3 * cameraSpeed
         }

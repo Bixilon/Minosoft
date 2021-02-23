@@ -112,6 +112,9 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
             val uvlock = state["uvlock"]?.asBoolean ?: false
             val rescale = state["rescale"]?.asBoolean ?: false
             val parentElements = mapping.blockModels[ModIdentifier(state["model"].asString.replace("block/", ""))]!!.elements
+            if (state["model"].asString.contains("stairs")) {
+                val breakpoint = null
+            }
             val result: MutableList<ElementRenderer> = mutableListOf()
             for (parentElement in parentElements) {
                 result.add(ElementRenderer(parentElement, rotation, true, rescale)) // uvlock is not yet implemented in the data generator
