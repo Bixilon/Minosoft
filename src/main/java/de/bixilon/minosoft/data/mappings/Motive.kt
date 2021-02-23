@@ -12,8 +12,26 @@
  */
 package de.bixilon.minosoft.data.mappings
 
-data class Motive(val identifier: ModIdentifier) {
+import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+
+data class Motive(
+    val identifier: ModIdentifier,
+    val width: Int,
+    val height: Int,
+) : RegistryItem {
     override fun toString(): String {
         return identifier.toString()
+    }
+
+    companion object : IdentifierDeserializer<Motive> {
+        override fun deserialize(mappings: VersionMapping, identifier: ModIdentifier, data: JsonObject): Motive {
+            return Motive(
+                identifier = identifier,
+                width = data["width"].asInt,
+                height = data["height"].asInt,
+            )
+        }
+
     }
 }

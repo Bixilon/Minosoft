@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerDigging;
@@ -22,14 +22,14 @@ import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketAcknowledgePlayerDigging extends ClientboundPacket {
     BlockPosition position;
-    Block block;
+    BlockState block;
     PacketPlayerDigging.DiggingStatus status;
     boolean successful;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.position = buffer.readPosition();
-        this.block = buffer.getConnection().getMapping().getBlock(buffer.readVarInt());
+        this.block = buffer.getConnection().getMapping().getBlockState(buffer.readVarInt());
         this.status = PacketPlayerDigging.DiggingStatus.byId(buffer.readVarInt());
         this.successful = buffer.readBoolean();
         return true;
@@ -44,7 +44,7 @@ public class PacketAcknowledgePlayerDigging extends ClientboundPacket {
         return this.position;
     }
 
-    public Block getBlock() {
+    public BlockState getBlock() {
         return this.block;
     }
 

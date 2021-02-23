@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.mappings.versions
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.Mappings
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager
@@ -24,7 +23,6 @@ import de.bixilon.minosoft.protocol.protocol.Packets.Clientbound
 import de.bixilon.minosoft.protocol.protocol.Packets.Serverbound
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 
@@ -63,7 +61,7 @@ data class Version(
             localeManager = Versions.PRE_FLATTENING_VERSION.localeManager
             return
         }
-        assetsManager = AssetsManager(Minosoft.getConfig().config.debug.verifyAssets, Resources.getAssetVersionByVersion(this))
+        assetsManager = AssetsManager(Minosoft.getConfig().config.debug.verifyAssets, Resources.getAssetVersionByVersion(this), Resources.getPixLyzerDataHashByVersion(this))
         assetsManager.downloadAllAssets(latch)
         localeManager = MinecraftLocaleManager(this)
         localeManager.load(this, Minosoft.getConfig().config.general.language)
@@ -97,9 +95,8 @@ data class Version(
         } else if (!isFlattened()) {
             mapping.parentMapping = Versions.PRE_FLATTENING_MAPPING
         }
-
-        val files: Map<String, JsonObject> = try {
-            Util.readJsonTarStream(AssetsManager.readAssetAsStreamByHash(Resources.getAssetVersionByVersion(this).minosoftMappings))
+        val pixlyzerData = try {
+            AssetsManager.readJsonAssetByHash(Resources.getPixLyzerDataHashByVersion(this)).asJsonObject
         } catch (e: Throwable) {
             // should not happen, but if this version is not flattened, we can fallback to the flatten mappings. Some things might not work...
             Log.printException(e, LogLevels.VERBOSE)
@@ -109,35 +106,13 @@ data class Version(
             if (versionId == ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
                 Versions.PRE_FLATTENING_MAPPING = null
             }
-            mapOf()
+            JsonObject()
         }
-        latch.addCount(Mappings.VALUES.size)
-        for (mapping in Mappings.VALUES) {
-            var data: JsonObject? = null
-            files[mapping.filename + ".json"]?.let {
-                data = it
-            }
-            try {
-                if (data == null) {
-                    loadVersionMappings(mapping, ProtocolDefinition.DEFAULT_MOD, null)
-                    latch.countDown()
-                    continue
-                }
-                for ((mod, json) in data!!.entrySet()) {
-                    check(json is JsonObject) { "Invalid mod json" }
-                    loadVersionMappings(mapping, mod, json)
-                }
-            } catch (exception: Exception) {
-                if (mapping == Mappings.ENTITIES) {
-                    Log.verbose(String.format("Could not load entities mapping for version %s. Some features will be unavailable.", this))
-                    Log.printException(exception, LogLevels.VERBOSE)
-                } else {
-                    throw exception
-                }
-            }
-            latch.countDown()
-        }
-        if (files.isNotEmpty()) {
+        latch.addCount(1)
+        mapping.version = this
+        mapping.load(pixlyzerData)
+        latch.countDown()
+        if (pixlyzerData.size() > 0) {
             Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", this, (System.currentTimeMillis() - startTime), versionName))
         } else {
             Log.verbose(String.format("Could not load mappings for version %s. Some features will be unavailable.", this))
@@ -145,10 +120,6 @@ data class Version(
         isLoaded = true
         isGettingLoaded = false
         latch.countDown()
-    }
-
-    private fun loadVersionMappings(type: Mappings, mod: String, data: JsonObject?) {
-        mapping.load(type, mod, data, this)
     }
 
     fun unload() {

@@ -13,15 +13,10 @@
 
 package de.bixilon.minosoft.data.world
 
-import de.bixilon.minosoft.data.mappings.Biome
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.biomes.Biome
 
 data class BlockFloatingInfo(
     var light: Int = 15,
     var skyLight: Int = 15,
-    var biome: Biome = DEFAULT_BIOME,
-) {
-    companion object {
-        val DEFAULT_BIOME = Biome(ModIdentifier.getIdentifier("ocean"))
-    }
-}
+    var biome: Biome? = null, // ToDo
+)

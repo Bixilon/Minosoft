@@ -17,7 +17,7 @@ import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.mappings.Dimension;
-import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public class World {
         return this.chunks.get(loc);
     }
 
-    public void setBlock(BlockPosition pos, Block block) {
+    public void setBlock(BlockPosition pos, BlockState block) {
         if (getChunk(pos.getChunkLocation()) != null) {
             getChunk(pos.getChunkLocation()).setRawBlock(pos.getInChunkLocation(), block);
         }

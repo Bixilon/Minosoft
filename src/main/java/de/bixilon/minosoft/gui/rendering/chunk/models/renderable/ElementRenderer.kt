@@ -16,9 +16,8 @@ package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.mappings.ModIdentifier
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -104,11 +103,11 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
     }
 
     companion object {
-        fun createElements(state: JsonObject, mapping: VersionMapping): MutableList<ElementRenderer> {
+        fun createElements(state: JsonObject, parent: BlockModel): MutableList<ElementRenderer> {
             val rotation = glm.radians(vec3InJsonObject(state))
             val uvlock = state["uvlock"]?.asBoolean ?: false
             val rescale = state["rescale"]?.asBoolean ?: false
-            val parentElements = mapping.blockModels[ModIdentifier(state["model"].asString.replace("block/", ""))]!!.elements
+            val parentElements = parent.elements
             val result: MutableList<ElementRenderer> = mutableListOf()
             for (parentElement in parentElements) {
                 result.add(ElementRenderer(parentElement, rotation, uvlock, rescale))

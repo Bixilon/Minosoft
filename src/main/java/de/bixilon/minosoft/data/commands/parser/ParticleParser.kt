@@ -28,7 +28,7 @@ class ParticleParser : CommandParser() {
     override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): ParticleData {
         val identifier = stringReader.readModIdentifier()
 
-        val particle = connection.mapping.getParticle(identifier.value) ?: throw ParticleNotFoundCommandParseException(stringReader, identifier.key)
+        val particle = connection.mapping.particleRegistry.get(identifier.value) ?: throw ParticleNotFoundCommandParseException(stringReader, identifier.key)
 
         stringReader.skipWhitespaces()
 

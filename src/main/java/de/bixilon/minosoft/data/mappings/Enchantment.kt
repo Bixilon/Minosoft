@@ -12,8 +12,21 @@
  */
 package de.bixilon.minosoft.data.mappings
 
-data class Enchantment(val identifier: ModIdentifier) {
+import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+
+data class Enchantment(
+    val identifier: ModIdentifier,
+    // ToDo
+) : RegistryItem {
     override fun toString(): String {
         return identifier.toString()
+    }
+
+    companion object : IdentifierDeserializer<Enchantment> {
+        override fun deserialize(mappings: VersionMapping, identifier: ModIdentifier, data: JsonObject): Enchantment {
+            return Enchantment(identifier)
+        }
+
     }
 }

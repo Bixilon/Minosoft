@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.world
 
-import de.bixilon.minosoft.data.mappings.blocks.Block
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import java.util.*
 
 /**
@@ -34,7 +34,7 @@ class Chunk(val sections: MutableMap<Int, ChunkSection> = mutableMapOf()) {
         }
     }
 
-    fun setRawBlocks(blocks: HashMap<InChunkLocation, Block?>) {
+    fun setRawBlocks(blocks: HashMap<InChunkLocation, BlockState?>) {
         for ((location, blockInfo) in blocks) {
             setRawBlock(location, blockInfo)
         }
@@ -44,7 +44,7 @@ class Chunk(val sections: MutableMap<Int, ChunkSection> = mutableMapOf()) {
         getSectionOrCreate(location.getSectionHeight()).setBlockInfo(location.getInChunkSectionLocation(), block)
     }
 
-    fun setRawBlock(location: InChunkLocation, block: Block?) {
+    fun setRawBlock(location: InChunkLocation, block: BlockState?) {
         getSectionOrCreate(location.getSectionHeight()).let {
             val inChunkSectionLocation = location.getInChunkSectionLocation()
             if (block == null) {

@@ -42,7 +42,7 @@ public class JarHashGenerator {
 
             Resources.loadVersion(version, versionJson);
 
-            AssetsManager assetsManager = new AssetsManager(true, Resources.getAssetVersionByVersion(version));
+            AssetsManager assetsManager = new AssetsManager(true, Resources.getAssetVersionByVersion(version), Resources.getPixLyzerDataHashByVersion(version));
             String jarAssetsHash = assetsManager.generateJarAssets();
 
             versionJson.addProperty("jar_assets_hash", jarAssetsHash);

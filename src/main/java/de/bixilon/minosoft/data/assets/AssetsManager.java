@@ -22,7 +22,6 @@ import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.mappings.ModIdentifier;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
-import de.bixilon.minosoft.util.GitInfo;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
 
@@ -40,11 +39,13 @@ public class AssetsManager {
     private static final String[] RELEVANT_ASSETS = {"minecraft/lang/", "minecraft/sounds.json", "minecraft/sounds/", "minecraft/textures/", "minecraft/font/"}; // whitelist for all assets we care (we have our own block models, etc)
     private final boolean verifyHash;
     private final AssetVersion assetVersion;
+    private final String pixlyzerHash;
     private final HashMap<String, String> assetsMap = new HashMap<>();
 
-    public AssetsManager(boolean verifyHash, AssetVersion assetVersion) {
+    public AssetsManager(boolean verifyHash, AssetVersion assetVersion, String pixlyzerHash) {
         this.verifyHash = verifyHash;
         this.assetVersion = assetVersion;
+        this.pixlyzerHash = pixlyzerHash;
     }
 
     public static InputStreamReader readAssetByHash(String hash) throws IOException {
@@ -219,9 +220,9 @@ public class AssetsManager {
 
         this.assetsMap.putAll(parseAssetsIndex(this.assetVersion.getJarAssetsHash()));
 
-        // download minosoft mappings
+        // download pixlyzer mappings
 
-        downloadAsset(AssetsSource.MINOSOFT_GIT, this.assetVersion.getMinosoftMappings());
+        downloadAsset(AssetsSource.PIXLYZER, this.pixlyzerHash);
     }
 
     private HashMap<String, String> verifyAssets(AssetsSource source, CountUpAndDownLatch latch, HashMap<String, String> assets) {
@@ -248,10 +249,9 @@ public class AssetsManager {
     private void downloadAsset(AssetsSource source, String hash) throws IOException {
         switch (source) {
             case MINECRAFT -> downloadAsset(String.format(ProtocolDefinition.MINECRAFT_URL_RESOURCES, hash.substring(0, 2), hash), hash);
-            case MINOSOFT_GIT -> downloadAsset(Util.formatString(
-                    Minosoft.getConfig().getConfig().getDownload().getUrl().getResources(),
+            case PIXLYZER -> downloadAsset(Util.formatString(
+                    Minosoft.getConfig().getConfig().getDownload().getUrl().getPixlyzer(),
                     Map.of(
-                            "branch", GitInfo.INSTANCE.getGIT_BRANCH(),
                             "hashPrefix", hash.substring(0, 2),
                             "fullHash", hash)
             ), hash, false);

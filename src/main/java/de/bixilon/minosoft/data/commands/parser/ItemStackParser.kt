@@ -32,7 +32,7 @@ class ItemStackParser : CommandParser() {
             stringReader.skip()
         }
         val argument = stringReader.readModIdentifier() // ToDo: Check predicates
-        val item = connection.mapping.getItem(argument.value)
+        val item = connection.mapping.itemRegistry.get(argument.value)
         check(item != null) {
             throw ItemNotFoundCommandParseException(stringReader, argument.key)
         }

@@ -63,7 +63,7 @@ public class PacketSpawnPlayer extends ClientboundPacket {
 
         Item currentItem = null;
         if (buffer.getVersionId() < V_15W31A) {
-            currentItem = buffer.getConnection().getMapping().getItem(buffer.readUnsignedShort());
+            currentItem = buffer.getConnection().getMapping().getItemRegistry().get(buffer.readUnsignedShort());
         }
         EntityMetaData metaData = null;
         if (buffer.getVersionId() < V_19W34A) {

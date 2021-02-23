@@ -29,7 +29,7 @@ public class CampfireBlockEntityMetaData extends BlockEntityMetaData {
     public CampfireBlockEntityMetaData(Connection connection, ListTag nbt) {
         this.items = new Slot[4];
         for (CompoundTag tag : nbt.<CompoundTag>getValue()) {
-            this.items[tag.getByteTag("Slot").getValue()] = new Slot(null, connection.getMapping().getItem(new ModIdentifier(tag.getStringTag("id").getValue())), tag.getByteTag("Count").getValue()); // ToDo: version should not be null
+            this.items[tag.getByteTag("Slot").getValue()] = new Slot(null, connection.getMapping().getItemRegistry().get(new ModIdentifier(tag.getStringTag("id").getValue())), tag.getByteTag("Count").getValue()); // ToDo: version should not be null
         }
     }
 

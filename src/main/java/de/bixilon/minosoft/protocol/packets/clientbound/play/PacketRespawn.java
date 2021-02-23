@@ -41,15 +41,15 @@ public class PacketRespawn extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_20W21A) {
             if (buffer.getVersionId() < V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
-                this.dimension = buffer.getConnection().getMapping().getDimension(buffer.readByte());
+                this.dimension = buffer.getConnection().getMapping().getDimensionRegistry().get(buffer.readByte());
             } else {
-                this.dimension = buffer.getConnection().getMapping().getDimension(buffer.readInt());
+                this.dimension = buffer.getConnection().getMapping().getDimensionRegistry().get(buffer.readInt());
             }
         } else if (buffer.getVersionId() < V_1_16_2_PRE3) {
-            this.dimension = buffer.getConnection().getMapping().getDimension(buffer.readIdentifier());
+            this.dimension = buffer.getConnection().getMapping().getDimensionRegistry().get(buffer.readIdentifier());
         } else {
             CompoundTag tag = (CompoundTag) buffer.readNBT();
-            this.dimension = buffer.getConnection().getMapping().getDimension(new ModIdentifier(tag.getStringTag("effects").getValue())); // ToDo
+            this.dimension = buffer.getConnection().getMapping().getDimensionRegistry().get(new ModIdentifier(tag.getStringTag("effects").getValue())); // ToDo
         }
         if (buffer.getVersionId() < V_19W11A) {
             this.difficulty = Difficulties.byId(buffer.readUnsignedByte());

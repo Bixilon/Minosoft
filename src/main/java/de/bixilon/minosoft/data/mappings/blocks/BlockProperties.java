@@ -445,7 +445,7 @@ public enum BlockProperties {
     CAVE_VINES_BERRIES_NO,
     ;
 
-    public static final HashMap<String, HashMap<String, BlockProperties>> PROPERTIES_MAPPING = new HashMap<>();
+    public static final HashMap<String, HashMap<Object, BlockProperties>> PROPERTIES_MAPPING = new HashMap<>();
 
     static {
         // add all to hashmap
@@ -458,7 +458,7 @@ public enum BlockProperties {
     }
 
     private final String group;
-    private final String value;
+    private final Object value;
 
     BlockProperties() {
         final String name = name();
@@ -489,17 +489,22 @@ public enum BlockProperties {
         this.value = value;
     }
 
-    private static String getValueByName(String name) {
+    private static Object getValueByName(String name) {
         final List<String> split = Arrays.asList(name.split("_"));
         if (name.contains("LEVEL")) {
             // level with int values
-            return split.get(split.indexOf("LEVEL") + 1);
+            return Integer.parseInt(split.get(split.indexOf("LEVEL") + 1));
         } else if (name.endsWith("YES")) {
-            return String.valueOf(true);
+            return true;
         } else if (name.endsWith("NO")) {
-            return String.valueOf(false);
+            return false;
         } else if (split.size() == 3) {
-            return split.get(2).toLowerCase();
+            String value = split.get(2).toLowerCase();
+            try {
+                return Integer.parseInt(value);
+            } catch (Exception ignored) {
+                return value;
+            }
         } else {
             throw new IllegalArgumentException(String.format("Could not find value automatically: %s", name));
         }
@@ -509,7 +514,7 @@ public enum BlockProperties {
         return this.group;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return this.value;
     }
 }

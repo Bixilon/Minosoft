@@ -61,7 +61,7 @@ class PacketJoinGame : ClientboundPacket() {
         }
 
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {
-            dimension = buffer.connection.mapping.getDimension(buffer.readByte().toInt())!!
+            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readByte().toInt())!!
             difficulty = Difficulties.byId(buffer.readUnsignedByte().toInt())
             maxPlayers = buffer.readByte().toInt()
             if (buffer.versionId >= ProtocolVersions.V_13W42B) {
@@ -80,7 +80,7 @@ class PacketJoinGame : ClientboundPacket() {
             buffer.readStringArray() // world
         }
         if (buffer.versionId < ProtocolVersions.V_20W21A) {
-            dimension = buffer.connection.mapping.getDimension(buffer.readInt())!!
+            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readInt())!!
         } else {
             val dimensionCodec = buffer.readNBT()
             dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
@@ -134,7 +134,7 @@ class PacketJoinGame : ClientboundPacket() {
         }
         connection.player.gameMode = gameMode
         connection.player.world.isHardcore = isHardcore
-        connection.mapping.dimensionIdentifierMap = dimensions
+        connection.mapping.dimensionRegistry.setData(dimensions)
         connection.player.world.dimension = dimension
         val entity = PlayerEntity(connection, entityId, connection.player.playerUUID, null, null, connection.player.playerName, null, null)
         connection.player.entity = entity

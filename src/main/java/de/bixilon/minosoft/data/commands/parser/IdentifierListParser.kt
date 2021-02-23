@@ -30,13 +30,13 @@ class IdentifierListParser : CommandParser() {
 
 
         if (this == ENCHANTMENT_PARSER) {
-            return connection.mapping.getEnchantment(identifier.value) ?: throw EnchantmentNotFoundCommandParseException(stringReader, identifier.key)
+            return connection.mapping.enchantmentRegistry.get(identifier.value) ?: throw EnchantmentNotFoundCommandParseException(stringReader, identifier.key)
         }
         if (this == MOB_EFFECT_PARSER) {
-            return connection.mapping.getMobEffect(identifier.value) ?: throw MobEffectNotFoundCommandParseException(stringReader, identifier.key)
+            return connection.mapping.mobEffectRegistry.get(identifier.value) ?: throw MobEffectNotFoundCommandParseException(stringReader, identifier.key)
         }
         if (this == DIMENSION_EFFECT_PARSER) {
-            return connection.mapping.getDimension(identifier.value) ?: throw DimensionNotFoundCommandParseException(stringReader, identifier.key)
+            return connection.mapping.dimensionRegistry.get(identifier.value) ?: throw DimensionNotFoundCommandParseException(stringReader, identifier.key)
         }
         if (this == SUMMONABLE_ENTITY_PARSER) {
             // ToDo: only summonable entities, not all of them

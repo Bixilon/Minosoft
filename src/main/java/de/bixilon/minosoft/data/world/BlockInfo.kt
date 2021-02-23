@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData
-import de.bixilon.minosoft.data.mappings.blocks.Block
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 
 data class BlockInfo(
-    val block: Block,
+    val block: BlockState,
     var metaData: BlockEntityMetaData? = null,
     val info: BlockFloatingInfo = BlockFloatingInfo(),
 ) {
-    constructor(block: Block) : this(block, null) // ToDo: For java compatibility
+    constructor(block: BlockState) : this(block, null) // ToDo: For java compatibility
 }

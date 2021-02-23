@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.mappings.BlockId;
+import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.blocks.actions.*;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.modding.event.events.BlockActionEvent;
@@ -38,7 +38,7 @@ public class PacketBlockAction extends ClientboundPacket {
         }
         short byte1 = buffer.readUnsignedByte();
         short byte2 = buffer.readUnsignedByte();
-        BlockId blockId = buffer.getConnection().getMapping().getBlockId(buffer.readVarInt());
+        Block blockId = buffer.getConnection().getMapping().getBlockRegistry().get(buffer.readVarInt());
         if (blockId == null) {
             return true;
         }

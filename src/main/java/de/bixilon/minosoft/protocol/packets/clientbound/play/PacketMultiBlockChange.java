@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
@@ -32,7 +32,7 @@ import java.util.Map;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketMultiBlockChange extends ClientboundPacket {
-    private final HashMap<InChunkLocation, Block> blocks = new HashMap<>();
+    private final HashMap<InChunkLocation, BlockState> blocks = new HashMap<>();
     private ChunkLocation location;
 
     @Override
@@ -52,7 +52,7 @@ public class PacketMultiBlockChange extends ClientboundPacket {
                 byte y = (byte) ((raw & 0xFF_00_00) >>> 16);
                 byte z = (byte) ((raw & 0x0F_00_00_00) >>> 24);
                 byte x = (byte) ((raw & 0xF0_00_00_00) >>> 28);
-                this.blocks.put(new InChunkLocation(x, y, z), buffer.getConnection().getMapping().getBlock((blockId << 4) | meta));
+                this.blocks.put(new InChunkLocation(x, y, z), buffer.getConnection().getMapping().getBlockState((blockId << 4) | meta));
             }
             return true;
         }
@@ -63,7 +63,7 @@ public class PacketMultiBlockChange extends ClientboundPacket {
                 byte pos = buffer.readByte();
                 byte y = buffer.readByte();
                 int blockId = buffer.readVarInt();
-                this.blocks.put(new InChunkLocation((pos & 0xF0 >>> 4) & 0xF, y, pos & 0xF), buffer.getConnection().getMapping().getBlock(blockId));
+                this.blocks.put(new InChunkLocation((pos & 0xF0 >>> 4) & 0xF, y, pos & 0xF), buffer.getConnection().getMapping().getBlockState(blockId));
             }
             return true;
         }
@@ -76,7 +76,7 @@ public class PacketMultiBlockChange extends ClientboundPacket {
         int count = buffer.readVarInt();
         for (int i = 0; i < count; i++) {
             long data = buffer.readVarLong();
-            this.blocks.put(new InChunkLocation((int) ((data >> 8) & 0xF), yOffset + (int) ((data >> 4) & 0xF), (int) (data & 0xF)), buffer.getConnection().getMapping().getBlock(((int) (data >>> 12))));
+            this.blocks.put(new InChunkLocation((int) ((data >> 8) & 0xF), yOffset + (int) ((data >> 4) & 0xF), (int) (data & 0xF)), buffer.getConnection().getMapping().getBlockState(((int) (data >>> 12))));
         }
         return true;
     }
@@ -93,8 +93,8 @@ public class PacketMultiBlockChange extends ClientboundPacket {
 
         // tweak
         if (!connection.getVersion().isFlattened()) {
-            for (Map.Entry<InChunkLocation, Block> entry : getBlocks().entrySet()) {
-                Block block = VersionTweaker.transformBlock(entry.getValue(), chunk, entry.getKey().getInChunkSectionLocation(), entry.getKey().getSectionHeight());
+            for (Map.Entry<InChunkLocation, BlockState> entry : getBlocks().entrySet()) {
+                BlockState block = VersionTweaker.transformBlock(entry.getValue(), chunk, entry.getKey().getInChunkSectionLocation(), entry.getKey().getSectionHeight());
                 if (block == entry.getValue()) {
                     continue;
                 }
@@ -123,7 +123,7 @@ public class PacketMultiBlockChange extends ClientboundPacket {
         return this.location;
     }
 
-    public HashMap<InChunkLocation, Block> getBlocks() {
+    public HashMap<InChunkLocation, BlockState> getBlocks() {
         return this.blocks;
     }
 }

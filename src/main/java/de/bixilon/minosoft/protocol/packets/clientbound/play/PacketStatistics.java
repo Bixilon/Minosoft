@@ -31,10 +31,10 @@ public class PacketStatistics extends ClientboundPacket {
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
             if (buffer.getVersionId() < V_17W47A) { // ToDo
-                this.statistics.put(buffer.getConnection().getMapping().getStatistic(buffer.readIdentifier()), buffer.readVarInt());
+                this.statistics.put(buffer.getConnection().getMapping().getStatisticRegistry().get(buffer.readIdentifier()), buffer.readVarInt());
             } else {
                 StatisticCategories category = StatisticCategories.byId(buffer.readVarInt());
-                this.statistics.put(buffer.getConnection().getMapping().getStatistic(buffer.readVarInt()), buffer.readVarInt());
+                this.statistics.put(buffer.getConnection().getMapping().getStatisticRegistry().get(buffer.readVarInt()), buffer.readVarInt());
             }
         }
         return true;

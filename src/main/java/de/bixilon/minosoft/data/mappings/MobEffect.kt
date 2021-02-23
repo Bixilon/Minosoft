@@ -12,8 +12,21 @@
  */
 package de.bixilon.minosoft.data.mappings
 
-data class MobEffect(val identifier: ModIdentifier) {
+import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+
+data class MobEffect(
+    val identifier: ModIdentifier,
+    // ToDo
+) : RegistryItem {
     override fun toString(): String {
         return identifier.toString()
+    }
+
+    companion object : IdentifierDeserializer<MobEffect> {
+        override fun deserialize(mappings: VersionMapping, identifier: ModIdentifier, data: JsonObject): MobEffect {
+            return MobEffect(identifier)
+        }
+
     }
 }

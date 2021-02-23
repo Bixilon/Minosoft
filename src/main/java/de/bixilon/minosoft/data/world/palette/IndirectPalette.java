@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.world.palette;
 
 import de.bixilon.minosoft.config.StaticConfiguration;
-import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -31,11 +31,11 @@ public class IndirectPalette implements Palette {
     }
 
     @Override
-    public Block blockById(int blockId) {
+    public BlockState blockById(int blockId) {
         if (blockId < this.palette.length) {
             blockId = this.palette[blockId];
         }
-        Block block = this.mapping.getBlock(blockId);
+        BlockState block = this.mapping.getBlockState(blockId);
         if (StaticConfiguration.DEBUG_MODE) {
             if (block == null) {
                 if (blockId == ProtocolDefinition.NULL_BLOCK_ID) {

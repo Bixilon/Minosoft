@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.mappings.blocks.Block
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.*
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
@@ -92,7 +92,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
     }
 
     override fun init() {
-        minecraftTextures = TextureArray.createTextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockIdMap.values))
+        minecraftTextures = TextureArray.createTextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockStateIdMap.values))
         minecraftTextures.load()
 
 
@@ -126,14 +126,14 @@ class ChunkRenderer(private val connection: Connection, private val world: World
         glDisable(GL_CULL_FACE)
     }
 
-    private fun resolveBlockTextureIds(blocks: Set<Block>): List<Texture> {
+    private fun resolveBlockTextureIds(blocks: Set<BlockState>): List<Texture> {
         val textures: MutableList<Texture> = mutableListOf()
         textures.add(TextureArray.DEBUG_TEXTURE)
         val textureMap: MutableMap<String, Texture> = mutableMapOf()
         textureMap[TextureArray.DEBUG_TEXTURE.name] = TextureArray.DEBUG_TEXTURE
 
         for (block in blocks) {
-            for (model in block.blockRenderers) {
+            for (model in block.renders) {
                 model.resolveTextures(textures, textureMap)
             }
         }

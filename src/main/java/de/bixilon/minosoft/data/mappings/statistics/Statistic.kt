@@ -13,8 +13,9 @@
 package de.bixilon.minosoft.data.mappings.statistics
 
 import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.RegistryItem
 
-data class Statistic(val identifier: ModIdentifier) {
+data class Statistic(val identifier: ModIdentifier) : RegistryItem {
     override fun toString(): String {
         return identifier.toString()
     }

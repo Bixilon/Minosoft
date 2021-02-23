@@ -187,7 +187,7 @@ public class OutByteBuffer {
                 writeShort((short) -1);
                 return;
             }
-            writeShort((short) (int) this.connection.getMapping().getItemId(slot.getItem()));
+            writeShort((short) this.connection.getMapping().getItemRegistry().getId(slot.getItem()));
             writeByte((byte) slot.getItemCount());
             writeShort(slot.getItemMetadata());
             writeNBT(slot.getNbt(this.connection.getMapping()));
@@ -196,7 +196,7 @@ public class OutByteBuffer {
             writeBoolean(false);
             return;
         }
-        writeVarInt(this.connection.getMapping().getItemId(slot.getItem()));
+        writeVarInt(this.connection.getMapping().getItemRegistry().getId(slot.getItem()));
         writeByte((byte) slot.getItemCount());
         writeNBT(slot.getNbt(this.connection.getMapping()));
     }

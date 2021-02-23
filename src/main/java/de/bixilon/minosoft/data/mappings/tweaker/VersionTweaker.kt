@@ -18,7 +18,8 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.animal.horse.*
 import de.bixilon.minosoft.data.entities.entities.monster.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
-import de.bixilon.minosoft.data.mappings.blocks.Block
+import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.*
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -106,12 +107,13 @@ object VersionTweaker {
     }
 
 
+    // ToDo: Broken
     @JvmStatic
-    fun transformBlock(originalBlock: Block, chunk: Chunk, location: InChunkSectionLocation, sectionHeight: Int): Block? {
-        when (originalBlock.identifier.fullIdentifier) {
-            "minecraft:grass" -> {
+    fun transformBlock(originalBlock: BlockState, chunk: Chunk, location: InChunkSectionLocation, sectionHeight: Int): BlockState? {
+        when (originalBlock.owner.identifier) {
+            ModIdentifier("minecraft:grass") -> {
                 getBlockAbove(chunk, location, sectionHeight)?.let {
-                    if (it == TweakBlocks.SNOW || it == TweakBlocks.SNOW_LAYER) {
+                    if (it.owner.identifier == TweakBlocks.SNOW_IDENTIFIER || it.owner.identifier == TweakBlocks.SNOW_LAYER_IDENTIFIER) {
                         return TweakBlocks.GRASS_BLOCK_SNOWY_YES
                     }
                 }
@@ -121,7 +123,7 @@ object VersionTweaker {
         return originalBlock
     }
 
-    private fun getBlockAbove(chunk: Chunk, location: InChunkSectionLocation, sectionHeight: Int): Block? {
+    private fun getBlockAbove(chunk: Chunk, location: InChunkSectionLocation, sectionHeight: Int): BlockState? {
         val above = location.getInChunkLocation(sectionHeight)
         return chunk.getBlockInfo(InChunkLocation(above.x, above.y + 1, above.z))?.block
     }

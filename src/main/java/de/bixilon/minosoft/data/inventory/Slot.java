@@ -100,11 +100,11 @@ public class Slot {
         }
         if (nbt.containsKey("Enchantments")) {
             for (CompoundTag enchantment : nbt.getListTag("Enchantments").<CompoundTag>getValue()) {
-                this.enchantments.put(this.version.getMapping().getEnchantment(new ModIdentifier(enchantment.getStringTag("id").getValue())), enchantment.getNumberTag("lvl").getAsInt());
+                this.enchantments.put(this.version.getMapping().getEnchantmentRegistry().get(new ModIdentifier(enchantment.getStringTag("id").getValue())), enchantment.getNumberTag("lvl").getAsInt());
             }
         } else if (nbt.containsKey("ench")) {
             for (CompoundTag enchantment : nbt.getListTag("ench").<CompoundTag>getValue()) {
-                this.enchantments.put(this.version.getMapping().getEnchantment(enchantment.getNumberTag("id").getAsInt()), enchantment.getNumberTag("lvl").getAsInt());
+                this.enchantments.put(this.version.getMapping().getEnchantmentRegistry().get(enchantment.getNumberTag("id").getAsInt()), enchantment.getNumberTag("lvl").getAsInt());
             }
         }
     }
@@ -147,9 +147,9 @@ public class Slot {
                 nbt.writeTag("Enchantments", enchantmentList);
             } else {
                 ListTag enchantmentList = new ListTag(TagTypes.COMPOUND, new ArrayList<>());
-                this.enchantments.forEach((id, level) -> {
+                this.enchantments.forEach((enchantment, level) -> {
                     CompoundTag tag = new CompoundTag();
-                    tag.writeTag("id", new ShortTag((short) mapping.getEnchantmentId(id)));
+                    tag.writeTag("id", new ShortTag((short) mapping.getEnchantmentRegistry().getId(enchantment)));
                     tag.writeTag("lvl", new ShortTag(level.shortValue()));
                     enchantmentList.getValue().add(tag);
                 });

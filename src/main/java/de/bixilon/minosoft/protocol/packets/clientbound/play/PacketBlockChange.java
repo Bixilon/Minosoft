@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.data.world.Chunk;
@@ -28,17 +28,17 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
 public class PacketBlockChange extends ClientboundPacket {
     BlockPosition position;
-    Block block;
+    BlockState block;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionByte();
-            this.block = buffer.getConnection().getMapping().getBlock((buffer.readVarInt() << 4) | buffer.readByte()); // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
+            this.block = buffer.getConnection().getMapping().getBlockState((buffer.readVarInt() << 4) | buffer.readByte()); // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
             return true;
         }
         this.position = buffer.readPosition();
-        this.block = buffer.getConnection().getMapping().getBlock(buffer.readVarInt());
+        this.block = buffer.getConnection().getMapping().getBlockState(buffer.readVarInt());
         return true;
 
     }
@@ -57,7 +57,7 @@ public class PacketBlockChange extends ClientboundPacket {
 
         // tweak
         if (!connection.getVersion().isFlattened()) {
-            Block block = VersionTweaker.transformBlock(getBlock(), chunk, this.position.getInChunkSectionLocation(), this.position.getSectionHeight());
+            BlockState block = VersionTweaker.transformBlock(getBlock(), chunk, this.position.getInChunkSectionLocation(), this.position.getSectionHeight());
             section.setRawBlock(getPosition().getInChunkLocation().getInChunkSectionLocation(), block);
         } else {
             section.setRawBlock(getPosition().getInChunkLocation().getInChunkSectionLocation(), getBlock());
@@ -75,7 +75,7 @@ public class PacketBlockChange extends ClientboundPacket {
         return this.position;
     }
 
-    public Block getBlock() {
+    public BlockState getBlock() {
         return this.block;
     }
 }

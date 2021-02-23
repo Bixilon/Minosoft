@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.Vector;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.data.inventory.Slot;
-import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.data.world.BlockPosition;
@@ -78,7 +78,7 @@ public class EntityMetaData {
             case NBT -> buffer.readNBT();
             case PARTICLE -> buffer.readParticle();
             case POSE -> buffer.readPose();
-            case BLOCK_ID -> buffer.getConnection().getMapping().getBlockId(buffer.readVarInt());
+            case BLOCK_ID -> buffer.getConnection().getMapping().getBlockState(buffer.readVarInt()); // ToDo
             case OPT_VAR_INT -> buffer.readVarInt() - 1;
             case VILLAGER_DATA -> new VillagerData(VillagerData.VillagerTypes.byId(buffer.readVarInt()), VillagerData.VillagerProfessions.byId(buffer.readVarInt(), buffer.getVersionId()), VillagerData.VillagerLevels.byId(buffer.readVarInt()));
             case OPT_BLOCK_ID -> {
@@ -86,7 +86,7 @@ public class EntityMetaData {
                 if (blockId == 0) {
                     yield null;
                 }
-                yield buffer.getConnection().getMapping().getBlockId(blockId);
+                yield buffer.getConnection().getMapping().getBlockState(blockId);
             }
         };
     }
@@ -170,7 +170,7 @@ public class EntityMetaData {
             return get(field);
         }
 
-        public Block getBlock(EntityMetaDataFields field) {
+        public BlockState getBlock(EntityMetaDataFields field) {
             return get(field);
         }
 

@@ -12,8 +12,32 @@
  */
 package de.bixilon.minosoft.data.mappings
 
-data class Item(val identifier: ModIdentifier) {
+import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.Rarities
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+
+data class Item(
+    val identifier: ModIdentifier,
+    val rarity: Rarities = Rarities.COMMON,
+    val maxStackSize: Int = 64,
+    val maxDamage: Int = 0,
+    val isFireResistant: Boolean = false,
+    val descriptionId: String?,
+) : RegistryItem {
     override fun toString(): String {
         return identifier.toString()
+    }
+
+    companion object : IdentifierDeserializer<Item> {
+        override fun deserialize(mappings: VersionMapping, identifier: ModIdentifier, data: JsonObject): Item {
+            return Item(
+                identifier = identifier,
+                rarity = data["rarity"]?.asInt?.let { Rarities.VALUES[it] } ?: Rarities.COMMON,
+                maxStackSize = data["max_stack_size"]?.asInt ?: 64,
+                maxDamage = data["max_damage"]?.asInt ?: 0,
+                isFireResistant = data["is_fire_resistant"]?.asBoolean ?: false,
+                descriptionId = data["description_id"]?.asString,
+            )
+        }
     }
 }

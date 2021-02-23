@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.util;
 
 import de.bixilon.minosoft.data.mappings.Dimension;
-import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.world.BlockInfo;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkSection;
@@ -85,7 +85,7 @@ public final class ChunkUtil {
                                     arrayPos++;
                                     continue;
                                 }
-                                Block block = buffer.getConnection().getMapping().getBlock(fullBlockId);
+                                BlockState block = buffer.getConnection().getMapping().getBlockState(fullBlockId);
                                 blockMap.put(new InChunkSectionLocation(nibbleX, nibbleY, nibbleZ), new BlockInfo(block));
                                 arrayPos++;
                             }
@@ -128,7 +128,7 @@ public final class ChunkUtil {
                     for (int nibbleZ = 0; nibbleZ < ProtocolDefinition.SECTION_WIDTH_Z; nibbleZ++) {
                         for (int nibbleX = 0; nibbleX < ProtocolDefinition.SECTION_WIDTH_X; nibbleX++) {
                             int blockId = blockData[arrayPos];
-                            Block block = buffer.getConnection().getMapping().getBlock(blockId);
+                            BlockState block = buffer.getConnection().getMapping().getBlockState(blockId);
                             if (block == null) {
                                 arrayPos++;
                                 continue;
@@ -185,7 +185,7 @@ public final class ChunkUtil {
                         }
                         blockId &= individualValueMask;
 
-                        Block block = palette.blockById(blockId);
+                        BlockState block = palette.blockById(blockId);
                         if (block == null) {
                             continue;
                         }
