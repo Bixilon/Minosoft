@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockInfo
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -88,7 +89,10 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) {
                 if (neighbourBlockFullFace && cullFace) {
                     continue
                 }
-                element.render(textureMapping, modelMatrix, direction, data)
+
+                val tintColor: RGBColor? = blockInfo.block.tintColor
+
+                element.render(tintColor, textureMapping, modelMatrix, direction, data)
             }
         }
     }

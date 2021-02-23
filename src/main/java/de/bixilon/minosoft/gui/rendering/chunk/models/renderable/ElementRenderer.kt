@@ -49,7 +49,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
     }
 
 
-    fun render(textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, data: MutableList<Float>) {
+    fun render(tintColor: RGBColor?, textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, data: MutableList<Float>) {
         val realDirection = directionMapping[direction]!!
         val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
 
@@ -76,10 +76,10 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
             data.add(texture.animations.toFloat())
             data.add(texture.heightFactor)
 
-            if (texture.tintIndex == 1) {
-                data.add(Float.fromBits(RGBColor(0x10, 0xee, 0x10).color))
-            } else {
+            if (tintColor == null) {
                 data.add(0f)
+            } else {
+                data.add(Float.fromBits(tintColor.color))
             }
         }
 

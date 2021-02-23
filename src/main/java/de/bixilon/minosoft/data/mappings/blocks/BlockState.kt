@@ -18,6 +18,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
@@ -29,6 +30,7 @@ data class BlockState(
     val properties: Set<BlockProperties> = setOf(),
     val rotation: BlockRotations = BlockRotations.NONE,
     val renders: Set<BlockRenderer> = setOf(),
+    val tintColor: RGBColor? = null,
 ) {
 
     override fun hashCode(): Int {
@@ -165,12 +167,15 @@ data class BlockState(
                 }
             }
 
+            val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { RGBColor.noAlpha(it) } ?: owner.tintColor
+
 
             return BlockState(
                 owner = owner,
                 properties = properties.toSet(),
                 rotation = rotation,
                 renders = renders.toSet(),
+                tintColor = tintColor
             )
         }
 

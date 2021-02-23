@@ -86,4 +86,8 @@ public final class RGBColor implements ChatCode {
     public int getColor() {
         return this.color;
     }
+
+    public static RGBColor noAlpha(int color) {
+        return new RGBColor(color << 8 | 0xFF);
+    }
 }

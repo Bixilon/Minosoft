@@ -18,12 +18,14 @@ import de.bixilon.minosoft.data.mappings.Item
 import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.data.mappings.RegistryItem
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.text.RGBColor
 
 data class Block(
     val identifier: ModIdentifier,
     val explosionResistance: Float = 0.0f,
     val hasCollision: Boolean = false,
     val hasDynamicShape: Boolean = false,
+    val tintColor: RGBColor? = null,
     private val itemId: Int = 0,
 ) : RegistryItem {
     lateinit var item: Item
@@ -40,6 +42,7 @@ data class Block(
                 explosionResistance = data["explosion_resistance"]?.asFloat ?: 0.0f,
                 hasCollision = data["has_collision"]?.asBoolean ?: false,
                 hasDynamicShape = data["has_dynamic_shape"]?.asBoolean ?: false,
+                tintColor = data["tint_color"]?.asInt?.let { RGBColor.noAlpha(it) },
                 itemId = data["item"]?.asInt ?: 0,
             )
 
