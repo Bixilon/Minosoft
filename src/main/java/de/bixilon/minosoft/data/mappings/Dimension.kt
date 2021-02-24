@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
-class Dimension(
+data class Dimension(
     val resourceLocation: ResourceLocation,
     val piglinSafe: Boolean = false,
     val natural: Boolean = true,
@@ -43,6 +43,24 @@ class Dimension(
 
     override fun toString(): String {
         return resourceLocation.toString()
+    }
+
+    fun bareEquals(dimension: Dimension): Boolean {
+        return this.piglinSafe == dimension.piglinSafe &&
+                this.natural == dimension.natural &&
+                this.ambientLight == dimension.ambientLight &&
+                this.infiniBurn == dimension.infiniBurn &&
+                this.respawnAnchorWorks == dimension.respawnAnchorWorks &&
+                this.hasSkyLight == dimension.hasSkyLight &&
+                this.bedWorks == dimension.bedWorks &&
+                this.effects == dimension.effects &&
+                this.hasRaids == dimension.hasRaids &&
+                this.logicalHeight == dimension.logicalHeight &&
+                this.coordinateScale == dimension.coordinateScale &&
+                this.minY == dimension.minY &&
+                this.hasCeiling == dimension.hasCeiling &&
+                this.ultrawarm == dimension.ultrawarm &&
+                this.height == dimension.height
     }
 
     companion object : ResourceLocationDeserializer<Dimension> {

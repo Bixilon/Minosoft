@@ -23,10 +23,10 @@ import de.bixilon.minosoft.modding.event.events.JoinGameEvent
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A
 import de.bixilon.minosoft.util.BitByte
+import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 import de.bixilon.minosoft.util.nbt.tag.ListTag
@@ -84,15 +84,18 @@ class PacketJoinGame : ClientboundPacket() {
         } else {
             val dimensionCodec = buffer.readNBT()
             dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
-            dimension = if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
-                dimensions[ResourceLocation(buffer.readString())]!!
+            if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
+                dimension = dimensions[buffer.readResourceLocation()]!!
             } else {
                 val tag = buffer.readNBT() as CompoundTag
-                if (tag.getByteTag("has_skylight").value.toInt() == 0x01) { // ToDo: this is just for not messing up the skylight
-                    dimensions[ProtocolDefinition.DEFAULT_DIMENSION]!!
-                } else {
-                    dimensions[ProtocolDefinition.NETHER_DIMENSION]!!
+                val parsedDimension = Dimension.deserialize(ResourceLocation(Util.generateRandomString(10)), tag) // ToDo: Why no resource Location?
+                for ((_, entry) in dimensions) {
+                    if (parsedDimension.bareEquals(entry)) {
+                        dimension = entry
+                        break
+                    }
                 }
+                check(dimension != null) { "Can not find dimension!" }
             }
         }
         if (buffer.versionId >= ProtocolVersions.V_20W22A) {
@@ -172,5 +175,9 @@ class PacketJoinGame : ClientboundPacket() {
 
     override fun log() {
         Log.protocol(String.format("[IN] Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", entityId, gameMode, dimension, difficulty, isHardcore, viewDistance))
+    }
+
+    override fun onError(connection: Connection) {
+        connection.disconnect()
     }
 }

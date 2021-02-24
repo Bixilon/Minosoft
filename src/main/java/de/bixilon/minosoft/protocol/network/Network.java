@@ -80,9 +80,15 @@ public abstract class Network {
             if (packet == null) {
                 throw new PacketNotImplementedException(data, packetType, this.connection);
             }
-
-            boolean success = packet.read(data);
+            boolean success;
+            try {
+                success = packet.read(data);
+            } catch (Throwable exception) {
+                packet.onError(this.connection);
+                throw exception;
+            }
             if (data.getBytesLeft() > 0 || !success) {
+                packet.onError(this.connection);
                 throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packetType, data.getPosition(), data.getBytesLeft(), data.getLength(), success));
             }
             return packet;

@@ -10,15 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets
 
-package de.bixilon.minosoft.protocol.packets;
+import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+abstract class ClientboundPacket : Packet {
 
-public abstract class ClientboundPacket implements Packet {
-    public abstract boolean read(InByteBuffer buffer) throws Exception;
+    @Throws(Exception::class)
+    abstract fun read(buffer: InByteBuffer): Boolean
 
-    public void handle(Connection connection) {
-    }
+    open fun handle(connection: Connection) {}
+
+    open fun onError(connection: Connection) {}
 }

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.json.ResourceLocationJsonMap
 open class Registry<T : RegistryItem>(
     private var parentRegistry: Registry<T>? = null,
     initialSize: Int = 50,
-) {
+) : Iterable<T> {
     private var initialized = false
     private val idMap = HashBiMap.create<Int, T>(initialSize)
     private val resourceLocationMap = HashBiMap.create<ResourceLocation, T>(initialSize)
@@ -107,5 +107,9 @@ open class Registry<T : RegistryItem>(
         NONE,
         BITS_4,
         BITS_16,
+    }
+
+    override fun iterator(): Iterator<T> {
+        return resourceLocationMap.values.iterator()
     }
 }
