@@ -24,5 +24,8 @@ object RenderConstants {
 
     val GRASS_OUT_OF_BOUNDS_COLOR = RGBColor(-65281)
 
+    val LILY_PAD_INVENTORY_COLOR = RGBColor("#71C35C")
+    val LILY_PAD_BLOCK_COLOR = RGBColor("#208030")
+
     const val COLORMAP_SIZE = 255
 }

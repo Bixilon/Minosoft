@@ -30,7 +30,7 @@ class TintColorCalculator {
     fun calculateTint(tint: ResourceLocation, biome: Biome): RGBColor? {
         return when (tint) {
             ResourceLocation("water_tint") -> biome.waterColor
-            ResourceLocation("grass_tint") -> {
+            ResourceLocation("grass_tint"), ResourceLocation("sugar_cane_tint"), ResourceLocation("shearing_double_plant_tint") -> {
                 val colorMapPixelIndex = biome.downfallColorMapCoordinate shl 8 or biome.temperatureColorMapCoordinate
                 var color = if (colorMapPixelIndex > grassColorMap.size) {
                     RenderConstants.GRASS_OUT_OF_BOUNDS_COLOR
@@ -42,12 +42,10 @@ class TintColorCalculator {
                 }
                 biome.grassColorModifier.modifier.invoke(color)
             }
-            ResourceLocation("shearing_double_plant_tint") -> RGBColor("#456789")
             ResourceLocation("foliage_tint") -> {
                 foliageColorMap[biome.downfallColorMapCoordinate shl 8 or biome.temperatureColorMapCoordinate]
             }
-            ResourceLocation("sugar_cane_tint") -> RGBColor("#654321")
-            ResourceLocation("lily_pad_tint") -> RGBColor("#987654")
+            ResourceLocation("lily_pad_tint") -> RenderConstants.LILY_PAD_BLOCK_COLOR
             else -> null
         }
     }
