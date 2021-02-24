@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.MMath
 
 data class Biome(
@@ -39,11 +40,19 @@ data class Biome(
     val grassColorModifier: GrassColorModifiers = GrassColorModifiers.NONE,
 ) : RegistryItem {
 
-    val temperatureColorMapCoordinate = ((1.0 - MMath.clamp(temperature, 0.0f, 1.0f)) * RenderConstants.COLORMAP_SIZE).toInt()
-    val downfallColorMapCoordinate = ((1.0 - (MMath.clamp(downfall, 0.0f, 1.0f) * MMath.clamp(temperature, 0.0f, 1.0f))) * RenderConstants.COLORMAP_SIZE).toInt()
+    val temperatureColorMapCoordinate = getColorMapCoordinate(temperature)
+    val downfallColorMapCoordinate = getColorMapCoordinate(downfall * temperature)
 
     override fun toString(): String {
         return resourceLocation.toString()
+    }
+
+    private fun getColorMapCoordinate(value: Float): Int {
+        return ((1.0 - MMath.clamp(value, 0.0f, 1.0f)) * RenderConstants.COLORMAP_SIZE).toInt()
+    }
+
+    fun getClampedTemperature(height: Int): Int {
+        return getColorMapCoordinate(MMath.clamp(temperature + (MMath.clamp(height - ProtocolDefinition.SEA_LEVEL_HEIGHT, 1, Int.MAX_VALUE) * ProtocolDefinition.HEIGHT_SEA_LEVEL_MODIFIER), 0f, 1f))
     }
 
     companion object : ResourceLocationDeserializer<Biome> {
@@ -77,15 +86,11 @@ data class Biome(
     }
 
     enum class GrassColorModifiers(val modifier: (color: RGBColor) -> RGBColor) {
-        NONE({ color: RGBColor ->
-            color
-        }),
-        DARK_FORREST({ color: RGBColor ->
-            RGBColor(color.color + 2634762 shl 8)
-        }),
-        SWAMP({ color: RGBColor ->
+        NONE({ color: RGBColor -> color }),
+        DARK_FORREST({ color: RGBColor -> RGBColor(color.color + 2634762 shl 8) }),
+        SWAMP({
             // ToDo: Minecraft uses PerlinSimplexNoise here
-            color
+            RGBColor("#6A7039")
         }),
 
     }

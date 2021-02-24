@@ -101,7 +101,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
                     biome.foliageColor?.let { tintColor = it }
 
                     blockInfo.block.owner.tint?.let { tint ->
-                        tintColor = renderWindow.tintColorCalculator.calculateTint(tint, biome)
+                        tintColor = renderWindow.tintColorCalculator.calculateTint(tint, biome, blockPosition)
                     }
                 }
 
