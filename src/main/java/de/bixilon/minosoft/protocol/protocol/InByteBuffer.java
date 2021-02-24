@@ -89,6 +89,9 @@ public class InByteBuffer {
     }
 
     public byte[] readBytes(int count) {
+        if (count > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         byte[] ret = new byte[count];
         System.arraycopy(this.bytes, this.position, ret, 0, count);
         this.position += count;
@@ -131,6 +134,9 @@ public class InByteBuffer {
     }
 
     public int[] readUnsignedLEShorts(int num) {
+        if (num > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         int[] ret = new int[num];
         for (int i = 0; i < ret.length; i++) {
             ret[i] = ((readUnsignedByte()) | (readUnsignedByte() << 8));
@@ -139,6 +145,9 @@ public class InByteBuffer {
     }
 
     public String[] readStringArray(int length) {
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         String[] ret = new String[length];
         for (int i = 0; i < length; i++) {
             ret[i] = readString();
@@ -333,6 +342,9 @@ public class InByteBuffer {
     }
 
     byte[] readBytes(int pos, int count) {
+        if (count > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         byte[] ret = new byte[count];
         System.arraycopy(this.bytes, pos, ret, 0, count);
         return ret;
@@ -375,6 +387,9 @@ public class InByteBuffer {
     }
 
     public int[] readIntArray(int length) {
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         int[] ret = new int[length];
         for (int i = 0; i < length; i++) {
             ret[i] = readInt();
@@ -383,6 +398,9 @@ public class InByteBuffer {
     }
 
     public long[] readLongArray(int length) {
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         long[] ret = new long[length];
         for (int i = 0; i < length; i++) {
             ret[i] = readLong();
@@ -437,6 +455,9 @@ public class InByteBuffer {
     }
 
     public int[] readVarIntArray(int length) {
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         int[] ret = new int[length];
         for (int i = 0; i < length; i++) {
             ret[i] = readVarInt();
@@ -453,6 +474,9 @@ public class InByteBuffer {
     }
 
     public Ingredient[] readIngredientArray(int length) {
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         Ingredient[] ret = new Ingredient[length];
         for (int i = 0; i < length; i++) {
             ret[i] = readIngredient();
@@ -465,6 +489,9 @@ public class InByteBuffer {
     }
 
     public Slot[] readSlotArray(int length) {
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         Slot[] res = new Slot[length];
         for (int i = 0; i < length; i++) {
             res[i] = readSlot();
@@ -488,7 +515,12 @@ public class InByteBuffer {
     }
 
     public CommandNode[] readCommandNodesArray() {
-        CommandNode[] nodes = new CommandNode[readVarInt()];
+        int count = readVarInt();
+
+        if (count > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
+        CommandNode[] nodes = new CommandNode[count];
         for (int i = 0; i < nodes.length; i++) {
             nodes[i] = readCommandNode();
         }
