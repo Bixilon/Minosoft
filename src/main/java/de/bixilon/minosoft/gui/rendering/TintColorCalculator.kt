@@ -13,13 +13,52 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.text.RGBColor
 
-object TintColorCalculator {
-    fun getColor(color: Int): RGBColor? {
-        if (color == 0) {
-            return null
+class TintColorCalculator {
+    private lateinit var grassColorMap: Array<RGBColor>
+    private lateinit var foliageColorMap: Array<RGBColor>
+
+    fun init(assetsManager: AssetsManager) {
+        grassColorMap = assetsManager.readPixelArray("minecraft/textures/colormap/grass.png")
+        foliageColorMap = assetsManager.readPixelArray("minecraft/textures/colormap/foliage.png")
+    }
+
+    fun calculateTint(tint: ResourceLocation, biome: Biome): RGBColor? {
+        return when (tint) {
+            ResourceLocation("water_tint") -> biome.waterColor
+            ResourceLocation("grass_tint") -> {
+                val colorMapPixelIndex = biome.downfallColorMapCoordinate shl 8 or biome.temperatureColorMapCoordinate
+                var color = if (colorMapPixelIndex > grassColorMap.size) {
+                    RenderConstants.GRASS_OUT_OF_BOUNDS_COLOR
+                } else {
+                    grassColorMap[colorMapPixelIndex]
+                }
+                if (color == RenderConstants.WHITE_COLOR) {
+                    color = RenderConstants.GRASS_FAILOVER_COLOR
+                }
+                biome.grassColorModifier.modifier.invoke(color)
+            }
+            ResourceLocation("shearing_double_plant_tint") -> RGBColor("#456789")
+            ResourceLocation("foliage_tint") -> {
+                foliageColorMap[biome.downfallColorMapCoordinate shl 8 or biome.temperatureColorMapCoordinate]
+            }
+            ResourceLocation("sugar_cane_tint") -> RGBColor("#654321")
+            ResourceLocation("lily_pad_tint") -> RGBColor("#987654")
+            else -> null
         }
-        return RGBColor.noAlpha(color)
+    }
+
+
+    companion object {
+        fun getJsonColor(color: Int): RGBColor? {
+            if (color == 0) {
+                return null
+            }
+            return RGBColor.noAlpha(color)
+        }
     }
 }

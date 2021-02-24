@@ -51,13 +51,15 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
     private var deltaTime = 0.0 // time between current frame and last frame
 
     private var lastFrame = 0.0
-    lateinit var camera: Camera
+    val camera: Camera = Camera(connection, Minosoft.getConfig().config.game.camera.fov, this)
     private val latch = CountUpAndDownLatch(1)
 
     private var renderingStatus = RenderingStates.RUNNING
 
     private var polygonEnabled = false
     private var mouseCatch = !StaticConfiguration.DEBUG_MODE
+
+    val tintColorCalculator = TintColorCalculator()
 
     // all renderers
     val chunkRenderer: ChunkRenderer = ChunkRenderer(connection, connection.player.world, this)
@@ -111,8 +113,9 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             glfwTerminate()
             throw RuntimeException("Failed to create the GLFW window")
         }
-        camera = Camera(connection, Minosoft.getConfig().config.game.camera.fov, this)
         camera.init(this)
+
+        tintColorCalculator.init(connection.version.assetsManager)
 
 
         glfwSetKeyCallback(this.windowId) { _: Long, key: Int, _: Int, action: Int, _: Int ->

@@ -19,6 +19,10 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Location
+import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.data.world.BlockPosition
+import de.bixilon.minosoft.data.world.ChunkLocation
+import de.bixilon.minosoft.data.world.InChunkSectionLocation
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
@@ -49,6 +53,19 @@ class Camera(
     private var cameraFront = Vec3(0.0f, 0.0f, -1.0f)
     private var cameraRight = Vec3(0.0f, 0.0f, -1.0f)
     private var cameraUp = Vec3(0.0f, 1.0f, 0.0f)
+
+    var location: Location = Location(0.0, 0.0, 0.0)
+        private set
+    var blockPosition: BlockPosition = BlockPosition(0, 0, 0)
+        private set
+    var currentBiome: Biome? = null
+        private set
+    var chunkLocation: ChunkLocation = ChunkLocation(0, 0)
+        private set
+    var sectionHeight: Int = 0
+        private set
+    var inChunkSectionLocation: InChunkSectionLocation = InChunkSectionLocation(0, 0, 0)
+        private set
 
     private var screenHeight = 0
     private var screenWidth = 0
@@ -173,9 +190,26 @@ class Camera(
         for (shader in shaders) {
             shader.use().setMat4("viewProjectionMatrix", calculateProjectionMatrix(screenWidth, screenHeight) * calculateViewMatrix())
         }
+
+        positionChangeCallback()
+    }
+
+    private fun positionChangeCallback() {
+        location = Location(cameraPosition)
+        blockPosition = location.toBlockPosition()
+        currentBiome = connection.player.world.getChunk(blockPosition.getChunkLocation())?.biomeAccessor?.getBiome(blockPosition)
+        chunkLocation = blockPosition.getChunkLocation()
+        sectionHeight = blockPosition.getSectionHeight()
+        inChunkSectionLocation = blockPosition.getInChunkSectionLocation()
+
         // recalculate sky color for current biome
-        val blockPosition = Location(cameraPosition).toBlockPosition()
-        renderWindow.setSkyColor(connection.player.world.getChunk(blockPosition.getChunkLocation())?.biomeAccessor?.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
+        connection.player.world.dimension?.hasSkyLight?.let {
+            if (it) {
+                renderWindow.setSkyColor(currentBiome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
+            } else {
+                renderWindow.setSkyColor(RenderConstants.BLACK_COLOR)
+            }
+        } ?: renderWindow.setSkyColor(RenderConstants.DEFAULT_SKY_COLOR)
     }
 
     private fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int): Mat4 {

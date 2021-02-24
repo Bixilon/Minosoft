@@ -18,5 +18,5 @@ import de.bixilon.minosoft.data.world.BlockPosition
 
 interface BiomeAccessor {
 
-    fun getBiome(position: BlockPosition): Biome
+    fun getBiome(position: BlockPosition): Biome?
 }

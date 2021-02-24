@@ -93,7 +93,7 @@ data class Dimension(
                 ambientLight = data.get("ambient_light")?.asFloat ?: 0f,
                 infiniBurn = ResourceLocation(data.get("ambient_light")?.asString ?: "infiniburn_overworld"),
                 respawnAnchorWorks = data.get("respawn_anchor_works")?.asBoolean == true,
-                hasSkyLight = data.get("has_skylight")?.asBoolean == true,
+                hasSkyLight = data.get("has_sky_light")?.asBoolean == true,
                 bedWorks = data.get("bed_works")?.asBoolean == true,
                 effects = ResourceLocation(data.get("effects")?.asString ?: "overworld"),
                 hasRaids = data.get("has_raids")?.asBoolean == true,

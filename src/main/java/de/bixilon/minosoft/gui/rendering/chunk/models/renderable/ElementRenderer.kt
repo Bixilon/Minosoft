@@ -76,10 +76,10 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
             data.add(texture.animations.toFloat())
             data.add(texture.heightFactor)
 
-            if (tintColor == null) {
-                data.add(0f)
-            } else {
+            if (face.tint && tintColor != null) {
                 data.add(Float.fromBits(tintColor.color))
+            } else {
+                data.add(0f)
             }
         }
 

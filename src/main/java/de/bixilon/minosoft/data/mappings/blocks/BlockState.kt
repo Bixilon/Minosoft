@@ -168,7 +168,7 @@ data class BlockState(
                 }
             }
 
-            val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getColor(it) } ?: owner.tintColor
+            val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) } ?: owner.tintColor
 
 
             return BlockState(

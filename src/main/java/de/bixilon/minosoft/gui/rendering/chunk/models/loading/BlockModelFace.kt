@@ -23,6 +23,7 @@ import java.util.*
 class BlockModelFace(data: JsonObject, from: Vec3, to: Vec3, direction: Directions) {
     val textureName: String = data.get("texture").asString.removePrefix("#")
     val cullFace: Directions?
+    val tint: Boolean = data.has("tintindex")
     private var positions: MutableList<Vec2>
 
     init {
@@ -56,8 +57,8 @@ class BlockModelFace(data: JsonObject, from: Vec3, to: Vec3, direction: Directio
         positions = mutableListOf(
             uvToFloat(Vec2(textureStart.x, textureStart.y)),
             uvToFloat(Vec2(textureStart.x, textureEnd.y)),
-            uvToFloat(Vec2(textureEnd.x,   textureEnd.y)),
-            uvToFloat(Vec2(textureEnd.x,   textureStart.y)),
+            uvToFloat(Vec2(textureEnd.x, textureEnd.y)),
+            uvToFloat(Vec2(textureEnd.x, textureStart.y)),
         )
         val rotation = data["rotation"]?.asInt?.div(90) ?: 0
         Collections.rotate(positions, rotation)

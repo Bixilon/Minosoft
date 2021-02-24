@@ -20,12 +20,16 @@ import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
+import de.bixilon.minosoft.data.text.RGBColor;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
+import de.matthiasmann.twl.utils.PNGDecoder;
+import org.lwjgl.BufferUtils;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -336,5 +340,19 @@ public class AssetsManager {
 
     public AssetVersion getAssetVersion() {
         return this.assetVersion;
+    }
+
+    public RGBColor[] readPixelArray(String name) throws IOException {
+        PNGDecoder decoder = new PNGDecoder(readAssetAsStream(name));
+
+        ByteBuffer buffer = BufferUtils.createByteBuffer(decoder.getWidth() * decoder.getHeight() * PNGDecoder.Format.RGBA.getNumComponents());
+        decoder.decode(buffer, decoder.getWidth() * PNGDecoder.Format.RGBA.getNumComponents(), PNGDecoder.Format.RGBA);
+        buffer.rewind();
+
+        RGBColor[] colors = new RGBColor[decoder.getWidth() * decoder.getHeight()];
+        for (int pixel = 0; pixel < buffer.limit(); pixel += PNGDecoder.Format.RGBA.getNumComponents()) {
+            colors[pixel / 4] = new RGBColor(buffer.get(), buffer.get(), buffer.get(), buffer.get());
+        }
+        return colors;
     }
 }

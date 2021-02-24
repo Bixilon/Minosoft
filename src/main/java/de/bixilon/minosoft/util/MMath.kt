@@ -11,25 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.biome
+package de.bixilon.minosoft.util
 
-import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.world.BlockPosition
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-
-class NoiseBiomeAccessor(
-    private val biomes: Array<Biome>,
-) : BiomeAccessor {
-
-    override fun getBiome(position: BlockPosition): Biome? {
-        val inChunk = position.getInChunkSectionLocation()
-        val index = inChunk.y * ProtocolDefinition.SECTION_HEIGHT_Y + ((inChunk.z / 4) * 4 + (inChunk.x / 4))
-        if (index < 0 || index > biomes.size) {
-            return null
+object MMath {
+    fun clamp(value: Int, min: Int, max: Int): Int {
+        if (value < min) {
+            return min
         }
+        if (value > max) {
+            return max
+        }
+        return value
+    }
 
-        return biomes[index]
-
-        // ToDo: This value is pseudo randomly generated. It depends on the seed of the world (received in join game).
+    fun clamp(value: Float, min: Float, max: Float): Float {
+        if (value < min) {
+            return min
+        }
+        if (value > max) {
+            return max
+        }
+        return value
     }
 }

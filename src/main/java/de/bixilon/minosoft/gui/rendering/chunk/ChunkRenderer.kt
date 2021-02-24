@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.*
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
@@ -90,7 +92,23 @@ class ChunkRenderer(private val connection: Connection, private val world: World
                 Log.debug("")
             }
             val biome = chunk.biomeAccessor.getBiome(blockPosition)
-            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, biome, worldPosition, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
+
+            var tintColor: RGBColor? = null
+            if (StaticConfiguration.BIOME_DEBUG_MODE) {
+                tintColor = RGBColor(biome.hashCode())
+            } else {
+                biome?.let {
+                    biome.foliageColor?.let { tintColor = it }
+
+                    blockInfo.block.owner.tint?.let { tint ->
+                        tintColor = renderWindow.tintColorCalculator.calculateTint(tint, biome)
+                    }
+                }
+
+                blockInfo.block.tintColor?.let { tintColor = it }
+            }
+
+            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, tintColor, worldPosition, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
         }
         return data.toFloatArray()
     }

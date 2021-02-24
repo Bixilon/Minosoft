@@ -17,4 +17,12 @@ import de.bixilon.minosoft.data.text.RGBColor
 
 object RenderConstants {
     val DEFAULT_SKY_COLOR = RGBColor("#ecff89")
+    val WHITE_COLOR = RGBColor("#ffffff")
+    val BLACK_COLOR = RGBColor("#000000")
+
+    val GRASS_FAILOVER_COLOR = RGBColor("#48B518")
+
+    val GRASS_OUT_OF_BOUNDS_COLOR = RGBColor(-65281)
+
+    const val COLORMAP_SIZE = 255
 }
