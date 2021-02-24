@@ -110,7 +110,7 @@ public class PacketMultiBlockChange extends ClientboundPacket {
 
         for (var sectionHeight : sectionHeights) {
             ChunkSection section = chunk.getSectionOrCreate(sectionHeight);
-            connection.getRenderer().getRenderWindow().getChunkRenderer().prepareChunkSection(getLocation(), sectionHeight, section);
+            connection.getRenderer().getRenderWindow().getWorldRenderer().prepareChunkSection(getLocation(), sectionHeight, section);
         }
     }
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger, Lukas Eisenhauer
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.*
 
-class WorldMesh(data: FloatArray) {
+class ChunkSectionMesh(data: FloatArray) {
     var vAO: Int = glGenVertexArrays()
     var vBO: Int = glGenBuffers()
     var trianglesCount: Int = data.size / FLOATS_PER_VERTEX

@@ -29,7 +29,7 @@ import glm_.vec3.Vec3
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Camera(private val connection: Connection, private var fov: Float) {
+class Camera(private val connection: Connection, var fov: Float) {
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
     private var movementSpeed = 7
     var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)

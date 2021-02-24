@@ -31,7 +31,7 @@ import glm_.vec4.Vec4
 
 class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolean, rescale: Boolean) {
     private val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
-    private val faces: MutableMap<Directions, BlockModelFace> = HashMap(element.faces)
+    private val faces: MutableMap<Directions, BlockModelFace> = element.faces.toMutableMap()
     private var positions: Array<Vec3> = element.positions.clone()
     private val directionMapping: MutableMap<Directions, Directions> = mutableMapOf()
 

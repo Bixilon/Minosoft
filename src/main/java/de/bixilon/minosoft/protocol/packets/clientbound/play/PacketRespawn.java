@@ -91,7 +91,7 @@ public class PacketRespawn extends ClientboundPacket {
         connection.getPlayer().setSpawnConfirmed(false);
         connection.getPlayer().setGameMode(getGameMode());
 
-        connection.getRenderer().getRenderWindow().getChunkRenderer().clearChunkCache();
+        connection.getRenderer().getRenderWindow().getWorldRenderer().clearChunkCache();
     }
 
     @Override

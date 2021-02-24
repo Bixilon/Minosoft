@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger, Lukas Eisenhauer
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,10 +30,10 @@ import org.lwjgl.opengl.GL11.glEnable
 import org.lwjgl.opengl.GL13.glDisable
 import java.util.concurrent.ConcurrentHashMap
 
-class ChunkRenderer(private val connection: Connection, private val world: World, val renderWindow: RenderWindow) : Renderer {
+class WorldRenderer(private val connection: Connection, private val world: World, val renderWindow: RenderWindow) : Renderer {
     private lateinit var minecraftTextures: TextureArray
     lateinit var chunkShader: Shader
-    private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, WorldMesh>>()
+    private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, ChunkSectionMesh>>()
     private var currentTick = 0 // for animation usage
     private var lastTickIncrementTime = 0L
 
@@ -118,7 +118,8 @@ class ChunkRenderer(private val connection: Connection, private val world: World
             }
         }
 
-        for ((_, map) in chunkSectionsToDraw) {
+        for ((chunkLocation, map) in chunkSectionsToDraw) {
+            if (chunkLocation.isVisibleFrom(connection.renderer.renderWindow.camera))
             for ((_, mesh) in map) {
                 mesh.draw()
             }
@@ -157,7 +158,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
                 chunkSectionsToDraw[chunkLocation] = sectionMap
             }
             renderWindow.renderQueue.add {
-                val newMesh = WorldMesh(data)
+                val newMesh = ChunkSectionMesh(data)
                 sectionMap[sectionHeight]?.unload()
                 sectionMap[sectionHeight] = newMesh
             }

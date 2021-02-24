@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger, Lukas Eisenhauer
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,7 +20,7 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.mappings.ModIdentifier
-import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.RenderStats
 import de.bixilon.minosoft.modding.event.EventInvokerCallback
@@ -59,7 +59,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
     private var mouseCatch = !StaticConfiguration.DEBUG_MODE
 
     // all renderers
-    val chunkRenderer: ChunkRenderer = ChunkRenderer(connection, connection.player.world, this)
+    val worldRenderer: WorldRenderer = WorldRenderer(connection, connection.player.world, this)
     val hudRenderer: HUDRenderer = HUDRenderer(connection, this)
 
     val renderQueue = ConcurrentLinkedQueue<Runnable>()
@@ -205,7 +205,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         // Make the OpenGL context current
         glfwMakeContextCurrent(windowId)
         // Enable v-sync
-        glfwSwapInterval(1)
+        glfwSwapInterval(0)
 
 
         // Make the window visible
@@ -216,10 +216,10 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
 
-        chunkRenderer.init()
+        worldRenderer.init()
         hudRenderer.init()
 
-        chunkRenderer.postInit()
+        worldRenderer.postInit()
         hudRenderer.postInit()
 
 
@@ -275,7 +275,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
         hudRenderer.screenChangeResizeCallback(screenWidth, screenHeight)
 
-        camera.addShaders(chunkRenderer.chunkShader)
+        camera.addShaders(worldRenderer.chunkShader)
 
         camera.screenChangeResizeCallback(screenWidth, screenHeight)
 
@@ -304,7 +304,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
 
 
-            chunkRenderer.draw()
+            worldRenderer.draw()
             hudRenderer.draw()
 
             renderStats.endDraw()
@@ -351,7 +351,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         }
         if (this.renderingStatus == RenderingStates.PAUSED) {
             renderQueue.clear()
-            chunkRenderer.refreshChunkCache()
+            worldRenderer.refreshChunkCache()
         }
         this.renderingStatus = renderingStatus
     }
