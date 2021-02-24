@@ -139,7 +139,7 @@ class Camera(private val connection: Connection, private var fov: Float) {
             cameraPosition = cameraPosition + CAMERA_UP_VEC3 * cameraSpeed
         }
         if (lastPosition != cameraPosition) {
-            recalculateViewMatrix()
+            recalculateViewProjectionMatrix()
             sendPositionToServer()
         }
 
@@ -150,7 +150,7 @@ class Camera(private val connection: Connection, private var fov: Float) {
             0f
         }
         if (lastZoom != zoom) {
-            recalculateProjectionMatrix()
+            recalculateViewProjectionMatrix()
         }
 
     }
@@ -162,23 +162,17 @@ class Camera(private val connection: Connection, private var fov: Float) {
     fun screenChangeResizeCallback(screenWidth: Int, screenHeight: Int) {
         this.screenWidth = screenWidth
         this.screenHeight = screenHeight
-        recalculateProjectionMatrix()
+        recalculateViewProjectionMatrix()
     }
 
-    private fun recalculateProjectionMatrix() {
+    private fun recalculateViewProjectionMatrix() {
         for (shader in shaders) {
-            shader.use().setMat4("projectionMatrix", calculateProjectionMatrix(screenWidth, screenHeight))
+            shader.use().setMat4("viewProjectionMatrix", calculateProjectionMatrix(screenWidth, screenHeight) * calculateViewMatrix())
         }
     }
 
     private fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int): Mat4 {
         return glm.perspective(glm.radians(fov / (zoom + 1.0f)), screenWidth.toFloat() / screenHeight.toFloat(), 0.2f, 1000f)
-    }
-
-    private fun recalculateViewMatrix() {
-        for (shader in shaders) {
-            shader.use().setMat4("viewMatrix", calculateViewMatrix())
-        }
     }
 
     private fun calculateViewMatrix(): Mat4 {
@@ -198,7 +192,7 @@ class Camera(private val connection: Connection, private var fov: Float) {
 
         cameraRight = cameraFront.cross(CAMERA_UP_VEC3).normalize()
         cameraUp = cameraRight.cross(cameraFront).normalize()
-        recalculateViewMatrix()
+        recalculateViewProjectionMatrix()
         sendPositionToServer()
     }
 
