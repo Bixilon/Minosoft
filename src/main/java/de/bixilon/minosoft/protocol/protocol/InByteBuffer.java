@@ -24,8 +24,9 @@ import de.bixilon.minosoft.data.entities.EntityMetaData;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.Poses;
 import de.bixilon.minosoft.data.inventory.Slot;
-import de.bixilon.minosoft.data.mappings.LegacyModIdentifier;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.LegacyResourceLocation;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
+import de.bixilon.minosoft.data.mappings.biomes.Biome;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData;
 import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData;
@@ -89,6 +90,9 @@ public class InByteBuffer {
     }
 
     public byte[] readBytes(int count) {
+        if (count > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         byte[] ret = new byte[count];
         System.arraycopy(this.bytes, this.position, ret, 0, count);
         this.position += count;
@@ -131,6 +135,9 @@ public class InByteBuffer {
     }
 
     public int[] readUnsignedLEShorts(int num) {
+        if (num > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         int[] ret = new int[num];
         for (int i = 0; i < ret.length; i++) {
             ret[i] = ((readUnsignedByte()) | (readUnsignedByte() << 8));
@@ -139,6 +146,9 @@ public class InByteBuffer {
     }
 
     public String[] readStringArray(int length) {
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         String[] ret = new String[length];
         for (int i = 0; i < length; i++) {
             ret[i] = readString();
@@ -223,21 +233,21 @@ public class InByteBuffer {
     }
 
     public ParticleData readParticle() {
-        Particle type = this.connection.getMapping().getParticle(readVarInt());
+        Particle type = this.connection.getMapping().getParticleRegistry().get(readVarInt());
         return readParticleData(type);
     }
 
     public ParticleData readParticleData(Particle type) {
         if (this.versionId < V_17W45A) {
             // old particle format
-            return switch (type.getIdentifier().getFullIdentifier()) {
-                case "minecraft:iconcrack" -> new ItemParticleData(new Slot(this.connection.getVersion(), this.connection.getMapping().getItem(readVarInt(), readVarInt())), type);
-                case "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlock(readVarInt() << 4), type);
+            return switch (type.getResourceLocation().getFull()) {
+                case "minecraft:iconcrack" -> new ItemParticleData(new Slot(this.connection.getVersion(), this.connection.getMapping().getItemRegistry().get((readVarInt() << 16) | readVarInt())), type);
+                case "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlockState(readVarInt() << 4), type);
                 default -> new ParticleData(type);
             };
         }
-        return switch (type.getIdentifier().getFullIdentifier()) {
-            case "minecraft:block", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlock(readVarInt()), type);
+        return switch (type.getResourceLocation().getFull()) {
+            case "minecraft:block", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlockState(readVarInt()), type);
             case "minecraft:dust" -> new DustParticleData(readFloat(), readFloat(), readFloat(), readFloat(), type);
             case "minecraft:item" -> new ItemParticleData(readSlot(), type);
             default -> new ParticleData(type);
@@ -302,10 +312,10 @@ public class InByteBuffer {
                 metaData = readShort();
             }
             CompoundTag nbt = (CompoundTag) readNBT(this.versionId < V_14W28B);
-            return new Slot(this.connection.getVersion(), this.connection.getMapping().getItem(id, metaData), count, metaData, nbt);
+            return new Slot(this.connection.getVersion(), this.connection.getMapping().getItemRegistry().get((id << 16) | metaData), count, metaData, nbt);
         }
         if (readBoolean()) {
-            return new Slot(this.connection.getVersion(), this.connection.getMapping().getItem(readVarInt()), readByte(), (CompoundTag) readNBT());
+            return new Slot(this.connection.getVersion(), this.connection.getMapping().getItemRegistry().get(readVarInt()), readByte(), (CompoundTag) readNBT());
         }
         return null;
     }
@@ -333,6 +343,9 @@ public class InByteBuffer {
     }
 
     byte[] readBytes(int pos, int count) {
+        if (count > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         byte[] ret = new byte[count];
         System.arraycopy(this.bytes, pos, ret, 0, count);
         return ret;
@@ -375,6 +388,9 @@ public class InByteBuffer {
     }
 
     public int[] readIntArray(int length) {
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         int[] ret = new int[length];
         for (int i = 0; i < length; i++) {
             ret[i] = readInt();
@@ -382,7 +398,35 @@ public class InByteBuffer {
         return ret;
     }
 
+    public Biome[] readBiomeArray() {
+        int length = 0;
+        if (this.versionId >= V_20W28A) {
+            length = readVarInt();
+        } else if (this.versionId >= V_19W36A) {
+            length = 1024;
+        }
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
+
+        Biome[] ret = new Biome[length];
+        for (int i = 0; i < length; i++) {
+            int biomeId;
+
+            if (this.versionId >= V_20W28A) {
+                biomeId = readVarInt();
+            } else {
+                biomeId = readInt();
+            }
+            ret[i] = this.connection.getMapping().getBiomeRegistry().get(biomeId);
+        }
+        return ret;
+    }
+
     public long[] readLongArray(int length) {
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         long[] ret = new long[length];
         for (int i = 0; i < length; i++) {
             ret[i] = readLong();
@@ -437,6 +481,9 @@ public class InByteBuffer {
     }
 
     public int[] readVarIntArray(int length) {
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         int[] ret = new int[length];
         for (int i = 0; i < length; i++) {
             ret[i] = readVarInt();
@@ -453,6 +500,9 @@ public class InByteBuffer {
     }
 
     public Ingredient[] readIngredientArray(int length) {
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         Ingredient[] ret = new Ingredient[length];
         for (int i = 0; i < length; i++) {
             ret[i] = readIngredient();
@@ -465,6 +515,9 @@ public class InByteBuffer {
     }
 
     public Slot[] readSlotArray(int length) {
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
         Slot[] res = new Slot[length];
         for (int i = 0; i < length; i++) {
             res[i] = readSlot();
@@ -488,7 +541,12 @@ public class InByteBuffer {
     }
 
     public CommandNode[] readCommandNodesArray() {
-        CommandNode[] nodes = new CommandNode[readVarInt()];
+        int count = readVarInt();
+
+        if (count > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
+        CommandNode[] nodes = new CommandNode[count];
         for (int i = 0; i < nodes.length; i++) {
             nodes[i] = readCommandNode();
         }
@@ -523,14 +581,14 @@ public class InByteBuffer {
         };
     }
 
-    public ModIdentifier readIdentifier() {
-        String identifier = readString();
+    public ResourceLocation readResourceLocation() {
+        String resourceLocation = readString();
 
-        if (Util.doesStringContainsUppercaseLetters(identifier)) {
-            // just a string but wrapped into a identifier (like old plugin channels MC|BRAND or ...)
-            return new LegacyModIdentifier(identifier);
+        if (Util.doesStringContainsUppercaseLetters(resourceLocation)) {
+            // just a string but wrapped into a resourceLocation (like old plugin channels MC|BRAND or ...)
+            return new LegacyResourceLocation(resourceLocation);
         }
-        return new ModIdentifier(identifier);
+        return new ResourceLocation(resourceLocation);
     }
 
 }

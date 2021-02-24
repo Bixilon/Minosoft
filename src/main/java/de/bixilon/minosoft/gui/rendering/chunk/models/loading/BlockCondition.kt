@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.loading
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.BlockRotations
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 
 open class BlockCondition {
     private var properties: MutableSet<BlockProperties> = mutableSetOf()
@@ -40,7 +40,7 @@ open class BlockCondition {
 
     constructor()
 
-    open operator fun contains(block: Block): Boolean {
+    open operator fun contains(block: BlockState): Boolean {
         return if (rotation != BlockRotations.NONE && rotation != block.rotation) {
             false
         } else {
@@ -50,7 +50,7 @@ open class BlockCondition {
 
     companion object {
         val TRUE_CONDITION: BlockCondition = object : BlockCondition() {
-            override fun contains(block: Block): Boolean {
+            override fun contains(block: BlockState): Boolean {
                 return true
             }
         }

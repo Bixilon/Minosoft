@@ -14,34 +14,19 @@ package de.bixilon.minosoft.data.entities.entities.decoration
 
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.Location
 import de.bixilon.minosoft.data.entities.Location.Companion.fromPosition
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
-import de.bixilon.minosoft.data.mappings.ModIdentifier
 import de.bixilon.minosoft.data.mappings.Motive
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.protocol.network.Connection
 import java.util.*
 
-class Painting : Entity {
-    @get:EntityMetaDataFunction(identifier = "Direction")
-    val direction: Directions
-
-    @get:EntityMetaDataFunction(identifier = "Motive")
-    val motive: Motive
-
-    constructor(connection: Connection, entityId: Int, uuid: UUID, location: Location, rotation: EntityRotation) : super(connection, entityId, uuid, location, rotation) {
-        direction = Directions.NORTH
-        motive = DEFAULT_MOTIVE
-    }
-
-    constructor(connection: Connection, entityId: Int, uuid: UUID, position: BlockPosition, direction: Directions, motive: Motive) : super(connection, entityId, uuid, fromPosition(position), EntityRotation(0f, 0f, 0f)) {
-        this.direction = direction
-        this.motive = motive
-    }
-
-    companion object {
-        val DEFAULT_MOTIVE = Motive(ModIdentifier("kebab"))
-    }
-}
+class Painting(
+    connection: Connection,
+    entityId: Int,
+    uuid: UUID,
+    position: BlockPosition,
+    @get:EntityMetaDataFunction(name = "Direction") val direction: Directions,
+    @get:EntityMetaDataFunction(name = "Motive") val motive: Motive,
+) : Entity(connection, entityId, uuid, fromPosition(position), EntityRotation(0f, 0f, 0f))

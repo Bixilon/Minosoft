@@ -28,7 +28,7 @@ public class PacketRemoveEntityEffect extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
-        this.effect = buffer.getConnection().getMapping().getMobEffect(buffer.readByte());
+        this.effect = buffer.getConnection().getMapping().getMobEffectRegistry().get(buffer.readByte());
         return true;
     }
 

@@ -12,13 +12,17 @@
  */
 package de.bixilon.minosoft.data.world
 
-import de.bixilon.minosoft.data.mappings.blocks.Block
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.world.biome.BiomeAccessor
 import java.util.*
 
 /**
  * Collection of chunks sections (allocated in y)
  */
-class Chunk(val sections: MutableMap<Int, ChunkSection> = mutableMapOf()) {
+class Chunk(
+    val sections: MutableMap<Int, ChunkSection> = mutableMapOf(),
+    var biomeAccessor: BiomeAccessor,
+) {
 
     fun getBlockInfo(location: InChunkLocation): BlockInfo? {
         return sections[location.getSectionHeight()]?.getBlockInfo(location.getInChunkSectionLocation())
@@ -34,7 +38,7 @@ class Chunk(val sections: MutableMap<Int, ChunkSection> = mutableMapOf()) {
         }
     }
 
-    fun setRawBlocks(blocks: HashMap<InChunkLocation, Block?>) {
+    fun setRawBlocks(blocks: HashMap<InChunkLocation, BlockState?>) {
         for ((location, blockInfo) in blocks) {
             setRawBlock(location, blockInfo)
         }
@@ -44,14 +48,14 @@ class Chunk(val sections: MutableMap<Int, ChunkSection> = mutableMapOf()) {
         getSectionOrCreate(location.getSectionHeight()).setBlockInfo(location.getInChunkSectionLocation(), block)
     }
 
-    fun setRawBlock(location: InChunkLocation, block: Block?) {
+    fun setRawBlock(location: InChunkLocation, block: BlockState?) {
         getSectionOrCreate(location.getSectionHeight()).let {
             val inChunkSectionLocation = location.getInChunkSectionLocation()
             if (block == null) {
                 it.blocks.remove(inChunkSectionLocation)
                 return
             }
-            it.setBlockInfo(inChunkSectionLocation, BlockInfo(block, info = it.blocksFloatingInfo[inChunkSectionLocation] ?: BlockFloatingInfo()))
+            it.setBlockInfo(inChunkSectionLocation, BlockInfo(block))
         }
 
     }

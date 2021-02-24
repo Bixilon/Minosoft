@@ -30,10 +30,10 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.ZOOM
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 
 data class KeyBindingsGameConfig(
-    val entries: MutableMap<ModIdentifier, KeyBinding> = mutableMapOf(
+    val entries: MutableMap<ResourceLocation, KeyBinding> = mutableMapOf(
         MOVE_FORWARD to KeyBinding(
             mutableMapOf(
                 KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_W)
@@ -112,22 +112,22 @@ data class KeyBindingsGameConfig(
 )
 
 object KeyBindingsNames {
-    val MOVE_FORWARD = ModIdentifier("minosoft:move_forward")
-    val MOVE_BACKWARDS = ModIdentifier("minosoft:move_backwards")
-    val MOVE_LEFT = ModIdentifier("minosoft:move_left")
-    val MOVE_RIGHT = ModIdentifier("minosoft:move_right")
-    val MOVE_SPRINT = ModIdentifier("minosoft:move_sprint")
-    val MOVE_FLY_UP = ModIdentifier("minosoft:move_fly_up")
-    val MOVE_FLY_DOWN = ModIdentifier("minosoft:move_fly_down")
+    val MOVE_FORWARD = ResourceLocation("minosoft:move_forward")
+    val MOVE_BACKWARDS = ResourceLocation("minosoft:move_backwards")
+    val MOVE_LEFT = ResourceLocation("minosoft:move_left")
+    val MOVE_RIGHT = ResourceLocation("minosoft:move_right")
+    val MOVE_SPRINT = ResourceLocation("minosoft:move_sprint")
+    val MOVE_FLY_UP = ResourceLocation("minosoft:move_fly_up")
+    val MOVE_FLY_DOWN = ResourceLocation("minosoft:move_fly_down")
 
-    val ZOOM = ModIdentifier("minosoft:zoom")
+    val ZOOM = ResourceLocation("minosoft:zoom")
 
-    val QUIT_RENDERING = ModIdentifier("minosoft:quit_rendering")
+    val QUIT_RENDERING = ResourceLocation("minosoft:quit_rendering")
 
-    val DEBUG_SCREEN = ModIdentifier("minosoft:debug_screen")
-    val DEBUG_POLYGEN = ModIdentifier("minosoft:debug_polygen")
-    val DEBUG_MOUSE_CATCH = ModIdentifier("minosoft:debug_mouse_catch")
+    val DEBUG_SCREEN = ResourceLocation("minosoft:debug_screen")
+    val DEBUG_POLYGEN = ResourceLocation("minosoft:debug_polygen")
+    val DEBUG_MOUSE_CATCH = ResourceLocation("minosoft:debug_mouse_catch")
 
-    val WHEN_IN_GAME = ModIdentifier("minosoft:in_game")
-    val WHEN_PLAYER_IS_FLYING = ModIdentifier("minosoft:is_flying")
+    val WHEN_IN_GAME = ResourceLocation("minosoft:in_game")
+    val WHEN_PLAYER_IS_FLYING = ResourceLocation("minosoft:is_flying")
 }

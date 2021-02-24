@@ -18,15 +18,15 @@ import de.bixilon.minosoft.data.GameModes
 import de.bixilon.minosoft.data.LevelTypes
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.Dimension
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.modding.event.events.JoinGameEvent
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A
 import de.bixilon.minosoft.util.BitByte
+import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 import de.bixilon.minosoft.util.nbt.tag.ListTag
@@ -45,7 +45,7 @@ class PacketJoinGame : ClientboundPacket() {
     var isReducedDebugScreen = false
     var isEnableRespawnScreen = true
     var hashedSeed: Long = 0L
-    var dimensions: HashBiMap<ModIdentifier, Dimension> = HashBiMap.create()
+    var dimensions: HashBiMap<ResourceLocation, Dimension> = HashBiMap.create()
 
     override fun read(buffer: InByteBuffer): Boolean {
         entityId = buffer.readInt()
@@ -61,7 +61,7 @@ class PacketJoinGame : ClientboundPacket() {
         }
 
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {
-            dimension = buffer.connection.mapping.getDimension(buffer.readByte().toInt())!!
+            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readByte().toInt())!!
             difficulty = Difficulties.byId(buffer.readUnsignedByte().toInt())
             maxPlayers = buffer.readByte().toInt()
             if (buffer.versionId >= ProtocolVersions.V_13W42B) {
@@ -80,19 +80,22 @@ class PacketJoinGame : ClientboundPacket() {
             buffer.readStringArray() // world
         }
         if (buffer.versionId < ProtocolVersions.V_20W21A) {
-            dimension = buffer.connection.mapping.getDimension(buffer.readInt())!!
+            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readInt())!!
         } else {
             val dimensionCodec = buffer.readNBT()
             dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
-            dimension = if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
-                dimensions[ModIdentifier(buffer.readString())]!!
+            if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
+                dimension = dimensions[buffer.readResourceLocation()]!!
             } else {
                 val tag = buffer.readNBT() as CompoundTag
-                if (tag.getByteTag("has_skylight").value.toInt() == 0x01) { // ToDo: this is just for not messing up the skylight
-                    dimensions[ProtocolDefinition.DEFAULT_DIMENSION]!!
-                } else {
-                    dimensions[ProtocolDefinition.NETHER_DIMENSION]!!
+                val parsedDimension = Dimension.deserialize(ResourceLocation(Util.generateRandomString(10)), tag) // ToDo: Why no resource Location?
+                for ((_, entry) in dimensions) {
+                    if (parsedDimension.bareEquals(entry)) {
+                        dimension = entry
+                        break
+                    }
                 }
+                check(dimension != null) { "Can not find dimension!" }
             }
         }
         if (buffer.versionId >= ProtocolVersions.V_20W22A) {
@@ -134,7 +137,7 @@ class PacketJoinGame : ClientboundPacket() {
         }
         connection.player.gameMode = gameMode
         connection.player.world.isHardcore = isHardcore
-        connection.mapping.dimensionIdentifierMap = dimensions
+        connection.mapping.dimensionRegistry.setData(dimensions)
         connection.player.world.dimension = dimension
         val entity = PlayerEntity(connection, entityId, connection.player.playerUUID, null, null, connection.player.playerName, null, null)
         connection.player.entity = entity
@@ -142,11 +145,11 @@ class PacketJoinGame : ClientboundPacket() {
         connection.sender.sendChatMessage("I am alive! ~ Minosoft")
     }
 
-    private fun parseDimensionCodec(nbt: NBTTag, versionId: Int): HashBiMap<ModIdentifier, Dimension> {
+    private fun parseDimensionCodec(nbt: NBTTag, versionId: Int): HashBiMap<ResourceLocation, Dimension> {
         if (nbt !is CompoundTag) {
             throw IllegalArgumentException()
         }
-        val dimensionMap: HashBiMap<ModIdentifier, Dimension> = HashBiMap.create()
+        val dimensionMap: HashBiMap<ResourceLocation, Dimension> = HashBiMap.create()
         val listTag: ListTag = if (versionId < ProtocolVersions.V_20W28A) {
             nbt.getListTag("dimension")
         } else {
@@ -155,7 +158,7 @@ class PacketJoinGame : ClientboundPacket() {
         for (tag in listTag.getValue<NBTTag>()) {
             check(tag is CompoundTag) { "Invalid dimension codec!" }
 
-            val dimensionIdentifier = tag.getStringTag(if (versionId < ProtocolVersions.V_1_16_PRE3) {
+            val dimensionResourceLocation = tag.getStringTag(if (versionId < ProtocolVersions.V_1_16_PRE3) {
                 "key"
             } else {
                 "name"
@@ -165,12 +168,16 @@ class PacketJoinGame : ClientboundPacket() {
             } else {
                 tag
             }
-            dimensionMap[ModIdentifier(dimensionIdentifier)] = Dimension.deserialize(ModIdentifier(dimensionIdentifier), dimensionPropertyTag)
+            dimensionMap[ResourceLocation(dimensionResourceLocation)] = Dimension.deserialize(ResourceLocation(dimensionResourceLocation), dimensionPropertyTag)
         }
         return dimensionMap
     }
 
     override fun log() {
         Log.protocol(String.format("[IN] Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", entityId, gameMode, dimension, difficulty, isHardcore, viewDistance))
+    }
+
+    override fun onError(connection: Connection) {
+        connection.disconnect()
     }
 }

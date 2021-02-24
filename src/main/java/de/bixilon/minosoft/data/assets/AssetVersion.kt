@@ -21,5 +21,4 @@ data class AssetVersion(
     val indexHash: String?,
     val clientJarHash: String?,
     val jarAssetsHash: String?,
-    val minosoftMappings: String?,
 )

@@ -13,19 +13,19 @@
 
 package de.bixilon.minosoft.data;
 
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 
 public class Tag {
-    private final ModIdentifier identifier;
+    private final ResourceLocation resourceLocation;
     private final int[] idList;
 
-    public Tag(ModIdentifier identifier, int[] idList) {
-        this.identifier = identifier;
+    public Tag(ResourceLocation resourceLocation, int[] idList) {
+        this.resourceLocation = resourceLocation;
         this.idList = idList;
     }
 
-    public ModIdentifier getIdentifier() {
-        return this.identifier;
+    public ResourceLocation getResourceLocation() {
+        return this.resourceLocation;
     }
 
     public int[] getIdList() {

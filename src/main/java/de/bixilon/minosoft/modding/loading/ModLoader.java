@@ -58,7 +58,7 @@ public class ModLoader {
             executor.execute(() -> {
                 MinosoftMod mod = loadMod(progress, modFile);
                 if (mod != null) {
-                    MOD_MAP.put(mod.getInfo().getModIdentifier().getUUID(), mod);
+                    MOD_MAP.put(mod.getInfo().getModVersionIdentifier().getUUID(), mod);
                 }
                 latch.countDown();
             });
@@ -84,12 +84,12 @@ public class ModLoader {
                     MOD_MAP.remove(modEntry.getKey());
                     continue modLoop;
                 }
-                if (dependency.getVersionMinimum() < info.getModIdentifier().getVersionId()) {
+                if (dependency.getVersionMinimum() < info.getModVersionIdentifier().getVersionId()) {
                     Log.warn("Could not satisfy mod dependency for mod %s (Requires %s version > %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMinimum());
                     MOD_MAP.remove(modEntry.getKey());
                     continue modLoop;
                 }
-                if (dependency.getVersionMaximum() > info.getModIdentifier().getVersionId()) {
+                if (dependency.getVersionMaximum() > info.getModVersionIdentifier().getVersionId()) {
                     Log.warn("Could not satisfy mod dependency for mod %s (Requires %s version < %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMaximum());
                     MOD_MAP.remove(modEntry.getKey());
                     continue modLoop;
@@ -101,11 +101,11 @@ public class ModLoader {
                     Log.warn("Could not satisfy mod soft dependency for mod %s (Requires %s)", modEntry.getValue().getInfo(), dependency.getUUID());
                     continue;
                 }
-                if (dependency.getVersionMinimum() < info.getModIdentifier().getVersionId()) {
+                if (dependency.getVersionMinimum() < info.getModVersionIdentifier().getVersionId()) {
                     Log.warn("Could not satisfy mod dependency for mod %s (Requires %s version > %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMinimum());
                     continue;
                 }
-                if (dependency.getVersionMaximum() > info.getModIdentifier().getVersionId()) {
+                if (dependency.getVersionMaximum() > info.getModVersionIdentifier().getVersionId()) {
                     Log.warn("Could not satisfy mod soft dependency for mod %s (Requires %s version < %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMaximum());
                 }
             }
@@ -166,7 +166,7 @@ public class ModLoader {
             ZipFile zipFile = new ZipFile(file);
             ModInfo modInfo = new ModInfo(Util.readJsonFromZip("mod.json", zipFile));
             if (isModLoaded(modInfo)) {
-                Log.warn(String.format("Mod %s:%d (uuid=%s) is loaded multiple times! Skipping", modInfo.getName(), modInfo.getModIdentifier().getVersionId(), modInfo.getModIdentifier().getUUID()));
+                Log.warn(String.format("Mod %s:%d (uuid=%s) is loaded multiple times! Skipping", modInfo.getName(), modInfo.getModVersionIdentifier().getVersionId(), modInfo.getModVersionIdentifier().getUUID()));
                 return null;
             }
             JarClassLoader jcl = new JarClassLoader();
@@ -194,7 +194,7 @@ public class ModLoader {
     }
 
     public static boolean isModLoaded(ModInfo info) {
-        return MOD_MAP.containsKey(info.getModIdentifier().getUUID());
+        return MOD_MAP.containsKey(info.getModVersionIdentifier().getUUID());
     }
 
     @Nullable

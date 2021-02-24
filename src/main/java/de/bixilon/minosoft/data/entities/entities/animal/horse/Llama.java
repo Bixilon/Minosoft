@@ -27,17 +27,17 @@ public class Llama extends AbstractChestedHorse {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Strength")
+    @EntityMetaDataFunction(name = "Strength")
     public int getStrength() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.LLAMA_STRENGTH);
     }
 
-    @EntityMetaDataFunction(identifier = "CarpetColor")
+    @EntityMetaDataFunction(name = "CarpetColor")
     public int getCarpetColor() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.LLAMA_CARPET_COLOR);
     }
 
-    @EntityMetaDataFunction(identifier = "Variant")
+    @EntityMetaDataFunction(name = "Variant")
     public int getVariant() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.LLAMA_VARIANT);
     }

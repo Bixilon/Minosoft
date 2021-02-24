@@ -21,28 +21,39 @@ import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.util.Util;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Resources {
     private static final HashBiMap<Version, AssetVersion> ASSETS_VERSIONS = HashBiMap.create();
+    private static final HashMap<Version, String> PIXLYZER_VERSIONS = new HashMap<>();
 
     public static void load() throws IOException {
         JsonObject json = Util.readJsonAssetResource("mapping/resources.json");
 
         JsonObject versions = json.getAsJsonObject("versions");
         for (Map.Entry<String, JsonElement> versionEntry : versions.entrySet()) {
-            loadVersion(versionEntry.getKey(), versionEntry.getValue().getAsJsonObject());
+            Version version = Versions.getVersionByName(versionEntry.getKey());
+            if (version == null) {
+                // version not supported
+                continue;
+            }
+            loadVersion(version, versionEntry.getValue().getAsJsonObject());
         }
 
-    }
+        // PixLyzer
+        JsonObject pixlyzerIndex = Util.readJsonAssetResource("mapping/pixlyzer_index.json");
 
-    public static void loadVersion(String versionName, JsonObject json) {
-        Version version = Versions.getVersionByName(versionName);
-        if (version == null) {
-            // version not supported
-            return;
+        for (Map.Entry<String, JsonElement> versionEntry : pixlyzerIndex.entrySet()) {
+
+            Version version = Versions.getVersionByName(versionEntry.getKey());
+            if (version == null) {
+                // version not supported
+                continue;
+            }
+            PIXLYZER_VERSIONS.put(version, versionEntry.getValue().getAsString());
         }
-        loadVersion(version, json);
+
     }
 
     public static void loadVersion(Version version, JsonObject json) {
@@ -50,13 +61,16 @@ public class Resources {
         String indexHash = json.has("index_hash") ? json.get("index_hash").getAsString() : null;
         String clientJarHash = json.has("client_jar_hash") ? json.get("client_jar_hash").getAsString() : null;
         String jarAssetsHash = json.has("jar_assets_hash") ? json.get("jar_assets_hash").getAsString() : null;
-        String minosoftMapping = json.has("mappings") ? json.get("mappings").getAsString() : null;
 
-        AssetVersion assetVersion = new AssetVersion(version, indexVersion, indexHash, clientJarHash, jarAssetsHash, minosoftMapping);
+        AssetVersion assetVersion = new AssetVersion(version, indexVersion, indexHash, clientJarHash, jarAssetsHash);
         ASSETS_VERSIONS.put(version, assetVersion);
     }
 
     public static AssetVersion getAssetVersionByVersion(Version version) {
         return ASSETS_VERSIONS.get(version);
+    }
+
+    public static String getPixLyzerDataHashByVersion(Version version) {
+        return PIXLYZER_VERSIONS.get(version);
     }
 }

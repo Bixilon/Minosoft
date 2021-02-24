@@ -12,14 +12,13 @@
  */
 package de.bixilon.minosoft.data.world
 
-import de.bixilon.minosoft.data.mappings.blocks.Block
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 
 /**
  * Collection of 16x16x16 blocks
  */
 class ChunkSection constructor(
     val blocks: MutableMap<InChunkSectionLocation, BlockInfo> = mutableMapOf(),
-    val blocksFloatingInfo: MutableMap<InChunkSectionLocation, BlockFloatingInfo> = mutableMapOf(),
 ) {
 
     fun getBlockInfo(location: InChunkSectionLocation): BlockInfo? {
@@ -42,11 +41,11 @@ class ChunkSection constructor(
 
     }
 
-    fun setRawBlock(location: InChunkSectionLocation, block: Block?) {
+    fun setRawBlock(location: InChunkSectionLocation, block: BlockState?) {
         if (block == null) {
             setBlockInfo(location, null)
             return
         }
-        setBlockInfo(location, BlockInfo(block, info = blocksFloatingInfo[location] ?: BlockFloatingInfo()))
+        setBlockInfo(location, BlockInfo(block))
     }
 }

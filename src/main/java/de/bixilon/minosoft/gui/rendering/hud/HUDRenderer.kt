@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.hud
 
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
@@ -23,8 +23,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class HUDRenderer(private val connection: Connection, renderWindow: RenderWindow) : Renderer {
     var hudScale = HUDScale.MEDIUM
-    val hudElements: MutableMap<ModIdentifier, HUDElement> = mutableMapOf(
-        ModIdentifier("minosoft:hud_text_renderer") to HUDTextElement(connection, this, renderWindow),
+    val hudElements: MutableMap<ResourceLocation, HUDElement> = mutableMapOf(
+        ResourceLocation("minosoft:hud_text_renderer") to HUDTextElement(connection, this, renderWindow),
     )
     var lastTimePrepared = 0L
 

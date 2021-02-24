@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.data.world.InChunkLocation;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -25,10 +25,10 @@ import java.util.HashMap;
  * Fired when at least block is changed
  */
 public class MultiBlockChangeEvent extends ConnectionEvent {
-    private final HashMap<InChunkLocation, Block> blocks;
+    private final HashMap<InChunkLocation, BlockState> blocks;
     private final ChunkLocation location;
 
-    public MultiBlockChangeEvent(Connection connection, HashMap<InChunkLocation, Block> blocks, ChunkLocation location) {
+    public MultiBlockChangeEvent(Connection connection, HashMap<InChunkLocation, BlockState> blocks, ChunkLocation location) {
         super(connection);
         this.blocks = blocks;
         this.location = location;
@@ -40,7 +40,7 @@ public class MultiBlockChangeEvent extends ConnectionEvent {
         this.location = pkg.getLocation();
     }
 
-    public HashMap<InChunkLocation, Block> getBlocks() {
+    public HashMap<InChunkLocation, BlockState> getBlocks() {
         return this.blocks;
     }
 

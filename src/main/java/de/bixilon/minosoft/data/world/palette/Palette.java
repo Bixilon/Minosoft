@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.palette;
 
-import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 public interface Palette {
@@ -26,7 +26,7 @@ public interface Palette {
         return new DirectPalette();
     }
 
-    Block blockById(int id);
+    BlockState blockById(int id);
 
     int getBitsPerBlock();
 

@@ -15,24 +15,24 @@ package de.bixilon.minosoft.data.commands.parser
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.*
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.BlockRotations
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.protocol.network.Connection
 
 class BlockStateParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Block? {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): BlockState? {
         if (this == BLOCK_PREDICATE_PARSER) {
             if (stringReader.peek() != '#') {
                 throw InvalidBlockPredicateCommandParseException(stringReader, stringReader.read().toString())
             }
             stringReader.skip()
         }
-        val identifier = stringReader.readModIdentifier() // ToDo: check tags
-        val blockId = connection.mapping.getBlockId(identifier.value) ?: throw BlockNotFoundCommandParseException(stringReader, identifier.key)
-        var block: Block? = null
+        val resourceLocation = stringReader.readResourceLocation() // ToDo: check tags
+        val block = connection.mapping.blockRegistry.get(resourceLocation.value) ?: throw BlockNotFoundCommandParseException(stringReader, resourceLocation.key)
+        var blockState: BlockState? = null
 
         if (stringReader.canRead() && stringReader.peek() == '[') {
             val propertyMap = stringReader.readProperties()
@@ -55,17 +55,17 @@ class BlockStateParser : CommandParser() {
                 val blockProperty = blockPropertyKey[pair.value] ?: throw UnknownBlockPropertyCommandParseException(stringReader, pair.value)
                 allProperties.add(blockProperty)
             }
-            for (state in blockId.blocks) {
-                if (state.bareEquals(Block(identifier.value, allProperties, rotation ?: BlockRotations.NONE))) {
-                    block = state
+            for (state in block.states) {
+                if (state.bareEquals(BlockState(block, allProperties, rotation ?: BlockRotations.NONE))) {
+                    blockState = state
                     break
                 }
             }
         } else {
-            block = Block(blockId.identifier)
+            blockState = BlockState(block)
         }
-        check(block != null) {
-            throw BlockNotFoundCommandParseException(stringReader, identifier.key)
+        check(blockState != null) {
+            throw BlockNotFoundCommandParseException(stringReader, resourceLocation.key)
         }
 
         if (this == BLOCK_PREDICATE_PARSER) {
@@ -74,7 +74,7 @@ class BlockStateParser : CommandParser() {
             }
             return null // ToDo
         }
-        return block
+        return blockState
     }
 
     companion object {

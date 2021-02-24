@@ -14,15 +14,17 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.mappings.ModIdentifier
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockInfo
+import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
 
-class BlockRenderer {
+class BlockRenderer(data: JsonObject, parent: BlockModel) {
     private val transparentFaces: MutableSet<Directions> = mutableSetOf()
     private val cullFaces: MutableSet<Directions> = mutableSetOf()
     val textures: MutableMap<String, String> = mutableMapOf()
@@ -30,22 +32,12 @@ class BlockRenderer {
     private val elements: MutableSet<ElementRenderer> = mutableSetOf()
     private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
 
-    constructor(entry: JsonObject, mapping: VersionMapping) {
-        loadElements(entry, mapping)
-    }
-
-    private fun loadElements(entry: JsonObject, mapping: VersionMapping) {
-        val newElements = ElementRenderer.createElements(entry, mapping)
+    init {
+        val newElements = ElementRenderer.createElements(data, parent)
         this.elements.addAll(newElements)
-        val parent = mapping.blockModels[ModIdentifier(entry["model"].asString.replace("block/", ""))]
-        textures.putAll(parent!!.textures)
+        textures.putAll(parent.textures)
     }
 
-    constructor(models: List<JsonObject>, mapping: VersionMapping) {
-        for (state in models) {
-            loadElements(state, mapping)
-        }
-    }
 
     fun resolveTextures(indexed: MutableList<Texture>, textureMap: MutableMap<String, Texture>) {
         for ((key, textureName) in textures) {
@@ -79,7 +71,7 @@ class BlockRenderer {
         }
     }
 
-    fun render(blockInfo: BlockInfo, position: Vec3, data: MutableList<Float>, neighbourBlocks: Array<BlockInfo?>) {
+    fun render(blockInfo: BlockInfo, biome: Biome, position: Vec3, data: MutableList<Float>, neighbourBlocks: Array<BlockInfo?>) {
         val modelMatrix = Mat4().translate(position)
 
         for (direction in Directions.DIRECTIONS) {
@@ -87,7 +79,7 @@ class BlockRenderer {
                 val cullFace = cullFaces.contains(direction)
 
                 var neighbourBlockFullFace = false
-                neighbourBlocks[direction.ordinal]?.block?.blockRenderers?.let { // ToDo: Improve this
+                neighbourBlocks[direction.ordinal]?.block?.renders?.let { // ToDo: Improve this
                     val testDirection = direction.inverse()
                     for (model in it) {
                         if (model.fullFaceDirections.contains(testDirection) && !model.transparentFaces.contains(testDirection)) {
@@ -99,7 +91,13 @@ class BlockRenderer {
                 if (neighbourBlockFullFace && cullFace) {
                     continue
                 }
-                element.render(textureMapping, modelMatrix, direction, data)
+
+                var tintColor: RGBColor? = blockInfo.block.tintColor
+
+                if (StaticConfiguration.BIOME_DEBUG_MODE) {
+                    tintColor = RGBColor(biome.hashCode())
+                }
+                element.render(tintColor, textureMapping, modelMatrix, direction, data)
             }
         }
     }

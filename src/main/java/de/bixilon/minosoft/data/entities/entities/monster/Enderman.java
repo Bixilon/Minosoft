@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
-import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import javax.annotation.Nullable;
@@ -31,21 +31,21 @@ public class Enderman extends AbstractSkeleton {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Carried block")
+    @EntityMetaDataFunction(name = "Carried block")
     @Nullable
-    public Block getCarriedBlock() {
+    public BlockState getCarriedBlock() {
         if (this.versionId <= V_1_8_9) { // ToDo: No clue here
-            return this.connection.getMapping().getBlock(this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK) << 4 | this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK_DATA));
+            return this.connection.getMapping().getBlockState(this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK) << 4 | this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK_DATA));
         }
         return this.metaData.getSets().getBlock(EntityMetaDataFields.ENDERMAN_CARRIED_BLOCK);
     }
 
-    @EntityMetaDataFunction(identifier = "Is screaming")
+    @EntityMetaDataFunction(name = "Is screaming")
     public boolean isScreaming() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_SCREAMING);
     }
 
-    @EntityMetaDataFunction(identifier = "Is starring")
+    @EntityMetaDataFunction(name = "Is starring")
     public boolean isStarring() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_STARRING);
     }

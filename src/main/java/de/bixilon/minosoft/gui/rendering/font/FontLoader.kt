@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.font
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.assets.AssetsManager
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
@@ -36,14 +36,14 @@ object FontLoader {
         return ret
     }
 
-    private fun loadBitmapFontProvider(atlasPath: ModIdentifier, height: Int? = 8, ascent: Int, chars: List<Char>, assetsManager: AssetsManager, atlasOffset: Int): FontProvider {
+    private fun loadBitmapFontProvider(atlasPath: ResourceLocation, height: Int? = 8, ascent: Int, chars: List<Char>, assetsManager: AssetsManager, atlasOffset: Int): FontProvider {
         val width = if (ascent == 7) { // ToDo: Why?
             8
         } else {
             9
         }
         val provider = FontProvider(width)
-        val atlasTexture = Texture((atlasPath.mod + "/textures/" + atlasPath.identifier), atlasOffset)
+        val atlasTexture = Texture((atlasPath.namespace + "/textures/" + atlasPath.path), atlasOffset)
         atlasTexture.load(assetsManager)
         val height = height ?: atlasTexture.width / FONT_ATLAS_SIZE
         provider.atlasTextures.add(atlasTexture)
@@ -88,7 +88,7 @@ object FontLoader {
     }
 
 
-    private fun loadUnicodeFontProvider(template: ModIdentifier, sizes: InputStream, assetsManager: AssetsManager, atlasOffset: Int): FontProvider {
+    private fun loadUnicodeFontProvider(template: ResourceLocation, sizes: InputStream, assetsManager: AssetsManager, atlasOffset: Int): FontProvider {
         val provider = FontProvider(UNICODE_SIZE)
         var i = 0
         lateinit var currentAtlasTexture: Texture
@@ -99,7 +99,7 @@ object FontLoader {
                     Texture(TextureArray.DEBUG_TEXTURE.name, i / UNICODE_CHARS_PER_PAGE)
                 } else {
                     // new page (texture)
-                    Texture((template.mod + "/textures/" + template.identifier).format("%02x".format(i / 256)), atlasOffset + (i / 256))
+                    Texture((template.namespace + "/textures/" + template.path).format("%02x".format(i / 256)), atlasOffset + (i / 256))
                 }
                 currentAtlasTexture.load(assetsManager)
                 provider.atlasTextures.add(currentAtlasTexture)
@@ -115,10 +115,10 @@ object FontLoader {
     fun loadFontProvider(data: JsonObject, assetsManager: AssetsManager, atlasTextureOffset: Int): FontProvider {
         return when (data["type"].asString) {
             "bitmap" -> {
-                loadBitmapFontProvider(ModIdentifier(data["file"].asString), data["height"]?.asInt, data["ascent"].asInt, getCharArray(data["chars"].asJsonArray), assetsManager, atlasTextureOffset)
+                loadBitmapFontProvider(ResourceLocation(data["file"].asString), data["height"]?.asInt, data["ascent"].asInt, getCharArray(data["chars"].asJsonArray), assetsManager, atlasTextureOffset)
             }
             "legacy_unicode" -> {
-                loadUnicodeFontProvider(ModIdentifier(data["template"].asString), assetsManager.readAssetAsStream(ModIdentifier(data["sizes"].asString)), assetsManager, atlasTextureOffset)
+                loadUnicodeFontProvider(ResourceLocation(data["template"].asString), assetsManager.readAssetAsStream(ResourceLocation(data["sizes"].asString)), assetsManager, atlasTextureOffset)
             }
             "ttf" -> {
                 TODO("True Type Fonts are not implemented yet")

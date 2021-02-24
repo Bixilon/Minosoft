@@ -16,9 +16,8 @@ package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.mappings.ModIdentifier
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -50,7 +49,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
     }
 
 
-    fun render(textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, data: MutableList<Float>) {
+    fun render(tintColor: RGBColor?, textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, data: MutableList<Float>) {
         val realDirection = directionMapping[direction]!!
         val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
 
@@ -77,10 +76,10 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
             data.add(texture.animations.toFloat())
             data.add(texture.heightFactor)
 
-            if (texture.tintIndex == 1) {
-                data.add(Float.fromBits(RGBColor(0x10, 0xee, 0x10).color))
-            } else {
+            if (tintColor == null) {
                 data.add(0f)
+            } else {
+                data.add(Float.fromBits(tintColor.color))
             }
         }
 
@@ -107,14 +106,11 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
     }
 
     companion object {
-        fun createElements(state: JsonObject, mapping: VersionMapping): MutableList<ElementRenderer> {
+        fun createElements(state: JsonObject, parent: BlockModel): MutableList<ElementRenderer> {
             val rotation = glm.radians(vec3InJsonObject(state))
             val uvlock = state["uvlock"]?.asBoolean ?: false
             val rescale = state["rescale"]?.asBoolean ?: false
-            val parentElements = mapping.blockModels[ModIdentifier(state["model"].asString.replace("block/", ""))]!!.elements
-            if (state["model"].asString.contains("stairs")) {
-                val breakpoint = null
-            }
+            val parentElements = parent.elements
             val result: MutableList<ElementRenderer> = mutableListOf()
             for (parentElement in parentElements) {
                 result.add(ElementRenderer(parentElement, rotation, true, rescale)) // uvlock is not yet implemented in the data generator

@@ -20,22 +20,22 @@ import java.util.HashSet;
 public enum BlockRotations {
     NONE,
     // mostly sign, but general
-    SOUTH("0"),
-    SOUTH_SOUTH_WEST("1"),
-    SOUTH_WEST("2"),
-    WEST_SOUTH_WEST("3"),
-    WEST("4"),
-    WEST_NORTH_WEST("5"),
-    NORTH_WEST("6"),
-    NORTH_NORTH_WEST("7"),
-    NORTH("8"),
-    NORTH_NORTH_EAST("9"),
-    NORTH_EAST("10"),
-    EAST_NORTH_EAST("11"),
-    EAST("12"),
-    EAST_SOUTH_EAST("13"),
-    SOUTH_EAST("14"),
-    SOUTH_SOUTH_EAST("15"),
+    SOUTH(0),
+    SOUTH_SOUTH_WEST(1),
+    SOUTH_WEST(2),
+    WEST_SOUTH_WEST(3),
+    WEST(4),
+    WEST_NORTH_WEST(5),
+    NORTH_WEST(6),
+    NORTH_NORTH_WEST(7),
+    NORTH(8),
+    NORTH_NORTH_EAST(9),
+    NORTH_EAST(10),
+    EAST_NORTH_EAST(11),
+    EAST(12),
+    EAST_SOUTH_EAST(13),
+    SOUTH_EAST(14),
+    SOUTH_SOUTH_EAST(15),
 
     // stairs?
     NORTH_SOUTH,
@@ -66,7 +66,7 @@ public enum BlockRotations {
     AXIS_Y("y"),
     AXIS_Z("z");
 
-    public static final HashMap<String, BlockRotations> ROTATION_MAPPING = new HashMap<>();
+    public static final HashMap<Object, BlockRotations> ROTATION_MAPPING = new HashMap<>();
 
     static {
         // add all to hashmap
@@ -76,17 +76,17 @@ public enum BlockRotations {
         }
     }
 
-    private final HashSet<String> aliases;
+    private final HashSet<Object> aliases;
 
     BlockRotations() {
         this.aliases = new HashSet<>();
     }
 
-    BlockRotations(String... alias) {
+    BlockRotations(Object... alias) {
         this.aliases = new HashSet<>(Arrays.asList(alias));
     }
 
-    public HashSet<String> getAliases() {
+    public HashSet<Object> getAliases() {
         return this.aliases;
     }
 }

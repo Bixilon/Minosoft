@@ -18,13 +18,17 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.animal.horse.*
 import de.bixilon.minosoft.data.entities.entities.monster.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
-import de.bixilon.minosoft.data.mappings.blocks.Block
-import de.bixilon.minosoft.data.world.*
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.world.BlockInfo
+import de.bixilon.minosoft.data.world.Chunk
+import de.bixilon.minosoft.data.world.InChunkLocation
+import de.bixilon.minosoft.data.world.InChunkSectionLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
 object VersionTweaker {
-    // some data was packed in mata data in early versions (1.8). This function converts it to the real identifier
+    // some data was packed in mata data in early versions (1.8). This function converts it to the real resource location
     @JvmStatic
     fun getRealEntityClass(fakeClass: Class<out Entity>, metaData: EntityMetaData, versionId: Int): Class<out Entity> {
         if (versionId > ProtocolVersions.V_1_8_9) { // ToDo: No clue here
@@ -99,19 +103,20 @@ object VersionTweaker {
                     section.setBlockInfo(location, null)
                     continue
                 }
-                section.setBlockInfo(location, BlockInfo(newBlock, blockInfo.metaData, section.blocksFloatingInfo[location] ?: BlockFloatingInfo()))
+                section.setBlockInfo(location, BlockInfo(newBlock, blockInfo.metaData))
             }
         }
         return chunk
     }
 
 
+    // ToDo: Broken
     @JvmStatic
-    fun transformBlock(originalBlock: Block, chunk: Chunk, location: InChunkSectionLocation, sectionHeight: Int): Block? {
-        when (originalBlock.identifier.fullIdentifier) {
-            "minecraft:grass" -> {
+    fun transformBlock(originalBlock: BlockState, chunk: Chunk, location: InChunkSectionLocation, sectionHeight: Int): BlockState? {
+        when (originalBlock.owner.resourceLocation) {
+            ResourceLocation("minecraft:grass") -> {
                 getBlockAbove(chunk, location, sectionHeight)?.let {
-                    if (it == TweakBlocks.SNOW || it == TweakBlocks.SNOW_LAYER) {
+                    if (it.owner.resourceLocation == TweakBlocks.SNOW_RESOURCE_LOCATION || it.owner.resourceLocation == TweakBlocks.SNOW_LAYER_RESOURCE_LOCAION) {
                         return TweakBlocks.GRASS_BLOCK_SNOWY_YES
                     }
                 }
@@ -121,7 +126,7 @@ object VersionTweaker {
         return originalBlock
     }
 
-    private fun getBlockAbove(chunk: Chunk, location: InChunkSectionLocation, sectionHeight: Int): Block? {
+    private fun getBlockAbove(chunk: Chunk, location: InChunkSectionLocation, sectionHeight: Int): BlockState? {
         val above = location.getInChunkLocation(sectionHeight)
         return chunk.getBlockInfo(InChunkLocation(above.x, above.y + 1, above.z))?.block
     }

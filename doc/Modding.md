@@ -3,6 +3,7 @@
 ## mod.json
 In the root folder of your jar file (the mod) must be a file called `mod.json`. It contains metadata for the mod loader.
 ### Example
+
 ```json
 {
   "uuid": "1f37a8e0-9ec7-45db-ad2f-40afd2eb5a07",
@@ -13,7 +14,7 @@ In the root folder of your jar file (the mod) must be a file called `mod.json`. 
   ],
   "name": "Example Mod",
   "moddingAPIVersion": 1,
-  "identifier": "example",
+  "resourceNamespace": "example",
   "mainClass": "de.example.mod.Main",
   "loading": {
     "priority": "NORMAL"
@@ -45,7 +46,7 @@ In the root folder of your jar file (the mod) must be a file called `mod.json`. 
 - `versionId` like in android there is a numeric version id. It is used to compare between versions (and as identifier). **Required**
 - `versionName`, `authors` and `name` is the classic implementation of metadata. Can be anything, will be displayed in the mod list. **Required**
 - `moddingAPIVersion` Modding API version of minosoft. Currently `1` **Required**
-- `identifier` is the prefix of items (for Minecraft it is `minecraft`). Aka the thing before the `:`.  **Required**
+- `resourceNamespace` is the prefix of items (for Minecraft it is `minecraft`). Aka the thing before the `:`.  **Required**
 - `mainClass` the Main class of your mod (self explaining). The main class needs to extent the abstract class `MinosoftMod`. **Required**
 - `loading` Loading attributes. **Optional**
   - `priority` should the mod be loaded at the beginning or at the end. Possible values are `LOWEST`, `LOW`, `NORMAL`, `HIGH`, `HIGHEST` **Optional**
@@ -115,14 +116,17 @@ public class TestMod extends MinosoftMod {
 }
 ```
 Your `mod.json` can look like this
+
 ```json
 {
   "uuid": "1f37a8e0-9ec7-45db-ad2f-40afd2eb5a07",
   "versionId": 1,
   "versionName": "1.0",
-  "authors": ["Bixilon"],
+  "authors": [
+    "Bixilon"
+  ],
   "name": "Example Mod",
-  "identifier": "example",
+  "resourceNamespace": "example",
   "mainClass": "de.bixilon.example.mod.main.TestMod"
 }
 ```

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.SoundCategories;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
@@ -24,13 +24,13 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W45A;
 
 public class PacketStopSound extends ClientboundPacket {
     SoundCategories category;
-    ModIdentifier soundIdentifier;
+    ResourceLocation soundResourceLocation;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_17W45A) { // ToDo: these 2 values need to be switched in before 1.12.2
             this.category = SoundCategories.valueOf(buffer.readString().toUpperCase());
-            this.soundIdentifier = buffer.readIdentifier();
+            this.soundResourceLocation = buffer.readResourceLocation();
             return true;
         }
         byte flags = buffer.readByte();
@@ -38,21 +38,21 @@ public class PacketStopSound extends ClientboundPacket {
             this.category = SoundCategories.byId(buffer.readVarInt());
         }
         if (BitByte.isBitMask(flags, 0x02)) {
-            this.soundIdentifier = buffer.readIdentifier();
+            this.soundResourceLocation = buffer.readResourceLocation();
         }
         return true;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received stop sound (category=%s, soundIdentifier=%s)", this.category, this.soundIdentifier));
+        Log.protocol(String.format("[IN] Received stop sound (category=%s, soundResourceLocation=%s)", this.category, this.soundResourceLocation));
     }
 
     public SoundCategories getSoundId() {
         return this.category;
     }
 
-    public ModIdentifier getSoundIdentifier() {
-        return this.soundIdentifier;
+    public ResourceLocation getSoundResourceLocation() {
+        return this.soundResourceLocation;
     }
 }

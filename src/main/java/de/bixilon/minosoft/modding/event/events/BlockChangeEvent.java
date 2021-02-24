@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockChange;
@@ -23,9 +23,9 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockChange;
  */
 public class BlockChangeEvent extends ConnectionEvent {
     private final BlockPosition position;
-    private final Block block;
+    private final BlockState block;
 
-    public BlockChangeEvent(Connection connection, BlockPosition position, Block block) {
+    public BlockChangeEvent(Connection connection, BlockPosition position, BlockState block) {
         super(connection);
         this.position = position;
         this.block = block;
@@ -41,7 +41,7 @@ public class BlockChangeEvent extends ConnectionEvent {
         return this.position;
     }
 
-    public Block getBlock() {
+    public BlockState getBlock() {
         return this.block;
     }
 }

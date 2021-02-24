@@ -27,17 +27,17 @@ public class Zombie extends Monster {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Is baby")
+    @EntityMetaDataFunction(name = "Is baby")
     public boolean isBaby() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ZOMBIE_IS_BABY);
     }
 
-    @EntityMetaDataFunction(identifier = "Special type")
+    @EntityMetaDataFunction(name = "Special type")
     public int getSpecialType() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.ZOMBIE_SPECIAL_TYPE);
     }
 
-    @EntityMetaDataFunction(identifier = "Is converting to drowned")
+    @EntityMetaDataFunction(name = "Is converting to drowned")
     public boolean isConvertingToDrowned() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.ZOMBIE_DROWNING_CONVERSION);
     }

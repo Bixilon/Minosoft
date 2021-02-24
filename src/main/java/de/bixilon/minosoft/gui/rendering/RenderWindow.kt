@@ -19,8 +19,9 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.mappings.ModIdentifier
-import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.RenderStats
 import de.bixilon.minosoft.modding.event.EventInvokerCallback
@@ -40,7 +41,7 @@ import org.lwjgl.system.MemoryUtil
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class RenderWindow(private val connection: Connection, val rendering: Rendering) {
-    private val keyBindingCallbacks: MutableMap<ModIdentifier, Pair<KeyBinding, MutableSet<((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)>>> = mutableMapOf()
+    private val keyBindingCallbacks: MutableMap<ResourceLocation, Pair<KeyBinding, MutableSet<((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)>>> = mutableMapOf()
     private val keysDown: MutableSet<KeyCodes> = mutableSetOf()
     private val keyBindingDown: MutableSet<KeyBinding> = mutableSetOf()
     val renderStats = RenderStats()
@@ -110,7 +111,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             glfwTerminate()
             throw RuntimeException("Failed to create the GLFW window")
         }
-        camera = Camera(connection, Minosoft.getConfig().config.game.camera.fov)
+        camera = Camera(connection, Minosoft.getConfig().config.game.camera.fov, this)
         camera.init(this)
 
 
@@ -205,12 +206,14 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         // Make the OpenGL context current
         glfwMakeContextCurrent(windowId)
         // Enable v-sync
-        glfwSwapInterval(0)
+        glfwSwapInterval(1)
 
 
         // Make the window visible
         GL.createCapabilities()
-        glClearColor(137 / 256f, 207 / 256f, 240 / 256f, 1.0f)
+
+        setSkyColor(RGBColor("#fffe7a"))
+
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -316,10 +319,15 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             camera.handleInput(deltaTime)
 
 
-            // handle opengl context tasks
+            // handle opengl context tasks, maximum 10 per frame
+            var actionsDone = 0
             for (renderQueueElement in renderQueue) {
+                if (actionsDone == 10) {
+                    break
+                }
                 renderQueueElement.run()
                 renderQueue.remove(renderQueueElement)
+                actionsDone++
             }
 
             when (renderingStatus) {
@@ -356,13 +364,17 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         this.renderingStatus = renderingStatus
     }
 
-    fun registerKeyCallback(identifier: ModIdentifier, callback: ((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)) {
-        var identifierCallbacks = keyBindingCallbacks[identifier]?.second
-        if (identifierCallbacks == null) {
-            identifierCallbacks = mutableSetOf()
-            val keyBinding = Minosoft.getConfig().config.game.controls.keyBindings.entries[identifier] ?: return
-            keyBindingCallbacks[identifier] = Pair(keyBinding, identifierCallbacks)
+    fun registerKeyCallback(resourceLocation: ResourceLocation, callback: ((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)) {
+        var resourceLocationCallbacks = keyBindingCallbacks[resourceLocation]?.second
+        if (resourceLocationCallbacks == null) {
+            resourceLocationCallbacks = mutableSetOf()
+            val keyBinding = Minosoft.getConfig().config.game.controls.keyBindings.entries[resourceLocation] ?: return
+            keyBindingCallbacks[resourceLocation] = Pair(keyBinding, resourceLocationCallbacks)
         }
-        identifierCallbacks.add(callback)
+        resourceLocationCallbacks.add(callback)
+    }
+
+    fun setSkyColor(color: RGBColor) {
+        glClearColor(color.floatRed, color.floatGreen, color.floatBlue, 1.0f)
     }
 }

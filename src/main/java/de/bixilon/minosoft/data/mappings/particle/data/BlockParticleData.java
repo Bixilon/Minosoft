@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.data.mappings.particle.data;
 
-import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 
 public class BlockParticleData extends ParticleData {
-    private final Block block;
+    private final BlockState block;
 
-    public BlockParticleData(Block block, Particle type) {
+    public BlockParticleData(BlockState block, Particle type) {
         super(type);
         this.block = block;
     }
 
-    public Block getBlock() {
+    public BlockState getBlock() {
         return this.block;
     }
 

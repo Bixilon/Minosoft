@@ -30,22 +30,22 @@ public class Cat extends TamableAnimal {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Variant")
+    @EntityMetaDataFunction(name = "Variant")
     public CatVariants getVariant() {
         return CatVariants.byId(this.metaData.getSets().getInt(EntityMetaDataFields.CAT_VARIANT));
     }
 
-    @EntityMetaDataFunction(identifier = "Lying")
+    @EntityMetaDataFunction(name = "Lying")
     public boolean isLying() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.CAT_IS_LYING);
     }
 
-    @EntityMetaDataFunction(identifier = "Relaxed")
+    @EntityMetaDataFunction(name = "Relaxed")
     public boolean isRelaxed() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.CAT_IS_RELAXED);
     }
 
-    @EntityMetaDataFunction(identifier = "Collar color")
+    @EntityMetaDataFunction(name = "Collar color")
     public RGBColor getCollarColor() {
         return ChatColors.getColorById(this.metaData.getSets().getInt(EntityMetaDataFields.CAT_GET_COLLAR_COLOR));
     }

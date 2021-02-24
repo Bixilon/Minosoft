@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.palette;
 
-import de.bixilon.minosoft.data.mappings.blocks.Block;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
@@ -25,8 +25,8 @@ public class DirectPalette implements Palette {
     VersionMapping mapping;
 
     @Override
-    public Block blockById(int id) {
-        return this.mapping.getBlock(id);
+    public BlockState blockById(int id) {
+        return this.mapping.getBlockState(id);
     }
 
     @Override

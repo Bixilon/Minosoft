@@ -17,7 +17,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.util.Util;
 
 import java.util.UUID;
@@ -62,7 +62,7 @@ public class HoverEvent {
         SHOW_ACHIEVEMENT
     }
 
-    public static record EntityHoverData(UUID uuid, ModIdentifier identifier, ChatComponent name) {
+    public static record EntityHoverData(UUID uuid, ResourceLocation resourceLocation, ChatComponent name) {
 
         public static EntityHoverData deserialize(JsonElement data) {
             JsonObject json;
@@ -75,9 +75,9 @@ public class HoverEvent {
                 // 1.14.3.... lol
                 json = JsonParser.parseString(json.get("text").getAsString()).getAsJsonObject();
             }
-            ModIdentifier type = null;
+            ResourceLocation type = null;
             if (json.has("type")) {
-                type = new ModIdentifier(json.get("type").getAsString());
+                type = new ResourceLocation(json.get("type").getAsString());
             }
             return new EntityHoverData(Util.getUUIDFromString(json.get("id").getAsString()), type, ChatComponent.valueOf(json.get("name")));
         }

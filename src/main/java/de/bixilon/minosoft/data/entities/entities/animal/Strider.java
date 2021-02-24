@@ -27,17 +27,17 @@ public class Strider extends Animal {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Boost stime")
+    @EntityMetaDataFunction(name = "Boost stime")
     private int getBoostTime() {
         return this.metaData.getSets().getInt(EntityMetaDataFields.STRIDER_TIME_TO_BOOST);
     }
 
-    @EntityMetaDataFunction(identifier = "Is suffocating")
+    @EntityMetaDataFunction(name = "Is suffocating")
     private boolean isSuffocating() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.STRIDER_IS_SUFFOCATING);
     }
 
-    @EntityMetaDataFunction(identifier = "Has saddle")
+    @EntityMetaDataFunction(name = "Has saddle")
     private boolean hasSaddle() {
         return this.metaData.getSets().getBoolean(EntityMetaDataFields.STRIDER_HAS_SADDLE);
     }

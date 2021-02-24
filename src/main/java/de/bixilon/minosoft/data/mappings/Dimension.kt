@@ -13,19 +13,20 @@
 package de.bixilon.minosoft.data.mappings
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
-class Dimension(
-    val identifier: ModIdentifier,
+data class Dimension(
+    val resourceLocation: ResourceLocation,
     val piglinSafe: Boolean = false,
     val natural: Boolean = true,
     val ambientLight: Float = 0.0f,
-    val infiniBurn: ModIdentifier = ModIdentifier("infiniburn_overworld"),
+    val infiniBurn: ResourceLocation = ResourceLocation("infiniburn_overworld"),
     val respawnAnchorWorks: Boolean = false,
     val hasSkyLight: Boolean = true,
     val bedWorks: Boolean = true,
-    val effects: ModIdentifier = ModIdentifier("overworld"),
+    val effects: ResourceLocation = ResourceLocation("overworld"),
     val hasRaids: Boolean = true,
     val logicalHeight: Int = 256,
     val coordinateScale: Double = 0.0,
@@ -33,7 +34,7 @@ class Dimension(
     val hasCeiling: Boolean = false,
     val ultrawarm: Boolean = false,
     val height: Int = 256,
-) {
+) : RegistryItem {
     val lowestSection = if (minY < 0) {
         (minY + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
     } else {
@@ -41,21 +42,39 @@ class Dimension(
     }
 
     override fun toString(): String {
-        return identifier.toString()
+        return resourceLocation.toString()
     }
 
-    companion object {
-        fun deserialize(identifier: ModIdentifier, nbt: CompoundTag): Dimension {
+    fun bareEquals(dimension: Dimension): Boolean {
+        return this.piglinSafe == dimension.piglinSafe &&
+                this.natural == dimension.natural &&
+                this.ambientLight == dimension.ambientLight &&
+                this.infiniBurn == dimension.infiniBurn &&
+                this.respawnAnchorWorks == dimension.respawnAnchorWorks &&
+                this.hasSkyLight == dimension.hasSkyLight &&
+                this.bedWorks == dimension.bedWorks &&
+                this.effects == dimension.effects &&
+                this.hasRaids == dimension.hasRaids &&
+                this.logicalHeight == dimension.logicalHeight &&
+                this.coordinateScale == dimension.coordinateScale &&
+                this.minY == dimension.minY &&
+                this.hasCeiling == dimension.hasCeiling &&
+                this.ultrawarm == dimension.ultrawarm &&
+                this.height == dimension.height
+    }
+
+    companion object : ResourceLocationDeserializer<Dimension> {
+        fun deserialize(resourceLocation: ResourceLocation, nbt: CompoundTag): Dimension {
             return Dimension(
-                identifier = identifier,
+                resourceLocation = resourceLocation,
                 piglinSafe = nbt.getBoolean("piglin_safe") == true,
                 natural = nbt.getBoolean("natural") == true,
                 ambientLight = nbt.getFloatTag("ambient_light")?.value ?: 0f,
-                infiniBurn = ModIdentifier(nbt.getStringTag("infiniburn")?.value ?: "infiniburn_overworld"),
+                infiniBurn = ResourceLocation(nbt.getStringTag("infiniburn")?.value ?: "infiniburn_overworld"),
                 respawnAnchorWorks = nbt.getBoolean("respawn_anchor_works") == true,
                 hasSkyLight = nbt.getBoolean("has_skylight") == true,
                 bedWorks = nbt.getBoolean("bed_works") == true,
-                effects = ModIdentifier(nbt.getStringTag("effects")?.value ?: "overworld"),
+                effects = ResourceLocation(nbt.getStringTag("effects")?.value ?: "overworld"),
                 hasRaids = nbt.getBoolean("has_raids") == true,
                 logicalHeight = nbt.getNumberTag("logical_height")?.asInt ?: 256,
                 coordinateScale = nbt.getDoubleTag("coordinate_scale")?.value ?: 0.0,
@@ -66,24 +85,24 @@ class Dimension(
             )
         }
 
-        fun deserialize(identifier: ModIdentifier, json: JsonObject): Dimension {
+        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Dimension {
             return Dimension(
-                identifier = identifier,
-                piglinSafe = json.get("piglin_safe")?.asBoolean == true,
-                natural = json.get("natural")?.asBoolean == true,
-                ambientLight = json.get("ambient_light")?.asFloat ?: 0f,
-                infiniBurn = ModIdentifier(json.get("ambient_light")?.asString ?: "infiniburn_overworld"),
-                respawnAnchorWorks = json.get("respawn_anchor_works")?.asBoolean == true,
-                hasSkyLight = json.get("has_skylight")?.asBoolean == true,
-                bedWorks = json.get("bed_works")?.asBoolean == true,
-                effects = ModIdentifier(json.get("effects")?.asString ?: "overworld"),
-                hasRaids = json.get("has_raids")?.asBoolean == true,
-                logicalHeight = json.get("logical_height")?.asInt ?: 256,
-                coordinateScale = json.get("coordinate_scale")?.asDouble ?: 0.0,
-                minY = json.get("min_y")?.asInt ?: 0,
-                hasCeiling = json.get("has_ceiling")?.asBoolean == true,
-                ultrawarm = json.get("ultrawarm")?.asBoolean == true,
-                height = json.get("height")?.asInt ?: 256,
+                resourceLocation = resourceLocation,
+                piglinSafe = data.get("piglin_safe")?.asBoolean == true,
+                natural = data.get("natural")?.asBoolean == true,
+                ambientLight = data.get("ambient_light")?.asFloat ?: 0f,
+                infiniBurn = ResourceLocation(data.get("ambient_light")?.asString ?: "infiniburn_overworld"),
+                respawnAnchorWorks = data.get("respawn_anchor_works")?.asBoolean == true,
+                hasSkyLight = data.get("has_skylight")?.asBoolean == true,
+                bedWorks = data.get("bed_works")?.asBoolean == true,
+                effects = ResourceLocation(data.get("effects")?.asString ?: "overworld"),
+                hasRaids = data.get("has_raids")?.asBoolean == true,
+                logicalHeight = data.get("logical_height")?.asInt ?: 256,
+                coordinateScale = data.get("coordinate_scale")?.asDouble ?: 0.0,
+                minY = data.get("min_y")?.asInt ?: 0,
+                hasCeiling = data.get("has_ceiling")?.asBoolean == true,
+                ultrawarm = data.get("ultrawarm")?.asBoolean == true,
+                height = data.get("height")?.asInt ?: 256,
             )
         }
     }

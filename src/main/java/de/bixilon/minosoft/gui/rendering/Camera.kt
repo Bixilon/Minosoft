@@ -29,7 +29,11 @@ import glm_.vec3.Vec3
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Camera(private val connection: Connection, var fov: Float) {
+class Camera(
+    private val connection: Connection,
+    var fov: Float,
+    private val renderWindow: RenderWindow,
+) {
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
     private var movementSpeed = 7
     var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
@@ -139,7 +143,7 @@ class Camera(private val connection: Connection, var fov: Float) {
             cameraPosition = cameraPosition + CAMERA_UP_VEC3 * cameraSpeed
         }
         if (lastPosition != cameraPosition) {
-            recalculateViewMatrix()
+            recalculateViewProjectionMatrix()
             sendPositionToServer()
         }
 
@@ -150,7 +154,7 @@ class Camera(private val connection: Connection, var fov: Float) {
             0f
         }
         if (lastZoom != zoom) {
-            recalculateProjectionMatrix()
+            recalculateViewProjectionMatrix()
         }
 
     }
@@ -162,23 +166,20 @@ class Camera(private val connection: Connection, var fov: Float) {
     fun screenChangeResizeCallback(screenWidth: Int, screenHeight: Int) {
         this.screenWidth = screenWidth
         this.screenHeight = screenHeight
-        recalculateProjectionMatrix()
+        recalculateViewProjectionMatrix()
     }
 
-    private fun recalculateProjectionMatrix() {
+    private fun recalculateViewProjectionMatrix() {
         for (shader in shaders) {
-            shader.use().setMat4("projectionMatrix", calculateProjectionMatrix(screenWidth, screenHeight))
+            shader.use().setMat4("viewProjectionMatrix", calculateProjectionMatrix(screenWidth, screenHeight) * calculateViewMatrix())
         }
+        // recalculate sky color for current biome
+        val blockPosition = Location(cameraPosition).toBlockPosition()
+        renderWindow.setSkyColor(connection.player.world.getChunk(blockPosition.getChunkLocation())?.biomeAccessor?.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
     }
 
     private fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int): Mat4 {
         return glm.perspective(glm.radians(fov / (zoom + 1.0f)), screenWidth.toFloat() / screenHeight.toFloat(), 0.2f, 1000f)
-    }
-
-    private fun recalculateViewMatrix() {
-        for (shader in shaders) {
-            shader.use().setMat4("viewMatrix", calculateViewMatrix())
-        }
     }
 
     private fun calculateViewMatrix(): Mat4 {
@@ -198,7 +199,7 @@ class Camera(private val connection: Connection, var fov: Float) {
 
         cameraRight = cameraFront.cross(CAMERA_UP_VEC3).normalize()
         cameraUp = cameraRight.cross(cameraFront).normalize()
-        recalculateViewMatrix()
+        recalculateViewProjectionMatrix()
         sendPositionToServer()
     }
 

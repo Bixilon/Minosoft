@@ -18,5 +18,5 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EntityMetaDataFunction {
-    String identifier();
+    String name();
 }

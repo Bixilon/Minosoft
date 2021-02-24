@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.inventory;
 
 import de.bixilon.minosoft.data.mappings.Enchantment;
 import de.bixilon.minosoft.data.mappings.Item;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.data.text.ChatComponent;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Slot {
-    private static final ModIdentifier SKULL_IDENTIFIER = new ModIdentifier("skull");
+    private static final ResourceLocation SKULL_RESOURCE_LOCATION = new ResourceLocation("skull");
     private final Item item;
     private final HashMap<Enchantment, Integer> enchantments = new HashMap<>();
     private final ArrayList<ChatComponent> lore = new ArrayList<>();
@@ -59,7 +59,7 @@ public class Slot {
 
     public Slot(Version version, Item item) {
         this.version = version;
-        if (item.getIdentifier().equals(ProtocolDefinition.AIR_IDENTIFIER)) {
+        if (item.getResourceLocation().equals(ProtocolDefinition.AIR_RESOURCE_LOCATION)) {
             this.item = null;
         } else {
             this.item = item;
@@ -100,11 +100,11 @@ public class Slot {
         }
         if (nbt.containsKey("Enchantments")) {
             for (CompoundTag enchantment : nbt.getListTag("Enchantments").<CompoundTag>getValue()) {
-                this.enchantments.put(this.version.getMapping().getEnchantment(new ModIdentifier(enchantment.getStringTag("id").getValue())), enchantment.getNumberTag("lvl").getAsInt());
+                this.enchantments.put(this.version.getMapping().getEnchantmentRegistry().get(new ResourceLocation(enchantment.getStringTag("id").getValue())), enchantment.getNumberTag("lvl").getAsInt());
             }
         } else if (nbt.containsKey("ench")) {
             for (CompoundTag enchantment : nbt.getListTag("ench").<CompoundTag>getValue()) {
-                this.enchantments.put(this.version.getMapping().getEnchantment(enchantment.getNumberTag("id").getAsInt()), enchantment.getNumberTag("lvl").getAsInt());
+                this.enchantments.put(this.version.getMapping().getEnchantmentRegistry().get(enchantment.getNumberTag("id").getAsInt()), enchantment.getNumberTag("lvl").getAsInt());
             }
         }
     }
@@ -147,9 +147,9 @@ public class Slot {
                 nbt.writeTag("Enchantments", enchantmentList);
             } else {
                 ListTag enchantmentList = new ListTag(TagTypes.COMPOUND, new ArrayList<>());
-                this.enchantments.forEach((id, level) -> {
+                this.enchantments.forEach((enchantment, level) -> {
                     CompoundTag tag = new CompoundTag();
-                    tag.writeTag("id", new ShortTag((short) mapping.getEnchantmentId(id)));
+                    tag.writeTag("id", new ShortTag((short) mapping.getEnchantmentRegistry().getId(enchantment)));
                     tag.writeTag("lvl", new ShortTag(level.shortValue()));
                     enchantmentList.getValue().add(tag);
                 });
@@ -245,13 +245,13 @@ public class Slot {
 
     public String getLanguageName() {
         // ToDo: pre flattening names are completely broken
-        String[] keys = {String.format("item.%s.%s", this.item.getIdentifier().getMod(), this.item.getIdentifier()), String.format("block.%s.%s", this.item.getIdentifier().getMod(), this.item.getIdentifier())};
+        String[] keys = {String.format("item.%s.%s", this.item.getResourceLocation().getNamespace(), this.item.getResourceLocation()), String.format("block.%s.%s", this.item.getResourceLocation().getNamespace(), this.item.getResourceLocation())};
         for (String key : keys) {
             if (this.version.getLocaleManager().canTranslate(key)) {
                 return this.version.getLocaleManager().translate(key);
             }
         }
-        return this.item.getIdentifier().getFullIdentifier();
+        return this.item.getResourceLocation().getFull();
     }
 
     @Nullable
@@ -323,7 +323,7 @@ public class Slot {
     }
 
     public String getSkullOwner() {
-        if (!this.item.getIdentifier().equals(SKULL_IDENTIFIER)) {
+        if (!this.item.getResourceLocation().equals(SKULL_RESOURCE_LOCATION)) {
             throw new IllegalArgumentException("Item is not a skull!");
         }
         return this.skullOwner;

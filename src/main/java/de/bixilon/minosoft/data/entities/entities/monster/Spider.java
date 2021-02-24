@@ -31,7 +31,7 @@ public class Spider extends Monster {
         return this.metaData.getSets().getBitMask(EntityMetaDataFields.SPIDER_FLAGS, bitMask);
     }
 
-    @EntityMetaDataFunction(identifier = "Is climbing")
+    @EntityMetaDataFunction(name = "Is climbing")
     public boolean isClimbing() {
         return getSpiderFlag(0x01);
     }

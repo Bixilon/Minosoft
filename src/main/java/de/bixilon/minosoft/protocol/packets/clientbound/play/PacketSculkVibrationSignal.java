@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -21,18 +21,18 @@ import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketSculkVibrationSignal extends ClientboundPacket {
     private BlockPosition vibrationSourcePosition;
-    private ModIdentifier vibrationTargetType;
+    private ResourceLocation vibrationTargetType;
     private Object vibrationTargetData;
     private int arrivalTicks;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.vibrationSourcePosition = buffer.readPosition();
-        this.vibrationTargetType = buffer.readIdentifier();
-        this.vibrationTargetData = switch (this.vibrationTargetType.getFullIdentifier()) {
+        this.vibrationTargetType = buffer.readResourceLocation();
+        this.vibrationTargetData = switch (this.vibrationTargetType.getFull()) {
             case "minecraft:block" -> buffer.readPosition(); // sculk source position
             case "minecraft:entity" -> buffer.readEntityId();
-            default -> throw new IllegalArgumentException("Unexpected value: " + this.vibrationTargetType.getFullIdentifier());
+            default -> throw new IllegalArgumentException("Unexpected value: " + this.vibrationTargetType.getFull());
         };
         this.arrivalTicks = buffer.readVarInt();
         return true;
@@ -42,7 +42,7 @@ public class PacketSculkVibrationSignal extends ClientboundPacket {
         return this.vibrationSourcePosition;
     }
 
-    public ModIdentifier getVibrationTargetType() {
+    public ResourceLocation getVibrationTargetType() {
         return this.vibrationTargetType;
     }
 
@@ -67,6 +67,6 @@ public class PacketSculkVibrationSignal extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Sculk Vibration (position=%s, identifier=%s, additionalData=%s, arrivalTicks=%d)", this.vibrationSourcePosition, this.vibrationTargetType, this.vibrationTargetData, this.arrivalTicks));
+        Log.protocol(String.format("[IN] Sculk Vibration (position=%s, resourceLocation=%s, additionalData=%s, arrivalTicks=%d)", this.vibrationSourcePosition, this.vibrationTargetType, this.vibrationTargetData, this.arrivalTicks));
     }
 }

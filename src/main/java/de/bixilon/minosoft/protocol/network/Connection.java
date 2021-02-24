@@ -144,15 +144,15 @@ public class Connection {
             Log.info(String.format("Connecting to server: %s", address));
             this.network.connect(address);
             latch.countDown();
-        } catch (Exception e) {
-            Log.printException(e, LogLevels.DEBUG);
+        } catch (Throwable exception) {
+            Log.printException(exception, LogLevels.DEBUG);
             Log.fatal(String.format("Could not load version %s. This version seems to be unsupported!", version));
             if (this.customMapping.getVersion() != null) {
                 this.customMapping.getVersion().getMapping().setParentMapping(null);
             }
             this.customMapping.setVersion(null);
             version.unload();
-            this.lastException = new MappingsLoadingException("Mappings could not be loaded", e);
+            this.lastException = new MappingsLoadingException("Mappings could not be loaded", exception);
             setConnectionState(ConnectionStates.FAILED_NO_RETRY);
         }
     }

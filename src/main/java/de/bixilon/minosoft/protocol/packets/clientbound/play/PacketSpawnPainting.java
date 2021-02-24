@@ -39,9 +39,9 @@ public class PacketSpawnPainting extends ClientboundPacket {
         }
         Motive motive;
         if (buffer.getVersionId() < V_18W02A) {
-            motive = buffer.getConnection().getMapping().getMotive(buffer.readIdentifier());
+            motive = buffer.getConnection().getMapping().getMotiveRegistry().get(buffer.readResourceLocation());
         } else {
-            motive = buffer.getConnection().getMapping().getMotive(buffer.readVarInt());
+            motive = buffer.getConnection().getMapping().getMotiveRegistry().get(buffer.readVarInt());
         }
         BlockPosition position;
         Directions direction;

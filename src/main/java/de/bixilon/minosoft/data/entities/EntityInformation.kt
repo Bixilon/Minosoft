@@ -13,19 +13,27 @@
 package de.bixilon.minosoft.data.entities
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 
 data class EntityInformation(
-    val identifier: ModIdentifier,
+    val resourceLocation: ResourceLocation,
+    val descriptionId: String?,
     val width: Float,
     val height: Float,
+    val size_fixed: Boolean,
+    val fireImmune: Boolean,
 ) {
 
     companion object {
-        fun deserialize(identifier: ModIdentifier, data: JsonObject): EntityInformation? {
-            return if (data.has("width") && data.has("height")) {
-                EntityInformation(identifier, data["width"].asFloat, data["height"].asFloat)
-            } else null
+        fun deserialize(resourceLocation: ResourceLocation, data: JsonObject): EntityInformation {
+            return EntityInformation(
+                resourceLocation = resourceLocation,
+                descriptionId = data["description_id"]?.asString,
+                width = data["width"].asFloat,
+                height = data["height"].asFloat,
+                fireImmune = data["fire_immune"]?.asBoolean ?: false,
+                size_fixed = data["site_fixed"]?.asBoolean ?: false
+            )
         }
     }
 }

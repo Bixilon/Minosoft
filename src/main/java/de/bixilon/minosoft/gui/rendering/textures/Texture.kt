@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.BufferUtils
@@ -36,8 +37,6 @@ class Texture(
     var animations: Int = 0
     var animationFrameTime: Int = 0
 
-    var tintIndex = 0
-
     fun load(assetsManager: AssetsManager) {
         if (loaded) {
             return
@@ -45,11 +44,8 @@ class Texture(
         val texturePath = if (name.endsWith(".png")) {
             name
         } else {
-            "minecraft/textures/${name}.png"
-        }
-
-        if (texturePath == "minecraft/textures/block/grass_block_top.png") {
-            tintIndex = 1
+            val resourceLocation = ResourceLocation(name)
+            "${resourceLocation.namespace}/textures/${resourceLocation.path}.png"
         }
 
         val decoder = PNGDecoder(assetsManager.readAssetAsStream(texturePath))

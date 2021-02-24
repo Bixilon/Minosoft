@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
 import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
@@ -109,10 +109,10 @@ public class PacketSender {
         this.connection.sendPacket(new PacketPluginMessageSending(channel, toSend.toByteArray()));
     }
 
-    public void sendPluginMessageData(ModIdentifier channel, OutByteBuffer toSend) {
-        String channelName = channel.getFullIdentifier();
+    public void sendPluginMessageData(ResourceLocation channel, OutByteBuffer toSend) {
+        String channelName = channel.getFull();
         if (Util.doesStringContainsUppercaseLetters(channelName)) {
-            channelName = channel.getIdentifier();
+            channelName = channel.getPath();
         }
         this.connection.sendPacket(new PacketPluginMessageSending(channelName, toSend.toByteArray()));
     }

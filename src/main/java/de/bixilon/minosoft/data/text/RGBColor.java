@@ -38,7 +38,15 @@ public final class RGBColor implements ChatCode {
         if (colorString.startsWith("#")) {
             colorString = colorString.substring(1);
         }
-        this.color = Integer.parseInt(colorString, 16);
+        if (colorString.length() == 6) {
+            this.color = Integer.parseUnsignedInt(colorString + "ff", 16);
+        } else {
+            this.color = Integer.parseUnsignedInt(colorString, 16);
+        }
+    }
+
+    public static RGBColor noAlpha(int color) {
+        return new RGBColor(color << 8 | 0xFF);
     }
 
     @IntRange(from = 0, to = 255)
@@ -51,14 +59,29 @@ public final class RGBColor implements ChatCode {
         return (this.color >>> 24) & 0xFF;
     }
 
+    @IntRange(from = 0, to = 1)
+    public float getFloatRed() {
+        return getRed() / 255f;
+    }
+
     @IntRange(from = 0, to = 255)
     public int getGreen() {
         return (this.color >>> 16) & 0xFF;
     }
 
+    @IntRange(from = 0, to = 1)
+    public float getFloatGreen() {
+        return getGreen() / 255f;
+    }
+
     @IntRange(from = 0, to = 255)
     public int getBlue() {
         return (this.color >>> 8) & 0xFF;
+    }
+
+    @IntRange(from = 0, to = 1)
+    public float getFloatBlue() {
+        return getBlue() / 255f;
     }
 
     @Override

@@ -33,37 +33,37 @@ public abstract class AbstractHorse extends Animal {
         return this.metaData.getSets().getBitMask(EntityMetaDataFields.ABSTRACT_HORSE_FLAGS, bitMask);
     }
 
-    @EntityMetaDataFunction(identifier = "Is tame")
+    @EntityMetaDataFunction(name = "Is tame")
     public boolean isTame() {
         return getAbstractHorseFlag(0x02);
     }
 
-    @EntityMetaDataFunction(identifier = "Is saddled")
+    @EntityMetaDataFunction(name = "Is saddled")
     public boolean isSaddled() {
         return getAbstractHorseFlag(0x04);
     }
 
-    @EntityMetaDataFunction(identifier = "Has bred")
+    @EntityMetaDataFunction(name = "Has bred")
     public boolean hasBred() {
         return getAbstractHorseFlag(0x08);
     }
 
-    @EntityMetaDataFunction(identifier = "Is eating")
+    @EntityMetaDataFunction(name = "Is eating")
     public boolean isEating() {
         return getAbstractHorseFlag(0x10);
     }
 
-    @EntityMetaDataFunction(identifier = "Is rearing")
+    @EntityMetaDataFunction(name = "Is rearing")
     public boolean isRearing() {
         return getAbstractHorseFlag(0x20);
     }
 
-    @EntityMetaDataFunction(identifier = "Is mouth open")
+    @EntityMetaDataFunction(name = "Is mouth open")
     public boolean isMouthOpen() {
         return getAbstractHorseFlag(0x40);
     }
 
-    @EntityMetaDataFunction(identifier = "Owner UUID")
+    @EntityMetaDataFunction(name = "Owner UUID")
     @Nullable
     public UUID getOwner() {
         return this.metaData.getSets().getUUID(EntityMetaDataFields.ABSTRACT_HORSE_OWNER_UUID);

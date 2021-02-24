@@ -31,7 +31,7 @@ public class ThrownPotion extends ThrowableItemProjectile {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Item")
+    @EntityMetaDataFunction(name = "Item")
     @Override
     public Slot getItem() {
         if (this.versionId > V_20W09A) {

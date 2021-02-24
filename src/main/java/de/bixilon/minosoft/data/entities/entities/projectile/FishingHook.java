@@ -27,12 +27,12 @@ public class FishingHook extends Projectile {
         super(connection, entityId, uuid, location, rotation);
     }
 
-    @EntityMetaDataFunction(identifier = "Hooked entity id")
+    @EntityMetaDataFunction(name = "Hooked entity id")
     public int getHookedEntityId() {
         return getMetaData().getSets().getInt(EntityMetaDataFields.FISHING_HOOK_HOOKED_ENTITY);
     }
 
-    @EntityMetaDataFunction(identifier = "Is catchable")
+    @EntityMetaDataFunction(name = "Is catchable")
     public boolean isCatchable() {
         return getMetaData().getSets().getBoolean(EntityMetaDataFields.FISHING_HOOK_CATCHABLE);
     }

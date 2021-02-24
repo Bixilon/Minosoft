@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings.recipes;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.inventory.Slot;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,7 +23,7 @@ import java.util.HashSet;
 public class Recipes {
     private final HashSet<Recipe> recipeList = new HashSet<>();
     private final HashBiMap<Integer, Recipe> recipeIdMap = HashBiMap.create(); // ids for version <= VERSION_1_12_2
-    private final HashBiMap<ModIdentifier, Recipe> recipeNameMap = HashBiMap.create();
+    private final HashBiMap<ResourceLocation, Recipe> recipeNameMap = HashBiMap.create();
 
     public static boolean ingredientsEquals(Ingredient[] one, Ingredient[] two) {
         if (one.length != two.length) {
@@ -39,7 +39,7 @@ public class Recipes {
         this.recipeNameMap.clear();
     }
 
-    public void registerCustomRecipes(HashBiMap<ModIdentifier, Recipe> recipes) {
+    public void registerCustomRecipes(HashBiMap<ResourceLocation, Recipe> recipes) {
         this.recipeNameMap.putAll(recipes);
     }
 
@@ -47,8 +47,8 @@ public class Recipes {
         return this.recipeIdMap.get(id);
     }
 
-    public Recipe getRecipe(ModIdentifier identifier) {
-        return this.recipeNameMap.get(identifier);
+    public Recipe getRecipe(ResourceLocation resourceLocation) {
+        return this.recipeNameMap.get(resourceLocation);
     }
 
     public Recipe getRecipe(RecipeTypes property, Slot result, String group, Ingredient[] ingredients) {
