@@ -14,7 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockInfo
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
@@ -69,7 +71,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) {
         }
     }
 
-    fun render(blockInfo: BlockInfo, position: Vec3, data: MutableList<Float>, neighbourBlocks: Array<BlockInfo?>) {
+    fun render(blockInfo: BlockInfo, biome: Biome, position: Vec3, data: MutableList<Float>, neighbourBlocks: Array<BlockInfo?>) {
         val modelMatrix = Mat4().translate(position)
 
         for (direction in Directions.DIRECTIONS) {
@@ -90,8 +92,11 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) {
                     continue
                 }
 
-                val tintColor: RGBColor? = blockInfo.block.tintColor
+                var tintColor: RGBColor? = blockInfo.block.tintColor
 
+                if (StaticConfiguration.BIOME_DEBUG_MODE) {
+                    tintColor = RGBColor(biome.hashCode())
+                }
                 element.render(tintColor, textureMapping, modelMatrix, direction, data)
             }
         }

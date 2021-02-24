@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.logging.Log
 import glm_.vec3.Vec3
 import org.lwjgl.opengl.GL11.GL_CULL_FACE
 import org.lwjgl.opengl.GL11.glEnable
@@ -37,10 +38,8 @@ class ChunkRenderer(private val connection: Connection, private val world: World
     private var currentTick = 0 // for animation usage
     private var lastTickIncrementTime = 0L
 
-    private fun prepareChunk(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection): FloatArray {
+    private fun prepareChunk(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection, chunk: Chunk): FloatArray {
         val data: MutableList<Float> = mutableListOf()
-
-        // ToDo: Greedy meshing!
 
         val below = world.allChunks[chunkLocation]?.sections?.get(sectionHeight - 1)
         val above = world.allChunks[chunkLocation]?.sections?.get(sectionHeight + 1)
@@ -86,7 +85,12 @@ class ChunkRenderer(private val connection: Connection, private val world: World
             }
             val worldPosition = Vec3(position.x + chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X, position.y + sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y, position.z + chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z)
 
-            blockInfo.block.getBlockRenderer(BlockPosition(chunkLocation, sectionHeight, position)).render(blockInfo, worldPosition, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
+            val blockPosition = BlockPosition(chunkLocation, sectionHeight, position)
+            if (blockPosition == BlockPosition(-103, 3, 288)) {
+                Log.debug("")
+            }
+            val biome = chunk.biomeAccessor.getBiome(blockPosition)
+            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, biome, worldPosition, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
         }
         return data.toFloatArray()
     }
@@ -142,13 +146,13 @@ class ChunkRenderer(private val connection: Connection, private val world: World
     fun prepareChunk(chunkLocation: ChunkLocation, chunk: Chunk) {
         chunkSectionsToDraw[chunkLocation] = ConcurrentHashMap()
         for ((sectionHeight, section) in chunk.sections) {
-            prepareChunkSection(chunkLocation, sectionHeight, section)
+            prepareChunkSection(chunkLocation, sectionHeight, section, chunk)
         }
     }
 
-    fun prepareChunkSection(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection) {
+    fun prepareChunkSection(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection, chunk: Chunk) {
         renderWindow.rendering.executor.execute {
-            val data = prepareChunk(chunkLocation, sectionHeight, section)
+            val data = prepareChunk(chunkLocation, sectionHeight, section, chunk)
 
             var sectionMap = chunkSectionsToDraw[chunkLocation]
             if (sectionMap == null) {

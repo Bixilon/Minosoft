@@ -11,12 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world
+package de.bixilon.minosoft.data.world.biome
 
 import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.data.world.BlockPosition
 
-data class BlockFloatingInfo(
-    var light: Int = 15,
-    var skyLight: Int = 15,
-    var biome: Biome? = null, // ToDo
-)
+interface BiomeAccessor {
+
+    fun getBiome(position: BlockPosition): Biome
+}

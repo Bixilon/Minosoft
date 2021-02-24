@@ -11,14 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world
+package de.bixilon.minosoft.data.world.biome
 
-import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.data.world.BlockPosition
 
-data class BlockInfo(
-    val block: BlockState,
-    var metaData: BlockEntityMetaData? = null,
-) {
-    constructor(block: BlockState) : this(block, null) // ToDo: For java compatibility
+class DummyBiomeAccessor(private val biome: Biome) : BiomeAccessor {
+    override fun getBiome(position: BlockPosition): Biome {
+        return biome
+    }
 }

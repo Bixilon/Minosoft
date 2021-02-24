@@ -20,7 +20,10 @@ import de.bixilon.minosoft.data.entities.entities.monster.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.world.*
+import de.bixilon.minosoft.data.world.BlockInfo
+import de.bixilon.minosoft.data.world.Chunk
+import de.bixilon.minosoft.data.world.InChunkLocation
+import de.bixilon.minosoft.data.world.InChunkSectionLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
@@ -100,7 +103,7 @@ object VersionTweaker {
                     section.setBlockInfo(location, null)
                     continue
                 }
-                section.setBlockInfo(location, BlockInfo(newBlock, blockInfo.metaData, section.blocksFloatingInfo[location] ?: BlockFloatingInfo()))
+                section.setBlockInfo(location, BlockInfo(newBlock, blockInfo.metaData))
             }
         }
         return chunk

@@ -11,14 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world
+package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.text.RGBColor
 
-data class BlockInfo(
-    val block: BlockState,
-    var metaData: BlockEntityMetaData? = null,
-) {
-    constructor(block: BlockState) : this(block, null) // ToDo: For java compatibility
+object RenderConstants {
+    val DEFAULT_SKY_COLOR = RGBColor("#ecff89")
 }

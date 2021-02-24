@@ -20,6 +20,7 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.RenderStats
@@ -110,7 +111,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             glfwTerminate()
             throw RuntimeException("Failed to create the GLFW window")
         }
-        camera = Camera(connection, Minosoft.getConfig().config.game.camera.fov)
+        camera = Camera(connection, Minosoft.getConfig().config.game.camera.fov, this)
         camera.init(this)
 
 
@@ -210,7 +211,9 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
         // Make the window visible
         GL.createCapabilities()
-        glClearColor(137 / 256f, 207 / 256f, 240 / 256f, 1.0f)
+
+        setSkyColor(RGBColor("#fffe7a"))
+
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -369,5 +372,9 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             keyBindingCallbacks[resourceLocation] = Pair(keyBinding, resourceLocationCallbacks)
         }
         resourceLocationCallbacks.add(callback)
+    }
+
+    fun setSkyColor(color: RGBColor) {
+        glClearColor(color.floatRed, color.floatGreen, color.floatBlue, 1.0f)
     }
 }

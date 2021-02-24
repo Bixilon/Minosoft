@@ -14,18 +14,21 @@
 package de.bixilon.minosoft.util;
 
 import de.bixilon.minosoft.data.mappings.Dimension;
+import de.bixilon.minosoft.data.mappings.biomes.Biome;
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.world.BlockInfo;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkSection;
 import de.bixilon.minosoft.data.world.InChunkSectionLocation;
+import de.bixilon.minosoft.data.world.biome.BiomeAccessor;
+import de.bixilon.minosoft.data.world.biome.DummyBiomeAccessor;
+import de.bixilon.minosoft.data.world.biome.XZBiomeAccessor;
 import de.bixilon.minosoft.data.world.palette.Palette;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.BitSet;
 import java.util.HashMap;
-import java.util.Map;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
@@ -91,10 +94,10 @@ public final class ChunkUtil {
                             }
                         }
                     }
-                    sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap, Map.of())); // ToDo
+                    sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap)); // ToDo
                 }
             }
-            return new Chunk(sectionMap);
+            return new Chunk(sectionMap, new DummyBiomeAccessor(buffer.getConnection().getMapping().getBiomeRegistry().get(0)));
         }
         if (buffer.getVersionId() < V_15W35A) { // ToDo: was this really changed in 62?
             byte sections = BitByte.getBitCount(sectionBitMasks[0]);
@@ -138,9 +141,9 @@ public final class ChunkUtil {
                         }
                     }
                 }
-                sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap, Map.of()));
+                sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap));
             }
-            return new Chunk(sectionMap);
+            return new Chunk(sectionMap, new DummyBiomeAccessor(buffer.getConnection().getMapping().getBiomeRegistry().get(0))); // ToDo
         }
         // really big thanks to: https://wiki.vg/index.php?title=Chunk_Format&oldid=13712
         HashMap<Integer, ChunkSection> sectionMap = new HashMap<>();
@@ -201,12 +204,17 @@ public final class ChunkUtil {
                 }
             }
 
-            sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap, Map.of()));
+            sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap));
         }
-        if (buffer.getVersionId() < V_19W36A) {
-            byte[] biomes = buffer.readBytes(256);
+        BiomeAccessor biomeAccessor = new DummyBiomeAccessor(buffer.getConnection().getMapping().getBiomeRegistry().get(0));
+        if (buffer.getVersionId() < V_19W36A && fullChunk) {
+            Biome[] biomes = new Biome[256];
+            for (int i = 0; i < biomes.length; i++) {
+                biomes[i] = buffer.getConnection().getMapping().getBiomeRegistry().get(buffer.readInt());
+            }
+            biomeAccessor = new XZBiomeAccessor(biomes);
         }
-        return new Chunk(sectionMap);
+        return new Chunk(sectionMap, biomeAccessor);
     }
 
     public static void readSkyLightPacket(InByteBuffer buffer, long[] skyLightMask, long[] blockLightMask, long[] emptyBlockLightMask, long[] emptySkyLightMask) {

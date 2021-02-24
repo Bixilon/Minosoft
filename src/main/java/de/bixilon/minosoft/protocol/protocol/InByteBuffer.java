@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.entities.Poses;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.LegacyResourceLocation;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
+import de.bixilon.minosoft.data.mappings.biomes.Biome;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData;
 import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData;
@@ -393,6 +394,31 @@ public class InByteBuffer {
         int[] ret = new int[length];
         for (int i = 0; i < length; i++) {
             ret[i] = readInt();
+        }
+        return ret;
+    }
+
+    public Biome[] readBiomeArray() {
+        int length = 0;
+        if (this.versionId >= V_20W28A) {
+            length = readVarInt();
+        } else if (this.versionId >= V_19W36A) {
+            length = 1024;
+        }
+        if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+            throw new IllegalArgumentException("Trying to allocate to much memory");
+        }
+
+        Biome[] ret = new Biome[length];
+        for (int i = 0; i < length; i++) {
+            int biomeId;
+
+            if (this.versionId >= V_20W28A) {
+                biomeId = readVarInt();
+            } else {
+                biomeId = readInt();
+            }
+            ret[i] = this.connection.getMapping().getBiomeRegistry().get(biomeId);
         }
         return ret;
     }

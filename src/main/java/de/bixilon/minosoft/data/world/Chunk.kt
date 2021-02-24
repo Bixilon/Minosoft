@@ -13,12 +13,16 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.world.biome.BiomeAccessor
 import java.util.*
 
 /**
  * Collection of chunks sections (allocated in y)
  */
-class Chunk(val sections: MutableMap<Int, ChunkSection> = mutableMapOf()) {
+class Chunk(
+    val sections: MutableMap<Int, ChunkSection> = mutableMapOf(),
+    var biomeAccessor: BiomeAccessor,
+) {
 
     fun getBlockInfo(location: InChunkLocation): BlockInfo? {
         return sections[location.getSectionHeight()]?.getBlockInfo(location.getInChunkSectionLocation())
@@ -51,7 +55,7 @@ class Chunk(val sections: MutableMap<Int, ChunkSection> = mutableMapOf()) {
                 it.blocks.remove(inChunkSectionLocation)
                 return
             }
-            it.setBlockInfo(inChunkSectionLocation, BlockInfo(block, info = it.blocksFloatingInfo[inChunkSectionLocation] ?: BlockFloatingInfo()))
+            it.setBlockInfo(inChunkSectionLocation, BlockInfo(block))
         }
 
     }

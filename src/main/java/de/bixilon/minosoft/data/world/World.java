@@ -22,19 +22,20 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Collection of chunks
  */
 public class World {
-    private final HashMap<ChunkLocation, Chunk> chunks = new HashMap<>();
+    private final ConcurrentHashMap<ChunkLocation, Chunk> chunks = new ConcurrentHashMap<>();
     private final HashBiMap<Integer, Entity> entityIdMap = HashBiMap.create();
     private final HashBiMap<UUID, Entity> entityUUIDMap = HashBiMap.create();
     private boolean hardcore;
     private boolean raining;
     private Dimension dimension; // used for sky color, etc
 
-    public HashMap<ChunkLocation, Chunk> getAllChunks() {
+    public ConcurrentHashMap<ChunkLocation, Chunk> getAllChunks() {
         return this.chunks;
     }
 

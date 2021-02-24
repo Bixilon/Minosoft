@@ -19,6 +19,8 @@ import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
+import de.bixilon.minosoft.data.world.biome.BiomeAccessor;
+import de.bixilon.minosoft.data.world.biome.NoiseBiomeAccessor;
 import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent;
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -38,7 +40,6 @@ public class PacketChunkData extends ClientboundPacket {
     private ChunkLocation location;
     private Chunk chunk;
     private CompoundTag heightMap;
-    private int[] biomes;
     private boolean ignoreOldData;
 
     @Override
@@ -84,12 +85,9 @@ public class PacketChunkData extends ClientboundPacket {
         if (buffer.getVersionId() >= V_18W44A) {
             this.heightMap = (CompoundTag) buffer.readNBT();
         }
+        BiomeAccessor biomeAccessor = null;
         if (fullChunk) {
-            if (buffer.getVersionId() >= V_20W28A) {
-                this.biomes = buffer.readVarIntArray();
-            } else if (buffer.getVersionId() >= V_19W36A) {
-                this.biomes = buffer.readIntArray(1024);
-            }
+            biomeAccessor = new NoiseBiomeAccessor(buffer.readBiomeArray());
         }
 
         int size = buffer.readVarInt();
@@ -98,6 +96,11 @@ public class PacketChunkData extends ClientboundPacket {
 
         if (size > 0) {
             this.chunk = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMasks, 0, fullChunk, dimension.getHasSkyLight());
+            if (this.chunk != null) {
+                if (biomeAccessor != null) {
+                    this.chunk.setBiomeAccessor(biomeAccessor);
+                }
+            }
             // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
             buffer.setPosition(size + lastPos);
         }
