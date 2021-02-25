@@ -21,7 +21,7 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.chunk.ChunkRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.RenderStats
 import de.bixilon.minosoft.modding.event.EventInvokerCallback

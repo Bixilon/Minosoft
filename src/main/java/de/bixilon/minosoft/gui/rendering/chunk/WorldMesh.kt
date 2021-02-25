@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.*
 
-class ChunkSectionMesh(data: FloatArray) {
+class WorldMesh(data: FloatArray) {
     var vAO: Int = glGenVertexArrays()
     var vBO: Int = glGenBuffers()
     var trianglesCount: Int = data.size / FLOATS_PER_VERTEX

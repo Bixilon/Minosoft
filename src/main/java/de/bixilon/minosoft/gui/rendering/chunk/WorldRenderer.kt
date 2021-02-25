@@ -34,11 +34,16 @@ import java.util.concurrent.ConcurrentHashMap
 class WorldRenderer(private val connection: Connection, private val world: World, val renderWindow: RenderWindow) : Renderer {
     private lateinit var minecraftTextures: TextureArray
     lateinit var chunkShader: Shader
-    private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, ChunkSectionMesh>>()
+    private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, WorldMesh>>()
+    private val visibleChunks: MutableSet<ChunkLocation> = mutableSetOf()
+    private lateinit var frustum: Frustum
     private var currentTick = 0 // for animation usage
     private var lastTickIncrementTime = 0L
 
     private fun prepareChunk(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection, chunk: Chunk): FloatArray {
+        if (frustum.containsChunk(chunkLocation, connection)) {
+            visibleChunks.add(chunkLocation)
+        }
         val data: MutableList<Float> = mutableListOf()
 
         val below = world.allChunks[chunkLocation]?.sections?.get(sectionHeight - 1)
@@ -122,7 +127,9 @@ class WorldRenderer(private val connection: Connection, private val world: World
         }
 
         for ((chunkLocation, map) in chunkSectionsToDraw) {
-            if (chunkLocation.isVisibleFrom(connection.renderer.renderWindow.camera))
+            if (! visibleChunks.contains(chunkLocation)) {
+                continue
+            }
             for ((_, mesh) in map) {
                 mesh.draw()
             }
@@ -161,7 +168,7 @@ class WorldRenderer(private val connection: Connection, private val world: World
                 chunkSectionsToDraw[chunkLocation] = sectionMap
             }
             renderWindow.renderQueue.add {
-                val newMesh = ChunkSectionMesh(data)
+                val newMesh = WorldMesh(data)
                 sectionMap[sectionHeight]?.unload()
                 sectionMap[sectionHeight] = newMesh
             }
@@ -191,7 +198,7 @@ class WorldRenderer(private val connection: Connection, private val world: World
         }
     }
 
-    fun prepareWorld(world: World) {
+    private fun prepareWorld(world: World) {
         for ((chunkLocation, chunk) in world.allChunks) {
             prepareChunk(chunkLocation, chunk)
         }
@@ -200,5 +207,15 @@ class WorldRenderer(private val connection: Connection, private val world: World
     fun refreshChunkCache() {
         clearChunkCache()
         prepareWorld(connection.player.world)
+    }
+
+    fun recalculateFrustum(frustum: Frustum) {
+        visibleChunks.clear()
+        this.frustum = frustum
+        for ((chunkLocation, _) in chunkSectionsToDraw.entries) {
+            if (frustum.containsChunk(chunkLocation, connection)) {
+                visibleChunks.add(chunkLocation)
+            }
+        }
     }
 }

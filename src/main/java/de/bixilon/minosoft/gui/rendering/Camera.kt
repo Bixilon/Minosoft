@@ -19,6 +19,7 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Location
+import de.bixilon.minosoft.gui.rendering.chunk.Frustum
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
@@ -34,6 +35,7 @@ class Camera(
     var fov: Float,
     private val renderWindow: RenderWindow,
 ) {
+    lateinit var viewProjectionMatrix: Mat4
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
     private var movementSpeed = 7
     var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
@@ -46,8 +48,8 @@ class Camera(
     private var lastPositionChange = 0L
     private var currentPositionSent = false
 
-    private var cameraFront = Vec3(0.0f, 0.0f, -1.0f)
-    private var cameraRight = Vec3(0.0f, 0.0f, -1.0f)
+    var cameraFront = Vec3(0.0f, 0.0f, -1.0f)
+    var cameraRight = Vec3(0.0f, 0.0f, -1.0f)
     private var cameraUp = Vec3(0.0f, 1.0f, 0.0f)
 
     private var screenHeight = 0
@@ -170,12 +172,14 @@ class Camera(
     }
 
     private fun recalculateViewProjectionMatrix() {
+        val matrix = calculateProjectionMatrix(screenWidth, screenHeight) * calculateViewMatrix()
         for (shader in shaders) {
-            shader.use().setMat4("viewProjectionMatrix", calculateProjectionMatrix(screenWidth, screenHeight) * calculateViewMatrix())
+            shader.use().setMat4("viewProjectionMatrix", matrix)
         }
         // recalculate sky color for current biome
         val blockPosition = Location(cameraPosition).toBlockPosition()
         renderWindow.setSkyColor(connection.player.world.getChunk(blockPosition.getChunkLocation())?.biomeAccessor?.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
+        connection.renderer.renderWindow.worldRenderer.recalculateFrustum(Frustum(this))
     }
 
     private fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int): Mat4 {

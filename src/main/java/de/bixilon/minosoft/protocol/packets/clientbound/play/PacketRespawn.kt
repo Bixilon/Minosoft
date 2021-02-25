@@ -91,7 +91,7 @@ class PacketRespawn : ClientboundPacket() {
         connection.player.world.dimension = dimension
         connection.player.isSpawnConfirmed = false
         connection.player.gameMode = gameMode
-        connection.renderer.renderWindow.chunkRenderer.clearChunkCache()
+        connection.renderer.renderWindow.worldRenderer.clearChunkCache()
     }
 
     override fun log() {
