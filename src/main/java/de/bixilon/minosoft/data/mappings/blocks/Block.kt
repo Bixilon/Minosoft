@@ -34,7 +34,7 @@ data class Block(
     val states: MutableSet<BlockState> = mutableSetOf()
 
     override fun postInit(versionMapping: VersionMapping) {
-        item = versionMapping.itemRegistry.get(itemId)!!
+        item = versionMapping.itemRegistry.get(itemId)
     }
 
     companion object : ResourceLocationDeserializer<Block> {

@@ -13,46 +13,67 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements.text
 
+import de.bixilon.minosoft.data.text.RGBColor
 import glm_.BYTES
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
 import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.*
 
-class HUDFontMesh(data: FloatArray) {
-    var vAO: Int = glGenVertexArrays()
-    var vBO: Int = glGenBuffers()
-    var trianglesCount: Int = data.size / FLOAT_PER_VERTEX
+class HUDFontMesh {
+    private val data: MutableList<Float> = mutableListOf()
+    private var vao: Int = 0
+    private var vbo: Int = 0
+    private var trianglesCount: Int = 0
+
+
+    fun load() {
+        trianglesCount = data.size / FLOATS_PER_VERTEX
+        vao = glGenVertexArrays()
+        vbo = glGenBuffers()
+
+        // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+        glBindVertexArray(vao)
+        glBindBuffer(GL_ARRAY_BUFFER, vbo)
+        glBufferData(GL_ARRAY_BUFFER, data.toFloatArray(), GL_STATIC_DRAW)
+        var index = 0
+        glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, 0L)
+        glEnableVertexAttribArray(index++)
+        glVertexAttribPointer(index, 2, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (3 * Float.BYTES).toLong())
+        glEnableVertexAttribArray(index++)
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (5 * Float.BYTES).toLong())
+        glEnableVertexAttribArray(index++)
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (6 * Float.BYTES).toLong())
+        glEnableVertexAttribArray(index++)
+
+        // note that this is allowed, the call to glVertexAttribPointer registered vbo as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+        glBindBuffer(GL_ARRAY_BUFFER, 0)
+    }
+
+
+    fun addVertex(position: Vec3, textureCoordinates: Vec2, atlasPage: Int, color: RGBColor) {
+        data.add(position.x)
+        data.add(position.y)
+        data.add(position.z)
+        data.add(textureCoordinates.x)
+        data.add(textureCoordinates.y)
+        data.add(Float.fromBits(atlasPage))
+        data.add(Float.fromBits(color.color))
+    }
 
     fun draw() {
-        glBindVertexArray(vAO)
+        glBindVertexArray(vao)
         glDrawArrays(GL_TRIANGLES, 0, trianglesCount)
     }
 
     fun unload() {
-        glDeleteVertexArrays(vAO)
-        glDeleteBuffers(vBO)
-    }
-
-    init {
-        // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-        glBindVertexArray(vAO)
-        glBindBuffer(GL_ARRAY_BUFFER, vBO)
-        glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW)
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, FLOAT_PER_VERTEX * Float.BYTES, 0L)
-        glEnableVertexAttribArray(0)
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, FLOAT_PER_VERTEX * Float.BYTES, (3 * Float.BYTES).toLong())
-        glEnableVertexAttribArray(1)
-        glVertexAttribPointer(2, 1, GL_FLOAT, false, FLOAT_PER_VERTEX * Float.BYTES, (5 * Float.BYTES).toLong())
-        glEnableVertexAttribArray(2)
-        glVertexAttribPointer(3, 1, GL_FLOAT, false, FLOAT_PER_VERTEX * Float.BYTES, (6 * Float.BYTES).toLong())
-        glEnableVertexAttribArray(3)
-
-        // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
+        glDeleteVertexArrays(vao)
+        glDeleteBuffers(vbo)
     }
 
     companion object {
-        private const val FLOAT_PER_VERTEX = 7
+        private const val FLOATS_PER_VERTEX = 7
     }
 }

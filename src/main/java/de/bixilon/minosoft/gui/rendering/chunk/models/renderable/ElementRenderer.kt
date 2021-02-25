@@ -17,6 +17,7 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
@@ -28,7 +29,7 @@ import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
-class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolean, rescale: Boolean) {
+class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolean, rescale: Boolean) {
     private val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
     private val faces: MutableMap<Directions, BlockModelFace> = HashMap(element.faces)
     private var positions: Array<Vec3> = element.positions.clone()
@@ -49,7 +50,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
     }
 
 
-    fun render(tintColor: RGBColor?, textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, data: MutableList<Float>) {
+    fun render(tintColor: RGBColor?, textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, mesh: ChunkMesh) {
         val realDirection = directionMapping[direction]!!
         val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
 
@@ -61,31 +62,21 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvlock: Boolea
 
         val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
 
-        fun addToData(vec3: Vec3, textureCoordinates: Vec2) {
-            val input = Vec4(vec3, 1.0f)
-            val output = modelMatrix * input
-            data.add(output.x)
-            data.add(output.y)
-            data.add(output.z)
-            data.add(textureCoordinates.x * texture.widthFactor)
-            data.add(textureCoordinates.y * texture.heightFactor)
-            data.add(Float.fromBits(texture.id)) // ToDo: Compact this
-
-            // ToDo: Send this only once per texture
-            data.add(texture.animationFrameTime.toFloat())
-            data.add(texture.animations.toFloat())
-            data.add(texture.heightFactor)
-
-            if (face.tint && tintColor != null) {
-                data.add(Float.fromBits(tintColor.color))
-            } else {
-                data.add(0f)
-            }
-        }
 
         fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>) {
             for (vertex in drawOrder) {
-                addToData(drawPositions[vertex.first], texturePositions[vertex.second]!!)
+                val input = Vec4(drawPositions[vertex.first], 1.0f)
+                val output = modelMatrix * input
+                mesh.addVertex(
+                    position = output.toVec3(),
+                    textureCoordinates = texturePositions[vertex.second]!!,
+                    texture = texture,
+                    tintColor = if (face.tint) {
+                        tintColor
+                    } else {
+                        null
+                    }
+                )
             }
         }
 

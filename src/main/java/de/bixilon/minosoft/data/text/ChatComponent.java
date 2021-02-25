@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.gui.rendering.font.Font;
 import de.bixilon.minosoft.gui.rendering.font.FontBindings;
 import de.bixilon.minosoft.gui.rendering.hud.HUDScale;
+import de.bixilon.minosoft.gui.rendering.hud.elements.text.HUDFontMesh;
 import glm_.mat4x4.Mat4;
 import glm_.vec2.Vec2;
 import javafx.collections.FXCollections;
@@ -28,7 +29,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public abstract class ChatComponent {
     public static ChatComponent valueOf(Object raw) {
@@ -96,5 +96,5 @@ public abstract class ChatComponent {
     /**
      * @return Adds all verticies to the array (used in opengl)
      */
-    public abstract void addVerticies(Vec2 startPosition, Vec2 offset, Mat4 perspectiveMatrix, FontBindings binding, Font font, HUDScale hudScale, List<Float> meshData, Vec2 maxSize);
+    public abstract void addVerticies(Vec2 startPosition, Vec2 offset, Mat4 perspectiveMatrix, FontBindings binding, Font font, HUDScale hudScale, HUDFontMesh mesh, Vec2 maxSize);
 }

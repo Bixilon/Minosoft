@@ -17,6 +17,7 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockInfo
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.mat4x4.Mat4
@@ -69,7 +70,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) {
         }
     }
 
-    fun render(blockInfo: BlockInfo, tintColor: RGBColor?, position: Vec3, data: MutableList<Float>, neighbourBlocks: Array<BlockInfo?>) {
+    fun render(blockInfo: BlockInfo, tintColor: RGBColor?, position: Vec3, mesh: ChunkMesh, neighbourBlocks: Array<BlockInfo?>) {
         val modelMatrix = Mat4().translate(position)
 
         for (direction in Directions.DIRECTIONS) {
@@ -90,7 +91,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) {
                     continue
                 }
 
-                element.render(tintColor, textureMapping, modelMatrix, direction, data)
+                element.render(tintColor, textureMapping, modelMatrix, direction, mesh)
             }
         }
     }

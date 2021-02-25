@@ -36,12 +36,12 @@ import java.util.concurrent.ConcurrentHashMap
 class ChunkRenderer(private val connection: Connection, private val world: World, val renderWindow: RenderWindow) : Renderer {
     private lateinit var minecraftTextures: TextureArray
     lateinit var chunkShader: Shader
-    private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, WorldMesh>>()
+    private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, ChunkMesh>>()
     private var currentTick = 0 // for animation usage
     private var lastTickIncrementTime = 0L
 
-    private fun prepareChunk(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection, chunk: Chunk): FloatArray {
-        val data: MutableList<Float> = mutableListOf()
+    private fun prepareChunk(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection, chunk: Chunk): ChunkMesh {
+        val mesh = ChunkMesh()
 
         val below = world.allChunks[chunkLocation]?.sections?.get(sectionHeight - 1)
         val above = world.allChunks[chunkLocation]?.sections?.get(sectionHeight + 1)
@@ -108,9 +108,9 @@ class ChunkRenderer(private val connection: Connection, private val world: World
                 blockInfo.block.tintColor?.let { tintColor = it }
             }
 
-            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, tintColor, worldPosition, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
+            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, tintColor, worldPosition, mesh, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
         }
-        return data.toFloatArray()
+        return mesh
     }
 
     override fun init() {
@@ -170,7 +170,7 @@ class ChunkRenderer(private val connection: Connection, private val world: World
 
     fun prepareChunkSection(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection, chunk: Chunk) {
         renderWindow.rendering.executor.execute {
-            val data = prepareChunk(chunkLocation, sectionHeight, section, chunk)
+            val mesh = prepareChunk(chunkLocation, sectionHeight, section, chunk)
 
             var sectionMap = chunkSectionsToDraw[chunkLocation]
             if (sectionMap == null) {
@@ -178,9 +178,9 @@ class ChunkRenderer(private val connection: Connection, private val world: World
                 chunkSectionsToDraw[chunkLocation] = sectionMap
             }
             renderWindow.renderQueue.add {
-                val newMesh = WorldMesh(data)
+                mesh.load()
                 sectionMap[sectionHeight]?.unload()
-                sectionMap[sectionHeight] = newMesh
+                sectionMap[sectionHeight] = mesh
             }
         }
     }

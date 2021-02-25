@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.gui.rendering.font.Font;
 import de.bixilon.minosoft.gui.rendering.font.FontBindings;
 import de.bixilon.minosoft.gui.rendering.hud.HUDScale;
+import de.bixilon.minosoft.gui.rendering.hud.elements.text.HUDFontMesh;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.hash.BetterHashSet;
@@ -33,7 +34,6 @@ import javax.annotation.Nullable;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
-import java.util.List;
 
 public class BaseComponent extends ChatComponent {
     private static final String LEGACY_RESET_SUFFIX = String.valueOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) + PostChatFormattingCodes.RESET.getChar();
@@ -215,14 +215,14 @@ public class BaseComponent extends ChatComponent {
     }
 
     @Override
-    public void addVerticies(Vec2 startPosition, Vec2 offset, Mat4 perspectiveMatrix, FontBindings binding, Font font, HUDScale hudScale, List<Float> meshData, Vec2 maxSize) {
+    public void addVerticies(Vec2 startPosition, Vec2 offset, Mat4 perspectiveMatrix, FontBindings binding, Font font, HUDScale hudScale, HUDFontMesh mesh, Vec2 maxSize) {
         if (binding == FontBindings.RIGHT_DOWN || binding == FontBindings.RIGHT_UP) {
             for (int i = this.parts.size() - 1; i >= 0; i--) {
-                this.parts.get(i).addVerticies(startPosition, offset, perspectiveMatrix, binding, font, hudScale, meshData, maxSize);
+                this.parts.get(i).addVerticies(startPosition, offset, perspectiveMatrix, binding, font, hudScale, mesh, maxSize);
             }
         } else {
             for (var chatPart : this.parts) {
-                chatPart.addVerticies(startPosition, offset, perspectiveMatrix, binding, font, hudScale, meshData, maxSize);
+                chatPart.addVerticies(startPosition, offset, perspectiveMatrix, binding, font, hudScale, mesh, maxSize);
             }
         }
     }
