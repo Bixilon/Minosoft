@@ -13,22 +13,51 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.BYTES
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
 import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.*
 
-class WorldMesh(data: FloatArray) {
-    var vAO: Int = glGenVertexArrays()
-    var vBO: Int = glGenBuffers()
-    var trianglesCount: Int = data.size / FLOATS_PER_VERTEX
+class ChunkMesh {
+    private val data: MutableList<Float> = mutableListOf()
+    private var vao: Int = 0
+    private var vbo: Int = 0
+    private var trianglesCount: Int = 0
 
-    init {
+    fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?) {
+        data.add(position.x)
+        data.add(position.y)
+        data.add(position.z)
+        data.add(textureCoordinates.x * texture.widthFactor)
+        data.add(textureCoordinates.y * texture.heightFactor)
+        data.add(Float.fromBits(texture.id)) // ToDo: Compact this
+
+        // ToDo: Send this only once per texture
+        data.add(texture.animationFrameTime.toFloat())
+        data.add(texture.animations.toFloat())
+        data.add(texture.heightFactor)
+
+        if (tintColor == null) {
+            data.add(0f)
+        } else {
+            data.add(Float.fromBits(tintColor.color))
+        }
+    }
+
+    fun load() {
+        trianglesCount = data.size / FLOATS_PER_VERTEX
+        vao = glGenVertexArrays()
+        vbo = glGenBuffers()
+
         // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-        glBindVertexArray(vAO)
-        glBindBuffer(GL_ARRAY_BUFFER, vBO)
-        glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW)
+        glBindVertexArray(vao)
+        glBindBuffer(GL_ARRAY_BUFFER, vbo)
+        glBufferData(GL_ARRAY_BUFFER, data.toFloatArray(), GL_STATIC_DRAW)
         var index = 0
         glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, 0L)
         glEnableVertexAttribArray(index++)
@@ -53,13 +82,13 @@ class WorldMesh(data: FloatArray) {
     }
 
     fun draw() {
-        glBindVertexArray(vAO)
+        glBindVertexArray(vao)
         glDrawArrays(GL_TRIANGLES, 0, trianglesCount)
     }
 
     fun unload() {
-        glDeleteVertexArrays(vAO)
-        glDeleteBuffers(vBO)
+        glDeleteVertexArrays(vao)
+        glDeleteBuffers(vbo)
     }
 
     companion object {

@@ -28,12 +28,13 @@ data class Block(
     val hasDynamicShape: Boolean = false,
     val tintColor: RGBColor? = null,
     private val itemId: Int = 0,
+    val tint: ResourceLocation? = null,
 ) : RegistryItem {
     lateinit var item: Item
     val states: MutableSet<BlockState> = mutableSetOf()
 
     override fun postInit(versionMapping: VersionMapping) {
-        item = versionMapping.itemRegistry.get(itemId)!!
+        item = versionMapping.itemRegistry.get(itemId)
     }
 
     companion object : ResourceLocationDeserializer<Block> {
@@ -44,8 +45,9 @@ data class Block(
                 explosionResistance = data["explosion_resistance"]?.asFloat ?: 0.0f,
                 hasCollision = data["has_collision"]?.asBoolean ?: false,
                 hasDynamicShape = data["has_dynamic_shape"]?.asBoolean ?: false,
-                tintColor = data["tint_color"]?.asInt?.let { TintColorCalculator.getColor(it) },
+                tintColor = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) },
                 itemId = data["item"]?.asInt ?: 0,
+                tint = data["tint"]?.asString?.let { ResourceLocation(it) }
             )
 
             // block states

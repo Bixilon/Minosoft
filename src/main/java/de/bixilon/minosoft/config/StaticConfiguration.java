@@ -20,7 +20,7 @@ import java.io.File;
 
 public class StaticConfiguration {
     public static final boolean DEBUG_MODE = true; // if true, additional checks will be made to validate data, ... Decreases performance
-    public static final boolean BIOME_DEBUG_MODE = true; // colors all biomes according to the biome hashCode
+    public static final boolean BIOME_DEBUG_MODE = false; // colors all biomes according to the biome hashCode
     public static final boolean DEBUG_SLOW_LOADING = false; // if true, many Thread.sleep will be executed and the start will be delayed (by a lot)
     public static String CONFIG_FILENAME = "minosoft.json"; // Filename of minosoft's base configuration (located in AppData/Minosoft/config)
     public static boolean SKIP_MOJANG_AUTHENTICATION; // disables all connections to mojang

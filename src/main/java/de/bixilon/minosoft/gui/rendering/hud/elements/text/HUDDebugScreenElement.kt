@@ -17,10 +17,6 @@ import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.entities.Location
-import de.bixilon.minosoft.data.world.BlockPosition
-import de.bixilon.minosoft.data.world.ChunkLocation
-import de.bixilon.minosoft.data.world.InChunkSectionLocation
 import de.bixilon.minosoft.gui.rendering.font.FontBindings
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.util.GitInfo
@@ -41,12 +37,7 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
     private val systemMemoryText: String = formatBytes(systemInfoHardwareAbstractionLayer.memory.total)
     private val osText: String = "${System.getProperty("os.name")}: ${systemInfo.operatingSystem.family} ${systemInfo.operatingSystem.bitness}bit"
 
-    // only calculate once per update values
-    private lateinit var location: Location
-    private lateinit var blockPosition: BlockPosition
-    private lateinit var chunkLocation: ChunkLocation
-    private var sectionHeight: Int = 0
-    private lateinit var inChunkSectionLocation: InChunkSectionLocation
+    private val camera = hudTextElement.renderWindow.camera
 
     private var debugScreenEnabled = StaticConfiguration.DEBUG_MODE
 
@@ -54,7 +45,6 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
         if (!debugScreenEnabled) {
             return
         }
-        calculateDynamicValues()
 
         chatComponents[FontBindings.LEFT_UP]!!.addAll(listOf(
             "FPS: ${getFPS()}",
@@ -66,6 +56,7 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
             "Chunk ${getChunkLocation()}",
             "Facing ${getFacing()}",
             "Dimension ${hudTextElement.connection.player.world.dimension}",
+            "Biome ${camera.currentBiome}",
         ))
         chatComponents[FontBindings.RIGHT_UP]!!.addAll(listOf(
             "Java: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit",
@@ -153,29 +144,21 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
     }
 
     private fun getLocation(): String {
-        return "${formatCoordinate(location.x)} / ${formatCoordinate(location.y)} / ${formatCoordinate(location.z)}"
+        return "${formatCoordinate(camera.feetLocation.x)} / ${formatCoordinate(camera.feetLocation.y)} / ${formatCoordinate(camera.feetLocation.z)}"
     }
 
     private fun getBlockPosition(): String {
-        return "${blockPosition.x} / ${blockPosition.y} / ${blockPosition.z}"
+        return "${camera.blockPosition.x} / ${camera.blockPosition.y} / ${camera.blockPosition.z}"
     }
 
     private fun getChunkLocation(): String {
-        return "${inChunkSectionLocation.x} ${inChunkSectionLocation.y} ${inChunkSectionLocation.z} in ${chunkLocation.x} $sectionHeight ${chunkLocation.z}"
+        return "${camera.inChunkSectionLocation.x} ${camera.inChunkSectionLocation.y} ${camera.inChunkSectionLocation.z} in ${camera.chunkLocation.x} ${camera.sectionHeight} ${camera.chunkLocation.z}"
     }
 
     private fun getFacing(): String {
         val yaw = hudTextElement.renderWindow.camera.yaw
         val pitch = hudTextElement.renderWindow.camera.pitch
         return "todo (${formatRotation(yaw)} / ${formatRotation(pitch)})"
-    }
-
-    private fun calculateDynamicValues() {
-        location = Location(hudTextElement.renderWindow.camera.cameraPosition)
-        blockPosition = location.toBlockPosition()
-        chunkLocation = blockPosition.getChunkLocation()
-        sectionHeight = blockPosition.getSectionHeight()
-        inChunkSectionLocation = blockPosition.getInChunkSectionLocation()
     }
 
 

@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.*
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
@@ -34,17 +36,17 @@ import java.util.concurrent.ConcurrentHashMap
 class WorldRenderer(private val connection: Connection, private val world: World, val renderWindow: RenderWindow) : Renderer {
     private lateinit var minecraftTextures: TextureArray
     lateinit var chunkShader: Shader
-    private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, WorldMesh>>()
+    private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, ChunkMesh>>()
     private val visibleChunks: MutableSet<ChunkLocation> = mutableSetOf()
     private lateinit var frustum: Frustum
     private var currentTick = 0 // for animation usage
     private var lastTickIncrementTime = 0L
 
-    private fun prepareChunk(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection, chunk: Chunk): FloatArray {
+    private fun prepareChunk(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection, chunk: Chunk): ChunkMesh {
         if (frustum.containsChunk(chunkLocation, connection)) {
             visibleChunks.add(chunkLocation)
         }
-        val data: MutableList<Float> = mutableListOf()
+        val mesh = ChunkMesh()
 
         val below = world.allChunks[chunkLocation]?.sections?.get(sectionHeight - 1)
         val above = world.allChunks[chunkLocation]?.sections?.get(sectionHeight + 1)
@@ -95,9 +97,25 @@ class WorldRenderer(private val connection: Connection, private val world: World
                 Log.debug("")
             }
             val biome = chunk.biomeAccessor.getBiome(blockPosition)
-            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, biome, worldPosition, data, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
+
+            var tintColor: RGBColor? = null
+            if (StaticConfiguration.BIOME_DEBUG_MODE) {
+                tintColor = RGBColor(biome.hashCode())
+            } else {
+                biome?.let {
+                    biome.foliageColor?.let { tintColor = it }
+
+                    blockInfo.block.owner.tint?.let { tint ->
+                        tintColor = renderWindow.tintColorCalculator.calculateTint(tint, biome, blockPosition)
+                    }
+                }
+
+                blockInfo.block.tintColor?.let { tintColor = it }
+            }
+
+            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, tintColor, worldPosition, mesh, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
         }
-        return data.toFloatArray()
+        return mesh
     }
 
     override fun init() {
@@ -160,7 +178,7 @@ class WorldRenderer(private val connection: Connection, private val world: World
 
     fun prepareChunkSection(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection, chunk: Chunk) {
         renderWindow.rendering.executor.execute {
-            val data = prepareChunk(chunkLocation, sectionHeight, section, chunk)
+            val mesh = prepareChunk(chunkLocation, sectionHeight, section, chunk)
 
             var sectionMap = chunkSectionsToDraw[chunkLocation]
             if (sectionMap == null) {
@@ -168,9 +186,9 @@ class WorldRenderer(private val connection: Connection, private val world: World
                 chunkSectionsToDraw[chunkLocation] = sectionMap
             }
             renderWindow.renderQueue.add {
-                val newMesh = WorldMesh(data)
+                mesh.load()
                 sectionMap[sectionHeight]?.unload()
-                sectionMap[sectionHeight] = newMesh
+                sectionMap[sectionHeight] = mesh
             }
         }
     }

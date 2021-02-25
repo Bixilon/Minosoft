@@ -19,6 +19,10 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Location
+import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.data.world.BlockPosition
+import de.bixilon.minosoft.data.world.ChunkLocation
+import de.bixilon.minosoft.data.world.InChunkSectionLocation
 import de.bixilon.minosoft.gui.rendering.chunk.Frustum
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.protocol.network.Connection
@@ -35,7 +39,6 @@ class Camera(
     var fov: Float,
     private val renderWindow: RenderWindow,
 ) {
-    lateinit var viewProjectionMatrix: Mat4
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
     private var movementSpeed = 7
     var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
@@ -51,6 +54,21 @@ class Camera(
     var cameraFront = Vec3(0.0f, 0.0f, -1.0f)
     var cameraRight = Vec3(0.0f, 0.0f, -1.0f)
     private var cameraUp = Vec3(0.0f, 1.0f, 0.0f)
+
+    var feetLocation: Location = Location(0.0, 0.0, 0.0)
+        private set
+    var headLocation: Location = Location(0.0, 0.0, 0.0)
+        private set
+    var blockPosition: BlockPosition = BlockPosition(0, 0, 0)
+        private set
+    var currentBiome: Biome? = null
+        private set
+    var chunkLocation: ChunkLocation = ChunkLocation(0, 0)
+        private set
+    var sectionHeight: Int = 0
+        private set
+    var inChunkSectionLocation: InChunkSectionLocation = InChunkSectionLocation(0, 0, 0)
+        private set
 
     private var screenHeight = 0
     private var screenWidth = 0
@@ -176,10 +194,30 @@ class Camera(
         for (shader in shaders) {
             shader.use().setMat4("viewProjectionMatrix", matrix)
         }
+
+        positionChangeCallback()
+    }
+
+    private fun positionChangeCallback() {
+        headLocation = Location(cameraPosition)
+        feetLocation = Location(headLocation.x, headLocation.y - PLAYER_HEIGHT, headLocation.z)
+        blockPosition = feetLocation.toBlockPosition()
+        currentBiome = connection.player.world.getChunk(blockPosition.getChunkLocation())?.biomeAccessor?.getBiome(blockPosition)
+        chunkLocation = blockPosition.getChunkLocation()
+        sectionHeight = blockPosition.getSectionHeight()
+        inChunkSectionLocation = blockPosition.getInChunkSectionLocation()
+
         // recalculate sky color for current biome
         val blockPosition = Location(cameraPosition).toBlockPosition()
         renderWindow.setSkyColor(connection.player.world.getChunk(blockPosition.getChunkLocation())?.biomeAccessor?.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
         connection.renderer.renderWindow.worldRenderer.recalculateFrustum(Frustum(this))
+        connection.player.world.dimension?.hasSkyLight?.let {
+            if (it) {
+                renderWindow.setSkyColor(currentBiome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
+            } else {
+                renderWindow.setSkyColor(RenderConstants.BLACK_COLOR)
+            }
+        } ?: renderWindow.setSkyColor(RenderConstants.DEFAULT_SKY_COLOR)
     }
 
     private fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int): Mat4 {
@@ -216,7 +254,7 @@ class Camera(
     private fun sendPositionToServer() {
         if (System.currentTimeMillis() - lastPositionChange > ProtocolDefinition.TICK_TIME) {
             // ToDo: Replace this with proper movement and only send it, when our position changed
-            connection.sendPacket(PacketPlayerPositionAndRotationSending(Location(cameraPosition), EntityRotation(yaw, pitch), false))
+            connection.sendPacket(PacketPlayerPositionAndRotationSending(feetLocation, EntityRotation(yaw, pitch), false))
             lastPositionChange = System.currentTimeMillis()
             currentPositionSent = true
             return
@@ -224,7 +262,14 @@ class Camera(
         currentPositionSent = false
     }
 
+    fun setPosition(location: Location) {
+        feetLocation = location
+        headLocation = Location(location.x, location.y + PLAYER_HEIGHT, location.z)
+        cameraPosition = headLocation.toVec3()
+    }
+
     companion object {
         private val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
+        private const val PLAYER_HEIGHT = 1.3 // player is 1.8 blocks high, the camera is normally at 0.5. 1.8 - 0.5 = 1.13
     }
 }

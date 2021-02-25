@@ -27,6 +27,7 @@ import de.bixilon.minosoft.protocol.network.Connection
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
+import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
 class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, val renderWindow: RenderWindow) : HUDElement {
@@ -53,18 +54,15 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
         prepare()
     }
 
-    private fun drawTextBackground(start: Vec2, end: Vec2, perspectiveMatrix: Mat4, meshData: MutableList<Float>) {
+    private fun drawTextBackground(start: Vec2, end: Vec2, perspectiveMatrix: Mat4, mesh: HUDFontMesh) {
         fun drawLetterVertex(position: Vec2) {
             val matrixPosition = perspectiveMatrix * Vec4(position.x, position.y, 0f, 1f)
-            meshData.add(matrixPosition.x)
-            meshData.add(matrixPosition.y)
-            meshData.add(-0.995f)
-
-            meshData.add(0f)
-            meshData.add(0f)
-            meshData.add(Float.fromBits(0))
-
-            meshData.add(Float.fromBits(RGBColor(0, 0, 0, 76).color))
+            mesh.addVertex(
+                position = Vec3(matrixPosition.x, matrixPosition.y, TEXT_BACKGROUND_Z),
+                textureCoordinates = TEXT_BACKGROUND_ATLAS_COORDINATES,
+                atlasPage = TEXT_BACKGROUND_ATLAS_INDEX,
+                color = TEXT_BACKGROUND_COLOR,
+            )
         }
 
         drawLetterVertex(start)
@@ -76,14 +74,14 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
 
     }
 
-    fun drawChatComponent(position: Vec2, binding: FontBindings, text: ChatComponent, meshData: MutableList<Float>, maxSize: Vec2) {
+    fun drawChatComponent(position: Vec2, binding: FontBindings, text: ChatComponent, mesh: HUDFontMesh, maxSize: Vec2) {
         if (text.message.isBlank()) {
             maxSize += Vec2(0, font.charHeight * hudRenderer.hudScale.scale)
             return
         }
-        text.addVerticies(position, Vec2(0), fontBindingPerspectiveMatrices[binding.ordinal], binding, font, hudRenderer.hudScale, meshData, maxSize)
+        text.addVerticies(position, Vec2(0), fontBindingPerspectiveMatrices[binding.ordinal], binding, font, hudRenderer.hudScale, mesh, maxSize)
 
-        drawTextBackground(position - 1, (position + maxSize) + 1, fontBindingPerspectiveMatrices[binding.ordinal], meshData)
+        drawTextBackground(position - 1, (position + maxSize) + 1, fontBindingPerspectiveMatrices[binding.ordinal], mesh)
     }
 
     override fun prepare() {
@@ -105,7 +103,7 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
             hudTextElement.update()
         }
 
-        val meshData: MutableList<Float> = mutableListOf()
+        val mesh = HUDFontMesh()
 
         for ((binding, components) in componentsBindingMap) {
             val offset = Vec2(3, 3)
@@ -116,12 +114,13 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
 
             for ((_, component) in components.withIndex()) {
                 val currentOffset = Vec2()
-                drawChatComponent(offset, binding, ChatComponent.valueOf(component), meshData, currentOffset)
+                drawChatComponent(offset, binding, ChatComponent.valueOf(component), mesh, currentOffset)
                 offset += Vec2(0, currentOffset.y + 1)
             }
         }
+        mesh.load()
         hudMeshHUD.unload()
-        hudMeshHUD = HUDFontMesh(meshData.toFloatArray())
+        hudMeshHUD = mesh
     }
 
 
@@ -131,7 +130,8 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
         fontAtlasTexture = font.createAtlasTexture()
         fontAtlasTexture.load()
 
-        hudMeshHUD = HUDFontMesh(floatArrayOf())
+        hudMeshHUD = HUDFontMesh()
+        hudMeshHUD.load()
 
         fontShader = Shader("font_vertex.glsl", "font_fragment.glsl")
         fontShader.load()
@@ -156,5 +156,14 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
             hudTextElement.draw()
         }
         hudMeshHUD.draw()
+    }
+
+    companion object {
+
+        private const val TEXT_BACKGROUND_Z = -0.995f
+        private val TEXT_BACKGROUND_ATLAS_COORDINATES = Vec2()
+        private const val TEXT_BACKGROUND_ATLAS_INDEX = 0
+        private val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
+
     }
 }
