@@ -54,7 +54,9 @@ class Camera(
     private var cameraRight = Vec3(0.0f, 0.0f, -1.0f)
     private var cameraUp = Vec3(0.0f, 1.0f, 0.0f)
 
-    var location: Location = Location(0.0, 0.0, 0.0)
+    var feetLocation: Location = Location(0.0, 0.0, 0.0)
+        private set
+    var headLocation: Location = Location(0.0, 0.0, 0.0)
         private set
     var blockPosition: BlockPosition = BlockPosition(0, 0, 0)
         private set
@@ -195,8 +197,9 @@ class Camera(
     }
 
     private fun positionChangeCallback() {
-        location = Location(cameraPosition)
-        blockPosition = location.toBlockPosition()
+        headLocation = Location(cameraPosition)
+        feetLocation = Location(headLocation.x, headLocation.y - PLAYER_HEIGHT, headLocation.z)
+        blockPosition = feetLocation.toBlockPosition()
         currentBiome = connection.player.world.getChunk(blockPosition.getChunkLocation())?.biomeAccessor?.getBiome(blockPosition)
         chunkLocation = blockPosition.getChunkLocation()
         sectionHeight = blockPosition.getSectionHeight()
@@ -246,7 +249,7 @@ class Camera(
     private fun sendPositionToServer() {
         if (System.currentTimeMillis() - lastPositionChange > ProtocolDefinition.TICK_TIME) {
             // ToDo: Replace this with proper movement and only send it, when our position changed
-            connection.sendPacket(PacketPlayerPositionAndRotationSending(Location(cameraPosition), EntityRotation(yaw, pitch), false))
+            connection.sendPacket(PacketPlayerPositionAndRotationSending(feetLocation, EntityRotation(yaw, pitch), false))
             lastPositionChange = System.currentTimeMillis()
             currentPositionSent = true
             return
@@ -254,7 +257,14 @@ class Camera(
         currentPositionSent = false
     }
 
+    fun setPosition(location: Location) {
+        feetLocation = location
+        headLocation = Location(location.x, location.y + PLAYER_HEIGHT, location.z)
+        cameraPosition = headLocation.toVec3()
+    }
+
     companion object {
         private val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
+        private const val PLAYER_HEIGHT = 1.3 // player is 1.8 blocks high, the camera is normally at 0.5. 1.8 - 0.5 = 1.13
     }
 }

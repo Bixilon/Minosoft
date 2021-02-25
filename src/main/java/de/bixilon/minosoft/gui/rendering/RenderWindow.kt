@@ -84,7 +84,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
                 latch.countDown()
             }
             renderQueue.add {
-                camera.cameraPosition = packet.location.toVec3()
+                camera.setPosition(packet.location)
                 camera.setRotation(packet.rotation.yaw.toDouble(), packet.rotation.pitch.toDouble())
             }
         })

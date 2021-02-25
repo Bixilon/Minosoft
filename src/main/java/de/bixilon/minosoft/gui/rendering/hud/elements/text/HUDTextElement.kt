@@ -162,7 +162,7 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
 
         private const val TEXT_BACKGROUND_Z = -0.995f
         private val TEXT_BACKGROUND_ATLAS_COORDINATES = Vec2()
-        private val TEXT_BACKGROUND_ATLAS_INDEX = 0
+        private const val TEXT_BACKGROUND_ATLAS_INDEX = 0
         private val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
 
     }

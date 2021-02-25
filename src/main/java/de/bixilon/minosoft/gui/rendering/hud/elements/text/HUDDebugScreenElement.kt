@@ -144,7 +144,7 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
     }
 
     private fun getLocation(): String {
-        return "${formatCoordinate(camera.location.x)} / ${formatCoordinate(camera.location.y)} / ${formatCoordinate(camera.location.z)}"
+        return "${formatCoordinate(camera.feetLocation.x)} / ${formatCoordinate(camera.feetLocation.y)} / ${formatCoordinate(camera.feetLocation.z)}"
     }
 
     private fun getBlockPosition(): String {
