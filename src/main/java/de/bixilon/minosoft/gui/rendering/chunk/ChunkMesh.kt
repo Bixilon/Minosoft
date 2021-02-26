@@ -60,6 +60,7 @@ class ChunkMesh {
         glBindVertexArray(vao)
         glBindBuffer(GL_ARRAY_BUFFER, vbo)
         glBufferData(GL_ARRAY_BUFFER, data.toFloatArray(), GL_STATIC_DRAW)
+        data.clear() // clear data ((do not store in memory)
         var index = 0
         glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, 0L)
         glEnableVertexAttribArray(index++)
